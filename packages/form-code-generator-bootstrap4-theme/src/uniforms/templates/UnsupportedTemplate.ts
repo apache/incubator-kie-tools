@@ -18,9 +18,9 @@
  */
 
 import unsupported from "!!raw-loader!../../resources/templates/unsupported.template";
-import { FormElementTemplate, FormElementTemplateProps } from "./types";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
-import { FormElement, FormInput } from "../../api";
+import { FormInput } from "../../api";
 import { getInputReference } from "../utils/Utils";
 
 export interface UnsupportedFieldProps extends FormElementTemplateProps<any> {
@@ -35,13 +35,12 @@ export class UnsupportedFieldTemplate implements FormElementTemplate<FormInput, 
   }
 
   render(props: UnsupportedFieldProps): FormInput {
-    const data = {
-      props: props,
-    };
-
     return {
       ref: getInputReference(props),
-      html: this.unsupportedTemplate(data),
+      html: this.unsupportedTemplate({ props }),
+      globalFunctions: undefined,
+      setValueFromModelCode: undefined,
+      writeValueToModelCode: undefined,
     };
   }
 }

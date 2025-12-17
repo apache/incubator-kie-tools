@@ -26,7 +26,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/docker/distribution/reference"
+	"github.com/distribution/reference"
+	"github.com/docker/docker/api/types/image"
 	"io"
 	"os"
 	"os/exec"
@@ -37,7 +38,6 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
@@ -55,7 +55,7 @@ type DockerLogMessage struct {
 }
 
 type DockerClient interface {
-	ImageList(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error)
+	ImageList(ctx context.Context, options image.ListOptions) ([]image.Summary, error)
 }
 
 func getDockerClient() (*client.Client, error) {
@@ -102,15 +102,15 @@ func getDockerContainerID() (string, error) {
 		return "", err
 	}
 
-	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	containers, err := cli.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
 		return "", err
 	}
 
-	for _, container := range containers {
+	for _, c := range containers {
 		// Check if the container has the expected image name or other identifying information
-		if strings.Contains(container.Image, metadata.DevModeImage) {
-			return container.ID, nil
+		if strings.Contains(c.Image, metadata.DevModeImage) {
+			return c.ID, nil
 		}
 	}
 
@@ -257,13 +257,13 @@ func CheckImageExists(cli DockerClient, ctx context.Context, imageName string) (
 	} else {
 		imageName = fmt.Sprintf("%s:%s", reference.Path(named), "latest")
 	}
-	images, err := cli.ImageList(ctx, types.ImageListOptions{All: true})
+	images, err := cli.ImageList(ctx, image.ListOptions{All: true})
 	if err != nil {
 		return false, fmt.Errorf("error listing images: %s", err)
 	}
 
-	for _, image := range images {
-		for _, tag := range image.RepoTags {
+	for _, i := range images {
+		for _, tag := range i.RepoTags {
 			if strings.HasSuffix(tag, imageName) {
 				return true, nil
 			}
@@ -327,7 +327,7 @@ func startDockerContainer(cli *client.Client, ctx context.Context, resp containe
 	fmt.Printf("\nCreated container with ID %s", resp.ID)
 	fmt.Println("\n⏳ Starting your container and SonataFlow project...")
 
-	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	if err := cli.ContainerStart(ctx, resp.ID, container.StartOptions{}); err != nil {
 		return fmt.Errorf("\nUnable to start container %s", resp.ID)
 	}
 
@@ -366,7 +366,7 @@ func processOutputDuringContainerExecution(cli *client.Client, ctx context.Conte
 	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
 
 	//Print all container logs
-	out, err := cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: false, ShowStderr: true, Follow: true})
+	out, err := cli.ContainerLogs(ctx, resp.ID, container.LogsOptions{ShowStdout: false, ShowStderr: true, Follow: true})
 	if err != nil {
 		return fmt.Errorf("\nError getting container logs: %s", err)
 	}
@@ -389,7 +389,6 @@ func processOutputDuringContainerExecution(cli *client.Client, ctx context.Conte
 
 	return nil
 }
-
 
 func PollContainerStoppedCheck(containerID string, interval time.Duration, ready chan<- bool) {
 	for {

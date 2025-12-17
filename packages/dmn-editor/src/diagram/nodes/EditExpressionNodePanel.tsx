@@ -21,24 +21,30 @@ import * as React from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function EditExpressionNodePanel(props: { isVisible: boolean; id: string }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const settings = useSettings();
 
   return (
     <>
       {props.isVisible && (
-        <Label
+        <div
+          className={"kie-dmn-editor--edit-expression-node-panel nodrag"}
+          onDragCapture={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
           onClick={() =>
             dmnEditorStoreApi.setState((state) => {
               state.dispatch(state).boxedExpressionEditor.open(props.id);
             })
           }
-          className={"kie-dmn-editor--edit-expression-node-panel"}
         >
-          {settings.isReadOnly ? "View" : "Edit"}
-        </Label>
+          <Label>{settings.isReadOnly ? i18n.nodes.view : i18n.nodes.edit}</Label>
+        </div>
       )}
     </>
   );

@@ -24,6 +24,7 @@ import { FormElement, FormInput } from "../../api";
 import FormInputs from "./FormInputs";
 import { CodeGenContext } from "../CodeGenContext";
 import NestedFieldInput from "./NestedFieldInput";
+import ListItemField, { ListItemProps } from "./ListItemField";
 
 export const renderFormInputs = (schema: Bridge): FormElement[] => {
   const codegenCtx: CodeGenContext = {
@@ -43,7 +44,7 @@ export const renderFormInputs = (schema: Bridge): FormElement[] => {
 export const renderNestedInputFragmentWithContext = (
   uniformsContext: any,
   field: any,
-  itempProps: any,
+  itemProps: any,
   disabled?: boolean
 ): FormInput | undefined => {
   const codegenCtx: CodeGenContext = {
@@ -55,7 +56,30 @@ export const renderNestedInputFragmentWithContext = (
       codegenCtx,
       uniformsContext,
       field,
-      itempProps,
+      itemProps,
+      disabled,
+    })
+  );
+
+  return codegenCtx.rendered.length === 1 ? codegenCtx.rendered[0] : undefined;
+};
+
+export const renderListItemFragmentWithContext = (
+  uniformsContext: any,
+  fieldName: string,
+  itemProps: ListItemProps,
+  disabled?: boolean
+): FormInput | undefined => {
+  const codegenCtx: CodeGenContext = {
+    rendered: [],
+  };
+
+  ReactDOMServer.renderToString(
+    React.createElement(ListItemField, {
+      codegenCtx,
+      uniformsContext,
+      fieldName,
+      itemProps,
       disabled,
     })
   );

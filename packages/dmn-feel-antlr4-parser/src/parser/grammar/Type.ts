@@ -17,7 +17,10 @@
  * under the License.
  */
 
+import { Identifier } from "../Identifier";
+
 export interface Type {
   name: string;
   typeRef?: string;
+  source: Identifier;
 }

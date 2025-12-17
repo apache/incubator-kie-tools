@@ -50,6 +50,10 @@ export class Envelope<
     return this.envelopeClient.channelApi;
   }
 
+  public get shared() {
+    return this.envelopeClient.shared;
+  }
+
   public async start(
     viewDelegate: () => Promise<() => ViewType>,
     envelopeContext: ContextType,

@@ -47,7 +47,7 @@ export interface PopoverMenuProps {
   /**
    * Lifecycle function invoked when the popover has fully transitioned out, called when the user click outside the popover.
    */
-  onHide?: () => void;
+  onHidden?: () => void;
   /**
    * Lifecycle function invoked when the popover has fully transitioned out, called when the user press "Esc" key.
    */
@@ -82,8 +82,8 @@ export const PopoverMenu = React.forwardRef(
       appendTo,
       className,
       hasAutoWidth,
-      minWidth,
-      onHide = () => {},
+      minWidth = `var(--pf-v5-c-popover--MinWidth)`,
+      onHidden = () => {},
       onCancel = () => {},
       onShown = () => {},
     }: PopoverMenuProps,
@@ -102,23 +102,30 @@ export const PopoverMenu = React.forwardRef(
       onShown();
     }, [setCurrentlyOpenContextMenu, id, onShown]);
 
-    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((showFunction) => {
+    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((_event, showFunction) => {
       showFunction?.();
     }, []);
 
     const shouldClose: PopoverProps["shouldClose"] = useCallback(
-      (tip, hideFunction, event): void => {
+      (event, hideFunction): void => {
         if (event instanceof KeyboardEvent && NavigationKeysUtils.isEsc(event.key)) {
           onCancel(event);
         } else {
-          onHide();
+          hideFunction?.();
         }
-
-        setCurrentlyOpenContextMenu(undefined);
-        hideFunction?.();
       },
-      [onCancel, onHide, setCurrentlyOpenContextMenu]
+      [onCancel]
     );
+
+    const onHiddenCallback: PopoverProps["onHidden"] = useCallback((): void => {
+      // This validation is to prevent this code of being called twice, because if the user clicks outside the
+      // Boxed Expression component the onHidden() is called again by the Popover which is listen to clicks
+      // on the document to close all opened popups.
+      if (currentlyOpenContextMenu) {
+        onHidden();
+        setCurrentlyOpenContextMenu(undefined);
+      }
+    }, [currentlyOpenContextMenu, onHidden, setCurrentlyOpenContextMenu]);
 
     useImperativeHandle(
       ref,
@@ -158,14 +165,14 @@ export const PopoverMenu = React.forwardRef(
         minWidth={minWidth}
         position={popupPosition}
         distance={distance ?? 0}
-        reference={arrowPlacement}
+        triggerRef={arrowPlacement}
         appendTo={appendTo}
         // Need this 1px to render something and not break it.
         headerContent={<div style={{ height: "1px" }}></div>}
         bodyContent={body}
         isVisible={isPopoverVisible}
         onShown={onPopoverShown}
-        onHide={shouldClose}
+        onHidden={onHiddenCallback}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
         flipBehavior={["bottom-start", "bottom", "bottom-end", "right-start", "left-start", "right-end", "left-end"]}

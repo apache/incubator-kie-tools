@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tGroup } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tGroup } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -27,19 +27,21 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameGroupNode } from "../mutations/renameNode";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../i18n";
 
-export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGroup>; index: number }) {
+export function GroupProperties({ group, index }: { group: Normalized<DMN_LATEST__tGroup>; index: number }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
 
   return (
     <>
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <TextInput
           aria-label={"Name"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          onChange={(newName) => {
+          onChange={(_event, newName) => {
             setState((state) => {
               renameGroupNode({
                 definitions: state.dmn.model.definitions,
@@ -48,32 +50,32 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
               });
             });
           }}
-          value={group["@_name"]}
-          placeholder={"Enter a name..."}
+          value={group["@_name"] ?? ""}
+          placeholder={i18n.propertiesPanel.namePlaceholder}
         />
       </FormGroup>
 
-      <FormGroup label="Description">
+      <FormGroup label={i18n.propertiesPanel.description}>
         <TextArea
           aria-label={"Description"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={group.description?.__$$text}
-          onChange={(newDescription) => {
+          value={group.description?.__$$text ?? ""}
+          onChange={(_event, newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tGroup>).description = {
+              (state.dmn.model.definitions.artifact![index] as Normalized<DMN_LATEST__tGroup>).description = {
                 __$$text: newDescription,
               };
             });
           }}
-          placeholder={"Enter a description..."}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
       </FormGroup>
 
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {group["@_id"]}
         </ClipboardCopy>
       </FormGroup>

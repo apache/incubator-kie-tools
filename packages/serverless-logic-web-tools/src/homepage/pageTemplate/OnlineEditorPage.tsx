@@ -27,15 +27,14 @@ import {
   MastheadMain,
   MastheadToggle,
 } from "@patternfly/react-core/dist/js/components/Masthead";
-import { PageSidebar } from "@patternfly/react-core/dist/js/components/Page/PageSidebar";
+import { PageSidebar, PageSidebarBody } from "@patternfly/react-core/dist/js/components/Page";
 import { SkipToContent } from "@patternfly/react-core/dist/js/components/SkipToContent";
 import { Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Page, PageToggleButton } from "@patternfly/react-core/dist/js/components/Page";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
 import { useMemo, useState } from "react";
-import { useHistory, useRouteMatch } from "react-router";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useMatch, useLocation, Outlet } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
@@ -48,18 +47,18 @@ import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 import { APP_NAME } from "../../AppConstants";
 import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 export type OnlineEditorPageProps = {
-  children?: React.ReactNode;
   pageContainerRef: React.RefObject<HTMLDivElement>;
   isNavOpen: boolean;
   setIsNavOpen: (value: boolean) => void;
 };
 
 export function OnlineEditorPage(props: OnlineEditorPageProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
-  const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
+  const isRouteInSettingsSection = useMatch(`${routes.settings.home.path({})}/*`);
   const [activeQuickStartID, setActiveQuickStartID] = useState("");
   const [allQuickStartStates, setAllQuickStartStates] = useState({});
 
@@ -79,7 +78,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
       <ToolbarContent>
         <ToolbarGroup
           variant="icon-button-group"
-          alignment={{ default: "alignRight" }}
+          align={{ default: "alignRight" }}
           spacer={{ default: "spacerNone", md: "spacerMd" }}
         >
           <ToolbarItem>
@@ -120,7 +119,8 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
       </MastheadToggle>
       <MastheadMain>
         <MastheadBrand
-          onClick={() => history.push({ pathname: routes.home.path({}) })}
+          component="a"
+          onClick={() => navigate({ pathname: routes.home.path({}) })}
           style={{ textDecoration: "none" }}
         >
           <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
@@ -144,10 +144,17 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     [location, isRouteInSettingsSection]
   );
 
-  const sidebar = <PageSidebar nav={pageNav} theme="dark" />;
+  const sidebar = (
+    <PageSidebar theme="dark">
+      <PageSidebarBody>{pageNav}</PageSidebarBody>
+    </PageSidebar>
+  );
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;
+  const buildInfo = useMemo(() => {
+    return process.env["WEBPACK_REPLACE__buildInfo"];
+  }, []);
 
   return (
     <QuickStartContainer {...drawerProps}>
@@ -159,7 +166,12 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           mainContainerId={mainContainerId}
           isManagedSidebar
         >
-          {props.children}
+          <Outlet />
+          {buildInfo && (
+            <div className={"kie-tools--build-info"}>
+              <Label>{buildInfo}</Label>
+            </div>
+          )}
         </Page>
       </div>
     </QuickStartContainer>

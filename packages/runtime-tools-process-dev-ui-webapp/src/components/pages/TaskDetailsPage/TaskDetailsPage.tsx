@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Drawer,
   DrawerActions,
@@ -43,10 +43,7 @@ import {
   componentOuiaProps,
   ouiaPageTypeAndObjectId,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import {
-  TaskInboxGatewayApi,
-  useTaskInboxGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
@@ -57,16 +54,14 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import { EmbeddedTaskDetails, TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskDetails";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
+import { TaskListChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
 
-interface Props {
-  taskId?: string;
-}
-
-const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
-  const taskInboxGatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
+const TaskDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+  const channelApi: TaskListChannelApi = useTaskListChannelApi();
   const appContext = useDevUIAppContext();
 
-  const [taskId] = useState<string>(props.match.params.taskId);
+  const { taskId } = useParams<{ taskId?: string }>();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userTask, setUserTask] = useState<UserTaskInstance>();
   const [notification, setNotification] = useState<Notification>();
@@ -79,8 +74,16 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
 
   const loadTask = async () => {
     try {
-      const task = await taskInboxGatewayApi.getTaskById(taskId);
+      const task = await channelApi.taskList__getTaskById(taskId);
       setUserTask(task);
+      if (
+        (appContext.getCurrentUser().id && !task?.potentialUsers?.includes(appContext.getCurrentUser()?.id)) ||
+        (!appContext.getCurrentUser().id && (task?.potentialUsers?.length ?? 0) > 0)
+      ) {
+        setIsDetailsExpanded(true);
+      } else {
+        setIsDetailsExpanded(false);
+      }
     } catch (err) {
       setError(err);
     } finally {
@@ -106,7 +109,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
           label: "Go to Tasks",
           onClick: () => {
             setNotification(null);
-            goToInbox();
+            goToTaskList();
           },
         },
       ],
@@ -116,9 +119,9 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
     });
   };
 
-  const goToInbox = () => {
-    taskInboxGatewayApi.clearOpenTask();
-    props.history.push("/TaskInbox");
+  const goToTaskList = () => {
+    channelApi.taskList__clearOpenTask();
+    navigate({ pathname: "/Tasks" });
   };
 
   const onSubmitSuccess = (phase: string) => {
@@ -156,8 +159,8 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
           <GridItem span={12} className={"Dev-ui__card-size"}>
             <Card className={"Dev-ui__card-size"}>
               <ServerErrors error={error} variant="large">
-                <Button variant="primary" onClick={() => goToInbox()}>
-                  Go to Inbox
+                <Button variant="primary" onClick={() => goToTaskList()}>
+                  Go to Tasks
                 </Button>
               </ServerErrors>
             </Card>
@@ -177,8 +180,8 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
             <Card className={"Dev-ui__card-size"}>
               <KogitoEmptyState
                 type={KogitoEmptyStateType.Info}
-                title={"Cannot find task"}
-                body={`Cannot find task with id '${taskId}'`}
+                title={"Cannot find Task"}
+                body={`Cannot find Task with id '${taskId}'`}
               />
             </Card>
           </GridItem>
@@ -244,7 +247,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
               <Grid hasGutter md={1} className={"Dev-ui__card-size"}>
                 <GridItem span={12} className={"Dev-ui__card-size"}>
                   <Card className={"Dev-ui__card-size"}>
-                    <CardBody className="pf-u-h-100">
+                    <CardBody className="pf-v5-u-h-100">
                       <TaskFormContainer
                         userTask={userTask}
                         onSubmitSuccess={onSubmitSuccess}

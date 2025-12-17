@@ -16,16 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useMemo } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { JobsManagementPage, ProcessesPage } from "../../pages";
 import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
-import TaskInboxPage from "../../pages/TaskInboxPage/TaskInboxPage";
+import TaskListPage from "../../pages/TaskListPage/TaskListPage";
 import TaskDetailsPage from "../../pages/TaskDetailsPage/TaskDetailsPage";
 import FormsListPage from "../../pages/FormsListPage/FormsListPage";
 import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
 import ProcessFormPage from "../../pages/ProcessFormPage/ProcessFormPage";
-import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { PageNotFound } from "@kie-tools/runtime-tools-shared-webapp-components/dist/PageNotFound";
 import { NoData } from "@kie-tools/runtime-tools-shared-webapp-components/dist/NoData";
 
@@ -33,85 +32,25 @@ interface IOwnProps {
   navigate: string;
 }
 
-type DevUIRoute = { enabled: () => boolean; node: React.ReactNode };
-
-const defaultPath = "/Jobs";
-
-const defaultButton = "Go to Jobs";
+const DEFAULT_PATH = "Jobs";
+const DEFAULT_BUTTON = "Go to Jobs";
 
 const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
-  const context = useDevUIAppContext();
-
-  const routes: DevUIRoute[] = useMemo(
-    () => [
-      {
-        enabled: () => true,
-        node: <Route key="0" exact path="/" render={() => <Redirect to={`/${navigate}`} />} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="1" exact path="/Processes" component={ProcessesPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="2" exact path="/Process/:instanceID" component={ProcessDetailsPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="3" exact path="/Jobs" component={JobsManagementPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="4" exact path="/Tasks" component={TaskInboxPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="5" exact path="/Forms" component={FormsListPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="6" exact path="/Forms/:formName" component={FormDetailPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="7" exact path="/ProcessDefinition/Form/:processName" component={ProcessFormPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: (
-          <Route
-            key="11"
-            exact
-            path="/TaskDetails/:taskId"
-            render={(routeProps) => <TaskDetailsPage {...routeProps} />}
-          />
-        ),
-      },
-      {
-        enabled: () => true,
-        node: (
-          <Route
-            key="14"
-            path="/NoData"
-            render={(_props) => <NoData {..._props} defaultPath={defaultPath} defaultButton={defaultButton} />}
-          />
-        ),
-      },
-      {
-        enabled: () => true,
-        node: (
-          <Route
-            key="18"
-            path="*"
-            render={(_props) => <PageNotFound {..._props} defaultPath={defaultPath} defaultButton={defaultButton} />}
-          />
-        ),
-      },
-    ],
-    [context.isProcessEnabled]
+  return (
+    <Routes>
+      <Route path={"/"} element={<Navigate replace to={navigate} />} />
+      <Route path={"Processes"} element={<ProcessesPage />} />,
+      <Route path={"Process/:processId"} element={<ProcessDetailsPage />} />,
+      <Route path={"ProcessDefinition/Form/:processName"} element={<ProcessFormPage />} />,
+      <Route path={"Jobs"} element={<JobsManagementPage />} />,
+      <Route path={"Tasks"} element={<TaskListPage />} />,
+      <Route path={"TaskDetails/:taskId"} element={<TaskDetailsPage />} />
+      <Route path={"Forms"} element={<FormsListPage />} />,
+      <Route path={"Forms/:formName"} element={<FormDetailPage />} />,
+      <Route path={"NoData"} element={<NoData defaultPath={DEFAULT_PATH} defaultButton={DEFAULT_BUTTON} />} />
+      <Route path={"*"} element={<PageNotFound defaultPath={DEFAULT_PATH} defaultButton={DEFAULT_BUTTON} />} />
+    </Routes>
   );
-
-  return <Switch>{routes.filter((r) => r.enabled()).map((r) => r.node)}</Switch>;
 };
 
 export default DevUIRoutes;

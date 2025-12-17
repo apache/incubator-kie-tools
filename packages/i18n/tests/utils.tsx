@@ -22,17 +22,18 @@ import { useContext } from "react";
 import { DictionaryInterpolation, ReferenceDictionary } from "@kie-tools-core/i18n/dist/core/Dictionary";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 
-export interface DummyDictionary extends ReferenceDictionary {
-  greeting: (name: string) => string;
-  welcome: string;
-  modal: {
-    title: string;
-    text: string;
-  };
-}
+export interface DummyDictionary
+  extends ReferenceDictionary<{
+    greeting: (name: string | number) => string;
+    welcome: string;
+    modal: {
+      title: string;
+      text: string;
+    };
+  }> {}
 
-export const interpolationFunction: DictionaryInterpolation = (name: string) => `Hi ${name}!`;
-export const dummyDefault: DummyDictionary = {
+export const interpolationFunction: DictionaryInterpolation = (name: string | number) => `Hi ${name}!`;
+export const dummyDefault: ReferenceDictionary<DummyDictionary> = {
   greeting: interpolationFunction,
   welcome: "Welcome",
   modal: {

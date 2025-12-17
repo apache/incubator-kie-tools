@@ -24,10 +24,10 @@ import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -39,13 +39,14 @@ import {
   GIT_DEFAULT_BRANCH,
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ApplyAcceleratorResult, useAccelerator } from "../accelerator/useAccelerator";
 import { KOGITO_QUARKUS_ACCELERATOR } from "../accelerator/Accelerators";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -62,7 +63,7 @@ export function CreateGitHubRepositoryModal(props: {
   onSuccess: (args: { url: string }) => void;
   currentFile: WorkspaceFile;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
   const workspaces = useWorkspaces();
   const settingsDispatch = useSettingsDispatch();
@@ -153,26 +154,30 @@ export function CreateGitHubRepositoryModal(props: {
       props.onSuccess({ url: repo.data.html_url });
 
       if (applyAcceleratorResult?.success) {
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            workspaceId: props.workspace.descriptor.workspaceId,
-            fileRelativePath: applyAcceleratorResult.currentFileAfterMoving.relativePathWithoutExtension,
-            extension: applyAcceleratorResult.currentFileAfterMoving.extension,
-          }),
-        });
+        navigate(
+          {
+            pathname: routes.workspaceWithFilePath.path({
+              workspaceId: props.workspace.descriptor.workspaceId,
+              fileRelativePath: applyAcceleratorResult.currentFileAfterMoving.relativePath,
+            }),
+          },
+          { replace: true }
+        );
       }
     } catch (err) {
       if (applyAcceleratorResult?.success) {
         await rollbackApply({ ...applyAcceleratorResult });
       }
 
-      history.replace({
-        pathname: routes.workspaceWithFilePath.path({
-          extension: props.currentFile.extension,
-          fileRelativePath: props.currentFile.relativePathWithoutExtension,
-          workspaceId: props.workspace.descriptor.workspaceId,
-        }),
-      });
+      navigate(
+        {
+          pathname: routes.workspaceWithFilePath.path({
+            fileRelativePath: props.currentFile.relativePath,
+            workspaceId: props.workspace.descriptor.workspaceId,
+          }),
+        },
+        { replace: true }
+      );
 
       console.error(err);
       setError(err);
@@ -196,7 +201,7 @@ export function CreateGitHubRepositoryModal(props: {
     workspaces,
     props,
     applyAccelerator,
-    history,
+    navigate,
     routes.workspaceWithFilePath,
     rollbackApply,
     cleanUpTempResources,
@@ -245,32 +250,33 @@ export function CreateGitHubRepositoryModal(props: {
             <br />
           </FormAlert>
         )}
-        <FormGroup
-          label="Name"
-          isRequired={true}
-          helperTextInvalid={
-            "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."
-          }
-          helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="github-repository-name"
-          validated={validated}
-        >
+        <FormGroup label="Name" isRequired={true} fieldId="github-repository-name">
           <TextInput
             id={"github-repo-name"}
             validated={validated}
             isRequired={true}
             placeholder={"Name"}
             value={name}
-            onChange={setName}
+            onChange={(_event, val) => setName(val)}
           />
+          {validated === "error" ? (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">
+                  {"Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="success"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
         <Divider inset={{ default: "inset3xl" }} />
-        <FormGroup
-          helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="github-repo-visibility"
-        >
+        <FormGroup fieldId="github-repo-visibility">
           <Radio
             isChecked={!isPrivate}
             id={"github-repository-public"}
@@ -317,10 +323,17 @@ export function CreateGitHubRepositoryModal(props: {
                 </>
               }
               isChecked={shouldUseAccelerator}
-              onChange={(checked) => setShouldUseAccelerator(checked)}
+              onChange={(_event, checked) => setShouldUseAccelerator(checked)}
               isDisabled={!canAcceleratorBeUsed}
             />
           </Tooltip>
+          {
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="default"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          }
         </FormGroup>
       </Form>
     </Modal>

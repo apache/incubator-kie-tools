@@ -18,7 +18,7 @@
  */
 import * as React from "react";
 import { useCallback } from "react";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import {
@@ -26,7 +26,6 @@ import {
   UserContext,
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
-import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
 import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
@@ -40,10 +39,6 @@ interface IOwnProps {
 }
 
 const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, children }) => {
-  const renderPage = useCallback(() => {
-    return <BasePage>{children}</BasePage>;
-  }, [children]);
-
   return (
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
@@ -51,15 +46,13 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
           <CloudEventFormContextProvider>
             <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
               <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
-                <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
-                  <WorkflowFormContextProvider>
-                    <Router>
-                      <Switch>
-                        <Route path="/" render={renderPage} />
-                      </Switch>
-                    </Router>
-                  </WorkflowFormContextProvider>
-                </WorkflowDefinitionListContextProviderWithApolloClient>
+                <WorkflowFormContextProvider>
+                  <Router>
+                    <Routes>
+                      <Route path="*" element={<BasePage>{children}</BasePage>} />
+                    </Routes>
+                  </Router>
+                </WorkflowFormContextProvider>
               </WorkflowListContextProviderWithApolloClient>
             </WorkflowDetailsContextProviderWithApolloClient>
           </CloudEventFormContextProvider>

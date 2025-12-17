@@ -36,6 +36,7 @@ export function updateColumn({
   factIdentifierClassName,
   factIdentifierName,
   factName,
+  genericTypes,
   selectedColumnIndex,
 }: {
   className: string;
@@ -50,20 +51,29 @@ export function updateColumn({
   factIdentifierClassName: string | undefined;
   factIdentifierName: string | undefined;
   factName: string;
+  genericTypes: string[];
   selectedColumnIndex: number;
 }): { updatedFactMapping: SceSim__FactMappingType } {
   const factMappingToUpdate = factMappings[selectedColumnIndex];
   factMappingToUpdate.className = { __$$text: className };
-  factMappingToUpdate.factAlias = { __$$text: factName };
-  factMappingToUpdate.factIdentifier.className = { __$$text: factClassName };
-  factMappingToUpdate.factIdentifier.name = { __$$text: factName };
-  factMappingToUpdate.factMappingValueType = { __$$text: factMappingValueType };
   factMappingToUpdate.expressionAlias = { __$$text: expressionAlias };
   factMappingToUpdate.expressionElements = {
     ExpressionElement: expressionElementsSteps.map((ee) => {
       return { step: { __$$text: ee } };
     }),
   };
+  factMappingToUpdate.factAlias = { __$$text: factName };
+  factMappingToUpdate.factIdentifier.className = { __$$text: factClassName };
+  factMappingToUpdate.factIdentifier.name = { __$$text: factName };
+  factMappingToUpdate.factMappingValueType = { __$$text: factMappingValueType };
+  factMappingToUpdate.genericTypes =
+    genericTypes.length > 0
+      ? {
+          string: genericTypes.map((genericType) => {
+            return { __$$text: genericType };
+          }),
+        }
+      : undefined;
 
   factMappingValuesTypes.forEach((fmv) => {
     const factMappingValues = fmv.factMappingValues.FactMappingValue!;
@@ -77,7 +87,7 @@ export function updateColumn({
     const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
     factMappingValueToUpdate.factIdentifier.className = { __$$text: factClassName };
     factMappingValueToUpdate.factIdentifier.name = { __$$text: factName };
-    //factMappingValueToUpdate.rawValue = { __$$text: update.value },  //TODO 2 related see kie-issues#1514
+    factMappingValueToUpdate.rawValue = undefined;
   });
 
   return { updatedFactMapping: JSON.parse(JSON.stringify(factMappingToUpdate)) };

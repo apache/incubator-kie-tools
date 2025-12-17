@@ -19,14 +19,7 @@
 
 import * as React from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import {
-  Card,
-  CardActions,
-  CardBody,
-  CardExpandableContent,
-  CardHeader,
-  CardHeaderMain,
-} from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardExpandableContent, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
 import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
@@ -49,6 +42,8 @@ import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-f
 import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { KieSandboxDeployment } from "../devDeployments/services/types";
+import { ReAuthenticateButton } from "./ReAuthenticateHelper";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions, authSessionStatus } = useAuthSessions();
@@ -138,37 +133,62 @@ function AuthSessionCard(props: {
   return (
     <Card key={props.authSession.id} isCompact={true} isExpanded={isExpanded}>
       <CardHeader onExpand={() => setExpanded((prev) => !prev)}>
-        <CardActions>
-          {authSessionStatus.get(props.authSession.id) === AuthSessionStatus.INVALID && (
-            <Tooltip content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}>
-              <>
-                <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
-              </>
-            </Tooltip>
-          )}
-          <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(props.authSession)}>
-            Remove
-          </Button>
-        </CardActions>
-        <CardHeaderMain
-          style={{
-            display: "flex",
-            opacity: (props.authSession.type !== "git" ? 1 : props.usages?.length ?? 0) <= 0 ? 0.5 : 1,
-          }}
+        <Flex
+          flexWrap={{ default: "nowrap" }}
+          justifyContent={{ default: "justifyContentSpaceBetween" }}
+          alignItems={{ default: "alignItemsCenter" }}
+          style={{ width: "100%" }}
         >
-          <AuthSessionLabel authSession={props.authSession} />
-          {(props.authSession.type === "git" ||
-            props.authSession.type === "openshift" ||
-            props.authSession.type === "kubernetes") && (
-            <>
-              &nbsp; &nbsp; &nbsp;
-              <Label>
-                &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
-                &nbsp;
-              </Label>
-            </>
-          )}
-        </CardHeaderMain>
+          <FlexItem>
+            <Flex
+              flexWrap={{ default: "nowrap" }}
+              alignItems={{ default: "alignItemsCenter" }}
+              spaceItems={{ default: "spaceItemsMd" }}
+            >
+              <FlexItem>
+                <AuthSessionLabel authSession={props.authSession} />
+              </FlexItem>
+
+              {(props.authSession.type === "git" ||
+                props.authSession.type === "openshift" ||
+                props.authSession.type === "kubernetes") && (
+                <>
+                  <FlexItem>
+                    <Label>
+                      &nbsp;
+                      {props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
+                      &nbsp;
+                    </Label>
+                  </FlexItem>
+                  &nbsp; &nbsp; &nbsp;
+                  {authSessionStatus.get(props.authSession.id) === AuthSessionStatus.INVALID && (
+                    <>
+                      <FlexItem>
+                        <Tooltip
+                          content={
+                            "Could not authenticate using this session. Its Token was probably revoked, or expired."
+                          }
+                        >
+                          <>
+                            <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
+                          </>
+                        </Tooltip>
+                      </FlexItem>
+                      <FlexItem>
+                        <ReAuthenticateButton key={`reauth-${props.authSession.id}`} authSession={props.authSession} />
+                      </FlexItem>
+                    </>
+                  )}
+                </>
+              )}
+            </Flex>
+          </FlexItem>
+          <FlexItem>
+            <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(props.authSession)}>
+              Remove
+            </Button>
+          </FlexItem>
+        </Flex>
       </CardHeader>
       <CardExpandableContent>
         <CardBody>

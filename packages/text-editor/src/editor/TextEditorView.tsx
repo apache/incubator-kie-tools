@@ -22,6 +22,7 @@ import {
   EditorApi,
   EditorInitArgs,
   EditorTheme,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
@@ -36,7 +37,7 @@ export class TextEditorView implements Editor {
   public af_componentTitle: "Text Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<TextEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, TextEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();

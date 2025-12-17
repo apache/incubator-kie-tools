@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-db-migrator-tool",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "pnpm pre-build && mvn clean install -DskipTests",
+    "build:prod": "pnpm pre-build && run-script-os",
+    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "install": "node install.js",
+    "pre-build": "mvn dependency:unpack"
+  },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

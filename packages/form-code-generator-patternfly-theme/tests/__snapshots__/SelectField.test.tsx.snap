@@ -1,13 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<SelectField> tests <SelectField> - multiple value rendering 1`] = `
-<div>
-  {"ref":{"binding":"otherPositions","stateName":"otherPositions","stateSetter":"set__otherPositions","dataType":{"name":"string[]","defaultValue":"[]"}},"pfImports":["SelectOption","SelectOptionObject","Select","SelectVariant","FormGroup"],"reactImports":["useState"],"requiredCode":["multiple_select_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'OtherPositions'}\\n      isRequired={true}\\n    &gt;&lt;Select\\n      id={'id'}\\n      name={'otherPositions'}\\n      variant={SelectVariant.typeaheadMulti}\\n      isDisabled={false}\\n      placeholderText={''}\\n      isOpen={otherPositions__expanded}\\n      selections={otherPositions}\\n      onToggle={(isOpen) =&gt; set__otherPositions__expanded(isOpen)}\\n      onSelect={(event, value, isPlaceHolder) =&gt; {\\n        handleMultipleSelect(value, isPlaceHolder, otherPositions, set__otherPositions)\\n      }}\\n      value={otherPositions}\\n    &gt;\\n      &lt;SelectOption key={'Developer'} value={'Developer'}&gt;Developer&lt;/SelectOption&gt;\\n&lt;SelectOption key={'HR'} value={'HR'}&gt;HR&lt;/SelectOption&gt;\\n&lt;SelectOption key={'UX'} value={'UX'}&gt;UX&lt;/SelectOption&gt;\\n    &lt;/Select&gt;&lt;/FormGroup&gt;","stateCode":"const [ otherPositions, set__otherPositions ] = useState&lt;string[]&gt;([]);\\nconst [ otherPositions__expanded, set__otherPositions__expanded ] = useState&lt;boolean&gt;(false);","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'OtherPositions'}
+      isRequired={true}
+    ><Select
+      id={'id'}
+      name={'otherPositions'}
+      variant={SelectVariant.typeaheadMulti}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={otherPositions__expanded}
+      selections={otherPositions}
+      onToggle={(isOpen) => set__otherPositions__expanded(isOpen)}
+      onSelect={(event, value, isPlaceHolder) => {
+        if (isPlaceHolder) {
+          set__otherPositions([]);
+        } else {
+          set__otherPositions(prev => {
+            const selectedValue = value.toString ? value.toString() : value as string;
+            if (prev.indexOf(selectedValue) != -1) {
+              return prev.filter((s) => s !== selectedValue);
+            }
+            return [selectedValue, ...prev];
+          });
+        }
+      }}
+      value={otherPositions}
+    >
+      <SelectOption key={'Developer'} value={'Developer'}>Developer</SelectOption>
+<SelectOption key={'HR'} value={'HR'}>HR</SelectOption>
+<SelectOption key={'UX'} value={'UX'}>UX</SelectOption>
+    </Select></FormGroup>"
 `;
 
 exports[`<SelectField> tests <SelectField> - single value rendering 1`] = `
-<div>
-  {"ref":{"binding":"role","stateName":"role","stateSetter":"set__role","dataType":{"name":"string","defaultValue":"\\"\\""}},"pfImports":["SelectOption","SelectOptionObject","Select","SelectVariant","FormGroup"],"reactImports":["useState"],"requiredCode":["select_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Role'}\\n      isRequired={true}\\n    &gt;&lt;Select\\n      id={'id'}\\n      name={'role'}\\n      variant={SelectVariant.single}\\n      isDisabled={false}\\n      placeholderText={''}\\n      isOpen={role__expanded}\\n      selections={role}\\n      onToggle={(isOpen) =&gt; set__role__expanded(isOpen)}\\n      onSelect={(event, value, isPlaceHolder) =&gt; {\\n        handleSelect(value, isPlaceHolder, role, set__role, set__role__expanded)\\n      }}\\n      value={role}\\n    &gt;\\n      &lt;SelectOption key={'Developer'} value={'Developer'}&gt;Developer&lt;/SelectOption&gt;\\n&lt;SelectOption key={'HR'} value={'HR'}&gt;HR&lt;/SelectOption&gt;\\n&lt;SelectOption key={'UX'} value={'UX'}&gt;UX&lt;/SelectOption&gt;\\n    &lt;/Select&gt;&lt;/FormGroup&gt;","stateCode":"const [ role, set__role ] = useState&lt;string&gt;(\\"\\");\\nconst [ role__expanded, set__role__expanded ] = useState&lt;boolean&gt;(false);","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Role'}
+      isRequired={true}
+    ><Select
+      id={'id'}
+      name={'role'}
+      variant={SelectVariant.single}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={role__expanded}
+      selections={role}
+      onToggle={(isOpen) => set__role__expanded(isOpen)}
+      onSelect={(event, value, isPlaceHolder) => {
+        if (isPlaceHolder) {
+          set__role('');
+          set__role__expanded(false);
+        } else {
+          const parsedSelection = value.toString ? value.toString() : value as string;
+          set__role(parsedSelection || '');
+          set__role__expanded(false);
+        }
+      }}
+      value={role}
+    >
+      <SelectOption key={'Developer'} value={'Developer'}>Developer</SelectOption>
+<SelectOption key={'HR'} value={'HR'}>HR</SelectOption>
+<SelectOption key={'UX'} value={'UX'}>UX</SelectOption>
+    </Select></FormGroup>"
 `;

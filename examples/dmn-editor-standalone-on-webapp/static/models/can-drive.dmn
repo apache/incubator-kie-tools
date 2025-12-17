@@ -18,8 +18,8 @@
   ~ under the License.      
 -->
 <definitions
-  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
   namespace="https://kie.org/dmn/_8131B6C4-A117-47E9-93EB-922C63CE328F"
   id="_71B8B1CC-1F0B-4DE3-AFD2-C60FF033481C"
   name="CanDrive"

@@ -19,29 +19,31 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { TextField, TextFieldType } from "./Fields";
+import { TextField, TextFieldType } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
-import { DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tLiteralExpression } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function InvocationFunctionCallCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tLiteralExpression>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tLiteralExpression>,
     [selectedObjectInfos?.cell]
   );
 
@@ -49,8 +51,8 @@ export function InvocationFunctionCallCell(props: {
     <>
       <TextField
         type={TextFieldType.TEXT_INPUT}
-        title={"Function to be called"}
-        placeholder="Enter the function name..."
+        title={i18n.propertiesPanel.functionToBeCalled}
+        placeholder={i18n.propertiesPanel.functionNamePlaceholder}
         isReadOnly={props.isReadOnly}
         initialValue={cell.text?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}

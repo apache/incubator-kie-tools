@@ -20,7 +20,11 @@
 import { EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
-import { ServerlessWorkflowCombinedEditorApi, ServerlessWorkflowCombinedEditorChannelApi } from "../api";
+import {
+  ServerlessWorkflowCombinedEditorApi,
+  ServerlessWorkflowCombinedEditorChannelApi,
+  ServerlessWorkflowCombinedEditorEnvelopeApi,
+} from "../api";
 import { ServerlessWorkflowCombinedEditor } from "./ServerlessWorkflowCombinedEditor";
 import { Position } from "monaco-editor";
 
@@ -31,7 +35,10 @@ export class ServerlessWorkflowCombinedEditorView implements ServerlessWorkflowC
   public af_componentTitle: "Serverless Workflow Combined Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowCombinedEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      ServerlessWorkflowCombinedEditorEnvelopeApi,
+      ServerlessWorkflowCombinedEditorChannelApi
+    >,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<ServerlessWorkflowCombinedEditorApi>();

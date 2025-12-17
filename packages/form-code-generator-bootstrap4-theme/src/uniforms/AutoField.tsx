@@ -22,6 +22,7 @@ import {
   BoolField,
   CheckBoxGroupField,
   DateField,
+  ListField,
   NestField,
   NumField,
   RadioField,
@@ -41,10 +42,8 @@ const AutoField = createAutoField((props) => {
   }
 
   switch (props.fieldType) {
-    /*
-    TODO: implement array support
     case Array:
-      return  ListField;*/
+      return ListField;
     case Boolean:
       return BoolField;
     case Date:

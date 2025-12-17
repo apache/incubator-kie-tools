@@ -24,6 +24,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import "./BeeTableEditableCellContent.css";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 const CELL_LINE_HEIGHT = 20;
 
@@ -70,21 +72,22 @@ export function BeeTableEditableCellContent({
   const [previousValue, setPreviousValue] = useState(value);
   const [editingValue, setEditingValue] = useState(value);
   const feelInputRef = useRef<FeelInputRef>(null);
+  const { locale } = useBoxedExpressionEditorI18n();
 
   const mode = useMemo(() => {
     return isEditing && !isReadOnly ? Mode.Edit : Mode.Read;
   }, [isEditing, isReadOnly]);
 
   // FIXME: Tiago --> Temporary fix for the Boxed Expression Editor to work well. Ideally this wouldn't bee here, as the BeeTable should be decoupled from the DMN Editor's Boxed Expression Editor use-case.
-  const { onRequestFeelVariables } = useBoxedExpressionEditor();
+  const { onRequestFeelIdentifiers } = useBoxedExpressionEditor();
 
-  const feelVariables = useMemo(() => {
+  const feelIdentifiers = useMemo(() => {
     if (mode === Mode.Edit) {
-      return onRequestFeelVariables?.();
+      return onRequestFeelIdentifiers?.();
     } else {
       return undefined;
     }
-  }, [mode, onRequestFeelVariables]);
+  }, [mode, onRequestFeelIdentifiers]);
 
   useEffect(() => {
     setPreviousValue((prev) => (isEditing ? prev : value));
@@ -183,7 +186,9 @@ export function BeeTableEditableCellContent({
     (e) => {
       // When inside FEEL Input, all keyboard events should be kept inside it.
       // Exceptions to this strategy are handled on `onFeelKeyDown`.
-      if (isEditing) {
+      // NOTE: In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
+      if (isEditing && !(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
         e.stopPropagation();
       }
 
@@ -205,7 +210,7 @@ export function BeeTableEditableCellContent({
         className={cssClass}
         onKeyDown={onKeyDown}
       >
-        <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
+        <span className="editable-cell-value pf-v5-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
         <span data-ouia-component-id={"editable-cell-raw-value"} className={"editable-cell-raw-value"}>
           {value}
         </span>
@@ -218,8 +223,9 @@ export function BeeTableEditableCellContent({
           onPreviewChanged={setPreview}
           options={MONACO_OPTIONS}
           onBlur={onFeelBlur}
-          feelVariables={feelVariables}
+          feelIdentifiers={feelIdentifiers}
           expressionId={expressionId}
+          locale={locale}
         />
       </div>
     </>

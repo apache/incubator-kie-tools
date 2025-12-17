@@ -1,0 +1,188 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+services:
+  postgres:
+    container_name: process-security-postgres
+    image: postgres:16.8-alpine3.21
+    profiles: ["jvm", "container"]
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker-compose/sql:/docker-entrypoint-initdb.d:Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      timeout: 45s
+      interval: 10s
+      retries: 50
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  pgadmin:
+    container_name: process-security-pgadmin
+    image: dpage/pgadmin4:9.1
+    profiles: ["jvm", "container"]
+    ports:
+      - "8055:80"
+    depends_on:
+      - postgres
+    volumes:
+      - ./docker-compose/pgadmin/servers.json:/pgadmin4/servers.json
+      - ./docker-compose/pgadmin/pgpass:/pgadmin4/pgpass
+    entrypoint: >
+      /bin/sh -c "
+      cp -f /pgadmin4/pgpass /var/lib/pgadmin/;
+      chmod 600 /var/lib/pgadmin/pgpass;
+      /entrypoint.sh
+      "
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@kie.org
+      PGADMIN_DEFAULT_PASSWORD: pass
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      GUNICORN_ACCESS_LOGFILE: "/dev/null"
+
+  keycloak-1:
+    container_name: process-security-keycloak-1
+    image: quay.io/keycloak/keycloak:26.0.5
+    profiles: ["development", "jvm", "container"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost:9000\r\nConnection: close\r\n\r\n' >&3;cat <&3 | grep -q '\"status\": \"UP\"' && exit 0 || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - 8180:8080
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
+    volumes:
+      - ./docker-compose/keycloak-realm-1:/opt/keycloak/data/import
+    command: start-dev --import-realm
+
+  keycloak-2:
+    container_name: process-security-keycloak-2
+    image: quay.io/keycloak/keycloak:26.0.5
+    profiles: ["development", "jvm", "container"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost:9000\r\nConnection: close\r\n\r\n' >&3;cat <&3 | grep -q '\"status\": \"UP\"' && exit 0 || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - 8280:8080
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
+    volumes:
+      - ./docker-compose/keycloak-realm-2:/opt/keycloak/data/import
+    command: start-dev --import-realm
+
+  kie-service-1:
+    container_name: process-security-kie-service-1
+    image: dev.local/apache/process-security-kie-service-1:${PROJECT_VERSION}
+    profiles: ["container"]
+    depends_on:
+      keycloak-1:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      QUARKUS_HTTP_CORS_ORIGINS: "/.*/"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://127.0.0.1:5432/kie1"
+      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://127.0.0.1:5432/kie1"
+      QUARKUS_DATASOURCE_USERNAME: kie-user-1
+      QUARKUS_DATASOURCE_PASSWORD: kie-pass-1
+      QUARKUS_DATASOURCE_DB_KIND: postgresql
+      QUARKUS_HTTP_PORT: 8081
+      KOGITO_JOBS_SERVICE_URL: http://${HOST}:8081
+      KOGITO_SERVICE_URL: http://${HOST}:8081
+      KOGITO_DATAINDEX_HTTP_URL: http://${HOST}:8081
+      QUARKUS_OIDC_AUTH_SERVER_URL: http://${HOST}:8180/realms/kie
+    network_mode: host
+
+  kie-service-2:
+    container_name: process-security-kie-service-2
+    image: dev.local/apache/process-security-kie-service-2:${PROJECT_VERSION}
+    profiles: ["container"]
+    depends_on:
+      keycloak-2:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      QUARKUS_HTTP_CORS_ORIGINS: "/.*/"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://127.0.0.1:5432/kie2"
+      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://127.0.0.1:5432/kie2"
+      QUARKUS_DATASOURCE_USERNAME: kie-user-2
+      QUARKUS_DATASOURCE_PASSWORD: kie-pass-2
+      QUARKUS_DATASOURCE_DB_KIND: postgresql
+      QUARKUS_HTTP_PORT: 8082
+      KOGITO_JOBS_SERVICE_URL: http://${HOST}:8082
+      KOGITO_SERVICE_URL: http://${HOST}:8082
+      KOGITO_DATAINDEX_HTTP_URL: http://${HOST}:8082
+      QUARKUS_OIDC_AUTH_SERVER_URL: http://${HOST}:8280/realms/kie
+    network_mode: host
+
+  kie-service-3:
+    container_name: process-security-kie-service-3
+    image: dev.local/apache/process-security-kie-service-3:${PROJECT_VERSION}
+    profiles: ["container"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      QUARKUS_HTTP_CORS_ORIGINS: "/.*/"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://127.0.0.1:5432/kie3"
+      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://127.0.0.1:5432/kie3"
+      QUARKUS_DATASOURCE_USERNAME: kie-user-3
+      QUARKUS_DATASOURCE_PASSWORD: kie-pass-3
+      QUARKUS_DATASOURCE_DB_KIND: postgresql
+      QUARKUS_HTTP_PORT: 8083
+      KOGITO_JOBS_SERVICE_URL: http://${HOST}:8083
+      KOGITO_SERVICE_URL: http://${HOST}:8083
+      KOGITO_DATAINDEX_HTTP_URL: http://${HOST}:8083
+    network_mode: host
+
+  managment-console:
+    container_name: process-security-management-console
+    image: ${MANAGEMENT_CONSOLE_IMAGE}
+    profiles: ["container"]
+    ports:
+      - "8380:8080"
+    depends_on:
+      kie-service-1:
+        condition: service_started
+      kie-service-2:
+        condition: service_started
+      kie-service-3:
+        condition: service_started
+    environment:
+      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID: kie-management-console

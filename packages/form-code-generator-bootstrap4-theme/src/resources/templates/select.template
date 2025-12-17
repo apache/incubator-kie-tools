@@ -1,8 +1,8 @@
-<select class="form-control" id="<%=props.id%>" name="<%=props.name%>"<%=props.disabled ? " disabled" : ""%><%=props.multiple ? " multiple" : ""%>>
-<% if(props.placeHolder) { %>
-    <option value=""><%=props.placeHolder%></option>
+<select class="form-control" id="<%=id%>" name="<%=name%>"<%=disabled ? " disabled" : ""%><%=multiple ? " multiple" : ""%>>
+<% if(placeHolder) { %>
+    <option value=""><%=placeHolder%></option>
 <% } %>
-<% _.each(props.options, function(option) { %>
-    <option value="<%=option.value%>"<%=props.value===option.value ? " selected" : ""%>><%=option.label%></option>
+<% _.each(options, function(option) { %>
+    <option value="<%=option.value%>"<%=value===option.value ? " selected" : ""%>><%=option.label%></option>
 <% }); %>
 </select>

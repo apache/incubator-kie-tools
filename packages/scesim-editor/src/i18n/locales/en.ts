@@ -23,14 +23,12 @@ import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 export const en: TestScenarioEditorI18n = {
   ...en_common,
   alerts: {
-    dmnDataNotAvailable:
-      "It's still not possibile to retrieve the DMN information from your DMN file. Work in progress.",
     ruleDataNotAvailable:
-      "It's not possibile to retrieve the Java Classes from your project. This feature is still not supported.",
+      "It's not possible to retrieve the Java Classes from your project. This feature is still not supported.",
     dmnDataRetrievedFromScesim:
-      "Impossibile to retrieve DMN Nodes from the given DMN file, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data.",
+      "Impossible to retrieve DMN Nodes from the referenced DMN file, therefore, they have been restored from the SCESIM file. These data might NOT be synchronized. You can view and edit this asset, but dropping a column could result in losing its related DMN Node data. To fix this issue, go to the Settings panel and restore the link with the related DMN model.",
     ruleDataRetrievedFromScesim:
-      "Impossibile to retrieve the Java Classes from your project, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
+      "Impossible to retrieve the Java classes from your project, therefore, they have been restored from the SCESIM file. These data might NOT be synchronized. You can view and edit this asset, but dropping a column could result in losing its related Java Class data.",
   },
   creationPanel: {
     assetsGroup: "Asset type",
@@ -45,12 +43,14 @@ export const en: TestScenarioEditorI18n = {
     createButton: "Create",
     dmnGroup: "Select DMN",
     dmnNoChoice: "Select a DMN file",
-    kieSessionGroup: "KIE Session",
-    kieAgendaGroup: "Group",
+    dmnNoPresent: "No DMN files found in the project",
+    kieSessionGroup: "KIE session",
+    kieAgendaGroup: "RuleFlow group",
     optional: "Optional",
     statelessSession: "Stateless Session",
     testSkip: "Skip this file during the test",
     title: "Create a new Test Scenario",
+    modelPlaceholder: "Select a model...",
   },
   drawer: {
     cheatSheet: {
@@ -101,10 +101,15 @@ export const en: TestScenarioEditorI18n = {
         "To edit a test scenario definition, select a grid's column and assign it a DMN Node attribute using the below selector",
       descriptionRule:
         "To edit a test scenario definition, select a grid's column and assign it a Java Class field using the below selector",
+      emptyDataObjectsTitle: "No Data Objects",
+      emptyDataObjectsMissingTitle: "Missing Data Object",
       emptyDataObjectsTitleDMN: "No DMN Nodes",
       emptyDataObjectsTitleRule: "No Java Classes",
+      emptyDataObjectsDescription: "All the Data Objects have been already assigned",
+      emptyDataObjectsMissingDescription:
+        "The selected column's Data Object is missing. Most likely, this scesim file is no longer synchronized with the referenced DMN file. Please manually remove it and update your table accordingly with the DMN file.",
       emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
-      emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
+      emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from the project.",
       expandAll: "Expand all",
       insertDataObject: "Assign",
       insertDataObjectTooltipColumnSelectionMessage:
@@ -119,14 +124,15 @@ export const en: TestScenarioEditorI18n = {
     settings: {
       assetType: "Type",
       dmnModel: "DMN Model",
+      dmnModelReferenceError: "Wrong DMN Model path",
       dmnName: "DMN Name",
       dmnNameSpace: "DMN Namespace",
       fileName: "Name",
       kieSessionRule: "KIE Session",
       kieSessionRulePlaceholder: "(Optional) KieSession",
       kieSessionRuleTooltip: "Optional value. If not specified, the default session will be used.",
-      ruleFlowGroup: "AgendaGroup/RuleFlowGroup",
-      ruleFlowGroupPlaceholder: "(Optional) AgendaGroup or RuleFlowGroup.",
+      ruleFlowGroup: "RuleFlow group",
+      ruleFlowGroupPlaceholder: "(Optional) RuleFlow group.",
       ruleFlowGroupTooltip:
         "Optional value. The defined Scenario will be executed against the provided Agenda Group or RuleFlowGroup.",
       statelessSessionRule: "Stateless Session",
@@ -139,9 +145,10 @@ export const en: TestScenarioEditorI18n = {
   },
   errorFallBack: {
     title: "An unexpected error happened",
-    body: "This is a bug. Please consider reporting it so the DMN Editor can continue improving. See the details below.",
+    body: "This is a bug. Please consider reporting it so the Test Scenario Editor can continue improving. See the details below.",
     lastActionButton: "Try undoing last action",
     fileIssueHref: "File an issue",
+    errorDetails: "Error details: ",
   },
   sidebar: {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
@@ -161,6 +168,7 @@ export const en: TestScenarioEditorI18n = {
     },
     background: {},
     copy: "Copy",
+    copied: "Copied",
     cut: "Cut",
     delete: "Delete",
     deleteField: "Delete Field",
@@ -181,4 +189,10 @@ export const en: TestScenarioEditorI18n = {
     reset: "Reset",
     selection: "Selection",
   },
+  fileParsingErrorMessage:
+    "Impossible to correctly parse the provided SCESIM file. Most likely, the XML structure of the file is invalid.",
+  parsingErrorTitle: "File parsing error",
+  unsupportedTitle: (version: string) => `This file holds a Test Scenario asset version ( ${version} ) not supported`,
+  unsupportedMessage: (version: string) =>
+    `Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version ( ${version} ).`,
 };

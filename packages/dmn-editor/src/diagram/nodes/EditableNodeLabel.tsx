@@ -22,12 +22,12 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { EmptyLabel } from "./Nodes";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
-import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tNamedElement } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useFocusableElement } from "../../focus/useFocusableElement";
@@ -36,6 +36,7 @@ import { NodeLabelPosition } from "./NodeSvgs";
 import { State } from "../../store/Store";
 import "./EditableNodeLabel.css";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -61,7 +62,7 @@ export function EditableNodeLabel({
   shouldCommitOnBlur?: boolean;
   grow?: boolean;
   truncate?: boolean;
-  namedElement?: Normalized<DMN15__tNamedElement>;
+  namedElement?: Normalized<DMN_LATEST__tNamedElement>;
   namedElementQName?: XmlQName;
   position: NodeLabelPosition;
   isEditing: boolean;
@@ -138,7 +139,7 @@ export function EditableNodeLabel({
       return true;
     }
 
-    return DMN15_SPEC.namedElement.isValidName(
+    return DMN16_SPEC.namedElement.isValidName(
       namedElement?.["@_id"] ?? generateUuid(),
       internalValue,
       onGetAllUniqueNames(s)
@@ -152,6 +153,7 @@ export function EditableNodeLabel({
 
     if (isValid && internalValue !== value && shouldCommit) {
       onChange(internalValue);
+      setInternalValue(value); // Reset the component after the commit
     } else {
       console.debug(`Label change cancelled for node with label ${value}`);
       setInternalValue(value);
@@ -161,7 +163,11 @@ export function EditableNodeLabel({
   // Finish editing on `Enter` pressed.
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      e.stopPropagation();
+      // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
+      if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+        e.stopPropagation();
+      }
 
       if (e.key === "Enter") {
         if (!isValid) {

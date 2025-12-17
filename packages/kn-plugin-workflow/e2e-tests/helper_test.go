@@ -24,6 +24,8 @@ package e2e_tests
 import (
 	"bufio"
 	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -42,7 +44,6 @@ import (
 
 // Holds quarkus dependencies populated from environment variables
 var quarkusDependencies = metadata.ResolveQuarkusDependencies()
-
 
 // ExecuteCommand executes a command with the given arguments and returns an error if the command fails.
 func ExecuteCommand(command string, args ...string) error {
@@ -218,12 +219,19 @@ func LookupFlagDefaultValue(flagName string, createCmd *cobra.Command) (string, 
 
 // IsSignalInterrupt checks if the given error is caused by a signal interrupt.
 func IsSignalInterrupt(err error) bool {
-	if exitErr, ok := err.(*exec.ExitError); ok {
+	if err == nil {
+		return false
+	}
+	if errors.Is(err, context.Canceled) {
+		return true
+	}
+	var exitErr *exec.ExitError
+	if errors.As(err, &exitErr) {
 		if status, ok := exitErr.Sys().(syscall.WaitStatus); ok {
-			return status.Signaled() && status.Signal() == os.Interrupt
+			return status.Signaled() && (status.Signal() == syscall.SIGINT || status.Signal() == syscall.SIGTERM)
 		}
 	}
-	return false
+	return strings.Contains(err.Error(), "signal: interrupt") || strings.Contains(err.Error(), "signal: terminated")
 }
 
 // cleanUpFolder removes the folder at the given path and recreates it with permissions set to 0750.
@@ -269,8 +277,13 @@ func WriteMavenConfigFileWithTailDirs(projectDir string) {
 		fmt.Printf("Failed to resolve absolute path for `@kie-tools/maven-base` package. %v", err)
 		os.Exit(1)
 	}
+	droolsAndKogitoM2, err := filepath.Abs("../../../node_modules/@kie-tools-core/drools-and-kogito/dist/1st-party-m2/repository")
+	if err != nil {
+		fmt.Printf("Failed to resolve absolute path for `@kie-tools-core/drools-and-kogito` package. %v", err)
+		os.Exit(1)
+	}
 
-	tail := mavenBaseM2 + "," + sonataflowQuarkusDevUiM2 + "\n"
+	tail := droolsAndKogitoM2 + "," + mavenBaseM2 + "," + sonataflowQuarkusDevUiM2 + "\n"
 
 	err = os.WriteFile(filepath.Join(projectDir, ".mvn", "maven.config"), []byte("-Dmaven.repo.local.tail="+tail), 0644)
 	if err != nil {

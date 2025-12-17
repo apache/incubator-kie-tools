@@ -21,24 +21,20 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useHistory } from "react-router";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import {
-  Card,
-  CardActions,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  CardHeaderMain,
-  CardTitle,
-} from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardFooter, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -60,7 +56,6 @@ import {
   DrawerPanelContent,
   DrawerSection,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { Link } from "react-router-dom";
 import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
@@ -94,7 +89,7 @@ import { BellIcon } from "@patternfly/react-icons/dist/js/icons/bell-icon";
 
 export function HomePage() {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
@@ -102,11 +97,14 @@ export function HomePage() {
   const { env } = useEnv();
 
   const closeExpandedWorkspace = useCallback(() => {
-    history.replace({
-      pathname: routes.home.path({}),
-      search: queryParams.without(QueryParams.EXPAND).toString(),
-    });
-  }, [history, routes, queryParams]);
+    navigate(
+      {
+        pathname: routes.home.path({}),
+        search: queryParams.without(QueryParams.EXPAND).toString(),
+      },
+      { replace: true }
+    );
+  }, [navigate, routes, queryParams]);
 
   const expandWorkspace = useCallback(
     (workspaceId: string) => {
@@ -116,12 +114,15 @@ export function HomePage() {
         return;
       }
 
-      history.replace({
-        pathname: routes.home.path({}),
-        search: routes.home.queryString({ expand }),
-      });
+      navigate(
+        {
+          pathname: routes.home.path({}),
+          search: routes.home.queryString({ expand }),
+        },
+        { replace: true }
+      );
     },
-    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
+    [closeExpandedWorkspace, navigate, routes, expandedWorkspaceId]
   );
 
   useEffect(() => {
@@ -132,12 +133,11 @@ export function HomePage() {
     <OnlineEditorPage>
       <PageSection
         isFilled={false}
-        sticky={"top"}
         hasOverflowScroll={false}
         style={{ overflowX: "scroll" }}
         aria-label="New Models Section"
       >
-        <Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-c-page__main-section--PaddingTop)" }}>
+        <Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-v5-c-page__main-section--PaddingTop)" }}>
           <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
@@ -147,9 +147,9 @@ export function HomePage() {
               <Divider inset={{ default: "insetXl" }} />
               <Gallery
                 hasGutter={true}
-                // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
+                // var(--pf-v5-c-page__main-section--PaddingTop) is the "Gutter" width.
                 minWidths={{
-                  default: "calc(" + 100 / editorsConfig.length + "% - var(--pf-c-page__main-section--PaddingTop))",
+                  default: "calc(" + 100 / editorsConfig.length + "% - var(--pf-v5-c-page__main-section--PaddingTop))",
                 }}
                 style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
@@ -175,8 +175,8 @@ export function HomePage() {
               <Divider inset={{ default: "insetXl" }} />
               <Gallery
                 hasGutter={true}
-                // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
-                minWidths={{ default: "calc(50% - var(--pf-c-page__main-section--PaddingTop))" }}
+                // var(--pf-v5-c-page__main-section--PaddingTop) is the "Gutter" width.
+                minWidths={{ default: "calc(50% - var(--pf-v5-c-page__main-section--PaddingTop))" }}
                 style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
                 <ImportFromUrlCard />
@@ -235,10 +235,11 @@ export function HomePage() {
                     {workspaceDescriptors.length === 0 && (
                       <Bullseye>
                         <EmptyState>
-                          <EmptyStateIcon icon={CubesIcon} />
-                          <Title headingLevel="h4" size="lg">
-                            {`Nothing here`}
-                          </Title>
+                          <EmptyStateHeader
+                            titleText={<>{`Nothing here`}</>}
+                            icon={<EmptyStateIcon icon={CubesIcon} />}
+                            headingLevel="h4"
+                          />
                           <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
                         </EmptyState>
                       </Bullseye>
@@ -257,37 +258,45 @@ export function HomePage() {
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
   return (
-    <Card isSelected={false} isSelectable={true} isHoverable={true} isCompact={true}>
-      <CardHeader>
-        <CardHeaderMain>
-          <Flex>
-            <FlexItem>
-              <CardTitle>
-                <TextContent>
-                  <Text component={TextVariants.h3}>
-                    <ExclamationTriangleIcon />
-                    &nbsp;&nbsp;
-                    {`There was an error obtaining information for '${props.workspace.workspaceId}'`}
-                  </Text>
-                </TextContent>
-              </CardTitle>
-            </FlexItem>
-          </Flex>
-        </CardHeaderMain>
-        <CardActions
-          onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
-        >
-          <DeleteDropdownWithConfirmation
-            onDelete={() => {
-              workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
-            }}
-            item={
-              <>
-                Delete <b>{`"${props.workspace.name}"`}</b>
-              </>
-            }
-          />
-        </CardActions>
+    <Card isSelected={false} isSelectable={true} isCompact={true}>
+      <CardHeader
+        actions={{
+          actions: (
+            <>
+              <DeleteDropdownWithConfirmation
+                onDelete={() => {
+                  workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
+                }}
+                item={
+                  <>
+                    Delete <b>{`"${props.workspace.name}"`}</b>
+                  </>
+                }
+              />
+            </>
+          ),
+          hasNoOffset: false,
+          className: undefined,
+        }}
+      >
+        actions=
+        {
+          <>
+            <Flex>
+              <FlexItem>
+                <CardTitle>
+                  <TextContent>
+                    <Text component={TextVariants.h3}>
+                      <ExclamationTriangleIcon />
+                      &nbsp;&nbsp;
+                      {`There was an error obtaining information for '${props.workspace.workspaceId}'`}
+                    </Text>
+                  </TextContent>
+                </CardTitle>
+              </FlexItem>
+            </Flex>
+          </>
+        }
       </CardHeader>
     </Card>
   );
@@ -301,7 +310,7 @@ export function WorkspaceCard(props: {
 }) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
@@ -325,53 +334,57 @@ export function WorkspaceCard(props: {
                 isSelectable={true}
                 onMouseOver={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
-                isHoverable={true}
                 isCompact={true}
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  history.push({
+                  navigate({
                     pathname: routes.workspaceWithFilePath.path({
                       workspaceId: editableFiles[0].workspaceId,
-                      fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                      extension: editableFiles[0].extension,
+                      fileRelativePath: editableFiles[0].relativePath,
                     }),
                   });
                 }}
               >
-                <CardHeader>
+                <CardHeader
+                  actions={{
+                    actions: (
+                      <>
+                        <DeleteDropdownWithConfirmation
+                          key={`${workspace.descriptor.workspaceId}-${isHovered}`}
+                          onDelete={() => {
+                            props.onDelete?.();
+                            workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                          }}
+                          item={
+                            <Flex flexWrap={{ default: "nowrap" }}>
+                              <FlexItem>
+                                Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                              </FlexItem>
+                              <FlexItem>
+                                <b>
+                                  <FileLabel extension={editableFiles[0].extension} />
+                                </b>
+                              </FlexItem>
+                            </Flex>
+                          }
+                        />
+                      </>
+                    ),
+                  }}
+                >
                   <FileLink file={editableFiles[0]} style={{ width: "100%", minWidth: 0 }}>
-                    <CardHeaderMain style={{ width: "100%" }}>
-                      <SingleFileWorkspaceListItem
-                        isBig={true}
-                        file={editableFiles[0]}
-                        workspaceDescriptor={workspace.descriptor}
-                      />
-                    </CardHeaderMain>
+                    {/* <CardHeaderMain style={{ width: "100%" }}> */}
+                    <SingleFileWorkspaceListItem
+                      isBig={true}
+                      file={editableFiles[0]}
+                      workspaceDescriptor={workspace.descriptor}
+                    />
+                    {/* </CardHeaderMain> */}
                   </FileLink>
-                  <CardActions
+                  {/* <CardActions
                     style={{ visibility: isHovered ? "visible" : "hidden" }}
                     onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
-                  >
-                    <DeleteDropdownWithConfirmation
-                      key={`${workspace.descriptor.workspaceId}-${isHovered}`}
-                      onDelete={() => {
-                        props.onDelete?.();
-                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                      }}
-                      item={
-                        <Flex flexWrap={{ default: "nowrap" }}>
-                          <FlexItem>
-                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
-                          </FlexItem>
-                          <FlexItem>
-                            <b>
-                              <FileLabel extension={editableFiles[0].extension} />
-                            </b>
-                          </FlexItem>
-                        </Flex>
-                      }
-                    />
-                  </CardActions>
+                  ></CardActions> */}
                 </CardHeader>
               </Card>
             )) || (
@@ -381,58 +394,65 @@ export function WorkspaceCard(props: {
               isSelectable={true}
               onMouseOver={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
-              isHoverable={true}
               isCompact={true}
               style={{ cursor: "pointer" }}
               onClick={props.onSelect}
             >
-              <CardHeader isToggleRightAligned={true} onExpand={props.onSelect}>
-                <CardHeaderMain style={{ width: "100%", minWidth: 0 }}>
-                  <WorkspaceListItem
-                    isBig={true}
-                    workspaceDescriptor={workspace.descriptor}
-                    allFiles={workspace.files}
-                    editableFiles={editableFiles}
-                  />
-                </CardHeaderMain>
-                <CardActions
-                  style={{ visibility: isHovered ? "visible" : "hidden" }}
-                  onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
-                >
-                  <DeleteDropdownWithConfirmation
-                    key={`${workspace.descriptor.workspaceId}-${isHovered}`}
-                    onDelete={() => {
-                      props.onDelete?.();
-                      workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                    }}
-                    item={
-                      <Flex
-                        flexWrap={{ default: "nowrap" }}
-                        justifyContent={{ default: "justifyContentFlexStart" }}
-                        style={{ width: "100%" }}
-                        spaceItems={{ default: "spaceItemsNone" }}
-                      >
-                        <FlexItem>{"Delete "}</FlexItem>
-                        <FlexItem style={{ minWidth: 0 }}>
-                          <Tooltip distance={5} position={"top-start"} content={workspace.descriptor.name}>
-                            <TextContent>
-                              <Text
-                                component={TextVariants.p}
-                                style={{
-                                  whiteSpace: "nowrap",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                }}
-                              >
-                                <b>{`"${workspace.descriptor.name}"`}</b>
-                              </Text>
-                            </TextContent>
-                          </Tooltip>
-                        </FlexItem>
-                      </Flex>
-                    }
-                  />
-                </CardActions>
+              <CardHeader
+                actions={{
+                  actions: (
+                    <>
+                      <DeleteDropdownWithConfirmation
+                        key={`${workspace.descriptor.workspaceId}-${isHovered}`}
+                        onDelete={() => {
+                          props.onDelete?.();
+                          workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                        }}
+                        item={
+                          <Flex
+                            flexWrap={{ default: "nowrap" }}
+                            justifyContent={{ default: "justifyContentFlexStart" }}
+                            style={{ width: "100%" }}
+                            spaceItems={{ default: "spaceItemsNone" }}
+                          >
+                            <FlexItem>{"Delete "}</FlexItem>
+                            <FlexItem style={{ minWidth: 0 }}>
+                              <Tooltip distance={5} position={"top-start"} content={workspace.descriptor.name}>
+                                <TextContent>
+                                  <Text
+                                    component={TextVariants.p}
+                                    style={{
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                    }}
+                                  >
+                                    <b>{`"${workspace.descriptor.name}"`}</b>
+                                  </Text>
+                                </TextContent>
+                              </Tooltip>
+                            </FlexItem>
+                          </Flex>
+                        }
+                      />
+                    </>
+                  ),
+                  hasNoOffset: false,
+                  className: undefined,
+                }}
+                isToggleRightAligned={true}
+                onExpand={props.onSelect}
+              >
+                {
+                  <>
+                    <WorkspaceListItem
+                      isBig={true}
+                      workspaceDescriptor={workspace.descriptor}
+                      allFiles={workspace.files}
+                      editableFiles={editableFiles}
+                    />
+                  </>
+                }
               </CardHeader>
             </Card>
           )}
@@ -541,7 +561,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
               <FlexItem>
                 <ResponsiveDropdown
                   isPlain={true}
-                  position={"left"}
+                  position={"right"}
                   isOpen={isNewFileDropdownMenuOpen}
                   onClose={() => setNewFileDropdownMenuOpen(false)}
                   title={"Add file"}

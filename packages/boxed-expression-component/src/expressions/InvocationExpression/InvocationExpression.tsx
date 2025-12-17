@@ -21,6 +21,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
@@ -51,7 +52,7 @@ import { ExpressionVariableCell, ExpressionWithVariable } from "../../expression
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tBinding } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./InvocationExpression.css";
 
@@ -193,8 +194,8 @@ export function InvocationExpression({
             accessor: invocationId as keyof ROWTYPE,
             label:
               invocationExpression.expression?.__$$element === "literalExpression"
-                ? invocationExpression.expression.text?.__$$text ?? "Function name"
-                : "Function name",
+                ? invocationExpression.expression.text?.__$$text ?? i18n.functionName
+                : i18n.functionName,
             isRowIndexColumn: false,
             isInlineEditable: true,
             dataType: undefined as any,
@@ -203,7 +204,7 @@ export function InvocationExpression({
             columns: [
               {
                 accessor: "parameter" as any,
-                label: "parameter",
+                label: i18n.parameter,
                 isRowIndexColumn: false,
                 dataType: DmnBuiltInDataType.Undefined,
                 isWidthPinned: true,
@@ -213,7 +214,7 @@ export function InvocationExpression({
               },
               {
                 accessor: "expression" as any,
-                label: "expression",
+                label: i18n.expression,
                 isRowIndexColumn: false,
                 dataType: DmnBuiltInDataType.Undefined,
                 minWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
@@ -224,50 +225,76 @@ export function InvocationExpression({
         ],
       },
     ],
-    [expressionHolderId, invocationExpression, parametersWidth, invocationId, setParametersWidth]
+    [
+      expressionHolderId,
+      invocationExpression,
+      invocationId,
+      i18n.functionName,
+      i18n.parameter,
+      i18n.expression,
+      parametersWidth,
+      setParametersWidth,
+    ]
   );
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
         if (u.column.originalId === id) {
-          setExpression((prev: Normalized<BoxedInvocation>) => ({
-            ...prev,
-            "@_id": prev["@_id"],
-            name: u.name,
-          }));
-        } else if (u.column.originalId === invocationId) {
-          setExpression((prev: Normalized<BoxedInvocation>) => {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedInvocation> = {
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedInvocation>) => ({
               ...prev,
-              expression: {
-                ...prev.expression,
-                "@_id": prev.expression?.["@_id"] ?? generateUuid(),
-                __$$element: "literalExpression",
-                text: {
-                  __$$text: u.name,
+              "@_id": prev["@_id"],
+              name: u.name,
+            }),
+            expressionChangedArgs: {
+              action: Action.VariableChanged,
+              variableUuid: expressionHolderId,
+              nameChange: { from: invocationExpression["@_label"] ?? "", to: u.name },
+            },
+          });
+        } else if (u.column.originalId === invocationId) {
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedInvocation>) => {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedInvocation> = {
+                ...prev,
+                expression: {
+                  ...prev.expression,
+                  "@_id": prev.expression?.["@_id"] ?? generateUuid(),
+                  __$$element: "literalExpression",
+                  text: {
+                    __$$text: u.name,
+                  },
                 },
-              },
-            };
-            return ret;
+              };
+              return ret;
+            },
+            expressionChangedArgs: {
+              action: Action.VariableChanged,
+              variableUuid: expressionHolderId,
+              nameChange: { from: invocationExpression["@_label"] ?? "", to: u.name },
+            },
           });
         } else {
-          setExpression((prev: Normalized<BoxedInvocation>) => {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedInvocation> = {
-              ...prev,
-              "@_id": prev["@_id"] ?? generateUuid(),
-              "@_typeRef": u.typeRef,
-              "@_label": u.name,
-            };
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedInvocation>) => {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedInvocation> = {
+                ...prev,
+                "@_id": prev["@_id"] ?? generateUuid(),
+                "@_typeRef": u.typeRef,
+                "@_label": u.name,
+              };
 
-            return ret;
+              return ret;
+            },
+            expressionChangedArgs: { action: Action.ExpressionCreated },
           });
         }
       }
     },
-    [setExpression, id, invocationId]
+    [id, invocationId, setExpression, expressionHolderId, invocationExpression]
   );
 
   const headerVisibility = useMemo(
@@ -281,19 +308,22 @@ export function InvocationExpression({
 
   const updateParameter = useCallback(
     (index: number, { expression, variable }: ExpressionWithVariable) => {
-      setExpression((prev: Normalized<BoxedInvocation>) => {
-        const newArgumentEntries = [...(prev.binding ?? [])];
-        newArgumentEntries[index] = {
-          parameter: variable,
-          expression: expression,
-        };
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedInvocation> = {
-          ...prev,
-          binding: newArgumentEntries,
-        };
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedInvocation>) => {
+          const newArgumentEntries = [...(prev.binding ?? [])];
+          newArgumentEntries[index] = {
+            parameter: variable,
+            expression: expression,
+          };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedInvocation> = {
+            ...prev,
+            binding: newArgumentEntries,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.InvocationParametersChanged },
       });
     },
     [setExpression]
@@ -332,7 +362,7 @@ export function InvocationExpression({
   }, [i18n]);
 
   const getDefaultArgumentEntry = useCallback(
-    (name?: string): Normalized<DMN15__tBinding> => {
+    (name?: string): Normalized<DMN_LATEST__tBinding> => {
       return {
         parameter: {
           "@_id": generateUuid(),
@@ -352,27 +382,30 @@ export function InvocationExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      const newEntries: Normalized<DMN15__tBinding>[] = [];
+      const newEntries: Normalized<DMN_LATEST__tBinding>[] = [];
       const names = (invocationExpression.binding ?? []).map((e) => e.parameter["@_name"]);
       for (let i = 0; i < args.rowsCount; i++) {
         const name = getNextAvailablePrefixedName(names, "p");
         names.push(name);
         newEntries.push(getDefaultArgumentEntry(name));
       }
-      setExpression((prev: Normalized<BoxedInvocation>) => {
-        const newArgumentEntries = [...(prev.binding ?? [])];
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedInvocation>) => {
+          const newArgumentEntries = [...(prev.binding ?? [])];
 
-        for (const newEntry of newEntries) {
-          newArgumentEntries.splice(args.beforeIndex, 0, newEntry);
-        }
+          for (const newEntry of newEntries) {
+            newArgumentEntries.splice(args.beforeIndex, 0, newEntry);
+          }
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedInvocation> = {
-          ...prev,
-          binding: newArgumentEntries,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedInvocation> = {
+            ...prev,
+            binding: newArgumentEntries,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowsAdded, rowIndex: args.beforeIndex, rowsCount: args.rowsCount },
       });
     },
     [getDefaultArgumentEntry, invocationExpression.binding, setExpression]
@@ -381,17 +414,20 @@ export function InvocationExpression({
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
       let oldExpression: Normalized<BoxedExpression> | undefined;
-      setExpression((prev: Normalized<BoxedInvocation>) => {
-        const newArgumentEntries = [...(prev.binding ?? [])];
-        oldExpression = newArgumentEntries[args.rowIndex].expression;
-        newArgumentEntries.splice(args.rowIndex, 1);
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedInvocation> = {
-          ...prev,
-          binding: newArgumentEntries,
-        };
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedInvocation>) => {
+          const newArgumentEntries = [...(prev.binding ?? [])];
+          oldExpression = newArgumentEntries[args.rowIndex].expression;
+          newArgumentEntries.splice(args.rowIndex, 1);
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedInvocation> = {
+            ...prev,
+            binding: newArgumentEntries,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowRemoved, rowIndex: args.rowIndex },
       });
 
       setWidthsById(({ newMap }) => {
@@ -406,18 +442,21 @@ export function InvocationExpression({
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
       let oldExpression: Normalized<BoxedExpression> | undefined;
-      setExpression((prev: Normalized<BoxedInvocation>) => {
-        const newArgumentEntries = [...(prev.binding ?? [])];
-        oldExpression = newArgumentEntries[args.rowIndex].expression;
-        const defaultArgumentEntry = getDefaultArgumentEntry(newArgumentEntries[args.rowIndex].parameter["@_name"]);
-        newArgumentEntries.splice(args.rowIndex, 1, defaultArgumentEntry);
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedInvocation> = {
-          ...prev,
-          binding: newArgumentEntries,
-        };
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedInvocation>) => {
+          const newArgumentEntries = [...(prev.binding ?? [])];
+          oldExpression = newArgumentEntries[args.rowIndex].expression;
+          const defaultArgumentEntry = getDefaultArgumentEntry(newArgumentEntries[args.rowIndex].parameter["@_name"]);
+          newArgumentEntries.splice(args.rowIndex, 1, defaultArgumentEntry);
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedInvocation> = {
+            ...prev,
+            binding: newArgumentEntries,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowReset, rowIndex: args.rowIndex },
       });
 
       setWidthsById(({ newMap }) => {

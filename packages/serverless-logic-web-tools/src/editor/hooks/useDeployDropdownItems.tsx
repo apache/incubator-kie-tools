@@ -21,7 +21,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
-import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -44,7 +44,7 @@ import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 
 const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
@@ -66,11 +66,13 @@ export function useDeployDropdownItems(props: Props) {
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
   });
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     props.workspaceFile.getFileContentsAsString().then((content) => {
-      setCanContentBeDeployed(content.trim().length > 0 && !notifications.some((d) => d.severity === "ERROR"));
+      setCanContentBeDeployed(
+        content.trim().length > 0 && !notifications.some((d) => d.severity === "ERROR" || d.severity === "WARNING")
+      );
     });
   }, [notifications, props.workspaceFile]);
 
@@ -78,7 +80,7 @@ export function useDeployDropdownItems(props: Props) {
     useCallback(({ close }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="info"
           title={
             <>
@@ -99,7 +101,7 @@ export function useDeployDropdownItems(props: Props) {
       return (
         <Alert
           isExpandable
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="success"
           title={"Your Dev Mode has been successfully updated"}
           aria-live="polite"
@@ -128,7 +130,7 @@ export function useDeployDropdownItems(props: Props) {
     useCallback(({ close }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="info"
           title={
             <>
@@ -149,7 +151,7 @@ export function useDeployDropdownItems(props: Props) {
       return (
         <Alert
           isExpandable
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="warning"
           title={"Something went wrong while uploading to the Dev Mode."}
           aria-live="polite"
@@ -174,7 +176,7 @@ export function useDeployDropdownItems(props: Props) {
     useCallback(({ close }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="warning"
           title={
             <>
@@ -202,8 +204,8 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const onSetup = useCallback(() => {
-    history.push(routes.settings.openshift.path({}));
-  }, [history]);
+    navigate(routes.settings.openshift.path({}));
+  }, [navigate]);
 
   const onDeploy = useCallback(() => {
     openshift.setConfirmDeployModalOpen(true);
@@ -319,10 +321,10 @@ export function useDeployDropdownItems(props: Props) {
           <>
             <Divider />
             <Tooltip content={i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip} position="bottom">
-              <DropdownItem icon={<RegistryIcon color="var(--pf-global--warning-color--100)" />} isDisabled>
+              <DropdownItem icon={<RegistryIcon color="var(--pf-v5-global--warning-color--100)" />} isDisabled>
                 <Flex flexWrap={{ default: "nowrap" }}>
                   <FlexItem>
-                    <Text component="small" style={{ color: "var(--pf-global--warning-color--200)" }}>
+                    <Text component="small" style={{ color: "var(--pf-v5-global--warning-color--200)" }}>
                       This model has foreign workspace dependencies
                     </Text>
                   </FlexItem>
@@ -336,14 +338,14 @@ export function useDeployDropdownItems(props: Props) {
             <Divider />
             <Tooltip
               content={
-                "Models with errors or empty ones cannot be deployed. Check the Problems tab for more information."
+                "Models with errors, warnings, or that are empty cannot be deployed. Please check the Problems tab for more information."
               }
               position="bottom"
             >
-              <DropdownItem icon={<ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />} isDisabled>
+              <DropdownItem icon={<ExclamationCircleIcon color="var(--pf-v5-global--danger-color--100)" />} isDisabled>
                 <Flex flexWrap={{ default: "nowrap" }}>
                   <FlexItem>
-                    <Text component="small" style={{ color: "var(--pf-global--danger-color--300)" }}>
+                    <Text component="small" style={{ color: "var(--pf-v5-global--danger-color--300)" }}>
                       This model cannot be deployed
                     </Text>
                   </FlexItem>

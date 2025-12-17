@@ -19,9 +19,9 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField, ExpressionLanguageField, TypeRefField } from "./Fields";
+import { DescriptionField, ExpressionLanguageField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tDecisionTable, DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecisionTable, DMN_LATEST__tUnaryTests } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
@@ -31,8 +31,10 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { externalModelsByNamespace } = useExternalModels();
@@ -57,7 +59,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
           .getDataTypes(externalModelsByNamespace);
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
-            (root?.cell as Normalized<DMN15__tDecisionTable>)?.input?.[cellPath.column ?? 0].inputExpression[
+            (root?.cell as Normalized<DMN_LATEST__tDecisionTable>)?.input?.[cellPath.column ?? 0].inputExpression[
               "@_typeRef"
             ] ?? ""
           ) ?? DmnBuiltInDataType.Undefined;
@@ -66,14 +68,19 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
     }
   }, [dmnEditorStoreApi, externalModelsByNamespace, props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]);
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tUnaryTests>>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tUnaryTests>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as Normalized<DMN15__tUnaryTests>, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tUnaryTests>,
+    [selectedObjectInfos?.cell]
+  );
 
   return (
     <>
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
@@ -89,7 +96,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
       )}
       {headerType?.itemDefinition && (
         <>
-          <FormGroup label="Constraint">
+          <FormGroup label={i18n.propertiesPanel.constraint}>
             <ConstraintsFromTypeConstraintAttribute
               isReadOnly={true}
               itemDefinition={headerType.itemDefinition}
@@ -106,7 +113,11 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newExpressionLanguage: string) =>
           updater((dmnObject) => {
-            dmnObject["@_expressionLanguage"] = newExpressionLanguage;
+            if (newExpressionLanguage === "") {
+              delete dmnObject["@_expressionLanguage"];
+            } else {
+              dmnObject["@_expressionLanguage"] = newExpressionLanguage;
+            }
           })
         }
       />

@@ -88,7 +88,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Using a different Data Index Service.
 
       ```bash
-      docker run -t -p 8080:8080 -e SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm docker.io/apache/incubator-kie-sonataflow-management-console:main
+      docker run -p 8080:8080 -e SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm docker.io/apache/incubator-kie-sonataflow-management-console:main
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -108,6 +108,28 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 The port used internally on the container can be changed:
 
 When building, set the `SONATAFLOW_MANAGEMENT_CONSOLE__port` environment variable to any port you want, and the Containerfile will be built using that port.
+
+## Run the Docker Image Locally
+
+1. This command will start the container and configure it to access your local data-index service from the container.
+   Replace `<HOST_IP_ADDRESS>` with the IP address of your host machine.
+
+   ```bash
+   docker run --rm -p 8080:8080 \
+     -e SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE='DEV' \
+     -e SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT='http://<HOST_IP_ADDRESS>:4000/graphql' \
+     --network host \
+     docker.io/apache/incubator-kie-sonataflow-management-console:main
+   ```
+
+2. In a separate terminal, start Sonataflow Dev App for the Data Index service.
+
+   ```bash
+    cd ../sonataflow-dev-app
+    pnpm start
+   ```
+
+   **Important Note:** Avoid using the `-it` option (interactive and TTY) with the docker run command, as it may cause the internal Apache HTTPD server to terminate with SIGWINCH during terminal resizing. For more details, refer to https://bz.apache.org/bugzilla/show_bug.cgi?id=50669
 
 ---
 

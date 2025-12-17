@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useState, ReactElement } from "react";
-import { DropdownGroup, DropdownItem, DropdownPosition } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownGroup, DropdownItem, DropdownPosition } from "@patternfly/react-core/deprecated";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
@@ -42,6 +42,7 @@ export function DeleteDropdownWithConfirmation(
       isOpen={isDeleteDropdownOpen}
       isPlain={true}
       position={DropdownPosition.right}
+      menuAppendTo={document.body}
       toggle={
         <ResponsiveDropdownToggle
           style={{ color: "unset" }}
@@ -55,7 +56,13 @@ export function DeleteDropdownWithConfirmation(
       }
       dropdownItems={[
         <DropdownGroup label={"Are you sure?"} key="confirm-delete">
-          <DropdownItem tabIndex={1} onClick={props.onDelete}>
+          <DropdownItem
+            tabIndex={1}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onDelete();
+            }}
+          >
             {props.item}
           </DropdownItem>
         </DropdownGroup>,

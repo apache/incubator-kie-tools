@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { Dropdown, DropdownProps } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownProps } from "@patternfly/react-core/deprecated";
 
 import { useWindowSizeRelationToBreakpoint } from "./hooks";
 import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";
@@ -49,7 +49,7 @@ export function ResponsiveDropdown(props: React.PropsWithChildren<ResponsiveDrop
           </ResponsiveDropdownModal>
         </>
       ) : (
-        <Dropdown {...props} />
+        <Dropdown {...props} menuAppendTo={props.menuAppendTo ?? document.body} />
       )}
     </ResponsiveDropdownContext.Provider>
   );

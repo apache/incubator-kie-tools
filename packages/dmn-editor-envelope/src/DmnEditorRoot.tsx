@@ -25,9 +25,9 @@ import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalizat
 import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { domParser } from "@kie-tools/xml-parser-ts";
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
 import { getNamespaceOfDmnImport } from "@kie-tools/dmn-editor/dist/includedModels/importNamespaces";
@@ -37,19 +37,35 @@ import {
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  JavaCodeCompletionAccessor,
+  JavaCodeCompletionClass,
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { DmnEditorEnvelopeI18n } from "./i18n";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
+export const TARGET_DIRECTORY = "target/classes/";
 
 export const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
-  xmlns="${dmn15ns.get("")}"
-  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
+  xmlns="${dmn16ns.get("")}"
+  expressionLanguage="${DMN16_SPEC.expressionLanguage.default}"
   namespace="https://kie.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">
 </definitions>`;
+
+export interface JavaCodeCompletionExposedInteropApi {
+  getFields(fqcn: string): Promise<JavaCodeCompletionAccessor[]>;
+  getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
+  isLanguageServerAvailable(): Promise<boolean>;
+}
 
 export type DmnEditorRootProps = {
   exposing: (s: DmnEditorRoot) => void;
@@ -57,9 +73,15 @@ export type DmnEditorRootProps = {
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
+  onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
+  isEvaluationHighlightsSupported?: boolean;
   isReadOnly: boolean;
+  isImportDataTypesFromJavaClassesSupported?: boolean;
+  javaCodeCompletionService?: JavaCodeCompletionExposedInteropApi;
+  locale: string;
+  i18n: DmnEditorEnvelopeI18n;
 };
 
 export type DmnEditorRootState = {
@@ -73,6 +95,7 @@ export type DmnEditorRootState = {
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistered: boolean;
   error: Error | undefined;
+  evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -95,6 +118,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistered: false,
       error: undefined,
+      evaluationResultsByNodeId: new Map(),
     };
   }
 
@@ -102,6 +126,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   public openBoxedExpressionEditor(nodeId: string): void {
     this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId): void {
+    this.setState((prev) => ({ ...prev, evaluationResultsByNodeId: evaluationResultsByNodeId }));
   }
 
   public async undo(): Promise<void> {
@@ -230,8 +258,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     });
 
     return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
-      // Do not show this DMN on the list
-      p === this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
+      // Do not show this DMN on the list and filter out assets into target/classes directory
+      p === this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot || p.includes(TARGET_DIRECTORY)
         ? []
         : __path.relative(__path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
     );
@@ -310,117 +338,127 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     if (commands === undefined) {
       return;
     }
-    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress("Escape", "Edit | Unselect", async () =>
-      commands.cancelAction()
+    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress(
+      this.props.i18n.terms.keyboardKeys.escape,
+      this.props.i18n.edit + " | " + this.props.i18n.unselect,
+      async () => commands.cancelAction()
     );
     const deleteSelectionBackspace = this.props.keyboardShortcutsService.registerKeyPress(
-      "Backspace",
-      "Edit | Delete selection",
+      this.props.i18n.terms.keyboardKeys.backspace,
+      this.props.i18n.edit + " | " + this.props.i18n.deleteSelection,
       async () => {}
     );
     const deleteSelectionDelete = this.props.keyboardShortcutsService.registerKeyPress(
-      "Delete",
-      "Edit | Delete selection",
+      this.props.i18n.terms.keyboardKeys.delete,
+      this.props.i18n.edit + " | " + this.props.i18n.deleteSelection,
       async () => {}
     );
     const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
-      "A",
-      "Edit | Select/Deselect all",
+      this.props.i18n.terms.keyboardKeys.a,
+      this.props.i18n.edit + " | " + this.props.i18n.selectDeselectAll,
       async () => commands.selectAll()
     );
     const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
-      "G",
-      "Edit | Create group wrapping selection",
+      this.props.i18n.terms.keyboardKeys.g,
+      this.props.i18n.edit + " | " + this.props.i18n.createGroupWrappingSelection,
       async () => {
         console.log(" KEY GROUP PRESSED, ", commands);
         return commands.createGroup();
       }
     );
-    const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress("X", "Edit | Hide from DRD", async () =>
-      commands.hideFromDrd()
+    const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress(
+      this.props.i18n.terms.keyboardKeys.x,
+      this.props.i18n.edit + " | " + this.props.i18n.hideFromDrd,
+      async () => commands.hideFromDrd()
     );
-    const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Edit | Copy nodes", async () =>
-      commands.copy()
+    const copy = this.props.keyboardShortcutsService?.registerKeyPress(
+      this.props.i18n.terms.keyboardKeys.ctrlC,
+      this.props.i18n.edit + " | " + this.props.i18n.copyNodes,
+      async () => commands.copy()
     );
-    const cut = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Edit | Cut nodes", async () =>
-      commands.cut()
+    const cut = this.props.keyboardShortcutsService?.registerKeyPress(
+      this.props.i18n.terms.keyboardKeys.ctrlX,
+      this.props.i18n.edit + " | " + this.props.i18n.cutNodes,
+      async () => commands.cut()
     );
-    const paste = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Edit | Paste nodes", async () =>
-      commands.paste()
+    const paste = this.props.keyboardShortcutsService?.registerKeyPress(
+      this.props.i18n.terms.keyboardKeys.ctrlV,
+      this.props.i18n.edit + " | " + this.props.i18n.pasteNodes,
+      async () => commands.paste()
     );
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
-      "I",
-      "Misc | Open/Close properties panel",
+      this.props.i18n.terms.keyboardKeys.i,
+      this.props.i18n.misc + " | " + this.props.i18n.openClosePropertiesPanel,
       async () => commands.togglePropertiesPanel()
     );
     const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
-      "H",
-      "Misc | Toggle hierarchy highlights",
+      this.props.i18n.terms.keyboardKeys.h,
+      this.props.i18n.misc + " | " + this.props.i18n.toggleHierarchyHighlights,
       async () => commands.toggleHierarchyHighlight()
     );
     const moveUp = this.props.keyboardShortcutsService.registerKeyPress(
-      "Up",
-      "Move | Move selection up",
+      this.props.i18n.terms.keyboardKeys.up,
+      this.props.i18n.move + " | " + this.props.i18n.selectionUp,
       async () => {}
     );
     const moveDown = this.props.keyboardShortcutsService.registerKeyPress(
-      "Down",
-      "Move | Move selection down",
+      this.props.i18n.terms.keyboardKeys.down,
+      this.props.i18n.move + " | " + this.props.i18n.selectionDown,
       async () => {}
     );
     const moveLeft = this.props.keyboardShortcutsService.registerKeyPress(
-      "Left",
-      "Move | Move selection left",
+      this.props.i18n.terms.keyboardKeys.left,
+      this.props.i18n.move + " | " + this.props.i18n.selectionLeft,
       async () => {}
     );
     const moveRight = this.props.keyboardShortcutsService.registerKeyPress(
-      "Right",
-      "Move | Move selection right",
+      this.props.i18n.terms.keyboardKeys.right,
+      this.props.i18n.move + " | " + this.props.i18n.selectionRight,
       async () => {}
     );
     const bigMoveUp = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Up",
-      "Move | Move selection up a big distance",
+      this.props.i18n.terms.keyboardKeys.shiftUp,
+      this.props.i18n.move + " | " + this.props.i18n.selectionUpBigDistance,
       async () => {}
     );
     const bigMoveDown = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Down",
-      "Move | Move selection down a big distance",
+      this.props.i18n.terms.keyboardKeys.shiftDown,
+      this.props.i18n.move + " | " + this.props.i18n.selectionDownBigDistance,
       async () => {}
     );
     const bigMoveLeft = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Left",
-      "Move | Move selection left a big distance",
+      this.props.i18n.terms.keyboardKeys.shiftLeft,
+      this.props.i18n.move + " | " + this.props.i18n.selectionLeftBigDistance,
       async () => {}
     );
     const bigMoveRight = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Right",
-      "Move | Move selection right a big distance",
+      this.props.i18n.terms.keyboardKeys.shiftRight,
+      this.props.i18n.move + " | " + this.props.i18n.selectionRightBigDistance,
       async () => {}
     );
     const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
-      "B",
-      "Navigate | Focus on selection",
+      this.props.i18n.terms.keyboardKeys.b,
+      this.props.i18n.navigate + " | " + this.props.i18n.focusOnSelection,
       async () => commands.focusOnSelection()
     );
     const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Space",
-      "Navigate | Reset position to origin",
+      this.props.i18n.terms.keyboardKeys.space,
+      this.props.i18n.navigate + " | " + this.props.i18n.resetPositionToOrigin,
       async () => commands.resetPosition()
     );
     const pan = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Right Mouse Button",
-      "Navigate | Hold and drag to Pan",
+      this.props.i18n.rightMouseButton,
+      this.props.i18n.navigate + " | " + this.props.i18n.holdAndDragtoPan,
       async () => {}
     );
     const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Ctrl",
-      "Navigate | Hold and scroll to zoom in/out",
+      this.props.i18n.terms.keyboardKeys.ctrl,
+      this.props.i18n.navigate + " | " + this.props.i18n.holdAndScrollToZoomInOut,
       async () => {}
     );
     const navigateHorizontally = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Shift",
-      "Navigate | Hold and scroll to navigate horizontally",
+      this.props.i18n.terms.keyboardKeys.shift,
+      this.props.i18n.navigate + " | " + this.props.i18n.holdAndScrollToNavigateHorizontally,
       async () => {}
     );
 
@@ -478,13 +516,18 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               originalVersion={this.state.marshaller?.originalVersion}
               model={this.model}
               externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={[]}
+              evaluationResultsByNodeId={this.state.evaluationResultsByNodeId}
               validationMessages={[]}
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              locale={this.props.locale}
+              isEvaluationHighlightsSupported={this.props?.isEvaluationHighlightsSupported}
               isReadOnly={this.state.isReadOnly}
+              isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
+              javaCodeCompletionService={this.props?.javaCodeCompletionService}
               onModelChange={this.onModelChange}
+              onOpenedBoxedExpressionEditorNodeChange={this.props.onOpenedBoxedExpressionEditorNodeChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.
               onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}
@@ -604,7 +647,11 @@ function ExternalModelsManager({
         for (let i = 0; i < list.normalizedPosixPathsRelativeToTheWorkspaceRoot.length; i++) {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = list.normalizedPosixPathsRelativeToTheWorkspaceRoot[i];
 
-          if (normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+          // Do not show this DMN on the list and filter out assets into target/classes directory
+          if (
+            normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot ||
+            normalizedPosixPathRelativeToTheWorkspaceRoot.includes(TARGET_DIRECTORY)
+          ) {
             continue;
           }
 
@@ -710,10 +757,11 @@ function DmnMarshallerFallbackError({ error }: { error: Error }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          Unable to open file.
-        </Title>
+        <EmptyStateHeader
+          titleText="Unable to open file."
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <br />
         <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
       </EmptyState>

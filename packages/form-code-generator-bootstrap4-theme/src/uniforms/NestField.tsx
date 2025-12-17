@@ -23,8 +23,9 @@ import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils
 import { FormElement, FormInput, FormInputContainer } from "../api";
 import { useBootstrapCodegenContext } from "./BootstrapCodeGenContext";
 import { NESTED, renderCodeGenElement } from "./templates/templates";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: object }>;
+export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps: ListItemProps }>;
 
 const Nest: React.FunctionComponent<NestFieldProps> = ({
   id,
@@ -42,27 +43,24 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const uniformsContext = useContext(context);
   const codegenCtx = useBootstrapCodegenContext();
 
-  const nestedFields: FormElement<any>[] = [];
-  if (fields) {
-    fields.forEach((field) => {
-      const nestedElement = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
-      if (nestedElement) {
-        nestedFields.push(nestedElement);
-      } else {
-        console.log(`Cannot render form field for: '${field}'`);
-      }
-    });
-  }
-
-  const properties = {
+  const element: FormInputContainer = renderCodeGenElement(NESTED, {
     id: name,
     name: name,
     label: label,
     disabled: disabled,
-    children: nestedFields,
-  };
-
-  const element: FormInputContainer = renderCodeGenElement(NESTED, properties);
+    itemProps: itemProps,
+    children: fields
+      ? fields.reduce((nestedFields: FormElement<any>[], field) => {
+          const nestedElement = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
+          if (nestedElement) {
+            nestedFields.push(nestedElement);
+          } else {
+            console.log(`Cannot render form field for: '${field}'`);
+          }
+          return nestedFields;
+        }, [])
+      : [],
+  });
   codegenCtx?.rendered.push(element);
   return <>{JSON.stringify(element)}</>;
 };

@@ -27,7 +27,21 @@ The SonataFlow Dev App is intended for development purposes only. It provides mo
 
 To run the development app, use the following command:
 
-`pnpm start`
+`CORS_DOMAIN=https://localhost:8080 pnpm start`
+
+# Configuration
+
+The `SonataFlow Dev App` can be configured via environment variables:
+
+- CORS_DOMAIN: (required) Defines the allowed origin for CORS, '\*' is not allowed.
+- SONATAFLOW_DEV_APP_DELAY: Defines the server's response delay in milliseconds.
+
+For example:
+
+```bash
+$ export SONATAFLOW_DEV_APP_DELAY=500
+$ export CORS_DOMAIN=https://localhost:8080
+```
 
 ### GraphQL Modifications
 

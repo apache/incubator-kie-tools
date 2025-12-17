@@ -22,9 +22,15 @@ package main
 import (
 	"crypto/tls"
 	"flag"
+	"fmt"
 	"os"
+	"time"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
+	"k8s.io/client-go/dynamic"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
 
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"k8s.io/klog/v2/klogr"
@@ -75,6 +81,11 @@ func init() {
 func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
+	var leaseDuration *time.Duration
+	var renewDeadline *time.Duration
+	var retryPeriod *time.Duration
+	var qps *float64
+	var burst *int
 	var probeAddr string
 	var secureMetrics bool
 	var enableHTTP2 bool
@@ -85,12 +96,37 @@ func main() {
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
+	// Flags for leader election tuning, resilient default values for production.
+	leaseDuration = flag.Duration("lease-duration", 60*time.Second, "Leader election lease duration")
+	renewDeadline = flag.Duration("renew-deadline", 40*time.Second, "Leader election renew deadline")
+	retryPeriod = flag.Duration("retry-period", 15*time.Second, "Leader election retry period")
+
+	// Flags for tuning client-go throttling
+	// 20 / 50	Very light operators
+	// 50 / 100	General-purpose OLM operators
+	// 100 / 200	Operators managing many CRDs or watching many namespaces
+	// 200 / 400	Extremely chatty operators (cluster-wide + many controllers)
+	qps = flag.Float64("qps", 50, "Maximum average QPS for Kubernetes client-go")
+	burst = flag.Int("burst", 100, "Maximum burst for Kubernetes client-go")
+
 	flag.BoolVar(&secureMetrics, "metrics-secure", false,
 		"If set the metrics endpoint is served securely")
 	flag.BoolVar(&enableHTTP2, "enable-http2", false,
 		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
 	flag.StringVar(&controllerCfgPath, "controller-cfg-path", "", "The controller config file path.")
 	flag.Parse()
+
+	klog.InfoS("leader election configuration",
+		"leader-elect", enableLeaderElection,
+		"lease-duration", leaseDuration,
+		"renew-deadline", renewDeadline,
+		"retry-period", retryPeriod)
+
+	klog.InfoS("client-go throttling configuration",
+		"qps", qps,
+		"burst", burst)
+
+	manager.SetOperatorStartTime()
 
 	ctrl.SetLogger(klogr.New().WithName(controller.ComponentName))
 
@@ -114,7 +150,10 @@ func main() {
 		TLSOpts: tlsOpts,
 	})
 
-	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
+	config := ctrl.GetConfigOrDie()
+	config.QPS = float32(*qps)
+	config.Burst = *burst
+	mgr, err := ctrl.NewManager(config, ctrl.Options{
 		Scheme: scheme,
 		Metrics: metricsserver.Options{
 			BindAddress:   metricsAddr,
@@ -136,6 +175,9 @@ func main() {
 		// if you are doing or is intended to do any operation such as perform cleanups
 		// after the manager stops then its usage might be unsafe.
 		// LeaderElectionReleaseOnCancel: true,
+		LeaseDuration: leaseDuration,
+		RenewDeadline: renewDeadline,
+		RetryPeriod:   retryPeriod,
 	})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "unable to start manager")
@@ -145,12 +187,21 @@ func main() {
 	// Set global assessors
 	utils.SetIsOpenShift(mgr.GetConfig())
 	utils.SetClient(mgr.GetClient())
+	cli, err := dynamic.NewForConfig(mgr.GetConfig())
+	if err != nil {
+		// shouldn't fail, since config is provided by the cluster, if fails, SetIsOpenShift should probably fail before.
+		panic(fmt.Sprintf("Impossible to get new dynamic client for config to support controller operations: %s", err))
+	}
+	utils.SetDynamicClient(cli)
 
 	// Fail fast, we can change this behavior in the future to read from defaults instead.
 	if _, err = cfg.InitializeControllersCfgAt(controllerCfgPath); err != nil {
 		klog.V(log.E).ErrorS(err, "unable to read controllers configuration file")
 		os.Exit(1)
 	}
+
+	// Initialize the worker used by the SonataFlow reconciliations to execute auxiliary async operations.
+	manager.InitializeSFCWorker(manager.SonataFlowControllerWorkerSize)
 
 	if err = (&controller.SonataFlowReconciler{
 		Client:   mgr.GetClient(),

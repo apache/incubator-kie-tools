@@ -19,17 +19,19 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField } from "./Fields";
+import { DescriptionField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/StoreContext";
+import { useDmnEditorI18n } from "../../i18n";
 
 type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "description" | "@_typeRef" | "@_id">;
 
 export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
+  const { i18n } = useDmnEditorI18n();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -42,8 +44,8 @@ export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressi
 
   return (
     <>
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>

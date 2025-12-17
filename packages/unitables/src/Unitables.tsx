@@ -26,7 +26,6 @@ import nextId from "react-id-generator";
 import { UnitablesBeeTable } from "./bee";
 import { UnitablesI18n } from "./i18n";
 import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
-import "./Unitables.css";
 import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
 import setObjectValueByPath from "lodash/set";
 import getObjectValueByPath from "lodash/get";
@@ -34,10 +33,16 @@ import { diff } from "deep-object-diff";
 import cloneDeep from "lodash/cloneDeep";
 import { useUnitablesContext } from "./UnitablesContext";
 import { UnitablesInputsConfigs } from "./UnitablesTypes";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { usePreviousRef } from "@kie-tools-core/react-hooks/dist/usePreviousRef";
+import "./Unitables.css";
 
 export interface UnitablesProps {
   rows: Array<Record<string, any>>;
@@ -98,7 +103,7 @@ export const Unitables = ({
     if (child.tagName === "svg" || child.tagName === "path") {
       return;
     }
-    if (child.style) {
+    if (child.style && !child.parentElement?.className.includes("row-index-column-cell")) {
       child.style.height = "60px";
     }
     if (!child.childNodes) {
@@ -215,28 +220,27 @@ export const Unitables = ({
 
   return (
     <>
+      <div
+        className={"kie-tools--unitables-open-on-form-container"}
+        style={{ display: "flex", flexDirection: "column" }}
+      >
+        <OutsideRowMenu height={128} isFirstChild={true}>{`#`}</OutsideRowMenu>
+        {rows.map((_, rowIndex) => (
+          <Tooltip key={rowIndex} content={i18n.openRowFormView(rowIndex)}>
+            <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
+              <Button
+                className={"kie-tools--masthead-hoverable"}
+                variant={ButtonVariant.plain}
+                onClick={() => openRow(rowIndex)}
+              >
+                <ListIcon />
+              </Button>
+            </OutsideRowMenu>
+          </Tooltip>
+        ))}
+      </div>
       {unitablesColumns.length > 0 && rows.length > 0 && formsDivRendered ? (
         <div style={{ display: "flex" }} ref={containerRef}>
-          <div
-            className={"kie-tools--unitables-open-on-form-container"}
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
-            <OutsideRowMenu height={64} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
-            {rows.map((_, rowIndex) => (
-              <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
-                <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
-                  <Button
-                    className={"kie-tools--masthead-hoverable"}
-                    variant={ButtonVariant.plain}
-                    onClick={() => openRow(rowIndex)}
-                  >
-                    <ListIcon />
-                  </Button>
-                </OutsideRowMenu>
-              </Tooltip>
-            ))}
-          </div>
           <UnitablesBeeTable
             rowWrapper={rowWrapper}
             scrollableParentRef={scrollableParentRef}
@@ -254,7 +258,7 @@ export const Unitables = ({
           />
         </div>
       ) : (
-        <EmptyUnitables />
+        <EmptyUnitables i18n={i18n} />
       )}
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
@@ -284,9 +288,9 @@ function OutsideRowMenu({
         color: "gray",
         alignItems: "center",
         justifyContent: "center",
-        borderBottom: `${isLastChild ? 3 : borderBottomSizeBasis}px solid lightgray`,
-        borderTop: `${isFirstChild ? 2 : 0}px solid lightgray`,
-        borderLeft: "3px solid lightgray",
+        borderBottom: `${isLastChild ? 3 : borderBottomSizeBasis}px solid var(--pf-v5-global--palette--black-400)`,
+        borderTop: `${isFirstChild ? 2 : 0}px solid var(--pf-v5-global--palette--black-400)`,
+        borderLeft: "3px solid var(--pf-v5-global--palette--black-400)",
       }}
     >
       {children}
@@ -294,16 +298,16 @@ function OutsideRowMenu({
   );
 }
 
-function EmptyUnitables() {
+function EmptyUnitables(props: { i18n: UnitablesI18n }) {
   return (
     <div style={{ width: "50vw" }}>
       <EmptyState>
-        <EmptyStateIcon icon={CubeIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
         <TextContent>
-          <Text component={"h2"}>No inputs node yet...</Text>
+          <Text component={"h2"}>{props.i18n.noInputNodes}</Text>
         </TextContent>
         <EmptyStateBody>
-          <TextContent>Add an input node and see a custom table here.</TextContent>
+          <TextContent>{props.i18n.addInputNode}</TextContent>
         </EmptyStateBody>
       </EmptyState>
     </div>

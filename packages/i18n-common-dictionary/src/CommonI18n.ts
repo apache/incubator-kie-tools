@@ -40,7 +40,7 @@ export type CommonDictionary = {
   download: string;
   edit: string;
   edited: string;
-  execution: string;
+  evaluation: string;
   exit: string;
   file: string;
   files: string;
@@ -79,9 +79,38 @@ export type CommonDictionary = {
   uninstall: string;
   username: string;
   validation: string;
+  keyboardKeys: {
+    ctrlC: string;
+    ctrlX: string;
+    ctrlV: string;
+    ctrl: string;
+    escape: string;
+    backspace: string;
+    delete: string;
+    up: string;
+    down: string;
+    left: string;
+    right: string;
+    a: string;
+    g: string;
+    h: string;
+    s: string;
+    u: string;
+    i: string;
+    b: string;
+    x: string;
+    y: string;
+    shiftUp: string;
+    shiftDown: string;
+    shiftLeft: string;
+    shiftRight: string;
+    space: string;
+    shift: string;
+  };
 };
 
-export interface CommonI18n extends ReferenceDictionary {
-  names: typeof names;
-  terms: CommonDictionary;
-}
+export interface CommonI18n
+  extends ReferenceDictionary<{
+    names: typeof names;
+    terms: CommonDictionary;
+  }> {}

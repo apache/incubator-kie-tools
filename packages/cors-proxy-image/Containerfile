@@ -18,12 +18,18 @@
 FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.5
 
 ARG CORS_PROXY_DEFAULT_PORT=8080
-ARG CORS_PROXY_DEFAULT_ORIGIN=*
+ARG CORS_PROXY_DEFAULT_ALLOWED_ORIGINS=
 ARG CORS_PROXY_DEFAULT_VERBOSE=false
+ARG CORS_PROXY_DEFAULT_ALLOW_HOSTS=localhost,*.github.com
 
 ENV HOME          /home/kie-sandbox
 ENV NVM_DIR       $HOME/.nvm
-ENV NODE_VERSION  v22.13.1
+ENV NODE_VERSION  v22.14.0
+
+ENV CORS_PROXY_HTTP_PORT=$CORS_PROXY_DEFAULT_PORT
+ENV CORS_PROXY_ALLOWED_ORIGINS=$CORS_PROXY_DEFAULT_ALLOWED_ORIGINS
+ENV CORS_PROXY_VERBOSE=$CORS_PROXY_DEFAULT_VERBOSE
+ENV CORS_PROXY_ALLOW_HOSTS=$CORS_PROXY_DEFAULT_ALLOW_HOSTS
 
 RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
@@ -32,10 +38,7 @@ RUN mkdir $HOME \
   && microdnf --disableplugin=subscription-manager install -y tar gzip \
   && microdnf --disableplugin=subscription-manager clean all \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
-  && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION" \
-  && export CORS_PROXY_HTTP_PORT=$CORS_PROXY_DEFAULT_PORT \
-  && export CORS_PROXY_ORIGIN=CORS_PROXY_DEFAULT_ORIGIN \
-  && export CORS_PROXY_VERBOSE=CORS_PROXY_DEFAULT_VERBOSE
+  && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION"
 
 
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
@@ -46,5 +49,7 @@ COPY --chown=1000:0 dist-dev/cors-proxy $HOME/cors-proxy
 EXPOSE $CORS_PROXY_DEFAULT_PORT
 
 USER 1000
+
+HEALTHCHECK --interval=1m --timeout=5s CMD curl -f http://localhost:${CORS_PROXY_HTTP_PORT}/ping || exit 1
 
 CMD node $HOME/cors-proxy/index.js

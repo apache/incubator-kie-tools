@@ -21,8 +21,9 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Page, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
-import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader } from "@patternfly/react-core/deprecated";
+import { HashRouter as Router, Link, Route, Routes } from "react-router-dom";
 import { SwfStandaloneEditorPage } from "./Pages/SwfStandaloneEditorPage";
 import { SwfStandaloneDiagramOnlyEditorPage } from "./Pages/SwfStandaloneDiagramOnlyEditorPage";
 import { SwfStandaloneTextOnlyEditorPage } from "./Pages/SwfStandaloneTextOnlyEditorPage";
@@ -54,7 +55,7 @@ export function App() {
           <PageHeader
             logo={<Brand src={"logo.png"} alt="Logo" />}
             topNav={
-              <Nav onSelect={(e) => setLocation(e.itemId as Location)} aria-label="Nav" variant="horizontal">
+              <Nav onSelect={(_event, e) => setLocation(e.itemId as Location)} aria-label="Nav" variant="horizontal">
                 <NavList>
                   <NavItem itemId={Location.HOME} isActive={location === Location.HOME}>
                     <Link to={Location.HOME}>Home</Link>
@@ -83,20 +84,12 @@ export function App() {
           />
         }
       >
-        <Switch>
-          <Route exact={true} path={"/"}>
-            <p>Select a page</p>
-          </Route>
-          <Route path={Location.SWF_STANDALONE_EDITOR}>
-            <SwfStandaloneEditorPage />
-          </Route>
-          <Route path={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>
-            <SwfStandaloneDiagramOnlyEditorPage />
-          </Route>
-          <Route path={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}>
-            <SwfStandaloneTextOnlyEditorPage />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path={"/"} element={<p>Select a page</p>} />
+          <Route path={Location.SWF_STANDALONE_EDITOR} element={<SwfStandaloneEditorPage />} />
+          <Route path={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY} element={<SwfStandaloneDiagramOnlyEditorPage />} />
+          <Route path={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY} element={<SwfStandaloneTextOnlyEditorPage />} />
+        </Routes>
       </Page>
     </Router>
   );

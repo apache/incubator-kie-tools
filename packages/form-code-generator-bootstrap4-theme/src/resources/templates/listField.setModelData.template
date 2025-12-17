@@ -1,0 +1,6 @@
+<%=path%>?.forEach((value, <%= indexVariableName %>) => {
+// Add element;
+onAddListItem<%= functionName %>(`<%= name %>`, true)
+const <%= prefix %>__currentItem = `<%= name %>.${<%= indexVariableName %>}`
+<%= itemsSetValueFromModel.code %>
+});

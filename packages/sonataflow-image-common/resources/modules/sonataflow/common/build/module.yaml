@@ -19,7 +19,23 @@
 schema_version: 1
 name: org.kie.sonataflow.common.build
 version: "main"
-description: "Kogito Serverless Workflow image build process"
+description: "SonataFlow image build process"
+
+# Requires org.kie.sonataflow.common.scripts module
+
+envs:
+  - name: QUARKUS_EXTENSIONS
+    example: "org.apache.kie.sonataflow:sonataflow-quarkus:${KOGITO_VERSION},org.kie:kie-addons-quarkus-knative-eventing:${KOGITO_VERSION}"
+    description: To add extensions to the SonataFlow application pom.xml file.
+  - name: QUARKUS_CREATE_ARGS
+    example: -DnoCode
+    description: To use only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
+  - name: ADDITIONAL_DEPENDENCIES
+    example: org.kie:kie-addons-quarkus-persistence-jdbc:${KOGITO_VERSION}
+    description: |
+      Comma-separated list of additional dependencies to add to the image local Maven repository. 
+      These dependencies are NOT added to the SonataFlow application pom.xml file. 
+      The libraries will be available at the m2/repository directory.
 
 execute:
   - script: configure.sh

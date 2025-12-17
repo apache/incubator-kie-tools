@@ -35,15 +35,16 @@ import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import * as React from "react";
 import { useMemo, useEffect } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { routes } from "../routes";
 import { BasePageNav } from "./basePage/BasePageNav";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 
 export function BasePage(props: { children?: React.ReactNode }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const app = useApp();
+  const tooltipRef = React.useRef<HTMLButtonElement>(null);
 
   const masthead = useMemo(
     () => (
@@ -55,7 +56,8 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadToggle>
         <MastheadMain>
           <MastheadBrand
-            onClick={() => history.push({ pathname: routes.home.path({}) })}
+            component="a"
+            onClick={() => navigate({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >
             <Brand className="sonataflow-deployment-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
@@ -73,11 +75,12 @@ export function BasePage(props: { children?: React.ReactNode }) {
           <Toolbar id="toolbar" isFullHeight isStatic>
             <ToolbarContent>
               {app.data.showDisclaimer && (
-                <ToolbarItem alignment={{ default: "alignRight" }}>
+                <ToolbarItem align={{ default: "alignRight" }}>
                   <Tooltip
                     className="app--masterhead__disclaimer"
                     position="bottom-end"
                     key="disclaimer-tooltip"
+                    triggerRef={tooltipRef}
                     content={
                       <>
                         This deployment is intended to be used during <b>development</b>, so users should not use the
@@ -99,17 +102,25 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadContent>
       </Masthead>
     ),
-    [app.data.appName, history, app.appDataPromise.status, app.data.showDisclaimer]
+    [app.data.appName, navigate, app.appDataPromise.status, app.data.showDisclaimer]
   );
 
   useEffect(() => {
     if (app.appDataPromise.status === PromiseStateStatus.REJECTED) {
-      history.replace(routes.dataJsonError.path({}));
+      navigate(routes.dataJsonError.path({}), { replace: true });
     }
-  }, [history, app.appDataPromise]);
+  }, [navigate, app.appDataPromise]);
 
   return (
-    <Page sidebar={<PageSidebar nav={<BasePageNav />} theme="dark" />} header={masthead} isManagedSidebar>
+    <Page
+      sidebar={
+        <PageSidebar theme="dark">
+          <BasePageNav />
+        </PageSidebar>
+      }
+      header={masthead}
+      isManagedSidebar
+    >
       {props.children}
     </Page>
   );

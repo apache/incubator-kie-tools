@@ -33,14 +33,14 @@ import { useMemo } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-  DMN15__tGroup,
-  DMN15__tInputData,
-  DMN15__tKnowledgeSource,
-  DMN15__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tBusinessKnowledgeModel,
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDecisionService,
+  DMN_LATEST__tGroup,
+  DMN_LATEST__tInputData,
+  DMN_LATEST__tKnowledgeSource,
+  DMN_LATEST__tTextAnnotation,
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
@@ -51,8 +51,10 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./SingleNodeProperties.css";
+import { useDmnEditorI18n } from "../i18n";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
   const node = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(nodeId));
@@ -89,28 +91,28 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
             title={(() => {
               switch (node.type) {
                 case NODE_TYPES.inputData:
-                  return "Input";
+                  return i18n.nodes.input;
                 case NODE_TYPES.decision:
-                  return "Decision";
+                  return i18n.nodes.decision;
                 case NODE_TYPES.bkm:
-                  return "Business Knowledge Model";
+                  return i18n.nodes.businessKnowledgeModel;
                 case NODE_TYPES.decisionService:
-                  return "Decision Service";
+                  return i18n.nodes.decisionService;
                 case NODE_TYPES.knowledgeSource:
-                  return "Knowledge Source";
+                  return i18n.nodes.knowledgeSource;
                 case NODE_TYPES.textAnnotation:
-                  return "Text Annotation";
+                  return i18n.nodes.textAnnotation;
                 case NODE_TYPES.group:
-                  return "Group";
+                  return i18n.nodes.group;
                 case NODE_TYPES.unknown:
-                  return <>Unknown</>;
+                  return <>{i18n.externalNodes.unknown}</>;
                 default:
                   throw new Error(`Unknown type of node ${node.type}`);
               }
             })()}
             action={
               <Button
-                title={"Close"}
+                title={i18n.close}
                 variant={ButtonVariant.plain}
                 onClick={() => {
                   dmnEditorStoreApi.setState((state) => {
@@ -134,7 +136,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.inputData:
                     return (
                       <InputDataProperties
-                        inputData={node.data!.dmnObject as Normalized<DMN15__tInputData>}
+                        inputData={node.data!.dmnObject as Normalized<DMN_LATEST__tInputData>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -142,7 +144,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.decision:
                     return (
                       <DecisionProperties
-                        decision={node.data!.dmnObject as Normalized<DMN15__tDecision>}
+                        decision={node.data!.dmnObject as Normalized<DMN_LATEST__tDecision>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -150,7 +152,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.bkm:
                     return (
                       <BkmProperties
-                        bkm={node.data!.dmnObject as Normalized<DMN15__tBusinessKnowledgeModel>}
+                        bkm={node.data!.dmnObject as Normalized<DMN_LATEST__tBusinessKnowledgeModel>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -158,7 +160,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.decisionService:
                     return (
                       <DecisionServiceProperties
-                        decisionService={node.data!.dmnObject as Normalized<DMN15__tDecisionService>}
+                        decisionService={node.data!.dmnObject as Normalized<DMN_LATEST__tDecisionService>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -166,7 +168,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.knowledgeSource:
                     return (
                       <KnowledgeSourceProperties
-                        knowledgeSource={node.data!.dmnObject as Normalized<DMN15__tKnowledgeSource>}
+                        knowledgeSource={node.data!.dmnObject as Normalized<DMN_LATEST__tKnowledgeSource>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -174,14 +176,14 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.textAnnotation:
                     return (
                       <TextAnnotationProperties
-                        textAnnotation={node.data!.dmnObject as Normalized<DMN15__tTextAnnotation>}
+                        textAnnotation={node.data!.dmnObject as Normalized<DMN_LATEST__tTextAnnotation>}
                         index={node.data.index}
                       />
                     );
                   case NODE_TYPES.group:
                     return (
                       <GroupProperties
-                        group={node.data!.dmnObject as Normalized<DMN15__tGroup>}
+                        group={node.data!.dmnObject as Normalized<DMN_LATEST__tGroup>}
                         index={node.data.index}
                       />
                     );

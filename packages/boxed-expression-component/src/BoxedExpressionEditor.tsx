@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import "@patternfly/react-styles/css/components/Drawer/drawer.css";
+import "@patternfly/react-core/dist/styles/base.css";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { BeeGwtService, BoxedExpression, DmnDataType, Normalized, PmmlDocument } from "./api";
@@ -27,12 +27,11 @@ import {
   boxedExpressionEditorI18nDefaults,
 } from "./i18n";
 import { ExpressionDefinitionRoot } from "./expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot";
-import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
-import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
-import "./base-no-reset-wrapped.css";
+import { BoxedExpressionEditorContextProvider, OnExpressionChange } from "./BoxedExpressionEditorContext";
+import { FeelIdentifiers } from "@kie-tools/dmn-feel-antlr4-parser";
 import "./@types/react-table";
 
-export type OnRequestFeelVariables = () => FeelVariables;
+export type OnRequestFeelIdentifiers = () => FeelIdentifiers;
 
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT layer. Although the GWT layer is deprecated, and the new DMN Editor does not have GWT, some methods here are still necessary. */
@@ -46,7 +45,7 @@ export interface BoxedExpressionEditorProps {
   /** The boxed expression itself */
   expression: Normalized<BoxedExpression> | undefined;
   /** Called every time something changes on the expression */
-  onExpressionChange: React.Dispatch<React.SetStateAction<Normalized<BoxedExpression> | undefined>>;
+  onExpressionChange: OnExpressionChange;
   /** KIE Extension to represent IDs of individual columns or expressions */
   widthsById: Map<string, number[]>;
   /** Called every time a width changes on the expression */
@@ -62,10 +61,11 @@ export interface BoxedExpressionEditorProps {
   evaluationHitsCountById?: Map<string, number>;
   /** The containing HTMLElement which is scrollable */
   scrollableParentRef: React.RefObject<HTMLElement>;
-  /** Parsed variables used for syntax coloring and auto-complete */
-  onRequestFeelVariables?: OnRequestFeelVariables;
+  /** Parsed identifiers used for syntax coloring and auto-complete */
+  onRequestFeelIdentifiers?: OnRequestFeelIdentifiers;
   /** Hide DMN 1.4 boxed expressions */
   hideDmn14BoxedExpressions?: boolean;
+  locale?: string;
 }
 
 export function BoxedExpressionEditor({
@@ -80,17 +80,18 @@ export function BoxedExpressionEditor({
   isResetSupportedOnRootExpression,
   scrollableParentRef,
   pmmlDocuments,
+  onRequestFeelIdentifiers,
   evaluationHitsCountById,
-  onRequestFeelVariables,
   widthsById,
   onWidthsChange,
   hideDmn14BoxedExpressions,
+  locale,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
       defaults={boxedExpressionEditorI18nDefaults}
       dictionaries={boxedExpressionEditorDictionaries}
-      initialLocale={navigator.language}
+      initialLocale={locale ?? navigator.language}
       ctx={BoxedExpressionEditorI18nContext}
     >
       <BoxedExpressionEditorContextProvider
@@ -105,8 +106,8 @@ export function BoxedExpressionEditor({
         isReadOnly={isReadOnly}
         dataTypes={dataTypes}
         pmmlDocuments={pmmlDocuments}
+        onRequestFeelIdentifiers={onRequestFeelIdentifiers}
         evaluationHitsCountById={evaluationHitsCountById}
-        onRequestFeelVariables={onRequestFeelVariables}
         widthsById={widthsById}
         hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
       >

@@ -30,28 +30,28 @@ interface TaskDetailsProps {
   userTask?: UserTaskInstance;
 }
 
+const resolveTaskPriority = (priority?: string): string => {
+  switch (priority) {
+    case "0":
+      return "0 - High";
+    case "5":
+      return "5 - Medium";
+    case "10":
+      return "10 - Low";
+  }
+
+  return priority || "-";
+};
+
 export const TaskDetails: React.FC<TaskDetailsProps & OUIAProps> = ({ userTask, ouiaId, ouiaSafe }) => {
   if (!userTask) {
     return (
       <KogitoSpinner
         {...componentOuiaProps(ouiaId, "task-details-component-loading", ouiaSafe)}
-        spinnerText={"Loading task details"}
+        spinnerText={"Loading Task details"}
       />
     );
   }
-
-  const resolveTaskPriority = (priority?: string): string => {
-    switch (priority) {
-      case "0":
-        return "0 - High";
-      case "5":
-        return "5 - Medium";
-      case "10":
-        return "10 - Low";
-    }
-
-    return priority || "-";
-  };
 
   return (
     <Form {...componentOuiaProps(ouiaId, "task-details-component", ouiaSafe)}>

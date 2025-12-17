@@ -62,6 +62,7 @@ module.exports = async (webpackEnv) => {
     plugins: [
       new MonacoWebpackPlugin({
         languages: ["html", "typescript", "json"],
+        features: ["bracketMatching", "folding", "suggest"],
         globalAPI: true,
       }),
       new webpack.EnvironmentPlugin({

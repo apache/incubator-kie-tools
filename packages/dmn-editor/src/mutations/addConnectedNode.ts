@@ -18,14 +18,14 @@
  */
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import {
-  DC__Bounds,
-  DMN15__tAuthorityRequirement,
-  DMN15__tDecision,
-  DMN15__tDefinitions,
-  DMN15__tInformationRequirement,
-  DMN15__tKnowledgeRequirement,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tAuthorityRequirement,
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__tInformationRequirement,
+  DMN_LATEST__tKnowledgeRequirement,
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
@@ -48,7 +48,7 @@ export function addConnectedNode({
   edgeType,
   externalModelsByNamespace,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   drdIndex: number;
   sourceNode: { type: NodeType; href: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
@@ -184,14 +184,14 @@ export function getRequirementsFromEdge(
   newEdgeId: string,
   edge: EdgeType
 ):
-  | (Pick<Normalized<DMN15__tDecision>, "informationRequirement"> &
-      Pick<Normalized<DMN15__tDecision>, "knowledgeRequirement"> &
-      Pick<Normalized<DMN15__tDecision>, "authorityRequirement">)
+  | (Pick<Normalized<DMN_LATEST__tDecision>, "informationRequirement"> &
+      Pick<Normalized<DMN_LATEST__tDecision>, "knowledgeRequirement"> &
+      Pick<Normalized<DMN_LATEST__tDecision>, "authorityRequirement">)
   | undefined {
   const ir:
     | undefined //
-    | Required<Pick<Normalized<DMN15__tInformationRequirement>, "requiredInput" | "@_id">>
-    | Required<Pick<Normalized<DMN15__tInformationRequirement>, "requiredDecision" | "@_id">> = switchExpression(
+    | Required<Pick<Normalized<DMN_LATEST__tInformationRequirement>, "requiredInput" | "@_id">>
+    | Required<Pick<Normalized<DMN_LATEST__tInformationRequirement>, "requiredDecision" | "@_id">> = switchExpression(
     sourceNode.type,
     {
       [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
@@ -202,7 +202,7 @@ export function getRequirementsFromEdge(
 
   const kr:
     | undefined //
-    | Required<Pick<Normalized<DMN15__tKnowledgeRequirement>, "requiredKnowledge" | "@_id">> = switchExpression(
+    | Required<Pick<Normalized<DMN_LATEST__tKnowledgeRequirement>, "requiredKnowledge" | "@_id">> = switchExpression(
     sourceNode.type,
     {
       [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.href}` } },
@@ -213,9 +213,9 @@ export function getRequirementsFromEdge(
 
   const ar:
     | undefined //
-    | Required<Pick<Normalized<DMN15__tAuthorityRequirement>, "requiredInput" | "@_id">>
-    | Required<Pick<Normalized<DMN15__tAuthorityRequirement>, "requiredDecision" | "@_id">>
-    | Required<Pick<Normalized<DMN15__tAuthorityRequirement>, "requiredAuthority" | "@_id">> = switchExpression(
+    | Required<Pick<Normalized<DMN_LATEST__tAuthorityRequirement>, "requiredInput" | "@_id">>
+    | Required<Pick<Normalized<DMN_LATEST__tAuthorityRequirement>, "requiredDecision" | "@_id">>
+    | Required<Pick<Normalized<DMN_LATEST__tAuthorityRequirement>, "requiredAuthority" | "@_id">> = switchExpression(
     sourceNode.type,
     {
       [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
@@ -227,9 +227,9 @@ export function getRequirementsFromEdge(
 
   // We can use tDecision to type here, because it contains all requirement types.
   const requirements:
-    | (Pick<Normalized<DMN15__tDecision>, "informationRequirement"> &
-        Pick<Normalized<DMN15__tDecision>, "knowledgeRequirement"> &
-        Pick<Normalized<DMN15__tDecision>, "authorityRequirement">)
+    | (Pick<Normalized<DMN_LATEST__tDecision>, "informationRequirement"> &
+        Pick<Normalized<DMN_LATEST__tDecision>, "knowledgeRequirement"> &
+        Pick<Normalized<DMN_LATEST__tDecision>, "authorityRequirement">)
     | undefined = switchExpression(edge, {
     [EDGE_TYPES.informationRequirement]: ir ? { informationRequirement: [ir] } : undefined,
     [EDGE_TYPES.knowledgeRequirement]: kr ? { knowledgeRequirement: [kr] } : undefined,

@@ -20,17 +20,22 @@
 import * as React from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ns as dmn12ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/meta";
-import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Card, CardActions, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
@@ -38,7 +43,7 @@ import { basename, dirname, extname } from "path";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ExternalModel } from "../DmnEditor";
 import { useDmnEditor } from "../DmnEditorContext";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { addImport } from "../mutations/addImport";
 import { deleteImport } from "../mutations/deleteImport";
@@ -48,10 +53,10 @@ import { KIE_UNKNOWN_NAMESPACE } from "../kie/kie";
 import { ExternalModelLabel } from "./ExternalModelLabel";
 import { useExternalModels } from "./DmnEditorDependenciesContext";
 import { allPmmlImportNamespaces, getPmmlNamespace } from "../pmml/pmml";
-import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { getNamespaceOfDmnImport } from "./importNamespaces";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
-import { KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { KebabToggle } from "@patternfly/react-core/deprecated";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
@@ -60,6 +65,8 @@ import "./IncludedModels.css";
 import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import { AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { useDmnEditorI18n } from "../i18n";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -69,6 +76,7 @@ const namespaceForNewImportsByFileExtension: Record<string, string> = {
 };
 
 export function IncludedModels() {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
   const settings = useSettings();
@@ -140,7 +148,7 @@ export function IncludedModels() {
     if (
       !selectedPathRelativeToThisDmn ||
       !selectedModel ||
-      !DMN15_SPEC.IMPORT.name.isValid(generateUuid(), importName, s.computed(s).getAllFeelVariableUniqueNames())
+      !DMN16_SPEC.IMPORT.name.isValid(generateUuid(), importName, s.computed(s).getAllFeelVariableUniqueNames())
     ) {
       return;
     }
@@ -254,21 +262,21 @@ export function IncludedModels() {
         data-testid={"kie-tools--dmn-editor--included-models-modal"}
         isOpen={isModalOpen}
         onClose={() => cancel()}
-        title={"Include model"}
+        title={i18n.includedModels.includeModel}
         variant={ModalVariant.large}
         actions={
           (modelPathsRelativeToThisDmnNotYetIncluded?.length ?? 0) > 0 && selectedModelError === undefined
             ? [
                 <Button key="confirm" variant="primary" onClick={add}>
-                  Include model
+                  {i18n.includedModels.includeModel}
                 </Button>,
                 <Button key="cancel" variant="link" onClick={cancel}>
-                  Cancel
+                  {i18n.includedModels.cancel}
                 </Button>,
               ]
             : [
                 <Button key="cancel" variant="link" onClick={cancel} style={{ paddingLeft: 0 }}>
-                  Cancel
+                  {i18n.includedModels.cancel}
                 </Button>,
               ]
         }
@@ -282,7 +290,7 @@ export function IncludedModels() {
                 <br />
                 <br />
                 <Form>
-                  <FormGroup label={"Model"} isRequired={true}>
+                  <FormGroup label={i18n.includedModels.model} isRequired={true}>
                     <Select
                       toggleRef={selectToggleRef}
                       maxHeight={inViewSelect.maxHeight}
@@ -290,8 +298,8 @@ export function IncludedModels() {
                       menuAppendTo={document.body}
                       variant={SelectVariant.typeahead}
                       typeAheadAriaLabel={"Select a model to include..."}
-                      placeholderText={"Select a model to include..."}
-                      onToggle={setModelSelectOpen}
+                      placeholderText={i18n.includedModels.selectModelToInclude}
+                      onToggle={(_event, val) => setModelSelectOpen(val)}
                       onClear={() => setSelectedPathRelativeToThisDmn(undefined)}
                       onSelect={(e, path) => {
                         if (typeof path !== "string") {
@@ -306,7 +314,7 @@ export function IncludedModels() {
                       aria-labelledby={"Included model selector"}
                       isGrouped={true}
                     >
-                      <SelectGroup label={"DMN"} key={"DMN"}>
+                      <SelectGroup label={i18n.names.dmn} key={"DMN"}>
                         {((dmnPathsNotYetIncluded?.length ?? 0) > 0 &&
                           dmnPathsNotYetIncluded?.map((p) => {
                             const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(p) ?? p;
@@ -321,12 +329,12 @@ export function IncludedModels() {
                             );
                           })) || (
                           <SelectOption key={"none-dmn"} isDisabled={true} description={""} value={""}>
-                            <i>None</i>
+                            <i>{i18n.none}</i>
                           </SelectOption>
                         )}
                       </SelectGroup>
                       <Divider key="divider" />
-                      <SelectGroup label={"PMML"} key={"PMML"}>
+                      <SelectGroup label={i18n.names.pmml} key={"PMML"}>
                         {((pmmlPathsNotYetIncluded?.length ?? 0) > 0 &&
                           pmmlPathsNotYetIncluded?.map((p) => {
                             const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(p) ?? p;
@@ -341,22 +349,22 @@ export function IncludedModels() {
                             );
                           })) || (
                           <SelectOption key={"none-pmml"} isDisabled={true} description={""} value={""}>
-                            <i>None</i>
+                            <i>{i18n.none}</i>
                           </SelectOption>
                         )}
                       </SelectGroup>
                     </Select>
                   </FormGroup>
-                  <FormGroup label={"Name"}>
+                  <FormGroup label={i18n.name}>
                     <InlineFeelNameInput
-                      validate={DMN15_SPEC.IMPORT.name.isValid}
+                      validate={DMN16_SPEC.IMPORT.name.isValid}
                       placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
                       isPlain={false}
                       id={generateUuid()}
                       name={importName}
                       isReadOnly={false}
                       shouldCommitOnBlur={true}
-                      className={"pf-c-form-control"}
+                      // className={"pf-v5-c-form-control"}
                       onRenamed={setImportName}
                       allUniqueNames={getAllUniqueNames}
                     />
@@ -369,24 +377,24 @@ export function IncludedModels() {
               </>
             )) || (
               <>
-                {((modelPathRelativeToThisDmn?.length ?? 0) > 0 &&
-                  `All models available${
-                    externalContextName ? ` in '${externalContextName}' ` : ` `
-                  }are already included.`) ||
-                  `There's no available models${
-                    externalContextName ? ` in '${externalContextName}' ` : ` `
-                  }to be included.`}
+                {(modelPathRelativeToThisDmn?.length ?? 0) > 0 && externalContextName
+                  ? i18n.includedModels.allModelsAvailablewithName(externalContextName)
+                  : (modelPathRelativeToThisDmn?.length ?? 0) > 0
+                    ? i18n.includedModels.allModelsAvailable
+                    : externalContextName
+                      ? i18n.includedModels.noAvailableModelswithName(externalContextName)
+                      : i18n.includedModels.noAvailableModels}
               </>
             )}
           </>
-        )) || <>Loading...</>}
+        )) || <>{i18n.includedModels.loading}</>}
       </Modal>
       {thisDmnsImports.length > 0 && (
         <>
           {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
           <PageSection style={{ padding: "24px" }}>
             <Button isDisabled={settings.isReadOnly} onClick={openModal} variant={ButtonVariant.primary}>
-              Include model
+              {i18n.includedModels.includeModel}
             </Button>
             <br />
             <br />
@@ -423,21 +431,19 @@ export function IncludedModels() {
       {thisDmnsImports.length <= 0 && (
         <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
           <EmptyState style={{ maxWidth: "1280px" }}>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title size={"lg"} headingLevel={"h4"}>
-              No external models have been included.
-            </Title>
-            <EmptyStateBody>
-              Included models are externally defined models that have been added to this DMN file. Included DMN models
-              have their decision requirements diagram (DRD) or decision requirements graph (DRG) components available
-              in this DMN file. Included PMML models can be invoked through DMN Boxed Functions, usually inside Business
-              Knowledge Model nodes (BKMs)
-            </EmptyStateBody>
-            {!settings.isReadOnly && (
-              <Button onClick={openModal} variant={ButtonVariant.primary}>
-                Include model
-              </Button>
-            )}
+            <EmptyStateHeader
+              titleText={i18n.includedModels.noExternalModelsIncluded}
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel={"h4"}
+            />
+            <EmptyStateBody>{i18n.includedModels.externalModelsEmptyMessage}</EmptyStateBody>
+            <EmptyStateFooter>
+              {!settings.isReadOnly && (
+                <Button onClick={openModal} variant={ButtonVariant.primary}>
+                  {i18n.includedModels.includeModel}
+                </Button>
+              )}
+            </EmptyStateFooter>
           </EmptyState>
         </Flex>
       )}
@@ -451,11 +457,12 @@ function IncludedModelCard({
   externalModel,
   isReadOnly,
 }: {
-  _import: Normalized<DMN15__tImport>;
+  _import: Normalized<DMN_LATEST__tImport>;
   externalModel: ExternalModel | undefined;
   index: number;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { externalModelsByNamespace } = useExternalModels();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -479,6 +486,19 @@ function IncludedModelCard({
     [dmnEditorStoreApi, externalModelsByNamespace]
   );
 
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  );
+
+  const externalModelsByNamespaceMap = useMemo(() => {
+    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+    for (const [key, externalDmn] of externalDmnsByNamespace) {
+      externalModels.set(key, externalDmn.model);
+    }
+    return externalModels;
+  }, [externalDmnsByNamespace]);
+
   const rename = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
       dmnEditorStoreApi.setState((state) => {
@@ -488,10 +508,11 @@ function IncludedModelCard({
           newName,
           allTopLevelDataTypesByFeelName: state.computed(state).getDataTypes(externalModelsByNamespace)
             .allTopLevelDataTypesByFeelName,
+          externalModelsByNamespaceMap,
         });
       });
     },
-    [dmnEditorStoreApi, externalModelsByNamespace, index]
+    [dmnEditorStoreApi, externalModelsByNamespace, externalModelsByNamespaceMap, index]
   );
 
   const extension = useMemo(() => {
@@ -532,97 +553,93 @@ function IncludedModelCard({
   );
 
   return (
-    <Card isHoverable={true} isCompact={false}>
-      <CardHeader>
-        {!isReadOnly && (
-          <CardActions>
-            <Popover
-              bodyContent={
-                shouldRenderConfirmationMessage ? (
-                  <Alert
-                    isInline
-                    variant={AlertVariant.warning}
-                    title={"This action have major impact to your model"}
-                    actionClose={
-                      <AlertActionCloseButton
-                        onClose={() => {
-                          setRemovePopoverOpen(false);
-                          setConfirmationPopoverOpen(false);
+    <Card isCompact={false}>
+      <CardHeader
+        {...(!isReadOnly && {
+          actions: {
+            actions: (
+              <>
+                <Popover
+                  bodyContent={
+                    shouldRenderConfirmationMessage ? (
+                      <Alert
+                        isInline
+                        variant={AlertVariant.warning}
+                        title={i18n.includedModels.actionHaveMajorImpact}
+                        actionClose={
+                          <AlertActionCloseButton
+                            onClose={() => {
+                              setRemovePopoverOpen(false);
+                              setConfirmationPopoverOpen(false);
+                            }}
+                          />
+                        }
+                        actionLinks={
+                          <>
+                            <AlertActionLink
+                              onClick={(ev) => {
+                                remove(index);
+                                ev.stopPropagation();
+                                ev.preventDefault();
+                              }}
+                              variant={"link"}
+                              style={{ color: "var(--pf-v5-global--danger-color--200)", fontWeight: "bold" }}
+                            >
+                              {i18n.includedModels.removeIncludedModel(extension.toUpperCase())}
+                            </AlertActionLink>
+                          </>
+                        }
+                      >
+                        {extension === "dmn" && <>{i18n.includedModels.removeDmnMessage}</>}
+                        {extension === "pmml" && <>{i18n.includedModels.removePmmlMessage}</>}
+                      </Alert>
+                    ) : (
+                      <Button
+                        variant={"plain"}
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          ev.preventDefault();
+                          if (isReadOnly) {
+                            return;
+                          }
+                          setConfirmationPopoverOpen(true);
                         }}
-                      />
-                    }
-                    actionLinks={
-                      <>
-                        <AlertActionLink
-                          onClick={(ev) => {
-                            remove(index);
-                            ev.stopPropagation();
-                            ev.preventDefault();
-                          }}
-                          variant={"link"}
-                          style={{ color: "var(--pf-global--danger-color--200)", fontWeight: "bold" }}
-                        >
-                          {`Yes, remove included ${extension.toUpperCase()}`}
-                        </AlertActionLink>
-                      </>
-                    }
-                  >
-                    {extension === "dmn" && (
-                      <>
-                        Removing an included DMN will erase all its imported nodes and connected edges from your model.
-                        The references to item definitions, Business Knowledge Model functions, and Decision expressions
-                        will remain, requiring to be manually removed.
-                      </>
-                    )}
-                    {extension === "pmml" && (
-                      <>
-                        Removing an included PMML will not erase references on Boxed Function expressions, requiring it
-                        to be manually removed.
-                      </>
-                    )}
-                  </Alert>
-                ) : (
+                      >
+                        <TrashIcon />
+                        {"  "}
+                        {i18n.includedModels.remove}
+                      </Button>
+                    )
+                  }
+                  hasNoPadding={shouldRenderConfirmationMessage}
+                  maxWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+                  minWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+                  isVisible={isRemovePopoverOpen}
+                  showClose={false}
+                  shouldClose={() => {
+                    setRemovePopoverOpen(false);
+                    setConfirmationPopoverOpen(false);
+                  }}
+                  position={PopoverPosition.bottom}
+                  shouldOpen={() => setRemovePopoverOpen(true)}
+                >
                   <Button
                     variant={"plain"}
                     onClick={(ev) => {
                       ev.stopPropagation();
                       ev.preventDefault();
-                      if (isReadOnly) {
-                        return;
-                      }
-                      setConfirmationPopoverOpen(true);
                     }}
                   >
-                    <TrashIcon />
-                    {"  "}
-                    Remove
+                    <KebabToggle />
                   </Button>
-                )
-              }
-              hasNoPadding={shouldRenderConfirmationMessage}
-              maxWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
-              minWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
-              isVisible={isRemovePopoverOpen}
-              showClose={false}
-              shouldClose={() => {
-                setRemovePopoverOpen(false);
-                setConfirmationPopoverOpen(false);
-              }}
-              position={PopoverPosition.bottom}
-              shouldOpen={() => setRemovePopoverOpen(true)}
-            >
-              <div
-                className="kie-dmn-editor--model-card-kebabtoggle-wrapper"
-                onClick={(ev) => {
-                  ev.stopPropagation();
-                  ev.preventDefault();
-                }}
-              >
-                <KebabToggle />
-              </div>
-            </Popover>
-          </CardActions>
-        )}
+                </Popover>
+              </>
+            ),
+            hasNoOffset: false,
+            className: undefined,
+          },
+        })}
+      >
         <CardTitle>
           <InlineFeelNameInput
             placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
@@ -633,7 +650,7 @@ function IncludedModelCard({
             isReadOnly={isReadOnly}
             shouldCommitOnBlur={true}
             onRenamed={rename}
-            validate={DMN15_SPEC.IMPORT.name.isValid}
+            validate={DMN16_SPEC.IMPORT.name.isValid}
           />
           <br />
           <br />
@@ -662,14 +679,14 @@ function IncludedModelCard({
       ) : (
         // unknown
         <CardBody>
-          <Alert title={"External model not found."} isInline={true} variant={AlertVariant.danger}>
+          <Alert title={i18n.includedModels.externalModelNotFound} isInline={true} variant={AlertVariant.danger}>
             <Divider style={{ marginTop: "16px" }} />
             <br />
             <p>
-              <b>Namespace:</b>&nbsp;{_import["@_namespace"]}
+              <b>{i18n.includedModels.namespace}</b>&nbsp;{_import["@_namespace"]}
             </p>
             <p>
-              <b>URI:</b>&nbsp;{_import["@_locationURI"] ?? <i>None</i>}
+              <b>{i18n.includedModels.uri}</b>&nbsp;{_import["@_locationURI"] ?? <i>{i18n.none}</i>}
             </p>
           </Alert>
         </CardBody>

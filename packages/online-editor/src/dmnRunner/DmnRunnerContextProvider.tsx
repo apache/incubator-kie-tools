@@ -28,14 +28,23 @@ import {
   useReducer,
   useRef,
 } from "react";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import {
+  useWorkspaces,
+  WorkspaceFile,
+  WorkspacesContextType,
+} from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { InputRow } from "@kie-tools/form-dmn";
-import { DecisionResult, DmnEvaluationMessages, ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
+import {
+  DecisionResult,
+  DmnEvaluationMessages,
+  ExtendedServicesDmnResult,
+  ExtendedServicesModelPayload,
+} from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -61,7 +70,12 @@ import {
 } from "./DmnRunnerTypes";
 import { DmnRunnerDockToggle } from "./DmnRunnerDockToggle";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { diff } from "deep-object-diff";
@@ -73,13 +87,14 @@ import {
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
-import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { NewDmnEditorTypes } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorTypes";
 
 interface Props {
   isEditorReady?: boolean;
   workspaceFile: WorkspaceFile;
   dmnLanguageService?: DmnLanguageService;
-  dmnEditor: EmbeddedEditorRef | undefined;
 }
 
 const initialDmnRunnerProviderStates: DmnRunnerProviderState = {
@@ -119,6 +134,92 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
   } else {
     throw new Error("Invalid use of dmnRunnerResultDispatcher");
   }
+}
+
+/**
+ * This transformation is needed for these reasons:
+ * ### -1- ###
+ * DMN Runner backend return upper case constants: "SUCCEEDED", "FAILED", "SKIPPED"
+ * DMN Editor code base uses lower case constants: "succeeded", "failed", "skipped"
+ *
+ * ### -2- ###
+ * DMN Runner backend return evaluationHitIds as Object:
+ * {
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3715CF: 1,
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3713AD: 2
+ * }
+ * DMN Editor code base uses evaluationHitIds as Map<string, number>
+ * [
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3715CF,
+ *     value: 1
+ *   },
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3713AD",
+ *     value: 2
+ *   }
+ * ]
+ *
+ * ### -3- ###
+ * DMN Runner backend return data spilt into junks corresponding to table row or collection item
+ * DMN Editor want to show aggregated data for everything together
+ *
+ * @param result - DMN Runner backend data
+ * @param evaluationResultsByNodeId - transformed data for DMN Editor
+ */
+function transformExtendedServicesDmnResult(
+  result: ExtendedServicesDmnResult,
+  evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
+) {
+  result.decisionResults?.forEach((dr) => {
+    const evaluationHitsCountByRuleOrRowId = new Map<string, number>();
+    // ### -2- ###
+    for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
+      evaluationHitsCountByRuleOrRowId.set(`${key}`, value as number);
+    }
+    // We want to merge evaluation results that belongs to the same Decision
+    // So we need to check if the Decision wasn't already partially processed
+    if (!evaluationResultsByNodeId.has(dr.decisionId)) {
+      evaluationResultsByNodeId.set(dr.decisionId, {
+        // ### -1- ###
+        evaluationResult: dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult,
+        evaluationHitsCountByRuleOrRowId: evaluationHitsCountByRuleOrRowId,
+      });
+    } else {
+      const existingEvaluationHitsCount = evaluationResultsByNodeId.get(
+        dr.decisionId
+      )?.evaluationHitsCountByRuleOrRowId;
+      evaluationHitsCountByRuleOrRowId.forEach((value, key) => {
+        // ### -3- ###
+        if (existingEvaluationHitsCount?.has(key)) {
+          existingEvaluationHitsCount.set(key, (existingEvaluationHitsCount?.get(key) ?? 0) + value);
+        } else {
+          existingEvaluationHitsCount?.set(key, value);
+        }
+      });
+      evaluationResultsByNodeId.set(dr.decisionId, {
+        // For a collection input or DMN Runner table mode one Decision may have multiple different evaluation results
+        // We keep the worst evaluation result.
+        evaluationResult: theWorstEvaluationResult(
+          evaluationResultsByNodeId.get(dr.decisionId)?.evaluationResult,
+          dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult
+        ),
+        evaluationHitsCountByRuleOrRowId: existingEvaluationHitsCount ?? new Map(),
+      });
+    }
+  });
+
+  return evaluationResultsByNodeId;
+}
+
+function theWorstEvaluationResult(a?: NewDmnEditorTypes.EvaluationResult, b?: NewDmnEditorTypes.EvaluationResult) {
+  if (a === "failed" || b === "failed") {
+    return "failed";
+  }
+  if (a === "skipped" || b === "skipped") {
+    return "skipped";
+  }
+  return "succeeded";
 }
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
@@ -164,6 +265,11 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
+  const [currentResponseMessages, setCurrentResponseMessages] = useState<DmnEvaluationMessages[]>([]);
+  const [invalidElementPaths, setInvalidElementPaths] = useState<string[][]>([]);
+  const [isStrictMode, setIsStrictMode] = useState(false);
+
+  const { envelopeServer } = useEditorDockContext();
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -207,21 +313,20 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   const extendedServicesModelPayload = useCallback<(formInputs?: InputRow) => Promise<ExtendedServicesModelPayload>>(
     async (formInputs) => {
-      const fileContent = await workspaces.getFileContent({
-        workspaceId: props.workspaceFile.workspaceId,
-        relativePath: props.workspaceFile.relativePath,
-      });
-
-      const decodedFileContent = decoder.decode(fileContent);
-      const importIndex = await props.dmnLanguageService?.buildImportIndex([
-        {
-          content: decodedFileContent,
-          normalizedPosixPathRelativeToTheWorkspaceRoot: props.workspaceFile.relativePath,
-        },
-      ]);
+      const importIndex = await getImportIndex(
+        workspaces,
+        props.workspaceFile.workspaceId,
+        props.workspaceFile.relativePath,
+        props.dmnLanguageService
+      );
+      const { ["Included Models"]: includedModelInputs, ...rest } = formInputs ?? {};
+      const modifiedFormInputs = {
+        ...rest,
+        ...includedModelInputs,
+      };
 
       return {
-        context: formInputs,
+        context: modifiedFormInputs,
         mainURI: props.workspaceFile.relativePath,
         resources: [...(importIndex?.models.entries() ?? [])].map(
           ([normalizedPosixPathRelativeToTheWorkspaceRoot, model]) => ({
@@ -229,9 +334,29 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             URI: normalizedPosixPathRelativeToTheWorkspaceRoot,
           })
         ),
+        isStrictMode: isStrictMode,
       };
     },
-    [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
+    [
+      isStrictMode,
+      props.dmnLanguageService,
+      props.workspaceFile.relativePath,
+      props.workspaceFile.workspaceId,
+      workspaces,
+    ]
+  );
+
+  const findDecisionIdBySourceId = useCallback(
+    (sourceId: string) => {
+      if (!Array.isArray(invalidElementPaths)) return "";
+      for (const path of invalidElementPaths) {
+        if (path.includes(sourceId)) {
+          return path[0];
+        }
+      }
+      return "";
+    },
+    [invalidElementPaths]
   );
 
   // Responsible for getting decision results
@@ -245,7 +370,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         Promise.all(
           dmnRunnerInputs.map((dmnRunnerInput) => {
             // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
-            // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
+            // in the useLayoutEffect, making this effect to be triggered with the previous file.
             const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
             return extendedServicesModelPayload(input);
           })
@@ -264,7 +389,24 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get()) {
               return;
             }
+            if (dmnRunnerMode === DmnRunnerMode.TABLE) {
+              const messagesWithRowNumbers = results.flatMap((result, rowIndex) =>
+                (result?.messages || []).map((message) => ({
+                  ...message,
+                  message: `Row ${rowIndex + 1} : ${message.messageType}: ${message.message}`,
+                }))
+              );
+              setCurrentResponseMessages(messagesWithRowNumbers);
+            } else {
+              const messagesWithTypes =
+                results[currentInputIndex]?.messages?.map((message) => ({
+                  ...message,
+                  message: `${message.messageType}: ${message.message}`,
+                })) || [];
+              setCurrentResponseMessages(messagesWithTypes);
+            }
 
+            const invalidElements: string[][] = [];
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
@@ -272,10 +414,28 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 break;
               }
               if (result) {
+                invalidElements.push(...result.invalidElementPaths);
                 runnerResults.push(result.decisionResults);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
+            setInvalidElementPaths(invalidElements);
+
+            const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
+            if (dmnRunnerMode === DmnRunnerMode.FORM && results[currentInputIndex]) {
+              transformExtendedServicesDmnResult(results[currentInputIndex], evaluationResultsByNodeId);
+            } else {
+              for (const result of results) {
+                if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+                  break;
+                }
+                if (result) {
+                  transformExtendedServicesDmnResult(result, evaluationResultsByNodeId);
+                }
+              }
+            }
+            const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsByNodeId);
           })
           .catch((err) => {
             console.log(err);
@@ -288,6 +448,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         dmnRunnerInputs,
         extendedServicesModelPayload,
+        dmnRunnerMode,
+        currentInputIndex,
+        envelopeServer?.envelopeApi,
       ]
     )
   );
@@ -331,49 +494,57 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [dmnRunnerMode, isExpanded, onTogglePanel, panel]);
   // END
+  const decisionNameByDecisionId = useMemo(
+    () =>
+      results.reduce((decisionMap, decisionResults) => {
+        if (decisionResults) {
+          decisionResults.forEach((decisionResult) => {
+            decisionMap.set(decisionResult.decisionId, decisionResult.decisionName);
+          });
+        }
+        return decisionMap;
+      }, new Map<string, string>()),
+    [results]
+  );
 
-  // Set execution tab on Problems panel;
+  // Set evaluation tab on Problems panel;
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       return;
     }
 
-    const decisionNameByDecisionId = results[currentInputIndex]?.reduce(
-      (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
-      new Map<string, string>()
-    );
-
-    const messagesBySourceId =
-      results[currentInputIndex]?.reduce((acc, decisionResult) => {
-        decisionResult.messages?.forEach((message) => {
-          const messageEntry = acc.get(message.sourceId);
-          if (!messageEntry) {
-            acc.set(message.sourceId, [message]);
-          } else {
-            acc.set(message.sourceId, [...messageEntry, message]);
-          }
-        });
-        return acc;
-      }, new Map<string, DmnEvaluationMessages[]>()) ?? new Map<string, DmnEvaluationMessages[]>();
+    const messagesBySourceId = currentResponseMessages.reduce((acc, message) => {
+      const messageEntry = acc.get(message.sourceId);
+      if (!messageEntry) {
+        acc.set(message.sourceId, [message]);
+      } else {
+        acc.set(message.sourceId, [...messageEntry, message]);
+      }
+      return acc;
+    }, new Map<string, DmnEvaluationMessages[]>());
 
     const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-      const path = decisionNameByDecisionId?.get(sourceId) ?? "";
+      const decisionId = findDecisionIdBySourceId(sourceId);
+      const path = decisionNameByDecisionId?.get(decisionId) ?? "";
       return messages.map((message: any) => ({
         type: "PROBLEM",
         normalizedPosixPathRelativeToTheWorkspaceRoot: path,
         severity: message.severity,
-        message: `${message.messageType}: ${message.message}`,
+        message: `${message.message}`,
       }));
     });
 
-    setNotifications(i18n.terms.execution, "", notifications as any);
+    setNotifications(i18n.terms.evaluation, "", notifications as any);
   }, [
     setNotifications,
-    i18n.terms.execution,
+    i18n.terms.evaluation,
     results,
     currentInputIndex,
     props.workspaceFile.extension,
     extendedServices.status,
+    currentResponseMessages,
+    decisionNameByDecisionId,
+    findDecisionIdBySourceId,
   ]);
 
   const setDmnRunnerPersistenceJson = useCallback(
@@ -465,9 +636,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             workspaceFileEvent.content
           );
 
+          const importIndex = await getImportIndex(
+            workspaces,
+            props.workspaceFile.workspaceId,
+            props.workspaceFile.relativePath,
+            props.dmnLanguageService
+          );
+          const modifiedSchema = importIndex
+            ? props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ?? jsonSchema
+            : jsonSchema;
+
           // Remove incompatible values and add default values;
           try {
-            const validate = dmnRunnerAjv.compile(jsonSchema);
+            const validate = dmnRunnerAjv.compile(modifiedSchema);
             dmnRunnerPersistenceJson.inputs.forEach((input) => {
               // save id;
               const id = input.id;
@@ -481,7 +662,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           setDmnRunnerPersistenceJson({
             newConfigInputs: cloneDeep(dmnRunnerPersistenceJson.configs.inputs),
             newInputsRow: cloneDeep(dmnRunnerPersistenceJson.inputs).map((dmnRunnerInput) => ({
-              ...getDefaultValues(jsonSchema),
+              ...getDefaultValues(modifiedSchema),
               ...dmnRunnerInput,
             })),
             shouldUpdateFs: false,
@@ -516,7 +697,16 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerAjv, dmnRunnerPersistenceService, jsonSchema, setDmnRunnerPersistenceJson]
+      [
+        dmnRunnerAjv,
+        dmnRunnerPersistenceService,
+        jsonSchema,
+        props.dmnLanguageService,
+        props.workspaceFile.relativePath,
+        props.workspaceFile.workspaceId,
+        setDmnRunnerPersistenceJson,
+        workspaces,
+      ]
     )
   );
 
@@ -551,39 +741,52 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                   const jsonSchema = openapiSchemaToJsonSchema(dereferencedOpenApiSchema, {
                     definitionKeywords: ["definitions"],
                   });
-
-                  setJsonSchema((previousJsonSchema) => {
-                    // Early bailout in the DMN first render;
-                    // This prevents to set the inputs from the previous DMN
-                    if (!previousJsonSchema) {
-                      return jsonSchema;
+                  return getImportIndex(
+                    workspaces,
+                    props.workspaceFile.workspaceId,
+                    props.workspaceFile.relativePath,
+                    props.dmnLanguageService
+                  ).then((importIndex) => {
+                    if (canceled.get()) {
+                      return;
                     }
+                    const modifiedSchema = importIndex
+                      ? props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ??
+                        jsonSchema
+                      : jsonSchema;
+                    setJsonSchema((previousJsonSchema) => {
+                      // Early bailout in the DMN first render;
+                      // This prevents to set the inputs from the previous DMN
+                      if (!previousJsonSchema) {
+                        return modifiedSchema;
+                      }
 
-                    const validateInputs = dmnRunnerAjv.compile(jsonSchema);
+                      const validateInputs = dmnRunnerAjv.compile(modifiedSchema);
 
-                    // Add default values and delete changed data types;
-                    setDmnRunnerPersistenceJson({
-                      newConfigInputs: (previousConfigInputs) => {
-                        const newConfigInputs = cloneDeep(previousConfigInputs);
-                        removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
-                        return newConfigInputs;
-                      },
-                      newInputsRow: (previousInputs) => {
-                        return cloneDeep(previousInputs).map((input) => {
-                          const id = input.id;
-                          removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
-                          input.id = id;
-                          return { ...getDefaultValues(jsonSchema), ...input };
-                        });
-                      },
-                      cancellationToken: canceled,
+                      // Add default values and delete changed data types;
+                      setDmnRunnerPersistenceJson({
+                        newConfigInputs: (previousConfigInputs) => {
+                          const newConfigInputs = cloneDeep(previousConfigInputs);
+                          removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
+                          return newConfigInputs;
+                        },
+                        newInputsRow: (previousInputs) => {
+                          return cloneDeep(previousInputs).map((input) => {
+                            const id = input.id;
+                            removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
+                            input.id = id;
+                            return { ...getDefaultValues(modifiedSchema), ...input };
+                          });
+                        },
+                        cancellationToken: canceled,
+                      });
+
+                      // This should be done to remove any previous errors or to add new errors
+                      if (Object.keys(diff(previousJsonSchema, modifiedSchema)).length > 0) {
+                        forceDmnRunnerReRender();
+                      }
+                      return modifiedSchema;
                     });
-
-                    // This should be done to remove any previous errors or to add new errors
-                    if (Object.keys(diff(previousJsonSchema, jsonSchema)).length > 0) {
-                      forceDmnRunnerReRender();
-                    }
-                    return jsonSchema;
                   });
                 })
                 .catch((err) => {
@@ -607,6 +810,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServicesModelPayload,
         props.workspaceFile.extension,
         setDmnRunnerPersistenceJson,
+        props.dmnLanguageService,
+        props.workspaceFile.relativePath,
+        props.workspaceFile.workspaceId,
+        workspaces,
       ]
     )
   );
@@ -682,6 +889,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       setDmnRunnerInputs,
       setDmnRunnerMode,
       setDmnRunnerPersistenceJson,
+      setIsStrictMode,
     }),
     [
       onRowAdded,
@@ -692,6 +900,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       setDmnRunnerInputs,
       setDmnRunnerMode,
       setDmnRunnerPersistenceJson,
+      setIsStrictMode,
     ]
   );
 
@@ -710,7 +919,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
-      dmnEditor: props.dmnEditor,
+      isStrictMode,
     }),
     [
       canBeVisualized,
@@ -726,7 +935,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
-      props.dmnEditor,
+      isStrictMode,
     ]
   );
 
@@ -741,11 +950,32 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
 }
 
+async function getImportIndex(
+  workspaces: WorkspacesContextType,
+  workspaceId: string,
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+  dmnLanguageService?: DmnLanguageService
+) {
+  const fileContent = await workspaces.getFileContent({
+    workspaceId,
+    relativePath: normalizedPosixPathRelativeToTheWorkspaceRoot,
+  });
+
+  const decodedFileContent = decoder.decode(fileContent);
+  const importIndex = await dmnLanguageService?.buildImportIndex([
+    {
+      content: decodedFileContent,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+    },
+  ]);
+  return importIndex;
+}
+
 export function DmnRunnerExtendedServicesError() {
   return (
     <div>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationIcon} />} />
         <TextContent>
           <Text component={"h2"}>Error</Text>
         </TextContent>

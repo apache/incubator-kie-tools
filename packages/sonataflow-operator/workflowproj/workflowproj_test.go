@@ -28,6 +28,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/magiconair/properties"
+
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	"github.com/stretchr/testify/assert"
@@ -132,6 +134,48 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpecAndGeneric(t *testing.T) {
 	data, err = getResourceDataWithFileName(proj.Resources, "input.json")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, data)
+}
+
+func Test_Handler_WorkflowMinimalAndSecrets(t *testing.T) {
+	type env struct {
+		key              string
+		secretKeyRefName string
+	}
+	proj, err := New("default").
+		Named("minimal").
+		Profile(metadata.PreviewProfile).
+		WithWorkflow(getWorkflowMinimal()).
+		WithSecretProperties(getWorkflowSecretProperties()).
+		AsObjects()
+	assert.NoError(t, err)
+	assert.NotNil(t, proj.Workflow)
+	assert.NotNil(t, proj.SecretProperties)
+	assert.Equal(t, "minimal", proj.Workflow.Name)
+	assert.Equal(t, "minimal-secrets", proj.SecretProperties.Name)
+	assert.NotEmpty(t, proj.SecretProperties.StringData)
+
+	secretPropsContent, err := io.ReadAll(getWorkflowSecretProperties())
+	assert.NoError(t, err)
+	secrets, err := properties.Load(secretPropsContent, properties.UTF8)
+	assert.NoError(t, err)
+	envs := map[string]env{}
+
+	for _, value := range proj.Workflow.Spec.PodTemplate.Container.Env {
+		envs[value.Name] = env{key: value.ValueFrom.SecretKeyRef.Key, secretKeyRefName: value.ValueFrom.SecretKeyRef.Name}
+	}
+
+	for k, v := range secrets.Map() {
+		assert.Equal(t, v, proj.SecretProperties.StringData[k])
+		normalized, err := normalizeEnvNames(k)
+		for _, value := range normalized {
+			assert.NoError(t, err)
+			env, exists := envs[value]
+			assert.True(t, exists)
+			assert.Equal(t, k, env.key)
+			assert.Equal(t, proj.SecretProperties.Name, env.secretKeyRefName)
+		}
+
+	}
 }
 
 func getResourceDataWithFileName(cms []*corev1.ConfigMap, fileName string) (string, error) {
@@ -242,6 +286,65 @@ func TestWorkflowProjectHandler_Image(t *testing.T) {
 	assert.Equal(t, "host/namespace/service:latest", proj.Workflow.Spec.PodTemplate.Container.Image)
 }
 
+func TestNormalizeEnvName(t *testing.T) {
+	type testCase struct {
+		input    string
+		expected []string
+		error    bool
+	}
+	tests := []testCase{
+		{"my-env", []string{"MY_ENV"}, false},
+		{"my.env.1", []string{"MY_ENV_1"}, false},
+		{"my.env-1", []string{"MY_ENV_1"}, false},
+		{"my-env.1", []string{"MY_ENV_1"}, false},
+		{"my-env-1$", []string{""}, true},
+		{"my-env-1&&", []string{""}, true},
+		{"", []string{""}, true},
+		{"$%&*", []string{""}, true},
+		{"a", []string{"A"}, false},
+		{"1", []string{"1"}, false},
+		{"_", []string{""}, true},
+		{"my env", []string{"MY_ENV"}, false},
+		{"  my env  ", []string{"MY_ENV"}, false},
+		{"-", []string{""}, true},
+		{".", []string{""}, true},
+		{"my-env-1234567890-long-name-with-dashes", []string{"MY_ENV_1234567890_LONG_NAME_WITH_DASHES"}, false},
+		{"long-name-with-invalid-characters-@#$%^", []string{""}, true},
+		{"my-env-1@name", []string{""}, true},
+		{"A", []string{"A"}, false},
+		{"a1_b2", []string{"A1_B2"}, false},
+		{"a!!@#$b", []string{""}, true},
+		{"foo.\"bar\".baz", []string{"FOO__BAR__BAZ"}, false},
+		{"quarkus.'my-property'.foo", []string{"QUARKUS__MY_PROPERTY__FOO"}, false},
+		{"myProperty[10]", []string{"MYPROPERTY_10"}, false},
+		{"my.config[0].value", []string{"MY_CONFIG_0__VALUE"}, false},
+		{"quarkus.\"myProperty\"[0].value", []string{"QUARKUS__MYPROPERTY__0__VALUE"}, false},
+		{"quarkus.\"my-property\"[1].sub-name", []string{"QUARKUS__MY_PROPERTY__1__SUB_NAME"}, false},
+		{"quarkus.myProperty..sub.value", []string{"QUARKUS_MYPROPERTY__SUB_VALUE"}, false},
+		{"quarkus.[strange].key", []string{"QUARKUS__STRANGE__KEY"}, false},
+		{"quarkus.datasource.\"datasource-name\".jdbc.url", []string{"QUARKUS_DATASOURCE__DATASOURCE_NAME__JDBC_URL"}, false},
+		{"%dev.quarkus.http.port", []string{"_DEV_QUARKUS_HTTP_PORT"}, false},
+		{"%staging.quarkus.http.test-port", []string{"_STAGING_QUARKUS_HTTP_TEST_PORT"}, false},
+		{"%prod,dev.my.prop", []string{"_PROD_MY_PROP", "_DEV_MY_PROP"}, false},
+		{"%prod,dev.quarkus.datasource.\"datasource-name\".jdbc.url", []string{"_PROD_QUARKUS_DATASOURCE__DATASOURCE_NAME__JDBC_URL",
+			"_DEV_QUARKUS_DATASOURCE__DATASOURCE_NAME__JDBC_URL"}, false},
+	}
+
+	for _, test := range tests {
+		t.Run(test.input, func(t *testing.T) {
+			actual, err := normalizeEnvNames(test.input)
+			if test.error {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				for index, expected := range test.expected {
+					assert.Equal(t, expected, actual[index])
+				}
+			}
+		})
+	}
+}
+
 func getWorkflowMinimalInvalid() io.Reader {
 	return mustGetFile("testdata/workflows/workflow-minimal-invalid.sw.json")
 }
@@ -264,6 +367,10 @@ func getSpecOpenApi() io.Reader {
 
 func getSpecGeneric() io.Reader {
 	return mustGetFile("testdata/workflows/specs/workflow-service-schema.json")
+}
+
+func getWorkflowSecretProperties() io.Reader {
+	return mustGetFile("testdata/workflows/secret.properties")
 }
 
 func mustGetFile(filepath string) io.Reader {

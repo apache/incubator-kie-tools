@@ -17,7 +17,7 @@
 
 # KIE Sandbox Dev Deployment DMN Form Webapp Image
 
-Form Webapp to fill and submit decisions inputs. Requires a kogito quarkus app as it's backend.
+Form Webapp to fill and submit decisions inputs. Requires a Quarkus Kogito app as it's backend.
 
 ## Environment Variables
 

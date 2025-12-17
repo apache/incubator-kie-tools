@@ -23,11 +23,12 @@ import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker
 import "./Constraint.css";
 import "./ConstraintTime.css";
 import { ConstraintProps } from "./Constraint";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useInViewSelect } from "../../responsiveness/useInViewSelect";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import moment from "moment";
+import { useDmnEditorI18n } from "../../i18n";
 
 // Time zone list from https://www.timeanddate.com/time/zones/
 const UTC_POSITEVE_TIMEZONES = [
@@ -80,6 +81,7 @@ const UTC_NEGATIVE_TIMEZONES = [
 const TIME_REGEXP = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?([+|-](0[0-9]|1[0-9]|2[0-3]):[0-9][0-9])?$/;
 
 export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
+  const { i18n } = useDmnEditorI18n();
   const time = useMemo(() => {
     if (value.match(TIME_REGEXP) === null) {
       return "";
@@ -153,7 +155,7 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
         includeSeconds={true}
       />
       {time === "" ? (
-        <Tooltip content={"To tweak the timezone it's necessary to set a time first"}>
+        <Tooltip content={i18n.dataTypes.tweakTheTimezone}>
           <Select
             className={"kie-dmn-editor--constraint-time-timezone"}
             variant={SelectVariant.single}
@@ -173,9 +175,9 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
             isValid ? "" : "kie-dmn-editor--constraint-time-timezone-invalid"
           }`}
           variant={SelectVariant.single}
-          placeholderText="Select timezone"
+          placeholderText={i18n.dataTypes.selectTimezone}
           aria-label="Select timezone"
-          onToggle={(isExpanded) => setSelectTimezoneOpen(isExpanded)}
+          onToggle={(_event, isExpanded) => setSelectTimezoneOpen(isExpanded)}
           onSelect={onSelectTimezone}
           selections={timezone}
           isOpen={isSelectTimezoneOpen}

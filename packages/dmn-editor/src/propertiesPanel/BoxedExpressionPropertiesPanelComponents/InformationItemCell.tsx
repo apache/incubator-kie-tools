@@ -19,9 +19,9 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DescriptionField, NameField, TypeRefField } from "./Fields";
+import { DescriptionField, NameField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -30,6 +30,7 @@ import { useDmnEditor } from "../../DmnEditorContext";
 import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function InformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -38,6 +39,7 @@ export function InformationItemCell(props: {
   onTypeRefChange: (newTypeRef: string) => void;
   onDescriptionChange: (newDescription: string) => void;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { externalModelsByNamespace } = useExternalModels();
@@ -48,7 +50,7 @@ export function InformationItemCell(props: {
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tInformationItem>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tInformationItem>,
     [selectedObjectInfos?.cell]
   );
 
@@ -65,8 +67,8 @@ export function InformationItemCell(props: {
 
   return (
     <>
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
@@ -84,7 +86,7 @@ export function InformationItemCell(props: {
         onChange={props.onTypeRefChange}
       />
       {itemDefinition && (
-        <FormGroup label="Constraint">
+        <FormGroup label={i18n.propertiesPanel.constraint}>
           <ConstraintsFromTypeConstraintAttribute
             isReadOnly={true}
             itemDefinition={itemDefinition}

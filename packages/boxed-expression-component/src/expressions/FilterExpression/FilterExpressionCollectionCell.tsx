@@ -37,15 +37,18 @@ export function FilterExpressionCollectionCell({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedFilter>) => {
-        return {
-          ...prev,
-          in: {
-            ...prev.in,
-            expression: getNewExpression(prev.in.expression),
-          },
-        };
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFilter>) => {
+          return {
+            ...prev,
+            in: {
+              ...prev.in,
+              expression: getNewExpression(prev.in.expression),
+            },
+          };
+        },
+        expressionChangedArgs,
       });
     },
     [setExpression]

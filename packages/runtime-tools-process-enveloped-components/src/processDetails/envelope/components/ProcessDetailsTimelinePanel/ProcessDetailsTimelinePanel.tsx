@@ -17,7 +17,7 @@
  * under the License.
  */
 import Moment from "react-moment";
-import { Dropdown, KebabToggle, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, KebabToggle, DropdownItem } from "@patternfly/react-core/deprecated";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -32,7 +32,6 @@ import { OnRunningIcon } from "@patternfly/react-icons/dist/js/icons/on-running-
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import React, { useCallback, useState } from "react";
 import "../styles.css";
-import { ProcessDetailsDriver } from "../../../api";
 import {
   handleJobRescheduleUtil,
   handleNodeInstanceCancel,
@@ -42,17 +41,18 @@ import {
   jobCancel,
 } from "../../../utils/Utils";
 import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { JobsDetailsModal } from "../../../../jobsManagement/envelope/components/JobsDetailsModal";
 import { JobsRescheduleModal } from "../../../../jobsManagement/envelope/components/JobsRescheduleModal";
 import { JobsCancelModal } from "../../../../jobsManagement/envelope/components/JobsCancelModal";
+import { ProcessDetailsChannelApi } from "../../../api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
-export interface IOwnProps {
+export interface Props {
   data: Pick<ProcessInstance, "id" | "nodes" | "addons" | "error" | "serviceUrl" | "processId" | "state">;
-  driver: ProcessDetailsDriver;
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
   jobs: Job[];
   omittedProcessTimelineEvents?: string[];
 }
@@ -60,14 +60,7 @@ enum TitleType {
   SUCCESS = "success",
   FAILURE = "failure",
 }
-const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
-  data,
-  jobs,
-  driver,
-  omittedProcessTimelineEvents,
-  ouiaId,
-  ouiaSafe,
-}) => {
+const ProcessDetailsTimelinePanel: React.FC<Props> = ({ data, jobs, channelApi, omittedProcessTimelineEvents }) => {
   const [kebabOpenArray, setKebabOpenArray] = useState<string[]>([]);
   const [modalTitle, setModalTitle] = useState<JSX.Element>();
   const setCancelModalTitle = () => {
@@ -136,13 +129,13 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
       scheduleDate,
       selectedJob,
       handleRescheduleAction,
-      driver,
+      channelApi,
       setRescheduleError
     );
   };
 
   const handleCancelAction = async (job: Job): Promise<void> => {
-    await jobCancel(driver, job, setCancelModalTitle, setModalContent);
+    await jobCancel(channelApi, job, setCancelModalTitle, setModalContent);
     handleCancelModalToggle();
   };
 
@@ -210,7 +203,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleRetry(
               processInstanceData,
-              driver,
+              channelApi,
               () =>
                 onShowMessage(
                   "Retry operation",
@@ -235,7 +228,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleSkip(
               processInstanceData,
-              driver,
+              channelApi,
               () =>
                 onShowMessage("Skip operation", `The node ${node.name} was successfully skipped.`, TitleType.SUCCESS),
               (errorMessage: string) =>
@@ -261,7 +254,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleNodeInstanceRetrigger(
               processInstanceData,
-              driver,
+              channelApi,
               node,
               () =>
                 onShowMessage(
@@ -287,7 +280,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleNodeInstanceCancel(
               processInstanceData,
-              driver,
+              channelApi,
               node,
               () =>
                 onShowMessage(
@@ -327,7 +320,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onSelect={() => onDropdownSelect("timeline-kebab-toggle-" + index)}
           toggle={
             <KebabToggle
-              onToggle={(isOpen) => onKebabToggle(isOpen, "timeline-kebab-toggle-" + index)}
+              onToggle={(_event, isOpen) => onKebabToggle(isOpen, "timeline-kebab-toggle-" + index)}
               id={"timeline-kebab-toggle-" + index}
               data-testid={"timeline-kebab-toggle-" + index}
             />
@@ -347,8 +340,8 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
       return (
         <Tooltip content={"Node has job"} key={`${id}-job-tooltip-${job.id}`}>
           <OutlinedClockIcon
-            className="pf-u-ml-sm"
-            color="var(--pf-global--icon--Color--dark)"
+            className="pf-v5-u-ml-sm"
+            color="var(--pf-v5-global--icon--Color--dark)"
             onClick={() => handleJobDetails(job)}
           />
         </Tooltip>
@@ -392,7 +385,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   }, []);
 
   return (
-    <Card {...componentOuiaProps(ouiaId ? ouiaId : data.id, "timeline", ouiaSafe)}>
+    <Card className="timeline" style={{ height: "100%" }}>
       <ProcessInfoModal
         isModalOpen={isModalOpen}
         handleModalToggle={handleModalToggle}
@@ -419,7 +412,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
                           {data.error && content.definitionId === data.error.nodeDefinitionId ? (
                             <Tooltip content={data.error.message}>
                               <ErrorCircleOIcon
-                                color="var(--pf-global--danger-color--100)"
+                                color="var(--pf-v5-global--danger-color--100)"
                                 className="kogito-process-details--timeline-status"
                               />
                             </Tooltip>
@@ -430,7 +423,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
                           ) : (
                             <Tooltip content={"Completed"}>
                               <CheckCircleIcon
-                                color="var(--pf-global--success-color--100)"
+                                color="var(--pf-v5-global--success-color--100)"
                                 className="kogito-process-details--timeline-status"
                               />
                             </Tooltip>
@@ -444,7 +437,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
                           {content.name}
                           <span>
                             {content.type === "HumanTaskNode" && (
-                              <Tooltip content={"Human task"}>
+                              <Tooltip content={"User Task"}>
                                 <UserIcon className="pf-u-ml-sm" color="var(--pf-global--icon--Color--light)" />
                               </Tooltip>
                             )}

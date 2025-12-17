@@ -27,10 +27,11 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStatePrimary,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { DmnObjectListItem } from "./DmnObjectListItem";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -40,6 +41,7 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export type ExternalNode = {
   externalDrgElementNamespace: string;
@@ -50,6 +52,7 @@ export const MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS =
   "kie-dmn-editor--external-node-from-included-models";
 
 export function ExternalNodesPanel() {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
   const { externalModelsByNamespace } = useExternalModels();
@@ -74,26 +77,27 @@ export function ExternalNodesPanel() {
       {externalDmnsByNamespace.size === 0 && (
         <>
           <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title size={"md"} headingLevel={"h4"}>
-              No external nodes available
-            </Title>
-            <EmptyStateBody>
-              Maybe the included models have no exported nodes, or there are no included models.
-            </EmptyStateBody>
-            <br />
-            <EmptyStatePrimary>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={() =>
-                  dmnEditorStoreApi.setState((state) => {
-                    state.navigation.tab = DmnEditorTab.INCLUDED_MODELS;
-                  })
-                }
-              >
-                Include model...
-              </Button>
-            </EmptyStatePrimary>
+            <EmptyStateHeader
+              titleText={i18n.externalNodes.noExternalNodesAvailable}
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel={"h4"}
+            />
+            <EmptyStateBody>{i18n.externalNodes.IncludedModelsHaveNoExportedNodes}</EmptyStateBody>
+            <EmptyStateFooter>
+              <br />
+              <EmptyStateActions>
+                <Button
+                  variant={ButtonVariant.link}
+                  onClick={() =>
+                    dmnEditorStoreApi.setState((state) => {
+                      state.navigation.tab = DmnEditorTab.INCLUDED_MODELS;
+                    })
+                  }
+                >
+                  {i18n.includedModels.includeModel}
+                </Button>
+              </EmptyStateActions>
+            </EmptyStateFooter>
           </EmptyState>
         </>
       )}
@@ -102,10 +106,10 @@ export function ExternalNodesPanel() {
           <div className="kie-dmn-editor--sticky-top-glass-header" style={{ padding: "12px" }}>
             <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
               <TextContent>
-                <Text component="h3">External nodes</Text>
+                <Text component="h3">{i18n.externalNodes.externalNodesTitle}</Text>
               </TextContent>
               <Button
-                title={"Close"}
+                title={i18n.close}
                 variant={ButtonVariant.plain}
                 onClick={() =>
                   dmnEditorStoreApi.setState((state) => {
@@ -123,7 +127,7 @@ export function ExternalNodesPanel() {
               style={{ marginBottom: "12px", height: "36px" }}
               onKeyDown={(e) => e.stopPropagation()}
               autoFocus={true}
-              placeholder="Filter..."
+              placeholder={i18n.filter}
               value={filter}
               onChange={(_event, value) => setFilter(value)}
               onClear={() => setFilter("")}

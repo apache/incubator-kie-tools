@@ -1,0 +1,48 @@
+{
+  "private": true,
+  "name": "@kie-tools-examples/process-business-calendar",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
+    "build:dev:darwin:linux": "mvn clean compile -DskipTests",
+    "build:dev:win32": "pnpm powershell \"mvn clean compile `-DskipTests\"",
+    "build:prod": "pnpm lint && run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
+    "build:prod:darwin:linux": "mvn clean compile -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Pcontainer",
+    "build:prod:win32": "pnpm powershell \"mvn clean compile `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Pcontainer\"",
+    "install": "node install.js",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "start": "run-script-os",
+    "start:darwin:linux": "mvn quarkus:dev -DskipTests -Pdevelopment",
+    "start:win32": "pnpm powershell mvn quarkus:dev `-DskipTests `-Pdevelopment",
+    "startContainers": "run-script-os || pnpm run stopContainers",
+    "startContainers:darwin:linux": "mvn clean install -Pcontainer && docker compose up",
+    "startContainers:win32": "echo Running containers example is not supported on Windows",
+    "stopContainers": "run-script-os",
+    "stopContainers:darwin:linux": "docker compose down"
+  },
+  "dependencies": {
+    "@kie-tools/jbpm-quarkus-devui": "workspace:*",
+    "@kie-tools/maven-base": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

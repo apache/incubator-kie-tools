@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}
-          image: ${args.kogitoQuarkusBlankAppImageUrl}
+          image: ${args.quarkusBlankAppImageUrl}
           imagePullPolicy: ${args.imagePullPolicy}
           resources:
             limits:

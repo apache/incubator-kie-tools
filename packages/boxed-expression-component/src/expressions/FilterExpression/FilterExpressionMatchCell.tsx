@@ -56,20 +56,23 @@ export function FilterExpressionMatchCell({
   }, [beeGwtService, expression, isActive]);
 
   const onSetExpression = useCallback<OnSetExpression>(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedFilter>) => {
-        const newExpression = getNewExpression(prev.match.expression);
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFilter>) => {
+          const newExpression = getNewExpression(prev.match.expression);
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedFilter> = {
-          ...prev,
-          match: {
-            ...prev.match,
-            expression: newExpression!, // SPEC DISCREPANCY
-          },
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFilter> = {
+            ...prev,
+            match: {
+              ...prev.match,
+              expression: newExpression!, // SPEC DISCREPANCY
+            },
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
     [setExpression]
@@ -97,7 +100,7 @@ export function FilterExpressionMatchCell({
     <div className={"filter-expression-cell"}>
       <div
         className={"bracket-sign-container"}
-        style={{ borderRight: "1px solid var(--pf-global--palette--black-300)" }}
+        style={{ borderRight: "1px solid var(--pf-v5-global--palette--black-300)" }}
       >
         <div className={"bracket-sign"}>[</div>
       </div>
@@ -119,7 +122,7 @@ export function FilterExpressionMatchCell({
       </div>
       <div
         className={"bracket-sign-container"}
-        style={{ borderLeft: "1px solid var(--pf-global--palette--black-300)" }}
+        style={{ borderLeft: "1px solid var(--pf-v5-global--palette--black-300)" }}
       >
         <div className={"bracket-sign"}>]</div>
       </div>

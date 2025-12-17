@@ -24,7 +24,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { APP_NAME } from "../../AppConstants";
 import { routes } from "../../navigation/Routes";
@@ -36,7 +36,7 @@ import { useStorage } from "./useStorage";
 const PAGE_TITLE = "Storage";
 
 export function StorageSettings() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { wipeOutStorage } = useStorage();
   const [isDeleteCookiesChecked, setDeleteCookiesChecked] = useState(false);
   const [isDeleteLocalStorageChecked, setDeleteLocalStorageChecked] = useState(false);
@@ -74,9 +74,9 @@ export function StorageSettings() {
 
   useEffect(() => {
     if (!isBrowserChromiumBased()) {
-      history.replace(routes.settings.home.path({}));
+      navigate(routes.settings.home.path({}), { replace: true });
     }
-  }, [history]);
+  }, [navigate]);
 
   return (
     <SettingsPageContainer
@@ -111,7 +111,7 @@ export function StorageSettings() {
                 label="Cookies"
                 description={"Delete all cookies."}
                 isChecked={isDeleteCookiesChecked}
-                onChange={setDeleteCookiesChecked}
+                onChange={(_event, val) => setDeleteCookiesChecked(val)}
               />
               <br />
               <Checkbox
@@ -119,7 +119,7 @@ export function StorageSettings() {
                 label="LocalStorage"
                 description={"Delete all localStorage information."}
                 isChecked={isDeleteLocalStorageChecked}
-                onChange={setDeleteLocalStorageChecked}
+                onChange={(_event, val) => setDeleteLocalStorageChecked(val)}
               />
             </Alert>
           </Form>

@@ -25,7 +25,7 @@ import { ExclamationTriangleIcon, OutlinedQuestionCircleIcon } from "@patternfly
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
-import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base";
+import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base/types";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { RelativeDate } from "../../dates/RelativeDate";
@@ -65,8 +65,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
     return !isWsFolder
       ? routes.workspaceWithFilePath.path({
           workspaceId: descriptor.workspaceId,
-          fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-          extension: editableFiles[0].extension,
+          fileRelativePath: editableFiles[0].relativePath,
         })
       : routes.workspaceWithFiles.path({ workspaceId: descriptor.workspaceId });
   }, [descriptor.workspaceId, editableFiles, isWsFolder, totalFiles]);
@@ -194,7 +193,7 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
               </>
             }
           >
-            <OutlinedQuestionCircleIcon className="pf-c-question-circle-icon" />
+            <OutlinedQuestionCircleIcon className="pf-v5-c-question-circle-icon" />
           </Popover>
         </Td>
         <Td isActionCell>

@@ -1,7 +1,67 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<CheckBoxGroupField> tests <CheckBoxGroupField> - rendering 1`] = `
-<div>
-  {"ref":{"binding":"roles","stateName":"roles","stateSetter":"set__roles","dataType":{"name":"string[]","defaultValue":"[]"}},"pfImports":["Checkbox","FormGroup"],"reactImports":["useState"],"requiredCode":["checkbox_group_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Roles'}\\n      isRequired={true}\\n    &gt;\\n      &lt;Checkbox key={'id-Developer'} id={'id-Developer'} name={'roles'} aria-label={'roles'}\\n               label={'Developer'} \\n               isDisabled={false} \\n               isChecked={roles.indexOf('Developer') != -1}\\n               onChange={() =&gt; handleCheckboxGroupChange('Developer', roles, set__roles)}\\n               value={'Developer'}/&gt;\\n&lt;Checkbox key={'id-HR'} id={'id-HR'} name={'roles'} aria-label={'roles'}\\n               label={'HR'} \\n               isDisabled={false} \\n               isChecked={roles.indexOf('HR') != -1}\\n               onChange={() =&gt; handleCheckboxGroupChange('HR', roles, set__roles)}\\n               value={'HR'}/&gt;\\n&lt;Checkbox key={'id-UX'} id={'id-UX'} name={'roles'} aria-label={'roles'}\\n               label={'UX'} \\n               isDisabled={false} \\n               isChecked={roles.indexOf('UX') != -1}\\n               onChange={() =&gt; handleCheckboxGroupChange('UX', roles, set__roles)}\\n               value={'UX'}/&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ roles, set__roles ] = useState&lt;string[]&gt;([]);","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Roles'}
+      isRequired={true}
+    >
+      <Checkbox
+  key={'id-Developer'}
+  id={'id-Developer'}
+  name={'roles'}
+  aria-label={'roles'}
+  label={'Developer'} 
+  isDisabled={false} 
+  isChecked={roles.indexOf('Developer') !== -1}
+  onChange={set__roles(prev => {
+      const newState = [...prev];
+      if(newState.indexOf('Developer') != -1) {
+        newState.splice(index, 1);
+      } else {
+        newState.push('Developer');
+      }
+      return newState;
+    })}
+  value={'Developer'}
+/>
+<Checkbox
+  key={'id-HR'}
+  id={'id-HR'}
+  name={'roles'}
+  aria-label={'roles'}
+  label={'HR'} 
+  isDisabled={false} 
+  isChecked={roles.indexOf('HR') !== -1}
+  onChange={set__roles(prev => {
+      const newState = [...prev];
+      if(newState.indexOf('HR') != -1) {
+        newState.splice(index, 1);
+      } else {
+        newState.push('HR');
+      }
+      return newState;
+    })}
+  value={'HR'}
+/>
+<Checkbox
+  key={'id-UX'}
+  id={'id-UX'}
+  name={'roles'}
+  aria-label={'roles'}
+  label={'UX'} 
+  isDisabled={false} 
+  isChecked={roles.indexOf('UX') !== -1}
+  onChange={set__roles(prev => {
+      const newState = [...prev];
+      if(newState.indexOf('UX') != -1) {
+        newState.splice(index, 1);
+      } else {
+        newState.push('UX');
+      }
+      return newState;
+    })}
+  value={'UX'}
+/>
+    </FormGroup>"
 `;

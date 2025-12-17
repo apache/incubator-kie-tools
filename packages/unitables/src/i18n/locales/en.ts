@@ -27,4 +27,13 @@ export const en: UnitablesI18n = {
   schema: {
     selectPlaceholder: "Select...",
   },
+  recursiveNotSupported: "Recursive structures are not supported yet",
+  openRowFormView: (rowIndex: number) => `Open row ${rowIndex + 1} in the form view`,
+  noInputNodes: "No inputs node yet...",
+  addInputNode: "Add an input node and see a custom table here.",
+  error: "Error",
+  errorMessage: "An error has happened while trying to show your inputs",
+  noDecisionResults: "No Decision results yet...",
+  addInputDecisionNodes:
+    "Add input and decision nodes, Enter values for the inputs on the left and see the Decisions results here.",
 };

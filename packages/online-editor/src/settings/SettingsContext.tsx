@@ -24,16 +24,12 @@ import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoder
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useEnv } from "../env/hooks/EnvContext";
 import { QueryParams } from "../navigation/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsTabs } from "./SettingsModalBody";
-import { getCookie } from "../cookies";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-
-export const EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
-export const EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 
 export type SettingsContextType = {
   settings: {
@@ -155,8 +151,8 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
                 url: env.KIE_SANDBOX_CORS_PROXY_URL,
               },
               extendedServices: {
-                host: getCookie(EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envExtendedServicesHost,
-                port: getCookie(EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envExtendedServicesPort,
+                host: envExtendedServicesHost,
+                port: envExtendedServicesPort,
               },
               editors: {
                 useLegacyDmnEditor: false,
@@ -174,7 +170,7 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
   );
 
   const queryParams = useQueryParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [tab, setTab] = useState(defaultSettingsTab);
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -186,14 +182,20 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
   const dispatch = useMemo<SettingsDispatchContextType>(() => {
     return {
       open: (tab) => {
-        history.replace({
-          search: queryParams.with(QueryParams.SETTINGS, tab ?? defaultSettingsTab).toString(),
-        });
+        navigate(
+          {
+            search: queryParams.with(QueryParams.SETTINGS, tab ?? defaultSettingsTab).toString(),
+          },
+          { replace: true }
+        );
       },
       close: () => {
-        history.replace({
-          search: queryParams.without(QueryParams.SETTINGS).toString(),
-        });
+        navigate(
+          {
+            search: queryParams.without(QueryParams.SETTINGS).toString(),
+          },
+          { replace: true }
+        );
       },
       set: (patch) => {
         setSettings((s) => {
@@ -204,7 +206,7 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
         });
       },
     };
-  }, [defaultSettingsTab, history, persistSettings, queryParams]);
+  }, [defaultSettingsTab, navigate, persistSettings, queryParams]);
 
   const value = useMemo(() => {
     if (!settings) {

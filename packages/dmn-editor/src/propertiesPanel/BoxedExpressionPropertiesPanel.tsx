@@ -53,8 +53,11 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { drgElementToBoxedExpression } from "../boxedExpressions/BoxedExpressionScreen";
 import { IteratorVariableCell } from "./BoxedExpressionPropertiesPanelComponents/IteratorVariableCell";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useDmnEditorI18n } from "../i18n";
 
 export function BoxedExpressionPropertiesPanel() {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
@@ -98,8 +101,8 @@ export function BoxedExpressionPropertiesPanel() {
     if (!selectedObjectPath) {
       return;
     }
-    return getBoxedExpressionPropertiesPanelComponent(selectedObjectPath);
-  }, [boxedExpressionIndex, selectedObjectId]);
+    return getBoxedExpressionPropertiesPanelComponent(selectedObjectPath, i18n);
+  }, [boxedExpressionIndex, i18n, selectedObjectId]);
 
   return (
     <>
@@ -109,7 +112,14 @@ export function BoxedExpressionPropertiesPanel() {
           isResizable={true}
           minSize={"300px"}
           defaultSize={"500px"}
-          onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+          onKeyDown={(e) => {
+            // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+            // See https://github.com/apache/incubator-kie-issues/issues/1164
+            if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+              // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+              e.stopPropagation();
+            }
+          }}
         >
           <DrawerHead>
             {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}
@@ -124,7 +134,11 @@ export function BoxedExpressionPropertiesPanel() {
             </DrawerActions>
             {!shouldDisplayDecisionOrBkmProps && (
               <Form>
-                <FormSection title={boxedExpressionPropertiesPanelComponent?.title ?? ""}>
+                <FormSection
+                  title={
+                    boxedExpressionPropertiesPanelComponent?.title ? boxedExpressionPropertiesPanelComponent?.title : ""
+                  }
+                >
                   {(((selectedObjectId === undefined || selectedObjectId === "") &&
                     boxedExpressionPropertiesPanelComponent === undefined) ||
                     boxedExpressionPropertiesPanelComponent?.component ===

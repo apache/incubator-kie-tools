@@ -21,6 +21,7 @@ package root
 
 import (
 	"fmt"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/operator"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/specs"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
@@ -78,6 +79,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	cmd.AddCommand(quarkus.NewQuarkusCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
 	cmd.AddCommand(specs.SpecsCommand())
+	cmd.AddCommand(operator.NewOperatorCommand())
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

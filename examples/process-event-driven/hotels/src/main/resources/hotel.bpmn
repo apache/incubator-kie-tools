@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<bpmn2:definitions
+  xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:bpsim="http://www.bpsim.org/schemas/1.0"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:drools="http://www.jboss.org/drools"
+  xmlns:xsi="xsi"
+  id="_GlpX8YpdED2dBNv7eRNehQ"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd "
+  exporter="jBPM Process Modeler"
+  exporterVersion="2.0"
+  targetNamespace="http://www.omg.org/bpmn20"
+>
+  <bpmn2:itemDefinition id="_messageItem" structureRef="org.acme.message.Message" />
+  <bpmn2:itemDefinition
+    id="__A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA_eventOutputXItem"
+    structureRef="org.acme.message.Message"
+  />
+  <bpmn2:itemDefinition id="correlationType" structureRef="org.acme.message.Message" />
+  <bpmn2:itemDefinition id="_6404189C-98F1-471A-899F-4A66C9E9BB0E" structureRef="org.acme.message.Message" />
+  <bpmn2:itemDefinition id="_3580F1FA-767F-46C7-B043-9043FD0E817D" structureRef="org.acme.message.Message" />
+  <bpmn2:message id="_GlqmEIpdED2dBNv7eRNehQ" itemRef="correlationType" name="correlation" />
+  <bpmn2:itemDefinition id="CorrelationPropertyId_Type" structureRef="String" />
+  <bpmn2:correlationProperty id="CorrelationPropertyId" name="Correlation Property 1" type="CorrelationPropertyId_Type">
+    <bpmn2:correlationPropertyRetrievalExpression
+      id="_01E88DC7-3BDD-48E3-BCF9-39AD0772B2AB"
+      messageRef="_GlqmEIpdED2dBNv7eRNehQ"
+    >
+      <bpmn2:messagePath
+        id="_F1B5A911-766C-4E07-932E-A7C9BC825274"
+        evaluatesToTypeRef="_6404189C-98F1-471A-899F-4A66C9E9BB0E"
+        language="java"
+      >id</bpmn2:messagePath>
+    </bpmn2:correlationPropertyRetrievalExpression>
+  </bpmn2:correlationProperty>
+  <bpmn2:collaboration id="_959642FC-7D00-486A-AED9-4E752C2F4DDC" name="Default Collaboration">
+    <bpmn2:participant id="_1A4E80E2-ECE0-4326-95E5-7EFABCA82EE1" name="Pool Participant" processRef="hotel" />
+    <bpmn2:correlationKey id="CorrelationKeyId" name="Correlation Key Name">
+      <bpmn2:correlationPropertyRef>CorrelationPropertyId</bpmn2:correlationPropertyRef>
+    </bpmn2:correlationKey>
+  </bpmn2:collaboration>
+  <bpmn2:process
+    id="hotel"
+    drools:packageName="org.acme.hotel"
+    drools:version="1.0"
+    drools:adHoc="false"
+    name="Process Hotel"
+    isExecutable="true"
+    processType="Public"
+  >
+    <bpmn2:extensionElements>
+      <drools:import name="org.acme.message.Message" />
+    </bpmn2:extensionElements>
+    <bpmn2:property id="message" itemSubjectRef="_messageItem" name="message" />
+    <bpmn2:sequenceFlow
+      id="_68AB58DF-9349-4EBB-8A2E-1F38B76BE4A1"
+      sourceRef="_8FC9EA63-93C8-443A-9DA5-C0351D773BE6"
+      targetRef="_3A2B99F1-E885-434A-8304-1213AC43CE3C"
+    />
+    <bpmn2:sequenceFlow
+      id="_FB444661-5F48-432D-965A-C4996CC52E94"
+      sourceRef="_A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA"
+      targetRef="_8FC9EA63-93C8-443A-9DA5-C0351D773BE6"
+    />
+    <bpmn2:endEvent id="_3A2B99F1-E885-434A-8304-1213AC43CE3C" name="end">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[end]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_68AB58DF-9349-4EBB-8A2E-1F38B76BE4A1</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition />
+    </bpmn2:endEvent>
+    <bpmn2:scriptTask
+      id="_8FC9EA63-93C8-443A-9DA5-C0351D773BE6"
+      name="Process Hotel Book"
+      scriptFormat="http://www.java.com/java"
+    >
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Process Hotel Book]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_FB444661-5F48-432D-965A-C4996CC52E94</bpmn2:incoming>
+      <bpmn2:outgoing>_68AB58DF-9349-4EBB-8A2E-1F38B76BE4A1</bpmn2:outgoing>
+      <bpmn2:script>System.out.println("===== HOTEL LOG =====");</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:startEvent id="_A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA" name="start hotel handling">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[start hotel handling]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_FB444661-5F48-432D-965A-C4996CC52E94</bpmn2:outgoing>
+      <bpmn2:dataOutput
+        id="_A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA_eventOutputX"
+        drools:dtype="org.acme.message.Message"
+        itemSubjectRef="__A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA_eventOutputXItem"
+        name="event"
+      />
+      <bpmn2:dataOutputAssociation>
+        <bpmn2:sourceRef>_A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA_eventOutputX</bpmn2:sourceRef>
+        <bpmn2:targetRef>message</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:outputSet>
+        <bpmn2:dataOutputRefs>_A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA_eventOutputX</bpmn2:dataOutputRefs>
+      </bpmn2:outputSet>
+      <bpmn2:messageEventDefinition drools:msgref="correlation" messageRef="_GlqmEIpdED2dBNv7eRNehQ" />
+    </bpmn2:startEvent>
+    <bpmn2:correlationSubscription id="_E73308CB-08B7-4F6A-BB2F-C9B6A6F15959" correlationKeyRef="CorrelationKeyId">
+      <bpmn2:correlationPropertyBinding
+        id="_E992CBBD-0534-4098-8011-F7BB829CB6A2"
+        correlationPropertyRef="CorrelationPropertyId"
+      >
+        <bpmn2:dataPath
+          id="_73166CC8-FD65-4535-A153-146429AD7CCB"
+          evaluatesToTypeRef="_3580F1FA-767F-46C7-B043-9043FD0E817D"
+          language="java"
+        >"1"</bpmn2:dataPath>
+      </bpmn2:correlationPropertyBinding>
+    </bpmn2:correlationSubscription>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="hotel">
+      <bpmndi:BPMNShape
+        id="shape__A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA"
+        bpmnElement="_A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA"
+      >
+        <dc:Bounds height="56" width="56" x="214" y="155" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape
+        id="shape__8FC9EA63-93C8-443A-9DA5-C0351D773BE6"
+        bpmnElement="_8FC9EA63-93C8-443A-9DA5-C0351D773BE6"
+      >
+        <dc:Bounds height="102" width="154" x="373" y="132" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape
+        id="shape__3A2B99F1-E885-434A-8304-1213AC43CE3C"
+        bpmnElement="_3A2B99F1-E885-434A-8304-1213AC43CE3C"
+      >
+        <dc:Bounds height="56" width="56" x="630" y="155" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge
+        id="edge_shape__A07CABF6-05E3-44A3-BB33-EDE46ADF5FAA_to_shape__8FC9EA63-93C8-443A-9DA5-C0351D773BE6"
+        bpmnElement="_FB444661-5F48-432D-965A-C4996CC52E94"
+      >
+        <di:waypoint x="242" y="183" />
+        <di:waypoint x="450" y="183" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge
+        id="edge_shape__8FC9EA63-93C8-443A-9DA5-C0351D773BE6_to_shape__3A2B99F1-E885-434A-8304-1213AC43CE3C"
+        bpmnElement="_68AB58DF-9349-4EBB-8A2E-1F38B76BE4A1"
+      >
+        <di:waypoint x="450" y="183" />
+        <di:waypoint x="630" y="183" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters />
+          <bpsim:ElementParameters elementRef="_8FC9EA63-93C8-443A-9DA5-C0351D773BE6">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0" />
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0" />
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0" />
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0" />
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_GlpX8YpdED2dBNv7eRNehQ</bpmn2:source>
+    <bpmn2:target>_GlpX8YpdED2dBNv7eRNehQ</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

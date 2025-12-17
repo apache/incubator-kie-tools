@@ -21,10 +21,16 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Unitables, UnitablesProps } from "./Unitables";
 import { UnitablesContextProvider } from "./UnitablesContextProvider";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
+import { UnitablesI18n } from "./i18n";
 
 export function UnitablesWrapper(props: UnitablesProps) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -37,9 +43,13 @@ export function UnitablesWrapper(props: UnitablesProps) {
   return (
     <UnitablesContextProvider rowsInputs={props.rows}>
       {props.error ? (
-        <InputError />
+        <InputError i18n={props.i18n} />
       ) : (
-        <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
+        <ErrorBoundary
+          ref={inputErrorBoundaryRef}
+          setHasError={props.setError}
+          error={<InputError i18n={props.i18n} />}
+        >
           <Unitables {...props} />
         </ErrorBoundary>
       )}
@@ -47,16 +57,16 @@ export function UnitablesWrapper(props: UnitablesProps) {
   );
 }
 
-function InputError() {
+function InputError(props: { i18n: UnitablesI18n }) {
   return (
     <div style={{ width: "50vw" }}>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationIcon} />} />
         <TextContent>
-          <Text component={"h2"}>Error</Text>
+          <Text component={"h2"}>{props.i18n.error}</Text>
         </TextContent>
         <EmptyStateBody>
-          <p>An error has happened while trying to show your inputs</p>
+          <p>{props.i18n.errorMessage}</p>
         </EmptyStateBody>
       </EmptyState>
     </div>

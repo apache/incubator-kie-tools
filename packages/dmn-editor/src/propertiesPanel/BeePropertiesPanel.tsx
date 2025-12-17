@@ -29,11 +29,14 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useMemo } from "react";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useDmnEditorI18n } from "../i18n";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { externalModelsByNamespace } = useExternalModels();
+  const { i18n } = useDmnEditorI18n();
   const node = useDmnEditorStore((s) =>
     activeDrgElementId
       ? s
@@ -55,11 +58,20 @@ export function BeePropertiesPanel() {
           isResizable={true}
           minSize={"300px"}
           defaultSize={"500px"}
-          onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+          onKeyDown={(e) => {
+            // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+            // See https://github.com/apache/incubator-kie-issues/issues/1164
+            if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+              // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+              e.stopPropagation();
+            }
+          }}
         >
           <DrawerHead>
             {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}
-            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div>{`Nothing to show`}</div>}
+            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && (
+              <div>{i18n.propertiesPanel.nothingToShow}</div>
+            )}
             {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && <div>{selectedObjectId}</div>}
             <DrawerActions>
               <DrawerCloseButton

@@ -19,55 +19,51 @@
 
 const path = require("path");
 const { merge } = require("webpack-merge");
+const { EnvironmentPlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
-const { env } = require("./env");
+const childProcess = require("child_process");
 const { defaultEnvJson } = require("./build/defaultEnvJson");
+
+const { env } = require("./env");
+const buildEnv = env;
 
 const BG_IMAGES_DIRNAME = "bgimages";
 
 module.exports = async (webpackEnv) => {
+  const buildInfo = getBuildInfo();
+  let lastCommitSha = "";
+  try {
+    lastCommitSha = childProcess.execSync("git rev-parse --short HEAD").toString().trim();
+    JSON.stringify(lastCommitSha);
+  } catch (e) {
+    lastCommitSha = "unavailable";
+  }
+
   return merge(common(webpackEnv), {
     entry: {
-      index: path.resolve(__dirname, "src", "index.tsx"),
-      "resources/form-displayer": "./src/resources/form-displayer.ts",
-    },
-    devServer: {
-      static: {
-        directory: "./dist",
-      },
-      host: env.runtimeToolsManagementConsoleWebapp.host,
-      port: env.runtimeToolsManagementConsoleWebapp.port,
-      compress: true,
-      historyApiFallback: true,
-      hot: true,
-      client: {
-        overlay: {
-          warnings: false,
-          errors: true,
-          runtimeErrors: false,
-        },
-        progress: true,
-      },
-      proxy: {
-        "/svg": {
-          target: "http://localhost:4000",
-          secure: false,
-          changeOrigin: true,
-        },
-      },
+      index: "./src/index.tsx",
+      "resources/form-displayer-envelope": "./src/forms/form-displayer-envelope.ts",
     },
     plugins: [
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__commitHash: lastCommitSha,
+        WEBPACK_REPLACE__buildInfo: buildInfo,
+        WEBPACK_REPLACE__kogitoVersion: buildEnv.versions.kogito,
+      }),
       new HtmlWebpackPlugin({
-        template: "./src/index.html",
+        template: "./static/index.html",
         inject: false,
         minify: false,
       }),
       new CopyPlugin({
         patterns: [
+          { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
+          { from: "./static/favicon.svg", to: "./favicon.svg" },
           {
-            from: "./src/static/env.json",
+            from: "./static/env.json",
             to: "./env.json",
             transform: () => JSON.stringify(defaultEnvJson, null, 2),
           },
@@ -136,5 +132,27 @@ module.exports = async (webpackEnv) => {
       },
     },
     ignoreWarnings: [/Failed to parse source map/],
+    devServer: {
+      server: "http",
+      host: buildEnv.runtimeToolsManagementConsoleWebapp.dev.host,
+      port: buildEnv.runtimeToolsManagementConsoleWebapp.dev.port,
+      historyApiFallback: true, // FIXME: Tiago --> This is making the router work.
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
+      compress: true,
+      client: {
+        overlay: false,
+        progress: true,
+      },
+      allowedHosts: "all",
+    },
+    watchOptions: {
+      poll: 1000,
+    },
   });
 };
+
+function getBuildInfo() {
+  const buildInfo = buildEnv.runtimeToolsManagementConsoleWebapp.buildInfo;
+  console.info(`Management Console Webapp :: Build info: ${buildInfo}`);
+  return buildInfo;
+}

@@ -18,7 +18,8 @@
  */
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
-import { test } from "../__fixtures__/base";
+import { expect, test } from "../__fixtures__/base";
+import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -48,15 +49,62 @@ test.describe("Model Decision Services - DRD", () => {
     // its content should be automatically layout-ed
   });
 
-  test("888 add to DRD, mix of collapsed and expanded", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/888");
+  test("A Decision Service with conflicting contained Decisions should be added to the DRD in a collapsed state", async ({
+    drds,
+    palette,
+    nodes,
+    diagram,
+    drgNodes,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/888",
     });
-    // However, if one of its contained Decisions it also contained by other Decision Services
-    // present on that DRD, and one of them is in expanded form,
-    // the Decision Service is added as collapsed, and no Decisions are added or moved.
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS2",
+    });
+    await expect(nodes.get({ name: "DS2" })).toBeAttached();
+
+    await drgNodes.toggle();
+    await drgNodes.dragNode({ name: "D1", targetPosition: { x: 200, y: 200 } });
+    await drgNodes.toggle();
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drgNodes.toggle();
+    await drgNodes.dragNode({ name: "DS2", targetPosition: { x: 100, y: 100 } });
+    await drgNodes.toggle();
+    await expect(diagram.get()).toHaveScreenshot("add-conflicting-decision-service.png");
   });
 
   test("888 add to DRD, collapsed", async ({ drds }) => {
@@ -103,13 +151,32 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO, question, not understand
   });
 
-  test("892 collapse - remove its content", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/892");
+  test("Collapsing a Decision Service hides all of its contained Decisions from the DRD", async ({
+    palette,
+    nodes,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/892",
     });
-    // TODO
+    await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 400, y: 200 } });
+    await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "User Decision",
+    });
+    await expect(nodes.get({ name: "User Decision" })).toBeAttached();
+
+    await nodes.move({ name: "User Decision", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "User Decision" })).toBeAttached();
+
+    await nodes.selectAndCollapseDecisionService({ name: DefaultNodeName.DECISION_SERVICE });
+
+    await expect(nodes.get({ name: "User Decision" })).not.toBeAttached();
+    await expect(diagram.get()).toHaveScreenshot("collapse-decision-service.png");
   });
 
   test("892 collapse - allow only if no other DS is expanded in the DRD", async ({ drds }) => {
@@ -121,13 +188,137 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO
   });
 
-  test("892 expand - same depiction as other DRDs", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/892");
+  test("Expanding a Decision Service shows the same depiction as in other DRD", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/892",
     });
-    // TODO
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await nodes.selectAndCollapseDecisionService({ name: "DS1" });
+
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+    await drgNodes.toggle();
+
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+
+    await nodes.selectAndExpandDecisionService({ name: "DS1" });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await expect(diagram.get()).toHaveScreenshot("decision-service-from-other-drd.png");
+  });
+
+  test("Resizing decision contained by decision service should resize it in all DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/889",
+    });
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+
+    await drgNodes.toggle();
+    await nodes.resize({ nodeName: "D1", xOffset: 50, yOffset: 0 });
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("resized-decision.png");
+  });
+
+  test("Moving decision contained by decision service should move it in all DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/889",
+    });
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+
+    await drgNodes.toggle();
+    await nodes.move({ name: "D1", targetPosition: { x: 600, y: 300 } });
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("repositioned-decision.png");
   });
 
   test("892 expand - allow only if no other DS is collpased in the DRD", async ({ drds }) => {
@@ -148,49 +339,200 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO
   });
 
-  test("889 resize DS content and replicate in DRDs", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/889");
-    test.info().annotations.push({
-      type: TestAnnotations.REGRESSION,
-      description: "https://github.com/apache/incubator-kie-issues/issues/889",
-    });
-    // TODO
-  });
-
-  test("898 move DS divider and replicate in DRDs", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/898");
+  test("Resizing a Decision Service in a DRD should replicate it in all DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/898",
     });
-    // TODO
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+    await drgNodes.toggle();
+    await nodes.resize({ nodeName: "DS1", xOffset: 100, yOffset: 100 });
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("resized-decision-service.png");
   });
 
-  test("890 add node to DS, check its added to all DRDs where DS in expanded form", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/890");
+  test("Moving decision service divider line in one DRD replicates it in all DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/898",
+    });
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+
+    await drgNodes.toggle();
+    await nodes.moveDividerLine({ nodeName: "DS1" });
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("moving-divider-line.png");
+  });
+
+  test("Adding a node to Decision service adds it to all DRDs where Decision Service is in expanded form", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/890",
     });
-    // TODO
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await drgNodes.dragNode({ name: "D1", targetPosition: { x: 200, y: 200 } });
+    await drgNodes.toggle();
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("decision-added-to-decision-service.png");
   });
 
-  test("890 add node to DS, check its removed from DRDs where DS in collapsed form", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/890");
+  test("Moving a node to Decision service , check it is removed from DRDs where DS in collapsed form", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/890",
     });
-    // TODO
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await nodes.selectAndCollapseDecisionService({ name: "DS1" });
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await drgNodes.dragNode({ name: "D1", targetPosition: { x: 200, y: 200 } });
+    await drgNodes.toggle();
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("decision-added-to-decision-service-collapsedDS.png");
   });
 
-  test("891 remove node from DS, check its removed form DS in all DRDs", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/891");
+  test("Removing node from Decision Service removes from all DRDs", async ({
+    drds,
+    nodes,
+    drgNodes,
+    palette,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/891",
     });
-    // TODO, question, isn't this the same as 889 - syncing depiction of DS in all DRDs?
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await nodes.move({ name: "D1", targetPosition: { x: 700, y: 500 } });
+    await drgNodes.toggle();
+
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(nodes.get({ name: "D1" })).not.toBeAttached();
+    await expect(diagram.get()).toHaveScreenshot("decision-removed-from-decision-service.png");
   });
 
   test("893 collapsed external DS, synced in all DRDs", async ({ drds }) => {

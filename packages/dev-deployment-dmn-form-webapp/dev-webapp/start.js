@@ -28,12 +28,10 @@ const mvn = spawn(
     path.join(__dirname, "./quarkus-app"),
     "clean",
     "quarkus:dev",
-    "-Dmaven.test.skip",
-    `-Dversion.quarkus=${env.versions.quarkus}`,
-    `-Dversion.org.kie.kogito=${env.versions.kogito}`,
     `-Dquarkus.http.port=${env.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
-    `-Dkogito.service.url=http://localhost:${env.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
-    "-Dquarkus.http.root-path=/",
+    `-Dquarkus.http.host=0.0.0.0`,
+    `-Dkogito.service.url=http://0.0.0.0:${env.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
+    `-Drevision=${env.devDeploymentDmnFormWebapp.version}`,
   ],
   { shell: true }
 );

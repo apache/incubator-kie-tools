@@ -20,10 +20,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
-import {
-  DMN15__tItemDefinition,
-  DMN15__tUnaryTests,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tItemDefinition, DMN_LATEST__tUnaryTests } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ConstraintsEnum, isEnum } from "./ConstraintsEnum";
@@ -49,8 +46,9 @@ import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { ConstraintProps } from "./ConstraintComponents/Constraint";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
+import { useDmnEditorI18n } from "../i18n";
 
 export type TypeHelper = {
   check: (value: string) => boolean;
@@ -83,10 +81,10 @@ enum ConstraintsType {
 // that is part of the built in FEEL types.
 // If the found `itemDefinition` is a collection, it will have a early stop.
 export function recursivelyGetRootItemDefinition(
-  itemDefinition: Normalized<DMN15__tItemDefinition>,
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>,
   allDataTypesById: DataTypeIndex,
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex
-): Normalized<DMN15__tItemDefinition> {
+): Normalized<DMN_LATEST__tItemDefinition> {
   const typeRef: DmnBuiltInDataType = itemDefinition.typeRef?.__$$text as DmnBuiltInDataType;
 
   if (builtInFeelTypeNames.has(typeRef) === false) {
@@ -109,7 +107,7 @@ export function recursivelyGetRootItemDefinition(
 }
 
 export const constraintTypeHelper = (
-  itemDefinition: Normalized<DMN15__tItemDefinition>,
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>,
   allDataTypesById?: DataTypeIndex,
   allTopLevelItemDefinitionUniqueNames?: UniqueNameIndex
 ): TypeHelper => {
@@ -272,7 +270,7 @@ export const constraintTypeHelper = (
           return (
             <TextInput
               autoFocus={props.autoFocus}
-              onChange={props.onChange}
+              onChange={(_event, val) => props.onChange(val)}
               id={props.id}
               isDisabled={props.isDisabled}
               value={props.value}
@@ -287,7 +285,7 @@ export const constraintTypeHelper = (
           return (
             <TextInput
               autoFocus={props.autoFocus}
-              onChange={props.onChange}
+              onChange={(_event, val) => props.onChange(val)}
               id={props.id}
               isDisabled={props.isDisabled}
               value={props.value}
@@ -309,8 +307,8 @@ export function useConstraint({
   constraintTypeHelper,
   enabledConstraints,
 }: {
-  constraint: Normalized<DMN15__tUnaryTests> | undefined;
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  constraint: Normalized<DMN_LATEST__tUnaryTests> | undefined;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   isCollectionConstraintEnabled: boolean;
   constraintTypeHelper: TypeHelper;
   enabledConstraints: KIE__tConstraintType[] | undefined;
@@ -412,7 +410,7 @@ export function ConstraintsFromAllowedValuesAttribute({
   renderOnPropertiesPanel,
 }: {
   isReadOnly: boolean;
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   editItemDefinition: EditItemDefinition;
   renderOnPropertiesPanel?: boolean;
   isEnumDisabled?: boolean;
@@ -554,7 +552,7 @@ export function ConstraintsFromTypeConstraintAttribute({
   defaultsToAllowedValues,
 }: {
   isReadOnly: boolean;
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   editItemDefinition: EditItemDefinition;
   renderOnPropertiesPanel?: boolean;
   defaultsToAllowedValues: boolean;
@@ -721,6 +719,7 @@ export function Constraints({
   onToggleGroupChange: (selected: boolean, selectedConstraint: ConstraintsType) => void;
   onConstraintChange: (value: string | undefined, selectedConstraint: ConstraintsType) => void;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const [internalSelectedConstraint, setInternalSelectedConstraint] = useState<{
     selectedConstraint: ConstraintsType;
     itemDefinitionId: string;
@@ -768,17 +767,17 @@ export function Constraints({
             textAlign: "center",
           }}
         >
-          {`This data type doesn't support constraints`}
+          {i18n.dataTypes.dataTypeConstraints}
         </p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div>
             <ToggleGroup aria-label={"Constraint toggle group"}>
               <ToggleGroupItem
-                text={ConstraintsType.NONE}
+                text={i18n.none}
                 buttonId={ConstraintsType.NONE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.NONE}
-                onChange={onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly}
               />
               <ToggleGroupItem
@@ -787,24 +786,24 @@ export function Constraints({
                 // to be on top of the Monaco suggestion. The 10
                 // is an arbirtrary value, which solves the issue.
                 style={{ zIndex: 10 }}
-                text={ConstraintsType.EXPRESSION}
+                text={i18n.dataTypes.expression}
                 buttonId={ConstraintsType.EXPRESSION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.EXPRESSION}
-                onChange={onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.expression}
               />
               <ToggleGroupItem
-                text={ConstraintsType.ENUMERATION}
+                text={i18n.dataTypes.enumeration}
                 buttonId={ConstraintsType.ENUMERATION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.ENUMERATION}
-                onChange={onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
-                text={ConstraintsType.RANGE}
+                text={i18n.dataTypes.range}
                 buttonId={ConstraintsType.RANGE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.RANGE}
-                onChange={onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.range}
               />
             </ToggleGroup>
@@ -857,7 +856,7 @@ export function Constraints({
                   textAlign: "center",
                 }}
               >
-                {`All values are allowed`}
+                {i18n.dataTypes.allValuesAllowed}
               </p>
             )}
           </div>

@@ -30,7 +30,7 @@ export type ServerlessWorkflowDiagramEnvelopeApiFactoryArgs = EnvelopeApiFactory
   ServerlessWorkflowDiagramEditorEnvelopeApi,
   ServerlessWorkflowDiagramEditorChannelApi,
   EditorEnvelopeViewApi<ServerlessWorkflowDiagramEditor>,
-  KogitoEditorEnvelopeContextType<ServerlessWorkflowDiagramEditorChannelApi>
+  KogitoEditorEnvelopeContextType<ServerlessWorkflowDiagramEditorEnvelopeApi, ServerlessWorkflowDiagramEditorChannelApi>
 >;
 
 export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
@@ -43,7 +43,11 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
 {
   constructor(
     private readonly serverlessWorkflowArgs: ServerlessWorkflowDiagramEnvelopeApiFactoryArgs,
-    editorFactory: EditorFactory<ServerlessWorkflowDiagramEditor, ServerlessWorkflowDiagramEditorChannelApi>
+    editorFactory: EditorFactory<
+      ServerlessWorkflowDiagramEditor,
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      ServerlessWorkflowDiagramEditorChannelApi
+    >
   ) {
     super(serverlessWorkflowArgs, editorFactory);
   }

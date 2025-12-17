@@ -1,5 +1,3 @@
-{{- $dataIndexUrl := .Values.global.dataIndexUrl | required ".Values.global.dataIndexUrl is required." -}}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,41 +34,13 @@ spec:
           image: "{{ .Values.image.registry }}/{{ .Values.image.account }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE
-              value: {{ .Values.global.environment }}
-            - name: RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT
-              value: {{ $dataIndexUrl }}
             {{- if .Values.appNameOverride }}
-            - name: RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_NAME
+            - name: RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME
               value: {{ .Values.appNameOverride }}
             {{- end }}
-            {{- if .Values.appVersionOverride }}
-            - name: RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION
-              value: {{ .Values.appVersionOverride }}
-            {{- end }}
-            {{- if .Values.global.keycloakHealthCheck }}
-            - name: KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK
-              value: {{ .Values.global.keycloakHealthCheck }}
-            {{- end }}
-            {{- if .Values.global.keycloakTokenValidity }}
-            - name: KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY
-              value: {{ .Values.global.keycloakTokenValidity }}
-            {{- end }}
-            {{- if .Values.global.keycloakHealthCheckUrl }}
-            - name: KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL
-              value: {{ .Values.global.keycloakHealthCheckUrl }}
-            {{- end }}
-            {{- if .Values.global.keycloakRealm }}
-            - name: KOGITO_CONSOLES_KEYCLOAK_REALM
-              value: {{ .Values.global.keycloakRealm }}
-            {{- end }}
-            {{- if .Values.global.keycloakUrl }}
-            - name: KOGITO_CONSOLES_KEYCLOAK_URL
-              value: {{ .Values.global.keycloakUrl }}
-            {{- end }}
-            {{- if .Values.global.keycloakClientId }}
-            - name: KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID
-              value: {{ .Values.global.keycloakClientId }}
+            {{- if .Values.oidcClientIdOverride }}
+            - name: RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID
+              value: {{ .Values.oidcClientIdOverride }}
             {{- end }}
           ports:
             - name: http

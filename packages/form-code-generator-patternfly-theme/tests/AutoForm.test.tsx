@@ -72,6 +72,8 @@ const schema = {
   "friends.$": Object,
   "friends.$.name": { type: String },
   "friends.$.age": { type: Number },
+  "friends.$.know": { type: Array },
+  "friends.$.know.$": { type: String },
 };
 
 const props: AutoFormProps = {

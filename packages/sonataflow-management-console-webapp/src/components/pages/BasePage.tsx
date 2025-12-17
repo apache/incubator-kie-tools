@@ -32,12 +32,13 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 import PageToolbar from "@kie-tools/runtime-tools-components/dist/components/PageToolbar/PageToolbar";
 import { useMemo } from "react";
-import { useHistory } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 import { ManagementConsoleNav } from "../console";
 
 export function BasePage(props: { children?: React.ReactNode }) {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const masthead = useMemo(
     () => (
@@ -49,7 +50,8 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadToggle>
         <MastheadMain>
           <MastheadBrand
-            onClick={() => history.push({ pathname: routes.home.path({}) })}
+            component="a"
+            onClick={() => navigate({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >
             <Brand className="sonataflow-management-console-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
@@ -63,12 +65,16 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadContent>
       </Masthead>
     ),
-    []
+    [history]
   );
 
   return (
     <Page
-      sidebar={<PageSidebar nav={<ManagementConsoleNav pathname={history.location.pathname} />} theme="dark" />}
+      sidebar={
+        <PageSidebar theme="dark">
+          <ManagementConsoleNav pathname={location.pathname} />
+        </PageSidebar>
+      }
       header={masthead}
       isManagedSidebar
     >

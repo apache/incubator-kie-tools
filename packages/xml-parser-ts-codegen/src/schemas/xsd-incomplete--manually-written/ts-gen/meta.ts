@@ -34,6 +34,8 @@ export const meta = {
     "xsd:annotation": { type: "annotation", isArray: true, fromType: "", xsdType: "" },
     "xsd:simpleType": { type: "simpleType", isArray: true, fromType: "", xsdType: "" },
     "xsd:complexType": { type: "complexType", isArray: true, fromType: "", xsdType: "" },
+    "xsd:attributeGroup": { type: "topLevelAttributeGroup", isArray: true, fromType: "", xsdType: "" },
+    "xsd:attribute": { type: "attribute", isArray: true, fromType: "", xsdType: "" },
   },
   all: {
     "@_minOccurs": { type: "integer", isArray: false, fromType: "", xsdType: "" },
@@ -49,7 +51,17 @@ export const meta = {
   union: {
     "xsd:simpleType": { type: "simpleType", isArray: true, fromType: "", xsdType: "" },
   },
-  attribute: {},
+  attribute: {
+    "@_name": { type: "string", isArray: false, fromType: "", xsdType: "" },
+    "xsd:simpleType": { type: "simpleType", isArray: false, fromType: "", xsdType: "" },
+  },
+  topLevelAttributeGroup: {
+    "@_name": { type: "string", isArray: false, fromType: "", xsdType: "" },
+    "xsd:attribute": { type: "attribute", isArray: true, fromType: "", xsdType: "" },
+  },
+  attributeGroup: {
+    "@_ref": { type: "string", isArray: false, fromType: "", xsdType: "" },
+  },
   element: {
     "@_abstract": { type: "boolean", isArray: false, fromType: "", xsdType: "" },
     "@_minOccurs": { type: "integer", isArray: false, fromType: "", xsdType: "" },
@@ -58,11 +70,13 @@ export const meta = {
   },
   complexType: {
     "@_abstract": { type: "boolean", isArray: false, fromType: "", xsdType: "" },
+    "@_mixed": { type: "boolean", isArray: false, fromType: "", xsdType: "" },
     "xsd:complexContent": { type: "complexContent", isArray: false, fromType: "", xsdType: "" },
     "xsd:simpleContent": { type: "simpleContent", isArray: false, fromType: "", xsdType: "" },
     "xsd:sequence": { type: "sequence", isArray: false, fromType: "", xsdType: "" },
     "xsd:all": { type: "all", isArray: false, fromType: "", xsdType: "" },
     "xsd:attribute": { type: "attribute", isArray: true, fromType: "", xsdType: "" },
+    "xsd:attributeGroup": { type: "attributeGroup", isArray: true, fromType: "", xsdType: "" },
   },
   complexContent: {
     "xsd:extension": { type: "extension", isArray: false, fromType: "", xsdType: "" },

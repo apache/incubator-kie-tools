@@ -22,7 +22,6 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BanIcon } from "@patternfly/react-icons/dist/js/icons/ban-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { OnRunningIcon } from "@patternfly/react-icons/dist/js/icons/on-running-icon";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 interface Props {
@@ -30,13 +29,13 @@ interface Props {
   variant?: "default" | "label";
 }
 
-export const TaskState: React.FC<Props & OUIAProps> = ({ task, variant, ouiaId, ouiaSafe }) => {
+export const TaskState: React.FC<Props> = ({ task, variant }) => {
   const icon: JSX.Element = resolveTaskStateIcon(task);
 
   if (variant === "label") {
     const color = resolveTaskStateLabelColor(task);
     return (
-      <Label color={color} icon={icon} {...componentOuiaProps(ouiaId, "task-state", ouiaSafe)}>
+      <Label color={color} icon={icon}>
         {task.state}
       </Label>
     );
@@ -44,18 +43,18 @@ export const TaskState: React.FC<Props & OUIAProps> = ({ task, variant, ouiaId, 
 
   return (
     <React.Fragment>
-      {icon} <span {...componentOuiaProps(ouiaId, "task-state", ouiaSafe)}>{task.state}</span>
+      {icon} <span>{task.state}</span>
     </React.Fragment>
   );
 };
 
 function resolveTaskStateIcon(task: UserTaskInstance): JSX.Element {
   if (task.state === "Aborted") {
-    return <BanIcon className="pf-u-mr-sm" />;
+    return <BanIcon className="pf-v5-u-mr-sm" />;
   } else if (task.completed) {
-    return <CheckCircleIcon className="pf-u-mr-sm" color="var(--pf-global--success-color--100)" />;
+    return <CheckCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--success-color--100)" />;
   } else {
-    return <OnRunningIcon className="pf-u-mr-sm" />;
+    return <OnRunningIcon className="pf-v5-u-mr-sm" />;
   }
 }
 

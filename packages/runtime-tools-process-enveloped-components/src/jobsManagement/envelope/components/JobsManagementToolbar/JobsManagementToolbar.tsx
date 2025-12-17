@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useEffect } from "react";
-import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import {
   Toolbar,
   ToolbarContent,
@@ -36,7 +36,6 @@ import {
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 
 import { JobStatus, Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { JobsManagementDriver } from "../../../api";
 import "../styles.css";
 import { IOperations } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
@@ -44,8 +43,6 @@ import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/
 
 interface JobsManagementToolbarProps {
   chips: JobStatus[];
-  driver: JobsManagementDriver;
-  doQueryJobs: (offset: number, limit: number) => Promise<void>;
   jobOperations: IOperations;
   onResetToDefault: () => void;
   onRefresh: () => void;
@@ -54,23 +51,19 @@ interface JobsManagementToolbarProps {
   setSelectedJobInstances: (selectedJobInstances: Job[]) => void;
   setSelectedStatus: (selectedStatus: ((selectedStatus: JobStatus[]) => JobStatus[]) | JobStatus[]) => void;
   setChips: (chips: ((chip: JobStatus[]) => JobStatus[]) | JobStatus[]) => void;
-  setDisplayTable: (displayTable: boolean) => void;
-  setIsLoading: (isLoading: boolean) => void;
+  onApplyFilter: () => void;
 }
 const JobsManagementToolbar: React.FC<JobsManagementToolbarProps & OUIAProps> = ({
   chips,
-  driver,
-  doQueryJobs,
   onResetToDefault,
   jobOperations,
   onRefresh,
   selectedStatus,
   selectedJobInstances,
   setChips,
-  setDisplayTable,
-  setIsLoading,
   setSelectedStatus,
   setSelectedJobInstances,
+  onApplyFilter,
   ouiaId,
   ouiaSafe,
 }) => {
@@ -86,60 +79,52 @@ const JobsManagementToolbar: React.FC<JobsManagementToolbarProps & OUIAProps> = 
     <SelectOption key="SCHEDULED" value="SCHEDULED" />,
   ];
 
-  const onStatusToggle = (): void => {
-    setIsExpanded(!isExpanded);
-  };
+  const onStatusToggle = useCallback((): void => {
+    setIsExpanded((currentIsExpanded) => !currentIsExpanded);
+  }, []);
 
-  const filterData = async (): Promise<void> => {
-    await driver.applyFilter(selectedStatus);
-    doQueryJobs(0, 10);
-    setChipRemoved(false);
-  };
+  const onDelete = useCallback(
+    (type: string, id: string): void => {
+      setChips((currentChips) => {
+        const chipsCopy = [...currentChips];
+        const tempChips = chipsCopy.filter((item) => item !== id);
+        return tempChips;
+      });
+      setSelectedJobInstances([]);
+      setSelectedStatus((currentSelectedStatus) => {
+        let selectedStatusCopy = [...currentSelectedStatus];
+        selectedStatusCopy = selectedStatusCopy.filter((item) => item !== id);
+        return selectedStatusCopy;
+      });
+    },
+    [setChips, setSelectedJobInstances, setSelectedStatus]
+  );
 
-  const onApplyFilter = async (): Promise<void> => {
-    setChips(selectedStatus);
-    setIsLoading(true);
-    filterData();
-  };
+  const onSelect = useCallback(
+    (event, selection: JobStatus): void => {
+      setSelectedStatus((currentSelectedStatus) => {
+        let selectionText = event.target.id;
+        selectionText = selectionText.split("pf-random-id-")[1].split("-")[1];
+        const selectedStatusCopy = [...currentSelectedStatus];
+        if (currentSelectedStatus.includes(selectionText)) {
+          return selectedStatusCopy.filter((item) => item !== selectionText);
+        } else {
+          return [...selectedStatusCopy, selectionText];
+        }
+      });
+    },
+    [setSelectedStatus]
+  );
 
-  const onDelete = (type: string, id: string): void => {
-    const chipsCopy = [...chips];
-    const tempChips = chipsCopy.filter((item) => item !== id);
-    setSelectedJobInstances([]);
-    let selectedStatusCopy = [...selectedStatus];
-    setChips(tempChips);
-    selectedStatusCopy = selectedStatusCopy.filter((item) => item !== id);
-    setSelectedStatus(selectedStatusCopy);
-    if (tempChips.length > 0) {
-      setIsLoading(true);
-      setChipRemoved(true);
-    } else {
-      setDisplayTable(false);
-    }
-  };
+  const cancelJobsOptionSelect = useCallback((): void => {
+    setIsKebabOpen((currentIsKebabOpen) => !currentIsKebabOpen);
+  }, []);
 
-  const onSelect = (event, selection: JobStatus): void => {
-    let selectionText = event.target.id;
-    selectionText = selectionText.split("pf-random-id-")[1].split("-")[1];
-    let selectedStatusCopy = [...selectedStatus];
-    if (selectedStatus.includes(selectionText)) {
-      selectedStatusCopy = selectedStatusCopy.filter((item) => item !== selectionText);
-      setSelectedStatus(selectedStatusCopy);
-    } else {
-      selectedStatusCopy = [...selectedStatusCopy, selectionText];
-      setSelectedStatus(selectedStatusCopy);
-    }
-  };
-
-  const cancelJobsOptionSelect = (): void => {
-    setIsKebabOpen(!isKebabOpen);
-  };
-
-  const cancelJobsKebabToggle = (isOpen): void => {
+  const cancelJobsKebabToggle = useCallback((isOpen): void => {
     setIsKebabOpen(isOpen);
-  };
+  }, []);
 
-  const dropdownItemsCancelJobsButtons = (): JSX.Element[] => {
+  const dropdownItemsCancelJobsButtons = useCallback((): JSX.Element[] => {
     return [
       <DropdownItem
         key="cancel"
@@ -149,38 +134,48 @@ const JobsManagementToolbar: React.FC<JobsManagementToolbarProps & OUIAProps> = 
         Cancel selected
       </DropdownItem>,
     ];
-  };
+  }, [jobOperations, selectedJobInstances.length]);
 
-  const cancelJobsOption: JSX.Element = (
-    <OverflowMenu breakpoint="xl">
-      <OverflowMenuContent>
-        <OverflowMenuItem>
-          <Button
-            variant="secondary"
-            onClick={jobOperations[OperationType.CANCEL].functions.perform}
-            isDisabled={selectedJobInstances.length === 0}
-          >
-            Cancel selected
-          </Button>
-        </OverflowMenuItem>
-      </OverflowMenuContent>
-      <OverflowMenuControl>
-        <Dropdown
-          onSelect={cancelJobsOptionSelect}
-          toggle={<KebabToggle onToggle={cancelJobsKebabToggle} />}
-          isOpen={isKebabOpen}
-          isPlain
-          dropdownItems={dropdownItemsCancelJobsButtons()}
-        />
-      </OverflowMenuControl>
-    </OverflowMenu>
+  const cancelJobsOption: JSX.Element = useMemo(
+    () => (
+      <OverflowMenu breakpoint="xl">
+        <OverflowMenuContent>
+          <OverflowMenuItem>
+            <Button
+              variant="secondary"
+              onClick={jobOperations[OperationType.CANCEL].functions.perform}
+              isDisabled={selectedJobInstances.length === 0}
+            >
+              Cancel selected
+            </Button>
+          </OverflowMenuItem>
+        </OverflowMenuContent>
+        <OverflowMenuControl>
+          <Dropdown
+            onSelect={cancelJobsOptionSelect}
+            toggle={<KebabToggle onToggle={cancelJobsKebabToggle} />}
+            isOpen={isKebabOpen}
+            isPlain
+            dropdownItems={dropdownItemsCancelJobsButtons()}
+          />
+        </OverflowMenuControl>
+      </OverflowMenu>
+    ),
+    [
+      cancelJobsKebabToggle,
+      cancelJobsOptionSelect,
+      dropdownItemsCancelJobsButtons,
+      isKebabOpen,
+      jobOperations,
+      selectedJobInstances.length,
+    ]
   );
 
   useEffect(() => {
     if (chipRemoved) {
-      filterData();
+      onRefresh();
     }
-  }, [chipRemoved]);
+  }, [chipRemoved, onRefresh]);
 
   return (
     <Toolbar
@@ -243,7 +238,7 @@ const JobsManagementToolbar: React.FC<JobsManagementToolbarProps & OUIAProps> = 
           </ToolbarItem>
         </ToolbarGroup>
         <ToolbarItem variant="separator" />
-        <ToolbarGroup className="pf-u-ml-md" id="jobs-management-buttons">
+        <ToolbarGroup className="pf-v5-u-ml-md" id="jobs-management-buttons">
           {cancelJobsOption}
         </ToolbarGroup>
       </ToolbarContent>

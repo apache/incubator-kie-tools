@@ -26,9 +26,10 @@ import {
   DrilldownMenu,
   Menu,
   MenuContent,
-  MenuInput,
+  MenuSearch,
   MenuItem,
   MenuList,
+  MenuSearchInput,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename } from "path";
@@ -41,7 +42,7 @@ import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativ
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useGlobalAlert } from "../alerts/GlobalAlertsContext";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { CreateWorkspaceFromUploadedFolder } from "./CreateWorkspaceFromUploadedFolder";
 import { ImportFromUrlButton } from "../homepage/overView/ImportFromUrlButton";
 
@@ -60,7 +61,7 @@ export function NewFileDropdownMenu(props: {
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
   const [url, setUrl] = useState("");
   const [isUrlValid, setIsUrlValid] = useState(ValidatedOptions.default);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const allowedUrlTypes = useMemo(
     () => (!props.workspaceId ? undefined : [UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE]),
@@ -94,7 +95,7 @@ export function NewFileDropdownMenu(props: {
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
       if (!props.workspaceId) {
-        return history.push(routes.newModel.path({ extension }));
+        return navigate(routes.newModel.path({ extension }));
       }
 
       const file = await workspaces.addEmptyFile({
@@ -104,7 +105,7 @@ export function NewFileDropdownMenu(props: {
       });
       await props.onAddFile?.(file);
     },
-    [props, workspaces, routes, history]
+    [props, workspaces, routes, navigate]
   );
 
   const urlInputRef = useRef<HTMLInputElement>(null);
@@ -126,7 +127,7 @@ export function NewFileDropdownMenu(props: {
       }
 
       if (!props.workspaceId) {
-        return history.push({
+        return navigate({
           pathname: routes.importModel.path({}),
           search: routes.importModel.queryString({ url: urlString }),
         });
@@ -162,7 +163,7 @@ export function NewFileDropdownMenu(props: {
         // setImporting(false);
       }
     },
-    [props, workspaces, history, routes]
+    [props, workspaces, navigate, routes]
   );
 
   const successfullyUploadedAlert = useGlobalAlert(
@@ -226,15 +227,14 @@ export function NewFileDropdownMenu(props: {
         return;
       }
 
-      history.push({
+      navigate({
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: workspaceData.workspaceId,
           fileRelativePath: workspaceData.fileRelativePath,
-          extension: workspaceData.extension,
         }),
       });
     },
-    [history, routes, workspaces]
+    [navigate, routes, workspaces]
   );
 
   const handleFileUpload = useCallback(
@@ -319,29 +319,33 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"importFromUrlMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
-                <MenuInput>
-                  <ImportFromUrlForm
-                    importingError={importingError}
-                    allowedTypes={allowedUrlTypes}
-                    urlInputRef={urlInputRef}
-                    url={url}
-                    onChange={(url) => {
-                      setUrl(url);
-                      setImportingError(undefined);
-                    }}
-                    onValidate={setIsUrlValid}
-                    onSubmit={() => importFromUrl(url)}
-                  />
-                </MenuInput>
-                <MenuInput>
-                  <ImportFromUrlButton
-                    allowedTypes={allowedUrlTypes}
-                    url={url}
-                    isUrlValid={isUrlValid}
-                    isLoading={isImporting}
-                    onClick={() => importFromUrl(url)}
-                  />
-                </MenuInput>
+                <MenuSearch>
+                  <MenuSearchInput>
+                    <ImportFromUrlForm
+                      importingError={importingError}
+                      allowedTypes={allowedUrlTypes}
+                      urlInputRef={urlInputRef}
+                      url={url}
+                      onChange={(url) => {
+                        setUrl(url);
+                        setImportingError(undefined);
+                      }}
+                      onValidate={setIsUrlValid}
+                      onSubmit={() => importFromUrl(url)}
+                    />
+                  </MenuSearchInput>
+                </MenuSearch>
+                <MenuSearch>
+                  <MenuSearchInput>
+                    <ImportFromUrlButton
+                      allowedTypes={allowedUrlTypes}
+                      url={url}
+                      isUrlValid={isUrlValid}
+                      isLoading={isImporting}
+                      onClick={() => importFromUrl(url)}
+                    />
+                  </MenuSearchInput>
+                </MenuSearch>
               </DrilldownMenu>
             }
           >

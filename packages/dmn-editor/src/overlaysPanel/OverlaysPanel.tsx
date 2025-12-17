@@ -27,6 +27,8 @@ import { useLayoutEffect, useRef } from "react";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../i18n";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
@@ -38,40 +40,43 @@ interface OverlaysPanelProps {
 }
 
 export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
+  const { i18n } = useDmnEditorI18n();
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const overlayPanelContainer = useRef<HTMLDivElement>(null);
+  const { isEvaluationHighlightsSupported } = useSettings();
   useLayoutEffect(() => {
     if (overlayPanelContainer.current && availableHeight) {
-      const bounds = overlayPanelContainer.current.getBoundingClientRect();
-      const currentHeight = bounds.height;
-      const yPos = bounds.y;
-      if (currentHeight + yPos >= availableHeight) {
+      if (overlayPanelContainer.current.scrollHeight <= availableHeight) {
+        overlayPanelContainer.current.style.overflowY = "hidden";
+        overlayPanelContainer.current.style.height = "auto";
+      } else if (
+        overlayPanelContainer.current.style.height !== availableHeight - BOTTOM_MARGIN + "px" &&
+        overlayPanelContainer.current.style.height !== "auto"
+      ) {
         overlayPanelContainer.current.style.height = availableHeight - BOTTOM_MARGIN + "px";
-        overlayPanelContainer.current.style.overflowY = "scroll";
-      } else {
-        overlayPanelContainer.current.style.overflowY = "visible";
+        overlayPanelContainer.current.style.overflowY = "auto";
       }
     }
-  });
+  }, [availableHeight]);
 
   return (
     <div ref={overlayPanelContainer}>
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        <FormGroup label="Snapping">
+        <FormGroup label={i18n.overlaysPanel.snapping}>
           <Switch
             aria-label={"Snapping"}
             isChecked={diagram.snapGrid.isEnabled}
-            onChange={(newValue) =>
+            onChange={(_event, newValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.snapGrid.isEnabled = newValue;
               })
             }
           />
         </FormGroup>
-        <FormGroup label="Horizontal">
+        <FormGroup label={i18n.overlaysPanel.horizontal}>
           <Slider
             data-testid={"kie-tools--dmn-editor--horizontal-snapping-control"}
             className={"kie-dmn-editor--snap-slider"}
@@ -84,14 +89,14 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             step={SNAP_STEP}
             showTicks={true}
             hasTooltipOverThumb={true}
-            onChange={(newSliderValue, newInputValue) =>
+            onChange={(_event, newSliderValue, newInputValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.snapGrid.x = Math.min(MAX_SNAP, Math.max(MIN_SNAP, newInputValue ?? newSliderValue));
               })
             }
           />
         </FormGroup>
-        <FormGroup label="Vertical">
+        <FormGroup label={i18n.overlaysPanel.vertical}>
           <Slider
             data-testid={"kie-tools--dmn-editor--vertical-snapping-control"}
             className={"kie-dmn-editor--snap-slider"}
@@ -104,7 +109,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             step={SNAP_STEP}
             showTicks={true}
             hasTooltipOverThumb={true}
-            onChange={(newSliderValue, newInputValue) =>
+            onChange={(_event, newSliderValue, newInputValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.snapGrid.y = Math.min(MAX_SNAP, Math.max(MIN_SNAP, newInputValue ?? newSliderValue));
               })
@@ -118,62 +123,61 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        <FormGroup label={"Highlight selected node(s) hierarchy"}>
+        <FormGroup label={i18n.overlaysPanel.highlightSelectedNode}>
           <Switch
             aria-label={"Highlight selected node(s) hierarchy"}
             isChecked={diagram.overlays.enableNodeHierarchyHighlight}
-            onChange={(newValue) =>
+            onChange={(_event, newValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.overlays.enableNodeHierarchyHighlight = newValue;
               })
             }
           />
         </FormGroup>
-        <FormGroup label={"Show data type toolbar on nodes"}>
+        <FormGroup label={i18n.overlaysPanel.showDataTypeToolbar}>
           <Switch
             aria-label={"Show data type toolbar on nodes"}
             isChecked={diagram.overlays.enableDataTypesToolbarOnNodes}
-            onChange={(newValue) =>
+            onChange={(_event, newValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.overlays.enableDataTypesToolbarOnNodes = newValue;
               })
             }
           />
         </FormGroup>
-        <FormGroup label={"Enable styles"}>
+        <FormGroup label={i18n.overlaysPanel.enableStyles}>
           <Switch
             aria-label={"Show data type toolbar on nodes"}
             isChecked={diagram.overlays.enableCustomNodeStyles}
-            onChange={(newValue) =>
+            onChange={(_event, newValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.overlays.enableCustomNodeStyles = newValue;
               })
             }
           />
         </FormGroup>
-        <FormGroup
-          label={"Enable evaluation highlights"}
-          labelIcon={
-            <Tooltip
-              content={
-                "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes."
-              }
-            >
-              <Icon size="sm" status="info">
-                <HelpIcon />
-              </Icon>
-            </Tooltip>
-          }
-        >
-          <Switch
-            isChecked={diagram.overlays.enableEvaluationHighlights}
-            onChange={(newValue) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.enableEvaluationHighlights = newValue;
-              })
+        {isEvaluationHighlightsSupported && (
+          <FormGroup
+            label={i18n.overlaysPanel.enableEvaluationHighlights}
+            labelIcon={
+              <Tooltip content={i18n.overlaysPanel.enableHighlightingDecisionTable}>
+                <Icon size="sm" status="info">
+                  <HelpIcon />
+                </Icon>
+              </Tooltip>
             }
-          />
-        </FormGroup>
+          >
+            <Switch
+              data-testid={"kie-tools--dmn-editor--evaluation-highlights-control"}
+              isChecked={diagram.overlays.enableEvaluationHighlights}
+              onChange={(_event, newValue) =>
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.overlays.enableEvaluationHighlights = newValue;
+                })
+              }
+            />
+          </FormGroup>
+        )}
       </Form>
     </div>
   );

@@ -15,6 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# Labels to add to all resources and selectors.
+# https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/#labels
+commonLabels:
+  app.kubernetes.io/name: sonataflow-operator
+
 # Adds namespace to all resources.
 namespace: sonataflow-operator-system
 

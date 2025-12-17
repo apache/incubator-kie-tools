@@ -20,9 +20,9 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useEnv } from "../env/hooks/EnvContext";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 
@@ -35,18 +35,12 @@ export function CorsProxySettingsTab() {
 
   return (
     <>
-      <Page>
-        <PageSection>
-          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-            <Form onSubmit={onSubmit}>
-              <FormGroup
-                isRequired={true}
-                helperTextInvalid={""}
-                validated={"default"}
-                label={"URL"}
-                fieldId={"url-input"}
-              >
-                <InputGroup>
+      <PageSection>
+        <PageSection variant={"light"} isFilled={true}>
+          <Form onSubmit={onSubmit}>
+            <FormGroup isRequired={true} label={"URL"} fieldId={"url-input"}>
+              <InputGroup>
+                <InputGroupItem isFill>
                   <TextInput
                     isDisabled={true}
                     id="url-input"
@@ -57,17 +51,17 @@ export function CorsProxySettingsTab() {
                     value={env.KIE_SANDBOX_CORS_PROXY_URL}
                     autoFocus={true}
                   />
-                </InputGroup>
-              </FormGroup>
-              <TextContent>
-                <Text component={"small"}>
-                  {`The CORS Proxy allows ${env.KIE_SANDBOX_APP_NAME} to communicate with Git and Cloud providers.`}
-                </Text>
-              </TextContent>
-            </Form>
-          </PageSection>
+                </InputGroupItem>
+              </InputGroup>
+            </FormGroup>
+            <TextContent>
+              <Text component={"small"}>
+                {`The CORS Proxy allows ${env.KIE_SANDBOX_APP_NAME} to communicate with Git and Cloud providers.`}
+              </Text>
+            </TextContent>
+          </Form>
         </PageSection>
-      </Page>
+      </PageSection>
     </>
   );
 }

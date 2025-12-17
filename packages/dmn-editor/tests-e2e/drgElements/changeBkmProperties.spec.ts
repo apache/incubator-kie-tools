@@ -137,4 +137,18 @@ test.describe("Change Properties - BKM", () => {
 
     await expect(diagram.get()).toHaveScreenshot("change-bkm-position.png");
   });
+  test("should change the BKM node properties using the BEE properties panel", async ({
+    nodes,
+    beePropertiesPanel,
+  }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1459",
+    });
+    await nodes.edit({ name: DefaultNodeName.BKM });
+    await beePropertiesPanel.bkmNode.expressionHeaderCell().select();
+
+    await beePropertiesPanel.bkmNode.setDescription({ newDescription: "New Description" });
+    expect(await beePropertiesPanel.bkmNode.getDescription()).toBe("New Description");
+  });
 });

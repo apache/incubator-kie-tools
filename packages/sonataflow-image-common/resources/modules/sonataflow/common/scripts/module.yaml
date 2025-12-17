@@ -19,13 +19,9 @@
 schema_version: 1
 name: org.kie.sonataflow.common.scripts
 version: "main"
-description: "Kogito Serverless Workflow image common scripts"
+description: "SonataFlow images common scripts"
 
 envs:
-  - name: QUARKUS_EXTENSIONS
-    example: "quarkus-kubernetes,org.apache.kie.sonataflow:sonataflow-quarkus:${KOGITO_VERSION},org.kie:kie-addons-quarkus-knative-eventing:${KOGITO_VERSION}"
-    description: To add extension to your application
-
   - name: PROJECT_GROUP_ID
     value: "org.acme"
     description: Please do not change. To change only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
@@ -35,11 +31,10 @@ envs:
   - name: PROJECT_VERSION
     value: "1.0.0-SNAPSHOT"
     description: Please do not change. To change only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
-  - name: QUARKUS_CREATE_ARGS
-    example: -DnoCode
-    description: To use only if you plan to use the ${KOGITO_HOME}/launch/create-app.sh
   - name: QUARKUS_ADD_EXTENSION_ARGS
     description: To use only if you plan to use the ${KOGITO_HOME}/launch/add-extension.sh
+
+# Requires org.kie.kogito.maven.common module
 
 execute:
   - script: configure.sh

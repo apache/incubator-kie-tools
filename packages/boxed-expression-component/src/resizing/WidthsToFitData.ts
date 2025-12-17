@@ -17,6 +17,9 @@
  * under the License.
  */
 
+import { DmnBuiltInDataType } from "../api";
+import { DEFAULT_MIN_WIDTH } from "./WidthConstants";
+
 /**
  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
  *
@@ -46,4 +49,19 @@ export function getCanvasFont(el: Element) {
   const fontFamily = getCssStyle(el, "font-family") || "Times New Roman";
 
   return `${fontWeight} ${fontSize} ${fontFamily}`;
+}
+
+export function getDefaultColumnWidth({ name, typeRef }: { name: string; typeRef: string | undefined }): number {
+  return (
+    8 * 2 + // Copied from ContextEntry variable `getWidthToFit`
+    2 + // Copied from ContextEntry variable `getWidthToFit`
+    Math.max(
+      DEFAULT_MIN_WIDTH,
+      getTextWidth(name, "700 11.2px Menlo, monospace"),
+      getTextWidth(
+        `(${typeRef ?? DmnBuiltInDataType.Undefined})`,
+        "700 11.6667px RedHatText, Overpass, overpass, helvetica, arial, sans-serif"
+      )
+    )
+  );
 }

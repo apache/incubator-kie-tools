@@ -22,21 +22,26 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { BreadcrumbItem, Breadcrumb } from "@patternfly/react-core/components/Breadcrumb";
+import { BreadcrumbItem, Breadcrumb } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CaretDownIcon, PlusIcon } from "@patternfly/react-icons/dist/js/icons";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
 import { splitFiles } from "../../../extension";
@@ -47,13 +52,10 @@ import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
 import { ErrorPage } from "../../../error/ErrorPage";
 import Fuse from "fuse.js";
 
-export interface WorkspaceFilesProps {
-  workspaceId: string;
-}
+export function WorkspaceFiles() {
+  const { workspaceId } = useParams<{ workspaceId: string }>();
 
-export function WorkspaceFiles(props: WorkspaceFilesProps) {
-  const { workspaceId } = props;
-  const workspacePromise = useWorkspacePromise(workspaceId);
+  const workspacePromise = useWorkspacePromise(workspaceId!);
   const [selectedWorkspaceFiles, setSelectedWorkspaceFiles] = useState<WorkspaceFile[]>([]);
   const [deletingWorkspaceFiles, setDeletingWorkspaceFiles] = useState<WorkspaceFile[]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
@@ -73,7 +75,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
   );
   const [fuseSearch, setFuseSearch] = useState<Fuse<WorkspaceFile>>();
   const workspaces = useWorkspaces();
-  const history = useHistory();
+  const navigate = useNavigate();
   const isDeletingWorkspaceFilesPlural = useMemo(() => deletingWorkspaceFiles.length > 1, [deletingWorkspaceFiles]);
   const deletingElementTypesName = useMemo(
     () => (isDeletingWorkspaceFilesPlural ? "files" : "file"),
@@ -131,8 +133,8 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
       setIsConfirmDeleteModalOpen(false);
 
       if (deletingWorkspaceFiles.length === totalFilesCount) {
-        workspaces.deleteWorkspace({ workspaceId });
-        history.push({ pathname: routes.recentModels.path({}) });
+        workspaces.deleteWorkspace({ workspaceId: workspaceId! });
+        navigate({ pathname: routes.recentModels.path({}) });
         deleteSuccessAlert.show({ elementsTypeName });
         return;
       }
@@ -154,7 +156,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
     [
       deletingWorkspaceFiles,
       workspaces,
-      history,
+      navigate,
       workspaceId,
       deleteErrorAlert,
       deleteSuccessAlert,
@@ -221,7 +223,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
-      rejected={(e) => <ErrorPage kind="WorkspaceFiles" workspaceId={props.workspaceId} errors={e} />}
+      rejected={(e) => <ErrorPage kind="WorkspaceFiles" workspaceId={workspaceId!} errors={e} />}
       resolved={(workspace: ActiveWorkspace) => {
         const allFilesCount = workspace.files.length;
         const filteredFiles = filterFiles(searchValue);
@@ -293,7 +295,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
                                 isOpen={isNewFileDropdownMenuOpen}
                                 toggle={
                                   <DropdownToggle
-                                    onToggle={setNewFileDropdownMenuOpen}
+                                    onToggle={(_event, val) => setNewFileDropdownMenuOpen(val)}
                                     toggleIndicator={CaretDownIcon}
                                     toggleVariant="primary"
                                   >
@@ -311,11 +313,10 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
                                       return;
                                     }
 
-                                    history.push({
+                                    navigate({
                                       pathname: routes.workspaceWithFilePath.path({
                                         workspaceId: file.workspaceId,
-                                        fileRelativePath: file.relativePathWithoutExtension,
-                                        extension: file.extension,
+                                        fileRelativePath: file.relativePath,
                                       }),
                                     });
                                   }}
@@ -328,7 +329,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
                                 label="View readonly files"
                                 isChecked={isViewRoFilesChecked}
                                 isDisabled={isViewRoFilesDisabled}
-                                onChange={handleViewRoCheckboxChange}
+                                onChange={(_event, value) => handleViewRoCheckboxChange(value)}
                               ></Checkbox>
                             </ToolbarItem>
                           </>
@@ -359,10 +360,11 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
                   {allFilesCount === 0 && (
                     <Bullseye>
                       <EmptyState>
-                        <EmptyStateIcon icon={CubesIcon} />
-                        <Title headingLevel="h4" size="lg">
-                          {`Nothing here`}
-                        </Title>
+                        <EmptyStateHeader
+                          titleText={<>{`Nothing here`}</>}
+                          icon={<EmptyStateIcon icon={CubesIcon} />}
+                          headingLevel="h4"
+                        />
                         <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
                       </EmptyState>
                     </Bullseye>

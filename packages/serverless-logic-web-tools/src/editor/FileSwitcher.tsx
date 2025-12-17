@@ -23,11 +23,11 @@ import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
-import { Dropdown } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown } from "@patternfly/react-core/deprecated";
 import { Link } from "react-router-dom";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../workspace/components/FileLabel";
-import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
+import { Toggle } from "@patternfly/react-core/dist/js/deprecated/components/Dropdown/Toggle";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -39,9 +39,10 @@ import {
   Menu,
   MenuContent,
   MenuGroup,
-  MenuInput,
+  MenuSearch,
   MenuItem,
   MenuList,
+  MenuSearchInput,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
@@ -51,7 +52,7 @@ import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { useWorkspacesFilesPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
@@ -231,7 +232,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
             isPlain={true}
             toggle={
               <Toggle
-                onToggle={(isOpen) =>
+                onToggle={(_event, isOpen: boolean) =>
                   setFilesDropdownOpen((prev) => {
                     if (workspaceFileNameRef.current === document.activeElement) {
                       return prev;
@@ -305,7 +306,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                               }
                             }}
                             onKeyDown={handleWorkspaceFileNameKeyDown}
-                            onChange={checkNewFileName}
+                            onChange={(_event, value) => checkNewFileName(value)}
                             readOnlyVariant={!isEditable(props.workspaceFile.name) ? "plain" : undefined}
                             ref={workspaceFileNameRef}
                             type={"text"}
@@ -492,23 +493,25 @@ export function SearchableFilesMenuGroup(props: {
 
   return (
     <MenuGroup label={props.label}>
-      <MenuInput>
-        <TextInput
-          ref={searchInputRef}
-          value={search}
-          aria-label={"Readonly files menu items"}
-          iconVariant={"search"}
-          type={"search"}
-          onChange={(value) => setSearch(value)}
-        />
-      </MenuInput>
+      <MenuSearch>
+        <MenuSearchInput>
+          <TextInput
+            ref={searchInputRef}
+            value={search}
+            aria-label={"Readonly files menu items"}
+            type={"search"}
+            onChange={(_event, value) => setSearch(value)}
+          />
+        </MenuSearchInput>
+      </MenuSearch>
       {filteredFiles.length === 0 && search && (
         <Bullseye>
           <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {`No files match '${search}'.`}
-            </Title>
+            <EmptyStateHeader
+              titleText={<>{`No files match '${search}'.`}</>}
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel="h4"
+            />
           </EmptyState>
         </Bullseye>
       )}
@@ -641,7 +644,7 @@ export function FileName(props: { file: WorkspaceFile }) {
           <FileLabel extension={props.file.extension} />
         </FlexItem>
       </Flex>
-      <div className={"pf-c-dropdown__menu-item-description"}>
+      <div className={"pf-v5-c-dropdown__menu-item-description"}>
         {props.file.relativeDirPath.split("/").join(" > ")}
         &nbsp;
       </div>
@@ -656,8 +659,7 @@ export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => v
       <Link
         to={routes.workspaceWithFilePath.path({
           workspaceId: props.file.workspaceId,
-          fileRelativePath: props.file.relativePathWithoutExtension,
-          extension: props.file.extension,
+          fileRelativePath: props.file.relativePath,
         })}
       >
         <FileName file={props.file} />

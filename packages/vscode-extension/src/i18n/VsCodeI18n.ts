@@ -19,14 +19,15 @@
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-interface VsCodeDictionary extends ReferenceDictionary {
-  savedSvg: (fileName: string) => string;
-  openSvg: string;
-  savedSuccessfully: string;
-  errorOpeningFileText: (fileName: string) => string;
-  openAsTextButton: string;
-  reopenAsDiagramText: string;
-  reopenAsDiagramButton: string;
-}
+interface VsCodeDictionary
+  extends ReferenceDictionary<{
+    savedSvg: (fileName: string) => string;
+    openSvg: string;
+    savedSuccessfully: string;
+    errorOpeningFileText: (fileName: string) => string;
+    openAsTextButton: string;
+    reopenAsDiagramText: string;
+    reopenAsDiagramButton: string;
+  }> {}
 
 export interface VsCodeI18n extends VsCodeDictionary {}

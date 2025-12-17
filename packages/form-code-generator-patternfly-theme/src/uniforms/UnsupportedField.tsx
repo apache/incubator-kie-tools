@@ -22,7 +22,8 @@ import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { useAddFormElementToContext } from "./CodeGenContext";
-import { ANY_ARRAY, OBJECT } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_ANY_ARRAY, DEFAULT_DATA_TYPE_OBJECT } from "./utils/dataTypes";
+import { ListItemProps } from "./rendering/ListItemField";
 
 export type UnsupportedFieldProps = HTMLFieldProps<
   any,
@@ -30,12 +31,16 @@ export type UnsupportedFieldProps = HTMLFieldProps<
   {
     label: string;
     required: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldProps) => {
   const isArray: boolean = props.fieldType === Array;
-  const ref: InputReference = getInputReference(props.name, isArray ? ANY_ARRAY : OBJECT);
+  const ref: InputReference = getInputReference(
+    props.name,
+    isArray ? DEFAULT_DATA_TYPE_ANY_ARRAY : DEFAULT_DATA_TYPE_OBJECT
+  );
 
   const jsxCode = `<Alert variant='warning' title='Unsupported field type: ${props.fieldType.name}'> 
         Cannot find form control for property <code>${props.name}</code> with type <code>${props.fieldType.name}</code>:<br/> 
@@ -53,6 +58,7 @@ const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldPro
       required: props.required,
     },
     disabled: props.disabled,
+    itemProps: props.itemProps,
   });
 
   useAddFormElementToContext(element);

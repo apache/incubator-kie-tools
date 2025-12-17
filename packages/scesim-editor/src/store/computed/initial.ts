@@ -21,6 +21,14 @@ import { Cache } from "../ComputedStateCache";
 import { Computed } from "../TestScenarioEditorStore";
 
 export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
+  getDataObjects: {
+    value: undefined,
+    dependencies: [],
+  },
+  getDmnDataObjects: {
+    value: undefined,
+    dependencies: [],
+  },
   getTestScenarioDataObjects: {
     value: undefined,
     dependencies: [],

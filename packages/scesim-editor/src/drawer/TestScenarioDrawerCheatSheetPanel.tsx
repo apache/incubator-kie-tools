@@ -59,7 +59,6 @@ function TestScenarioDrawerCheatSheetPanel() {
         <TextListItem>
           {testScenarioType === "DMN" ? i18n.drawer.cheatSheet.expression5DMN : i18n.drawer.cheatSheet.expression5Rule}
         </TextListItem>
-        T
         <TextListItem>
           {testScenarioType === "DMN" ? i18n.drawer.cheatSheet.expression6DMN : i18n.drawer.cheatSheet.expression6Rule}
         </TextListItem>

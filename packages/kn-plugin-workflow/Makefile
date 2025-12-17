@@ -29,9 +29,13 @@ METADATA_PATH                 := github.com/apache/incubator-kie-tools/packages/
 SET_QUARKUS_PLATFORM_GROUP_ID := $(METADATA_PATH).QuarkusPlatformGroupId=$(QUARKUS_PLATFORM_GROUP_ID)
 SET_QUARKUS_VERSION           := $(METADATA_PATH).QuarkusVersion=$(QUARKUS_VERSION)
 SET_DEV_MODE_IMAGE            := $(METADATA_PATH).DevModeImage=$(DEV_MODE_IMAGE_URL)
+SET_BUILDER_IMAGE             := $(METADATA_PATH).BuilderImage=$(BUILD_IMAGE_URL)
 SET_VERSION                   := $(METADATA_PATH).PluginVersion=$(PLUGIN_VERSION)
 SET_KOGITO_VERSION            := $(METADATA_PATH).KogitoVersion=$(KOGITO_VERSION)
-LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION) -X $(SET_DEV_MODE_IMAGE) -X $(SET_KOGITO_VERSION)"
+LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION) -X $(SET_DEV_MODE_IMAGE) -X $(SET_KOGITO_VERSION) -X $(SET_BUILDER_IMAGE)"
+
+KIND_VERSION ?= v0.20.0
+OLM_VERSION = v0.31.0
 
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),arm64)
@@ -62,3 +66,37 @@ build-win32-amd64:
 clean:
 	go clean
 	rm -rf $(BIN_PATH) $(TEST_PATH)
+
+.PHONY: test-e2e
+test-e2e:
+	@$(MAKE) install-kind
+	@$(MAKE) create-cluster
+	@$(MAKE) install-operator-framework
+	@$(MAKE) go-test-e2e
+	@$(MAKE) go-test-e2e-report
+
+
+.PHONY: install-kind
+install-kind:
+	command -v kind >/dev/null || go install sigs.k8s.io/kind@$(KIND_VERSION)
+
+.PHONY: create-cluster
+create-cluster: install-kind
+	kind create cluster
+
+.PHONY: install-operator-framework
+install-operator-framework:
+	curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/$(OLM_VERSION)/install.sh | bash -s $(OLM_VERSION)
+
+.PHONY: go-test-e2e
+go-test-e2e:
+	rm -rf dist-tests-e2e
+	mkdir dist-tests-e2e
+	go test -v ./e2e-tests/... -tags e2e_tests -timeout 20m 2>&1 | tee ./dist-tests-e2e/go-test-output-e2e.txt
+
+.PHONY: go-test-e2e-report
+go-test-e2e-report:
+	go run github.com/jstemmer/go-junit-report/v2 \
+	  -set-exit-code \
+	  -in ./dist-tests-e2e/go-test-output-e2e.txt \
+	  -out ./dist-tests-e2e/junit-report-it.xml

@@ -20,23 +20,18 @@
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Pagination, PaginationVariant, PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownSeparator,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Dropdown, DropdownItem, DropdownSeparator, DropdownToggle } from "@patternfly/react-core/deprecated";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ErrorPage } from "../error/ErrorPage";
 import { QueryParams } from "../navigation/Routes";
 import { setPageTitle } from "../PageTitle";
@@ -86,7 +81,7 @@ export function SamplesCatalog() {
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
   const [isDrawerExpanded, setIsDrawerExpanded] = React.useState(false);
   const [selectedSample, setSelectedSample] = useState<Sample>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const categoryFilter = useQueryParam(QueryParams.SAMPLES_CATEGORY) as SampleCategory;
@@ -122,9 +117,9 @@ export function SamplesCatalog() {
         searchParams.delete(QueryParams.SAMPLES_CATEGORY);
       }
       const newSearchString = searchParams.toString();
-      history.push({ search: newSearchString });
+      navigate({ search: newSearchString });
     },
-    [history, location]
+    [navigate, location]
   );
 
   const onSearch = useCallback(
@@ -260,7 +255,7 @@ export function SamplesCatalog() {
                           toggle={
                             <DropdownToggle
                               id="category-filter-dropdown"
-                              onToggle={(isOpen: boolean) => setCategoryFilterDropdownOpen(isOpen)}
+                              onToggle={(_event, isOpen: boolean) => setCategoryFilterDropdownOpen(isOpen)}
                             >
                               {selectedCategory}
                             </DropdownToggle>
@@ -299,10 +294,11 @@ export function SamplesCatalog() {
                     {!loading && samplesCount === 0 && (
                       <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
                         <EmptyState style={{ height: "350px" }}>
-                          <EmptyStateIcon icon={CubesIcon} />
-                          <Title headingLevel="h4" size="lg">
-                            {"None of the available samples matched this search"}
-                          </Title>
+                          <EmptyStateHeader
+                            titleText={<>{"None of the available samples matched this search"}</>}
+                            icon={<EmptyStateIcon icon={CubesIcon} />}
+                            headingLevel="h4"
+                          />
                         </EmptyState>
                       </PageSection>
                     )}
@@ -324,7 +320,6 @@ export function SamplesCatalog() {
                           onSetPage={onSetPage}
                           page={page}
                           perPage={CARDS_PER_PAGE}
-                          perPageComponent="button"
                           perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
                           variant={PaginationVariant.bottom}
                           widgetId="bottom-example"

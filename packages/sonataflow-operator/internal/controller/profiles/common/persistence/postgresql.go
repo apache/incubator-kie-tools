@@ -19,6 +19,7 @@ package persistence
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/magiconair/properties"
 
@@ -37,7 +38,7 @@ const (
 )
 
 // ConfigurePostgreSQLEnv returns the common env variables required for the DataIndex or JobsService when postresql persistence is used.
-func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, databaseSchema, databaseNamespace string) []corev1.EnvVar {
+func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, databaseSchema, databaseNamespace string, includeReactiveUrl bool) []corev1.EnvVar {
 	dataSourcePort := constants.DefaultPostgreSQLPort
 	databaseName := defaultDatabaseName
 	dataSourceURL := postgresql.JdbcUrl
@@ -67,7 +68,7 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 	if len(postgresql.SecretRef.PasswordKey) > 0 {
 		quarkusDatasourcePassword = postgresql.SecretRef.PasswordKey
 	}
-	return []corev1.EnvVar{
+	env := []corev1.EnvVar{
 		{
 			Name: "QUARKUS_DATASOURCE_USERNAME",
 			ValueFrom: &corev1.EnvVarSource{
@@ -94,19 +95,28 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: dataSourceURL,
 		},
-		{
-			Name:  "KOGITO_PERSISTENCE_TYPE",
-			Value: "jdbc",
-		},
 	}
+	if includeReactiveUrl {
+		dataSourceReactiveURL := strings.TrimPrefix(dataSourceURL, "jdbc:")
+		dataSourceReactiveURL = strings.ReplaceAll(dataSourceReactiveURL, "currentSchema=", "search_path=")
+		env = append(env, corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: dataSourceReactiveURL,
+		})
+	}
+	env = append(env, corev1.EnvVar{
+		Name:  "KOGITO_PERSISTENCE_TYPE",
+		Value: "jdbc",
+	})
+	return env
 }
 
-func ConfigurePersistence(serviceContainer *corev1.Container, config *operatorapi.PersistenceOptionsSpec, defaultSchema, namespace string) *corev1.Container {
+func ConfigureWorkflowPersistence(serviceContainer *corev1.Container, config *operatorapi.PersistenceOptionsSpec, defaultSchema, namespace string) *corev1.Container {
 	if config.PostgreSQL == nil {
 		return serviceContainer
 	}
 	c := serviceContainer.DeepCopy()
-	c.Env = append(c.Env, ConfigurePostgreSQLEnv(config.PostgreSQL, defaultSchema, namespace)...)
+	c.Env = append(c.Env, ConfigurePostgreSQLEnv(config.PostgreSQL, defaultSchema, namespace, false)...)
 	return c
 }
 
@@ -169,4 +179,59 @@ func GetPostgreSQLWorkflowProperties(workflow *operatorapi.SonataFlow) *properti
 		props.Set(KogitoPersistenceProtoMarshaller, "false")
 	}
 	return props
+}
+
+// GetDBSchemaName Parses jdbc url and returns the schema name
+func GetDBSchemaName(persistencePostgreSQL *operatorapi.PersistencePostgreSQL, defaultSchemaName string) string {
+	if persistencePostgreSQL != nil && persistencePostgreSQL.ServiceRef != nil && len(persistencePostgreSQL.ServiceRef.DatabaseSchema) > 0 {
+		return persistencePostgreSQL.ServiceRef.DatabaseSchema
+	}
+
+	if persistencePostgreSQL != nil && len(persistencePostgreSQL.JdbcUrl) > 0 {
+		jdbcURL := persistencePostgreSQL.JdbcUrl
+		_, a, found := strings.Cut(jdbcURL, "currentSchema=")
+
+		if found {
+			if strings.Contains(a, "&") {
+				b, _, found := strings.Cut(a, "&")
+				if found {
+					return b
+				}
+			} else {
+				return a
+			}
+		}
+	}
+	return defaultSchemaName
+}
+
+func MapToPersistencePostgreSQL(platform *operatorapi.SonataFlowPlatform, defaultSchemaName string) *operatorapi.PersistencePostgreSQL {
+	if platform.Spec.Persistence != nil && platform.Spec.Persistence.PostgreSQL != nil {
+		persistencePostgreSQL := &operatorapi.PersistencePostgreSQL{}
+		persistencePostgreSQL.SecretRef = platform.Spec.Persistence.PostgreSQL.SecretRef
+
+		if len(platform.Spec.Persistence.PostgreSQL.JdbcUrl) > 0 {
+			persistencePostgreSQL.JdbcUrl = platform.Spec.Persistence.PostgreSQL.JdbcUrl
+		}
+
+		serviceRef := &operatorapi.PostgreSQLServiceOptions{}
+		if platform.Spec.Persistence.PostgreSQL.ServiceRef != nil {
+
+			serviceRef.DatabaseSchema = defaultSchemaName
+			serviceRef.SQLServiceOptions = &operatorapi.SQLServiceOptions{}
+
+			if len(platform.Spec.Persistence.PostgreSQL.ServiceRef.Name) > 0 {
+				serviceRef.SQLServiceOptions.Name = platform.Spec.Persistence.PostgreSQL.ServiceRef.Name
+			}
+
+			if len(platform.Spec.Persistence.PostgreSQL.ServiceRef.DatabaseName) > 0 {
+				serviceRef.SQLServiceOptions.DatabaseName = platform.Spec.Persistence.PostgreSQL.ServiceRef.DatabaseName
+			}
+
+			persistencePostgreSQL.ServiceRef = serviceRef
+		}
+		return persistencePostgreSQL
+	}
+
+	return nil
 }

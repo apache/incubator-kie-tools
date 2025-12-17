@@ -80,7 +80,7 @@ export interface BeeTableProps<R extends object> {
   /** Enable keyboard navigation */
   enableKeyboardNavigation?: boolean;
   /** */
-  onRowAdded?: (args: { beforeIndex: number }) => void;
+  onRowAdded?: (args: { beforeIndex: number; insertDirection: InsertRowColumnsDirection; rowsCount: number }) => void;
   onRowDuplicated?: (args: { rowIndex: number }) => void;
   onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;

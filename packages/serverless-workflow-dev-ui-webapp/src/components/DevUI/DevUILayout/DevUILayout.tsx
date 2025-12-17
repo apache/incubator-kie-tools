@@ -18,10 +18,9 @@
  */
 
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
-import { MemoryRouter } from "react-router";
 import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
 import DevUINav from "../DevUINav/DevUINav";
 import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
@@ -63,14 +62,6 @@ const DevUILayout: React.FC<IOwnProps> = ({
   openApiBaseUrl,
   openApiPath,
 }) => {
-  const renderPage = (routeProps: { location: { pathname: string } }) => {
-    return (
-      <PageLayout pageNavOpen={true} PageNav={<DevUINav pathname={routeProps.location.pathname} />}>
-        {children}
-      </PageLayout>
-    );
-  };
-
   return (
     <ApolloProvider client={apolloClient}>
       <DevUIAppContextProvider
@@ -94,9 +85,16 @@ const DevUILayout: React.FC<IOwnProps> = ({
                       <WorkflowFormContextProvider>
                         <CloudEventFormContextProvider>
                           <MemoryRouter>
-                            <Switch>
-                              <Route path="/" render={renderPage} />
-                            </Switch>
+                            <Routes>
+                              <Route
+                                path="*"
+                                element={
+                                  <PageLayout pageNavOpen={true} PageNav={<DevUINav />}>
+                                    {children}
+                                  </PageLayout>
+                                }
+                              />
+                            </Routes>
                           </MemoryRouter>
                         </CloudEventFormContextProvider>
                       </WorkflowFormContextProvider>

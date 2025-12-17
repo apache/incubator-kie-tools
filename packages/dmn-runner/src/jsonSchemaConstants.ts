@@ -21,3 +21,4 @@ export const RECURSION_KEYWORD = "recursion";
 export const RECURSION_REF_KEYWORD = "recursionRef";
 export const SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 export const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
+export const EXAMPLES_KEYWORD = "examples";

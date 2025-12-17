@@ -45,7 +45,7 @@ describe("type safety", () => {
     test(path.basename(file), () => {
       const xml = fs.readFileSync(path.join(__dirname, file), "utf-8");
 
-      const { parser, version } = getMarshaller(xml);
+      const { parser, version } = getMarshaller(xml, { upgradeTo: "latest" });
       const json = parser.parse();
 
       const minorVersion = version.split(".")[1];

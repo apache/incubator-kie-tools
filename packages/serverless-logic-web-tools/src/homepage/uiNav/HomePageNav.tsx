@@ -63,7 +63,7 @@ export function HomePageNav(props: { pathname: string }) {
         <Link to={routes.settings.runtime_tools.path({})}>Runtime Tools</Link>
       </NavItem>
     );
-  }, [settings]);
+  }, [settings, props.pathname]);
 
   return (
     <>
@@ -83,8 +83,8 @@ export function HomePageNav(props: { pathname: string }) {
             key={"Recent-models-nav"}
             isActive={
               props.pathname === routes.recentModels.path({}) ||
-              matchPath(props.pathname, { path: routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" }) })
-                ?.isExact
+              matchPath({ path: routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" }) }, props.pathname) !==
+                null
             }
             ouiaId="recent-models-nav"
           >

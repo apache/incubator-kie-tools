@@ -16,7 +16,7 @@
     "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm mvn-build-app\" \"pnpm copy-assets\" \"pnpm image:build\"",
     "build:prod": "pnpm build:dev && pnpm image:test",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/dist build && cp -R resources/* build",
     "copy-test-assets": "run-script-os",
     "copy-test-assets:linux:darwin": "cp -R test-resources/. build",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
@@ -32,11 +32,14 @@
     "mvn-build-app:win32": "echo \"Build skipped on Windows\"",
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoJitRunnerImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoJitRunnerImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoJitRunnerImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoJitRunnerImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
-    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*",
+    "@kie/kogito-images-install-helper": "workspace:*",
     "cross-env": "^7.0.3",
     "replace-in-file": "^7.1.0",
     "rimraf": "^3.0.2",

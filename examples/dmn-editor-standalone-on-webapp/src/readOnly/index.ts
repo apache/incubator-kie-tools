@@ -37,6 +37,7 @@ function loadEditor() {
     initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "loan-pre-qualification.dmn",
     initialContent: loadFile("loan-pre-qualification.dmn"),
     readOnly: true,
+    locale: "en",
   });
 
   console.log({ editor });

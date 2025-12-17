@@ -18,6 +18,7 @@
  */
 
 import {
+  Action,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -25,16 +26,14 @@ import {
   BoxedFor,
   BoxedIterator,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   generateUuid,
   Normalized,
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import React, { useCallback, useMemo, useRef } from "react";
-import {
-  DMN15__tChildExpression,
-  DMN15__tTypedChildExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tChildExpression, DMN_LATEST__tTypedChildExpression } from "@kie-tools/dmn-marshaller";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { BeeTableReadOnlyCell } from "../../table/BeeTable/BeeTableReadOnlyCell";
@@ -54,7 +53,7 @@ import { IteratorExpressionVariableCell } from "./IteratorExpressionVariableCell
 type ROWTYPE = Normalized<IteratorClause>;
 
 export type IteratorClause = {
-  child: DMN15__tTypedChildExpression | DMN15__tChildExpression | string | undefined;
+  child: DMN_LATEST__tTypedChildExpression | DMN_LATEST__tChildExpression | string | undefined;
   label: string;
 };
 
@@ -84,7 +83,7 @@ export function IteratorExpressionComponent({
         columns: [
           {
             accessor: "label",
-            label: "label",
+            label: i18n.label,
             width: ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
             minWidth: ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
             isInlineEditable: false,
@@ -95,7 +94,7 @@ export function IteratorExpressionComponent({
           },
           {
             accessor: "child",
-            label: "child",
+            label: i18n.child,
             width: undefined,
             minWidth: ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
             isInlineEditable: false,
@@ -105,7 +104,7 @@ export function IteratorExpressionComponent({
         ],
       },
     ];
-  }, [expression, expressionHolderId]);
+  }, [expression, expressionHolderId, i18n.child, i18n.label]);
 
   const headerVisibility = useMemo(() => {
     return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
@@ -128,21 +127,21 @@ export function IteratorExpressionComponent({
     (rowNumber: number) => {
       if (rowNumber === 0) {
         if (expression.__$$element === "for") {
-          return "for";
+          return i18n.iterableRowLabel.for;
         } else if (expression.__$$element === "some") {
-          return "some";
+          return i18n.iterableRowLabel.some;
         } else if (expression.__$$element === "every") {
-          return "every";
+          return i18n.iterableRowLabel.every;
         } else {
           throw new Error("Unknown IteratorExpression element");
         }
       } else if (rowNumber === 1) {
-        return "in";
+        return i18n.iterableRowLabel.in;
       } else if (rowNumber === 2) {
         if (expression.__$$element === "for") {
-          return "return";
+          return i18n.iterableRowLabel.return;
         } else if (expression.__$$element === "some" || expression.__$$element === "every") {
-          return "satisfies";
+          return i18n.iterableRowLabel.satisfies;
         } else {
           throw new Error("Unknown IteratorExpression element");
         }
@@ -150,7 +149,7 @@ export function IteratorExpressionComponent({
         throw new Error("IteratorExpression can't have more than 3 rows.");
       }
     },
-    [expression.__$$element]
+    [expression.__$$element, i18n.iterableRowLabel]
   );
 
   const getIterableRowElement = useCallback(
@@ -241,66 +240,91 @@ export function IteratorExpressionComponent({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedIterator>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedIterator> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": typeRef,
-        };
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          typeRef !== expression["@_typeRef"]
+            ? {
+                from: expression["@_typeRef"] ?? "",
+                to: typeRef,
+              }
+            : undefined,
+        nameChange:
+          name !== expression["@_label"]
+            ? {
+                from: expression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
 
-        return ret;
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedIterator>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedIterator> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": typeRef,
+          };
+
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [expression, expressionHolderId, setExpression]
   );
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: Normalized<BoxedIterator>) => {
-        if (args.rowIndex === 0) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedIterator> = {
-            ...prev,
-            "@_iteratorVariable": undefined,
-          };
-          return ret;
-        } else if (args.rowIndex === 1) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedIterator> = {
-            ...prev,
-            in: {
-              "@_id": generateUuid(),
-              expression: undefined!,
-            }, // SPEC DISCREPANCY
-          };
-          return ret;
-        } else if (args.rowIndex === 2) {
-          if (prev.__$$element === "for") {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedIterator>) => {
+          if (args.rowIndex === 0) {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedFor> = {
+            const ret: Normalized<BoxedIterator> = {
               ...prev,
-              return: {
+              "@_iteratorVariable": undefined,
+            };
+            return ret;
+          } else if (args.rowIndex === 1) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: Normalized<BoxedIterator> = {
+              ...prev,
+              in: {
                 "@_id": generateUuid(),
                 expression: undefined!,
               }, // SPEC DISCREPANCY
             };
             return ret;
-          } else if (prev.__$$element === "some" || prev.__$$element === "every") {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const iterator: Normalized<BoxedIterator> = {
-              ...prev,
-              satisfies: {
-                "@_id": generateUuid(),
-                expression: undefined!,
-              }, // SPEC DISCREPANCY
-            };
-            return iterator;
+          } else if (args.rowIndex === 2) {
+            if (prev.__$$element === "for") {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedFor> = {
+                ...prev,
+                return: {
+                  "@_id": generateUuid(),
+                  expression: undefined!,
+                }, // SPEC DISCREPANCY
+              };
+              return ret;
+            } else if (prev.__$$element === "some" || prev.__$$element === "every") {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const iterator: Normalized<BoxedIterator> = {
+                ...prev,
+                satisfies: {
+                  "@_id": generateUuid(),
+                  expression: undefined!,
+                }, // SPEC DISCREPANCY
+              };
+              return iterator;
+            } else {
+              throw new Error("Nested expression type not supported in IteratorExpression.");
+            }
           } else {
-            throw new Error("Nested expression type not supported in IteratorExpression.");
+            throw new Error("IteratorExpression shouldn't have more than 3 rows.");
           }
-        } else {
-          throw new Error("IteratorExpression shouldn't have more than 3 rows.");
-        }
+        },
+        expressionChangedArgs: { action: Action.RowReset, rowIndex: args.rowIndex },
       });
     },
     [setExpression]

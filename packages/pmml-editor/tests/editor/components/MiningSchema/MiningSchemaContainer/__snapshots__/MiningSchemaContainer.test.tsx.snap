@@ -8,72 +8,77 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
   data-testid="mining-schema-container"
 >
   <div
-    class="pf-l-stack pf-m-gutter mining-schema__overview"
+    class="pf-v5-l-stack pf-m-gutter mining-schema__overview"
   >
     <div
-      class="pf-l-stack__item"
+      class="pf-v5-l-stack__item"
     >
       <h4
-        class="pf-c-title pf-m-xl"
+        class="pf-v5-c-title pf-m-xl"
         data-ouia-component-id="OUIA-Generated-Title-1"
-        data-ouia-component-type="PF4/Title"
+        data-ouia-component-type="PF5/Title"
         data-ouia-safe="true"
       >
         Add Fields
       </h4>
     </div>
     <div
-      class="pf-l-stack__item"
+      class="pf-v5-l-stack__item"
     >
       <section
         data-ouia-component-id="mining-toolbar"
       >
         <div
-          class="pf-l-split pf-m-gutter"
+          class="pf-v5-l-split pf-m-gutter"
         >
           <div
-            class="pf-l-split__item pf-m-fill"
+            class="pf-v5-l-split__item pf-m-fill"
           >
             <div
-              class="pf-c-select"
+              class="pf-v5-c-select"
               data-ouia-component-id="select-mining-field"
-              data-ouia-component-type="PF4/Select"
+              data-ouia-component-type="PF5/Select"
               data-ouia-safe="true"
             >
               <div
-                class="pf-c-select__toggle pf-m-typeahead"
+                class="pf-v5-c-select__toggle pf-m-typeahead"
               >
                 <div
-                  class="pf-c-select__toggle-wrapper"
+                  class="pf-v5-c-select__toggle-wrapper"
                 >
-                  <input
-                    aria-invalid="false"
-                    aria-label="Select fields"
-                    autocomplete="off"
-                    class="pf-c-form-control pf-c-select__toggle-typeahead"
-                    id="select-mining-field-select-multi-typeahead-typeahead"
-                    placeholder="Select fields"
-                    type="text"
-                    value=""
-                  />
+                  <span
+                    class="pf-v5-c-form-control pf-v5-c-select__toggle-typeahead"
+                  >
+                    <input
+                      aria-invalid="false"
+                      aria-label="Select fields"
+                      autocomplete="off"
+                      data-ouia-component-id="OUIA-Generated-TextInputBase-3"
+                      data-ouia-component-type="PF5/TextInput"
+                      data-ouia-safe="true"
+                      id="select-mining-field-select-multi-typeahead-typeahead"
+                      placeholder="Select fields"
+                      type="text"
+                      value=""
+                    />
+                  </span>
                 </div>
                 <button
                   aria-expanded="false"
                   aria-haspopup="listbox"
                   aria-label="Options menu"
                   aria-labelledby="Select fields to add select-mining-field"
-                  class="pf-c-button pf-c-select__toggle-button pf-m-plain"
+                  class="pf-v5-c-button pf-v5-c-select__toggle-button pf-m-plain"
                   id="select-mining-field"
                   tabindex="-1"
                   type="button"
                 >
                   <svg
                     aria-hidden="true"
-                    class="pf-c-select__toggle-arrow"
+                    class="pf-v5-svg pf-v5-c-select__toggle-arrow"
                     fill="currentColor"
                     height="1em"
                     role="img"
-                    style="vertical-align: -0.125em;"
                     viewBox="0 0 320 512"
                     width="1em"
                   >
@@ -86,13 +91,13 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
             </div>
           </div>
           <div
-            class="pf-l-split__item"
+            class="pf-v5-l-split__item"
           >
             <button
               aria-disabled="false"
-              class="pf-c-button pf-m-primary"
+              class="pf-v5-c-button pf-m-primary"
               data-ouia-component-id="add-mining-field"
-              data-ouia-component-type="PF4/Button"
+              data-ouia-component-type="PF5/Button"
               data-ouia-safe="true"
               type="button"
             >
@@ -100,13 +105,13 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
             </button>
           </div>
           <div
-            class="pf-l-split__item"
+            class="pf-v5-l-split__item"
           >
             <button
               aria-disabled="false"
-              class="pf-c-button pf-m-secondary"
+              class="pf-v5-c-button pf-m-secondary"
               data-ouia-component-id="add-all-fields"
-              data-ouia-component-type="PF4/Button"
+              data-ouia-component-type="PF5/Button"
               data-ouia-safe="true"
               type="button"
             >
@@ -117,7 +122,7 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
       </section>
     </div>
     <div
-      class="pf-l-stack__item mining-schema__fields"
+      class="pf-v5-l-stack__item mining-schema__fields"
     >
       <section>
         <ul
@@ -136,10 +141,10 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
               class="editable-item__inner"
             >
               <div
-                class="pf-l-split pf-m-gutter"
+                class="pf-v5-l-split pf-m-gutter"
               >
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <span
                     class="mining-schema-list__item__name"
@@ -148,16 +153,16 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
                   </span>
                 </div>
                 <div
-                  class="pf-l-split__item pf-m-fill"
+                  class="pf-v5-l-split__item pf-m-fill"
                 />
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-plain editable-item__delete"
+                    class="pf-v5-c-button pf-m-plain editable-item__delete"
                     data-ouia-component-id="delete-field"
-                    data-ouia-component-type="PF4/Button"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     data-testid="mining-schema-field-n0__delete"
                     id="mining-schema-field-n0__delete"
@@ -165,10 +170,10 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
                   >
                     <svg
                       aria-hidden="true"
+                      class="pf-v5-svg"
                       fill="currentColor"
                       height="1em"
                       role="img"
-                      style="vertical-align: -0.125em;"
                       viewBox="0 0 448 512"
                       width="1em"
                     >
@@ -193,10 +198,10 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
               class="editable-item__inner"
             >
               <div
-                class="pf-l-split pf-m-gutter"
+                class="pf-v5-l-split pf-m-gutter"
               >
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <span
                     class="mining-schema-list__item__name"
@@ -205,16 +210,16 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
                   </span>
                 </div>
                 <div
-                  class="pf-l-split__item pf-m-fill"
+                  class="pf-v5-l-split__item pf-m-fill"
                 />
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-plain editable-item__delete"
+                    class="pf-v5-c-button pf-m-plain editable-item__delete"
                     data-ouia-component-id="delete-field"
-                    data-ouia-component-type="PF4/Button"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     data-testid="mining-schema-field-n1__delete"
                     id="mining-schema-field-n1__delete"
@@ -222,10 +227,10 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
                   >
                     <svg
                       aria-hidden="true"
+                      class="pf-v5-svg"
                       fill="currentColor"
                       height="1em"
                       role="img"
-                      style="vertical-align: -0.125em;"
                       viewBox="0 0 448 512"
                       width="1em"
                     >
@@ -253,62 +258,68 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
   data-testid="mining-schema-container"
 >
   <div
-    class="pf-l-stack pf-m-gutter mining-schema__overview"
+    class="pf-v5-l-stack pf-m-gutter mining-schema__overview"
   >
     <div
-      class="pf-l-stack__item"
+      class="pf-v5-l-stack__item"
     >
       <h4
-        class="pf-c-title pf-m-xl"
+        class="pf-v5-c-title pf-m-xl"
         data-ouia-component-id="OUIA-Generated-Title-2"
-        data-ouia-component-type="PF4/Title"
+        data-ouia-component-type="PF5/Title"
         data-ouia-safe="true"
       >
         Add Fields
       </h4>
     </div>
     <div
-      class="pf-l-stack__item"
+      class="pf-v5-l-stack__item"
     >
       <section
         data-ouia-component-id="mining-toolbar"
       >
         <div
-          class="pf-l-split pf-m-gutter"
+          class="pf-v5-l-split pf-m-gutter"
         >
           <div
-            class="pf-l-split__item pf-m-fill"
+            class="pf-v5-l-split__item pf-m-fill"
           >
             <div
-              class="pf-c-select"
+              class="pf-v5-c-select"
               data-ouia-component-id="select-mining-field"
-              data-ouia-component-type="PF4/Select"
+              data-ouia-component-type="PF5/Select"
               data-ouia-safe="true"
             >
               <div
-                class="pf-c-select__toggle pf-m-disabled pf-m-typeahead"
+                class="pf-v5-c-select__toggle pf-m-disabled pf-m-typeahead"
               >
                 <div
-                  class="pf-c-select__toggle-wrapper"
+                  class="pf-v5-c-select__toggle-wrapper"
                 >
-                  <input
-                    aria-invalid="false"
-                    aria-label="Select fields"
-                    autocomplete="off"
-                    class="pf-c-form-control pf-c-select__toggle-typeahead"
-                    disabled=""
-                    id="select-mining-field-select-multi-typeahead-typeahead"
-                    placeholder="Select fields"
-                    type="text"
-                    value=""
-                  />
+                  <span
+                    class="pf-v5-c-form-control pf-m-disabled pf-v5-c-select__toggle-typeahead"
+                  >
+                    <input
+                      aria-invalid="false"
+                      aria-label="Select fields"
+                      autocomplete="off"
+                      data-ouia-component-id="OUIA-Generated-TextInputBase-6"
+                      data-ouia-component-type="PF5/TextInput"
+                      data-ouia-safe="true"
+                      disabled=""
+                      id="select-mining-field-select-multi-typeahead-typeahead"
+                      placeholder="Select fields"
+                      type="text"
+                      value=""
+                    />
+                  </span>
                 </div>
                 <button
                   aria-expanded="false"
                   aria-haspopup="listbox"
                   aria-label="Options menu"
                   aria-labelledby="Select fields to add select-mining-field"
-                  class="pf-c-button pf-c-select__toggle-button pf-m-plain"
+                  class="pf-v5-c-button pf-v5-c-select__toggle-button pf-m-plain"
                   disabled=""
                   id="select-mining-field"
                   tabindex="-1"
@@ -316,11 +327,10 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
                 >
                   <svg
                     aria-hidden="true"
-                    class="pf-c-select__toggle-arrow"
+                    class="pf-v5-svg pf-v5-c-select__toggle-arrow"
                     fill="currentColor"
                     height="1em"
                     role="img"
-                    style="vertical-align: -0.125em;"
                     viewBox="0 0 320 512"
                     width="1em"
                   >
@@ -333,13 +343,13 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
             </div>
           </div>
           <div
-            class="pf-l-split__item"
+            class="pf-v5-l-split__item"
           >
             <button
               aria-disabled="true"
-              class="pf-c-button pf-m-primary pf-m-disabled"
+              class="pf-v5-c-button pf-m-primary pf-m-disabled"
               data-ouia-component-id="add-mining-field"
-              data-ouia-component-type="PF4/Button"
+              data-ouia-component-type="PF5/Button"
               data-ouia-safe="true"
               disabled=""
               type="button"
@@ -348,13 +358,13 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
             </button>
           </div>
           <div
-            class="pf-l-split__item"
+            class="pf-v5-l-split__item"
           >
             <button
               aria-disabled="true"
-              class="pf-c-button pf-m-secondary pf-m-disabled"
+              class="pf-v5-c-button pf-m-secondary pf-m-disabled"
               data-ouia-component-id="add-all-fields"
-              data-ouia-component-type="PF4/Button"
+              data-ouia-component-type="PF5/Button"
               data-ouia-safe="true"
               disabled=""
               type="button"
@@ -366,7 +376,7 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
       </section>
     </div>
     <div
-      class="pf-l-stack__item mining-schema__fields"
+      class="pf-v5-l-stack__item mining-schema__fields"
     >
       <section>
         <ul
@@ -385,10 +395,10 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
               class="editable-item__inner"
             >
               <div
-                class="pf-l-split pf-m-gutter"
+                class="pf-v5-l-split pf-m-gutter"
               >
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <span
                     class="mining-schema-list__item__name"
@@ -397,16 +407,16 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
                   </span>
                 </div>
                 <div
-                  class="pf-l-split__item pf-m-fill"
+                  class="pf-v5-l-split__item pf-m-fill"
                 />
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-plain editable-item__delete"
+                    class="pf-v5-c-button pf-m-plain editable-item__delete"
                     data-ouia-component-id="delete-field"
-                    data-ouia-component-type="PF4/Button"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     data-testid="mining-schema-field-n0__delete"
                     id="mining-schema-field-n0__delete"
@@ -414,10 +424,10 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
                   >
                     <svg
                       aria-hidden="true"
+                      class="pf-v5-svg"
                       fill="currentColor"
                       height="1em"
                       role="img"
-                      style="vertical-align: -0.125em;"
                       viewBox="0 0 448 512"
                       width="1em"
                     >
@@ -442,10 +452,10 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
               class="editable-item__inner"
             >
               <div
-                class="pf-l-split pf-m-gutter"
+                class="pf-v5-l-split pf-m-gutter"
               >
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <span
                     class="mining-schema-list__item__name"
@@ -454,16 +464,16 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
                   </span>
                 </div>
                 <div
-                  class="pf-l-split__item pf-m-fill"
+                  class="pf-v5-l-split__item pf-m-fill"
                 />
                 <div
-                  class="pf-l-split__item"
+                  class="pf-v5-l-split__item"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-plain editable-item__delete"
+                    class="pf-v5-c-button pf-m-plain editable-item__delete"
                     data-ouia-component-id="delete-field"
-                    data-ouia-component-type="PF4/Button"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     data-testid="mining-schema-field-n1__delete"
                     id="mining-schema-field-n1__delete"
@@ -471,10 +481,10 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
                   >
                     <svg
                       aria-hidden="true"
+                      class="pf-v5-svg"
                       fill="currentColor"
                       height="1em"
                       role="img"
-                      style="vertical-align: -0.125em;"
                       viewBox="0 0 448 512"
                       width="1em"
                     >

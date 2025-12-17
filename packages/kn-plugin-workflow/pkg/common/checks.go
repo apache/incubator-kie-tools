@@ -22,6 +22,7 @@ package common
 import (
 	"context"
 	"fmt"
+	"github.com/docker/docker/api/types/container"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -29,7 +30,7 @@ import (
 	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/docker/docker/api/types"
+	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/docker/docker/client"
 )
 
@@ -98,7 +99,7 @@ func CheckDocker() error {
 		fmt.Println("Error creating docker client")
 		return err
 	}
-	_, err = cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	_, err = cli.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
@@ -196,4 +197,23 @@ func CheckProjectName(name string) (err error) {
 
 	}
 	return
+}
+
+func IsValidProfile(profile string) error {
+	var allProfiles = []apiMetadata.ProfileType{
+		apiMetadata.DevProfile,
+		apiMetadata.PreviewProfile,
+		apiMetadata.GitOpsProfile,
+	}
+
+	for _, t := range allProfiles {
+		if t.String() == profile {
+			return nil
+		}
+	}
+	keys := make([]string, 0, len(allProfiles))
+	for k := range allProfiles {
+		keys = append(keys, allProfiles[k].String())
+	}
+	return fmt.Errorf("❌ ERROR: invalid profile: %s, valid profiles are: %s", profile, strings.Join(keys, ","))
 }

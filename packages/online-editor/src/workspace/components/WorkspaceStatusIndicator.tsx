@@ -30,7 +30,7 @@ import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outline
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
-import { matchPath } from "react-router";
+import { matchPath } from "react-router-dom";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -107,7 +107,7 @@ export function GitStatusIndicator(
     <Flex
       flexWrap={{ default: "nowrap" }}
       spaceItems={{ default: "spaceItemsMd" }}
-      className={"kie-tools--git-status-indicator"}
+      className={"kie-tools--git-status-indicator pf-v5-c-select kie-tools--masthead-hoverable"}
     >
       {(isGitBasedWorkspaceKind(props.gitStatusProps.workspaceDescriptor.origin.kind) ||
         props.gitStatusProps.workspaceDescriptor.origin.kind === WorkspaceKind.LOCAL) &&
@@ -116,27 +116,21 @@ export function GitStatusIndicator(
           pending: (
             <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
               <Tooltip content={`There are new changes since your last sync.`} position={"bottom"}>
-                <small>
-                  <SecurityIcon color={"gray"} />
-                </small>
+                <SecurityIcon color={"gray"} />
               </Tooltip>
             </Title>
           ),
           synced: (
             <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
               <Tooltip content={`All files are synced.`} position={"bottom"}>
-                <small>
-                  <CheckCircleIcon color={"green"} />
-                </small>
+                <CheckCircleIcon color={"green"} />
               </Tooltip>
             </Title>
           ),
           unknown: (
             <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
               <Tooltip content={"Checking status..."} position={"right"}>
-                <small>
-                  <OutlinedClockIcon color={"gray"} />
-                </small>
+                <OutlinedClockIcon color={"gray"} />
               </Tooltip>
             </Title>
           ),
@@ -192,16 +186,16 @@ export function WorkspaceStatusIndicator(props: {
     `block-navigation-for-${props.gitStatusProps.workspaceDescriptor.workspaceId}`,
     useCallback(
       ({ location }) => {
-        const match = matchPath<{ workspaceId: string }>(location.pathname, {
-          strict: true,
-          exact: true,
-          sensitive: false,
-          path: routes.workspaceWithFilePath.path({
-            workspaceId: ":workspaceId",
-            fileRelativePath: ":fileRelativePath*",
-            extension: ":extension",
-          }),
-        });
+        const match = matchPath(
+          {
+            end: true,
+            path: routes.workspaceWithFilePath.path({
+              workspaceId: ":workspaceId",
+              fileRelativePath: "*",
+            }),
+          },
+          location.pathname
+        );
 
         if (match?.params.workspaceId === props.gitStatusProps.workspaceDescriptor.workspaceId) {
           return false;

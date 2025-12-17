@@ -18,27 +18,52 @@
  */
 
 import { DataType } from "./DataType";
+import { Expression } from "./Expression";
+import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
+import { generateUuid } from "../Uuid";
 
 export class BuiltInTypes {
   public static readonly Number: DataType = {
+    uuid: generateUuid(),
     name: "number",
     typeRef: "number",
     properties: new Map([]),
+
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "number",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 
   public static readonly Boolean: DataType = {
+    uuid: generateUuid(),
     name: "boolean",
     typeRef: "boolean",
     properties: new Map([]),
+
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "boolean",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 
   public static readonly String: DataType = {
+    uuid: generateUuid(),
     name: "string",
     typeRef: "string",
     properties: new Map([]),
+
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "string",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 
   public static readonly DaysAndTimeDuration: DataType = {
+    uuid: generateUuid(),
     name: "days and time duration",
     typeRef: "days and time duration",
     properties: new Map([
@@ -47,10 +72,18 @@ export class BuiltInTypes {
       ["minutes", BuiltInTypes.Number],
       ["seconds", BuiltInTypes.Number],
       ["timezone", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
+
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "days and time duration",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 
   public static readonly DateAndTime: DataType = {
+    uuid: generateUuid(),
     name: "date and time",
     typeRef: "date and time",
     properties: new Map([
@@ -63,19 +96,35 @@ export class BuiltInTypes {
       ["second", BuiltInTypes.Number],
       ["time offset", BuiltInTypes.DaysAndTimeDuration],
       ["timezone", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
+
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "date and time",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 
   public static readonly YearsAndMonthsDuration: DataType = {
+    uuid: generateUuid(),
     name: "years and months duration",
     typeRef: "years and months duration",
     properties: new Map([
       ["years", BuiltInTypes.Number],
       ["months", BuiltInTypes.Number],
+      ["value", BuiltInTypes.Number],
     ]),
+
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "years and months duration",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 
   public static readonly Time: DataType = {
+    uuid: generateUuid(),
     name: "time",
     typeRef: "time",
     properties: new Map([
@@ -84,10 +133,17 @@ export class BuiltInTypes {
       ["second", BuiltInTypes.Number],
       ["time offset", BuiltInTypes.DaysAndTimeDuration],
       ["timezone", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "time",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 
   public static readonly Date: DataType = {
+    uuid: generateUuid(),
     name: "date",
     typeRef: "date",
     properties: new Map([
@@ -95,6 +151,12 @@ export class BuiltInTypes {
       ["month", BuiltInTypes.Number],
       ["day", BuiltInTypes.Number],
       ["weekday", BuiltInTypes.Number],
+      ["value", BuiltInTypes.Number],
     ]),
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "date",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
   };
 }

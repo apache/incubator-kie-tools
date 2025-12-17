@@ -34,7 +34,7 @@ import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kie-tools-core/keyboard-shortcuts/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
+import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "../i18n";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
 
 export class KogitoEditorEnvelopeApiImpl<
@@ -53,9 +53,9 @@ export class KogitoEditorEnvelopeApiImpl<
       EnvelopeApi,
       ChannelApi,
       EditorEnvelopeViewApi<E>,
-      KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>
+      KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
     >,
-    private readonly editorFactory: EditorFactory<E, KogitoEditorChannelApi>,
+    private readonly editorFactory: EditorFactory<E, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     private readonly i18n: I18n<EditorEnvelopeI18n> = new I18n<EditorEnvelopeI18n>(
       editorEnvelopeI18nDefaults,
       editorEnvelopeI18nDictionaries

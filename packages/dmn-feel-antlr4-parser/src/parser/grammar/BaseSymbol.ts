@@ -21,25 +21,38 @@ import { Symbol } from "./Symbol";
 import { Type } from "./Type";
 import { Scope } from "./Scope";
 
-export class BaseSymbol implements Symbol {
+/**
+ * Define a base symbol.
+ * A "symbol" is anything known by the parser.
+ */
+export abstract class BaseSymbol implements Symbol {
   private readonly id?: string;
   private readonly type?: Type;
   private readonly scope?: Scope;
 
-  constructor(id?: string, type?: Type, scope?: Scope) {
+  protected constructor(id?: string, type?: Type, scope?: Scope) {
     this.id = id;
     this.type = type;
     this.scope = scope;
   }
 
+  /**
+   * The ID of the symbol.
+   */
   getId(): string | undefined {
     return this.id;
   }
 
+  /**
+   * The scope of the symbol.
+   */
   getScope(): Scope | undefined {
     return this.scope;
   }
 
+  /**
+   * The type of the symbol.
+   */
   getType(): Type | undefined {
     return this.type;
   }

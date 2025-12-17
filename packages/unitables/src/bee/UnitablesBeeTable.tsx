@@ -96,8 +96,8 @@ export function UnitablesBeeTable({
         group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
-          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCut },
-          { name: i18n.terms.copy, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
         ],
       },
       {

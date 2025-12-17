@@ -19,12 +19,12 @@
 
 import * as React from "react";
 import {
-  DMN15__tDMNElementReference,
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-  DMN15__tInputData,
-  DMN15__tDefinitions,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tDMNElementReference,
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDecisionService,
+  DMN_LATEST__tInputData,
+  DMN_LATEST__tDefinitions,
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -35,7 +35,6 @@ import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useCallback, useMemo } from "react";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
-import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useDmnEditor } from "../DmnEditorContext";
@@ -48,11 +47,13 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ExternalDmn } from "../DmnEditor";
 import { Unpacked } from "../tsExt/tsExt";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useRefactor } from "../refactor/RefactorConfirmationDialog";
+import { useDmnEditorI18n } from "../i18n";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
-  | ({ __$$element: "decision" } & Normalized<DMN15__tDecision>)
-  | ({ __$$element: "inputData" } & Normalized<DMN15__tInputData>)
+  | ({ __$$element: "decision" } & Normalized<DMN_LATEST__tDecision>)
+  | ({ __$$element: "inputData" } & Normalized<DMN_LATEST__tInputData>)
 >;
 
 export function DecisionServiceProperties({
@@ -60,15 +61,16 @@ export function DecisionServiceProperties({
   namespace,
   index,
 }: {
-  decisionService: Normalized<DMN15__tDecisionService>;
+  decisionService: Normalized<DMN_LATEST__tDecisionService>;
   namespace: string | undefined;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const { externalModelsByNamespace } = useExternalModels();
 
   const allExternalDmns = Object.entries(externalModelsByNamespace ?? {}).reduce((acc, [namespace, externalModel]) => {
     if (!externalModel) {
@@ -112,38 +114,44 @@ export function DecisionServiceProperties({
 
   const resolvedTypeRef = useResolvedTypeRef(decisionService.variable?.["@_typeRef"], namespace);
 
+  const identifierId = useMemo(() => decisionService["@_id"], [decisionService]);
+  const oldName = useMemo(() => decisionService["@_label"] ?? decisionService["@_name"], [decisionService]);
+  const { setNewIdentifierNameCandidate, refactorConfirmationDialog, newName } = useRefactor({
+    index,
+    identifierId,
+    oldName,
+  });
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
+
   return (
     <>
-      <FormGroup label="Name">
+      {refactorConfirmationDialog}
+      <FormGroup label={i18n.name}>
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
           id={decisionService["@_id"]!}
-          name={decisionService["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
-          className={"pf-c-form-control"}
-          onRenamed={(newName) => {
-            setState((state) => {
-              renameDrgElement({
-                definitions: state.dmn.model.definitions,
-                index,
-                newName,
-              });
-            });
-          }}
+          className={"pf-v5-c-form-control"}
+          onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>
 
-      <FormGroup label="Data type">
+      <FormGroup label={i18n.propertiesPanel.dataType}>
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
           isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>;
+              const drgElement = state.dmn.model.definitions.drgElement![
+                index
+              ] as Normalized<DMN_LATEST__tDecisionService>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": decisionService["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
@@ -151,32 +159,36 @@ export function DecisionServiceProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Description">
+      <FormGroup label={i18n.propertiesPanel.description}>
         <TextArea
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={decisionService.description?.__$$text}
-          onChange={(newDescription) => {
+          value={decisionService.description?.__$$text ?? ""}
+          onChange={(_event, newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).description = {
-                __$$text: newDescription,
-              };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecisionService>).description =
+                {
+                  __$$text: newDescription,
+                };
             });
           }}
-          placeholder={"Enter a description..."}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
       </FormGroup>
 
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {decisionService["@_id"]}
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Output decisions" data-testid={"kie-tools--dmn-editor--decision-service-output-decisions"}>
+      <FormGroup
+        label={i18n.propertiesPanel.outputDecisions}
+        data-testid={"kie-tools--dmn-editor--decision-service-output-decisions"}
+      >
         <DecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.outputDecision}
@@ -184,7 +196,7 @@ export function DecisionServiceProperties({
         />
       </FormGroup>
       <FormGroup
-        label="Encapsulated decisions"
+        label={i18n.propertiesPanel.encapsulatedDecisions}
         data-testid={"kie-tools--dmn-editor--decision-service-encapsulated-decisions"}
       >
         <DecisionServiceElementList
@@ -195,28 +207,35 @@ export function DecisionServiceProperties({
       </FormGroup>
 
       <Divider />
-      <FormGroup label="Input decisions" data-testid={"kie-tools--dmn-editor--decision-service-input-decisions"}>
+      <FormGroup
+        label={i18n.propertiesPanel.inputDecisions}
+        data-testid={"kie-tools--dmn-editor--decision-service-input-decisions"}
+      >
         <DraggableDecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.inputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
           onChange={(newInputDecisions) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).inputDecision =
-                newInputDecisions;
+              (
+                state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecisionService>
+              ).inputDecision = newInputDecisions;
             });
           }}
           isDisabled={isReadOnly}
         />
       </FormGroup>
-      <FormGroup label="Input data" data-testid={"kie-tools--dmn-editor--decision-service-input-data"}>
+      <FormGroup
+        label={i18n.propertiesPanel.inputData}
+        data-testid={"kie-tools--dmn-editor--decision-service-input-data"}
+      >
         <DraggableDecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.inputData}
           allDrgElementsByHref={allDrgElementsByHref}
           onChange={(newInputData) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).inputData =
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecisionService>).inputData =
                 newInputData;
             });
           }}
@@ -235,10 +254,11 @@ export function DecisionServiceProperties({
         values={decisionService.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).extensionElements =
-              {
-                "kie:attachment": newExtensionElements,
-              };
+            (
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecisionService>
+            ).extensionElements = {
+              "kie:attachment": newExtensionElements,
+            };
           });
         }}
       />
@@ -252,9 +272,10 @@ export function DecisionServiceElementList({
   allDrgElementsByHref,
 }: {
   decisionServiceNamespace: string | undefined;
-  elements: Normalized<DMN15__tDecisionService>["outputDecision"];
+  elements: Normalized<DMN_LATEST__tDecisionService>["outputDecision"];
   allDrgElementsByHref: AllKnownDrgElementsByHref;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
   return (
@@ -262,7 +283,7 @@ export function DecisionServiceElementList({
       {(elements ?? []).length <= 0 && (
         <li style={{ paddingLeft: "32px" }}>
           <small>
-            <i>(Empty)</i>
+            <i>({i18n.propertiesPanel.empty})</i>
           </small>
         </li>
       )}
@@ -305,11 +326,12 @@ export function DraggableDecisionServiceElementList({
   isDisabled,
 }: {
   decisionServiceNamespace: string | undefined;
-  elements: Normalized<DMN15__tDecisionService>["outputDecision"];
+  elements: Normalized<DMN_LATEST__tDecisionService>["outputDecision"];
   allDrgElementsByHref: AllKnownDrgElementsByHref;
-  onChange: (hrefs: Normalized<DMN15__tDMNElementReference>[] | undefined) => void;
+  onChange: (hrefs: Normalized<DMN_LATEST__tDMNElementReference>[] | undefined) => void;
   isDisabled: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const [keys, setKeys] = React.useState(() => elements?.map((e) => e["@_href"]) ?? []);
 
@@ -333,7 +355,7 @@ export function DraggableDecisionServiceElementList({
   }, []);
 
   const draggableItem = useCallback(
-    (element: Normalized<DMN15__tDMNElementReference>, index: number) => {
+    (element: Normalized<DMN_LATEST__tDMNElementReference>, index: number) => {
       const localHref = parseXmlHref(element["@_href"]);
 
       // If the localHref has a namespace, then that's the one to use, as it can be that an external node is pointing to another external node in their perspective
@@ -377,7 +399,7 @@ export function DraggableDecisionServiceElementList({
       {(elements ?? []).length <= 0 && (
         <li style={{ paddingLeft: "32px" }}>
           <small>
-            <i>(Empty)</i>
+            <i>({i18n.propertiesPanel.empty})</i>
           </small>
         </li>
       )}
@@ -397,10 +419,11 @@ function DecisionServiceEquivalentFunction({
   allDrgElementsByHref,
   decisionServiceNamespace,
 }: {
-  decisionService: Normalized<DMN15__tDecisionService>;
+  decisionService: Normalized<DMN_LATEST__tDecisionService>;
   allDrgElementsByHref: AllKnownDrgElementsByHref;
   decisionServiceNamespace: string | undefined;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
@@ -440,8 +463,8 @@ function DecisionServiceEquivalentFunction({
 
   const buildFunctionArgList = useCallback(
     (
-      inputDecisions?: Normalized<DMN15__tDMNElementReference>[],
-      inputData?: Normalized<DMN15__tDMNElementReference>[]
+      inputDecisions?: Normalized<DMN_LATEST__tDMNElementReference>[],
+      inputData?: Normalized<DMN_LATEST__tDMNElementReference>[]
     ) => {
       const inputDecisionNodeNames = inputDecisions?.map((ide) => getNodeNameByHref(ide["@_href"]));
       const inputDataNodeNames = inputData?.map((ida) => getNodeNameByHref(ida["@_href"]));
@@ -455,7 +478,7 @@ function DecisionServiceEquivalentFunction({
   );
 
   return (
-    <Alert variant={AlertVariant.info} isInline title="Invoking this Decision Service in FEEL">
+    <Alert variant={AlertVariant.info} isInline title={i18n.propertiesPanel.invokingDecisionService}>
       <p data-testid={"kie-tools--dmn-editor--decision-service-feel"} style={{ fontFamily: "monospace" }}>
         {`${decisionService["@_name"]}(${buildFunctionArgList(
           decisionService.inputDecision,
@@ -467,7 +490,7 @@ function DecisionServiceEquivalentFunction({
 }
 
 function buildDisplayNameForDmnObject(
-  dmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> | undefined,
+  dmnObject: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]> | undefined,
   namespace: string
 ) {
   return `${namespace.substring(0, 11)}...${namespace.substring(namespace.length - 4)}.${dmnObject?.["@_name"]}`;

@@ -41,7 +41,7 @@ test.describe("Test Scenario table misc", () => {
 
   test("should render add column plus symbols on Property headers", async ({ table, testScenarioTable }) => {
     await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
-    await table.getColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 0 }).hover();
+    await table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 }).hover();
     await testScenarioTable.clickPlusIcon();
     await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
   });

@@ -23,7 +23,11 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { LfsStorageFile } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
+import {
+  fetchAuthenticatedBitbucketUser,
+  fetchAuthenticatedGitHubUser,
+  fetchAuthenticatedGitlabUser,
+} from "../accounts/git/ConnectToGitSection";
 import {
   AuthSession,
   AuthSessionStatus,
@@ -35,6 +39,7 @@ import {
   AUTH_SESSIONS_FS_NAME_WITH_VERSION,
   mapSerializer,
   authSessionBroadcastChannel,
+  isCloudAuthSession,
 } from "./AuthSessionApi";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { isGitAuthProvider, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
@@ -53,6 +58,7 @@ export type AuthSessionsDispatchContextType = {
   recalculateAuthSessionStatus: () => void;
   add: (authSession: AuthSession) => void;
   remove: (authSession: AuthSession) => void;
+  update: (authSession: AuthSession) => void;
 };
 
 const AuthSessionsContext = createContext<AuthSessionsContextType>({} as any);
@@ -126,6 +132,18 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     [authSessions, persistAuthSessions]
   );
 
+  const update = useCallback(
+    (authSession: AuthSession) => {
+      const n = new Map(authSessions?.entries() ?? []);
+      if (!n.has(authSession.id)) {
+        return;
+      }
+      n.set(authSession.id, authSession);
+      persistAuthSessions(n);
+    },
+    [authSessions, persistAuthSessions]
+  );
+
   // Update after persisted
   useEffect(() => {
     authSessionBroadcastChannel.onmessage = refresh;
@@ -166,14 +184,25 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                         authSession.token,
                         authProvider?.domain,
                         env.KIE_SANDBOX_CORS_PROXY_URL,
-                        authProvider?.insecurelyDisableTlsCertificateValidation
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
                       ),
                     github: () =>
                       fetchAuthenticatedGitHubUser(
                         authSession.token,
                         authProvider?.domain,
                         env.KIE_SANDBOX_CORS_PROXY_URL,
-                        authProvider?.insecurelyDisableTlsCertificateValidation
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
+                      ),
+                    gitlab: () =>
+                      fetchAuthenticatedGitlabUser(
+                        env.KIE_SANDBOX_APP_NAME,
+                        authSession.token,
+                        authProvider?.domain,
+                        env.KIE_SANDBOX_CORS_PROXY_URL,
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
                       ),
                   });
                   await fetchUser();
@@ -235,8 +264,8 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   useCancelableEffect(recalculateAuthSessionStatus);
 
   const dispatch = useMemo(() => {
-    return { add, remove, recalculateAuthSessionStatus };
-  }, [add, remove, recalculateAuthSessionStatus]);
+    return { add, remove, recalculateAuthSessionStatus, update };
+  }, [add, remove, recalculateAuthSessionStatus, update]);
 
   const value = useMemo(() => {
     return { authSessions, authSessionStatus };
@@ -262,6 +291,27 @@ export interface AuthInfo {
 export interface GitConfig {
   name: string;
   email: string;
+}
+
+export function useSyncCloudAuthSession(
+  selectedAuthSession: AuthSession | undefined,
+  setConnection: (connection: {
+    host: string;
+    namespace: string;
+    token: string;
+    insecurelyDisableTlsCertificateValidation: boolean;
+  }) => void
+) {
+  useEffect(() => {
+    if (selectedAuthSession && isCloudAuthSession(selectedAuthSession)) {
+      setConnection({
+        host: selectedAuthSession.host,
+        namespace: selectedAuthSession.namespace,
+        token: "",
+        insecurelyDisableTlsCertificateValidation: selectedAuthSession.insecurelyDisableTlsCertificateValidation,
+      });
+    }
+  }, [selectedAuthSession, setConnection]);
 }
 
 export function useAuthSession(authSessionId: string | undefined): {

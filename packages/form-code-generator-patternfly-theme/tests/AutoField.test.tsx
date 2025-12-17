@@ -21,14 +21,7 @@ import * as React from "react";
 import SimpleSchema from "simpl-schema";
 import { renderField } from "./_render";
 import { AutoField } from "../src/uniforms";
-import {
-  CHECKBOX_GROUP_FUNCTIONS,
-  DATE_FUNCTIONS,
-  MULTIPLE_SELECT_FUNCTIONS,
-  SELECT_FUNCTIONS,
-  TIME_FUNCTIONS,
-} from "../src/uniforms/staticCode/staticCodeBlocks";
-import { SELECT_IMPORTS } from "../src/uniforms/SelectField";
+import { DATE_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 
 const schema = {
   name: { type: String },
@@ -97,10 +90,6 @@ describe("<AutoField> tests", () => {
 
     expect(formElement.pfImports).toContain("FormGroup");
     expect(formElement.pfImports).toContain("Checkbox");
-
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(CHECKBOX_GROUP_FUNCTIONS);
   });
 
   it("<DateField> - rendering", () => {
@@ -109,9 +98,19 @@ describe("<AutoField> tests", () => {
     expect(formElement.pfImports).toContain("FormGroup");
     expect(formElement.pfImports).toContain("DatePicker");
     expect(formElement.pfImports).toContain("TimePicker");
-    expect(formElement.requiredCode).toHaveLength(2);
+    expect(formElement.requiredCode).toHaveLength(1);
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
-    expect(formElement.requiredCode).toContain(TIME_FUNCTIONS);
+  });
+
+  it("<ListField> - rendering", () => {
+    const { formElement } = doRenderField("friends");
+
+    expect(formElement.pfImports).toContain("FormGroup");
+    expect(formElement.pfImports).toContain("TextInput");
+    expect(formElement.pfIconImports).toContain("PlusCircleIcon");
+    expect(formElement.pfIconImports).toContain("MinusCircleIcon");
+
+    expect(formElement.jsxCode).not.toBeNull();
   });
 
   it("<NumField> - integer rendering", () => {
@@ -144,24 +143,24 @@ describe("<AutoField> tests", () => {
   it("<SelectField> - single value rendering", () => {
     const { formElement } = doRenderField("selectRole");
 
-    expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
-    SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
-
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(SELECT_FUNCTIONS);
+    expect(formElement.pfImports).toHaveLength(1);
+    expect(formElement.pfDeprecatedImports).toHaveLength(4);
+    ["FormGroup"].forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    ["SelectOption", "SelectOptionObject", "Select", "SelectVariant"].forEach((pfImport) =>
+      expect(formElement.pfDeprecatedImports).toContain(pfImport)
+    );
   });
 
   it("<SelectField> - multiple value rendering", () => {
     const { formElement } = doRenderField("otherPositions");
 
     expect(formElement.reactImports).toContain("useState");
-    expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
-    SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
-
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(MULTIPLE_SELECT_FUNCTIONS);
+    expect(formElement.pfImports).toHaveLength(1);
+    expect(formElement.pfDeprecatedImports).toHaveLength(4);
+    ["FormGroup"].forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    ["SelectOption", "SelectOptionObject", "Select", "SelectVariant"].forEach((pfImport) =>
+      expect(formElement.pfDeprecatedImports).toContain(pfImport)
+    );
   });
 
   it("<TextField> - TextInput rendering", () => {
@@ -181,12 +180,5 @@ describe("<AutoField> tests", () => {
     expect(formElement.requiredCode).not.toBeUndefined();
     expect(formElement.requiredCode).toHaveLength(1);
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
-  });
-
-  it("<UnsupportedField> - rendering", () => {
-    const { formElement } = doRenderField("friends");
-
-    expect(formElement.pfImports).toContain("FormGroup");
-    expect(formElement.pfImports).toContain("Alert");
   });
 });

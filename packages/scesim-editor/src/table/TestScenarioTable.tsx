@@ -47,7 +47,7 @@ import {
 
 import { useTestScenarioEditorI18n } from "../i18n";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-import { addColumn } from "../mutations/addColumn";
+import { addColumnWithEmptyInstanceAndProperty, addColumnWithEmptyProperty } from "../mutations/addColumn";
 import { deleteColumn } from "../mutations/deleteColumn";
 
 import "./TestScenarioTable.css";
@@ -112,12 +112,20 @@ function TestScenarioTable({
      In case of RULE Scenario, the Data Type is a FQCN (eg. java.lang.String). So, the label will take the class name only
      In any case, if the Data Type ends with a "Void", that means the type has not been assigned, so we show Undefined. */
   const determineDataTypeLabel = useCallback(
-    (dataType: string) => {
+    (dataType: string, genericTypes: string[]) => {
       let dataTypeLabel = dataType;
       if (testScenarioType === "RULE") {
         dataTypeLabel = dataTypeLabel.split(".").pop() ?? dataTypeLabel;
       }
-      return dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;
+      /* List Type */
+      if (genericTypes.length == 1) {
+        dataTypeLabel = testScenarioType === "RULE" ? `${dataTypeLabel}<${genericTypes[0]}>` : `${genericTypes[0]}[]`;
+      }
+      /* Map Type */
+      if (testScenarioType === "RULE" && genericTypes.length == 2) {
+        dataTypeLabel = `${dataTypeLabel}<${genericTypes[0]},${genericTypes[1]}>`;
+      }
+      return !dataTypeLabel || dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;
     },
     [testScenarioType]
   );
@@ -153,15 +161,13 @@ function TestScenarioTable({
         dataType:
           isDescriptionColumn || factMapping.factMappingValueType?.__$$text === "EXPRESSION"
             ? undefined
-            : determineDataTypeLabel(factMapping.className.__$$text),
+            : determineDataTypeLabel(
+                factMapping.className.__$$text,
+                factMapping.genericTypes?.string?.map((genericType) => genericType.__$$text) ?? []
+              ),
         groupType: factMapping.expressionIdentifier.type!.__$$text.toLowerCase(),
         id: factMapping!.expressionIdentifier.name!.__$$text,
         isRowIndexColumn: false,
-        // isInlineEditable: isDescriptionColumn         **TODO NOT SURE IF IT MAKES SENSE TO IMPLEMENT IT
-        //   ? false
-        //   : assetType === TestScenarioType[TestScenarioType.RULE]
-        //   ? true
-        //   : false,
         label: isDescriptionColumn ? factMapping.factAlias.__$$text : factMapping.expressionAlias!.__$$text,
         minWidth: isDescriptionColumn ? 300 : 100,
         setWidth: setColumnWidth(factMappingIndex),
@@ -183,7 +189,7 @@ function TestScenarioTable({
 
       return {
         accessor: instanceID,
-        dataType: determineDataTypeLabel(factMapping.factIdentifier.className!.__$$text),
+        dataType: determineDataTypeLabel(factMapping.factIdentifier.className!.__$$text, []),
         groupType: groupType.toLowerCase(),
         id: instanceID,
         isRowIndexColumn: false,
@@ -328,23 +334,19 @@ function TestScenarioTable({
       const isInstance =
         conditions.column?.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
         conditions.column?.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
+      const isOther = conditions.column?.groupType === TestScenarioTableColumnFieldGroup.OTHER;
 
       if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd || isHeader) {
         return [];
       }
 
       const columnIndex = conditions.selection.selectionStart.columnIndex;
-      const groupType = conditions.column?.groupType;
-
-      const atLeastTwoColumnsOfTheSameGroupType = groupType
-        ? _.groupBy(conditions.columns, (column) => column?.groupType)[groupType].length > 1
-        : true;
 
       const columnCanBeDeleted =
+        !isOther &&
         columnIndex > 0 &&
-        atLeastTwoColumnsOfTheSameGroupType &&
         ((isBackground && (conditions.columns?.length ?? 0) > 1) ||
-          (!isBackground && columnIndex > 0 && (conditions.columns?.length ?? 0) > 4));
+          (!isBackground && columnIndex > 0 && (conditions.columns?.length ?? 0) > 2));
 
       const columnsWithNoOperations = isBackground ? [0] : [0, 1];
       const columnOperations = (isInstance ? columnIndex in [0] : columnIndex in columnsWithNoOperations)
@@ -371,14 +373,19 @@ function TestScenarioTable({
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
               BeeTableOperation.RowInsertN,
-              ...(tableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowDelete,
               BeeTableOperation.RowReset,
               BeeTableOperation.RowDuplicate,
             ]
           : []),
       ];
     },
-    [isBackground, TestScenarioTableColumnHeaderGroup, TestScenarioTableColumnInstanceGroup, tableRows.length]
+    [
+      TestScenarioTableColumnHeaderGroup,
+      TestScenarioTableColumnInstanceGroup,
+      TestScenarioTableColumnFieldGroup,
+      isBackground,
+    ]
   );
 
   const generateOperationConfig = useCallback(
@@ -518,6 +525,68 @@ function TestScenarioTable({
     [isBackground, tableColumns.instancesGroup]
   );
 
+  /* It determines in which index position a column should be added. In case of a field, the new column index is simply
+   in the right or in the left of the selected column. In case of a new instance, it's required to find the first column
+   index outside the selected Instance group. */
+  const determineNewColumnTargetIndex = (
+    factMappings: SceSim__FactMappingType[],
+    insertDirection: InsertRowColumnsDirection,
+    isInstance: boolean,
+    selectedColumnIndex: number,
+    selectedFactMapping: SceSim__FactMappingType
+  ) => {
+    const groupType = selectedFactMapping.expressionIdentifier.type!.__$$text;
+    const instanceName = selectedFactMapping.factIdentifier.name!.__$$text;
+    const instanceType = selectedFactMapping.factIdentifier.className!.__$$text;
+
+    if (!isInstance) {
+      if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+        return selectedColumnIndex + 1;
+      } else {
+        return selectedColumnIndex;
+      }
+    }
+
+    let newColumnTargetColumn = -1;
+
+    if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+      for (let i = selectedColumnIndex; i < factMappings.length; i++) {
+        const currentFM = factMappings[i];
+        if (
+          currentFM.expressionIdentifier.type!.__$$text === groupType &&
+          currentFM.factIdentifier.name?.__$$text === instanceName &&
+          currentFM.factIdentifier.className?.__$$text === instanceType
+        ) {
+          if (i == factMappings.length - 1) {
+            newColumnTargetColumn = i + 1;
+          }
+        } else {
+          newColumnTargetColumn = i;
+          break;
+        }
+      }
+    } else {
+      for (let i = selectedColumnIndex; i >= 0; i--) {
+        const currentFM = factMappings[i];
+
+        if (
+          currentFM.expressionIdentifier.type!.__$$text === groupType &&
+          currentFM.factIdentifier.name?.__$$text === instanceName &&
+          currentFM.factIdentifier.className?.__$$text === instanceType
+        ) {
+          if (i == 0) {
+            newColumnTargetColumn = 0;
+          }
+        } else {
+          newColumnTargetColumn = i + 1;
+          break;
+        }
+      }
+    }
+
+    return newColumnTargetColumn;
+  };
+
   /**
    * It adds a new FactMapping (Column) in the Model Descriptor structure and adds the new column related FactMapping Value (Cell)
    */
@@ -555,14 +624,38 @@ function TestScenarioTable({
           isInstance
         );
 
-        addColumn({
-          beforeIndex: args.beforeIndex,
-          factMappings: factMappings,
-          factMappingValues: factMappingValues,
-          isInstance: isInstance,
-          insertDirection: args.insertDirection,
-          selectedColumnFactMappingIndex: selectedColumnFactMappingIndex,
-        });
+        const selectedColumnFactMapping = factMappings[selectedColumnFactMappingIndex];
+        const targetColumnIndex = determineNewColumnTargetIndex(
+          factMappings,
+          args.insertDirection,
+          isInstance,
+          selectedColumnFactMappingIndex,
+          selectedColumnFactMapping
+        );
+        const isNewInstance =
+          isInstance || selectedColumnFactMapping.factIdentifier.className?.__$$text === "java.lang.Void";
+
+        for (let columnIndex = 0; columnIndex < args.columnsCount; columnIndex++) {
+          isNewInstance
+            ? addColumnWithEmptyInstanceAndProperty({
+                expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
+                factMappings: factMappings,
+                factMappingValuesTypes: factMappingValues,
+                targetColumnIndex: targetColumnIndex + columnIndex,
+              })
+            : addColumnWithEmptyProperty({
+                expressionElementsSteps: [
+                  selectedColumnFactMapping.expressionElements!.ExpressionElement![0].step.__$$text,
+                ],
+                expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
+                factAlias: selectedColumnFactMapping.factAlias.__$$text,
+                factIdentifierClassName: selectedColumnFactMapping.factIdentifier.className!.__$$text,
+                factIdentifierName: selectedColumnFactMapping.factIdentifier.name!.__$$text,
+                factMappings: factMappings,
+                factMappingValuesTypes: factMappingValues,
+                targetColumnIndex: targetColumnIndex + columnIndex,
+              });
+        }
       });
     },
     [
@@ -592,6 +685,7 @@ function TestScenarioTable({
       const isInstance =
         args.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
         args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
+
       testScenarioEditorStoreApi.setState((state) => {
         const factMappings = isBackground
           ? state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping!
@@ -600,6 +694,8 @@ function TestScenarioTable({
           ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
           : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
         const factMappingIndexToRemove = determineSelectedColumnIndex(factMappings, args.columnIndex + 1, isInstance);
+        const factMappingExpressionIdentifierTypeToRemove =
+          factMappings[factMappingIndexToRemove].expressionIdentifier.type!.__$$text;
 
         const { deletedFactMappingIndexs } = deleteColumn({
           factMappingIndexToRemove: factMappingIndexToRemove,
@@ -610,13 +706,32 @@ function TestScenarioTable({
           selectedColumnIndex: args.columnIndex,
         });
 
-        /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left */
-        const firstIndexOnTheLeft = Math.min(...deletedFactMappingIndexs);
-        const selectedColumnIndex = firstIndexOnTheLeft > 0 ? firstIndexOnTheLeft - 1 : 0;
+        /* If the last elements of factMappingGroup (i.e. "EXPECT" or "GIVEN") has been removed,
+           a new empty Instance must be created */
+        const factMappingGroupElementsAfterRemoval = _.groupBy(
+          factMappings,
+          (factMapping) => factMapping.expressionIdentifier.type!.__$$text
+        )[factMappingExpressionIdentifierTypeToRemove];
+        const isAtLeastOneGroupElementPresent =
+          !!factMappingGroupElementsAfterRemoval && factMappingGroupElementsAfterRemoval.length > 0;
+
+        /* If all element of a group (i.e. "EXPECT" or "GIVEN") are deleted, a new empty column is created for that group */
+        if (!isAtLeastOneGroupElementPresent) {
+          addColumnWithEmptyInstanceAndProperty({
+            expressionIdentifierType: factMappingExpressionIdentifierTypeToRemove,
+            factMappings: factMappings,
+            factMappingValuesTypes: factMappingValues,
+            targetColumnIndex: Math.min(...deletedFactMappingIndexs),
+          });
+        }
+
+        /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left. */
+        const firstRemovedIndex = Math.min(...deletedFactMappingIndexs);
+        const selectedColumnIndex = Math.max(0, firstRemovedIndex - 1);
 
         state.dispatch(state).table.updateSelectedColumn({
-          factMapping: JSON.parse(JSON.stringify(factMappings[selectedColumnIndex])),
-          index: firstIndexOnTheLeft,
+          factMapping: _.cloneDeep(factMappings[selectedColumnIndex]),
+          index: selectedColumnIndex,
           isBackground: isBackground,
         });
       });
@@ -635,7 +750,7 @@ function TestScenarioTable({
    * It adds a Scenario (Row) at the given row index
    */
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; insertDirection: InsertRowColumnsDirection; rowsCount: number }) => {
       if (isBackground) {
         throw new Error("Impossible state. Background table can have a single row only");
       }
@@ -644,7 +759,9 @@ function TestScenarioTable({
           state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
         const factMappingValues = state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
 
-        addRow({ beforeIndex: args.beforeIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        for (let rowIndex = 0; rowIndex < args.rowsCount; rowIndex++) {
+          addRow({ beforeIndex: args.beforeIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        }
       });
     },
     [isBackground, testScenarioEditorStoreApi]
@@ -662,6 +779,13 @@ function TestScenarioTable({
         const factMappingValues = state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
 
         deleteRow({ rowIndex: args.rowIndex, factMappingValues: factMappingValues });
+
+        /* If all rows (i.e. factMappingValues) have been deleted, a new row is added */
+        if (factMappingValues.length === 0) {
+          const factMappings =
+            state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+          addRow({ beforeIndex: args.rowIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        }
       });
     },
     [isBackground, testScenarioEditorStoreApi]
@@ -698,7 +822,7 @@ function TestScenarioTable({
 
   const onHeaderClick = useCallback(
     (columnKey: string) => {
-      console.log(columnKey);
+      console.debug("[TestScenarioTable] columnKey: ", columnKey);
       if (
         columnKey == TestScenarioTableColumnHeaderGroup.EXPECT ||
         columnKey == TestScenarioTableColumnHeaderGroup.GIVEN

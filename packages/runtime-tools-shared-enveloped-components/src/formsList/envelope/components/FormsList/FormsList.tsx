@@ -33,7 +33,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface FormsListProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -84,7 +84,7 @@ const FormsList: React.FC<FormsListProps & OUIAProps> = ({
     init();
   };
 
-  const handleItemClick: ToggleGroupItemProps["onChange"] = (_isChosen, event): void => {
+  const handleItemClick: ToggleGroupItemProps["onChange"] = (event, _isChosen): void => {
     const toggleButtonId = event.currentTarget.id;
     if (toggleButtonId === "tableView") {
       setIsSelected({

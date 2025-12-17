@@ -48,6 +48,7 @@ export interface DecisionResult {
   result: DmnEvaluationResult;
   messages?: DmnEvaluationMessages[];
   evaluationStatus: DmnEvaluationStatus;
+  evaluationHitIds: Object;
 }
 
 // Result returned from extended-services /jitdmn/dmnresult;
@@ -56,4 +57,5 @@ export interface ExtendedServicesDmnResult {
   dmnContext?: Record<string, any>;
   messages: DmnEvaluationMessages[];
   namespace?: string;
+  invalidElementPaths: string[][];
 }

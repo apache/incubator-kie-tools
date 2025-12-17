@@ -53,8 +53,10 @@ export function init(args: { container: HTMLElement; bus: EnvelopeBus }) {
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TodoListEnvelopeViewApi>();
     return new Promise<() => TodoListEnvelopeViewApi>((res) => {
-      ReactDOM.render(<TodoListEnvelopeView ref={ref} channelApi={envelope.channelApi} />, args.container, () =>
-        res(() => ref.current!)
+      ReactDOM.render(
+        <TodoListEnvelopeView ref={ref} channelApi={envelope.channelApi} shared={envelope.shared} />,
+        args.container,
+        () => res(() => ref.current!)
       );
     });
   };

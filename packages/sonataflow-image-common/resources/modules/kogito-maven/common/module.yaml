@@ -21,10 +21,10 @@ name: org.kie.kogito.maven.common
 version: "main"
 
 envs:
-  - name: "MAVEN_VERSION"
-    description: "The Maven version to setup with this module"
   - name: "MAVEN_HOME"
     value: "/usr/share/maven"
+  - name: "MAVEN_CMD"
+    value: "/usr/share/maven/bin/mvn"
   - name: "MAVEN_SETTINGS_PATH"
     description: "The location of the settings.xml file"
     value: "${KOGITO_HOME}/.m2/settings.xml"
@@ -45,7 +45,7 @@ envs:
   - name: "HTTP_PROXY_USERNAME"
     description: "Proxy Username"
   - name: "HTTP_PROXY_NONPROXYHOSTS"
-    description: "Non proxy hosts, list of hosts that will ot be proxied."
+    description: "Non proxy hosts, list of hosts that will not be proxied."
     example: "localhost"
   - name: "MAVEN_MIRROR_URL"
     description: "The base URL of a mirror used for retrieving artifacts."
@@ -92,6 +92,9 @@ envs:
   - name: "MAVEN_OFFLINE_MODE"
     description: "When set to true, tells Maven to work in offline mode. See Maven `-o` option for more information."
     example: "true"
+
+packages:
+  manager: microdnf
 
 execute:
   - script: configure

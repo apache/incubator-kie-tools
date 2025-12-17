@@ -19,6 +19,14 @@
       <id>kogito-images</id>
       <repositories>
         <repository>
+          <id>central</id>
+          <name>Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
           <id>apache-public-repository-group</id>
           <name>Apache Public Repository Group</name>
           <url>https://repository.apache.org/content/groups/public/</url>

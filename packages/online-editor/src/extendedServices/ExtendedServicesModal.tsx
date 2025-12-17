@@ -24,21 +24,16 @@ import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form"
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectDirection } from "@patternfly/react-core/deprecated";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import {
-  Wizard,
-  WizardContext,
-  WizardContextConsumer,
-  WizardFooter,
-} from "@patternfly/react-core/dist/js/components/Wizard";
+import { Wizard, WizardContext, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/deprecated";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
 import { useOnlineI18n } from "../i18n";
-import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
@@ -46,6 +41,8 @@ import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useEnv } from "../env/hooks/EnvContext";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 enum ModalPage {
   INITIAL,
@@ -127,23 +124,25 @@ export function ExtendedServicesModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.macos.install.openFile}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.macos.install.openFile}
+                      interpolationMap={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text>
-                    <I18nWrapped
-                      components={{
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
+                      interpolationMap={{
                         file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
                         folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
                       }}
-                    >
-                      {i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
-                    </I18nWrapped>
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
@@ -176,9 +175,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.stopped.launchExtendedServices}
+                          interpolationMap={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -194,32 +196,37 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ folder: <Label>{i18n.terms.macosApplicationFolder}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
+                          interpolationMap={{
+                            folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
+                          interpolationMap={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped
-                          components={{
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openInstruction}
+                          interpolationMap={{
                             file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
                             again: <b>{i18n.dmnRunner.modal.wizard.macos.start.firstTime.again}</b>,
                           }}
-                        >
-                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openInstruction}
-                        </I18nWrapped>
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -235,9 +242,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.launchExtendedServices}
+                          interpolationMap={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -318,9 +328,12 @@ export function ExtendedServicesModal() {
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                    {i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
-                  </I18nWrapped>
+                  <I18nWrappedTemplate
+                    text={i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
+                    interpolationMap={{
+                      file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                    }}
+                  />
                 </TextContent>
               </ListItem>
             </List>
@@ -352,9 +365,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.windows.start.stopped.launchExtendedServices}
+                          interpolationMap={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -370,9 +386,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
+                          interpolationMap={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -395,9 +414,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.windows.start.launchExtendedServices}
+                          interpolationMap={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -483,14 +505,20 @@ export function ExtendedServicesModal() {
                   </Text>
                   <List>
                     <ListItem>
-                      <I18nWrapped components={{ package: <Label>{UBUNTU_APP_INDICATOR_LIB}</Label> }}>
-                        {i18n.dmnRunner.modal.wizard.linux.install.ubuntuDependency}
-                      </I18nWrapped>
+                      <I18nWrappedTemplate
+                        text={i18n.dmnRunner.modal.wizard.linux.install.ubuntuDependency}
+                        interpolationMap={{
+                          package: <Label>{UBUNTU_APP_INDICATOR_LIB}</Label>,
+                        }}
+                      />
                     </ListItem>
                     <ListItem>
-                      <I18nWrapped components={{ package: <Label>{FEDORA_APP_INDICATOR_LIB}</Label> }}>
-                        {i18n.dmnRunner.modal.wizard.linux.install.fedoraDependency}
-                      </I18nWrapped>
+                      <I18nWrappedTemplate
+                        text={i18n.dmnRunner.modal.wizard.linux.install.fedoraDependency}
+                        interpolationMap={{
+                          package: <Label>{FEDORA_APP_INDICATOR_LIB}</Label>,
+                        }}
+                      />
                     </ListItem>
                   </List>
                 </TextContent>
@@ -498,9 +526,12 @@ export function ExtendedServicesModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.linux.install.extractContent}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.linux.install.extractContent}
+                      interpolationMap={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
@@ -508,9 +539,12 @@ export function ExtendedServicesModal() {
             <br />
             <TextContent>
               <Text component={TextVariants.p}>
-                <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label> }}>
-                  {i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
-                </I18nWrapped>
+                <I18nWrappedTemplate
+                  text={i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
+                  interpolationMap={{
+                    file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
+                  }}
+                />
               </Text>
             </TextContent>
           </>
@@ -541,9 +575,12 @@ export function ExtendedServicesModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
+                      interpolationMap={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
@@ -568,9 +605,12 @@ export function ExtendedServicesModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
+                      interpolationMap={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
                 <br />
@@ -676,7 +716,7 @@ export function ExtendedServicesModal() {
         <>
           {modalPage === ModalPage.INITIAL && (
             <Button
-              className="pf-u-mt-xl kogito--editor__extended-services-modal-initial-center"
+              className="pf-v5-u-mt-xl kogito--editor__extended-services-modal-initial-center"
               onClick={() =>
                 env.KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD === false
                   ? setModalPage(ModalPage.WIZARD)
@@ -689,7 +729,7 @@ export function ExtendedServicesModal() {
           {modalPage === ModalPage.WIZARD && (
             <div className={"kogito--editor__extended-services-modal-footer"}>
               <Alert
-                variant={"default"}
+                variant={"custom"}
                 isInline={true}
                 className={"kogito--editor__extended-services-modal-footer-alert"}
                 title={
@@ -713,34 +753,37 @@ export function ExtendedServicesModal() {
             </TextContent>
           </div>
           <div>
-            <TextContent className="pf-u-mt-sm pf-u-mb-md">
+            <TextContent className="pf-v5-u-mt-sm pf-v5-u-mb-md">
               <Text component={TextVariants.p}>{i18n.extendedServices.modal.initial.subHeader}</Text>
             </TextContent>
           </div>
           <br />
           {extendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER && (
-            <div className="pf-u-display-flex pf-u-flex-direction-row">
-              <div className="pf-u-w-25 pf-u-ml-sm">
+            <div className="pf-v5-u-display-flex pf-v5-u-flex-direction-row">
+              <div className="pf-v5-u-w-25 pf-v5-u-ml-sm">
                 <TextContent>
                   <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.runDmnModels}</Text>
                 </TextContent>
                 <br />
-                <TextContent className="pf-u-mt-md">
+                <TextContent className="pf-v5-u-mt-md">
                   <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.explanation}</Text>
                 </TextContent>
                 <br />
-                <TextContent className="pf-u-mt-md">
+                <TextContent className="pf-v5-u-mt-md">
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ icon: <ExclamationCircleIcon /> }}>
-                      {i18n.dmnRunner.modal.initial.notificationPanelExplanation}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.initial.notificationPanelExplanation}
+                      interpolationMap={{
+                        icon: <ExclamationCircleIcon />,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </div>
               <br />
-              <div className="pf-u-w-75 pf-u-p-sm">
+              <div className="pf-v5-u-w-75 pf-v5-u-p-sm">
                 <img
-                  className="pf-u-h-100"
+                  className="pf-v5-u-h-100"
                   src={routes.static.images.dmnRunnerGif.path({})}
                   alt={"DMN Runner usage"}
                   width={"100%"}
@@ -749,22 +792,22 @@ export function ExtendedServicesModal() {
             </div>
           )}
           {extendedServices.installTriggeredBy === DependentFeature.DEV_DEPLOYMENTS && (
-            <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row">
-              <div className="pf-u-w-25 pf-u-mr-sm">
+            <div className="pf-v5-u-mt-xl pf-v5-u-display-flex pf-v5-u-flex-direction-row">
+              <div className="pf-v5-u-w-25 pf-v5-u-mr-sm">
                 <TextContent>
                   <Text component={TextVariants.p}>{i18n.devDeployments.introduction.explanation}</Text>
                 </TextContent>
                 <br />
-                <TextContent className="pf-u-mt-md">
+                <TextContent className="pf-v5-u-mt-md">
                   <Text component={TextVariants.p}>
                     <I18nHtml>{i18n.devDeployments.introduction.disclaimer}</I18nHtml>
                   </Text>
                 </TextContent>
               </div>
               <br />
-              <div className="pf-u-w-75">
+              <div className="pf-v5-u-w-75">
                 <img
-                  className="pf-u-h-100"
+                  className="pf-v5-u-h-100"
                   src={routes.static.images.dmnDevDeploymentGif.path({})}
                   alt={"DMN Dev Deployments usage"}
                   width={"100%"}
@@ -859,35 +902,34 @@ function ExtendedServicesPortForm() {
   return (
     <>
       <Text component={TextVariants.p}>
-        <I18nWrapped
-          components={{
+        <I18nWrappedTemplate
+          text={i18n.dmnRunner.modal.wizard.advancedSettings.title}
+          interpolationMap={{
             port: <Text className={"kogito--code"}>{config.port}</Text>,
           }}
-        >
-          {i18n.dmnRunner.modal.wizard.advancedSettings.title}
-        </I18nWrapped>
+        />
       </Text>
       <br />
       <Form isHorizontal={true}>
-        <FormGroup
-          fieldId={"extended-services-port"}
-          label={i18n.dmnRunner.modal.wizard.advancedSettings.label}
-          validated={
-            config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353
-              ? "error"
-              : "success"
-          }
-          helperTextInvalid={i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
-        >
+        <FormGroup fieldId={"extended-services-port"} label={i18n.dmnRunner.modal.wizard.advancedSettings.label}>
           <TextInput
             value={config.port}
             type={"number"}
-            onChange={(value) =>
+            onChange={(_event, value) =>
               settingsDispatch.set((settings) => {
                 settings.extendedServices.port = `${value}`;
               })
             }
           />
+          <HelperText>
+            {config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353 ? (
+              <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                {i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
+              </HelperTextItem>
+            ) : (
+              <HelperTextItem></HelperTextItem>
+            )}
+          </HelperText>
         </FormGroup>
       </Form>
     </>

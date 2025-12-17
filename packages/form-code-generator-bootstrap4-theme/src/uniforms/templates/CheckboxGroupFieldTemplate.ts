@@ -22,11 +22,13 @@ import getRequiredCode from "!!raw-loader!../../resources/staticCode/getCheckbox
 import input from "!!raw-loader!../../resources/templates/checkboxGroup.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/checkboxGroup.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/checkboxGroup.writeModelData.template";
-import { FORM_GROUP_TEMPLATE, FormElementTemplate, FormElementTemplateProps } from "./types";
+import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
-import { CodeFragment, FormInput } from "../../api";
-import { fieldNameToOptionalChain, flatFieldName } from "./utils";
+import { FormInput } from "../../api";
+import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
 import { getInputReference } from "../utils/Utils";
+import { DEFAULT_LIST_INDEX_NAME, getCurrentItemSetModelData, getNormalizedListIdOrName } from "./ListFieldTemplate";
 
 export interface Option {
   value: string;
@@ -42,47 +44,49 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
   private readonly inputTemplate: CompiledTemplate;
   private readonly setValueFromModelTemplate: CompiledTemplate;
   private readonly writeValueToModelTemplate: CompiledTemplate;
+  private readonly formGroupTemplate: CompiledTemplate;
 
   constructor() {
     this.inputTemplate = template(input);
     this.setValueFromModelTemplate = template(setValueFromModel);
     this.writeValueToModelTemplate = template(writeValueToModel);
+    this.formGroupTemplate = template(formGroupTemplate);
   }
 
   render(props: CheckBoxGroupFieldProps): FormInput {
-    const data = {
-      props: props,
-      input: this.inputTemplate({ props: props }),
-    };
-
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE(data),
+      html: this.formGroupTemplate({
+        id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+        label: props.label,
+        input: this.inputTemplate({
+          id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+          name: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.name) : props.name,
+          options: props.options,
+          disabled: props.disabled,
+        }),
+        isListItem: props.itemProps?.isListItem ?? false,
+      }),
       disabled: props.disabled,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.buildWriteValueToModelCode(props),
-    };
-  }
-
-  private buildSetValueFromModelCode(props: CheckBoxGroupFieldProps): CodeFragment {
-    const properties = {
-      ...props,
-      path: fieldNameToOptionalChain(props.name),
-    };
-    return {
-      code: this.setValueFromModelTemplate(properties),
-      requiredCode: [setRequiredCode],
-    };
-  }
-
-  private buildWriteValueToModelCode(props: CheckBoxGroupFieldProps): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-
-    return {
-      code: this.writeValueToModelTemplate(props),
-      requiredCode: [getRequiredCode],
+      globalFunctions: undefined,
+      setValueFromModelCode: {
+        code: this.setValueFromModelTemplate({
+          ...props,
+          name: props.itemProps?.isListItem
+            ? getCurrentItemSetModelData(props.name, props.itemProps?.indexVariableName ?? DEFAULT_LIST_INDEX_NAME)
+            : props.name,
+          path: fieldNameToOptionalChain(props.name),
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
+          isListItem: props.itemProps?.isListItem ?? false,
+        }),
+        requiredCode: [setRequiredCode],
+      },
+      writeValueToModelCode: props.disabled
+        ? undefined
+        : {
+            code: this.writeValueToModelTemplate(props),
+            requiredCode: [getRequiredCode],
+          },
     };
   }
 }

@@ -59,15 +59,14 @@
         <enabled>false</enabled>
       </releases>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -75,10 +74,19 @@
     <version.quarkus>$ENVSUBST__VERSION_QUARKUS</version.quarkus>
     <version.kogito>$ENVSUBST__VERSION_KOGITO</version.kogito>
     <version.jbpm-quarkus-devui-bom>$ENVSUBST__VERSION_JBPM_QUARKUS_DEVUI_BOM</version.jbpm-quarkus-devui-bom>
+    <version.io.vertx>4.5.22</version.io.vertx>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities. -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <!-- End of version overrides. -->
+
       <dependency>
         <groupId>io.quarkus.platform</groupId>
         <artifactId>quarkus-bom</artifactId>

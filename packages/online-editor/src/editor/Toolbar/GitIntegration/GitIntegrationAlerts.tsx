@@ -198,7 +198,7 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
                 onClick={() => pushNewBranch(newBranchName)}
                 variant={ButtonVariant.link}
                 style={{ paddingLeft: 0 }}
-                isSmall={true}
+                size="sm"
                 isDisabled={!canPushToGitRepository}
               >
                 {`Switch to '${newBranchName}'`}
@@ -225,18 +225,19 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
 
   const successfullyCreatedGistOrSnippetAlert = useGlobalAlert(
     useCallback(
-      ({ close }) => {
+      ({ close }, staticArgs?: { url: string }) => {
         if (!isGistLikeWorkspaceKind(workspace.descriptor.origin.kind)) {
           return <></>;
         }
 
-        const gistOrSnippetUrl = workspace.descriptor.origin.url;
+        const gistOrSnippetUrl = staticArgs?.url || workspace.descriptor.origin.url;
         return (
           <Alert
             variant="success"
             title={switchExpression(workspace.descriptor.origin.kind, {
               GITHUB_GIST: i18n.editorPage.alerts.createGist,
               BITBUCKET_SNIPPET: i18n.editorPage.alerts.createSnippet,
+              GITLAB_SNIPPET: i18n.editorPage.alerts.createSnippet,
             })}
             actionClose={<AlertActionCloseButton onClose={close} />}
             actionLinks={
@@ -264,7 +265,13 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
           return <></>;
         }
 
-        const gistOrSnippetUrl = workspace.descriptor.origin.url;
+        const gistOrSnippetUrl = switchExpression(workspace.descriptor.origin.kind, {
+          // Remove the `.git` extension from GitLab snippet URLs.
+          // If a snippet URL ends with `.git`, GitLab may return a 404 error when accessed.
+          // This ensures only the extension is removed, not other parts of the URL.
+          GITLAB_SNIPPET: workspace.descriptor.origin.url?.replace?.(/\.git$/, ""),
+          default: workspace.descriptor.origin.url,
+        });
         return (
           <Alert
             variant="info"
@@ -275,6 +282,7 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
                 {switchExpression(workspace.descriptor.origin.kind, {
                   BITBUCKET_SNIPPET: "Snippet",
                   GITHUB_GIST: "Gist",
+                  GITLAB_SNIPPET: "Snippet",
                 })}
                 ...
               </>
@@ -299,13 +307,20 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
           return <></>;
         }
 
-        const gistOrSnippetUrl = workspace.descriptor.origin.url;
+        const gistOrSnippetUrl = switchExpression(workspace.descriptor.origin.kind, {
+          // Remove the `.git` extension from GitLab snippet URLs.
+          // If a snippet URL ends with `.git`, GitLab may return a 404 error when accessed.
+          // This ensures only the extension is removed, not other parts of the URL.
+          GITLAB_SNIPPET: workspace.descriptor.origin.url?.replace?.(/\.git$/, ""),
+          default: workspace.descriptor.origin.url,
+        });
         return (
           <Alert
             variant="success"
             title={switchExpression(workspace.descriptor.origin.kind, {
               GITHUB_GIST: i18n.editorPage.alerts.updateGist,
               BITBUCKET_SNIPPET: i18n.editorPage.alerts.updateSnippet,
+              GITLAB_SNIPPET: i18n.editorPage.alerts.updateSnippet,
             })}
             actionClose={<AlertActionCloseButton onClose={close} />}
             actionLinks={
@@ -335,6 +350,7 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
             title={switchExpression(workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
               GITHUB_GIST: i18n.editorPage.alerts.errorPushingGist,
               BITBUCKET_SNIPPET: i18n.editorPage.alerts.errorPushingSnippet,
+              GITLAB_SNIPPET: i18n.editorPage.alerts.errorPushingSnippet,
             })}
             actionLinks={[
               <AlertActionLink

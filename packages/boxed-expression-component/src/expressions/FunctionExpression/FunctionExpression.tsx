@@ -20,20 +20,23 @@
 import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid, Normalized } from "../../api";
+import { Action, BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid, Normalized } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
+import {
+  boxedExpressionEditorDictionaries,
+  BoxedExpressionEditorI18nContext,
+  boxedExpressionEditorI18nDefaults,
+  useBoxedExpressionEditorI18n,
+} from "../../i18n";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { BoxedFunctionFeel, FeelFunctionExpression } from "./FeelFunctionExpression";
 import { FunctionKindSelector } from "./FunctionKindSelector";
 import { BoxedFunctionJava, JavaFunctionExpression } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
 import { BoxedFunctionPmml, PmmlFunctionExpression } from "./PmmlFunctionExpression";
-import {
-  DMN15__tFunctionDefinition,
-  DMN15__tFunctionKind,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller";
 import "./FunctionExpression.css";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 export function FunctionExpression({
   isNested,
@@ -71,67 +74,70 @@ export function FunctionExpression({
   }
 }
 
-export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN15__tFunctionKind>) {
+export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN_LATEST__tFunctionKind>) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const { isReadOnly } = useBoxedExpressionEditor();
 
   const onFunctionKindSelect = useCallback(
-    (kind: Normalized<DMN15__tFunctionKind>) => {
-      setExpression((prev: Normalized<BoxedFunction>) => {
-        if (kind === BoxedFunctionKind.Feel) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const retFeel: Normalized<BoxedFunction> = {
-            __$$element: "functionDefinition",
-            "@_label": prev["@_label"],
-            "@_id": generateUuid(),
-            "@_kind": BoxedFunctionKind.Feel,
-            "@_typeRef": undefined,
-            expression: {
-              __$$element: "literalExpression",
+    (kind: Normalized<DMN_LATEST__tFunctionKind>) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunction>) => {
+          if (kind === BoxedFunctionKind.Feel) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const retFeel: Normalized<BoxedFunction> = {
+              __$$element: "functionDefinition",
+              "@_label": prev["@_label"],
               "@_id": generateUuid(),
+              "@_kind": BoxedFunctionKind.Feel,
               "@_typeRef": undefined,
-            },
-            formalParameter: [],
-          };
-          return retFeel;
-        } else if (kind === BoxedFunctionKind.Java) {
-          const expressionId = generateUuid();
+              expression: {
+                __$$element: "literalExpression",
+                "@_id": generateUuid(),
+                "@_typeRef": undefined,
+              },
+              formalParameter: [],
+            };
+            return retFeel;
+          } else if (kind === BoxedFunctionKind.Java) {
+            const expressionId = generateUuid();
 
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const retJava: Normalized<BoxedFunction> = {
-            __$$element: "functionDefinition",
-            "@_label": prev["@_label"],
-            "@_id": expressionId,
-            expression: {
-              __$$element: "context",
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const retJava: Normalized<BoxedFunction> = {
+              __$$element: "functionDefinition",
+              "@_label": prev["@_label"],
+              "@_id": expressionId,
+              expression: {
+                __$$element: "context",
+                "@_id": generateUuid(),
+              },
+              "@_kind": BoxedFunctionKind.Java,
+              "@_typeRef": undefined,
+              formalParameter: [],
+            };
+            return retJava;
+          } else if (kind === BoxedFunctionKind.Pmml) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const retPmml: Normalized<BoxedFunction> = {
+              __$$element: "functionDefinition",
+              "@_label": prev["@_label"],
               "@_id": generateUuid(),
-            },
-            "@_kind": BoxedFunctionKind.Java,
-            "@_typeRef": undefined,
-            formalParameter: [],
-          };
-          return retJava;
-        } else if (kind === BoxedFunctionKind.Pmml) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const retPmml: Normalized<BoxedFunction> = {
-            __$$element: "functionDefinition",
-            "@_label": prev["@_label"],
-            "@_id": generateUuid(),
-            expression: {
-              __$$element: "context",
-              "@_id": generateUuid(),
-            },
-            "@_kind": BoxedFunctionKind.Pmml,
-            "@_typeRef": undefined,
-            formalParameter: [],
-          };
-          return retPmml;
-        } else {
-          throw new Error("Shouldn't ever reach this point.");
-        }
+              expression: {
+                __$$element: "context",
+                "@_id": generateUuid(),
+              },
+              "@_kind": BoxedFunctionKind.Pmml,
+              "@_typeRef": undefined,
+              formalParameter: [],
+            };
+            return retPmml;
+          } else {
+            throw new Error("Shouldn't ever reach this point.");
+          }
+        },
+        expressionChangedArgs: { action: Action.FunctionKindChanged, from: functionKind, to: kind },
       });
     },
-    [setExpression]
+    [functionKind, setExpression]
   );
 
   return useMemo(
@@ -147,7 +153,7 @@ export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN
 }
 
 export function useFunctionExpressionParametersColumnHeader(
-  formalParameters: Normalized<DMN15__tFunctionDefinition["formalParameter"]>,
+  formalParameters: Normalized<DMN_LATEST__tFunctionDefinition["formalParameter"]>,
   isReadOnly: boolean
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -160,7 +166,7 @@ export function useFunctionExpressionParametersColumnHeader(
         data-testid="kie-tools--bee--parameters-list"
         className={`parameters-list ${_.isEmpty(formalParameters) ? "empty-parameters" : ""}`}
       >
-        <p className="pf-u-text-truncate">
+        <p className="pf-v5-u-text-truncate">
           {_.isEmpty(formalParameters) ? (
             i18n.editParameters
           ) : (

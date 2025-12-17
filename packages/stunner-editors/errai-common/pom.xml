@@ -67,7 +67,16 @@
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-annotations</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
 
     <dependency>

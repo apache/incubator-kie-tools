@@ -29,7 +29,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -53,17 +53,17 @@ export default defineConfig({
     locale: "en-US",
   },
   expect: {
-    timeout: 10000,
+    timeout: 30_000,
     toHaveScreenshot: {
       // An acceptable ratio of pixels that are different to the
       // total amount of pixels, between 0 and 1.
-      maxDiffPixelRatio: 0.1,
+      maxDiffPixelRatio: 0.001,
     },
   },
   /* Configure projects for major browsers */
   projects: [
     {
-      timeout: 60000,
+      timeout: 180_000,
       name: ProjectName.CHROMIUM,
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
     },
@@ -74,13 +74,13 @@ export default defineConfig({
     // },
 
     {
-      timeout: 60000,
+      timeout: 180_000,
       name: ProjectName.WEBKIT,
       use: { ...devices["Desktop Safari"], deviceScaleFactor: 1 },
     },
 
     {
-      timeout: 60000,
+      timeout: 180_000,
       name: ProjectName.GOOGLE_CHROME,
       use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
     },

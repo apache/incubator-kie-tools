@@ -28,7 +28,7 @@ import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
 import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/form-dmn";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -41,6 +41,7 @@ import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 import { useSettings } from "../settings/SettingsContext";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 enum ButtonPosition {
   INPUT,
@@ -68,18 +69,10 @@ export function DmnRunnerDrawerPanelContent() {
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
   const { i18n, locale } = useOnlineI18n();
-  const {
-    currentInputIndex,
-    dmnRunnerKey,
-    extendedServicesError,
-    inputs,
-    jsonSchema,
-    results,
-    resultsDifference,
-    dmnEditor,
-  } = useDmnRunnerState();
+  const { currentInputIndex, dmnRunnerKey, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
+    useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
-  const { notificationsPanel, onOpenPanel } = useEditorDockContext();
+  const { envelopeServer, notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
@@ -114,10 +107,10 @@ export function DmnRunnerDrawerPanelContent() {
     notificationsPanel?.setActiveTab(i18n.terms.validation);
   }, [i18n.terms.validation, notificationsPanel, onOpenPanel]);
 
-  const openExecutionTab = useCallback(() => {
+  const openEvaluationTab = useCallback(() => {
     onOpenPanel(PanelId.NOTIFICATIONS_PANEL);
-    notificationsPanel?.setActiveTab(i18n.terms.execution);
-  }, [i18n.terms.execution, notificationsPanel, onOpenPanel]);
+    notificationsPanel?.setActiveTab(i18n.terms.evaluation);
+  }, [i18n.terms.evaluation, notificationsPanel, onOpenPanel]);
 
   useEffect(() => {
     setDrawerError(false);
@@ -173,12 +166,17 @@ export function DmnRunnerDrawerPanelContent() {
     onOpenPanel(PanelId.DMN_RUNNER_TABLE);
   }, [onOpenPanel, setDmnRunnerMode]);
 
+  const [openedBoxedExpressionNodeId, _] = useSharedValue(
+    (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>)?.shared
+      ?.newDmnEditor_openedBoxedExpressionEditorNodeId ?? undefined
+  );
+
   return (
     <DrawerPanelContent
       id={"kogito-panel-content"}
       className={"kogito--editor__drawer-content-panel"}
       defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}
-      onResize={onResize}
+      onResize={(_event, val) => onResize(val)}
       isResizable={true}
       minSize={"361px"}
     >
@@ -224,7 +222,7 @@ export function DmnRunnerDrawerPanelContent() {
                             aria-label="Select Row Input"
                             toggle={
                               <DropdownToggle
-                                style={{ padding: "0px" }}
+                                style={{ padding: "0px", whiteSpace: "nowrap" }}
                                 toggleIndicator={null}
                                 onToggle={() => openRowSelection((prevState) => !prevState)}
                               >
@@ -337,16 +335,17 @@ export function DmnRunnerDrawerPanelContent() {
                       differences={resultsDifference[currentInputIndex]}
                       locale={locale}
                       notificationsPanel={true}
-                      openExecutionTab={openExecutionTab}
+                      openEvaluationTab={openEvaluationTab}
                       openBoxedExpressionEditor={
                         !isLegacyDmnEditor
                           ? (nodeId: string) => {
-                              const newDmnEditorEnvelopeApi = dmnEditor?.getEnvelopeServer()
-                                .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
-                              newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
+                              const newDmnEditorEnvelopeApi =
+                                envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                              newDmnEditorEnvelopeApi.notifications.newDmnEditor_openBoxedExpressionEditor.send(nodeId);
                             }
                           : undefined
                       }
+                      openedBoxedExpressionEditorNodeId={openedBoxedExpressionNodeId}
                     />
                   </PageSection>
                 </div>

@@ -2,13 +2,17 @@
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.4/.schema/devbox.schema.json",
   "packages": {
     "temurin-bin-17": "17.0.9",
-    "nodejs": "22.11.0",
-    "maven": "3.9.9",
+    "nodejs": "22.14.0",
+    "maven": "3.9.11",
     "kubernetes-helm": "3.13.3",
     "gnumake": "4.4.1",
-    "go": "1.22.9",
+    "go": "1.24.10",
     "python": "3.12.2",
-    "libxml2": "2.13.3"
+    "libxml2": "2.13.3",
+    "glibcLocales": {
+      "version": "2.40-66",
+      "platforms": ["x86_64-linux", "aarch64-linux"]
+    }
   },
   "env": {
     "PLAYWRIGHT_BROWSERS_PATH": "0",
@@ -20,10 +24,7 @@
     "PATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs/bin:$DEVBOX_PROJECT_ROOT/.devbox/pnpm-store:$PATH"
   },
   "shell": {
-    "init_hook": [
-      ". $VENV_DIR/bin/activate",
-      "[[ $OSTYPE == 'darwin'* ]] && export PATH=$(echo $PATH | tr ':' '\n' | grep -vi 'xcode\\|clang\\|cctools' | paste -sd ':' -)"
-    ],
+    "init_hook": [". $VENV_DIR/bin/activate"],
     "scripts": {
       "versions": [
         "java --version && mvn -v && node -v && pnpm -v && go version && helm version && make -v && python3 --version && pip3 --version"

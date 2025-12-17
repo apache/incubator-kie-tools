@@ -129,10 +129,12 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
             final EdgeShape edgeShape = (EdgeShape) context.getCanvas().getShape(edge.getUUID());
             final Shape sourceNodeShape = context.getCanvas().getShape(sourceNode.getUUID());
             final Shape targetNodeShape = context.getCanvas().getShape(targetNode.getUUID());
-            edgeShape.applyConnections(edge,
+            if (sourceNodeShape != null && targetNodeShape != null) {
+                edgeShape.applyConnections(edge,
                                        sourceNodeShape.getShapeView(),
                                        targetNodeShape.getShapeView(),
                                        MutationContext.STATIC);
+            }
         }
     }
 

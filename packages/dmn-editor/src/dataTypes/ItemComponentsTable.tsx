@@ -28,12 +28,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownSeparator,
-  KebabToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownSeparator, KebabToggle } from "@patternfly/react-core/deprecated";
 import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
@@ -44,7 +39,7 @@ import { DataTypeName } from "./DataTypeName";
 import { canHaveConstraints, getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import {
   buildClipboardFromDataType,
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
@@ -57,10 +52,11 @@ import { isRange } from "./ConstraintsRange";
 import { constraintTypeHelper, recursivelyGetRootItemDefinition } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -89,6 +85,7 @@ export function ItemComponentsTable({
   dropdownOpenFor: string | undefined;
   setDropdownOpenFor: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const { externalModelsByNamespace } = useExternalModels();
@@ -156,10 +153,10 @@ export function ItemComponentsTable({
       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
         <FlexItem>
           <Title size={"md"} headingLevel={"h4"}>
-            {`Properties in '${parent.itemDefinition["@_name"]}'`}
+            {i18n.dataTypes.propertiesInDefinition(parent.itemDefinition["@_name"])}
             {!isReadOnly && (
               <Button
-                title={"Add item component (at the top)"}
+                title={i18n.dataTypes.addItemComponent}
                 variant={ButtonVariant.link}
                 onClick={() =>
                   addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
@@ -175,17 +172,17 @@ export function ItemComponentsTable({
         </FlexItem>
         <FlexItem>
           <Button variant={ButtonVariant.link} onClick={expandAll}>
-            Expand all
+            {i18n.dataTypes.expandAll}
           </Button>
           <Button variant={ButtonVariant.link} onClick={collapseAll}>
-            Collapse all
+            {i18n.dataTypes.collapseAll}
           </Button>
           {!isReadOnly && (
             <Dropdown
               toggle={
                 <KebabToggle
                   id={"toggle-kebab-properties-table"}
-                  onToggle={(isOpen) => setDropdownOpenFor(isOpen ? parent.itemDefinition["@_id"] : undefined)}
+                  onToggle={(_event, isOpen) => setDropdownOpenFor(isOpen ? parent.itemDefinition["@_id"] : undefined)}
                 />
               }
               onSelect={() => setDropdownOpenFor(undefined)}
@@ -211,7 +208,7 @@ export function ItemComponentsTable({
                       getNewDmnIdRandomizer()
                         .ack({
                           json: clipboard.itemDefinitions,
-                          type: "DMN15__tDefinitions",
+                          type: "DMN16__tDefinitions",
                           attr: "itemDefinition",
                         })
                         .randomize();
@@ -222,7 +219,7 @@ export function ItemComponentsTable({
                     });
                   }}
                 >
-                  Paste property
+                  {i18n.dataTypes.pasteProperty}
                 </DropdownItem>,
               ]}
             />
@@ -231,7 +228,7 @@ export function ItemComponentsTable({
       </Flex>
       {flatTree.length <= 0 && (
         <div className={"kie-dmn-editor--data-type-properties-table--empty-state"}>
-          {isReadOnly ? "None" : "None yet"}
+          {isReadOnly ? i18n.none : i18n.noneYet}
         </div>
       )}
       {flatTree.length > 0 && (
@@ -278,19 +275,19 @@ export function ItemComponentsTable({
                   dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "enumeration" ||
                   dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration"
                 ) {
-                  return <>Enumeration</>;
+                  return <>{i18n.dataTypes.enumeration}</>;
                 }
                 if (
                   dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "expression" ||
                   dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression"
                 ) {
-                  return <>Expression</>;
+                  return <>{i18n.dataTypes.expression}</>;
                 }
                 if (
                   dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "range" ||
                   dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range"
                 ) {
-                  return <>Range</>;
+                  return <>{i18n.dataTypes.range}</>;
                 }
 
                 const constraintValue =
@@ -303,15 +300,15 @@ export function ItemComponentsTable({
                 );
 
                 if (constraintValue === undefined) {
-                  return <>None</>;
+                  return <>{i18n.none}</>;
                 }
                 if (isEnum(constraintValue, typeHelper.check)) {
-                  return <>Enumeration</>;
+                  return <>{i18n.dataTypes.enumeration}</>;
                 }
                 if (isRange(constraintValue, typeHelper.check)) {
-                  return <>Range</>;
+                  return <>{i18n.dataTypes.range}</>;
                 }
-                return <>Expression</>;
+                return <>{i18n.dataTypes.expression}</>;
               };
 
               const rootItemDefinition = recursivelyGetRootItemDefinition(
@@ -347,7 +344,7 @@ export function ItemComponentsTable({
                           >
                             {isStruct(dt.itemDefinition) && (
                               <Button
-                                title={"Expand / collapse item component"}
+                                title={i18n.dataTypes.expandCollapseItemComponent}
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={(e) =>
@@ -372,7 +369,7 @@ export function ItemComponentsTable({
                           <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
                             {!isReadOnly && isStruct(dt.itemDefinition) && (
                               <Button
-                                title={"Add item component"}
+                                title={i18n.dataTypes.addItemComponent}
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={() => {
@@ -403,10 +400,10 @@ export function ItemComponentsTable({
                       </td>
                       <td>
                         <Switch
-                          aria-label={"Is struct?"}
+                          aria-label={i18n.dataTypes.isStruct}
                           isDisabled={isReadOnly}
                           isChecked={isStruct(dt.itemDefinition)}
-                          onChange={(isChecked) => {
+                          onChange={(_event, isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               if (isChecked) {
                                 itemDefinition.typeRef = undefined;
@@ -449,10 +446,10 @@ export function ItemComponentsTable({
                       </td>
                       <td>
                         <Switch
-                          aria-label={"Is collection?"}
+                          aria-label={i18n.dataTypes.isCollection}
                           isDisabled={isReadOnly}
                           isChecked={dt.itemDefinition["@_isCollection"] ?? false}
-                          onChange={(isChecked) => {
+                          onChange={(_event, isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               itemDefinition["@_isCollection"] = isChecked;
                               itemDefinition.typeConstraint = undefined;
@@ -483,7 +480,9 @@ export function ItemComponentsTable({
                           toggle={
                             <KebabToggle
                               id={"toggle-kebab-" + dt.itemDefinition["@_id"]}
-                              onToggle={(isOpen) => setDropdownOpenFor(isOpen ? dt.itemDefinition["@_id"] : undefined)}
+                              onToggle={(_event, isOpen) =>
+                                setDropdownOpenFor(isOpen ? dt.itemDefinition["@_id"] : undefined)
+                              }
                             />
                           }
                           onSelect={() => setDropdownOpenFor(undefined)}
@@ -501,7 +500,7 @@ export function ItemComponentsTable({
                                 });
                               }}
                             >
-                              View
+                              {i18n.dataTypes.view}
                             </DropdownItem>,
                             <DropdownSeparator key="view-separator" />,
                             <React.Fragment key={"extract-to-top-level-fragment"}>
@@ -522,14 +521,13 @@ export function ItemComponentsTable({
                                             "@_isCollection": false,
                                           });
 
-                                          const newItemDefinitionCopy: Normalized<DMN15__tItemDefinition> = JSON.parse(
-                                            JSON.stringify(newItemDefinition)
-                                          ); // Necessary because idRandomizer will mutate this object.
+                                          const newItemDefinitionCopy: Normalized<DMN_LATEST__tItemDefinition> =
+                                            JSON.parse(JSON.stringify(newItemDefinition)); // Necessary because idRandomizer will mutate this object.
 
                                           getNewDmnIdRandomizer()
                                             .ack({
                                               json: [newItemDefinitionCopy],
-                                              type: "DMN15__tDefinitions",
+                                              type: "DMN16__tDefinitions",
                                               attr: "itemDefinition",
                                             })
                                             .randomize();
@@ -546,7 +544,7 @@ export function ItemComponentsTable({
                                       );
                                     }}
                                   >
-                                    Extract data type
+                                    {i18n.dataTypes.extractDataType}
                                   </DropdownItem>
                                   <DropdownSeparator key="extract-data-type-separator" />
                                 </>
@@ -560,7 +558,7 @@ export function ItemComponentsTable({
                                 navigator.clipboard.writeText(JSON.stringify(clipboard));
                               }}
                             >
-                              Copy
+                              {i18n.dataTypes.copy}
                             </DropdownItem>,
                             <React.Fragment key={"cut-fragment"}>
                               {!isReadOnly && (
@@ -576,7 +574,7 @@ export function ItemComponentsTable({
                                     });
                                   }}
                                 >
-                                  Cut
+                                  {i18n.dataTypes.cut}
                                 </DropdownItem>
                               )}
                             </React.Fragment>,
@@ -591,7 +589,7 @@ export function ItemComponentsTable({
                                     });
                                   }}
                                 >
-                                  Remove
+                                  {i18n.dataTypes.remove}
                                 </DropdownItem>
                               )}
                             </React.Fragment>,
@@ -614,7 +612,7 @@ export function ItemComponentsTable({
                                         getNewDmnIdRandomizer()
                                           .ack({
                                             json: clipboard.itemDefinitions,
-                                            type: "DMN15__tDefinitions",
+                                            type: "DMN16__tDefinitions",
                                             attr: "itemDefinition",
                                           })
                                           .randomize();
@@ -625,7 +623,7 @@ export function ItemComponentsTable({
                                       });
                                     }}
                                   >
-                                    Paste property
+                                    {i18n.dataTypes.pasteProperty}
                                   </DropdownItem>
                                 </React.Fragment>
                               </React.Fragment>
@@ -656,7 +654,7 @@ export function ItemComponentsTable({
                     style={{ paddingLeft: 0 }}
                   >
                     <PlusCircleIcon />
-                    &nbsp;&nbsp;{`Add property to '${parent.itemDefinition["@_name"]}'`}
+                    &nbsp;&nbsp;{i18n.dataTypes.addPropertiesToDefinition(parent.itemDefinition["@_name"])}
                   </Button>
                 </td>
               </tr>

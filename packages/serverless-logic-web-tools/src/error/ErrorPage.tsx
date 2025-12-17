@@ -19,12 +19,18 @@
 
 import * as React from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useRoutes } from "../navigation/Hooks";
@@ -53,12 +59,12 @@ export type ErrorPageProps = { errors: string[] } & (
 
 export function ErrorPage(props: ErrorPageProps) {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(false);
 
   const returnRecentModels = useCallback(() => {
-    history.replace({ pathname: routes.home.path({}) });
-  }, [history, routes]);
+    navigate({ pathname: routes.home.path({}) }, { replace: true });
+  }, [navigate, routes]);
 
   const errorDetails = useMemo(() => props.errors.filter(Boolean).join("\n"), [props.errors]);
 
@@ -104,7 +110,7 @@ export function ErrorPage(props: ErrorPageProps) {
     <PageSection isFilled aria-label={`${props.kind.toLowerCase()}-error-section`}>
       <PageSection variant={"light"} padding={{ default: "noPadding" }}>
         <EmptyState>
-          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{title}</Text>
           </TextContent>
@@ -135,9 +141,11 @@ export function ErrorPage(props: ErrorPageProps) {
               <br />
             </PageSection>
           </EmptyStateBody>
-          <Button variant={ButtonVariant.tertiary} onClick={returnRecentModels}>
-            Return home
-          </Button>
+          <EmptyStateFooter>
+            <Button variant={ButtonVariant.tertiary} onClick={returnRecentModels}>
+              Return home
+            </Button>
+          </EmptyStateFooter>
         </EmptyState>
       </PageSection>
     </PageSection>

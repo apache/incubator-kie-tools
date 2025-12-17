@@ -21,16 +21,17 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupText, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useOnlineI18n } from "../../i18n";
-import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
+import { useAuthSessionsDispatch, useSyncCloudAuthSession } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import {
   AUTH_SESSION_VERSION_NUMBER,
+  AuthSession,
   CloudAuthSessionType,
   KubernetesAuthSession,
 } from "../../authSessions/AuthSessionApi";
@@ -43,6 +44,7 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
 import ArrowRightIcon from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -61,11 +63,14 @@ export function ConnectToKubernetesSimple(props: {
   setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
   isLoadingService: boolean;
+  selectedAuthSession?: AuthSession;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
   const authSessionsDispatch = useAuthSessionsDispatch();
+
+  useSyncCloudAuthSession(props.selectedAuthSession, props.setConnection);
 
   const onConnect = useCallback(async () => {
     if (isConnecting) {
@@ -86,14 +91,18 @@ export function ConnectToKubernetesSimple(props: {
       const newAuthSession: KubernetesAuthSession = {
         type: CloudAuthSessionType.Kubernetes,
         version: AUTH_SESSION_VERSION_NUMBER,
-        id: uuid(),
+        id: props.selectedAuthSession?.id ?? uuid(),
         ...props.connection,
         authProviderId: "kubernetes",
         createdAtDateISO: new Date().toISOString(),
         k8sApiServerEndpointsByResourceKind: props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind,
       };
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
-      authSessionsDispatch.add(newAuthSession);
+      if (props.selectedAuthSession) {
+        authSessionsDispatch.update(newAuthSession);
+      } else {
+        authSessionsDispatch.add(newAuthSession);
+      }
       props.setNewAuthSession(newAuthSession);
     } else if (isConnectionEstablished === KubernetesConnectionStatus.MISSING_PERMISSIONS) {
       setConnectionValidated(FormValiationOptions.MISSING_PERMISSIONS);
@@ -114,21 +123,21 @@ export function ConnectToKubernetesSimple(props: {
   const onClearToken = useCallback(() => props.setConnection({ ...props.connection, token: "" }), [props]);
 
   const onHostChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, host: newValue });
     },
     [props]
   );
 
   const onNamespaceChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, namespace: newValue });
     },
     [props]
   );
 
   const onTokenChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, token: newValue });
     },
     [props]
@@ -206,7 +215,7 @@ export function ConnectToKubernetesSimple(props: {
         style={{ paddingLeft: 0 }}
         id="dev-deployments-config-use-wizard-button"
         key="use-wizard"
-        className="pf-u-p-0"
+        className="pf-v5-u-p-0"
         variant="link"
         onClick={() => props.setMode(KubernetesSettingsTabMode.WIZARD)}
         data-testid="use-wizard-button"
@@ -214,7 +223,7 @@ export function ConnectToKubernetesSimple(props: {
       >
         {i18n.devDeployments.configModal.useKubernetesWizard}
         &nbsp;
-        <ArrowRightIcon className="pf-u-ml-sm" />
+        <ArrowRightIcon className="pf-v5-u-ml-sm" />
       </Button>
 
       <br />
@@ -230,33 +239,37 @@ export function ConnectToKubernetesSimple(props: {
                 aria-label="More info for namespace field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="namespace-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
           isRequired
           fieldId="namespace-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoFocus={true}
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="namespace-field"
-              name="namespace-field"
-              aria-label="Namespace field"
-              aria-describedby="namespace-field-helper"
-              value={props.connection.namespace}
-              onChange={onNamespaceChanged}
-              isDisabled={isConnecting}
-              tabIndex={1}
-              data-testid="namespace-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoFocus={true}
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="namespace-field"
+                name="namespace-field"
+                aria-label="Namespace field"
+                aria-describedby="namespace-field-helper"
+                value={props.connection.namespace}
+                onChange={onNamespaceChanged}
+                isDisabled={isConnecting}
+                tabIndex={1}
+                data-testid="namespace-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
+              <Button size="sm" variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
                 <TimesIcon />
               </Button>
             </InputGroupText>
@@ -271,32 +284,36 @@ export function ConnectToKubernetesSimple(props: {
                 aria-label="More info for host field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="host-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
           isRequired
           fieldId="host-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="host-field"
-              name="host-field"
-              aria-label="Host field"
-              aria-describedby="host-field-helper"
-              value={props.connection.host}
-              onChange={onHostChanged}
-              isDisabled={isConnecting}
-              tabIndex={2}
-              data-testid="host-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="host-field"
+                name="host-field"
+                aria-label="Host field"
+                aria-describedby="host-field-helper"
+                value={props.connection.host}
+                onChange={onHostChanged}
+                isDisabled={isConnecting}
+                tabIndex={2}
+                data-testid="host-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
+              <Button size="sm" variant="plain" aria-label="Clear host button" onClick={onClearHost}>
                 <TimesIcon />
               </Button>
             </InputGroupText>
@@ -311,32 +328,36 @@ export function ConnectToKubernetesSimple(props: {
                 aria-label="More info for token field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="token-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
           isRequired
           fieldId="token-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="token-field"
-              name="token-field"
-              aria-label="Token field"
-              aria-describedby="token-field-helper"
-              value={props.connection.token}
-              onChange={onTokenChanged}
-              isDisabled={isConnecting}
-              tabIndex={3}
-              data-testid="token-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="token-field"
+                name="token-field"
+                aria-label="Token field"
+                aria-describedby="token-field-helper"
+                value={props.connection.token}
+                onChange={onTokenChanged}
+                isDisabled={isConnecting}
+                tabIndex={3}
+                data-testid="token-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear token button" onClick={onClearToken}>
+              <Button size="sm" variant="plain" aria-label="Clear token button" onClick={onClearToken}>
                 <TimesIcon />
               </Button>
             </InputGroupText>

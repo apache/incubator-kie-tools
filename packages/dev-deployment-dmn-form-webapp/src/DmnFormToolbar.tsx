@@ -18,27 +18,22 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
 import {
   PageHeader,
   PageHeaderTools,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
-} from "@patternfly/react-core/dist/js/components/Page";
+} from "@patternfly/react-core/deprecated";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
 import { routes } from "./Routes";
@@ -57,7 +52,7 @@ function truncateText(text: string) {
 
 export function DmnFormToolbar(props: Props) {
   const app = useApp();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { i18n } = useDmnFormI18n();
   const [isLgKebabOpen, setLgKebabOpen] = useState(false);
   const [isSmKebabOpen, setSmKebabOpen] = useState(false);
@@ -69,11 +64,11 @@ export function DmnFormToolbar(props: Props) {
 
   const openForm = useCallback(
     (modelName: string) => {
-      history.push({
+      navigate({
         pathname: routes.form.path({ modelName }),
       });
     },
-    [history]
+    [navigate]
   );
 
   const disclaimer = useMemo(() => {
@@ -87,7 +82,7 @@ export function DmnFormToolbar(props: Props) {
         <Text className={"kogito--dmn-form__toolbar-title"}>
           {i18n.formToolbar.disclaimer.title}
           &nbsp; &nbsp;
-          <HelpIcon className="pf-u-ml-sm" />
+          <HelpIcon className="pf-v5-u-ml-sm" />
         </Text>
       </Tooltip>
     );
@@ -129,7 +124,7 @@ export function DmnFormToolbar(props: Props) {
           <Text component={TextVariants.a} className="kogito--dmn-form__toolbar a">
             {i18n.names.swaggerUI}
             &nbsp;
-            <ExternalLinkAltIcon className="pf-u-mx-sm" />
+            <ExternalLinkAltIcon className="pf-v5-u-mx-sm" />
           </Text>
         </DropdownItem>
       </React.Fragment>,
@@ -181,7 +176,7 @@ export function DmnFormToolbar(props: Props) {
                   toggle={
                     <DropdownToggle
                       id="dmn-dev-deployment-form-toolbar-model-dropdown-button"
-                      onToggle={(isOpen) => setModelDropdownOpen(isOpen)}
+                      onToggle={(_event, isOpen) => setModelDropdownOpen(isOpen)}
                       data-testid="dmn-dev-deployment-form-toolbar-model-dropdown-button"
                     >
                       {props.modelName && truncateText(props.modelName)}
@@ -225,7 +220,7 @@ export function DmnFormToolbar(props: Props) {
                     className={"kogito--dmn-form__toolbar-icon-button"}
                     id={"view-id-lg"}
                     toggleIndicator={null}
-                    onToggle={(isOpen) => setLgKebabOpen(isOpen)}
+                    onToggle={(_event, isOpen) => setLgKebabOpen(isOpen)}
                     ouiaId="toolbar-button"
                   >
                     <EllipsisVIcon />
@@ -255,7 +250,7 @@ export function DmnFormToolbar(props: Props) {
                     className={"kogito--dmn-form__toolbar-icon-button"}
                     id={"kebab-id-sm"}
                     toggleIndicator={null}
-                    onToggle={(isOpen) => setSmKebabOpen(isOpen)}
+                    onToggle={(_event, isOpen) => setSmKebabOpen(isOpen)}
                     ouiaId="small-toolbar-button"
                   >
                     <EllipsisVIcon />

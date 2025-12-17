@@ -25,10 +25,13 @@ import {
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { DashbuilderEditorChannelApi as DashbuilderEditorChannelApi } from "../api/DashbuilderEditorChannelApi";
+import { DashbuilderEditorEnvelopeApi } from "../api";
 
-export class DashbuilderEditorFactory implements EditorFactory<Editor, DashbuilderEditorChannelApi> {
+export class DashbuilderEditorFactory
+  implements EditorFactory<Editor, DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>
+{
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<DashbuilderEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     return new DashbuilderEditorView(ctx, initArgs);

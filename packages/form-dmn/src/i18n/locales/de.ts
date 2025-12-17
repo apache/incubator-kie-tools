@@ -26,21 +26,17 @@ export const de: TranslatedDictionary<FormDmnI18n> = {
   form: {
     status: {
       autoGenerationError: {
-        title: `${de_common.terms.oops}!`,
+        title: `${de_common.terms?.oops}!`,
         explanation: "Formular kann wegen eines Fehlers nicht dargestellt werden.",
-        checkNotificationPanel: ["Auf ", wrapped("link"), ` Fehler auf dem Benachrichtigungsfeld prüfen`],
+        checkNotificationPanel: `Auf  ${"{link}"} Fehler auf dem Benachrichtigungsfeld prüfen`,
       },
       emptyForm: {
         title: "Kein Formular",
-        explanation: `Assoziiertes ${de_common.names.dmn} hat keine Eingaben.`,
+        explanation: `Assoziiertes ${de_common.names?.dmn} hat keine Eingaben.`,
       },
       validatorError: {
         title: "Beim Versuch, das Formular zu erstellen, ist ein Fehler aufgetreten",
-        message: [
-          `Dieses ${de_common.names.dmn}-Modell enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beziehen Sie sich auf `,
-          wrapped("jira"),
-          " und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.",
-        ],
+        message: `Dieses ${de_common.names?.dmn}-Modell enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beziehen Sie sich auf ${"{jira}"} und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.`,
       },
     },
   },
@@ -58,20 +54,16 @@ export const de: TranslatedDictionary<FormDmnI18n> = {
   },
   result: {
     evaluation: {
-      success: "Erfolgreich evaluiert",
+      succeeded: "Erfolgreich evaluiert",
       skipped: "Evaluierung übersprungen",
       failed: "Evaluierung fehlgeschlagen",
     },
     error: {
-      title: `${de_common.terms.oops}!`,
+      title: `${de_common.terms?.oops}!`,
       explanation: "Das Ergebnis kann aufgrund eines Fehlers nicht wiedergegeben werden.",
-      message: [
-        `Dieses Ergebnis enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beachten Sie `,
-        wrapped("jira"),
-        " und melden Sie einen Fehler. Vergessen Sie nicht, die aktuelle Datei und die verwendeten Eingaben hochzuladen",
-      ],
+      message: `Dieses Ergebnis enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beachten Sie ${"{jira}"} und melden Sie einen Fehler. Vergessen Sie nicht, die aktuelle Datei und die verwendeten Eingaben hochzuladen`,
     },
-    dateTooltip: ["Dieser Wert ist in UTC angegeben. Der Wert in Ihrer aktuellen Zeitzone lautet ", wrapped("date")],
+    dateTooltip: `Dieser Wert ist in UTC angegeben. Der Wert in Ihrer aktuellen Zeitzone lautet ${"{date}"}`,
     withoutResponse: {
       title: "Keine Antwort",
       explanation: "Die Antwort erscheint, nachdem die Entscheidungen evaluiert wurden.",

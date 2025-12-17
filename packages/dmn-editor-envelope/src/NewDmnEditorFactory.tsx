@@ -18,13 +18,25 @@
  */
 
 import * as React from "react";
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
-import { DmnEditorInterface } from "./DmnEditorFactory";
+import { DmnEditorInterface, DmnEditorRootWrapper } from "./DmnEditorFactory";
+import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
+import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import { DmnEditorEnvelopeI18nContext, dmnEditorEnvelopeI18nDefaults, dmnEditorEnvelopeI18nDictionaries } from "./i18n";
 
-export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi> {
+export class NewDmnEditorFactory
+  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
+{
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<NewDmnEditorInterface> {
     return Promise.resolve(new NewDmnEditorInterface(envelopeContext, initArgs));
@@ -38,5 +50,38 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
    */
   public openBoxedExpressionEditor(nodeId: string): void {
     this.self.openBoxedExpressionEditor(nodeId);
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId): void {
+    this.self.showDmnEvaluationResults(evaluationResultsByNodeId);
+  }
+
+  public af_componentRoot() {
+    return (
+      <I18nDictionariesProvider
+        defaults={dmnEditorEnvelopeI18nDefaults}
+        dictionaries={dmnEditorEnvelopeI18nDictionaries}
+        initialLocale={this.initArgs.initialLocale}
+        ctx={DmnEditorEnvelopeI18nContext}
+      >
+        <DmnEditorRootWrapper
+          exposing={(dmnEditorRoot) => (this.self = dmnEditorRoot)}
+          envelopeContext={this.envelopeContext}
+          workspaceRootAbsolutePosixPath={
+            this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
+          }
+          isEvaluationHighlightsSupported={
+            this.initArgs.channel === ChannelType.ONLINE || this.initArgs.channel === ChannelType.ONLINE_MULTI_FILE
+          }
+          isReadOnly={this.initArgs.isReadOnly}
+          locale={this.initArgs.initialLocale}
+          onOpenedBoxedExpressionEditorNodeChange={(newOpenedNodeId) => {
+            (
+              this.envelopeContext as KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
+            )?.shared.newDmnEditor_openedBoxedExpressionEditorNodeId.set(newOpenedNodeId);
+          }}
+        />
+      </I18nDictionariesProvider>
+    );
   }
 }

@@ -17,11 +17,12 @@
  * under the License.
  */
 
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
@@ -31,6 +32,7 @@ import {
   BoxedFunction,
   BoxedFunctionKind,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   generateUuid,
   Normalized,
 } from "../../api";
@@ -49,14 +51,14 @@ import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../.
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import {
-  DMN15__tContext,
-  DMN15__tContextEntry,
-  DMN15__tFunctionDefinition,
-  DMN15__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tContext,
+  DMN_LATEST__tContextEntry,
+  DMN_LATEST__tFunctionDefinition,
+  DMN_LATEST__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller";
 import "./PmmlFunctionExpression.css";
 
-export type BoxedFunctionPmml = DMN15__tFunctionDefinition & {
+export type BoxedFunctionPmml = DMN_LATEST__tFunctionDefinition & {
   "@_kind": "PMML";
   __$$element: "functionDefinition";
 };
@@ -99,13 +101,13 @@ export function PmmlFunctionExpression({
           {
             headerCellElement: parametersColumnHeader,
             accessor: parametersId as any,
-            label: "parameters",
+            label: i18n.parameters,
             isRowIndexColumn: false,
             dataType: undefined as any,
             width: undefined,
             columns: [
               {
-                label: "label",
+                label: i18n.label,
                 accessor: "label" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -115,7 +117,7 @@ export function PmmlFunctionExpression({
                 minWidth: PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
               },
               {
-                label: "value",
+                label: i18n.value,
                 accessor: "value" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -128,7 +130,15 @@ export function PmmlFunctionExpression({
         ],
       },
     ];
-  }, [expressionHolderId, functionExpression, parametersColumnHeader, parametersId]);
+  }, [
+    expressionHolderId,
+    functionExpression,
+    i18n.label,
+    i18n.parameters,
+    i18n.value,
+    parametersColumnHeader,
+    parametersId,
+  ]);
 
   const headerVisibility = useMemo(() => {
     return isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels;
@@ -136,18 +146,40 @@ export function PmmlFunctionExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef: dataType }]: BeeTableColumnUpdate<PMML_ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedFunctionPmml> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": dataType,
-        };
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          dataType !== functionExpression["@_typeRef"]
+            ? {
+                from: functionExpression["@_typeRef"] ?? "",
+                to: dataType,
+              }
+            : undefined,
+        nameChange:
+          name !== functionExpression["@_label"]
+            ? {
+                from: functionExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
 
-        return ret;
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFunctionPmml> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": dataType,
+          };
+
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [expressionHolderId, functionExpression, setExpression]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
@@ -164,13 +196,13 @@ export function PmmlFunctionExpression({
   }, [i18n]);
 
   const getDocument = useCallback(() => {
-    return (functionExpression.expression as DMN15__tContext).contextEntry?.find(
+    return (functionExpression.expression as DMN_LATEST__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "document"
     );
   }, [functionExpression.expression]);
 
   const getModel = useCallback(() => {
-    return (functionExpression.expression as DMN15__tContext).contextEntry?.find(
+    return (functionExpression.expression as DMN_LATEST__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "model"
     );
   }, [functionExpression.expression]);
@@ -183,12 +215,14 @@ export function PmmlFunctionExpression({
       {
         label: "Document",
         value:
-          (document?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ?? "",
+          (document?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ??
+          "",
         pmmlFunctionExpression: functionExpression,
       },
       {
         label: "Model",
-        value: (model?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ?? "",
+        value:
+          (model?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ?? "",
         pmmlFunctionExpression: functionExpression,
       },
     ];
@@ -201,14 +235,17 @@ export function PmmlFunctionExpression({
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-      // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-      const ret: Normalized<BoxedFunctionPmml> = {
-        ...prev,
-        expression: undefined!,
-      };
+    setExpression({
+      setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: Normalized<BoxedFunctionPmml> = {
+          ...prev,
+          expression: undefined!,
+        };
 
-      return ret;
+        return ret;
+      },
+      expressionChangedArgs: { action: Action.RowReset, rowIndex: 0 },
     });
   }, [setExpression]);
 
@@ -328,9 +365,9 @@ function PmmlFunctionExpressionValueCell(props: React.PropsWithChildren<BeeTable
   );
 }
 
-function getDocumentEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN15__tContextEntry> {
+function getDocumentEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN_LATEST__tContextEntry> {
   return (
-    (pmmlFunction.expression as Normalized<DMN15__tContext>).contextEntry?.find(
+    (pmmlFunction.expression as Normalized<DMN_LATEST__tContext>).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "document"
     ) ?? {
       "@_id": generateUuid(),
@@ -342,9 +379,9 @@ function getDocumentEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normaliz
   );
 }
 
-function getModelEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN15__tContextEntry> {
+function getModelEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN_LATEST__tContextEntry> {
   return (
-    (pmmlFunction.expression as Normalized<DMN15__tContext>).contextEntry?.find(
+    (pmmlFunction.expression as Normalized<DMN_LATEST__tContext>).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "model"
     ) ?? {
       "@_id": generateUuid(),
@@ -370,7 +407,7 @@ function getUpdatedExpression(
     expression: {
       "@_id": generateUuid(),
       __$$element: "context",
-      ...(prev.expression as DMN15__tContext),
+      ...(prev.expression as DMN_LATEST__tContext),
       contextEntry: [
         {
           ...document,
@@ -404,6 +441,7 @@ function getUpdatedExpression(
 }
 
 function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTableCellProps<PMML_ROWTYPE>>) {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const pmmlFunctionExpression = useMemo(
     () => props.data[props.rowIndex].pmmlFunctionExpression,
     [props.data, props.rowIndex]
@@ -430,11 +468,14 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
   const onSelect = useCallback(
     (event, newDocument) => {
       setSelectOpen(false);
-      setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-        return getUpdatedExpression(prev, newDocument, "");
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+          return getUpdatedExpression(prev, newDocument, "");
+        },
+        expressionChangedArgs: { action: Action.ExpressionCreated },
       });
     },
-    [setExpression]
+    [pmmlFunctionExpression, setExpression]
   );
 
   const [isSelectOpen, setSelectOpen] = React.useState(false);
@@ -451,10 +492,10 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
       className={`pmml-document-select`}
       menuAppendTo={editorRef?.current ?? "inline"}
       ouiaId="pmml-document-select"
-      placeholderText={PMML_BINDING_VALUE_PLACEHOLDER}
+      placeholderText={i18n.noneSelected}
       aria-placeholder={PMML_BINDING_VALUE_PLACEHOLDER}
       variant={SelectVariant.single}
-      onToggle={setSelectOpen}
+      onToggle={(_event, val) => setSelectOpen(val)}
       onSelect={onSelect}
       isOpen={isSelectOpen}
       selections={[pmmlDocument]}
@@ -474,6 +515,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
 }
 
 function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTableCellProps<PMML_ROWTYPE>>) {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const pmmlFunctionExpression = useMemo(
     () => props.data[props.rowIndex].pmmlFunctionExpression,
     [props.data, props.rowIndex]
@@ -487,12 +529,15 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
     (event, newModel) => {
       setSelectOpen(false);
 
-      setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-        const document = getDocumentEntry(prev);
-        const currentDocument =
-          document.expression?.__$$element === "literalExpression" ? document.expression.text?.__$$text ?? "" : "";
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+          const document = getDocumentEntry(prev);
+          const currentDocument =
+            document.expression?.__$$element === "literalExpression" ? document.expression.text?.__$$text ?? "" : "";
 
-        return getUpdatedExpression(prev, currentDocument, newModel);
+          return getUpdatedExpression(prev, currentDocument, newModel);
+        },
+        expressionChangedArgs: { action: Action.LiteralTextExpressionChanged, from: "", to: newModel },
       });
     },
     [setExpression]
@@ -545,10 +590,10 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
       menuAppendTo={editorRef?.current ?? "inline"}
       ouiaId="pmml-document-select"
       isDisabled={!pmmlDocument}
-      placeholderText={pmmlDocument ? PMML_BINDING_VALUE_PLACEHOLDER : "Select a document first"}
+      placeholderText={pmmlDocument ? i18n.noneSelected : i18n.selectDocument}
       aria-placeholder={PMML_BINDING_VALUE_PLACEHOLDER}
       variant={SelectVariant.single}
-      onToggle={setSelectOpen}
+      onToggle={(_event, val) => setSelectOpen(val)}
       onSelect={onSelect}
       isOpen={isSelectOpen}
       selections={[model]}

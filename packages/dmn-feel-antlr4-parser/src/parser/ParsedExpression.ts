@@ -17,10 +17,10 @@
  *  under the License.
  */
 
-import { FeelVariable } from "./FeelVariable";
+import { FeelIdentifiedSymbol } from "./FeelIdentifiedSymbol";
 import { FeelSymbol } from "./FeelSymbol";
 
 export interface ParsedExpression {
   availableSymbols: Array<FeelSymbol>;
-  feelVariables: Array<FeelVariable>;
+  feelIdentifiedSymbols: Array<FeelIdentifiedSymbol>;
 }

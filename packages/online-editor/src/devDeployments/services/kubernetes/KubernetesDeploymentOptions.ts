@@ -20,13 +20,13 @@
 import { DeploymentOptionArgs } from "../types";
 import { DeploymentOption, DeploymentOptionOpts } from "../deploymentOptions/types";
 import { CustomImageOption } from "../deploymentOptions/customImage";
-import { KogitoQuarkusBlankAppOption } from "../deploymentOptions/kogitoQuarkusBlankApp";
-import { FormWebappServiceYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappServiceYaml";
-import { FormWebappIngressYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappIngressYaml";
-import { IngressYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/IngressYaml";
+import { QuarkusBlankAppOption } from "../deploymentOptions/quarkusBlankApp";
+import { FormWebappServiceYaml } from "../deploymentOptions/quarkusBlankApp/FormWebappServiceYaml";
+import { FormWebappIngressYaml } from "../deploymentOptions/quarkusBlankApp/FormWebappIngressYaml";
+import { IngressYaml } from "../deploymentOptions/quarkusBlankApp/IngressYaml";
 
 export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<DeploymentOption> {
-  const kogitoQuarkusBlankAppOpts: DeploymentOptionOpts = {
+  const quarkusBlankAppOpts: DeploymentOptionOpts = {
     parameters: {
       includeDmnFormWebapp: {
         id: "includeDmnFormWebapp",
@@ -62,11 +62,6 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "BASE_URL", value: "http://localhost/${{ devDeployment.uniqueName }}" },
-          },
-          {
-            op: "add",
-            path: "/spec/template/spec/containers/0/env/-",
             value: { name: "ROOT_PATH", value: "/${{ devDeployment.uniqueName }}" },
           },
           {
@@ -85,8 +80,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
         id: "command",
         name: "Command",
         description: "The command to be executed when the container starts",
-        defaultValue:
-          "./mvnw quarkus:dev -Dquarkus.http.non-application-root-path=/${{ devDeployment.uniqueName }}/q -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
+        defaultValue: "./mvnw quarkus:dev -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
         type: "text",
         resourcePatches: [
           {
@@ -110,11 +104,6 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "BASE_URL", value: "http://localhost/${{ devDeployment.uniqueName }}" },
-          },
-          {
-            op: "add",
-            path: "/spec/template/spec/containers/0/env/-",
             value: { name: "ROOT_PATH", value: "/${{ devDeployment.uniqueName }}" },
           },
           {
@@ -126,5 +115,5 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
       },
     ],
   };
-  return [KogitoQuarkusBlankAppOption(args, kogitoQuarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
+  return [QuarkusBlankAppOption(args, quarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
 }

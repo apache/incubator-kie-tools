@@ -43,6 +43,10 @@ export class Editor {
     );
   }
 
+  public async openEvaluationHighlights() {
+    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-evaluationhighlights--evaluation-highlights-story`);
+  }
+
   public async setIsReadOnly(newState: boolean) {
     const currentState = (await this.page.getByTestId(STORYBOOK__DMN_EDITOR_TOGGLE_READ_ONLY).textContent()) === "true";
     if (currentState !== newState) {
@@ -57,5 +61,11 @@ export class Editor {
 
   public async changeTab(args: { tab: TabName }) {
     await this.page.getByRole("tab", { name: args.tab }).click();
+  }
+
+  public async openDecisionWithNamespaceInHref() {
+    await this.page.goto(
+      `${this.baseURL}/iframe.html?args=&id=use-cases-namespace-in-required-decision-href--namespace-in-required-decision-href&viewMode=story`
+    );
   }
 }

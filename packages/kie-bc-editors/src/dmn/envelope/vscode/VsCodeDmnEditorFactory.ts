@@ -25,6 +25,7 @@ import {
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { DmnEditorEnvelopeApi } from "../../api";
 
 /**
  * EXPOSED INTEROP API
@@ -45,11 +46,13 @@ export interface CustomWindow extends Window {
 
 declare let window: CustomWindow;
 
-export class VsCodeDmnEditorFactory implements EditorFactory<DmnEditor, VsCodeDmnEditorChannelApi> {
+export class VsCodeDmnEditorFactory
+  implements EditorFactory<DmnEditor, DmnEditorEnvelopeApi, VsCodeDmnEditorChannelApi>
+{
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
-    ctx: KogitoEditorEnvelopeContextType<VsCodeDmnEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<DmnEditorEnvelopeApi, VsCodeDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<DmnEditor> {
     const exposedInteropApi: CustomWindow["envelope"] = {

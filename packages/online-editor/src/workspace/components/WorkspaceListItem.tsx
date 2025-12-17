@@ -25,6 +25,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { WorkspaceDescriptorDates } from "./WorkspaceDescriptorDates";
 import * as React from "react";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export function WorkspaceListItem(props: {
   isBig: boolean;
@@ -59,7 +60,9 @@ export function WorkspaceListItem(props: {
             textOverflow: "ellipsis",
           }}
         >
-          <FolderIcon />
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+            <FolderIcon />
+          </Icon>
           &nbsp;&nbsp;
           {props.workspaceDescriptor.name}
         </Text>

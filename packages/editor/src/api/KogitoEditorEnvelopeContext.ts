@@ -19,16 +19,19 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { ApiDefinition, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { ApiDefinition, ApiSharedValueConsumers, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { EditorTheme } from "./EditorTheme";
+import { KogitoEditorEnvelopeApi } from "./KogitoEditorEnvelopeApi";
 
 export interface KogitoEditorEnvelopeContextType<
+  EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
 > {
+  shared: ApiSharedValueConsumers<EnvelopeApi>;
   channelApi: MessageBusClientApi<ChannelApi>;
   operatingSystem?: OperatingSystem;
   services: {
@@ -38,10 +41,11 @@ export interface KogitoEditorEnvelopeContextType<
   supportedThemes: EditorTheme[];
 }
 
-export const KogitoEditorEnvelopeContext = React.createContext<KogitoEditorEnvelopeContextType<any>>({} as any);
+export const KogitoEditorEnvelopeContext = React.createContext<KogitoEditorEnvelopeContextType<any, any>>({} as any);
 
 export function useKogitoEditorEnvelopeContext<
+  EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi> = KogitoEditorEnvelopeApi,
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi,
 >() {
-  return useContext(KogitoEditorEnvelopeContext) as KogitoEditorEnvelopeContextType<ChannelApi>;
+  return useContext(KogitoEditorEnvelopeContext) as KogitoEditorEnvelopeContextType<EnvelopeApi, ChannelApi>;
 }

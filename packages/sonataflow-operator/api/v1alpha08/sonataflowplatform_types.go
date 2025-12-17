@@ -104,6 +104,31 @@ const (
 	PlatformDuplicatedReason = "Duplicated"
 )
 
+type DBMigrationStatus string
+
+const (
+	DBMigrationStatusStarted    DBMigrationStatus = "Started"
+	DBMigrationStatusInProgress DBMigrationStatus = "In-Progress"
+	DBMigrationStatusSucceeded  DBMigrationStatus = "Succeeded"
+	DBMigrationStatusFailed     DBMigrationStatus = "Failed"
+
+	MessageDBMigrationStatusStarted    string = "Started the database migrations for the services"
+	MessageDBMigrationStatusInProgress string = "The database migrations for the services are in-progress"
+	MessageDBMigrationStatusSucceeded  string = "The database migrations for the services are successful"
+	MessageDBMigrationStatusFailed     string = "The database migrations for the services have failed"
+
+	ReasonDBMigrationStatusStarted    string = "Started by SonataFlow operator"
+	ReasonDBMigrationStatusInProgress string = "The database migration job is in-progress"
+	ReasonDBMigrationStatusSucceeded  string = "The database migration job completed as expected"
+	ReasonDBMigrationStatusFailed     string = "The database may be unreachable, invalid credentials supplied or flyway migration failed. Please check logs for further details."
+)
+
+type SonataFlowPlatformDBMigrationPhase struct {
+	Status  DBMigrationStatus `json:"dbMigrationStatus,omitempty"`
+	Message string            `json:"message,omitempty"`
+	Reason  string            `json:"reason,omitempty"`
+}
+
 // SonataFlowPlatformStatus defines the observed state of SonataFlowPlatform
 // +k8s:openapi-gen=true
 type SonataFlowPlatformStatus struct {
@@ -123,6 +148,8 @@ type SonataFlowPlatformStatus struct {
 	// Triggers list of triggers created for the SonataFlowPlatform
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="triggers"
 	Triggers []SonataFlowPlatformTriggerRef `json:"triggers,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="dbMigrationStatus"
+	SonataFlowPlatformDBMigrationPhase *SonataFlowPlatformDBMigrationPhase `json:"sonataFlowPlatformDBMigrationPhase,omitempty"`
 }
 
 // SonataFlowPlatformTriggerRef defines a trigger created for the SonataFlowPlatform.

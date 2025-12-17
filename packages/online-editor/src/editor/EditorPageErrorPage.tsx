@@ -18,14 +18,20 @@
  */
 
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
@@ -37,12 +43,12 @@ export interface Props {
 
 export function EditorPageErrorPage(props: Props) {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(false);
 
   const returnHome = useCallback(() => {
-    history.push({ pathname: routes.home.path({}) });
-  }, [history, routes]);
+    navigate({ pathname: routes.home.path({}) });
+  }, [navigate, routes]);
 
   const detailsString = useMemo(() => {
     return props.errors.join("\n");
@@ -51,7 +57,7 @@ export function EditorPageErrorPage(props: Props) {
   return (
     <Bullseye>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationTriangleIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
         <TextContent>
           <Text component={"h2"}>{props.title}</Text>
         </TextContent>
@@ -80,9 +86,11 @@ export function EditorPageErrorPage(props: Props) {
             <br />
           </PageSection>
         </EmptyStateBody>
-        <Button variant={ButtonVariant.tertiary} onClick={returnHome}>
-          Return home
-        </Button>
+        <EmptyStateFooter>
+          <Button variant={ButtonVariant.tertiary} onClick={returnHome}>
+            Return home
+          </Button>
+        </EmptyStateFooter>
       </EmptyState>
     </Bullseye>
   );

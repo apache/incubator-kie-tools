@@ -20,27 +20,21 @@ import React, { useMemo } from "react";
 import { Card, CardHeader, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import {
-  Table,
-  TableVariant,
-  TableHeader,
-  TableBody,
-  IRow,
-  ICell,
-} from "@patternfly/react-table/dist/js/components/Table";
+import { TableVariant, IRow, ICell } from "@patternfly/react-table/dist/js/components/Table";
+import { Table, TableHeader, TableBody } from "@patternfly/react-table/dist/js/deprecated";
 import Moment from "react-moment";
 import JobActionsKebab from "../JobActionsKebab/JobActionsKebab";
 import { JobsIconCreator } from "../../../utils/Utils";
-import { ProcessDetailsDriver } from "../../../api";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { Job } from "@kie-tools/runtime-tools-process-gateway-api/src/types";
+import { ProcessDetailsChannelApi } from "../../../api";
+import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 interface JobsPanelProps {
   jobs: Job[];
-  driver: ProcessDetailsDriver;
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
 }
 
-const JobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({ jobs, driver, ouiaId, ouiaSafe }) => {
+const JobsPanel: React.FC<JobsPanelProps> = ({ jobs, channelApi }) => {
   const columns: ICell[] = useMemo(() => {
     return [
       {
@@ -94,22 +88,16 @@ const JobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({ jobs, driver, ouiaId,
             ),
           },
           {
-            title: <JobActionsKebab job={job} driver={driver} />,
+            title: <JobActionsKebab job={job} channelApi={channelApi} />,
           },
         ],
       };
     });
-  }, [driver, jobs]);
+  }, [channelApi, jobs]);
 
   if (jobs.length > 0) {
     return (
-      <Card
-        {...componentOuiaProps(
-          ouiaId,
-          "process-details-jobs-panel"
-          // ouiaSafe ? ouiaSafe : !jobsResponse.loading
-        )}
-      >
+      <Card className="process-details-jobs-panel" style={{ height: "100%" }}>
         <CardHeader>
           <Title headingLevel="h3" size="xl">
             Jobs

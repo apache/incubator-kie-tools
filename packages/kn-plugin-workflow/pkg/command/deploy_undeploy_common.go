@@ -32,25 +32,27 @@ import (
 )
 
 type DeployUndeployCmdConfig struct {
-	EmptyNameSpace             bool
-	NameSpace                  string
-	KubectlContext             string
-	SonataFlowFile             string
-	CustomGeneratedManifestDir string
-	TempDir                    string
-	ApplicationPropertiesPath  string
-	SubflowsDir                string
-	SpecsDir                   string
-	SchemasDir                 string
-	CustomManifestsFileDir     string
-	DefaultDashboardsFolder    string
-	Profile                    string
-	Image                      string
-	SchemasFilesPath           []string
-	SpecsFilesPath             map[string]string
-	SubFlowsFilesPath          []string
-	DashboardsPath             []string
-	Minify                     bool
+	EmptyNameSpace                   bool
+	NameSpace                        string
+	KubectlContext                   string
+	SonataFlowFile                   string
+	CustomGeneratedManifestDir       string
+	TempDir                          string
+	ApplicationPropertiesPath        string
+	ApplicationSecretPropertiesPath  string
+	SubflowsDir                      string
+	SpecsDir                         string
+	SchemasDir                       string
+	CustomManifestsFileDir           string
+	DefaultDashboardsFolder          string
+	Profile                          string
+	Image                            string
+	SchemasFilesPath                 []string
+	SpecsFilesPath                   map[string]string
+	SubFlowsFilesPath                []string
+	DashboardsPath                   []string
+	Minify                           bool
+	Wait					   		 bool
 }
 
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
@@ -64,7 +66,7 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 
 	//setup namespace
 	if len(cfg.NameSpace) == 0 {
-		if defaultNamespace, err := common.GetNamespace(); err == nil {
+		if defaultNamespace, err := common.GetCurrentNamespace(); err == nil {
 			cfg.NameSpace = defaultNamespace
 		} else {
 			return err
@@ -83,13 +85,10 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 }
 
 func generateManifests(cfg *DeployUndeployCmdConfig) error {
-
-	workflowExtensionsType := []string{metadata.YAMLSWExtension, metadata.YMLSWExtension, metadata.JSONSWExtension}
-
 	fmt.Println("\n🛠️  Generating your manifests...")
 
 	fmt.Println("🔍 Looking for your SonataFlow files...")
-	if file, err := common.FindSonataFlowFile(workflowExtensionsType); err != nil {
+	if file, err := common.FindSonataFlowFile(common.WorkflowExtensionsType); err != nil {
 		return err
 	} else {
 		cfg.SonataFlowFile = file
@@ -97,7 +96,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	fmt.Printf(" - ✅ SonataFlow file found: %s\n", cfg.SonataFlowFile)
 
 	fmt.Println("🔍 Looking for your SonataFlow sub flows...")
-	files, err := common.FindFilesWithExtensions(cfg.SubflowsDir, workflowExtensionsType)
+	files, err := common.FindFilesWithExtensions(cfg.SubflowsDir, common.WorkflowExtensionsType)
 	if err != nil {
 		return fmt.Errorf("❌ ERROR: failed to get subflows directory: %w", err)
 	}
@@ -119,6 +118,12 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	if applicationPropertiesPath != "" {
 		cfg.ApplicationPropertiesPath = applicationPropertiesPath
 		fmt.Printf(" - ✅ Properties file found: %s\n", cfg.ApplicationPropertiesPath)
+	}
+
+	applicationSecretPropertiesPath := findApplicationSecretPropertiesPath(dir)
+	if applicationSecretPropertiesPath != "" {
+		cfg.ApplicationSecretPropertiesPath = applicationSecretPropertiesPath
+		fmt.Printf(" - ✅ Secret Properties file found: %s\n", cfg.ApplicationSecretPropertiesPath)
 	}
 
 	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLExtension, metadata.YMLExtension}
@@ -184,6 +189,14 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.WithAppProperties(appIO)
 	}
 
+	if cfg.ApplicationSecretPropertiesPath != "" {
+		appIO, err := common.MustGetFile(cfg.ApplicationSecretPropertiesPath)
+		if err != nil {
+			return err
+		}
+		handler.WithSecretProperties(appIO)
+	}
+
 	for _, subflow := range cfg.SubFlowsFilesPath {
 		specIO, err := common.MustGetFile(subflow)
 		if err != nil {
@@ -239,6 +252,17 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 
 func findApplicationPropertiesPath(directoryPath string) string {
 	filePath := filepath.Join(directoryPath, metadata.ApplicationProperties)
+
+	fileInfo, err := os.Stat(filePath)
+	if err != nil || fileInfo.IsDir() {
+		return ""
+	}
+
+	return filePath
+}
+
+func findApplicationSecretPropertiesPath(directoryPath string) string {
+	filePath := filepath.Join(directoryPath, metadata.ApplicationSecretProperties)
 
 	fileInfo, err := os.Stat(filePath)
 	if err != nil || fileInfo.IsDir() {

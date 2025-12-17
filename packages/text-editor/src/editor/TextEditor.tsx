@@ -20,11 +20,11 @@
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { editor } from "monaco-editor";
+import { editor } from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
-import { MonacoEditor } from "./monaco/MonacoEditor";
-import { MonacoEditorApi, MonacoEditorOperation } from "./monaco/MonacoEditorController";
+import { MonacoEditor } from "./monaco";
+import { MonacoEditorApi, MonacoEditorOperation } from "./monaco";
 
 interface Props {
   onStateControlCommandUpdate: (command: StateControlCommand) => void;

@@ -4,14 +4,12 @@ exports[`ImportJavaClasses component tests Should close Modal after opening it a
 <body
   class=""
 >
-  <div
-    aria-hidden="true"
-  >
+  <div>
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-5"
-      data-ouia-component-type="PF4/Button"
+      class="pf-v5-c-button pf-m-secondary pf-m-progress"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-10"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
       type="button"
@@ -24,16 +22,16 @@ exports[`ImportJavaClasses component tests Should close Modal after opening it a
 
 exports[`ImportJavaClasses component tests Should move to second step 1`] = `
 <body
-  class="pf-c-backdrop__open"
+  class="pf-v5-c-backdrop__open"
 >
   <div
     aria-hidden="true"
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-6"
-      data-ouia-component-type="PF4/Button"
+      class="pf-v5-c-button pf-m-secondary pf-m-progress"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-12"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
       type="button"
@@ -43,86 +41,90 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
   </div>
   <div>
     <div
-      class="pf-c-backdrop"
+      class="pf-v5-c-backdrop"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           aria-describedby="pf-modal-part-6"
           aria-labelledby="pf-modal-part-5"
           aria-modal="true"
-          class="pf-c-modal-box pf-m-lg"
+          class="pf-v5-c-modal-box pf-m-lg"
           data-ouia-component-id="OUIA-Generated-Modal-large-5"
-          data-ouia-component-type="PF4/ModalContent"
+          data-ouia-component-type="PF5/ModalContent"
           data-ouia-safe="true"
           id="pf-modal-part-4"
           role="dialog"
         >
-          <button
-            aria-disabled="false"
-            aria-label="Close"
-            class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Modal-large-5-ModalBoxCloseButton"
-            data-ouia-component-type="PF4/Button"
-            data-ouia-safe="true"
-            type="button"
+          <div
+            class="pf-v5-c-modal-box__close"
           >
-            <svg
-              aria-hidden="true"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 352 512"
-              width="1em"
+            <button
+              aria-disabled="false"
+              aria-label="Close"
+              class="pf-v5-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Modal-large-5-ModalBoxCloseButton"
+              data-ouia-component-type="PF5/Button"
+              data-ouia-safe="true"
+              type="button"
             >
-              <path
-                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-              />
-            </svg>
-          </button>
+              <svg
+                aria-hidden="true"
+                class="pf-v5-svg"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </div>
           <header
-            class="pf-c-modal-box__header"
+            class="pf-v5-c-modal-box__header"
           >
             <h1
-              class="pf-c-modal-box__title"
+              class="pf-v5-c-modal-box__title"
               id="pf-modal-part-5"
             >
               
               <span
-                class="pf-c-modal-box__title-text"
+                class="pf-v5-c-modal-box__title-text"
               >
                 Import Java classes
               </span>
             </h1>
             <div
-              class="pf-c-modal-box__description"
+              class="pf-v5-c-modal-box__description"
               id="pf-modal-part-6"
             >
               It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
-            class="pf-c-modal-box__body"
+            class="pf-v5-c-modal-box__body"
           >
             <div
-              class="pf-c-wizard import-java-classes"
+              class="pf-v5-c-wizard import-java-classes"
               style="height: 600px;"
             >
               <button
                 aria-expanded="false"
                 aria-label="Wizard Toggle"
-                class="pf-c-wizard__toggle"
+                class="pf-v5-c-wizard__toggle"
               >
                 <span
-                  class="pf-c-wizard__toggle-list"
+                  class="pf-v5-c-wizard__toggle-list"
                 >
                   <span
-                    class="pf-c-wizard__toggle-list-item"
+                    class="pf-v5-c-wizard__toggle-list-item"
                   >
                     <span
-                      class="pf-c-wizard__toggle-num"
+                      class="pf-v5-c-wizard__toggle-num"
                     >
                       2
                     </span>
@@ -131,14 +133,14 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                   </span>
                 </span>
                 <span
-                  class="pf-c-wizard__toggle-icon"
+                  class="pf-v5-c-wizard__toggle-icon"
                 >
                   <svg
                     aria-hidden="true"
+                    class="pf-v5-svg"
                     fill="currentColor"
                     height="1em"
                     role="img"
-                    style="vertical-align: -0.125em;"
                     viewBox="0 0 320 512"
                     width="1em"
                   >
@@ -149,55 +151,59 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                 </span>
               </button>
               <div
-                class="pf-c-wizard__outer-wrap"
+                class="pf-v5-c-wizard__outer-wrap"
               >
                 <div
-                  class="pf-c-wizard__inner-wrap"
+                  class="pf-v5-c-wizard__inner-wrap"
                 >
                   <nav
-                    class="pf-c-wizard__nav"
+                    class="pf-v5-c-wizard__nav"
                     data-ouia-component-id="OUIA-Generated-WizardNav-5"
-                    data-ouia-component-type="PF4/WizardNav"
+                    data-ouia-component-type="PF5/WizardNav"
                     data-ouia-safe="true"
                   >
                     <ol
-                      class="pf-c-wizard__nav-list"
+                      class="pf-v5-c-wizard__nav-list"
+                      role="list"
                     >
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
-                          class="pf-c-wizard__nav-link"
+                          class="pf-v5-c-wizard__nav-link"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-13"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select Java classes
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="step"
-                          class="pf-c-wizard__nav-link pf-m-current"
+                          class="pf-v5-c-wizard__nav-link pf-m-current"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-14"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select fields
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
-                          class="pf-c-wizard__nav-link"
+                          class="pf-v5-c-wizard__nav-link"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-15"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Review
                         </button>
@@ -205,53 +211,54 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                     </ol>
                   </nav>
                   <div
-                    class="pf-c-wizard__main"
+                    class="pf-v5-c-wizard__main"
                   >
                     <div
-                      class="pf-c-wizard__main-body"
+                      class="pf-v5-c-wizard__main-body"
                     >
                       <table
                         aria-label="field-table"
-                        class="pf-c-table pf-m-grid-md"
-                        data-ouia-component-id="OUIA-Generated-Table-1"
-                        data-ouia-component-type="PF4/Table"
+                        class="pf-v5-c-table pf-m-grid-md"
+                        data-ouia-component-id="OUIA-Generated-Table-2"
+                        data-ouia-component-type="PF5/Table"
                         data-ouia-safe="true"
                         role="grid"
                       >
                         <tbody
-                          class="pf-m-expanded"
+                          class="pf-v5-c-table__tbody pf-m-expanded"
                           role="rowgroup"
                         >
                           <tr
-                            class=""
+                            class="pf-v5-c-table__tr"
                             data-ouia-component-id="OUIA-Generated-TableRow-1"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class="pf-c-table__toggle"
+                              class="pf-v5-c-table__td pf-v5-c-table__toggle"
+                              tabindex="-1"
                             >
                               <button
                                 aria-disabled="false"
                                 aria-expanded="true"
                                 aria-label="Details"
                                 aria-labelledby="simple-node0 expand-toggle0"
-                                class="pf-c-button pf-m-plain pf-m-expanded"
+                                class="pf-v5-c-button pf-m-plain pf-m-expanded"
                                 data-ouia-component-id="OUIA-Generated-Button-plain-9"
-                                data-ouia-component-type="PF4/Button"
+                                data-ouia-component-type="PF5/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle0"
                                 type="button"
                               >
                                 <div
-                                  class="pf-c-table__toggle-icon"
+                                  class="pf-v5-c-table__toggle-icon"
                                 >
                                   <svg
                                     aria-hidden="true"
+                                    class="pf-v5-svg"
                                     fill="currentColor"
                                     height="1em"
                                     role="img"
-                                    style="vertical-align: -0.125em;"
                                     viewBox="0 0 320 512"
                                     width="1em"
                                   >
@@ -263,7 +270,8 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                               </button>
                             </td>
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <span>
                                 <strong>
@@ -278,19 +286,21 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-2"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   isAlive
@@ -304,19 +314,21 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-3"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   name
@@ -331,39 +343,40 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                           </tr>
                         </tbody>
                         <tbody
-                          class="pf-m-expanded"
+                          class="pf-v5-c-table__tbody pf-m-expanded"
                           role="rowgroup"
                         >
                           <tr
-                            class=""
+                            class="pf-v5-c-table__tr"
                             data-ouia-component-id="OUIA-Generated-TableRow-4"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class="pf-c-table__toggle"
+                              class="pf-v5-c-table__td pf-v5-c-table__toggle"
+                              tabindex="-1"
                             >
                               <button
                                 aria-disabled="false"
                                 aria-expanded="true"
                                 aria-label="Details"
                                 aria-labelledby="simple-node1 expand-toggle1"
-                                class="pf-c-button pf-m-plain pf-m-expanded"
+                                class="pf-v5-c-button pf-m-plain pf-m-expanded"
                                 data-ouia-component-id="OUIA-Generated-Button-plain-10"
-                                data-ouia-component-type="PF4/Button"
+                                data-ouia-component-type="PF5/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle1"
                                 type="button"
                               >
                                 <div
-                                  class="pf-c-table__toggle-icon"
+                                  class="pf-v5-c-table__toggle-icon"
                                 >
                                   <svg
                                     aria-hidden="true"
+                                    class="pf-v5-svg"
                                     fill="currentColor"
                                     height="1em"
                                     role="img"
-                                    style="vertical-align: -0.125em;"
                                     viewBox="0 0 320 512"
                                     width="1em"
                                   >
@@ -375,7 +388,8 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                               </button>
                             </td>
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <span>
                                 <strong>
@@ -390,19 +404,21 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-5"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   test
@@ -414,9 +430,9 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                                 </span>
                                 <button
                                   aria-disabled="false"
-                                  class="pf-c-button pf-m-primary pf-m-small fetch-button"
+                                  class="pf-v5-c-button pf-m-primary pf-m-small fetch-button"
                                   data-ouia-component-id="OUIA-Generated-Button-primary-6"
-                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-component-type="PF5/Button"
                                   data-ouia-safe="true"
                                   type="button"
                                 >
@@ -426,19 +442,21 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-6"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   title
@@ -452,19 +470,21 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-7"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   year
@@ -483,36 +503,36 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                   </div>
                 </div>
                 <footer
-                  class="pf-c-wizard__footer"
+                  class="pf-v5-c-wizard__footer"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="OUIA-Generated-Button-primary-5"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe="true"
-                    type="submit"
-                  >
-                    Next
-                  </button>
-                  <button
-                    aria-disabled="false"
-                    class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="OUIA-Generated-Button-secondary-7"
-                    data-ouia-component-type="PF4/Button"
+                    class="pf-v5-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-13"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     type="button"
                   >
                     Back
                   </button>
+                  <button
+                    aria-disabled="false"
+                    class="pf-v5-c-button pf-m-primary"
+                    data-ouia-component-id="OUIA-Generated-Button-primary-5"
+                    data-ouia-component-type="PF5/Button"
+                    data-ouia-safe="true"
+                    type="submit"
+                  >
+                    Next
+                  </button>
                   <div
-                    class="pf-c-wizard__footer-cancel"
+                    class="pf-v5-c-wizard__footer-cancel"
                   >
                     <button
                       aria-disabled="false"
-                      class="pf-c-button pf-m-link"
+                      class="pf-v5-c-button pf-m-link"
                       data-ouia-component-id="OUIA-Generated-Button-link-5"
-                      data-ouia-component-type="PF4/Button"
+                      data-ouia-component-type="PF5/Button"
                       data-ouia-safe="true"
                       type="button"
                     >
@@ -532,16 +552,16 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
 
 exports[`ImportJavaClasses component tests Should move to second step and fetch a Java Class 1`] = `
 <body
-  class="pf-c-backdrop__open"
+  class="pf-v5-c-backdrop__open"
 >
   <div
     aria-hidden="true"
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-8"
-      data-ouia-component-type="PF4/Button"
+      class="pf-v5-c-button pf-m-secondary pf-m-progress"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-15"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
       type="button"
@@ -551,86 +571,90 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
   </div>
   <div>
     <div
-      class="pf-c-backdrop"
+      class="pf-v5-c-backdrop"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           aria-describedby="pf-modal-part-7"
           aria-labelledby="pf-modal-part-6"
           aria-modal="true"
-          class="pf-c-modal-box pf-m-lg"
+          class="pf-v5-c-modal-box pf-m-lg"
           data-ouia-component-id="OUIA-Generated-Modal-large-6"
-          data-ouia-component-type="PF4/ModalContent"
+          data-ouia-component-type="PF5/ModalContent"
           data-ouia-safe="true"
           id="pf-modal-part-5"
           role="dialog"
         >
-          <button
-            aria-disabled="false"
-            aria-label="Close"
-            class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Modal-large-6-ModalBoxCloseButton"
-            data-ouia-component-type="PF4/Button"
-            data-ouia-safe="true"
-            type="button"
+          <div
+            class="pf-v5-c-modal-box__close"
           >
-            <svg
-              aria-hidden="true"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 352 512"
-              width="1em"
+            <button
+              aria-disabled="false"
+              aria-label="Close"
+              class="pf-v5-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Modal-large-6-ModalBoxCloseButton"
+              data-ouia-component-type="PF5/Button"
+              data-ouia-safe="true"
+              type="button"
             >
-              <path
-                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-              />
-            </svg>
-          </button>
+              <svg
+                aria-hidden="true"
+                class="pf-v5-svg"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </div>
           <header
-            class="pf-c-modal-box__header"
+            class="pf-v5-c-modal-box__header"
           >
             <h1
-              class="pf-c-modal-box__title"
+              class="pf-v5-c-modal-box__title"
               id="pf-modal-part-6"
             >
               
               <span
-                class="pf-c-modal-box__title-text"
+                class="pf-v5-c-modal-box__title-text"
               >
                 Import Java classes
               </span>
             </h1>
             <div
-              class="pf-c-modal-box__description"
+              class="pf-v5-c-modal-box__description"
               id="pf-modal-part-7"
             >
               It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
-            class="pf-c-modal-box__body"
+            class="pf-v5-c-modal-box__body"
           >
             <div
-              class="pf-c-wizard import-java-classes"
+              class="pf-v5-c-wizard import-java-classes"
               style="height: 600px;"
             >
               <button
                 aria-expanded="false"
                 aria-label="Wizard Toggle"
-                class="pf-c-wizard__toggle"
+                class="pf-v5-c-wizard__toggle"
               >
                 <span
-                  class="pf-c-wizard__toggle-list"
+                  class="pf-v5-c-wizard__toggle-list"
                 >
                   <span
-                    class="pf-c-wizard__toggle-list-item"
+                    class="pf-v5-c-wizard__toggle-list-item"
                   >
                     <span
-                      class="pf-c-wizard__toggle-num"
+                      class="pf-v5-c-wizard__toggle-num"
                     >
                       2
                     </span>
@@ -639,14 +663,14 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                   </span>
                 </span>
                 <span
-                  class="pf-c-wizard__toggle-icon"
+                  class="pf-v5-c-wizard__toggle-icon"
                 >
                   <svg
                     aria-hidden="true"
+                    class="pf-v5-svg"
                     fill="currentColor"
                     height="1em"
                     role="img"
-                    style="vertical-align: -0.125em;"
                     viewBox="0 0 320 512"
                     width="1em"
                   >
@@ -657,55 +681,59 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                 </span>
               </button>
               <div
-                class="pf-c-wizard__outer-wrap"
+                class="pf-v5-c-wizard__outer-wrap"
               >
                 <div
-                  class="pf-c-wizard__inner-wrap"
+                  class="pf-v5-c-wizard__inner-wrap"
                 >
                   <nav
-                    class="pf-c-wizard__nav"
+                    class="pf-v5-c-wizard__nav"
                     data-ouia-component-id="OUIA-Generated-WizardNav-6"
-                    data-ouia-component-type="PF4/WizardNav"
+                    data-ouia-component-type="PF5/WizardNav"
                     data-ouia-safe="true"
                   >
                     <ol
-                      class="pf-c-wizard__nav-list"
+                      class="pf-v5-c-wizard__nav-list"
+                      role="list"
                     >
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
-                          class="pf-c-wizard__nav-link"
+                          class="pf-v5-c-wizard__nav-link"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-16"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select Java classes
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="step"
-                          class="pf-c-wizard__nav-link pf-m-current"
+                          class="pf-v5-c-wizard__nav-link pf-m-current"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-17"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select fields
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
-                          class="pf-c-wizard__nav-link"
+                          class="pf-v5-c-wizard__nav-link"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-18"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Review
                         </button>
@@ -713,53 +741,54 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                     </ol>
                   </nav>
                   <div
-                    class="pf-c-wizard__main"
+                    class="pf-v5-c-wizard__main"
                   >
                     <div
-                      class="pf-c-wizard__main-body"
+                      class="pf-v5-c-wizard__main-body"
                     >
                       <table
                         aria-label="field-table"
-                        class="pf-c-table pf-m-grid-md"
-                        data-ouia-component-id="OUIA-Generated-Table-3"
-                        data-ouia-component-type="PF4/Table"
+                        class="pf-v5-c-table pf-m-grid-md"
+                        data-ouia-component-id="OUIA-Generated-Table-6"
+                        data-ouia-component-type="PF5/Table"
                         data-ouia-safe="true"
                         role="grid"
                       >
                         <tbody
-                          class="pf-m-expanded"
+                          class="pf-v5-c-table__tbody pf-m-expanded"
                           role="rowgroup"
                         >
                           <tr
-                            class=""
+                            class="pf-v5-c-table__tr"
                             data-ouia-component-id="OUIA-Generated-TableRow-15"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class="pf-c-table__toggle"
+                              class="pf-v5-c-table__td pf-v5-c-table__toggle"
+                              tabindex="-1"
                             >
                               <button
                                 aria-disabled="false"
                                 aria-expanded="true"
                                 aria-label="Details"
                                 aria-labelledby="simple-node0 expand-toggle0"
-                                class="pf-c-button pf-m-plain pf-m-expanded"
+                                class="pf-v5-c-button pf-m-plain pf-m-expanded"
                                 data-ouia-component-id="OUIA-Generated-Button-plain-15"
-                                data-ouia-component-type="PF4/Button"
+                                data-ouia-component-type="PF5/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle0"
                                 type="button"
                               >
                                 <div
-                                  class="pf-c-table__toggle-icon"
+                                  class="pf-v5-c-table__toggle-icon"
                                 >
                                   <svg
                                     aria-hidden="true"
+                                    class="pf-v5-svg"
                                     fill="currentColor"
                                     height="1em"
                                     role="img"
-                                    style="vertical-align: -0.125em;"
                                     viewBox="0 0 320 512"
                                     width="1em"
                                   >
@@ -771,7 +800,8 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                               </button>
                             </td>
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <span>
                                 <strong>
@@ -786,19 +816,21 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-16"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   isAlive
@@ -812,19 +844,21 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-17"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   name
@@ -839,39 +873,40 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                           </tr>
                         </tbody>
                         <tbody
-                          class="pf-m-expanded"
+                          class="pf-v5-c-table__tbody pf-m-expanded"
                           role="rowgroup"
                         >
                           <tr
-                            class=""
+                            class="pf-v5-c-table__tr"
                             data-ouia-component-id="OUIA-Generated-TableRow-18"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class="pf-c-table__toggle"
+                              class="pf-v5-c-table__td pf-v5-c-table__toggle"
+                              tabindex="-1"
                             >
                               <button
                                 aria-disabled="false"
                                 aria-expanded="true"
                                 aria-label="Details"
                                 aria-labelledby="simple-node1 expand-toggle1"
-                                class="pf-c-button pf-m-plain pf-m-expanded"
+                                class="pf-v5-c-button pf-m-plain pf-m-expanded"
                                 data-ouia-component-id="OUIA-Generated-Button-plain-16"
-                                data-ouia-component-type="PF4/Button"
+                                data-ouia-component-type="PF5/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle1"
                                 type="button"
                               >
                                 <div
-                                  class="pf-c-table__toggle-icon"
+                                  class="pf-v5-c-table__toggle-icon"
                                 >
                                   <svg
                                     aria-hidden="true"
+                                    class="pf-v5-svg"
                                     fill="currentColor"
                                     height="1em"
                                     role="img"
-                                    style="vertical-align: -0.125em;"
                                     viewBox="0 0 320 512"
                                     width="1em"
                                   >
@@ -883,7 +918,8 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                               </button>
                             </td>
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <span>
                                 <strong>
@@ -898,19 +934,21 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-19"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   test
@@ -924,19 +962,21 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-20"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   title
@@ -950,19 +990,21 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                             </td>
                           </tr>
                           <tr
-                            class="pf-c-table__expandable-row pf-m-expanded"
+                            class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                             data-ouia-component-id="OUIA-Generated-TableRow-21"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <div
-                                class="pf-c-table__expandable-row-content"
+                                class="pf-v5-c-table__expandable-row-content"
                               >
                                 <span>
                                   year
@@ -977,20 +1019,22 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                           </tr>
                         </tbody>
                         <tbody
-                          class="pf-m-expanded"
+                          class="pf-v5-c-table__tbody pf-m-expanded"
                           role="rowgroup"
                         >
                           <tr
-                            class=""
+                            class="pf-v5-c-table__tr"
                             data-ouia-component-id="OUIA-Generated-TableRow-22"
-                            data-ouia-component-type="PF4/TableRow"
+                            data-ouia-component-type="PF5/TableRow"
                             data-ouia-safe="true"
                           >
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             />
                             <td
-                              class=""
+                              class="pf-v5-c-table__td"
+                              tabindex="-1"
                             >
                               <span>
                                 <strong>
@@ -1010,36 +1054,36 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                   </div>
                 </div>
                 <footer
-                  class="pf-c-wizard__footer"
+                  class="pf-v5-c-wizard__footer"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="OUIA-Generated-Button-primary-7"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe="true"
-                    type="submit"
-                  >
-                    Next
-                  </button>
-                  <button
-                    aria-disabled="false"
-                    class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="OUIA-Generated-Button-secondary-9"
-                    data-ouia-component-type="PF4/Button"
+                    class="pf-v5-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-16"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     type="button"
                   >
                     Back
                   </button>
+                  <button
+                    aria-disabled="false"
+                    class="pf-v5-c-button pf-m-primary"
+                    data-ouia-component-id="OUIA-Generated-Button-primary-7"
+                    data-ouia-component-type="PF5/Button"
+                    data-ouia-safe="true"
+                    type="submit"
+                  >
+                    Next
+                  </button>
                   <div
-                    class="pf-c-wizard__footer-cancel"
+                    class="pf-v5-c-wizard__footer-cancel"
                   >
                     <button
                       aria-disabled="false"
-                      class="pf-c-button pf-m-link"
+                      class="pf-v5-c-button pf-m-link"
                       data-ouia-component-id="OUIA-Generated-Button-link-6"
-                      data-ouia-component-type="PF4/Button"
+                      data-ouia-component-type="PF5/Button"
                       data-ouia-safe="true"
                       type="button"
                     >
@@ -1059,16 +1103,16 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
 
 exports[`ImportJavaClasses component tests Should move to third step 1`] = `
 <body
-  class="pf-c-backdrop__open"
+  class="pf-v5-c-backdrop__open"
 >
   <div
     aria-hidden="true"
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-13"
-      data-ouia-component-type="PF4/Button"
+      class="pf-v5-c-button pf-m-secondary pf-m-progress"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-22"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
       type="button"
@@ -1078,86 +1122,90 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
   </div>
   <div>
     <div
-      class="pf-c-backdrop"
+      class="pf-v5-c-backdrop"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           aria-describedby="pf-modal-part-9"
           aria-labelledby="pf-modal-part-8"
           aria-modal="true"
-          class="pf-c-modal-box pf-m-lg"
+          class="pf-v5-c-modal-box pf-m-lg"
           data-ouia-component-id="OUIA-Generated-Modal-large-8"
-          data-ouia-component-type="PF4/ModalContent"
+          data-ouia-component-type="PF5/ModalContent"
           data-ouia-safe="true"
           id="pf-modal-part-7"
           role="dialog"
         >
-          <button
-            aria-disabled="false"
-            aria-label="Close"
-            class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Modal-large-8-ModalBoxCloseButton"
-            data-ouia-component-type="PF4/Button"
-            data-ouia-safe="true"
-            type="button"
+          <div
+            class="pf-v5-c-modal-box__close"
           >
-            <svg
-              aria-hidden="true"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 352 512"
-              width="1em"
+            <button
+              aria-disabled="false"
+              aria-label="Close"
+              class="pf-v5-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Modal-large-8-ModalBoxCloseButton"
+              data-ouia-component-type="PF5/Button"
+              data-ouia-safe="true"
+              type="button"
             >
-              <path
-                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-              />
-            </svg>
-          </button>
+              <svg
+                aria-hidden="true"
+                class="pf-v5-svg"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </div>
           <header
-            class="pf-c-modal-box__header"
+            class="pf-v5-c-modal-box__header"
           >
             <h1
-              class="pf-c-modal-box__title"
+              class="pf-v5-c-modal-box__title"
               id="pf-modal-part-8"
             >
               
               <span
-                class="pf-c-modal-box__title-text"
+                class="pf-v5-c-modal-box__title-text"
               >
                 Import Java classes
               </span>
             </h1>
             <div
-              class="pf-c-modal-box__description"
+              class="pf-v5-c-modal-box__description"
               id="pf-modal-part-9"
             >
               It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
-            class="pf-c-modal-box__body"
+            class="pf-v5-c-modal-box__body"
           >
             <div
-              class="pf-c-wizard import-java-classes"
+              class="pf-v5-c-wizard import-java-classes"
               style="height: 600px;"
             >
               <button
                 aria-expanded="false"
                 aria-label="Wizard Toggle"
-                class="pf-c-wizard__toggle"
+                class="pf-v5-c-wizard__toggle"
               >
                 <span
-                  class="pf-c-wizard__toggle-list"
+                  class="pf-v5-c-wizard__toggle-list"
                 >
                   <span
-                    class="pf-c-wizard__toggle-list-item"
+                    class="pf-v5-c-wizard__toggle-list-item"
                   >
                     <span
-                      class="pf-c-wizard__toggle-num"
+                      class="pf-v5-c-wizard__toggle-num"
                     >
                       3
                     </span>
@@ -1166,14 +1214,14 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                   </span>
                 </span>
                 <span
-                  class="pf-c-wizard__toggle-icon"
+                  class="pf-v5-c-wizard__toggle-icon"
                 >
                   <svg
                     aria-hidden="true"
+                    class="pf-v5-svg"
                     fill="currentColor"
                     height="1em"
                     role="img"
-                    style="vertical-align: -0.125em;"
                     viewBox="0 0 320 512"
                     width="1em"
                   >
@@ -1184,55 +1232,59 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                 </span>
               </button>
               <div
-                class="pf-c-wizard__outer-wrap"
+                class="pf-v5-c-wizard__outer-wrap"
               >
                 <div
-                  class="pf-c-wizard__inner-wrap"
+                  class="pf-v5-c-wizard__inner-wrap"
                 >
                   <nav
-                    class="pf-c-wizard__nav"
+                    class="pf-v5-c-wizard__nav"
                     data-ouia-component-id="OUIA-Generated-WizardNav-8"
-                    data-ouia-component-type="PF4/WizardNav"
+                    data-ouia-component-type="PF5/WizardNav"
                     data-ouia-safe="true"
                   >
                     <ol
-                      class="pf-c-wizard__nav-list"
+                      class="pf-v5-c-wizard__nav-list"
+                      role="list"
                     >
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
-                          class="pf-c-wizard__nav-link"
+                          class="pf-v5-c-wizard__nav-link"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-22"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select Java classes
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
-                          class="pf-c-wizard__nav-link"
+                          class="pf-v5-c-wizard__nav-link"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-23"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select fields
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="step"
-                          class="pf-c-wizard__nav-link pf-m-current"
+                          class="pf-v5-c-wizard__nav-link pf-m-current"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-24"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Review
                         </button>
@@ -1240,56 +1292,57 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                     </ol>
                   </nav>
                   <div
-                    class="pf-c-wizard__main"
+                    class="pf-v5-c-wizard__main"
                   >
                     <div
-                      class="pf-c-wizard__main-body"
+                      class="pf-v5-c-wizard__main-body"
                     >
                       <div
                         class="fields-table"
                       >
                         <table
                           aria-label="field-table"
-                          class="pf-c-table pf-m-grid-md"
-                          data-ouia-component-id="OUIA-Generated-Table-8"
-                          data-ouia-component-type="PF4/Table"
+                          class="pf-v5-c-table pf-m-grid-md"
+                          data-ouia-component-id="OUIA-Generated-Table-16"
+                          data-ouia-component-type="PF5/Table"
                           data-ouia-safe="true"
                           role="grid"
                         >
                           <tbody
-                            class="pf-m-expanded"
+                            class="pf-v5-c-table__tbody pf-m-expanded"
                             role="rowgroup"
                           >
                             <tr
-                              class=""
+                              class="pf-v5-c-table__tr"
                               data-ouia-component-id="OUIA-Generated-TableRow-52"
-                              data-ouia-component-type="PF4/TableRow"
+                              data-ouia-component-type="PF5/TableRow"
                               data-ouia-safe="true"
                             >
                               <td
-                                class="pf-c-table__toggle"
+                                class="pf-v5-c-table__td pf-v5-c-table__toggle"
+                                tabindex="-1"
                               >
                                 <button
                                   aria-disabled="false"
                                   aria-expanded="true"
                                   aria-label="Details"
                                   aria-labelledby="simple-node0 expand-toggle0"
-                                  class="pf-c-button pf-m-plain pf-m-expanded"
+                                  class="pf-v5-c-button pf-m-plain pf-m-expanded"
                                   data-ouia-component-id="OUIA-Generated-Button-plain-29"
-                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-component-type="PF5/Button"
                                   data-ouia-safe="true"
                                   id="expand-toggle0"
                                   type="button"
                                 >
                                   <div
-                                    class="pf-c-table__toggle-icon"
+                                    class="pf-v5-c-table__toggle-icon"
                                   >
                                     <svg
                                       aria-hidden="true"
+                                      class="pf-v5-svg"
                                       fill="currentColor"
                                       height="1em"
                                       role="img"
-                                      style="vertical-align: -0.125em;"
                                       viewBox="0 0 320 512"
                                       width="1em"
                                     >
@@ -1301,7 +1354,8 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                 </button>
                               </td>
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               >
                                 <span>
                                   <strong>
@@ -1316,19 +1370,21 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                               </td>
                             </tr>
                             <tr
-                              class="pf-c-table__expandable-row pf-m-expanded"
+                              class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                               data-ouia-component-id="OUIA-Generated-TableRow-53"
-                              data-ouia-component-type="PF4/TableRow"
+                              data-ouia-component-type="PF5/TableRow"
                               data-ouia-safe="true"
                             >
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               />
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               >
                                 <div
-                                  class="pf-c-table__expandable-row-content"
+                                  class="pf-v5-c-table__expandable-row-content"
                                 >
                                   <span>
                                     isAlive
@@ -1342,19 +1398,21 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                               </td>
                             </tr>
                             <tr
-                              class="pf-c-table__expandable-row pf-m-expanded"
+                              class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                               data-ouia-component-id="OUIA-Generated-TableRow-54"
-                              data-ouia-component-type="PF4/TableRow"
+                              data-ouia-component-type="PF5/TableRow"
                               data-ouia-safe="true"
                             >
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               />
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               >
                                 <div
-                                  class="pf-c-table__expandable-row-content"
+                                  class="pf-v5-c-table__expandable-row-content"
                                 >
                                   <span>
                                     name
@@ -1369,39 +1427,40 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                             </tr>
                           </tbody>
                           <tbody
-                            class="pf-m-expanded"
+                            class="pf-v5-c-table__tbody pf-m-expanded"
                             role="rowgroup"
                           >
                             <tr
-                              class=""
+                              class="pf-v5-c-table__tr"
                               data-ouia-component-id="OUIA-Generated-TableRow-55"
-                              data-ouia-component-type="PF4/TableRow"
+                              data-ouia-component-type="PF5/TableRow"
                               data-ouia-safe="true"
                             >
                               <td
-                                class="pf-c-table__toggle"
+                                class="pf-v5-c-table__td pf-v5-c-table__toggle"
+                                tabindex="-1"
                               >
                                 <button
                                   aria-disabled="false"
                                   aria-expanded="true"
                                   aria-label="Details"
                                   aria-labelledby="simple-node1 expand-toggle1"
-                                  class="pf-c-button pf-m-plain pf-m-expanded"
+                                  class="pf-v5-c-button pf-m-plain pf-m-expanded"
                                   data-ouia-component-id="OUIA-Generated-Button-plain-30"
-                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-component-type="PF5/Button"
                                   data-ouia-safe="true"
                                   id="expand-toggle1"
                                   type="button"
                                 >
                                   <div
-                                    class="pf-c-table__toggle-icon"
+                                    class="pf-v5-c-table__toggle-icon"
                                   >
                                     <svg
                                       aria-hidden="true"
+                                      class="pf-v5-svg"
                                       fill="currentColor"
                                       height="1em"
                                       role="img"
-                                      style="vertical-align: -0.125em;"
                                       viewBox="0 0 320 512"
                                       width="1em"
                                     >
@@ -1413,7 +1472,8 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                 </button>
                               </td>
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               >
                                 <span>
                                   <strong>
@@ -1428,19 +1488,21 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                               </td>
                             </tr>
                             <tr
-                              class="pf-c-table__expandable-row pf-m-expanded"
+                              class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                               data-ouia-component-id="OUIA-Generated-TableRow-56"
-                              data-ouia-component-type="PF4/TableRow"
+                              data-ouia-component-type="PF5/TableRow"
                               data-ouia-safe="true"
                             >
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               />
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               >
                                 <div
-                                  class="pf-c-table__expandable-row-content"
+                                  class="pf-v5-c-table__expandable-row-content"
                                 >
                                   <span>
                                     test
@@ -1454,19 +1516,21 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                               </td>
                             </tr>
                             <tr
-                              class="pf-c-table__expandable-row pf-m-expanded"
+                              class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                               data-ouia-component-id="OUIA-Generated-TableRow-57"
-                              data-ouia-component-type="PF4/TableRow"
+                              data-ouia-component-type="PF5/TableRow"
                               data-ouia-safe="true"
                             >
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               />
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               >
                                 <div
-                                  class="pf-c-table__expandable-row-content"
+                                  class="pf-v5-c-table__expandable-row-content"
                                 >
                                   <span>
                                     title
@@ -1480,19 +1544,21 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                               </td>
                             </tr>
                             <tr
-                              class="pf-c-table__expandable-row pf-m-expanded"
+                              class="pf-v5-c-table__tr pf-v5-c-table__expandable-row pf-m-expanded"
                               data-ouia-component-id="OUIA-Generated-TableRow-58"
-                              data-ouia-component-type="PF4/TableRow"
+                              data-ouia-component-type="PF5/TableRow"
                               data-ouia-safe="true"
                             >
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               />
                               <td
-                                class=""
+                                class="pf-v5-c-table__td"
+                                tabindex="-1"
                               >
                                 <div
-                                  class="pf-c-table__expandable-row-content"
+                                  class="pf-v5-c-table__expandable-row-content"
                                 >
                                   <span>
                                     year
@@ -1512,36 +1578,36 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                   </div>
                 </div>
                 <footer
-                  class="pf-c-wizard__footer"
+                  class="pf-v5-c-wizard__footer"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="OUIA-Generated-Button-primary-12"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe="true"
-                    type="submit"
-                  >
-                    Import
-                  </button>
-                  <button
-                    aria-disabled="false"
-                    class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="OUIA-Generated-Button-secondary-14"
-                    data-ouia-component-type="PF4/Button"
+                    class="pf-v5-c-button pf-m-secondary"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-23"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     type="button"
                   >
                     Back
                   </button>
+                  <button
+                    aria-disabled="false"
+                    class="pf-v5-c-button pf-m-primary"
+                    data-ouia-component-id="OUIA-Generated-Button-primary-12"
+                    data-ouia-component-type="PF5/Button"
+                    data-ouia-safe="true"
+                    type="submit"
+                  >
+                    Import
+                  </button>
                   <div
-                    class="pf-c-wizard__footer-cancel"
+                    class="pf-v5-c-wizard__footer-cancel"
                   >
                     <button
                       aria-disabled="false"
-                      class="pf-c-button pf-m-link"
+                      class="pf-v5-c-button pf-m-link"
                       data-ouia-component-id="OUIA-Generated-Button-link-8"
-                      data-ouia-component-type="PF4/Button"
+                      data-ouia-component-type="PF5/Button"
                       data-ouia-safe="true"
                       type="button"
                     >
@@ -1561,16 +1627,16 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
 
 exports[`ImportJavaClasses component tests Should search box with results works 1`] = `
 <body
-  class="pf-c-backdrop__open"
+  class="pf-v5-c-backdrop__open"
 >
   <div
     aria-hidden="true"
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-4"
-      data-ouia-component-type="PF4/Button"
+      class="pf-v5-c-button pf-m-secondary pf-m-progress"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-8"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
       type="button"
@@ -1580,86 +1646,90 @@ exports[`ImportJavaClasses component tests Should search box with results works 
   </div>
   <div>
     <div
-      class="pf-c-backdrop"
+      class="pf-v5-c-backdrop"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           aria-describedby="pf-modal-part-4"
           aria-labelledby="pf-modal-part-3"
           aria-modal="true"
-          class="pf-c-modal-box pf-m-lg"
+          class="pf-v5-c-modal-box pf-m-lg"
           data-ouia-component-id="OUIA-Generated-Modal-large-3"
-          data-ouia-component-type="PF4/ModalContent"
+          data-ouia-component-type="PF5/ModalContent"
           data-ouia-safe="true"
           id="pf-modal-part-2"
           role="dialog"
         >
-          <button
-            aria-disabled="false"
-            aria-label="Close"
-            class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Modal-large-3-ModalBoxCloseButton"
-            data-ouia-component-type="PF4/Button"
-            data-ouia-safe="true"
-            type="button"
+          <div
+            class="pf-v5-c-modal-box__close"
           >
-            <svg
-              aria-hidden="true"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 352 512"
-              width="1em"
+            <button
+              aria-disabled="false"
+              aria-label="Close"
+              class="pf-v5-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Modal-large-3-ModalBoxCloseButton"
+              data-ouia-component-type="PF5/Button"
+              data-ouia-safe="true"
+              type="button"
             >
-              <path
-                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-              />
-            </svg>
-          </button>
+              <svg
+                aria-hidden="true"
+                class="pf-v5-svg"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </div>
           <header
-            class="pf-c-modal-box__header"
+            class="pf-v5-c-modal-box__header"
           >
             <h1
-              class="pf-c-modal-box__title"
+              class="pf-v5-c-modal-box__title"
               id="pf-modal-part-3"
             >
               
               <span
-                class="pf-c-modal-box__title-text"
+                class="pf-v5-c-modal-box__title-text"
               >
                 Import Java classes
               </span>
             </h1>
             <div
-              class="pf-c-modal-box__description"
+              class="pf-v5-c-modal-box__description"
               id="pf-modal-part-4"
             >
               It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
-            class="pf-c-modal-box__body"
+            class="pf-v5-c-modal-box__body"
           >
             <div
-              class="pf-c-wizard import-java-classes"
+              class="pf-v5-c-wizard import-java-classes"
               style="height: 600px;"
             >
               <button
                 aria-expanded="false"
                 aria-label="Wizard Toggle"
-                class="pf-c-wizard__toggle"
+                class="pf-v5-c-wizard__toggle"
               >
                 <span
-                  class="pf-c-wizard__toggle-list"
+                  class="pf-v5-c-wizard__toggle-list"
                 >
                   <span
-                    class="pf-c-wizard__toggle-list-item"
+                    class="pf-v5-c-wizard__toggle-list-item"
                   >
                     <span
-                      class="pf-c-wizard__toggle-num"
+                      class="pf-v5-c-wizard__toggle-num"
                     >
                       1
                     </span>
@@ -1668,14 +1738,14 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                   </span>
                 </span>
                 <span
-                  class="pf-c-wizard__toggle-icon"
+                  class="pf-v5-c-wizard__toggle-icon"
                 >
                   <svg
                     aria-hidden="true"
+                    class="pf-v5-svg"
                     fill="currentColor"
                     height="1em"
                     role="img"
-                    style="vertical-align: -0.125em;"
                     viewBox="0 0 320 512"
                     width="1em"
                   >
@@ -1686,57 +1756,61 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                 </span>
               </button>
               <div
-                class="pf-c-wizard__outer-wrap"
+                class="pf-v5-c-wizard__outer-wrap"
               >
                 <div
-                  class="pf-c-wizard__inner-wrap"
+                  class="pf-v5-c-wizard__inner-wrap"
                 >
                   <nav
-                    class="pf-c-wizard__nav"
+                    class="pf-v5-c-wizard__nav"
                     data-ouia-component-id="OUIA-Generated-WizardNav-3"
-                    data-ouia-component-type="PF4/WizardNav"
+                    data-ouia-component-type="PF5/WizardNav"
                     data-ouia-safe="true"
                   >
                     <ol
-                      class="pf-c-wizard__nav-list"
+                      class="pf-v5-c-wizard__nav-list"
+                      role="list"
                     >
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="step"
-                          class="pf-c-wizard__nav-link pf-m-current"
+                          class="pf-v5-c-wizard__nav-link pf-m-current"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-7"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select Java classes
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
-                          class="pf-c-wizard__nav-link"
+                          class="pf-v5-c-wizard__nav-link"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-8"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select fields
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
                           aria-disabled="true"
-                          class="pf-c-wizard__nav-link pf-m-disabled"
+                          class="pf-v5-c-wizard__nav-link pf-m-disabled"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-9"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
                           disabled=""
+                          type="button"
                         >
                           Review
                         </button>
@@ -1744,96 +1818,101 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                     </ol>
                   </nav>
                   <div
-                    class="pf-c-wizard__main"
+                    class="pf-v5-c-wizard__main"
                   >
                     <div
-                      class="pf-c-wizard__main-body"
+                      class="pf-v5-c-wizard__main-body"
                     >
                       <div
                         class="fs-search-input"
                       >
                         <div
-                          class="pf-c-text-input-group"
+                          style="display: contents;"
                         >
                           <div
-                            class="pf-c-text-input-group__main pf-m-icon"
+                            class="pf-v5-c-text-input-group"
                           >
-                            <span
-                              class="pf-c-text-input-group__text"
+                            <div
+                              class="pf-v5-c-text-input-group__main pf-m-icon"
                             >
                               <span
-                                class="pf-c-text-input-group__icon"
+                                class="pf-v5-c-text-input-group__text"
+                              >
+                                <span
+                                  class="pf-v5-c-text-input-group__icon"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="pf-v5-svg"
+                                    fill="currentColor"
+                                    height="1em"
+                                    role="img"
+                                    viewBox="0 0 512 512"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                                    />
+                                  </svg>
+                                </span>
+                                <input
+                                  aria-label="Search input"
+                                  class="pf-v5-c-text-input-group__text-input"
+                                  placeholder="Type the class name here"
+                                  type="text"
+                                  value="test"
+                                />
+                              </span>
+                            </div>
+                            <div
+                              class="pf-v5-c-text-input-group__utilities"
+                            >
+                              <button
+                                aria-disabled="false"
+                                aria-label="Reset"
+                                class="pf-v5-c-button pf-m-plain"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-5"
+                                data-ouia-component-type="PF5/Button"
+                                data-ouia-safe="true"
+                                type="button"
                               >
                                 <svg
                                   aria-hidden="true"
+                                  class="pf-v5-svg"
                                   fill="currentColor"
                                   height="1em"
                                   role="img"
-                                  style="vertical-align: -0.125em;"
-                                  viewBox="0 0 512 512"
+                                  viewBox="0 0 352 512"
                                   width="1em"
                                 >
                                   <path
-                                    d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
                                   />
                                 </svg>
-                              </span>
-                              <input
-                                aria-label="Search input"
-                                class="pf-c-text-input-group__text-input"
-                                placeholder="Type the class name here"
-                                type="text"
-                                value="test"
-                              />
-                            </span>
-                          </div>
-                          <div
-                            class="pf-c-text-input-group__utilities"
-                          >
-                            <button
-                              aria-disabled="false"
-                              aria-label="Reset"
-                              class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="OUIA-Generated-Button-plain-5"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe="true"
-                              type="button"
-                            >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 352 512"
-                                width="1em"
-                              >
-                                <path
-                                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                />
-                              </svg>
-                            </button>
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                       <ul
                         aria-label="class-data-list"
-                        class="pf-c-data-list pf-m-grid-md"
+                        class="pf-v5-c-data-list pf-m-grid-md"
+                        role="list"
                       >
                         <li
                           aria-labelledby=""
-                          class="pf-c-data-list__item"
+                          class="pf-v5-c-data-list__item"
                           id=""
                           name="com.Book"
                         >
                           <div
-                            class="pf-c-data-list__item-row"
+                            class="pf-v5-c-data-list__item-row"
                           >
                             <div
-                              class="pf-c-data-list__item-control"
+                              class="pf-v5-c-data-list__item-control"
                             >
                               <div
-                                class="pf-c-data-list__check"
+                                class="pf-v5-c-data-list__check"
                               >
                                 <input
                                   aria-invalid="false"
@@ -1844,7 +1923,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                               </div>
                             </div>
                             <div
-                              class="pf-c-data-list__cell"
+                              class="pf-v5-c-data-list__cell"
                               rowid=""
                             >
                               <span
@@ -1857,18 +1936,18 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                         </li>
                         <li
                           aria-labelledby=""
-                          class="pf-c-data-list__item"
+                          class="pf-v5-c-data-list__item"
                           id=""
                           name="com.Author"
                         >
                           <div
-                            class="pf-c-data-list__item-row"
+                            class="pf-v5-c-data-list__item-row"
                           >
                             <div
-                              class="pf-c-data-list__item-control"
+                              class="pf-v5-c-data-list__item-control"
                             >
                               <div
-                                class="pf-c-data-list__check"
+                                class="pf-v5-c-data-list__check"
                               >
                                 <input
                                   aria-invalid="false"
@@ -1879,7 +1958,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                               </div>
                             </div>
                             <div
-                              class="pf-c-data-list__cell"
+                              class="pf-v5-c-data-list__cell"
                               rowid=""
                             >
                               <span
@@ -1895,26 +1974,26 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                   </div>
                 </div>
                 <footer
-                  class="pf-c-wizard__footer"
+                  class="pf-v5-c-wizard__footer"
                 >
                   <button
                     aria-disabled="false"
-                    class="pf-c-button pf-m-primary"
+                    class="pf-v5-c-button pf-m-primary"
                     data-ouia-component-id="OUIA-Generated-Button-primary-3"
-                    data-ouia-component-type="PF4/Button"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     type="submit"
                   >
                     Next
                   </button>
                   <div
-                    class="pf-c-wizard__footer-cancel"
+                    class="pf-v5-c-wizard__footer-cancel"
                   >
                     <button
                       aria-disabled="false"
-                      class="pf-c-button pf-m-link"
+                      class="pf-v5-c-button pf-m-link"
                       data-ouia-component-id="OUIA-Generated-Button-link-3"
-                      data-ouia-component-type="PF4/Button"
+                      data-ouia-component-type="PF5/Button"
                       data-ouia-safe="true"
                       type="button"
                     >
@@ -1934,16 +2013,16 @@ exports[`ImportJavaClasses component tests Should search box with results works 
 
 exports[`ImportJavaClasses component tests Should show Modal after clicking on the button 1`] = `
 <body
-  class="pf-c-backdrop__open"
+  class="pf-v5-c-backdrop__open"
 >
   <div
     aria-hidden="true"
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-2"
-      data-ouia-component-type="PF4/Button"
+      class="pf-v5-c-button pf-m-secondary pf-m-progress"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-4"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
       type="button"
@@ -1953,86 +2032,90 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
   </div>
   <div>
     <div
-      class="pf-c-backdrop"
+      class="pf-v5-c-backdrop"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           aria-describedby="pf-modal-part-2"
           aria-labelledby="pf-modal-part-1"
           aria-modal="true"
-          class="pf-c-modal-box pf-m-lg"
+          class="pf-v5-c-modal-box pf-m-lg"
           data-ouia-component-id="OUIA-Generated-Modal-large-1"
-          data-ouia-component-type="PF4/ModalContent"
+          data-ouia-component-type="PF5/ModalContent"
           data-ouia-safe="true"
           id="pf-modal-part-0"
           role="dialog"
         >
-          <button
-            aria-disabled="false"
-            aria-label="Close"
-            class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Modal-large-1-ModalBoxCloseButton"
-            data-ouia-component-type="PF4/Button"
-            data-ouia-safe="true"
-            type="button"
+          <div
+            class="pf-v5-c-modal-box__close"
           >
-            <svg
-              aria-hidden="true"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 352 512"
-              width="1em"
+            <button
+              aria-disabled="false"
+              aria-label="Close"
+              class="pf-v5-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Modal-large-1-ModalBoxCloseButton"
+              data-ouia-component-type="PF5/Button"
+              data-ouia-safe="true"
+              type="button"
             >
-              <path
-                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-              />
-            </svg>
-          </button>
+              <svg
+                aria-hidden="true"
+                class="pf-v5-svg"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </div>
           <header
-            class="pf-c-modal-box__header"
+            class="pf-v5-c-modal-box__header"
           >
             <h1
-              class="pf-c-modal-box__title"
+              class="pf-v5-c-modal-box__title"
               id="pf-modal-part-1"
             >
               
               <span
-                class="pf-c-modal-box__title-text"
+                class="pf-v5-c-modal-box__title-text"
               >
                 Import Java classes
               </span>
             </h1>
             <div
-              class="pf-c-modal-box__description"
+              class="pf-v5-c-modal-box__description"
               id="pf-modal-part-2"
             >
               It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
-            class="pf-c-modal-box__body"
+            class="pf-v5-c-modal-box__body"
           >
             <div
-              class="pf-c-wizard import-java-classes"
+              class="pf-v5-c-wizard import-java-classes"
               style="height: 600px;"
             >
               <button
                 aria-expanded="false"
                 aria-label="Wizard Toggle"
-                class="pf-c-wizard__toggle"
+                class="pf-v5-c-wizard__toggle"
               >
                 <span
-                  class="pf-c-wizard__toggle-list"
+                  class="pf-v5-c-wizard__toggle-list"
                 >
                   <span
-                    class="pf-c-wizard__toggle-list-item"
+                    class="pf-v5-c-wizard__toggle-list-item"
                   >
                     <span
-                      class="pf-c-wizard__toggle-num"
+                      class="pf-v5-c-wizard__toggle-num"
                     >
                       1
                     </span>
@@ -2041,14 +2124,14 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                   </span>
                 </span>
                 <span
-                  class="pf-c-wizard__toggle-icon"
+                  class="pf-v5-c-wizard__toggle-icon"
                 >
                   <svg
                     aria-hidden="true"
+                    class="pf-v5-svg"
                     fill="currentColor"
                     height="1em"
                     role="img"
-                    style="vertical-align: -0.125em;"
                     viewBox="0 0 320 512"
                     width="1em"
                   >
@@ -2059,59 +2142,63 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                 </span>
               </button>
               <div
-                class="pf-c-wizard__outer-wrap"
+                class="pf-v5-c-wizard__outer-wrap"
               >
                 <div
-                  class="pf-c-wizard__inner-wrap"
+                  class="pf-v5-c-wizard__inner-wrap"
                 >
                   <nav
-                    class="pf-c-wizard__nav"
+                    class="pf-v5-c-wizard__nav"
                     data-ouia-component-id="OUIA-Generated-WizardNav-1"
-                    data-ouia-component-type="PF4/WizardNav"
+                    data-ouia-component-type="PF5/WizardNav"
                     data-ouia-safe="true"
                   >
                     <ol
-                      class="pf-c-wizard__nav-list"
+                      class="pf-v5-c-wizard__nav-list"
+                      role="list"
                     >
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="step"
-                          class="pf-c-wizard__nav-link pf-m-current"
+                          class="pf-v5-c-wizard__nav-link pf-m-current"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-1"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
+                          type="button"
                         >
                           Select Java classes
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
                           aria-disabled="true"
-                          class="pf-c-wizard__nav-link pf-m-disabled"
+                          class="pf-v5-c-wizard__nav-link pf-m-disabled"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-2"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
                           disabled=""
+                          type="button"
                         >
                           Select fields
                         </button>
                       </li>
                       <li
-                        class="pf-c-wizard__nav-item"
+                        class="pf-v5-c-wizard__nav-item"
                       >
                         <button
                           aria-current="false"
                           aria-disabled="true"
-                          class="pf-c-wizard__nav-link pf-m-disabled"
+                          class="pf-v5-c-wizard__nav-link pf-m-disabled"
                           data-ouia-component-id="OUIA-Generated-WizardNavItem-3"
-                          data-ouia-component-type="PF4/WizardNavItem"
+                          data-ouia-component-type="PF5/WizardNavItem"
                           data-ouia-safe="true"
                           disabled=""
+                          type="button"
                         >
                           Review
                         </button>
@@ -2119,82 +2206,94 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                     </ol>
                   </nav>
                   <div
-                    class="pf-c-wizard__main"
+                    class="pf-v5-c-wizard__main"
                   >
                     <div
-                      class="pf-c-wizard__main-body"
+                      class="pf-v5-c-wizard__main-body"
                     >
                       <div
                         class="fs-search-input"
                       >
                         <div
-                          class="pf-c-text-input-group"
+                          style="display: contents;"
                         >
                           <div
-                            class="pf-c-text-input-group__main pf-m-icon"
+                            aria-describedby="pf-tooltip-4"
+                            class="pf-v5-c-text-input-group"
                           >
-                            <span
-                              class="pf-c-text-input-group__text"
+                            <div
+                              class="pf-v5-c-text-input-group__main pf-m-icon"
                             >
                               <span
-                                class="pf-c-text-input-group__icon"
+                                class="pf-v5-c-text-input-group__text"
                               >
-                                <svg
-                                  aria-hidden="true"
-                                  fill="currentColor"
-                                  height="1em"
-                                  role="img"
-                                  style="vertical-align: -0.125em;"
-                                  viewBox="0 0 512 512"
-                                  width="1em"
+                                <span
+                                  class="pf-v5-c-text-input-group__icon"
                                 >
-                                  <path
-                                    d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
-                                  />
-                                </svg>
+                                  <svg
+                                    aria-hidden="true"
+                                    class="pf-v5-svg"
+                                    fill="currentColor"
+                                    height="1em"
+                                    role="img"
+                                    viewBox="0 0 512 512"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                                    />
+                                  </svg>
+                                </span>
+                                <input
+                                  aria-label="Search input"
+                                  class="pf-v5-c-text-input-group__text-input"
+                                  placeholder="Type the class name here"
+                                  type="text"
+                                  value=""
+                                />
                               </span>
-                              <input
-                                aria-label="Search input"
-                                class="pf-c-text-input-group__text-input"
-                                placeholder="Type the class name here"
-                                type="text"
-                                value=""
-                              />
-                            </span>
+                            </div>
                           </div>
-                          
                         </div>
                       </div>
                       <div
-                        class="pf-c-empty-state"
+                        class="pf-v5-c-empty-state"
                       >
                         <div
-                          class="pf-c-empty-state__content"
+                          class="pf-v5-c-empty-state__content"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="pf-c-empty-state__icon"
-                            fill="currentColor"
-                            height="1em"
-                            role="img"
-                            style="vertical-align: -0.125em;"
-                            viewBox="0 0 512 512"
-                            width="1em"
-                          >
-                            <path
-                              d="M488.6 250.2L392 214V105.5c0-15-9.3-28.4-23.4-33.7l-100-37.5c-8.1-3.1-17.1-3.1-25.3 0l-100 37.5c-14.1 5.3-23.4 18.7-23.4 33.7V214l-96.6 36.2C9.3 255.5 0 268.9 0 283.9V394c0 13.6 7.7 26.1 19.9 32.2l100 50c10.1 5.1 22.1 5.1 32.2 0l103.9-52 103.9 52c10.1 5.1 22.1 5.1 32.2 0l100-50c12.2-6.1 19.9-18.6 19.9-32.2V283.9c0-15-9.3-28.4-23.4-33.7zM358 214.8l-85 31.9v-68.2l85-37v73.3zM154 104.1l102-38.2 102 38.2v.6l-102 41.4-102-41.4v-.6zm84 291.1l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6zm240 112l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6z"
-                            />
-                          </svg>
-                          <h6
-                            class="pf-c-title pf-m-md"
-                            data-ouia-component-id="OUIA-Generated-Title-1"
-                            data-ouia-component-type="PF4/Title"
-                            data-ouia-safe="true"
-                          >
-                            No Java classes found or selected
-                          </h6>
                           <div
-                            class="pf-c-empty-state__body"
+                            class="pf-v5-c-empty-state__header"
+                          >
+                            <div
+                              class="pf-v5-c-empty-state__icon"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="pf-v5-svg"
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                viewBox="0 0 512 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M488.6 250.2L392 214V105.5c0-15-9.3-28.4-23.4-33.7l-100-37.5c-8.1-3.1-17.1-3.1-25.3 0l-100 37.5c-14.1 5.3-23.4 18.7-23.4 33.7V214l-96.6 36.2C9.3 255.5 0 268.9 0 283.9V394c0 13.6 7.7 26.1 19.9 32.2l100 50c10.1 5.1 22.1 5.1 32.2 0l103.9-52 103.9 52c10.1 5.1 22.1 5.1 32.2 0l100-50c12.2-6.1 19.9-18.6 19.9-32.2V283.9c0-15-9.3-28.4-23.4-33.7zM358 214.8l-85 31.9v-68.2l85-37v73.3zM154 104.1l102-38.2 102 38.2v.6l-102 41.4-102-41.4v-.6zm84 291.1l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6zm240 112l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6z"
+                                />
+                              </svg>
+                            </div>
+                            <div
+                              class="pf-v5-c-empty-state__title"
+                            >
+                              <h6
+                                class="pf-v5-c-empty-state__title-text"
+                              >
+                                No Java classes found or selected
+                              </h6>
+                            </div>
+                          </div>
+                          <div
+                            class="pf-v5-c-empty-state__body"
                           >
                             Type the Java class name or part of the name to find the one you want to import
                           </div>
@@ -2204,13 +2303,13 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                   </div>
                 </div>
                 <footer
-                  class="pf-c-wizard__footer"
+                  class="pf-v5-c-wizard__footer"
                 >
                   <button
                     aria-disabled="true"
-                    class="pf-c-button pf-m-primary pf-m-disabled"
+                    class="pf-v5-c-button pf-m-primary pf-m-disabled"
                     data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                    data-ouia-component-type="PF4/Button"
+                    data-ouia-component-type="PF5/Button"
                     data-ouia-safe="true"
                     disabled=""
                     type="submit"
@@ -2218,13 +2317,13 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                     Next
                   </button>
                   <div
-                    class="pf-c-wizard__footer-cancel"
+                    class="pf-v5-c-wizard__footer-cancel"
                   >
                     <button
                       aria-disabled="false"
-                      class="pf-c-button pf-m-link"
+                      class="pf-v5-c-button pf-m-link"
                       data-ouia-component-id="OUIA-Generated-Button-link-1"
-                      data-ouia-component-type="PF4/Button"
+                      data-ouia-component-type="PF5/Button"
                       data-ouia-safe="true"
                       type="button"
                     >
@@ -2239,6 +2338,22 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
       </div>
     </div>
   </div>
+  <div
+    aria-live="off"
+    class="pf-v5-c-tooltip pf-m-top"
+    id="pf-tooltip-4"
+    role="tooltip"
+    style="position: absolute; left: 0px; top: 0px; z-index: 9999; opacity: 0; transition: opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11); min-width: revert;"
+  >
+    <div
+      class="pf-v5-c-tooltip__arrow"
+    />
+    <div
+      class="pf-v5-c-tooltip__content"
+    >
+      Type at least 3 characters to begin the search
+    </div>
+  </div>
 </body>
 `;
 
@@ -2247,9 +2362,9 @@ exports[`ImportJavaClasses component tests should render ImportJavaClasses Butto
   <div>
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-1"
-      data-ouia-component-type="PF4/Button"
+      class="pf-v5-c-button pf-m-secondary pf-m-progress"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
       type="button"

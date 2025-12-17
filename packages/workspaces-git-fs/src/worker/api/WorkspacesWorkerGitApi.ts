@@ -18,7 +18,14 @@
  */
 
 import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
-import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "./WorkspaceOrigin";
+import {
+  BitbucketOrigin,
+  BitbucketSnippetOrigin,
+  GistOrigin,
+  GitHubOrigin,
+  GitlabOrigin,
+  GitlabSnippetOrigin,
+} from "./WorkspaceOrigin";
 import { LocalFile } from "./LocalFile";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 import { GitServerRef } from "./GitServerRef";
@@ -33,6 +40,7 @@ export interface WorkspacesWorkerGitApi {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<GitServerRef[]>;
 
   kieSandboxWorkspacesGit_hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
@@ -56,7 +64,7 @@ export interface WorkspacesWorkerGitApi {
   }>;
 
   kieSandboxWorkspacesGit_clone(args: {
-    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | BitbucketSnippetOrigin | GitlabOrigin | GitlabSnippetOrigin;
     gitAuthSessionId: string | undefined;
     gitConfig?: {
       email: string;
@@ -67,6 +75,7 @@ export interface WorkspacesWorkerGitApi {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<{
     workspace: WorkspaceDescriptor;
     suggestedFirstFile?: WorkspaceWorkerFileDescriptor;
@@ -83,6 +92,7 @@ export interface WorkspacesWorkerGitApi {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_push(args: {
@@ -96,6 +106,7 @@ export interface WorkspacesWorkerGitApi {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
@@ -144,8 +155,13 @@ export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_fetch(args: {
     workspaceId: string;
     remote: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
     ref: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<FetchResult>;
 
   kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
@@ -153,6 +169,7 @@ export interface WorkspacesWorkerGitApi {
     remoteUrl: string;
     branch?: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
@@ -160,6 +177,7 @@ export interface WorkspacesWorkerGitApi {
     remoteUrl: string;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace(args: {
@@ -167,12 +185,22 @@ export interface WorkspacesWorkerGitApi {
     remoteUrl: string;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_initGitlabSnippetOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_changeGitAuthSessionId(args: {
     workspaceId: string;
     gitAuthSessionId: string | undefined;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initLocalOnExistingWorkspace(args: { workspaceId: string }): Promise<void>;

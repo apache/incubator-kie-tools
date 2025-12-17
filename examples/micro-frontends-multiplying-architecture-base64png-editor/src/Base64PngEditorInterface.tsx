@@ -24,6 +24,7 @@ import {
   EditorInitArgs,
   EditorTheme,
   KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
@@ -59,7 +60,7 @@ export class Base64PngEditorInterface implements Editor {
   public af_componentTitle: "Base64 PNG Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();

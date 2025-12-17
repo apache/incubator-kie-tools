@@ -30,7 +30,7 @@ import {
   DropdownItem,
   DropdownPosition,
   DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../i18n";
@@ -49,6 +49,7 @@ import { useEditorToolbarContext, useEditorToolbarDispatchContext } from "./Edit
 import { useGitIntegration } from "./GitIntegration/GitIntegrationContextProvider";
 import { useAuthProvider } from "../../authProviders/AuthProvidersContext";
 import { useAuthSession } from "../../authSessions/AuthSessionsContext";
+import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 
 type Props = {
   workspace: ActiveWorkspace;
@@ -80,7 +81,7 @@ export function SyncDropdownMenu(props: Props) {
             <DropdownToggle
               id={"sync-dropdown"}
               data-testid={"sync-dropdown"}
-              onToggle={(isOpen) => setSyncGistOrSnippetDropdownOpen(isOpen)}
+              onToggle={(_event, isOpen) => setSyncGistOrSnippetDropdownOpen(isOpen)}
             >
               Sync
             </DropdownToggle>
@@ -94,6 +95,7 @@ export function SyncDropdownMenu(props: Props) {
                     {switchExpression(props.workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
                       GITHUB_GIST: i18n.editorToolbar.cantUpdateGistTooltip,
                       BITBUCKET_SNIPPET: i18n.editorToolbar.cantUpdateSnippetTooltip,
+                      GITLAB_SNIPPET: i18n.editorToolbar.cantUpdateSnippetTooltip,
                     })}
                   </div>
                 }
@@ -106,6 +108,7 @@ export function SyncDropdownMenu(props: Props) {
                     icon={switchExpression(props.workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
                       BITBUCKET_SNIPPET: <BitbucketIcon />,
                       GITHUB_GIST: <GithubIcon />,
+                      GITLAB_SNIPPET: <GitlabIcon />,
                     })}
                     onClick={updateGistOrSnippet}
                     isDisabled={!canUpdateGistOrSnippet}
@@ -114,6 +117,7 @@ export function SyncDropdownMenu(props: Props) {
                     {switchExpression(props.workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
                       BITBUCKET_SNIPPET: "Bitbucket Snippet",
                       GITHUB_GIST: "GitHub Gist",
+                      GITLAB_SNIPPET: "GitLab Snippet",
                     })}
                   </DropdownItem>
                   {canForkGitHubGist && (
@@ -122,7 +126,7 @@ export function SyncDropdownMenu(props: Props) {
                       <li role="menuitem">
                         <Alert
                           isInline={true}
-                          variant={"default"}
+                          variant={"custom"}
                           title={<span style={{ whiteSpace: "nowrap" }}>{"Can't update Gists you don't own"}</span>}
                         >
                           <br />
@@ -132,7 +136,7 @@ export function SyncDropdownMenu(props: Props) {
                           <Button
                             onClick={forkGitHubGist}
                             variant={ButtonVariant.link}
-                            isSmall={true}
+                            size="sm"
                             style={{ paddingLeft: 0 }}
                           >
                             {`Fork Gist`}
@@ -165,10 +169,11 @@ export function SyncDropdownMenu(props: Props) {
                       <Divider />
                       <Alert
                         isInline={true}
-                        variant={"default"}
+                        variant={"custom"}
                         title={`Can't Update ${switchExpression(authProvider?.type as GitAuthProviderType, {
                           github: "GitHub repository",
                           bitbucket: "Bitbucket repository",
+                          gitlab: "GitLab repository",
                           default: "Git repository",
                         })} without selecting a matching authentication source`}
                         actionLinks={
@@ -195,6 +200,7 @@ export function SyncDropdownMenu(props: Props) {
                           {
                             GITHUB_GIST: "Github Gist",
                             BITBUCKET_SNIPPET: "Bitbucket Snippet",
+                            GITLAB_SNIPPET: "GitLab Snippet",
                           }
                         )}.`}
                       </Alert>
@@ -215,7 +221,7 @@ export function SyncDropdownMenu(props: Props) {
             <DropdownToggle
               id={"sync-dropdown"}
               data-testid={"sync-dropdown"}
-              onToggle={(isOpen) => setSyncGitRepositoryDropdownOpen(isOpen)}
+              onToggle={(_event, isOpen) => setSyncGitRepositoryDropdownOpen(isOpen)}
             >
               Sync
             </DropdownToggle>
@@ -248,7 +254,7 @@ export function SyncDropdownMenu(props: Props) {
                     <>
                       <Alert
                         isInline={true}
-                        variant={"default"}
+                        variant={"custom"}
                         title={"Can't Push without selecting an authentication source"}
                         actionLinks={
                           <AuthSessionSelect

@@ -22,6 +22,7 @@ package properties
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 
@@ -116,13 +117,27 @@ func (a *managedPropertyHandler) Build() string {
 // withKogitoServiceUrl adds the property kogitoServiceUrlProperty to the application properties.
 // See Service Discovery https://kubernetes.io/docs/concepts/services-networking/service/#dns
 func (a *managedPropertyHandler) withKogitoServiceUrl() ManagedPropertyHandler {
-	var kogitoServiceUrl string
-	if len(a.workflow.Namespace) > 0 {
-		kogitoServiceUrl = fmt.Sprintf("%s://%s.%s", constants.DefaultHTTPProtocol, a.workflow.Name, a.workflow.Namespace)
+	return a.addDefaultManagedProperty(constants.KogitoServiceURLProperty, GetKogitoServiceUrl(a.workflow))
+}
+
+func GetKogitoServiceUrl(workflow *operatorapi.SonataFlow) string {
+	return GetKogitoServiceUrlWithNameAndNamespace(workflow.Name, workflow.Namespace)
+}
+
+func GetKogitoServiceUrlWithNameAndNamespace(name, namespace string) string {
+	if len(namespace) > 0 {
+		return fmt.Sprintf("%s://%s.%s", constants.DefaultHTTPProtocol, name, namespace)
 	} else {
-		kogitoServiceUrl = fmt.Sprintf("%s://%s", constants.DefaultHTTPProtocol, a.workflow.Name)
+		return fmt.Sprintf("%s://%s", constants.DefaultHTTPProtocol, name)
 	}
-	return a.addDefaultManagedProperty(constants.KogitoServiceURLProperty, kogitoServiceUrl)
+}
+
+func GetWorkflowEndpointUrl(workflow *operatorapi.SonataFlow) string {
+	return GetWorkflowEndpointUrlWithNameAndNamespace(workflow.Name, workflow.Namespace)
+}
+
+func GetWorkflowEndpointUrlWithNameAndNamespace(name, namespace string) string {
+	return GetKogitoServiceUrlWithNameAndNamespace(name, namespace) + "/" + name
 }
 
 // withKafkaHealthCheckDisabled adds the property kafkaSmallRyeHealthProperty to the application properties.
@@ -225,8 +240,11 @@ func setDevProfileDiscoveryProperties(ctx context.Context, catalog discovery.Ser
 		if err != nil {
 			klog.V(log.E).ErrorS(err, "An error was produced while getting workflow route url. ", "workflow", workflow.Name)
 		} else {
-			props.Set(constants.QuarkusHttpCors, "true")
-			props.Set(constants.QuarkusHttpCorsOrigins, routeUrl)
+			if url, err := url.Parse(routeUrl); err != nil {
+				klog.V(log.E).ErrorS(err, "An error was produced while parsing workflow route url. ", "workflow", workflow.Name)
+			} else {
+				props.Set(constants.QuarkusDevUIHosts, url.Host)
+			}
 		}
 	}
 }

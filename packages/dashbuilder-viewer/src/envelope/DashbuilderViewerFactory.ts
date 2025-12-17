@@ -22,14 +22,17 @@ import {
   Editor,
   EditorFactory,
   EditorInitArgs,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { DashbuilderViewerChannelApi } from "./DashbuilderViewerChannelApi";
 import { getDashbuilderLanguageData, Resource } from "../api/DashbuilderLanguageData";
 
-export class DashbuilderViewerFactory implements EditorFactory<Editor, DashbuilderViewerChannelApi> {
+export class DashbuilderViewerFactory
+  implements EditorFactory<Editor, KogitoEditorEnvelopeApi, DashbuilderViewerChannelApi>
+{
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, DashbuilderViewerChannelApi>,
     initArgs: EditorInitArgs
   ) {
     appendLoaderContainer();

@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-[mode="dark"] .pf-c-chart {
+[mode="dark"] .pf-v5-c-chart {
   background-color: #100c2a;
 }
 
-[mode="dark"] .pf-c-chart g text tspan {
+[mode="dark"] .pf-v5-c-chart g text tspan {
   fill: #eef1fa !important;
 }
 
-[mode="dark"] .pf-c-chart g line {
+[mode="dark"] .pf-v5-c-chart g line {
   stroke: #eef1fa !important;
 }

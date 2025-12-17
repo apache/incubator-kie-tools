@@ -36,7 +36,7 @@ const data = require("./MockData/graphql");
 const controller = require("./MockData/controllers");
 const typeDefs = require("./MockData/types");
 
-const DEFAULT_TIMEOUT = 2000;
+const DEFAULT_DELAY = Number(process.env.SONATAFLOW_DEV_APP_DELAY || 2000);
 
 const swaggerOptions = {
   swaggerOptions: {
@@ -60,6 +60,15 @@ function listen() {
     console.log(`The server is running and listening at http://localhost:${port}`);
   });
 }
+
+// validate corsDomain, required for CodeQL scan
+if (!config.corsDomain) {
+  throw new Error("Invalid CORS_DOMAIN: Please specify a domain.");
+}
+if (config.corsDomain.trim() === "*") {
+  throw new Error('Invalid CORS_DOMAIN: wildcard "*" is not allowed.');
+}
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -96,7 +105,7 @@ app.post("/forms/:formName", controller.saveFormContent);
 
 app.post(/^\/(service|hello|systout|jsongreet|order|yamlgreet)$/, controller.startProcessInstance);
 
-function timeout(ms = DEFAULT_TIMEOUT) {
+function timeout(ms = DEFAULT_DELAY) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 

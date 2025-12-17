@@ -19,23 +19,18 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.json && pnpm test",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
-    "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/i18n": "workspace:*",
-    "@kie-tools-core/notifications": "workspace:*",
-    "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
-    "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
+    "@kie-tools/kie-bc-editors-common": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
-    "@patternfly/react-core": "^4.276.6"
+    "@patternfly/react-core": "^5.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

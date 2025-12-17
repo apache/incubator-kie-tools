@@ -17,13 +17,18 @@
  * under the License.
  */
 import React, { useCallback, useMemo } from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
 import { WorkflowListState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { WorkflowListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowListContainer";
@@ -34,19 +39,25 @@ import { routes } from "../../routes";
 const PAGE_TITLE = "Workflow Instances";
 
 export function RuntimeToolsWorkflowInstances() {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const app = useApp();
-  const initialState: WorkflowListState = history.location && (history.location.state as WorkflowListState);
+  const initialState: WorkflowListState = location && (location.state as WorkflowListState);
 
   const dataIndexNotAvailable = useMemo(
     () => (
       <PageSection variant="light">
         <Bullseye>
           <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {`Data Index service not available`}
-            </Title>
+            <EmptyStateHeader
+              titleText={
+                <>
+                  Data Index service not available
+                  <EmptyStateIcon icon={CubesIcon} />{" "}
+                </>
+              }
+              headingLevel="h4"
+            />
             <EmptyStateBody>
               <TextContent>
                 <Text>
@@ -66,12 +77,14 @@ export function RuntimeToolsWorkflowInstances() {
 
   const onOpenWorkflowDetails = useCallback(
     (args: { workflowId: string; state: WorkflowListState }) => {
-      history.push({
-        pathname: routes.runtimeTools.workflowDetails.path({ workflowId: args.workflowId }),
-        state: args.state,
-      });
+      navigate(
+        {
+          pathname: routes.runtimeTools.workflowDetails.path({ workflowId: args.workflowId }),
+        },
+        { state: args.state }
+      );
     },
-    [history]
+    [navigate]
   );
 
   return (

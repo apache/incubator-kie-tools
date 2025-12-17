@@ -46,8 +46,8 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
   KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD: buildEnv.onlineEditor.disableExtendedServicesWizard,
   KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDevDeploymentImageUrl(buildEnv.devDeployments.baseImage),
-  KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL: getDevDeploymentImageUrl(
-    buildEnv.devDeployments.kogitoQuarkusBlankAppImage
+  KIE_SANDBOX_DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_URL: getDevDeploymentImageUrl(
+    buildEnv.devDeployments.quarkusBlankAppImage
   ),
   KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL: getDevDeploymentImageUrl(
     buildEnv.devDeployments.dmnFormWebappImage
@@ -74,9 +74,10 @@ export const defaultEnvJson: EnvJson = {
       supportedGitRemoteDomains: ["gitlab.com"],
       type: AuthProviderType.gitlab,
       name: "GitLab",
-      enabled: false,
+      enabled: true,
       iconPath: routes.static.images.gitlabLogo.path({}),
       group: AuthProviderGroup.GIT,
+      disableEncoding: true,
     },
     {
       id: "bitbucket_dot_org",

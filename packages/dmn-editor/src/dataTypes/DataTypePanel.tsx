@@ -29,12 +29,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownSeparator,
-  KebabToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownSeparator, KebabToggle } from "@patternfly/react-core/deprecated";
 import { DataType, DataTypeIndex, EditItemDefinition, AddItemComponent } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { ItemComponentsTable } from "./ItemComponentsTable";
@@ -42,7 +37,7 @@ import { getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 import { ConstraintsFromAllowedValuesAttribute, ConstraintsFromTypeConstraintAttribute } from "./Constraints";
@@ -54,6 +49,8 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
+import { useDmnEditorI18n } from "../i18n";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 export function DataTypePanel({
   isReadOnly,
@@ -66,6 +63,7 @@ export function DataTypePanel({
   allDataTypesById: DataTypeIndex;
   editItemDefinition: EditItemDefinition;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
   const toggleStruct = useCallback(
@@ -217,12 +215,12 @@ export function DataTypePanel({
         direction={{ default: "row" }}
       >
         <FlexItem>
-          <Flex direction={{ default: "column" }}>
+          <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
             <FlexItem>
               <Flex direction={{ default: "row" }}>
                 {dataType.namespace !== thisDmnsNamespace && (
                   <FlexItem>
-                    <Label>External</Label>
+                    <Label>{i18n.dataTypes.external}</Label>
                   </FlexItem>
                 )}
                 {parents.length > 0 && (
@@ -272,7 +270,9 @@ export function DataTypePanel({
             <span>|</span>
             <Button variant={ButtonVariant.link}>View usages</Button> */}
           <Dropdown
-            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
+            toggle={
+              <KebabToggle id={"toggle-kebab-top-level"} onToggle={(_event, val) => setTopLevelDropdownOpen(val)} />
+            }
             onSelect={() => setTopLevelDropdownOpen(false)}
             isOpen={topLevelDropdownOpen}
             menuAppendTo={document.body}
@@ -281,7 +281,7 @@ export function DataTypePanel({
             dropdownItems={[
               <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
                 <div>
-                  <b>ID: </b>
+                  <b>{i18n.dataTypes.id} </b>
                   {dataType.itemDefinition["@_id"]}
                 </div>
               </DropdownItem>,
@@ -294,7 +294,7 @@ export function DataTypePanel({
                   navigator.clipboard.writeText(JSON.stringify(clipboard));
                 }}
               >
-                Copy
+                {i18n.dataTypes.copy}
               </DropdownItem>,
               <React.Fragment key={"remove-fragment"}>
                 {!isReadOnly && (
@@ -317,7 +317,7 @@ export function DataTypePanel({
                         });
                       }}
                     >
-                      Remove
+                      {i18n.dataTypes.remove}
                     </DropdownItem>
                   </>
                 )}
@@ -327,32 +327,31 @@ export function DataTypePanel({
         </FlexItem>
       </Flex>
       {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
-      <PageSection style={{ padding: "24px" }}>
+      <PageSection style={{ padding: "24px" }} variant="light">
         <TextArea
           isDisabled={isReadOnly}
           key={dataType.itemDefinition["@_id"]}
           value={dataType.itemDefinition.description?.__$$text}
-          onChange={changeDescription}
-          placeholder={"Enter a description..."}
+          onChange={(_event, val) => changeDescription(val)}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           resizeOrientation={"vertical"}
           aria-label={"Data type description"}
         />
         <br />
-        <br />
         <Divider inset={{ default: "insetMd" }} />
         <br />
         <Switch
-          label={"Is collection?"}
+          label={i18n.dataTypes.isCollection}
           isChecked={!!dataType.itemDefinition["@_isCollection"]}
-          onChange={toggleCollection}
+          onChange={(_event, val) => toggleCollection(val)}
           isDisabled={isReadOnly}
         />
         <br />
         <br />
         <Switch
-          label={"Is struct?"}
+          label={i18n.dataTypes.isStruct}
           isChecked={isStruct(dataType.itemDefinition)}
-          onChange={toggleStruct}
+          onChange={(_event, val) => toggleStruct(val)}
           isDisabled={isReadOnly}
         ></Switch>
         <br />
@@ -377,21 +376,23 @@ export function DataTypePanel({
               <>
                 <Flex direction={{ default: "row" }} alignItems={{ default: "alignItemsCenter" }}>
                   <Title size={"md"} headingLevel="h4">
-                    Collection constraint
+                    {i18n.dataTypes.collectionConstraint}
                   </Title>
                   <Popover
                     showClose={false}
                     isVisible={isCollectionConstraintPopoverOpen}
                     shouldClose={() => setIsCollectionConstraintPopoverOpen(false)}
-                    headerContent="Collection Constraints (Type Constraint)"
+                    headerContent={i18n.dataTypes.collectionConstrainsTypeConstraint}
                     headerIcon={<InfoAltIcon />}
                     headerComponent="h1"
                     bodyContent={
-                      <p>
-                        As per the DMN specification, the <b>Type Constraint</b> attribute lists the possible values
-                        <br />
-                        or ranges of values in the base type that are allowed in this ItemDefinition.
-                      </p>
+                      <I18nWrappedTemplate
+                        text={i18n.dataTypes.dmnTypeConstraintText}
+                        interpolationMap={{
+                          typeConstraint: <b>{i18n.dataTypes.typeConstraint}</b>,
+                          lineBreak: <br />,
+                        }}
+                      />
                     }
                   >
                     <InfoAltIcon
@@ -410,21 +411,23 @@ export function DataTypePanel({
                 <br />
                 <Flex direction={{ default: "row" }} alignItems={{ default: "alignItemsCenter" }}>
                   <Title size={"md"} headingLevel="h4">
-                    Collection item constraint
+                    {i18n.dataTypes.collectionItemConstraint}
                   </Title>
                   <Popover
                     showClose={false}
                     isVisible={isCollectionItemConstraintPopoverOpen}
                     shouldClose={() => setIsCollectionItemConstraintPopoverOpen(false)}
-                    headerContent="Collection Item Constraints (Allowed Values)"
+                    headerContent={i18n.dataTypes.collectionItemConstraintAllowedValues}
                     headerIcon={<InfoAltIcon />}
                     headerComponent="h1"
                     bodyContent={
-                      <p>
-                        As per the DMN specification, the <b>Allowed Values</b> attribute lists the possible values
-                        <br />
-                        or ranges of values in the base type that are allowed in this ItemDefinition.
-                      </p>
+                      <I18nWrappedTemplate
+                        text={i18n.dataTypes.dmnTypeConstraintText}
+                        interpolationMap={{
+                          typeConstraint: <b>{i18n.dataTypes.allowedValues}</b>,
+                          lineBreak: <br />,
+                        }}
+                      />
                     }
                   >
                     <InfoAltIcon
@@ -433,12 +436,8 @@ export function DataTypePanel({
                     />
                   </Popover>
                 </Flex>
-                <Alert variant="warning" isInline isPlain title="Deprecated">
-                  <p>
-                    Creating constraints for the collection items directly on the collection itself is deprecated since
-                    DMN 1.5 and will possibly be removed in future versions. To prepare your DMN model for future
-                    updates, please create a dedicated Data Type for the items of this list and add constraints there.
-                  </p>
+                <Alert variant="warning" isInline isPlain title={i18n.dataTypes.deprecated}>
+                  <p>{i18n.dataTypes.creatingConstraints}</p>
                 </Alert>
                 <br />
 
@@ -451,7 +450,7 @@ export function DataTypePanel({
             ) : (
               <>
                 <Title size={"md"} headingLevel="h4">
-                  Constraints
+                  {i18n.dataTypes.constraints}
                 </Title>
                 <ConstraintsFromTypeConstraintAttribute
                   isReadOnly={isReadOnly}

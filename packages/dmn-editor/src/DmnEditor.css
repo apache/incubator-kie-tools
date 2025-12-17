@@ -20,6 +20,7 @@
 /* (begin) global */
 .kie-dmn-editor--root {
   height: 100%;
+  scrollbar-color: rgba(121, 121, 121, 0.4) #f1f1f1;
 }
 
 .kie-tools--dmn-editor--diagram-container {
@@ -104,6 +105,57 @@
 }
 /* (end) nodes */
 
+/* (begin) decision node evaluation status */
+.kie-dmn-editor--decision-node--evaluation-status-failed::before {
+  content: "\2716";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 7px;
+  padding-top: 2px;
+}
+
+.kie-dmn-editor--decision-node--evaluation-status-succeeded::before {
+  content: "\2714";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 7px;
+  padding-top: 2px;
+}
+
+.kie-dmn-editor--decision-node--evaluation-status-skipped::before {
+  content: "\21B7";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 7px;
+  padding-top: 2px;
+}
+
+/* (end) decision node evaluation status */
+
 /* (begin) decisionService and group nodes */
 /* DECISION SERVICES AND GROUPS HAVE A SPECIFIC SELECTION MECHANISM TO ALLOW EDITING EDGES INSIDE THEM */
 .kie-dmn-editor--node-decisionService-visibleRect {
@@ -162,6 +214,28 @@
   text-align: center;
   bottom: 4px;
   line-height: 21px;
+  pointer-events: all;
+}
+.kie-dmn-editor--decision-service-node .button-inactive {
+  pointer-events: none !important;
+  opacity: 0.4;
+}
+.react-flow__node-node_decisionService.selected .kie-dmn-editor--decision-service-expanded-button {
+  border-color: #006ba4 !important;
+}
+.kie-dmn-editor--decision-service-node .kie-dmn-editor--decision-service-expanded-button {
+  border: 3px;
+  border-style: solid;
+  border-color: black;
+  font-weight: bold;
+  position: absolute;
+  width: 24px;
+  height: 25px;
+  font-size: 24px;
+  text-align: center;
+  bottom: 4px;
+  line-height: 21px;
+  pointer-events: all;
 }
 .react-flow__node-node_decisionService .kie-dmn-editor--node-shape .kie-dmn-editor--decision-service-label {
   font-family: system-ui;
@@ -221,12 +295,12 @@
 /* (end) textAnnotation, and unknown nodes */
 
 /* (begin) palette */
-.kie-dmn-editor--drd-selector-popover .pf-c-popover__body {
+.kie-dmn-editor--drd-selector-popover .pf-v5-c-popover__body {
   padding: 0;
 }
 .kie-dmn-editor--drd-selector {
   padding: 3px 8px 3px 16px;
-  border-radius: 99999px;
+  border-radius: 999999px;
   background: white;
   border: 1px solid black;
   display: flex;
@@ -359,7 +433,7 @@
 /* (end) properties panel toggle */
 
 /* (begin) version popover */
-.kie-dmn-editor--version-popover .pf-c-popover__body {
+.kie-dmn-editor--version-popover .pf-v5-c-popover__body {
   padding: 0;
 }
 /* (end) version popover */
@@ -431,7 +505,7 @@
   filter: brightness(90%);
 }
 
-.kie-dmn-editor--snap-slider .pf-c-slider__value > input {
+.kie-dmn-editor--snap-slider .pf-v5-c-slider__value > input {
   max-width: 60px;
   min-width: 60px;
   width: 60px;
@@ -622,19 +696,19 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 
 /* Customizing some patternfly components is hard... */
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type > button,
-.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type input,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type span input,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > button,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type,
 .kie-dmn-editor--data-type-node-panel > div {
-  border-radius: 99999px;
+  border-radius: 999999px;
   outline: none;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__toggle.pf-m-typeahead {
   padding-left: 10px;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle-wrapper {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__toggle-wrapper {
   padding-left: 10px;
 }
 .kie-dmn-editor--data-type-node-panel > div {
@@ -642,38 +716,44 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   background: white;
   box-shadow: 5px 5px 2px 0px rgb(127 127 127);
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-select__menu.pf-m-static {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__menu.pf-m-static {
   text-align: left;
   z-index: 999999;
 }
 .kie-dmn-editor--data-type-node-panel span {
   height: 19px;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-c-select__toggle-button.pf-m-plain {
+.kie-dmn-editor--data-type-node-panel span.pf-v5-c-select__toggle-typeahead {
+  height: auto;
+}
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-button.pf-v5-c-select__toggle-button.pf-m-plain {
   margin-left: 24px;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-m-control::after,
-.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead::before {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-button.pf-m-control::after,
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__toggle.pf-m-typeahead::before {
   border: 0;
 }
 /* edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-node-panel {
+  border-radius: 999999px;
   position: absolute;
-  padding: 4px 8px;
   bottom: -16px;
-  font-size: 0.7em;
-  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
-  cursor: pointer;
   background: white;
   color: black;
-}
-.kie-dmn-editor--edit-expression-node-panel > .pf-c-label__content::before {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  cursor: pointer;
   border: 1px solid black;
 }
-.kie-dmn-editor--edit-expression-node-panel:hover {
+.kie-dmn-editor--edit-expression-node-panel span > .pf-v5-c-label__content {
+  font-size: 0.7rem;
+}
+.kie-dmn-editor--edit-expression-node-panel span > .pf-v5-c-label__content::before {
+  content: unset;
+}
+.kie-dmn-editor--edit-expression-node-panel span:hover {
   filter: brightness(95%);
 }
-.kie-dmn-editor--edit-expression-node-panel:active {
+.kie-dmn-editor--edit-expression-node-panel span:active {
   filter: brightness(90%);
 }
 .kie-dmn-editor--tabs ~ section {
@@ -697,8 +777,14 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   font-weight: bold;
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
-.kie-dmn-editor--info-label > .pf-c-label__content::before {
+.kie-dmn-editor--info-label div {
+  border-radius: 999999px;
+}
+.kie-dmn-editor--info-label > .pf-v5-c-label__content::before {
   border: 1px solid black;
+}
+.kie-dmn-editor--info-label .pf-v5-c-label__text {
+  line-height: 0;
 }
 .kie-dmn-editor--info-label:hover {
   filter: brightness(95%);
@@ -717,7 +803,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   width: 160px;
   justify-content: center;
 }
-.kie-dmn-editor--boxed-expression-back > .pf-c-label__content::before {
+.kie-dmn-editor--boxed-expression-back > .pf-v5-c-label__content::before {
   border: 1px solid black;
 }
 .kie-dmn-editor--boxed-expression-back:hover {
@@ -925,8 +1011,8 @@ th {
   text-underline-position: under;
 }
 
-.kie-dmn-editor--data-types-container .pf-c-switch__input:disabled:checked ~ .pf-c-switch__toggle {
-  background-color: var(--pf-global--primary-color--100);
+.kie-dmn-editor--data-types-container .pf-v5-c-switch__input:disabled:checked ~ .pf-v5-c-switch__toggle {
+  background-color: var(--pf-v5-global--primary-color--100);
   opacity: 50%;
 }
 /* (end) data types */
@@ -1107,16 +1193,16 @@ th {
 /* ******************************* */
 /*   ⬇ (begin) pf4 overrides ⬇    */
 /* ******************************* */
-.pf-c-popover {
+.pf-v5-c-popover {
   max-width: unset;
 }
 
-.pf-c-truncate,
-.pf-c-truncate__start {
+.pf-v5-c-truncate,
+.pf-v5-c-truncate__start {
   min-width: 0 !important;
 }
 
-.pf-c-select__menu {
+.pf-v5-c-select__menu {
   margin-top: 1px;
 }
 /*   ⬆ (end) pf4 overrides ⬆      */

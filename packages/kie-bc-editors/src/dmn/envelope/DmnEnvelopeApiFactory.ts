@@ -28,7 +28,7 @@ export type DmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   DmnEditorEnvelopeApi,
   DmnEditorChannelApi,
   EditorEnvelopeViewApi<DmnEditor>,
-  KogitoEditorEnvelopeContextType<DmnEditorChannelApi>
+  KogitoEditorEnvelopeContextType<DmnEditorEnvelopeApi, DmnEditorChannelApi>
 >;
 
 export class DmnEditorEnvelopeApiImpl

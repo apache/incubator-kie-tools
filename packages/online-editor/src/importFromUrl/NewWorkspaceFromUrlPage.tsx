@@ -24,7 +24,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
@@ -54,11 +54,12 @@ import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseStat
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
+import { useGitlabClient } from "../gitlab/useGitlabClient";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const accountsDispatch = useAccountsDispatch();
 
   const [importingError, setImportingError] = useState("");
@@ -71,6 +72,7 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamInsecurelyDisableTlsCertificateValidation = useQueryParam(
     QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
   );
+  const queryParamDisableEncodingValidation = useQueryParam(QueryParams.DISABLE_ENCODING);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
   const authProviders = useAuthProviders();
@@ -86,102 +88,134 @@ export function NewWorkspaceFromUrlPage() {
       : false;
   }, [queryParamInsecurelyDisableTlsCertificateValidation, authProvider]);
 
+  const disableEncodingValidation = useMemo(() => {
+    if (typeof queryParamDisableEncodingValidation === "string") {
+      return queryParamDisableEncodingValidation === "true";
+    }
+    return authProvider?.group === AuthProviderGroup.GIT ? authProvider.disableEncoding : false;
+  }, [queryParamDisableEncodingValidation, authProvider]);
+
   const importableUrl = useImportableUrl(queryParamUrl);
   const clonableUrlObject = useClonableUrl(
     queryParamUrl,
     authInfo,
     queryParamBranch,
-    insecurelyDisableTlsCertificateValidation
+    insecurelyDisableTlsCertificateValidation,
+    disableEncodingValidation
   );
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
 
   const setAuthSessionId = useCallback(
     (newAuthSessionId: React.SetStateAction<string | undefined>) => {
       if (!newAuthSessionId) {
-        history.replace({
-          pathname: routes.import.path({}),
-          search: queryParams.without(QueryParams.AUTH_SESSION_ID).toString(),
-        });
+        navigate(
+          {
+            pathname: routes.import.path({}),
+            search: queryParams.without(QueryParams.AUTH_SESSION_ID).toString(),
+          },
+          { replace: true }
+        );
         return;
       }
-      history.replace({
-        pathname: routes.import.path({}),
-        search: queryParams
-          .with(
-            QueryParams.AUTH_SESSION_ID,
-            typeof newAuthSessionId === "function" ? newAuthSessionId(queryParamAuthSessionId) : newAuthSessionId
-          )
-          .toString(),
-      });
+      navigate(
+        {
+          pathname: routes.import.path({}),
+          search: queryParams
+            .with(
+              QueryParams.AUTH_SESSION_ID,
+              typeof newAuthSessionId === "function" ? newAuthSessionId(queryParamAuthSessionId) : newAuthSessionId
+            )
+            .toString(),
+        },
+        { replace: true }
+      );
 
       accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
     },
-    [accountsDispatch, history, queryParamAuthSessionId, queryParams, routes.import]
+    [accountsDispatch, navigate, queryParamAuthSessionId, queryParams, routes.import]
   );
 
   const setUrl = useCallback(
     (newUrl) => {
       if (!newUrl) {
-        history.replace({
-          pathname: routes.import.path({}),
-          search: queryParams.without(QueryParams.URL).toString(),
-        });
+        navigate(
+          {
+            pathname: routes.import.path({}),
+            search: queryParams.without(QueryParams.URL).toString(),
+          },
+          { replace: true }
+        );
         return;
       }
-      history.replace({
-        pathname: routes.import.path({}),
-        search: queryParams
-          .with(QueryParams.URL, typeof newUrl === "function" ? newUrl(queryParamUrl ?? "") : newUrl)
-          .toString(),
-      });
+      navigate(
+        {
+          pathname: routes.import.path({}),
+          search: queryParams
+            .with(QueryParams.URL, typeof newUrl === "function" ? newUrl(queryParamUrl ?? "") : newUrl)
+            .toString(),
+        },
+        { replace: true }
+      );
     },
-    [history, queryParamUrl, queryParams, routes.import]
+    [navigate, queryParamUrl, queryParams, routes.import]
   );
 
   const setGitRefName = useCallback(
     (newGitRefName) => {
       if (!newGitRefName) {
-        history.replace({
-          pathname: routes.import.path({}),
-          search: queryParams.without(QueryParams.BRANCH).toString(),
-        });
+        navigate(
+          {
+            pathname: routes.import.path({}),
+            search: queryParams.without(QueryParams.BRANCH).toString(),
+          },
+          { replace: true }
+        );
         return;
       }
-      history.replace({
-        pathname: routes.import.path({}),
-        search: queryParams
-          .with(
-            QueryParams.BRANCH,
-            typeof newGitRefName === "function" ? newGitRefName(selectedGitRefName ?? "") : newGitRefName
-          )
-          .toString(),
-      });
+      navigate(
+        {
+          pathname: routes.import.path({}),
+          search: queryParams
+            .with(
+              QueryParams.BRANCH,
+              typeof newGitRefName === "function" ? newGitRefName(selectedGitRefName ?? "") : newGitRefName
+            )
+            .toString(),
+        },
+        { replace: true }
+      );
     },
-    [history, queryParams, routes.import, selectedGitRefName]
+    [navigate, queryParams, routes.import, selectedGitRefName]
   );
 
   const setInsecurelyDisableTlsCertificateValidation = useCallback(
     (newInsecurelyDisableTlsCertificateValidation) => {
       if (!newInsecurelyDisableTlsCertificateValidation) {
-        history.replace({
-          pathname: routes.import.path({}),
-          search: queryParams.without(QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION).toString(),
-        });
+        navigate(
+          {
+            pathname: routes.import.path({}),
+            search: queryParams.without(QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION).toString(),
+          },
+          { replace: true }
+        );
         return;
       }
-      history.replace({
-        pathname: routes.import.path({}),
-        search: queryParams
-          .with(
-            QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION,
-            typeof newInsecurelyDisableTlsCertificateValidation === "function"
-              ? newInsecurelyDisableTlsCertificateValidation(insecurelyDisableTlsCertificateValidation ?? false)
-              : newInsecurelyDisableTlsCertificateValidation
-          )
-          .toString(),
-      });
+      navigate(
+        {
+          pathname: routes.import.path({}),
+          search: queryParams
+            .with(
+              QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION,
+              typeof newInsecurelyDisableTlsCertificateValidation === "function"
+                ? newInsecurelyDisableTlsCertificateValidation(insecurelyDisableTlsCertificateValidation ?? false)
+                : newInsecurelyDisableTlsCertificateValidation
+            )
+            .toString(),
+        },
+        { replace: true }
+      );
     },
-    [history, insecurelyDisableTlsCertificateValidation, queryParams, routes.import]
+    [navigate, insecurelyDisableTlsCertificateValidation, queryParams, routes.import]
   );
 
   // Startup the page. Only import if those are set.
@@ -207,16 +241,19 @@ export function NewWorkspaceFromUrlPage() {
     if (selectedGitRefName) {
       newQueryParams = newQueryParams.with(QueryParams.BRANCH, selectedGitRefName);
     }
-    history.replace({
-      pathname: routes.import.path({}),
-      search: newQueryParams.toString(),
-    });
+    navigate(
+      {
+        pathname: routes.import.path({}),
+        search: newQueryParams.toString(),
+      },
+      { replace: true }
+    );
   }, [
     authProviders,
     authSession?.id,
     authSessionStatus,
     authSessions,
-    history,
+    navigate,
     queryParamUrl,
     queryParams,
     routes.import,
@@ -231,23 +268,28 @@ export function NewWorkspaceFromUrlPage() {
       const { workspace, suggestedFirstFile } = res;
 
       if (!suggestedFirstFile) {
-        history.replace({
-          pathname: routes.home.path({}),
-          search: routes.home.queryString({ expand: workspace.workspaceId }),
-        });
+        navigate(
+          {
+            pathname: routes.home.path({}),
+            search: routes.home.queryString({ expand: workspace.workspaceId }),
+          },
+          { replace: true }
+        );
         return res;
       }
 
-      history.replace({
-        pathname: routes.workspaceWithFilePath.path({
-          workspaceId: workspace.workspaceId,
-          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-          extension: suggestedFirstFile.extension,
-        }),
-      });
+      navigate(
+        {
+          pathname: routes.workspaceWithFilePath.path({
+            workspaceId: workspace.workspaceId,
+            fileRelativePath: suggestedFirstFile.relativePath,
+          }),
+        },
+        { replace: true }
+      );
       return res;
     },
-    [routes, history, workspaces]
+    [routes, navigate, workspaces]
   );
 
   const createWorkspaceForFile = useCallback(
@@ -261,24 +303,32 @@ export function NewWorkspaceFromUrlPage() {
           if (!suggestedFirstFile) {
             return;
           }
-          history.replace({
-            pathname: routes.workspaceWithFilePath.path({
-              workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
-            }),
-          });
+          navigate(
+            {
+              pathname: routes.workspaceWithFilePath.path({
+                workspaceId: workspace.workspaceId,
+                fileRelativePath: suggestedFirstFile.relativePath,
+              }),
+            },
+            { replace: true }
+          );
         });
     },
-    [routes, history, workspaces]
+    [routes, navigate, workspaces]
   );
 
   const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   const doImportAsSingleFile = useCallback(
     async (importableUrl: ImportableUrl) => {
-      const singleFileContent = await fetchSingleFileContent(importableUrl, gitHubClient, bitbucketClient);
+      const singleFileContent = await fetchSingleFileContent(
+        importableUrl,
+        gitHubClient,
+        bitbucketClient,
+        gitlabClient
+      );
 
       if (singleFileContent.error) {
         setImportingError(singleFileContent.error);
@@ -290,7 +340,7 @@ export function NewWorkspaceFromUrlPage() {
         fileContents: encoder.encode(singleFileContent.content!),
       });
     },
-    [bitbucketClient, createWorkspaceForFile, gitHubClient]
+    [bitbucketClient, createWorkspaceForFile, gitHubClient, gitlabClient]
   );
 
   const doImport = useCallback(async () => {
@@ -320,6 +370,7 @@ export function NewWorkspaceFromUrlPage() {
             authInfo,
             gitAuthSessionId: queryParamAuthSessionId,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           await doImportAsSingleFile(importableUrl);
@@ -330,6 +381,7 @@ export function NewWorkspaceFromUrlPage() {
       else if (
         importableUrl.type === UrlType.GITHUB_DOT_COM ||
         importableUrl.type === UrlType.BITBUCKET_DOT_ORG ||
+        importableUrl.type === UrlType.GITLAB_DOT_COM ||
         importableUrl.type === UrlType.GIT
       ) {
         if (gitServerRefsPromise.data?.defaultBranch) {
@@ -343,6 +395,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -365,6 +418,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -373,12 +427,18 @@ export function NewWorkspaceFromUrlPage() {
       }
 
       // snippet
-      else if (importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET) {
+      else if (
+        importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET ||
+        importableUrl.type === UrlType.GITLAB_DOT_COM_SNIPPET
+      ) {
         importableUrl.url.hash = "";
         if (gitServerRefsPromise.data?.defaultBranch) {
           await cloneGitRepository({
             origin: {
-              kind: WorkspaceKind.BITBUCKET_SNIPPET,
+              kind:
+                importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET
+                  ? WorkspaceKind.BITBUCKET_SNIPPET
+                  : WorkspaceKind.GITLAB_SNIPPET,
               url: importableUrl.url.toString(),
               branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
@@ -386,6 +446,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -419,16 +480,20 @@ export function NewWorkspaceFromUrlPage() {
     doImportAsSingleFile,
     queryParamBranch,
     insecurelyDisableTlsCertificateValidation,
+    disableEncodingValidation,
   ]);
 
   useEffect(() => {
     if (!queryParamUrl || (importingError && queryParamAuthSessionId)) {
-      history.replace({
-        pathname: routes.import.path({}),
-        search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
-      });
+      navigate(
+        {
+          pathname: routes.import.path({}),
+          search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
+        },
+        { replace: true }
+      );
     }
-  }, [history, importingError, queryParamUrl, queryParams, queryParamAuthSessionId, routes.import]);
+  }, [navigate, importingError, queryParamUrl, queryParams, queryParamAuthSessionId, routes.import]);
 
   useEffect(() => {
     if ((!queryParamBranch || !queryParamAuthSessionId) && selectedGitRefName) {
@@ -486,13 +551,16 @@ export function NewWorkspaceFromUrlPage() {
             <AdvancedImportModal
               ref={advancedImportModalRef}
               onSubmit={() => {
-                history.replace({
-                  pathname: routes.import.path({}),
-                  search: queryParams.without(QueryParams.CONFIRM).toString(),
-                });
+                navigate(
+                  {
+                    pathname: routes.import.path({}),
+                    search: queryParams.without(QueryParams.CONFIRM).toString(),
+                  },
+                  { replace: true }
+                );
               }}
               onClose={() => {
-                history.push({ pathname: routes.home.path({}) });
+                navigate({ pathname: routes.home.path({}) });
               }}
               clonableUrl={clonableUrlObject}
               validation={validation}

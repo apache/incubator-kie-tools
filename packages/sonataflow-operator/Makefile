@@ -342,7 +342,7 @@ bundle: kustomize install-operator-sdk ## Generate bundle manifests and metadata
 .PHONY: bundle-build
 BUNDLE_DESCRIPTOR = "images/bundle.yaml"
 bundle-build: ## Build the bundle image
-	cekit -v --descriptor $(BUNDLE_DESCRIPTOR) build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
+	cekit -v --descriptor $(BUNDLE_DESCRIPTOR) build ${build_options} $(BUILDER) --no-squash --platform=linux/amd64 --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
 ifneq ($(ignore_tag),true)
 	$(BUILDER) tag sonataflow-operator-bundle:latest $(BUNDLE_IMG)
 endif
@@ -373,7 +373,7 @@ endif
 BUNDLE_IMGS ?= $(BUNDLE_IMG)
 
 # The image tag given to the resulting catalog image (e.g. make catalog-build CATALOG_IMG=example.com/operator-catalog:v0.2.0).
-CATALOG_IMG ?= $(IMAGE_TAG_BASE)-catalog:v$(VERSION)
+CATALOG_IMG ?= $(IMAGE_TAG_BASE)-catalog:v$(IMAGE_TAG)
 
 # Set CATALOG_BASE_IMG to an existing catalog image tag to add $BUNDLE_IMGS to that image.
 ifneq ($(origin CATALOG_BASE_IMG), undefined)
@@ -457,7 +457,7 @@ endif
 .PHONY: full-test-e2e
 full-test-e2e: create-cluster load-docker-image deploy deploy-knative deploy-prometheus
 	sleep 30
-	kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready --timeout 120s
+	kubectl wait pod -A -l app.kubernetes.io/name=sonataflow-operator --for condition=Ready --timeout 120s
 	@$(MAKE) test-e2e label=platform
 	@$(MAKE) test-e2e label=cluster
 	@$(MAKE) test-e2e label=flows-monitoring
@@ -506,24 +506,24 @@ deploy-grafana: create-cluster
 delete-cluster: install-kind
 	kind delete cluster && $(BUILDER) rm -f kind-registry
 
-# Updates the controllers_cfg.yaml file with the images used by the operator.
+# Updates the manager_env_patch.yaml file with the images used by the operator.
 # These params come from the package.json file processing the env vars at ./env/index.js
-.PHONY: update-config
-update-config:
-	@echo "🔧 Preparing to update controllers config file..."
+.PHONY: update-patch
+update-patch:
+	@echo "🔧 Updating Kustomize patch file..."
+	$(eval PIN_TOOL ?= $$(shell build-env sonataFlowOperator.pinImageSHABundleTool)) # set to docker, podman, or skopeo if needed
 	$(eval PARAMS := \
-		jobsServicePostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoJobsServicePostgresqlImage) \
-		jobsServiceEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoJobsServiceEphemeralImage) \
-		dataIndexPostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage) \
-		dataIndexEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexEphemeralImage) \
-		sonataFlowBaseBuilderImageTag=$$(shell build-env sonataFlowOperator.sonataflowBuilderImage) \
-		sonataFlowDevModeImageTag=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage))
+		RELATED_IMAGE_JOBS_SERVICE_POSTGRESQL=$$(shell build-env sonataFlowOperator.kogitoJobsServicePostgresqlImage) \
+		RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL=$$(shell build-env sonataFlowOperator.kogitoJobsServiceEphemeralImage) \
+		RELATED_IMAGE_DATA_INDEX_POSTGRESQL=$$(shell build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage) \
+		RELATED_IMAGE_DATA_INDEX_EPHEMERAL=$$(shell build-env sonataFlowOperator.kogitoDataIndexEphemeralImage) \
+		RELATED_IMAGE_BASE_BUILDER=$$(shell build-env sonataFlowOperator.sonataflowBuilderImage) \
+		RELATED_IMAGE_DEVMODE=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage) \
+		RELATED_IMAGE_DB_MIGRATOR_TOOL=$$(shell build-env sonataFlowOperator.kogitoDBMigratorToolImage))
 	@if [ -z "$(strip $(PARAMS))" ]; then \
-		echo "⚠️  No variables resolved. Skipping updates to controllers config file."; \
+		echo "⚠️  No variables resolved. Skipping updates."; \
 	else \
-		echo "📋 Resolved variables:"; \
-		echo "$(PARAMS)" | tr ' ' '\n'; \
-		echo "🚀 Running Python script to update controllers config file..."; \
-		python ./hack/update_controllers_cfg.py $(PARAMS); \
-		echo "✅ Configuration updated successfully!"; \
+		echo "✅ Resolved:"; echo "$(PARAMS)" | tr ' ' '\n'; \
+		python ./hack/update_patch_env.py "$(PIN_TOOL)" $(PARAMS); \
+		echo "✅ Patch updated!"; \
 	fi

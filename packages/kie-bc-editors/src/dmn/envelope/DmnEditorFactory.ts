@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
-import { DmnEditorChannelApi, getDmnLanguageData } from "../api";
+import { GwtEditorWrapperFactory, XmlFormatter } from "@kie-tools/kie-bc-editors-common/dist/common";
+import { DmnEditorChannelApi, DmnEditorEnvelopeApi, getDmnLanguageData } from "../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DmnEditor, DmnEditorImpl } from "./DmnEditor";
 import { PmmlEditorMarshallerExposedInteropApi } from "./exposedInteropApi/PmmlEditorMarshallerExposedInteropApi";
@@ -32,11 +32,11 @@ export interface CustomWindow extends Window {
 
 declare let window: CustomWindow;
 
-export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorChannelApi> {
+export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
-    ctx: KogitoEditorEnvelopeContextType<DmnEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<DmnEditorEnvelopeApi, DmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<DmnEditor> {
     const exposedInteropApi: CustomWindow["envelope"] = {

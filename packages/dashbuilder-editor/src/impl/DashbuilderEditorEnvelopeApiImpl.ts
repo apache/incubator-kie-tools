@@ -28,7 +28,7 @@ export type DashbuilderEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   DashbuilderEditorEnvelopeApi,
   DashbuilderEditorChannelApi,
   EditorEnvelopeViewApi<DashbuilderEditorApi>,
-  KogitoEditorEnvelopeContextType<DashbuilderEditorChannelApi>
+  KogitoEditorEnvelopeContextType<DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>
 >;
 
 export class DashbuilderEditorEnvelopeApiImpl
@@ -37,7 +37,7 @@ export class DashbuilderEditorEnvelopeApiImpl
 {
   constructor(
     private readonly factoryArgs: DashbuilderEnvelopeApiFactoryArgs,
-    editorFactory: EditorFactory<DashbuilderEditorApi, DashbuilderEditorChannelApi>
+    editorFactory: EditorFactory<DashbuilderEditorApi, DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>
   ) {
     super(factoryArgs, editorFactory);
   }

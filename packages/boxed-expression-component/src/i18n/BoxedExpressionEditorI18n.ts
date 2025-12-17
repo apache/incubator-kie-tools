@@ -20,89 +20,142 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
-  addParameter: string;
-  builtInAggregator: string;
-  builtInAggregatorHelp: {
-    sum: string;
-    count: string;
-    min: string;
-    max: string;
-    none: string;
-  };
-  choose: string;
-  columns: string;
-  columnOperations: {
+interface BoxedExpressionEditorDictionary
+  extends ReferenceDictionary<{
+    addParameter: string;
+    builtInAggregator: string;
+    builtInAggregatorHelp: {
+      sum: string;
+      count: string;
+      min: string;
+      max: string;
+      none: string;
+    };
+    choose: string;
+    columns: string;
+    columnOperations: {
+      delete: string;
+      insertLeft: string;
+      insertRight: string;
+    };
+    class: string;
+    context: string;
+    contextEntry: string;
+    dataType: string;
+    dataTypeDropDown: {
+      builtIn: string;
+      custom: string;
+    };
+    decisionRule: string;
+    decisionTable: string;
+    document: string;
+    editClause: {
+      input: string;
+      output: string;
+    };
+    editContextEntry: string;
+    editExpression: string;
+    editHitPolicy: string;
+    editParameter: string;
+    editParameters: string;
+    editRelation: string;
+    enterFunction: string;
+    enterText: string;
+    expression: string;
     delete: string;
-    insertLeft: string;
-    insertRight: string;
-  };
-  class: string;
-  context: string;
-  contextEntry: string;
-  dataType: string;
-  dataTypeDropDown: {
-    builtIn: string;
-    custom: string;
-  };
-  decisionRule: string;
-  decisionTable: string;
-  document: string;
-  editClause: {
-    input: string;
-    output: string;
-  };
-  editContextEntry: string;
-  editParameter: string;
-  editRelation: string;
-  enterFunction: string;
-  enterText: string;
-  delete: string;
-  function: string;
-  hitPolicy: string;
-  hitPolicyHelp: {
-    unique: string;
-    first: string;
-    priority: string;
-    any: string;
-    collect: string;
-    ruleOrder: string;
-    outputOrder: string;
-  };
-  inputClause: string;
-  invocation: string;
-  insert: string;
-  insertDirections: {
-    toTheRight: string;
-    toTheLeft: string;
-    above: string;
-    below: string;
-  };
-  list: string;
-  literal: string;
-  manage: string;
-  methodSignature: string;
-  model: string;
-  name: string;
-  noParametersDefined: string;
-  parameters: string;
-  outputClause: string;
-  pmml: {
-    firstSelection: string;
-    secondSelection: string;
-  };
-  relation: string;
-  rows: string;
-  rowOperations: {
-    reset: string;
-    delete: string;
-    duplicate: string;
-    insertAbove: string;
-    insertBelow: string;
-  };
-  ruleAnnotation: string;
-  selectExpression: string;
-  selectLogicType: string;
-}
+    function: string;
+    hitPolicy: string;
+    hitPolicyHelp: {
+      unique: string;
+      first: string;
+      priority: string;
+      any: string;
+      collect: string;
+      ruleOrder: string;
+      outputOrder: string;
+    };
+    inputClause: string;
+    invocation: string;
+    insert: string;
+    insertDirections: {
+      toTheRight: string;
+      toTheLeft: string;
+      above: string;
+      below: string;
+    };
+    list: string;
+    literal: string;
+    manage: string;
+    methodSignature: string;
+    model: string;
+    name: string;
+    noParametersDefined: string;
+    parameters: string;
+    outputClause: string;
+    pmml: {
+      firstSelection: string;
+      secondSelection: string;
+    };
+    relation: string;
+    rows: string;
+    rowOperations: {
+      reset: string;
+      delete: string;
+      duplicate: string;
+      insertAbove: string;
+      insertBelow: string;
+    };
+    ruleAnnotation: string;
+    selectExpression: string;
+    selectFunctionKind: string;
+    selectLogicType: string;
+    contextExpression: {
+      variable: string;
+      expression: string;
+    };
+    yourAnnotationsHere: string;
+    hitPolicyLabel: string;
+    aggregatorFunction: string;
+    logicTypeHelp: {
+      literal: string;
+      context: string;
+      decisionTable: string;
+      relation: string;
+      functionDefinition: string;
+      invocation: string;
+      list: string;
+      conditional: string;
+      for: string;
+      every: string;
+      some: string;
+      filter: string;
+    };
+    pasteOperationNotSuccessful: string;
+    functionKindHelp: {
+      feel: string;
+      pmml: string;
+      java: string;
+      notSupported: string;
+    };
+    label: string;
+    value: string;
+    classNameLabel: string;
+    methodSignatureLabel: string;
+    getLabelexample: (label: string) => string;
+    parameterNamePlaceholder: string;
+    noneSelected: string;
+    selectDocument: string;
+    parameter: string;
+    functionName: string;
+    child: string;
+    iterableRowLabel: {
+      for: string;
+      some: string;
+      every: string;
+      return: string;
+      in: string;
+      satisfies: string;
+    };
+  }> {}
 
 export interface BoxedExpressionEditorI18n extends BoxedExpressionEditorDictionary, CommonI18n {}

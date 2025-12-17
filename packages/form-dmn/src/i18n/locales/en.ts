@@ -19,7 +19,6 @@
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { FormDmnI18n } from "../FormDmnI18n";
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
 
 export const en: FormDmnI18n = {
   ...en_common,
@@ -28,7 +27,7 @@ export const en: FormDmnI18n = {
       autoGenerationError: {
         title: `${en_common.terms.oops}!`,
         explanation: "Form cannot be rendered because of an error.",
-        checkNotificationPanel: ["Check for ", wrapped("link"), ` error on the Notifications Panel`],
+        checkNotificationPanel: `Check for ${"{link}"} error on the Notifications Panel`,
       },
       emptyForm: {
         title: "No Form",
@@ -36,11 +35,7 @@ export const en: FormDmnI18n = {
       },
       validatorError: {
         title: "An error occurred while trying to generate the form",
-        message: [
-          `This ${en_common.names.dmn} model contains a construct that is not yet supported. Please refer to `,
-          wrapped("jira"),
-          " and report an issue. Don't forget to upload the current file.",
-        ],
+        message: `This ${en_common.names.dmn} model contains a construct that is not yet supported. Please refer to ${"{jira}"} and report an issue. Don't forget to upload the current file.`,
       },
     },
   },
@@ -59,23 +54,21 @@ export const en: FormDmnI18n = {
   },
   result: {
     evaluation: {
-      success: "Evaluated with success",
+      succeeded: "Evaluation succeeded",
       skipped: "Evaluation skipped",
       failed: "Evaluation failed",
     },
     error: {
       title: `${en_common.terms.oops}!`,
       explanation: "Result cannot be rendered because of an error.",
-      message: [
-        `This result contains a construct that is not yet supported. Please refer to `,
-        wrapped("jira"),
-        " and report an issue. Don't forget to upload the current file, and the used inputs",
-      ],
+      message: `This result contains a construct that is not yet supported. Please refer to ${"{jira}"} and report an issue. Don't forget to upload the current file, and the used inputs`,
     },
-    dateTooltip: ["This value is in UTC. The value in your current timezone is ", wrapped("date")],
+    dateTooltip: `This value is in UTC. The value in your current timezone is ${"{date}"}`,
     withoutResponse: {
       title: "No response",
       explanation: "Response appears after decisions are evaluated.",
     },
+    recursiveStructureNotSupported: `Recursive structures ${"{linebreak}"} are not supported yet`,
+    openExpression: (name: string) => `Open '${name}' expression`,
   },
 };

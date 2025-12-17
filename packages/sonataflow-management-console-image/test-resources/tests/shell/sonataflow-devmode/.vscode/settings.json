@@ -1,0 +1,13 @@
+{
+  "java.import.gradle.enabled": false,
+  "java.import.maven.enabled": false,
+  "java.eclipse.downloadSources": true,
+  "files.exclude": {
+    "bin/": true,
+    ".eclipse/": true,
+    ".project": true,
+    ".classpath": true,
+    "build.gradle": true
+  },
+  "java.completion.importOrder": ["", "javax", "java", "#"]
+}

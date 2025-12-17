@@ -24,10 +24,23 @@ import {
   ProcessListSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { ProcessListState } from "./ProcessListApi";
+
+export interface OnOpenProcessListener {
+  onOpen: (process: ProcessInstance, processListState: ProcessListState) => void;
+}
+
+export interface OnUpdateProcessListStateListener {
+  onUpdate: (processListState: ProcessListState) => void;
+}
+
+export interface UnSubscribeHandler {
+  unSubscribe: () => void;
+}
 
 export interface ProcessListChannelApi {
   processList__initialLoad(filter: ProcessInstanceFilter, sortBy: ProcessListSortBy): Promise<void>;
-  processList__openProcess(process: ProcessInstance): Promise<void>;
+  processList__openProcess(process: ProcessInstance): void;
   processList__applyFilter(filter: ProcessInstanceFilter): Promise<void>;
   processList__applySorting(sortBy: ProcessListSortBy): Promise<void>;
   processList__handleProcessSkip(processInstance: ProcessInstance): Promise<void>;
@@ -39,4 +52,6 @@ export interface ProcessListChannelApi {
   ): Promise<BulkProcessInstanceActionResponse>;
   processList__query(offset: number, limit: number): Promise<ProcessInstance[]>;
   processList__getChildProcessesQuery(rootProcessInstanceId: string): Promise<ProcessInstance[]>;
+  processList__onOpenProcessListen(listener: OnOpenProcessListener): Promise<UnSubscribeHandler>;
+  processList__onUpdateProcessListState(listener: OnUpdateProcessListStateListener): Promise<UnSubscribeHandler>;
 }

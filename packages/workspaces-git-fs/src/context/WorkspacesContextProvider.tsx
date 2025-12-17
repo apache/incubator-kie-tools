@@ -22,7 +22,14 @@ import { useCallback, useMemo } from "react";
 import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { LocalFile } from "../worker/api/LocalFile";
-import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "../worker/api/WorkspaceOrigin";
+import {
+  BitbucketOrigin,
+  BitbucketSnippetOrigin,
+  GistOrigin,
+  GitHubOrigin,
+  GitlabOrigin,
+  GitlabSnippetOrigin,
+} from "../worker/api/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 
@@ -105,6 +112,7 @@ export function WorkspacesContextProvider(props: Props) {
       gitConfig?: { name: string; email: string };
       authInfo?: { username: string; password: string };
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_pull(args)
@@ -124,6 +132,7 @@ export function WorkspacesContextProvider(props: Props) {
         password: string;
       };
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) => {
         return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_push(args);
@@ -168,7 +177,9 @@ export function WorkspacesContextProvider(props: Props) {
       workspaceId: string;
       remote: string;
       ref: string;
+      authInfo?: { username: string; password: string };
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_fetch(args)
@@ -260,6 +271,7 @@ export function WorkspacesContextProvider(props: Props) {
         password: string;
       };
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_getGitServerRefs(args)
@@ -303,7 +315,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createWorkspaceFromGitRepository = useCallback(
     async (args: {
-      origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
+      origin: GistOrigin | GitHubOrigin | BitbucketOrigin | BitbucketSnippetOrigin | GitlabOrigin | GitlabSnippetOrigin;
       gitConfig?: { email: string; name: string };
       gitAuthSessionId: string | undefined;
       authInfo?: {
@@ -311,6 +323,7 @@ export function WorkspacesContextProvider(props: Props) {
         password: string;
       };
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) => {
       const workspaceClone = await workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_clone(args)
@@ -518,6 +531,7 @@ export function WorkspacesContextProvider(props: Props) {
       remoteUrl: URL;
       branch?: string;
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitOnExistingWorkspace({
@@ -525,6 +539,7 @@ export function WorkspacesContextProvider(props: Props) {
           remoteUrl: args.remoteUrl.toString(),
           branch: args.branch,
           insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+          disableEncoding: args.disableEncoding,
         })
       ),
     [workspacesSharedWorker]
@@ -536,6 +551,7 @@ export function WorkspacesContextProvider(props: Props) {
       remoteUrl: URL;
       branch: string;
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
@@ -543,6 +559,7 @@ export function WorkspacesContextProvider(props: Props) {
           remoteUrl: args.remoteUrl.toString(),
           branch: args.branch,
           insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+          disableEncoding: args.disableEncoding,
         })
       ),
     [workspacesSharedWorker]
@@ -554,6 +571,7 @@ export function WorkspacesContextProvider(props: Props) {
       remoteUrl: URL;
       branch: string;
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace({
@@ -561,6 +579,27 @@ export function WorkspacesContextProvider(props: Props) {
           remoteUrl: args.remoteUrl.toString(),
           branch: args.branch,
           insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+          disableEncoding: args.disableEncoding,
+        })
+      ),
+    [workspacesSharedWorker]
+  );
+
+  const initGilabSnippetOnWorkspace = useCallback(
+    async (args: {
+      workspaceId: string;
+      remoteUrl: URL;
+      branch: string;
+      insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
+    }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitlabSnippetOnExistingWorkspace({
+          workspaceId: args.workspaceId,
+          remoteUrl: args.remoteUrl.toString(),
+          branch: args.branch,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+          disableEncoding: args.disableEncoding,
         })
       ),
     [workspacesSharedWorker]
@@ -571,12 +610,14 @@ export function WorkspacesContextProvider(props: Props) {
       workspaceId: string;
       gitAuthSessionId: string | undefined;
       insecurelyDisableTlsCertificateValidation?: boolean;
+      disableEncoding?: boolean;
     }) => {
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_changeGitAuthSessionId({
           workspaceId: args.workspaceId,
           gitAuthSessionId: args.gitAuthSessionId,
           insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+          disableEncoding: args.disableEncoding,
         })
       );
     },
@@ -634,6 +675,7 @@ export function WorkspacesContextProvider(props: Props) {
       initGitOnWorkspace,
       initGistOnWorkspace,
       initSnippetOnWorkspace,
+      initGilabSnippetOnWorkspace,
       changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,
@@ -679,6 +721,7 @@ export function WorkspacesContextProvider(props: Props) {
       initGitOnWorkspace,
       initGistOnWorkspace,
       initSnippetOnWorkspace,
+      initGilabSnippetOnWorkspace,
       changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,

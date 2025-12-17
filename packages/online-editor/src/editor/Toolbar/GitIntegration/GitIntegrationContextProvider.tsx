@@ -30,7 +30,7 @@ import React, {
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { AuthSessionSelectFilter } from "../../../authSessions/AuthSessionSelect";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
-import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
+import { useAuthSession, useAuthSessions } from "../../../authSessions/AuthSessionsContext";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
 import { useGitHubClient } from "../../../github/Hooks";
 import { useBitbucketClient } from "../../../bitbucket/Hooks";
@@ -51,10 +51,12 @@ import {
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useNavigationBlockersBypass, useRoutes } from "../../../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useGitIntegrationAlerts } from "./GitIntegrationAlerts";
 import { AuthProviderGroup, isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
+import { useGitlabClient } from "../../../gitlab/useGitlabClient";
+import { AuthSession, AuthSessionStatus } from "../../../authSessions/AuthSessionApi";
 
 export type GitIntegrationContextType = {
   workspaceImportableUrl: ImportableUrl;
@@ -93,7 +95,7 @@ export type GitIntegrationContextProviderProps = {
 export function GitIntegrationContextProvider(props: GitIntegrationContextProviderProps) {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { authSession, authInfo, gitConfig } = useAuthSession(props.workspace.descriptor.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
   const workspaceImportableUrl = useImportableUrl(props.workspace.descriptor.origin.url?.toString());
@@ -103,18 +105,27 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
 
   const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   const [isGistOrSnippetLoading, setGistOrSnippetLoading] = useState(false);
   const [gitHubGist, setGitHubGist] = useState<
     OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined
   >(undefined);
   const [bitbucketSnippet, setBitbucketSnippet] = useState<any>(undefined);
+  const [gitlabSnippet, setGitlabSnippet] = useState<any>(undefined);
 
   const insecurelyDisableTlsCertificateValidation = useMemo(() => {
     if (authProvider?.group === AuthProviderGroup.GIT) {
       return authProvider.insecurelyDisableTlsCertificateValidation;
     }
     return props.workspace.descriptor.gitInsecurelyDisableTlsCertificateValidation;
+  }, [authProvider, props.workspace]);
+
+  const disableEncoding = useMemo(() => {
+    if (authProvider?.group === AuthProviderGroup.GIT) {
+      return authProvider.disableEncoding;
+    }
+    return props.workspace.descriptor.gitDisableEncoding;
   }, [authProvider, props.workspace]);
 
   useCancelableEffect(
@@ -169,6 +180,31 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     )
   );
 
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (gitlabSnippet || workspaceImportableUrl.type !== UrlType.GITLAB_DOT_COM_SNIPPET) {
+          return;
+        }
+
+        const { snippetId, group, project } = workspaceImportableUrl;
+
+        if (!snippetId) {
+          return;
+        }
+
+        gitlabClient.getSnippet({ snippetId, group, project }).then(async (response) => {
+          if (canceled.get()) {
+            return;
+          }
+          const json = await response.json();
+          setGitlabSnippet(json);
+        });
+      },
+      [gitlabSnippet, workspaceImportableUrl, gitlabClient]
+    )
+  );
+
   const authSessionSelectFilter = useMemo(() => {
     if (!props.workspace) {
       return gitAuthSessionSelectFilter();
@@ -196,8 +232,15 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       );
     }
 
+    if (props.workspace.descriptor.origin.kind === WorkspaceKind.GITLAB_SNIPPET) {
+      return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
+        new URL(props.workspace.descriptor.origin.url).host,
+        gitlabSnippet?.author?.username
+      );
+    }
+
     return gitAuthSessionSelectFilter();
-  }, [bitbucketSnippet?.owner?.login, gitHubGist?.owner?.login, props.workspace]);
+  }, [bitbucketSnippet?.owner?.login, gitHubGist?.owner?.login, gitlabSnippet?.author?.username, props.workspace]);
 
   const changeGitAuthSessionId = useCallback(
     (newGitAuthSessionId: React.SetStateAction<string | undefined>, lastAuthSessionId: string | undefined) => {
@@ -206,28 +249,48 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         gitAuthSessionId:
           typeof newGitAuthSessionId === "function" ? newGitAuthSessionId(lastAuthSessionId) : newGitAuthSessionId,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
     },
-    [props.workspace.descriptor.workspaceId, workspaces, insecurelyDisableTlsCertificateValidation]
+    [props.workspace.descriptor.workspaceId, workspaces, insecurelyDisableTlsCertificateValidation, disableEncoding]
   );
 
   const workspaceHasNestedDirectories = useMemo(
     () => props.workspace.files.filter((f) => f.relativePath !== f.name).length !== 0,
     [props.workspace]
   );
+  const { authSessionStatus } = useAuthSessions();
+  const isValidAuthSession = useCallback((): boolean => {
+    if (!authSession?.id) {
+      return false;
+    }
+    const status = authSessionStatus.get(authSession.id);
+    return status === AuthSessionStatus.VALID;
+  }, [authSession?.id, authSessionStatus]);
 
-  const canCreateGitHubRepository = useMemo(() => authProvider?.type === "github", [authProvider?.type]);
+  const canCreateGitHubRepository = useMemo(
+    () => authProvider?.type === "github" && isValidAuthSession(),
+    [authProvider?.type, isValidAuthSession]
+  );
 
-  const canCreateBitbucketRepository = useMemo(() => authProvider?.type === "bitbucket", [authProvider?.type]);
+  const canCreateBitbucketRepository = useMemo(
+    () => authProvider?.type === "bitbucket" && isValidAuthSession(),
+    [authProvider?.type, isValidAuthSession]
+  );
+
+  const canCreateGitlabRepository = useMemo(
+    () => authProvider?.type === "gitlab" && isValidAuthSession(),
+    [authProvider?.type, isValidAuthSession]
+  );
 
   const canCreateGitRepository = useMemo(
-    () => canCreateGitHubRepository || canCreateBitbucketRepository,
-    [canCreateGitHubRepository, canCreateBitbucketRepository]
+    () => canCreateGitHubRepository || canCreateBitbucketRepository || canCreateGitlabRepository,
+    [canCreateGitHubRepository, canCreateBitbucketRepository, canCreateGitlabRepository]
   );
 
   const canPushToGitRepository = useMemo(
-    () => authSession?.type === "git" && !!authProvider,
-    [authProvider, authSession?.type]
+    () => authSession?.type === "git" && !!authProvider && isValidAuthSession(),
+    [authProvider, authSession?.type, isValidAuthSession]
   );
 
   const isGitHubGistOwner = useMemo(() => {
@@ -238,7 +301,11 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     return authInfo?.uuid && bitbucketSnippet?.creator.uuid === authInfo.uuid;
   }, [authInfo, bitbucketSnippet]);
 
-  const isGistOrSnippetOwner = isGitHubGistOwner || isBitbucketSnippetOwner;
+  const isGitlabSnippetOwner = useMemo(() => {
+    return authInfo?.username && gitlabSnippet?.author?.username === authInfo.username;
+  }, [authInfo, gitlabSnippet]);
+
+  const isGistOrSnippetOwner = isGitHubGistOwner || isBitbucketSnippetOwner || isGitlabSnippetOwner;
 
   const canCreateGistOrSnippet = useMemo(
     () =>
@@ -246,9 +313,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         authProvider &&
           isGistEnabledAuthProviderType(authProvider?.type) &&
           props.workspace.descriptor.origin.kind === WorkspaceKind.LOCAL &&
-          !workspaceHasNestedDirectories
+          !workspaceHasNestedDirectories &&
+          isValidAuthSession()
       ),
-    [authProvider, props.workspace.descriptor.origin.kind, workspaceHasNestedDirectories]
+    [authProvider, isValidAuthSession, props.workspace.descriptor.origin.kind, workspaceHasNestedDirectories]
   );
 
   const canUpdateGistOrSnippet = useMemo(
@@ -259,9 +327,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           !!isGistOrSnippetOwner &&
           props.workspace &&
           isGistLikeWorkspaceKind(props.workspace.descriptor.origin.kind) &&
-          !workspaceHasNestedDirectories
+          !workspaceHasNestedDirectories &&
+          isValidAuthSession()
       ),
-    [authProvider, isGistOrSnippetOwner, props.workspace, workspaceHasNestedDirectories]
+    [authProvider, isGistOrSnippetOwner, isValidAuthSession, props.workspace, workspaceHasNestedDirectories]
   );
 
   const canForkGitHubGist = useMemo(
@@ -301,9 +370,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           force: false,
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         });
 
-        history.push({
+        navigate({
           pathname: routes.import.path({}),
           search: routes.import.queryString({
             url: `${props.workspace.descriptor.origin.url}`,
@@ -324,9 +394,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       alerts.pushErrorAlert,
       workspaces,
       gitConfig,
-      history,
+      navigate,
       routes.import,
       insecurelyDisableTlsCertificateValidation,
+      disableEncoding,
     ]
   );
 
@@ -349,6 +420,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           workspaceId: props.workspace.descriptor.workspaceId,
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         });
 
         if (args.showAlerts) {
@@ -379,6 +451,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       canPushToGitRepository,
       pushNewBranch,
       insecurelyDisableTlsCertificateValidation,
+      disableEncoding,
     ]
   );
 
@@ -408,6 +481,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         force: false,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
       await pullFromGitRepository({ showAlerts: false });
       alerts.pushSuccessAlert.show();
@@ -427,6 +501,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     gitConfig,
     pullFromGitRepository,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   const forceUpdateGistOrSnippet = useCallback(async () => {
@@ -444,12 +519,14 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         remoteRef: `refs/heads/${props.workspace.descriptor.origin.branch}`,
         force: true,
         authInfo,
+        disableEncoding,
       });
 
       await workspaces.pull({
         workspaceId: props.workspace.descriptor.workspaceId,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
       alerts.successfullyUpdatedGistOrSnippetAlert.show();
     } catch (e) {
@@ -466,6 +543,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     setSyncGistOrSnippetDropdownOpen,
     workspaces,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   const updateGistOrSnippet = useCallback(async () => {
@@ -493,11 +571,13 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         force: false,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       await workspaces.pull({
         workspaceId: props.workspace.descriptor.workspaceId,
         authInfo,
+        disableEncoding,
       });
     } catch (e) {
       alerts.errorPushingGistOrSnippet.show({ forceUpdateGistOrSnippet });
@@ -519,6 +599,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     forceUpdateGistOrSnippet,
     setSyncGistOrSnippetDropdownOpen,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   const forkGitHubGist = useCallback(async () => {
@@ -559,11 +640,12 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         force: true,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       // Redirect to import workspace
       navigationBlockersBypass.execute(() => {
-        history.push({
+        navigate({
           pathname: routes.import.path({}),
           search: routes.import.queryString({
             url: gist.data.html_url,
@@ -586,10 +668,11 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     workspaces,
     gitConfig,
     navigationBlockersBypass,
-    history,
+    navigate,
     routes.import,
     alerts.errorAlert,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   useEffect(() => {
