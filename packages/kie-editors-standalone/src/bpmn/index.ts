@@ -88,6 +88,8 @@ export function open(args: {
     stateControl,
     {
       normalizedPosixPathRelativeToTheWorkspaceRoot: "", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
+      // `fileName` is needed for `widService` that loads Work Item Definitions in `BPMNClientDiagramService`
+      // see `transform` and `doTransform` in `BPMNClientDiagramService` and `WorkItemDefinitionStandaloneClientService` implementation
       fileName: "default", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
       fileExtension: "bpmn",
       getFileContents: () => Promise.resolve(args.initialContent),
