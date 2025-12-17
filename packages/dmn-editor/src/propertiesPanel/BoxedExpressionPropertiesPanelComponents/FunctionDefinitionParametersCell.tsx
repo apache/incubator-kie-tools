@@ -35,7 +35,7 @@ import { useExternalModels } from "../../includedModels/DmnEditorDependenciesCon
 import { State } from "../../store/Store";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorI18n } from "../../i18n";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -64,7 +64,7 @@ export function FunctionDefinitionParameterCell(props: {
   return (
     <>
       <FormGroup label={i18n.propertiesPanel.id}>
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
@@ -88,13 +88,12 @@ export function FunctionDefinitionParameterCell(props: {
             }
             title={
               <p>
-                <I18nWrapped
-                  components={{
+                <I18nWrappedTemplate
+                  text={i18n.propertiesPanel.parameter}
+                  interpolationMap={{
                     name: <b>{parameter["@_name"]}</b>,
                   }}
-                >
-                  {i18n.propertiesPanel.parameter}
-                </I18nWrapped>
+                />
               </p>
             }
           />

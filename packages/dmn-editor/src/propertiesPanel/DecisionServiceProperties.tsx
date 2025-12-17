@@ -180,7 +180,7 @@ export function DecisionServiceProperties({
       </FormGroup>
 
       <FormGroup label={i18n.propertiesPanel.id}>
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {decisionService["@_id"]}
         </ClipboardCopy>
       </FormGroup>

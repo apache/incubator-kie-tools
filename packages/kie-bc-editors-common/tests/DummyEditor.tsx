@@ -20,7 +20,7 @@
 import * as React from "react";
 import { Editor, EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { GwtEditor } from "@kie-tools/kie-bc-editors/dist/common/consumedInteropApi/GwtAppFormerConsumedInteropApi";
+import { GwtEditor } from "@kie-tools/kie-bc-editors-common/dist/common/consumedInteropApi/GwtAppFormerConsumedInteropApi";
 
 export class DummyEditor implements Editor, GwtEditor {
   private ref: DummyEditorComponent;

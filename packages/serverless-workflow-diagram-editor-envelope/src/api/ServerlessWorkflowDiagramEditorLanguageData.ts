@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { GwtLanguageData } from "@kie-tools/kie-bc-editors/dist/common";
+import { GwtLanguageData } from "@kie-tools/kie-bc-editors-common/dist/common";
 import { editors } from "./GwtEditorMapping";
 
 export function getServerlessWorkflowLanguageData(resourcesPathPrefix: string): GwtLanguageData {

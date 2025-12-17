@@ -34,11 +34,7 @@ import { EmbeddedEditorChannelApiImpl } from "./EmbeddedEditorChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { useConnectedEnvelopeServer } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { getEditorIframeProps } from "../../channel/editorIframeProps";
-import {
-  editorEnvelopeI18nDefaults,
-  editorEnvelopeI18nDictionaries,
-  useEditorEnvelopeI18nContext,
-} from "../../envelope/i18n";
+import { editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries, useEditorEnvelopeI18nContext } from "../../i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

@@ -45,8 +45,32 @@ runs:
         cd ${{ inputs.working_dir }}
         df -h .
 
+    - name: "Calculate drools-and-kogito cache key"
+      id: drools_and_kogito_cache_key
+      env:
+        DROOLS_AND_KOGITO__skip: true
+      shell: bash
+      run: |
+        cd ${{ inputs.working_dir }}
+        pnpm bootstrap -F @kie-tools-core/drools-and-kogito...
+        keyOutput=$(cd packages/drools-and-kogito && pnpm run --silent print-cache-key)
+        echo "Drools and Kogito cache key: $keyOutput"
+        echo "key=$keyOutput" >> "$GITHUB_OUTPUT"
+
+    # Cache 'packages/drools-and-kogito/dist' using the git refs from Drools, OptaPlanner, Kogito Runtimes, and Kogito Apps as a unique key and refresh the cache on changes.
+    # The maven-base profile 'use-maven-repo-local-tail', in packages/maven-base/pom.xml, uses this folder for maven artifacts.
+    - name: "Cache drools-and-kogito dist folder"
+      if: ${{ steps.drools_and_kogito_cache_key.outputs.key != '' }}
+      id: drools_and_kogito_cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ inputs.working_dir }}/packages/drools-and-kogito/dist
+        key: ${{ runner.os }}-drools_and_kogito_cache-${{ steps.drools_and_kogito_cache_key.outputs.key }}
+
     - name: "Bootstrap"
       shell: bash
+      env:
+        DROOLS_AND_KOGITO__skip: ${{ steps.drools_and_kogito_cache.outputs.cache-hit }}
       run: |
         echo "STEP: Bootstrap"
         cd ${{ inputs.working_dir }}

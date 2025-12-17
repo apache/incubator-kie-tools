@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
-import { StateControlExposedInteropApi } from "@kie-tools/kie-bc-editors/dist/common/exposedInteropApi/StateControlExposedInteropApi";
+import { GwtStateControlService } from "@kie-tools/kie-bc-editors-common/dist/common/gwtStateControl";
+import { StateControlExposedInteropApi } from "@kie-tools/kie-bc-editors-common/dist/common/exposedInteropApi/StateControlExposedInteropApi";
 
 const innerMessageHandler = jest.fn();
 

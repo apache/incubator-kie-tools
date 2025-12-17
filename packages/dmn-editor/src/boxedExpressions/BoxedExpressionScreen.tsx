@@ -93,12 +93,14 @@ import {
 } from "../refactor/RefactorConfirmationDialog";
 import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
 import { useDmnEditor } from "../DmnEditorContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
 
   const settings = useSettings();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { locale, i18n } = useDmnEditorI18n();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
 
@@ -470,7 +472,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
               className={"kie-dmn-editor--boxed-expression-back"}
               icon={<ArrowRightIcon style={{ transform: "scale(-1, -1)", marginRight: "8px", marginTop: "4px" }} />}
             >
-              <p>Back to Diagram</p>
+              <p>{i18n.backToDiagram}</p>
             </Label>
           </FlexItem>
           <FlexItem>
@@ -548,6 +550,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
                 ? evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCountByRuleOrRowId
                 : undefined
             }
+            locale={locale}
           />
         </div>
       </>

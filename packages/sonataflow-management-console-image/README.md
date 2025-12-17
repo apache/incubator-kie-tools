@@ -118,6 +118,7 @@ When building, set the `SONATAFLOW_MANAGEMENT_CONSOLE__port` environment variabl
    docker run --rm -p 8080:8080 \
      -e SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE='DEV' \
      -e SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT='http://<HOST_IP_ADDRESS>:4000/graphql' \
+     --network host \
      docker.io/apache/incubator-kie-sonataflow-management-console:main
    ```
 

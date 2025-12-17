@@ -17,24 +17,26 @@
  * under the License.
  */
 
-import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
+import * as React from "react";
 
-export const en: EditorEnvelopeI18n = {
-  keyBindingsHelpOverlay: {
-    title: "Keyboard shortcuts",
-    categories: {
-      edit: "Edit",
-      help: "Help",
-    },
-    commands: {
-      undo: "Undo last edit",
-      redo: "Redo last edit",
-      showKeyboardOverlay: "Show keyboard shortcuts",
-    },
-  },
-  loadingScreen: {
-    loading: "Loading...",
-  },
-  editorNotAvailable: (extension: string): string => `No Editor available for '${extension}' extension`,
-  kogitoEditor: "Kogito editor",
+// component to replace placeholders in text with React components
+export const I18nWrappedTemplate = ({
+  text,
+  interpolationMap,
+}: {
+  text: string;
+  interpolationMap: Record<string, React.ReactNode>;
+}) => {
+  // Matches {key} where key is one of the placeholder keys
+  const interpolationMapRegex = new RegExp(`\\{(${Object.keys(interpolationMap).join("|")})\\}`, "g");
+
+  return (
+    <>
+      {text
+        .split(interpolationMapRegex)
+        .map((value, i) =>
+          value in interpolationMap ? <React.Fragment key={i}>{interpolationMap[value]}</React.Fragment> : value
+        )}
+    </>
+  );
 };

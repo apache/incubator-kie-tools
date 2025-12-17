@@ -17,6 +17,8 @@
  * under the License.
  */
 
+process.env.CORS_PROXY_ALLOWED_ORIGINS = "http://localhost:9001";
+
 import { startServer } from "../src/proxy";
 import { run } from "../src";
 
@@ -28,8 +30,8 @@ jest.mock("../src/proxy", () => ({
 
 function setEnv(env: Record<string, string>) {
   process.env = {
-    ...env,
     ...process.env,
+    ...env,
   };
 }
 
@@ -40,13 +42,15 @@ describe("index.ts test", () => {
   });
 
   it("Default values", () => {
-    run();
+    setEnv({});
 
+    run();
     expect(startServer).toHaveBeenCalledWith(
       expect.objectContaining({
         port: 8080,
-        origin: "*",
         verbose: false,
+        allowedHosts: ["localhost", "*.github.com"],
+        allowedOrigins: ["http://localhost:9001"],
       })
     );
   });
@@ -54,43 +58,126 @@ describe("index.ts test", () => {
   it("Custom port", () => {
     setEnv({
       CORS_PROXY_HTTP_PORT: "90",
+      CORS_PROXY_ALLOWED_ORIGINS: "http://example.com",
     });
 
     run();
     expect(startServer).toHaveBeenCalledWith(
       expect.objectContaining({
         port: 90,
-        origin: "*",
+        allowedOrigins: ["http://example.com"],
         verbose: false,
+        allowedHosts: ["localhost", "*.github.com"],
       })
     );
   });
 
-  it("Custom origin", () => {
+  it("Verbose mode", () => {
     setEnv({
-      CORS_PROXY_ORIGIN: "http://localhost",
-    });
-    run();
-    expect(startServer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        port: 8080,
-        origin: "http://localhost",
-        verbose: false,
-      })
-    );
-  });
-
-  it("Verbose", () => {
-    setEnv({
+      CORS_PROXY_ALLOWED_ORIGINS: "http://example.com",
       CORS_PROXY_VERBOSE: "true",
     });
     run();
     expect(startServer).toHaveBeenCalledWith(
       expect.objectContaining({
         port: 8080,
-        origin: "*",
+        allowedOrigins: ["http://example.com"],
         verbose: true,
+        allowedHosts: ["localhost", "*.github.com"],
       })
     );
+  });
+
+  describe("Allowed hosts configuration", () => {
+    it.each(["*.target.example.com,*.github.com", "*"])("Custom allow hosts with: %s", (allowedHosts) => {
+      setEnv({
+        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com",
+        CORS_PROXY_ALLOWED_HOSTS: allowedHosts,
+      });
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          verbose: false,
+          allowedHosts: allowedHosts.split(","),
+          allowedOrigins: ["http://example.com"],
+        })
+      );
+    });
+  });
+
+  describe("Allowed origins configuration", () => {
+    it("Single allowed origin", () => {
+      setEnv({
+        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com",
+      });
+
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          allowedOrigins: ["http://example.com"],
+          verbose: false,
+          allowedHosts: ["localhost", "*.github.com"],
+        })
+      );
+    });
+
+    it("Multiple allowed origins", () => {
+      setEnv({
+        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com,https://other.example.com,http://localhost:9001",
+      });
+
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          allowedOrigins: ["http://example.com", "https://other.example.com", "http://localhost:9001"],
+          verbose: false,
+          allowedHosts: ["localhost", "*.github.com"],
+        })
+      );
+    });
+
+    it("Should throw an error when allowed origins is not set", () => {
+      delete process.env.CORS_PROXY_ALLOWED_ORIGINS;
+
+      expect(() => {
+        run();
+      }).toThrow(new Error("Invalid origin: empty origins are not allowed in CORS_PROXY_ALLOWED_ORIGINS."));
+    });
+
+    it("Should throw an error when allowed origins is empty", () => {
+      setEnv({
+        CORS_PROXY_ALLOWED_ORIGINS: "",
+      });
+
+      expect(() => {
+        run();
+      }).toThrow(new Error("Invalid origin: empty origins are not allowed in CORS_PROXY_ALLOWED_ORIGINS."));
+    });
+
+    it.each(["*,http://example.com", "http://example.com,*", "*"])(
+      "Should throw an error when wildcard '*' is in the list with CORS_PROXY_ALLOWED_ORIGINS: %s",
+      (allowedOrigins) => {
+        setEnv({
+          CORS_PROXY_ALLOWED_ORIGINS: allowedOrigins,
+        });
+
+        expect(() => {
+          run();
+        }).toThrow(new Error('Invalid origin: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_ORIGINS.'));
+      }
+    );
+
+    it("Should throw an error when there are empty origins in the list", () => {
+      setEnv({
+        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com,,https://other.example.com",
+      });
+
+      expect(() => {
+        run();
+      }).toThrow(new Error("Invalid origin: empty origins are not allowed in CORS_PROXY_ALLOWED_ORIGINS."));
+    });
   });
 });

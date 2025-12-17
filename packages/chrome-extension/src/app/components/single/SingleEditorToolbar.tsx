@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
-import { useChromeExtensionI18n } from "../../i18n";
+import { useChromeExtensionI18n } from "../../../i18n";
 
 export const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 

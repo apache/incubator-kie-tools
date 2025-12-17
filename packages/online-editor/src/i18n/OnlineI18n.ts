@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
 import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
@@ -55,7 +55,7 @@ interface OnlineDictionary
       error: {
         title: string;
         explanation: string;
-        message: Array<string | Wrapped<"jira">>;
+        message: string;
       };
     };
     editorToolbar: {
@@ -380,14 +380,14 @@ interface OnlineDictionary
       error: {
         title: string;
         explanation: string;
-        message: Array<string | Wrapped<"jira">>;
+        message: string;
       };
       table: DmnUnitablesI18n;
       modal: {
         initial: {
           runDmnModels: string;
           explanation: string;
-          notificationPanelExplanation: Array<string | Wrapped<"icon">>;
+          notificationPanelExplanation: string;
         };
         wizard: {
           title: string;
@@ -409,23 +409,23 @@ interface OnlineDictionary
           macos: {
             install: {
               download: string;
-              openFile: Array<string | Wrapped<"file">>;
-              dragFileToApplicationsFolder: Array<string | Wrapped<"file" | "folder">>;
+              openFile: string;
+              dragFileToApplicationsFolder: string;
             };
             start: {
               stopped: {
                 startInstruction: string;
-                launchExtendedServices: Array<string | Wrapped<"file">>;
+                launchExtendedServices: string;
               };
               firstTime: {
                 title: string;
-                openApplicationsFolder: Array<string | Wrapped<"folder">>;
-                openAndCancel: Array<string | Wrapped<"file">>;
+                openApplicationsFolder: string;
+                openAndCancel: string;
                 again: string;
-                openInstruction: Array<string | Wrapped<"file" | "again">>;
+                openInstruction: string;
               };
               alreadyRanBefore: string;
-              launchExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: string;
               advanced: {
                 title: string;
                 runFollowingCommand: string;
@@ -435,20 +435,20 @@ interface OnlineDictionary
           windows: {
             install: {
               keepDownload: string;
-              moveTheFile: Array<string | Wrapped<"file">>;
+              moveTheFile: string;
             };
             start: {
               stopped: {
                 startInstruction: string;
-                launchExtendedServices: Array<string | Wrapped<"file">>;
+                launchExtendedServices: string;
               };
               firstTime: {
                 title: string;
-                openFolder: Array<string | Wrapped<"file">>;
+                openFolder: string;
                 runAnyway: string;
               };
               alreadyRanBefore: string;
-              launchExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: string;
               advanced: {
                 title: string;
                 runFollowingCommand: string;
@@ -459,24 +459,24 @@ interface OnlineDictionary
             install: {
               download: string;
               installAppIndicator: string;
-              ubuntuDependency: Array<string | Wrapped<"package">>;
-              fedoraDependency: Array<string | Wrapped<"package">>;
-              extractContent: Array<string | Wrapped<"file">>;
-              binaryExplanation: Array<string | Wrapped<"file">>;
+              ubuntuDependency: string;
+              fedoraDependency: string;
+              extractContent: string;
+              binaryExplanation: string;
             };
             start: {
               openTerminal: string;
-              goToFolder: Array<string | Wrapped<"file">>;
+              goToFolder: string;
               runCommand: string;
               advanced: {
                 title: string;
-                runFollowingCommand: Array<string | Wrapped<"file">>;
+                runFollowingCommand: string;
               };
             };
           };
           footerWaitingToConnect: string;
           advancedSettings: {
-            title: Array<string | Wrapped<"port">>;
+            title: string;
             label: string;
             helperTextInvalid: string;
           };

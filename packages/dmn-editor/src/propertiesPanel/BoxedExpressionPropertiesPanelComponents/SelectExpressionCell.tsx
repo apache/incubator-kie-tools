@@ -30,7 +30,7 @@ export function SelectExpressionCell(props: { selectedObjectId: string }) {
     <>
       <Title headingLevel={"h2"}>{i18n.propertiesPanel.selectExpression}</Title>
       <FormGroup label={i18n.propertiesPanel.id}>
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {props.selectedObjectId}
         </ClipboardCopy>
       </FormGroup>

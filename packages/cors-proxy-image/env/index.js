@@ -44,13 +44,17 @@ module.exports = composeEnv([rootEnv], {
       default: corsProxyEnv.env.corsProxy.dev.port,
       description: "HTTP port where the CORS proxy will run inside this image.",
     },
-    CORS_PROXY_IMAGE__imageOrigin: {
-      default: corsProxyEnv.env.corsProxy.dev.origin,
-      description: "Origin to be used for the CORS proxy running inside this image.",
+    CORS_PROXY_IMAGE__imageAllowedOrigins: {
+      default: corsProxyEnv.env.corsProxy.dev.allowedOrigins,
+      description: "Comma-separated list of allowed origins for the CORS proxy running inside this image.",
     },
     CORS_PROXY_IMAGE__imageVerbose: {
       default: false,
       description: "Toggle verbose mode on the CORS proxy logs.",
+    },
+    CORS_PROXY_IMAGE__imageAllowHosts: {
+      default: corsProxyEnv.env.corsProxy.dev.allowedHosts,
+      description: "Comma-separated list of allowed host patterns for domain filtering. Supports wildcards.",
     },
   }),
   get env() {
@@ -62,8 +66,9 @@ module.exports = composeEnv([rootEnv], {
           name: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageName),
           buildTag: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageBuildTag),
           port: getOrDefault(this.vars.CORS_PROXY_IMAGE__imagePort),
-          origin: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageOrigin),
+          allowedOrigins: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAllowedOrigins),
           verbose: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageVerbose),
+          allowedHosts: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAllowHosts),
         },
       },
     };
