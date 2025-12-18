@@ -29,14 +29,18 @@ import {
 import * as __path from "path";
 import * as vscode from "vscode";
 import { RelativePattern } from "vscode";
+import { isIgnored } from "isomorphic-git";
 import { toFsPath } from "../paths/paths";
 import { KogitoEditorDocument } from "../VsCodeKieEditorController";
 import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspaceRoot";
+import { ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders } from "./VsCodeResourceContentServiceIsomorphicGitFs";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
  */
 export class VsCodeResourceContentServiceForWorkspaces implements ResourceContentService {
+  private readonly isomorphicGitFs = new ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders();
+
   constructor(
     private readonly args: { workspaceRootAbsoluteFsPath: string; document: KogitoEditorDocument["document"] }
   ) {}
@@ -77,12 +81,21 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       await vscode.workspace.findFiles(relativePattern, defaultExcludes)
     ).map((uri) => vscode.workspace.asRelativePath(uri, false).replace(/\\/g, "/"));
 
-    console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: VS Code found files %s",
-      vscodeNormalizedPosixPathsRelativeToTheBasePath
+    const isNotIgnoredPath = await Promise.all(
+      vscodeNormalizedPosixPathsRelativeToTheBasePath.map(
+        async (relativePath) =>
+          !(await isIgnored({
+            fs: this.isomorphicGitFs,
+            dir: this.args.workspaceRootAbsoluteFsPath,
+            gitdir: __path.join(this.args.workspaceRootAbsoluteFsPath, ".git"),
+            filepath: relativePath,
+          }))
+      )
     );
+    const results = vscodeNormalizedPosixPathsRelativeToTheBasePath.filter((_, i) => isNotIgnoredPath[i]);
+    console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: VS Code found files %s", results);
 
-    return new ResourcesList(pattern, vscodeNormalizedPosixPathsRelativeToTheBasePath);
+    return new ResourcesList(pattern, results);
   }
 
   /**
