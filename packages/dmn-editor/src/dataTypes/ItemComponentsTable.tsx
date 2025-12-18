@@ -205,15 +205,17 @@ export function ItemComponentsTable({
                         return;
                       }
 
+                      const itemDefinitionsCopy = JSON.parse(JSON.stringify(clipboard.itemDefinitions));
+
                       getNewDmnIdRandomizer()
                         .ack({
-                          json: clipboard.itemDefinitions,
+                          json: itemDefinitionsCopy,
                           type: "DMN16__tDefinitions",
                           attr: "itemDefinition",
                         })
-                        .randomize();
+                        .randomize({ skipAlreadyAttributedIds: false });
 
-                      for (const itemDefinition of clipboard.itemDefinitions) {
+                      for (const itemDefinition of itemDefinitionsCopy) {
                         addItemComponent(parent.itemDefinition["@_id"]!, "unshift", itemDefinition);
                       }
                     });
@@ -609,15 +611,19 @@ export function ItemComponentsTable({
                                           return;
                                         }
 
+                                        const itemDefinitionsCopy = JSON.parse(
+                                          JSON.stringify(clipboard.itemDefinitions)
+                                        );
+
                                         getNewDmnIdRandomizer()
                                           .ack({
-                                            json: clipboard.itemDefinitions,
+                                            json: itemDefinitionsCopy,
                                             type: "DMN16__tDefinitions",
                                             attr: "itemDefinition",
                                           })
-                                          .randomize();
+                                          .randomize({ skipAlreadyAttributedIds: false });
 
-                                        for (const itemDefinition of clipboard.itemDefinitions) {
+                                        for (const itemDefinition of itemDefinitionsCopy) {
                                           addItemComponent(dt.itemDefinition["@_id"]!, "unshift", itemDefinition);
                                         }
                                       });
