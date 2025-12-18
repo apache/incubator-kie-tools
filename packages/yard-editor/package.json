@@ -39,7 +39,7 @@
     "@patternfly/react-icons": "^5.4.1",
     "@types/js-yaml": "^4.0.5",
     "csstype": "^3.0.11",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "json-schema": "^0.4.0",
     "monaco-editor": "^0.39.0",
     "monaco-yaml": "^4.0.4",

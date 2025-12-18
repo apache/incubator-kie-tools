@@ -10,6 +10,10 @@ overrides:
   d3-color: 3.1.0
   react-dropzone: ^11.4.2
   superagent: 10.2.2
+  json-refs>js-yaml: ^3.14.2
+  xmlbuilder2>js-yaml: ^3.14.2
+  '@apidevtools/json-schema-ref-parser>js-yaml': ^3.14.2
+  '@istanbuljs/load-nyc-config>js-yaml': ^3.14.2
 
 packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
 
@@ -4708,8 +4712,8 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.1.1
+        version: 4.1.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -5948,8 +5952,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
       js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.1.1
+        version: 4.1.1
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -7426,8 +7430,8 @@ importers:
         specifier: ^1.30.1
         version: 1.30.1
       js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.1.1
+        version: 4.1.1
       json-refs:
         specifier: ^3.0.15
         version: 3.0.15
@@ -10943,8 +10947,8 @@ importers:
         specifier: ^4.0.5
         version: 4.0.5
       js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.1.1
+        version: 4.1.1
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -13605,8 +13609,8 @@ importers:
         specifier: ^3.0.11
         version: 3.0.11
       js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.1.1
+        version: 4.1.1
       json-schema:
         specifier: ^0.4.0
         version: 0.4.0
@@ -26068,16 +26072,16 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@3.14.0:
-    resolution: {integrity: sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==}
-    hasBin: true
-
-  js-yaml@3.14.1:
-    resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
+  js-yaml@3.14.2:
+    resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
     hasBin: true
 
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
+
+  js-yaml@4.1.1:
+    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
   jsbn@0.1.1:
@@ -31999,7 +32003,7 @@ snapshots:
     dependencies:
       '@jsdevtools/ono': 7.1.3
       call-me-maybe: 1.0.2
-      js-yaml: 3.14.1
+      js-yaml: 3.14.2
 
   '@apidevtools/openapi-schemas@2.1.0': {}
 
@@ -38981,7 +38985,7 @@ snapshots:
       globals: 13.20.0
       ignore: 5.3.1
       import-fresh: 3.3.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       minimatch: 3.1.2
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -39402,7 +39406,7 @@ snapshots:
       http-proxy-agent: 6.1.1
       https-proxy-agent: 6.2.1
       jose: 4.14.6
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       json-stable-stringify: 1.0.2
       lodash: 4.17.21
       scuid: 1.1.0
@@ -39640,7 +39644,7 @@ snapshots:
     dependencies:
       camelcase: 5.3.1
       find-up: 4.1.0
-      js-yaml: 3.14.1
+      js-yaml: 3.14.2
       resolve-from: 5.0.0
 
   '@istanbuljs/schema@0.1.3': {}
@@ -41934,7 +41938,7 @@ snapshots:
       '@jsdevtools/ono': 7.1.3
       '@types/json-schema': 7.0.15
       call-me-maybe: 1.0.2
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
 
   '@readme/openapi-parser@2.5.0(openapi-types@7.2.3)':
     dependencies:
@@ -42034,7 +42038,7 @@ snapshots:
   '@severlessworkflow/sdk-typescript@3.0.3':
     dependencies:
       ajv: 8.17.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
 
   '@sideway/address@4.1.4':
     dependencies:
@@ -45471,12 +45475,12 @@ snapshots:
 
   '@yarnpkg/parsers@2.5.1':
     dependencies:
-      js-yaml: 3.14.1
+      js-yaml: 3.14.2
       tslib: 1.14.1
 
   '@yarnpkg/parsers@3.0.3':
     dependencies:
-      js-yaml: 3.14.1
+      js-yaml: 3.14.2
       tslib: 2.8.1
 
   '@yarnpkg/pnp@2.3.2':
@@ -48043,7 +48047,7 @@ snapshots:
   cosmiconfig@8.0.0:
     dependencies:
       import-fresh: 3.3.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       parse-json: 5.2.0
       path-type: 4.0.0
 
@@ -48051,7 +48055,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.5.3
@@ -53055,17 +53059,16 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@3.14.0:
-    dependencies:
-      argparse: 1.0.10
-      esprima: 4.0.1
-
-  js-yaml@3.14.1:
+  js-yaml@3.14.2:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
 
   js-yaml@4.1.0:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@4.1.1:
     dependencies:
       argparse: 2.0.1
 
@@ -53212,7 +53215,7 @@ snapshots:
     dependencies:
       commander: 4.1.1
       graphlib: 2.1.8
-      js-yaml: 3.14.1
+      js-yaml: 3.14.2
       lodash: 4.17.21
       native-promise-only: 0.8.1
       path-loader: 1.0.12
@@ -54283,7 +54286,7 @@ snapshots:
       find-up: 5.0.0
       glob: 8.1.0
       he: 1.2.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       log-symbols: 4.1.0
       minimatch: 5.1.6
       ms: 2.1.3
@@ -54930,7 +54933,7 @@ snapshots:
 
   openapi-typescript@5.4.2:
     dependencies:
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       mime: 3.0.0
       prettier: 2.8.8
       tiny-glob: 0.2.9
@@ -58176,7 +58179,7 @@ snapshots:
 
   terser-webpack-plugin@5.3.10(webpack@5.94.0):
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
@@ -59549,7 +59552,7 @@ snapshots:
       glob: 11.0.0
       got: 14.4.5
       hpagent: 1.2.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       mocha: 10.6.0
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.27.0
@@ -59976,7 +59979,7 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.12.1
       acorn: 8.12.1
       acorn-import-attributes: 1.9.5(acorn@8.12.1)
-      browserslist: 4.23.3
+      browserslist: 4.27.0
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.17.1
       es-module-lexer: 1.5.4
@@ -60242,7 +60245,7 @@ snapshots:
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack-cli: 4.10.0(webpack@5.94.0)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
@@ -60431,7 +60434,7 @@ snapshots:
       '@oozcitak/infra': 1.0.8
       '@oozcitak/util': 8.3.8
       '@types/node': 22.18.8
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
 
   xmlbuilder@11.0.1: {}
 
