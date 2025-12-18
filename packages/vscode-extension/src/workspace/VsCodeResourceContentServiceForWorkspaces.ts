@@ -73,10 +73,9 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     const relativePattern = new RelativePattern(theMostSpecificFolder, globRelativeToBase);
 
     const defaultExcludes = "**/{target,dist,node_modules}";
-    const vscodeFoundFiles = await vscode.workspace.findFiles(relativePattern, defaultExcludes);
-    const vscodeNormalizedPosixPathsRelativeToTheBasePath = vscodeFoundFiles.map((uri) =>
-      vscode.workspace.asRelativePath(uri, false).replace(/\\/g, "/")
-    );
+    const vscodeNormalizedPosixPathsRelativeToTheBasePath = (
+      await vscode.workspace.findFiles(relativePattern, defaultExcludes)
+    ).map((uri) => vscode.workspace.asRelativePath(uri, false).replace(/\\/g, "/"));
 
     console.debug(
       "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: VS Code found files %s",
