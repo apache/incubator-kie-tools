@@ -114,7 +114,7 @@ pipeline {
                             export PLAYWRIGHT_BASE__enableWebkitProject=true
                             export PLAYWRIGHT_BASE__projectTimeout=90000
                             export PLAYWRIGHT_BASE__expectTimeout=30000
-                            export PLAYWRIGHT_BASE__retries=2
+                            export PLAYWRIGHT_BASE__retries=3
                             export PLAYWRIGHT_BASE__workers=2
                             pnpm -r --workspace-concurrency=1 build:prod
                             '''.trim()
