@@ -35,8 +35,6 @@ const buildEnv: any = env;
 function basePlaywrightEnv(): Record<string, string> {
   return {
     STREAM_NAME: buildEnv.root.streamName,
-    PLAYWRIGHT_BASE__enableGoogleChromeTestsForAppleSilicon:
-      buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon,
     PLAYWRIGHT_BASE__enableChromiumProject: buildEnv.playwrightBase.enableChromiumProject,
     PLAYWRIGHT_BASE__enableGoogleChromeProject: buildEnv.playwrightBase.enableGoogleChromeProject,
     PLAYWRIGHT_BASE__enableWebkitProject: buildEnv.playwrightBase.enableWebkitProject,
@@ -46,6 +44,18 @@ function basePlaywrightEnv(): Record<string, string> {
     PLAYWRIGHT_BASE__retries: buildEnv.playwrightBase.retries,
     PLAYWRIGHT_BASE__workers: buildEnv.playwrightBase.workers,
   };
+}
+
+function getPlaywrightBaseEnv() {
+  return `PLAYWRIGHT_BASE__enableGoogleChromeTestsForAppleSilicon=${buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon}
+PLAYWRIGHT_BASE__enableChromiumProject=${buildEnv.playwrightBase.enableChromiumProject}
+PLAYWRIGHT_BASE__enableGoogleChromeProject=${buildEnv.playwrightBase.enableGoogleChromeProject}
+PLAYWRIGHT_BASE__enableWebkitProject=${buildEnv.playwrightBase.enableWebkitProject}
+PLAYWRIGHT_BASE__projectTimeout=${buildEnv.playwrightBase.projectTimeout}
+PLAYWRIGHT_BASE__expectTimeout=${buildEnv.playwrightBase.expectTimeout}
+PLAYWRIGHT_BASE__maxDiffPixelRatio=${buildEnv.playwrightBase.maxDiffPixelRatio}
+PLAYWRIGHT_BASE__retries=${buildEnv.playwrightBase.retries}
+PLAYWRIGHT_BASE__workers=${buildEnv.playwrightBase.workers}`;
 }
 
 type EnvMap = Record<string, string>;
@@ -88,10 +98,6 @@ function collectAdditionalEnv(argv: any): EnvMap {
 
 function prettyPrintError(error: unknown) {
   console.error(`\x1b[31m[${CLI_NAME}] %s\x1b[0m`, error instanceof Error ? error.message : String(error));
-}
-
-function isAppleSilicon(): boolean {
-  return process.platform === "darwin" && process.arch === "arm64";
 }
 
 function mergeEnv(overrides: EnvMap = {}): NodeJS.ProcessEnv {
@@ -184,36 +190,14 @@ It loads environment variables and passes them through the docker-compose file, 
         },
         (argv) => {
           const extraEnv = collectAdditionalEnv(argv);
-          // If Google Chrome is enabled check if tests are enabled for Apple Silicon
-          const isGoogleChromeEnabled =
-            buildEnv.playwrightBase.enableGoogleChromeProject === true
-              ? isAppleSilicon() && buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon === true
-                ? "true"
-                : !isAppleSilicon()
-                  ? "true"
-                  : "false"
-              : "false";
-
-          dockerComposeUp(!!argv.ci, {
-            PLAYWRIGHT_BASE__enableGoogleChromeProject: isGoogleChromeEnabled,
-            ...extraEnv,
-          });
+          dockerComposeUp(!!argv.ci, { ...extraEnv });
           console.info(
             `[${CLI_NAME}] docker compose up done. Env
 CI=${!!argv.ci}
-PLAYWRIGHT_BASE__enableGoogleChromeTestsForAppleSilicon=${buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon}
-PLAYWRIGHT_BASE__enableChromiumProject=${buildEnv.playwrightBase.enableChromiumProject}
-PLAYWRIGHT_BASE__enableGoogleChromeProject=${isGoogleChromeEnabled}
-PLAYWRIGHT_BASE__enableWebkitProject=${buildEnv.playwrightBase.enableWebkitProject}
-PLAYWRIGHT_BASE__projectTimeout=${buildEnv.playwrightBase.projectTimeout}
-PLAYWRIGHT_BASE__expectTimeout=${buildEnv.playwrightBase.expectTimeout}
-PLAYWRIGHT_BASE__maxDiffPixelRatio=${buildEnv.playwrightBase.maxDiffPixelRatio}
-PLAYWRIGHT_BASE__retries=${buildEnv.playwrightBase.retries}
-PLAYWRIGHT_BASE__workers=${buildEnv.playwrightBase.workers}
+${getPlaywrightBaseEnv()}
 extraEnv=${JSON.stringify(extraEnv)}
 `
           );
-
           execSync(
             `docker exec -i ${argv["container-name"]} /bin/bash -c "cd ${argv["container-workdir"]} && pnpm test-e2e:run"`,
             {
@@ -249,29 +233,10 @@ extraEnv=${JSON.stringify(extraEnv)}
         },
         (argv) => {
           const extraEnv = collectAdditionalEnv(argv);
-          const isGoogleChromeEnabled =
-            buildEnv.playwrightBase.enableGoogleChromeProject === true
-              ? isAppleSilicon() && buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon === true
-                ? "true"
-                : !isAppleSilicon()
-                  ? "true"
-                  : "false"
-              : "false";
-          dockerComposeUp(false, {
-            PLAYWRIGHT_BASE__enableGoogleChromeProject: isGoogleChromeEnabled,
-            ...extraEnv,
-          });
+          dockerComposeUp(!!argv.ci, { ...extraEnv });
           console.info(
             `[${CLI_NAME}] docker compose up done. Env
-CI=${!!argv.ci}
-PLAYWRIGHT_BASE__enableChromiumProject=${buildEnv.playwrightBase.enableChromiumProject}
-PLAYWRIGHT_BASE__enableGoogleChromeProject=${isGoogleChromeEnabled}
-PLAYWRIGHT_BASE__enableWebkitProject=${buildEnv.playwrightBase.enableWebkitProject}
-PLAYWRIGHT_BASE__projectTimeout=${buildEnv.playwrightBase.projectTimeout}
-PLAYWRIGHT_BASE__expectTimeout=${buildEnv.playwrightBase.expectTimeout}
-PLAYWRIGHT_BASE__maxDiffPixelRatio=${buildEnv.playwrightBase.maxDiffPixelRatio}
-PLAYWRIGHT_BASE__retries=${buildEnv.playwrightBase.retries}
-PLAYWRIGHT_BASE__workers=${buildEnv.playwrightBase.workers}
+${getPlaywrightBaseEnv()}
 extraEnv=${JSON.stringify(extraEnv)}
 `
           );

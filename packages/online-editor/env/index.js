@@ -147,19 +147,10 @@ module.exports = composeEnv(
         default: "false",
         description: "Tells if the development web server should use https",
       },
-      ONLINE_EDITOR_PLAYWRIGHT__enableGoogleChromeTestsForAppleSilicon: {
-        default: "false",
-        description: "Enable Google Chrome tests for ARM OSs. Overrides PLAYWRIGHT_BASE__enableGoogleChromeProject.",
-      },
     }),
     get env() {
       return {
         onlineEditor: {
-          playwright: {
-            enableGoogleChromeTestsForAppleSilicon: str2bool(
-              getOrDefault(this.vars.ONLINE_EDITOR_PLAYWRIGHT__enableGoogleChromeTestsForAppleSilicon)
-            ),
-          },
           dev: {
             port: getOrDefault(this.vars.ONLINE_EDITOR_DEV__port),
             https: str2bool(getOrDefault(this.vars.ONLINE_EDITOR_DEV__https)),

@@ -27,7 +27,7 @@ Each operating system has slight variations in UI, even within the same browser.
 
 > **ℹ️ NOTE**
 >
-> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Google Chrome is not available for Linux on ARM64, so any Google Chrome tests running under a Linux ARM64 container will be disabled. This is usually the case when running Linux containers on Apple Silicon machines, so Google Chrome tests are disabled in some packages under macOS ARM64.
+> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Additionally, Google Chrome is not available for Linux on ARM64, so any Chrome-based tests in an ARM64 container must be disabled. At present, tests run on AMD64 containers to ensure all browsers and test scenarios execute safely.
 
 ---
 

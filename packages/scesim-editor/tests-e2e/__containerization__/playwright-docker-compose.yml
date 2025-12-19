@@ -32,7 +32,6 @@ services:
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
       - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
-      - PLAYWRIGHT_BASE__enableGoogleChromeTestsForAppleSilicon=${PLAYWRIGHT_BASE__enableGoogleChromeTestsForAppleSilicon}
       - PLAYWRIGHT_BASE__enableChromiumProject=${PLAYWRIGHT_BASE__enableChromiumProject}
       - PLAYWRIGHT_BASE__enableGoogleChromeProject=${PLAYWRIGHT_BASE__enableGoogleChromeProject}
       - PLAYWRIGHT_BASE__enableWebkitProject=${PLAYWRIGHT_BASE__enableWebkitProject}
