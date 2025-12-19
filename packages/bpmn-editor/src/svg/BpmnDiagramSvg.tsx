@@ -70,6 +70,8 @@ import {
   START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE,
 } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/Bpmn20Spec";
 import { useActivityIcons } from "../diagram/nodes/Nodes";
+import { useCustomTasks } from "../customTasks/BpmnEditorCustomTasksContextProvider";
+import { CustomTask } from "../BpmnEditor";
 
 // Map node types to variant return types
 type NodeVariantReturnMap = {
@@ -100,15 +102,18 @@ type BpmnElementActivitytIcons = Parameters<typeof useActivityIcons>[0];
 type TaskOrSubProcessNodeSvgWithIconsProps = {
   nodeType: typeof NODE_TYPES.task | typeof NODE_TYPES.subProcess;
   bpmnElement: BpmnElementActivitytIcons;
+  customTasks: CustomTask[] | undefined;
 } & (TaskNodeSvgWithoutMarkersProps | SubProcessNodeSvgWithoutIconsProps);
 
 export function BpmnDiagramSvg({
   nodes,
   edges,
+  customTasks,
   snapGrid,
 }: {
   nodes: RF.Node<BpmnDiagramNodeData, BpmnNodeType>[];
   edges: RF.Edge<BpmnDiagramEdgeData>[];
+  customTasks: CustomTask[] | undefined;
   snapGrid: SnapGrid;
 }) {
   const sortedNodesByParent = useMemo(() => sortNodesByParent(nodes), [nodes]);
@@ -153,6 +158,7 @@ export function BpmnDiagramSvg({
               y={node.positionAbsolute!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.task>(NODE_TYPES.task, node?.data?.bpmnElement)}
               strokeWidth={node?.data?.bpmnElement?.__$$element === "callActivity" ? 5 : undefined}
+              customTasks={customTasks}
               {...style}
             />
           )}
@@ -248,6 +254,7 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.subProcess && (
             <TaskOrSubProcessNodeSvgWithIcons
+              customTasks={customTasks}
               nodeType={NODE_TYPES.subProcess}
               bpmnElement={node?.data?.bpmnElement as BpmnElementActivitytIcons}
               width={node.width!}
@@ -299,7 +306,7 @@ export function BpmnDiagramSvg({
     });
 
     return { nodesSvg, nodesById };
-  }, [sortedNodesByParent]);
+  }, [customTasks, sortedNodesByParent]);
 
   return (
     <>
@@ -434,11 +441,23 @@ export function getBpmnNodeVariant<T extends keyof NodeElementMap>(
 export function TaskOrSubProcessNodeSvgWithIcons({
   nodeType,
   bpmnElement,
+  customTasks,
   ...props
 }: TaskOrSubProcessNodeSvgWithIconsProps) {
   const icons = useActivityIcons(bpmnElement);
+
+  const icon = useMemo(() => {
+    if (bpmnElement.__$$element === "task") {
+      for (const ct of customTasks ?? []) {
+        if (ct.matches(bpmnElement)) {
+          return <>{ct.iconSvgElement}</>;
+        }
+      }
+    }
+  }, [customTasks, bpmnElement]);
+
   return nodeType === NODE_TYPES.task ? (
-    <TaskNodeSvg {...(props as TaskNodeSvgWithoutMarkersProps)} markers={icons} />
+    <TaskNodeSvg {...(props as TaskNodeSvgWithoutMarkersProps)} markers={icons} icon={icon} />
   ) : (
     <SubProcessNodeSvg {...(props as SubProcessNodeSvgWithoutIconsProps)} icons={icons} />
   );

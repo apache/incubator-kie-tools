@@ -1646,11 +1646,17 @@ export const UnknownNode = React.memo(
 );
 
 export function useActivityIcons(
-  activity:
-    | (Normalized<BPMN20__tSubProcess> & { __$$element: "adHocSubProcess" | "subProcess" })
-    | (Normalized<BPMN20__tTask> & {
-        __$$element: "task" | "serviceTask" | "userTask" | "businessRuleTask" | "scriptTask" | "callActivity";
-      })
+  activity: ElementFilter<
+    Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>,
+    | "adHocSubProcess"
+    | "subProcess"
+    | "task"
+    | "serviceTask"
+    | "userTask"
+    | "businessRuleTask"
+    | "scriptTask"
+    | "callActivity"
+  >
 ) {
   return useMemo(() => {
     const icons: ActivityNodeMarker[] = [];

@@ -59,7 +59,10 @@ import "@kie-tools/xyflow-react-kie-diagram/dist/patternfly-customizations.css";
 import "@kie-tools/xyflow-react-kie-diagram/dist/xyflow-customizations.css";
 import "./BpmnEditor.css";
 import { BPMN20__tProcess, BPMN20__tTask } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
-import { BpmnEditorCustomTasksContextProvider } from "./customTasks/BpmnEditorCustomTasksContextProvider";
+import {
+  BpmnEditorCustomTasksContextProvider,
+  useCustomTasks,
+} from "./customTasks/BpmnEditorCustomTasksContextProvider";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
@@ -255,6 +258,7 @@ export const BpmnEditorInternal = ({
   const isDiagramEditingInProgress = useBpmnEditorStore((s) => s.computed(s).isDiagramEditingInProgress());
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
   const { commandsRef } = useCommands();
+  const { customTasks } = useCustomTasks();
 
   const { bpmnModelBeforeEditingRef, bpmnEditorRootElementRef } = useBpmnEditor();
 
@@ -296,7 +300,12 @@ export const BpmnEditorInternal = ({
         ReactDOM.render(
           // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
           <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
-            <BpmnDiagramSvg nodes={nodes} edges={edges} snapGrid={state.xyFlowReactKieDiagram.snapGrid} />
+            <BpmnDiagramSvg
+              nodes={nodes}
+              edges={edges}
+              customTasks={customTasks}
+              snapGrid={state.xyFlowReactKieDiagram.snapGrid}
+            />
           </g>,
           svg
         );
@@ -305,7 +314,7 @@ export const BpmnEditorInternal = ({
       },
       getCommands: () => commandsRef.current,
     }),
-    [bpmnEditorStoreApi, commandsRef]
+    [bpmnEditorStoreApi, commandsRef, customTasks]
   );
 
   // Make sure the BPMN Editor reacts to props changing.
