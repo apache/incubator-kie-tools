@@ -92,9 +92,13 @@ export function deleteNode({
     deletedBpmnElement = deletedLane ? { ...deletedLane, __$$element: "lane" } : undefined;
   }
 
-  // or error
+  // or warn
   else {
-    throw new Error(`BPMN MUTATION: Cannot find any BPMN Element with ID '${__readonly_bpmnElementId}'.`);
+    console.warn(`BPMN MUTATION: Cannot find any BPMN Element with ID '${__readonly_bpmnElementId}'.`);
+    return {
+      deletedBpmnElement: undefined,
+      deletedBpmnShape: undefined,
+    };
   }
 
   // Delete the BPMNShape
