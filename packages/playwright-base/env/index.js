@@ -51,7 +51,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     PLAYWRIGHT_BASE__maxDiffPixelRatio: {
       default: "0.001",
-      description: "The threshold of the maximum difference on screenshot comparisons (in percentage)",
+      description:
+        "The threshold of the maximum pixel difference on screenshot comparisons (percentage in decimal form)",
     },
     PLAYWRIGHT_BASE__retries: {
       default: "0",
