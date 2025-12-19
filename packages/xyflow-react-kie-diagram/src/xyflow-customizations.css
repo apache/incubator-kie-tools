@@ -52,15 +52,18 @@
 .react-flow__node.selected {
   color: #006ba4 !important;
 }
-.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid ~ .xyflow-react-kie-diagram--node {
+.react-flow__node
+  > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid
+  ~ .xyflow-react-kie-diagram--node
+  > g {
   border-color: red !important;
   color: red !important;
   opacity: 0.4;
 }
-.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid {
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid > g {
   border-color: red !important;
 }
-.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid > * {
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid > g > * {
   stroke: rgba(255, 0, 0, 0.2) !important;
   fill: rgba(164, 0, 0, 0.1) !important;
 }
@@ -72,27 +75,28 @@
   border-color: #006ba4 !important;
   filter: drop-shadow(2px 2px 2px #006ba477);
 }
-.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside > * {
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside > g > * {
   stroke: #006ba4 !important;
   fill: rgba(0, 107, 164, 0.1) !important;
 }
 
-.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-border > * {
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-border > g > * {
   stroke: #006ba4 !important;
   stroke-width: 20px;
 }
 
-.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-border-invalid > * {
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-border-invalid > g > * {
   /* Empty on purpose. We don't want any CSS style for when an invalid node is dragged to another's border */
   content: ""; /* <-- Only here to stop warnings of empty CSS rule */
 }
 
-.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-invalid-non-container > * {
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-invalid-non-container > g > * {
   opacity: 0.4;
 }
 
 .react-flow__node.selected:not(.react-flow__node-node_unknown):not(.react-flow__node-node_textAnnotation)
   > .xyflow-react-kie-diagram--node-shape
+  > g
   > * {
   stroke: #006ba4 !important;
 }

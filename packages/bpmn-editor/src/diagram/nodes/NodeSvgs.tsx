@@ -945,7 +945,7 @@ export const LaneNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { gut
   const gutterWidth = _gutterWidth ?? 40;
 
   return (
-    <>
+    <g>
       <rect
         {...props}
         x={x}
@@ -983,7 +983,7 @@ export const LaneNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { gut
         ry={"0"}
         className={containerNodeInteractionRectCssClassName}
       />
-    </>
+    </g>
   );
 });
 

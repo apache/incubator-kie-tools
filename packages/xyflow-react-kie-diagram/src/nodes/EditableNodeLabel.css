@@ -51,6 +51,9 @@
   writing-mode: vertical-rl;
   transform: rotate(180deg);
 }
+.xyflow-react-kie-diagram--editable-node-name-input.center-left-vertical span {
+  width: fit-content;
+}
 .xyflow-react-kie-diagram--editable-node-name-input.top-center input,
 .xyflow-react-kie-diagram--editable-node-name-input.center-bottom input,
 .xyflow-react-kie-diagram--editable-node-name-input.center-center input {
