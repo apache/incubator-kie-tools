@@ -27,7 +27,7 @@ Each operating system has slight variations in UI, even within the same browser.
 
 > **ℹ️ NOTE**
 >
-> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Linux arm64 doesn't support Google Chrome, and due to this caveat, Google Chrome tests in macOS arm are disabled.
+> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Linux arm64 doesn't support Google Chrome, and due to this caveat, Google Chrome tests in macOS arm are disabled in some packages.
 
 ---
 
@@ -43,7 +43,7 @@ KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/playwright-base bu
 By default, tests run on using containers. To execute them in the native OS environment, set the `KIE_TOOLS_BUILD__containerizedEndToEndTests` environment variable to `false`.
 
 ```sh
-KIE_TOOLS_BUILD__containerizedEndToEndTests=true pnpm test-e2e
+KIE_TOOLS_BUILD__containerizedEndToEndTests=false pnpm test-e2e
 ```
 
 ## Updating Playwright screenshots
@@ -57,6 +57,53 @@ pnpm test-e2e:container:shell
 
 # Wait until the new shell is ready
 pnpm test-e2e:run --update-snapshots
+```
+
+## Playwright-base CLI
+
+A CLI tool to assist running containerized Playwright tests. It loads environment variables and passes them through the docker-compose file, and helps with starting the test suite, opening an interactive shell inside the container, and cleaning up.
+
+```sh
+pnpm pw-e2e-container --help
+pw-e2e-container <command>
+
+Commands:
+  pw-e2e-container run    Run the Playwright test suite inside Docker containers. This command will start the required containers using docker-compose
+                          and execute the Playwright tests in the specified container workdir.
+  pw-e2e-container shell  Open an interactive shell inside the Playwright test container. This command starts the required container using
+                          docker-compose and launches a shell in the specified workdir inside the container.
+  pw-e2e-container clean  Stop and remove all Playwright-related containers created by docker-compose. This command runs 'docker compose down' using
+                          the base Playwright compose file.
+
+Examples:
+  containerized-playwright run --container-name my_playwright_container        Run the Playwright test suite locally (no CI override) using the
+  --container-workdir incubator-kie-tools/packages/my-package                  specified container and workdir.
+
+  containerized-playwright run --ci --container-name my_playwright_container   Run the Playwright test suite in CI mode (applies CI docker-compose
+  --container-workdir incubator-kie-tools/packages/my-package                  override).
+
+  containerized-playwright run --container-name e2e --container-workdir        Run with extra environment variables forwarded to docker-compose
+  incubator-kie-tools/packages/foo --additional-env                            (comma-separated KEY=VALUE pairs).
+  BUILD_ID=123,REPORT_DIR=/tmp/reports
+
+  containerized-playwright run --container-name e2e --container-workdir        Pass multiple --additional-env options; later pairs override earlier
+  incubator-kie-tools/packages/foo --additional-env FOO=bar --additional-env   keys if duplicated.
+  COMMIT_SHA=deadbeef
+
+  CI=true containerized-playwright run --container-name e2e                    Leverage CI environment variable to auto-enable CI mode (equivalent to
+  --container-workdir incubator-kie-tools/packages/foo                         --ci when CI=true or CI=1).
+
+  containerized-playwright shell --container-name my_playwright_container      Start the container (if needed) and open an interactive bash shell in
+  --container-workdir incubator-kie-tools/packages/my-package                  the package workdir.
+
+  containerized-playwright shell --container-name e2e --container-workdir      Open an interactive shell with extra environment variables forwarded to
+  incubator-kie-tools/packages/foo --additional-env DEBUG=true                 docker-compose.
+
+  containerized-playwright shell --container-name e2e --container-workdir      Forward multiple env variables in a single --additional-env option
+  incubator-kie-tools/packages/foo --additional-env FOO=bar,BAZ=qux            using comma-separated pairs.
+
+  containerized-playwright clean                                               Stop and remove Playwright-related containers using the base
+                                                                               docker-compose file.
 ```
 
 ## Installing Playwright dependencies on host machine

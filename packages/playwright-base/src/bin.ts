@@ -28,6 +28,8 @@ import { hideBin } from "yargs/helpers";
 // @ts-ignore
 import { env } from "../env";
 
+const CLI_NAME = "pw-e2e-container";
+
 const buildEnv: any = env;
 
 function basePlaywrightEnv(): Record<string, string> {
@@ -85,7 +87,7 @@ function collectAdditionalEnv(argv: any): EnvMap {
 }
 
 function prettyPrintError(error: unknown) {
-  console.error("\x1b[31m[playwright-base] %s\x1b[0m", error instanceof Error ? error.message : String(error));
+  console.error(`\x1b[31m[${CLI_NAME}] %s\x1b[0m`, error instanceof Error ? error.message : String(error));
 }
 
 function isAppleSilicon(): boolean {
@@ -109,60 +111,95 @@ async function main() {
     await yargs(hideBin(process.argv))
       .version(false)
       .wrap(Math.min(150, terminalWidth()))
-      .scriptName("@kie-tools/playwright-base")
-      .epilog(`CLI tool to help using Playwright`)
-      .example(`playwright-base container`, "Run Playwright test suite")
+      .scriptName(CLI_NAME)
+      .epilog(
+        `A CLI tool to assist running containerized Playwright tests.
+It loads environment variables and passes them through the docker-compose file, and helps with starting the test suite, opening an interactive shell inside the container, and cleaning up.`
+      )
+      .example(
+        "containerized-playwright run --container-name my_playwright_container --container-workdir incubator-kie-tools/packages/my-package\n",
+        "Run the Playwright test suite locally (no CI override) using the specified container and workdir.\n"
+      )
+      .example(
+        "containerized-playwright run --ci --container-name my_playwright_container --container-workdir incubator-kie-tools/packages/my-package\n",
+        "Run the Playwright test suite in CI mode (applies CI docker-compose override).\n"
+      )
+      .example(
+        "containerized-playwright run --container-name e2e --container-workdir incubator-kie-tools/packages/foo --additional-env BUILD_ID=123,REPORT_DIR=/tmp/reports\n",
+        "Run with extra environment variables forwarded to docker-compose (comma-separated KEY=VALUE pairs).\n"
+      )
+      .example(
+        "containerized-playwright run --container-name e2e --container-workdir incubator-kie-tools/packages/foo --additional-env FOO=bar --additional-env COMMIT_SHA=deadbeef\n",
+        "Pass multiple --additional-env options; later pairs override earlier keys if duplicated.\n"
+      )
+      .example(
+        "CI=true containerized-playwright run --container-name e2e --container-workdir incubator-kie-tools/packages/foo\n",
+        "Leverage CI environment variable to auto-enable CI mode (equivalent to --ci when CI=true or CI=1).\n"
+      )
+      .example(
+        "containerized-playwright shell --container-name my_playwright_container --container-workdir incubator-kie-tools/packages/my-package\n",
+        "Start the container (if needed) and open an interactive bash shell in the package workdir.\n"
+      )
+      .example(
+        "containerized-playwright shell --container-name e2e --container-workdir incubator-kie-tools/packages/foo --additional-env DEBUG=true\n",
+        "Open an interactive shell with extra environment variables forwarded to docker-compose.\n"
+      )
+      .example(
+        "containerized-playwright shell --container-name e2e --container-workdir incubator-kie-tools/packages/foo --additional-env FOO=bar,BAZ=qux\n",
+        "Forward multiple env variables in a single --additional-env option using comma-separated pairs.\n"
+      )
+      .example(
+        "containerized-playwright clean\n",
+        "Stop and remove Playwright-related containers using the base docker-compose file.\n"
+      )
       .command(
-        "container",
-        "Containerization Playwright commands",
+        "run",
+        "Run the Playwright test suite inside Docker containers. This command will start the required containers using docker-compose and execute the Playwright tests in the specified container workdir.",
         (yargs) => {
-          return yargs
-            .command(
-              "run",
-              "Run Playwright test suite using containers.",
-              (yargs) => {
-                yargs
-                  .option("ci", {
-                    type: "boolean",
-                    default: process.env.CI === "true" || process.env.CI === "1",
-                    describe: "Use CI compose override",
-                  })
-                  .option("additional-env", {
-                    type: "string",
-                    default: "",
-                    describe: "Additional envs to be forwarded to docker compose file",
-                  })
-                  .option("container-name", {
-                    type: "string",
-                    default: "",
-                    describe: "Container name specified on the docker-compose file",
-                    demandOption: true,
-                  })
-                  .option("container-workdir", {
-                    type: "string",
-                    default: "",
-                    describe: "Container workdir. e.g. incubator-kie-tools/packages/<package_name>",
-                    demandOption: true,
-                  });
-              },
-              (argv) => {
-                const extraEnv = collectAdditionalEnv(argv);
-                // If Google Chrome is enabled check if tests are enabled for Apple Silicon
-                const isGoogleChromeEnabled =
-                  buildEnv.playwrightBase.enableGoogleChromeProject === true
-                    ? isAppleSilicon() && buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon === true
-                      ? "true"
-                      : !isAppleSilicon()
-                        ? "true"
-                        : "false"
-                    : "false";
+          yargs
+            .option("ci", {
+              type: "boolean",
+              default: process.env.CI === "true" || process.env.CI === "1",
+              describe: "Enable CI mode by applying the CI-specific docker-compose override file.",
+            })
+            .option("additional-env", {
+              type: "string",
+              default: "",
+              describe:
+                "Comma-separated KEY=VALUE pairs of additional environment variables to forward to docker-compose. Can be repeated.",
+            })
+            .option("container-name", {
+              type: "string",
+              default: "",
+              describe: "Name of the container as defined in the docker-compose file. Required.",
+              demandOption: true,
+            })
+            .option("container-workdir", {
+              type: "string",
+              default: "",
+              describe:
+                "Path inside the container where Playwright tests are located. Example: incubator-kie-tools/packages/<package_name>. Required.",
+              demandOption: true,
+            });
+        },
+        (argv) => {
+          const extraEnv = collectAdditionalEnv(argv);
+          // If Google Chrome is enabled check if tests are enabled for Apple Silicon
+          const isGoogleChromeEnabled =
+            buildEnv.playwrightBase.enableGoogleChromeProject === true
+              ? isAppleSilicon() && buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon === true
+                ? "true"
+                : !isAppleSilicon()
+                  ? "true"
+                  : "false"
+              : "false";
 
-                dockerComposeUp(!!argv.ci, {
-                  PLAYWRIGHT_BASE__enableGoogleChromeProject: isGoogleChromeEnabled,
-                  ...extraEnv,
-                });
-                console.info(
-                  `[playwright-base] docker compose up done. Env
+          dockerComposeUp(!!argv.ci, {
+            PLAYWRIGHT_BASE__enableGoogleChromeProject: isGoogleChromeEnabled,
+            ...extraEnv,
+          });
+          console.info(
+            `[${CLI_NAME}] docker compose up done. Env
 CI=${!!argv.ci}
 PLAYWRIGHT_BASE__enableGoogleChromeTestsForAppleSilicon=${buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon}
 PLAYWRIGHT_BASE__enableChromiumProject=${buildEnv.playwrightBase.enableChromiumProject}
@@ -175,55 +212,57 @@ PLAYWRIGHT_BASE__retries=${buildEnv.playwrightBase.retries}
 PLAYWRIGHT_BASE__workers=${buildEnv.playwrightBase.workers}
 extraEnv=${JSON.stringify(extraEnv)}
 `
-                );
+          );
 
-                execSync(
-                  `docker exec -i ${argv["container-name"]} /bin/bash -c "cd ${argv["container-workdir"]} && pnpm test-e2e:run"`,
-                  {
-                    stdio: "inherit",
-                  }
-                );
-              }
-            )
-            .command(
-              "shell",
-              "Start test container shell",
-              (yargs) => {
-                yargs
-                  .option("additional-env", {
-                    type: "string",
-                    default: "",
-                    describe: "Additional envs to be forwarded to docker compose file",
-                  })
-                  .option("container-name", {
-                    type: "string",
-                    default: "",
-                    describe: "Container name specified on the docker-compose file",
-                    demandOption: true,
-                  })
-                  .option("container-workdir", {
-                    type: "string",
-                    default: "",
-                    describe: "Container workdir. e.g. incubator-kie-tools/packages/<package_name>",
-                    demandOption: true,
-                  });
-              },
-              (argv) => {
-                const extraEnv = collectAdditionalEnv(argv);
-                const isGoogleChromeEnabled =
-                  buildEnv.playwrightBase.enableGoogleChromeProject === true
-                    ? isAppleSilicon() && buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon === true
-                      ? "true"
-                      : !isAppleSilicon()
-                        ? "true"
-                        : "false"
-                    : "false";
-                dockerComposeUp(false, {
-                  PLAYWRIGHT_BASE__enableGoogleChromeProject: isGoogleChromeEnabled,
-                  ...extraEnv,
-                });
-                console.info(
-                  `[playwright-base] docker compose up done. Env
+          execSync(
+            `docker exec -i ${argv["container-name"]} /bin/bash -c "cd ${argv["container-workdir"]} && pnpm test-e2e:run"`,
+            {
+              stdio: "inherit",
+            }
+          );
+        }
+      )
+      .command(
+        "shell",
+        "Open an interactive shell inside the Playwright test container. This command starts the required container using docker-compose and launches a shell in the specified workdir inside the container.",
+        (yargs) => {
+          yargs
+            .option("additional-env", {
+              type: "string",
+              default: "",
+              describe:
+                "Comma-separated KEY=VALUE pairs of additional environment variables to forward to docker-compose. Can be repeated.",
+            })
+            .option("container-name", {
+              type: "string",
+              default: "",
+              describe: "Name of the container as defined in the docker-compose file. Required.",
+              demandOption: true,
+            })
+            .option("container-workdir", {
+              type: "string",
+              default: "",
+              describe:
+                "Path inside the container where Playwright tests are located. Example: incubator-kie-tools/packages/<package_name>. Required.",
+              demandOption: true,
+            });
+        },
+        (argv) => {
+          const extraEnv = collectAdditionalEnv(argv);
+          const isGoogleChromeEnabled =
+            buildEnv.playwrightBase.enableGoogleChromeProject === true
+              ? isAppleSilicon() && buildEnv.playwrightBase.enableGoogleChromeTestsForAppleSilicon === true
+                ? "true"
+                : !isAppleSilicon()
+                  ? "true"
+                  : "false"
+              : "false";
+          dockerComposeUp(false, {
+            PLAYWRIGHT_BASE__enableGoogleChromeProject: isGoogleChromeEnabled,
+            ...extraEnv,
+          });
+          console.info(
+            `[${CLI_NAME}] docker compose up done. Env
 CI=${!!argv.ci}
 PLAYWRIGHT_BASE__enableChromiumProject=${buildEnv.playwrightBase.enableChromiumProject}
 PLAYWRIGHT_BASE__enableGoogleChromeProject=${isGoogleChromeEnabled}
@@ -235,46 +274,40 @@ PLAYWRIGHT_BASE__retries=${buildEnv.playwrightBase.retries}
 PLAYWRIGHT_BASE__workers=${buildEnv.playwrightBase.workers}
 extraEnv=${JSON.stringify(extraEnv)}
 `
-                );
+          );
 
-                const result = spawnSync(
-                  "docker",
-                  [
-                    "exec",
-                    "-it",
-                    argv["container-name"] as any,
-                    "/bin/bash",
-                    "-c",
-                    `cd ${argv["container-workdir"]} && exec /bin/bash`,
-                  ],
-                  {
-                    stdio: "inherit",
-                    env: mergeEnv(),
-                  }
-                );
-                if (result.status !== 0) {
-                  throw new Error(`docker exec shell exited with code ${result.status}`);
-                }
-              }
-            )
-            .command(
-              "clean",
-              "Delete all container related to Playwright",
-              () => {},
-              () => {
-                execSync(`docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml down`, {
-                  stdio: "inherit",
-                  env: mergeEnv(),
-                });
-              }
-            )
-            .demandCommand(1, "Please specify a subcommand: run | shell | clean");
-        },
-        () => {
-          console.info(`[playwright-base] Choose between options`);
+          const result = spawnSync(
+            "docker",
+            [
+              "exec",
+              "-it",
+              argv["container-name"] as any,
+              "/bin/bash",
+              "-c",
+              `cd ${argv["container-workdir"]} && exec /bin/bash`,
+            ],
+            {
+              stdio: "inherit",
+              env: mergeEnv(),
+            }
+          );
+          if (result.status !== 0) {
+            throw new Error(`docker exec shell exited with code ${result.status}`);
+          }
         }
       )
-      .demandCommand(1, "Please specify a subcommand: container")
+      .command(
+        "clean",
+        "Stop and remove all Playwright-related containers created by docker-compose. This command runs 'docker compose down' using the base Playwright compose file.",
+        () => {},
+        () => {
+          execSync(`docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml down`, {
+            stdio: "inherit",
+            env: mergeEnv(),
+          });
+        }
+      )
+      .demandCommand(1, "Please specify a command: run | shell | clean")
       .alias("h", "help")
       .parse();
   } catch (e) {
