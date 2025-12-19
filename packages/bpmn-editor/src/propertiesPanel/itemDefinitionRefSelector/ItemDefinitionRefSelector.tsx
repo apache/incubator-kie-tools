@@ -102,13 +102,19 @@ export function ItemDefinitionRefSelector({
   );
 
   const _onChange = useCallback(
-    (newItemDefinitionRef: string | undefined) => {
+    (
+      newItemDefinitionRef: string | undefined,
+      newItemDefinitionLabel: string | undefined,
+      args: { triggeredByCreateNewOption: boolean }
+    ) => {
       if (
         newItemDefinitionRef &&
         DEFAULT_OPTIONS.filter((ddt) => ddt.itemDefinitionRef === newItemDefinitionRef).length > 0
       ) {
         const r = addOrGetItemDefinitionId({ newDataType: newItemDefinitionRef });
         onChange(r, newItemDefinitionRef);
+      } else if (args.triggeredByCreateNewOption && newItemDefinitionRef && newItemDefinitionLabel) {
+        onChange(newItemDefinitionRef, newItemDefinitionLabel);
       } else {
         onChange(newItemDefinitionRef, allOptionsById.get(newItemDefinitionRef!)?.dataType);
       }
