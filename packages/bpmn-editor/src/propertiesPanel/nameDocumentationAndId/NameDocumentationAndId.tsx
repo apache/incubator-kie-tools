@@ -36,7 +36,10 @@ import { visitFlowElementsAndArtifacts, visitLanes } from "../../mutations/_elem
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProcessAndDiagramElements";
 import { useCallback } from "react";
-import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
+import {
+  deleteBpmn20Drools10MetaDataEntry,
+  setBpmn20Drools10MetaData,
+} from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 import { useBpmnEditorI18n } from "../../i18n";
 
 export function NameDocumentationAndId({
@@ -81,7 +84,11 @@ export function NameDocumentationAndId({
             });
             visitFlowElementsAndArtifacts(process, ({ element: e }) => {
               if (e["@_id"] === element?.["@_id"] && e.__$$element === element.__$$element) {
-                setBpmn20Drools10MetaData(e, "elementname", e["@_name"] || "");
+                if (e["@_name"]) {
+                  setBpmn20Drools10MetaData(e, "elementname", e["@_name"] || "");
+                } else {
+                  deleteBpmn20Drools10MetaDataEntry(e, "elementname");
+                }
               }
             });
           }
@@ -100,21 +107,29 @@ export function NameDocumentationAndId({
         if (element.__$$element === "lane") {
           visitLanes(process, ({ lane: e }) => {
             if (e["@_id"] === element["@_id"]) {
-              e.documentation ??= [];
-              e.documentation[0] = {
-                "@_id": generateUuid(),
-                __$$text: newDocumentation,
-              };
+              if (newDocumentation) {
+                e.documentation ??= [];
+                e.documentation[0] = {
+                  "@_id": generateUuid(),
+                  __$$text: newDocumentation,
+                };
+              } else if (e.documentation) {
+                delete e.documentation;
+              }
             }
           });
         } else {
           visitFlowElementsAndArtifacts(process, ({ element: e }) => {
             if (e["@_id"] === element["@_id"] && e.__$$element === element.__$$element) {
-              e.documentation ??= [];
-              e.documentation[0] = {
-                "@_id": generateUuid(),
-                __$$text: newDocumentation,
-              };
+              if (newDocumentation) {
+                e.documentation ??= [];
+                e.documentation[0] = {
+                  "@_id": generateUuid(),
+                  __$$text: newDocumentation,
+                };
+              } else if (e.documentation) {
+                delete e.documentation;
+              }
             }
           });
         }

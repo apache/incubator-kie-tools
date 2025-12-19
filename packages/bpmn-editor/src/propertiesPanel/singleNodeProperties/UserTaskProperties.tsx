@@ -61,8 +61,9 @@ export function UserTaskProperties({
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
   const settings = useBpmnEditorStore((s) => s.settings);
 
-  const handleChange = (fieldName: UserTaskReservedDataMappingInputNames, newValue: string | boolean) => {
-    const valueAsString = String(newValue);
+  const handleChange = (fieldName: UserTaskReservedDataMappingInputNames, newValue: string | boolean | undefined) => {
+    // Handle empty strings as undefined, but "false" should be properly converted to a string
+    const valueAsStringOrUndefined = newValue || typeof newValue === "boolean" ? String(newValue) : undefined;
     bpmnEditorStoreApi.setState((s) => {
       const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
 
@@ -73,7 +74,7 @@ export function UserTaskProperties({
         if (e["@_id"] === userTask?.["@_id"] && e.__$$element === userTask.__$$element) {
           const { inputDataMapping, outputDataMapping } = getDataMapping(e);
 
-          updateDataMappingWithValue(inputDataMapping, valueAsString, fieldName);
+          updateDataMappingWithValue(inputDataMapping, valueAsStringOrUndefined, fieldName);
 
           setDataMappingForElement({
             definitions: s.bpmn.model.definitions,
@@ -207,19 +208,23 @@ export function UserTaskProperties({
 
                 visitFlowElementsAndArtifacts(process, ({ element: e }) => {
                   if (e["@_id"] === userTask?.["@_id"] && e.__$$element === userTask.__$$element) {
-                    e.resourceRole ??= [];
-                    e.resourceRole[0] ??= {
-                      "@_id": generateUuid(),
-                      __$$element: "potentialOwner",
-                    };
-                    e.resourceRole[0].resourceAssignmentExpression ??= {
-                      "@_id": generateUuid(),
-                      expression: {
+                    if (newValue) {
+                      e.resourceRole ??= [];
+                      e.resourceRole[0] ??= {
                         "@_id": generateUuid(),
-                        __$$element: "formalExpression",
-                      },
-                    };
-                    e.resourceRole[0].resourceAssignmentExpression.expression.__$$text = newValue;
+                        __$$element: "potentialOwner",
+                      };
+                      e.resourceRole[0].resourceAssignmentExpression ??= {
+                        "@_id": generateUuid(),
+                        expression: {
+                          "@_id": generateUuid(),
+                          __$$element: "formalExpression",
+                        },
+                      };
+                      e.resourceRole[0].resourceAssignmentExpression.expression.__$$text = newValue;
+                    } else if (e.resourceRole) {
+                      delete e.resourceRole;
+                    }
                   }
                 });
               })

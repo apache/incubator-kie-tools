@@ -28,15 +28,17 @@ import { Normalized } from "../normalization/normalize";
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
 
+type NewFlowElement = Partial<
+  Normalized<Unpacked<NonNullable<BPMN20__tProcess["flowElement"] | BPMN20__tProcess["artifact"]>>>
+>;
+
 export function updateFlowElement({
   definitions,
   newFlowElement,
   id,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
-  newFlowElement: Partial<
-    Normalized<Unpacked<NonNullable<BPMN20__tProcess["flowElement"] | BPMN20__tProcess["artifact"]>>>
-  >;
+  newFlowElement: NewFlowElement;
   id: string;
 }) {
   const { process } = addOrGetProcessAndDiagramElements({ definitions });
@@ -49,7 +51,14 @@ export function updateFlowElement({
         );
       }
 
+      const keysToDelete = Object.keys(newFlowElement).filter(
+        (key: keyof NewFlowElement) => newFlowElement[key] === undefined || newFlowElement[key] === ""
+      );
+
       array[index] = { ...element, ...newFlowElement } as typeof element;
+      for (const key of keysToDelete) {
+        delete array[index][key as keyof NewFlowElement];
+      }
       return false; // Will stop visiting.
     }
   });
