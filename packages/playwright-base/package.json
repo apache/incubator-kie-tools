@@ -12,20 +12,33 @@
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
-  "types": "index.d.ts",
-  "main": "index.js",
+  "bin": {
+    "playwright-base-container": "bin.js"
+  },
+  "main": "dist/bin.js",
   "files": [
-    "index.js"
+    "bin.js",
+    "dist",
+    "src"
   ],
   "scripts": {
     "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:prod": "pnpm build:dev",
     "image:docker:build": "docker build --platform=linux/amd64 -t dev.local/apache-kie-tools/playwright-e2e-tests-image:$(build-env root.streamName) . -f Containerfile --output type=docker",
-    "install": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
+    "install": "pnpm install:cli && pnpm install:deps",
+    "install:cli": "rimraf dist && tsc",
+    "install:deps": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
+  },
+  "dependencies": {
+    "yargs": "^17.0.1"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@playwright/test": "^1.45.2",
-    "rimraf": "^3.0.2"
+    "@types/yargs": "^17.0.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "typescript": "^5.5.3"
   }
 }

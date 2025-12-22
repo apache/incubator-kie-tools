@@ -17,18 +17,14 @@
  * under the License.
  */
 
-import { devices, defineConfig } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
-import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 import merge from "lodash/merge";
 
 import { env } from "./env";
 const buildEnv: any = env; // build-env is not typed
 
 const customConfig = defineConfig({
-  expect: {
-    timeout: 30000,
-  },
   use: {
     viewport: { width: 1600, height: 1200 },
     baseURL: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
@@ -39,58 +35,29 @@ const customConfig = defineConfig({
     {
       command: "pnpm start:cors-proxy",
       url: `http://localhost:${buildEnv.corsProxy.dev.port}/ping`,
-      reuseExistingServer: !process.env.CI || true,
+      reuseExistingServer: true,
       stdout: "pipe",
     },
     {
       command: "pnpm start:extended-services",
       url: `http://localhost:${buildEnv.extendedServicesJava.port}/ping`,
-      reuseExistingServer: !process.env.CI || true,
+      reuseExistingServer: true,
       stdout: "pipe",
     },
     {
       command: "pnpm start:kie-sandbox-accelerator-quarkus",
       url: `http://localhost:${buildEnv.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-bare.git`,
-      reuseExistingServer: !process.env.CI || true,
+      reuseExistingServer: true,
       stdout: "pipe",
     },
     {
       command: "pnpm start:kie-sandbox",
       url: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
-      reuseExistingServer: !process.env.CI || true,
+      reuseExistingServer: true,
       ignoreHTTPSErrors: true,
       timeout: 240000,
     },
   ],
-  // Override
-  projects: buildEnv.onlineEditor.test.ONLINE_EDITOR__skipPlaywrightTestsForArm64
-    ? [
-        {
-          timeout: 60000,
-          name: ProjectName.CHROMIUM,
-          use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
-          testIgnore: "*",
-        },
-
-        // {
-        //   name: "firefox",
-        //   use: { ...devices["Desktop Firefox"] },
-        // },
-
-        {
-          timeout: 60000,
-          name: ProjectName.WEBKIT,
-          use: { ...devices["Desktop Safari"], deviceScaleFactor: 1 },
-        },
-
-        {
-          timeout: 60000,
-          name: ProjectName.GOOGLE_CHROME,
-          use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
-          testIgnore: "*",
-        },
-      ]
-    : undefined,
 });
 
 export default defineConfig(merge(playwirghtBaseConfig, customConfig));

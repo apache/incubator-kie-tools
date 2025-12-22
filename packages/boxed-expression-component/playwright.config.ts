@@ -31,17 +31,10 @@ const customConfig = defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=misc-empty-boxed-expression--base`,
-    reuseExistingServer: !process.env.CI || true,
+    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html`,
+    reuseExistingServer: true,
     stdout: "pipe",
     timeout: 180000,
-  },
-  expect: {
-    toHaveScreenshot: {
-      // An acceptable ratio of pixels that are different to the
-      // total amount of pixels, between 0 and 1.
-      maxDiffPixelRatio: 0.1,
-    },
   },
 });
 

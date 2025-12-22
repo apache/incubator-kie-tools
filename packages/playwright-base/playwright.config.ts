@@ -19,6 +19,34 @@
 
 import { devices, defineConfig } from "@playwright/test";
 import { ProjectName } from "./projectNames";
+import { env } from "./env";
+const buildEnv: any = env; // build-env is not typed
+
+const projectsConfig = [
+  buildEnv.playwrightBase.enableChromiumProject
+    ? {
+        timeout: +buildEnv.playwrightBase.projectTimeout,
+        name: ProjectName.CHROMIUM,
+        use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
+      }
+    : undefined,
+
+  buildEnv.playwrightBase.enableWebkitProject
+    ? {
+        timeout: +buildEnv.playwrightBase.projectTimeout,
+        name: ProjectName.WEBKIT,
+        use: { ...devices["Desktop Safari"], deviceScaleFactor: 1 },
+      }
+    : undefined,
+
+  buildEnv.playwrightBase.enableGoogleChromeProject
+    ? {
+        timeout: +buildEnv.playwrightBase.projectTimeout,
+        name: ProjectName.GOOGLE_CHROME,
+        use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
+      }
+    : undefined,
+];
 
 export default defineConfig({
   testDir: "./tests-e2e",
@@ -28,10 +56,8 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 1,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 2 : undefined,
+  retries: +buildEnv.playwrightBase.retries,
+  workers: +buildEnv.playwrightBase.workers,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
@@ -53,36 +79,13 @@ export default defineConfig({
     locale: "en-US",
   },
   expect: {
-    timeout: 30_000,
+    timeout: +buildEnv.playwrightBase.expectTimeout,
     toHaveScreenshot: {
       // An acceptable ratio of pixels that are different to the
       // total amount of pixels, between 0 and 1.
-      maxDiffPixelRatio: 0.001,
+      maxDiffPixelRatio: +buildEnv.playwrightBase.maxDiffPixelRatio,
     },
   },
   /* Configure projects for major browsers */
-  projects: [
-    {
-      timeout: 180_000,
-      name: ProjectName.CHROMIUM,
-      use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
-    },
-
-    // {
-    //   name: "firefox",
-    //   use: { ...devices["Desktop Firefox"] },
-    // },
-
-    {
-      timeout: 180_000,
-      name: ProjectName.WEBKIT,
-      use: { ...devices["Desktop Safari"], deviceScaleFactor: 1 },
-    },
-
-    {
-      timeout: 180_000,
-      name: ProjectName.GOOGLE_CHROME,
-      use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
-    },
-  ],
+  projects: projectsConfig.filter((e) => e !== undefined),
 });

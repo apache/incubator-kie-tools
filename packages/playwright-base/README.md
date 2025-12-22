@@ -19,27 +19,7 @@
 
 ## Overview
 
-This package collects common configurations to run end-to-end Playwright tests.
-
-## Installing Playwright deps
-
-Currently, all Playwright end-to-end tests run inside containers. If you need to debug a test, we recommend doing so on the host machine. To do this, you need to install the Playwright dependencies. Use the `PLAYWRIGHT_BASE__installDeps` environment variable during the bootstrap phase to install all the required dependencies.
-
-```sh
-# in the `kie-tools` root
-PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap
-```
-
-or
-
-```sh
-# in the `kie-tools` root
-PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap -F playwright-base
-```
-
-> **i NOTE**
->
-> Since this step install the Playwright browsers, it requires sudo permision.
+This package collects common configurations to run end-to-end Playwright tests. Currently, all Playwright end-to-end tests run inside containers. If you need to debug a test, we recommend doing so on the host machine, refer to the [Installing Playwright deps](#Installing-Playwright-deps)
 
 ## Using containers to generate screenshots
 
@@ -47,7 +27,7 @@ Each operating system has slight variations in UI, even within the same browser.
 
 > **ℹ️ NOTE**
 >
-> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Linux arm64 doesn't support Google Chrome, and due to this caveat, some tests will be disabled for this arch.
+> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Additionally, Google Chrome is not available for Linux on ARM64, so any Chrome-based tests in an ARM64 container must be disabled. At present, tests run on AMD64 containers to ensure all browsers and test scenarios execute safely.
 
 ---
 
@@ -63,7 +43,7 @@ KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/playwright-base bu
 By default, tests run on using containers. To execute them in the native OS environment, set the `KIE_TOOLS_BUILD__containerizedEndToEndTests` environment variable to `false`.
 
 ```sh
-KIE_TOOLS_BUILD__containerizedEndToEndTests=true pnpm test-e2e
+KIE_TOOLS_BUILD__containerizedEndToEndTests=false pnpm test-e2e
 ```
 
 ## Updating Playwright screenshots
@@ -78,6 +58,93 @@ pnpm test-e2e:container:shell
 # Wait until the new shell is ready
 pnpm test-e2e:run --update-snapshots
 ```
+
+## Playwright-base CLI
+
+A CLI tool to assist running containerized Playwright tests. It loads environment variables and passes them through the docker-compose file, and helps with starting the test suite, opening an interactive shell inside the container, and cleaning up.
+
+```sh
+pnpm playwright-base-container --help
+playwright-base-container <command>
+
+Commands:
+  playwright-base-container run    Run the Playwright test suite inside Docker containers. This command will start the required containers using docker-compose
+                          and execute the Playwright tests in the specified container workdir.
+
+  Options:
+      --ci                 Enable CI mode by applying the CI-specific docker-compose override file.                         [boolean] [default: false]
+      --additional-env     Comma-separated KEY=VALUE pairs of additional environment variables to forward to docker-compose. Can be repeated.
+                                                                                                                                [string] [default: ""]
+      --container-name     Name of the container as defined in the docker-compose file. Required.                    [string] [required] [default: ""]
+      --container-workdir  Path inside the container where Playwright tests are located. Example: incubator-kie-tools/packages/<package_name>.
+                           Required.                                                                                 [string] [required] [default: ""]
+
+  playwright-base-container shell  Open an interactive shell inside the Playwright test container. This command starts the required container using
+                          docker-compose and launches a shell in the specified workdir inside the container.
+
+  Options:
+      --additional-env     Comma-separated KEY=VALUE pairs of additional environment variables to forward to docker-compose. Can be repeated.
+                                                                                                                                [string] [default: ""]
+      --container-name     Name of the container as defined in the docker-compose file. Required.                    [string] [required] [default: ""]
+      --container-workdir  Path inside the container where Playwright tests are located. Example: incubator-kie-tools/packages/<package_name>.
+                           Required.                                                                                 [string] [required] [default: ""]
+
+  playwright-base-container clean  Stop and remove all Playwright-related containers created by docker-compose. This command runs 'docker compose down' using
+                          the base Playwright compose file.
+
+Examples:
+  playwright-base-container run --container-name my_playwright_container        Run the Playwright test suite locally (no CI override) using the
+  --container-workdir incubator-kie-tools/packages/my-package                  specified container and workdir.
+
+  playwright-base-container run --ci --container-name my_playwright_container   Run the Playwright test suite in CI mode (applies CI docker-compose
+  --container-workdir incubator-kie-tools/packages/my-package                  override).
+
+  playwright-base-container run --container-name e2e --container-workdir        Run with extra environment variables forwarded to docker-compose
+  incubator-kie-tools/packages/foo --additional-env                            (comma-separated KEY=VALUE pairs).
+  BUILD_ID=123,REPORT_DIR=/tmp/reports
+
+  playwright-base-container run --container-name e2e --container-workdir        Pass multiple --additional-env options; later pairs override earlier
+  incubator-kie-tools/packages/foo --additional-env FOO=bar --additional-env   keys if duplicated.
+  COMMIT_SHA=deadbeef
+
+  CI=true playwright-base-container run --container-name e2e                    Leverage CI environment variable to auto-enable CI mode (equivalent to
+  --container-workdir incubator-kie-tools/packages/foo                         --ci when CI=true or CI=1).
+
+  playwright-base-container shell --container-name my_playwright_container      Start the container (if needed) and open an interactive bash shell in
+  --container-workdir incubator-kie-tools/packages/my-package                  the package workdir.
+
+  playwright-base-container shell --container-name e2e --container-workdir      Open an interactive shell with extra environment variables forwarded to
+  incubator-kie-tools/packages/foo --additional-env DEBUG=true                 docker-compose.
+
+  playwright-base-container shell --container-name e2e --container-workdir      Forward multiple env variables in a single --additional-env option
+  incubator-kie-tools/packages/foo --additional-env FOO=bar,BAZ=qux            using comma-separated pairs.
+
+  playwright-base-container clean                                               Stop and remove Playwright-related containers using the base
+                                                                               docker-compose file.
+```
+
+## Installing Playwright dependencies on host machine
+
+> **ℹ️ Warning**
+>
+> The tests screenshot comparisons will not work in an environment different than the containers, meaning, this setup is only used to debug.
+> To install the Playwright dependencies use the `PLAYWRIGHT_BASE__installDeps` environment variable during the bootstrap phase to install all the required dependencies.
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap
+```
+
+or
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap -F playwright-base
+```
+
+> **ℹ️ NOTE**
+>
+> Since this step install the Playwright browsers, it requires sudo permision.
 
 ---
 

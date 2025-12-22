@@ -4038,6 +4038,9 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+      start-server-and-test:
+        specifier: ^2.0.3
+        version: 2.0.3
       storybook:
         specifier: ^7.3.2
         version: 7.6.13(encoding@0.1.13)
@@ -7660,16 +7663,32 @@ importers:
         version: 5.94.0
 
   packages/playwright-base:
+    dependencies:
+      yargs:
+        specifier: ^17.0.1
+        version: 17.7.2
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@playwright/test':
         specifier: ^1.45.2
         version: 1.45.2
+      '@types/yargs':
+        specifier: ^17.0.1
+        version: 17.0.24
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
 
   packages/pmml-editor:
     dependencies:

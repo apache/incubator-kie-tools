@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,24 +19,4 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
-
-module.exports = composeEnv(
-  [
-    require("@kie-tools/root-env/env"),
-    require("@kie-tools-core/webpack-base/env"),
-    require("@kie-tools/playwright-base/env"),
-  ],
-  {
-    vars: varsWithName({}),
-    get env() {
-      return {
-        boxedExpressionComponent: {
-          storybook: {
-            port: "9900",
-          },
-        },
-      };
-    },
-  }
-);
+require("./dist/bin");
