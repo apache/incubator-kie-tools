@@ -3,7 +3,7 @@
   "packages": {
     "temurin-bin-17": "17.0.9",
     "nodejs": "22.14.0",
-    "maven": "3.9.6",
+    "maven": "3.9.11",
     "kubernetes-helm": "3.13.3",
     "gnumake": "4.4.1",
     "go": "1.24.10",

@@ -51,7 +51,7 @@ The following prerequisites must be assessed before beginning the procedure:
 
 - Check if the below Kogito version upgraded the **Quarkus version** (E.g., from `3.8.0` to `3.8.1`). In that case, we need to upgrade Quarkus version in `kie-tools` accordingly.
 - Check if the below Kogito version upgraded to the **Java version** (E.g., from Java `17` to Java `21`). In such a case, we need to upgrade `kie-tools` Java modules accordingly.
-- Check if the below Kogito version upgraded to the **Maven version** (E.g., from Maven `3.9.6` to Maven `3.9.7`). In such a case, we need to upgrade `kie-tools` Maven modules accordingly.
+- Check if the below Kogito version upgraded to the **Maven version** (E.g., from Maven `3.9.6` to Maven `3.9.11`). In such a case, we need to upgrade `kie-tools` Maven modules accordingly.
 
 ## Upgrading Quarkus
 
@@ -90,7 +90,7 @@ The suggested strategy is to check all:
 
 To double-check that all the versions are correctly updated, please perform a search with grep (or the IDE-integrated search) if the old version is still referenced somewhere. As a key, you can use:
 
-- The version number (E.g., `17` for Java and `3.9.6` for Maven);
+- The version number (E.g., `17` for Java and `3.9.11` for Maven);
 - OpenJDK references (`openjdk`);
 - Apache Maven references (`apache-maven`);
 - GitHub Action references (`java-version` and `maven-version`);
