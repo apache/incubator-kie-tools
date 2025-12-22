@@ -28,7 +28,7 @@ import { hideBin } from "yargs/helpers";
 // @ts-ignore
 import { env } from "../env";
 
-const CLI_NAME = "pw-e2e-container";
+const CLI_NAME = "playwright-base-container";
 
 const buildEnv: any = env;
 

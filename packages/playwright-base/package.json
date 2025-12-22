@@ -13,7 +13,7 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "bin": {
-    "pw-e2e-container": "bin.js"
+    "playwright-base-container": "bin.js"
   },
   "main": "dist/bin.js",
   "files": [
