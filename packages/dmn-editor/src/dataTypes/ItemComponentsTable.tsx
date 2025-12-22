@@ -205,17 +205,15 @@ export function ItemComponentsTable({
                         return;
                       }
 
-                      const itemDefinitionsCopy = JSON.parse(JSON.stringify(clipboard.itemDefinitions));
-
                       getNewDmnIdRandomizer()
                         .ack({
-                          json: itemDefinitionsCopy,
+                          json: clipboard.itemDefinitions,
                           type: "DMN16__tDefinitions",
                           attr: "itemDefinition",
                         })
                         .randomize({ skipAlreadyAttributedIds: false });
 
-                      for (const itemDefinition of itemDefinitionsCopy) {
+                      for (const itemDefinition of clipboard.itemDefinitions) {
                         addItemComponent(parent.itemDefinition["@_id"]!, "unshift", itemDefinition);
                       }
                     });
@@ -611,19 +609,15 @@ export function ItemComponentsTable({
                                           return;
                                         }
 
-                                        const itemDefinitionsCopy = JSON.parse(
-                                          JSON.stringify(clipboard.itemDefinitions)
-                                        );
-
                                         getNewDmnIdRandomizer()
                                           .ack({
-                                            json: itemDefinitionsCopy,
+                                            json: clipboard.itemDefinitions,
                                             type: "DMN16__tDefinitions",
                                             attr: "itemDefinition",
                                           })
                                           .randomize({ skipAlreadyAttributedIds: false });
 
-                                        for (const itemDefinition of itemDefinitionsCopy) {
+                                        for (const itemDefinition of clipboard.itemDefinitions) {
                                           addItemComponent(dt.itemDefinition["@_id"]!, "unshift", itemDefinition);
                                         }
                                       });
