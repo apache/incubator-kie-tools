@@ -29,8 +29,27 @@ import { containerNodeVisibleRectCssClassName } from "@kie-tools/xyflow-react-ki
 import { ActivityNodeMarker, EventVariant, GatewayVariant, SubProcessVariant, TaskVariant } from "../BpmnDiagramDomain";
 import { useMemo } from "react";
 
+// ################################################################
+// ###             Note on the Kogito SVG Add-on:               ###
+// ###                                                          ###
+// ###  There are only three possibilities for elements inside  ###
+// ###  elements with the bpmn2nodeid attribute:                ###
+// ###                                                          ###
+// ###  ?shapeType=BACKGROUND"                                  ###
+// ###  ?shapeType=BORDE&renderType=STROKE                      ###
+// ###  ?shapeType=BORDE&renderType=FILL                        ###
+// ###                                                          ###
+// ###  Here we only needed to use the first two.               ###
+// ###                                                          ###
+// ################################################################
+
 export function DataObjectNodeSvg(
-  __props: NodeSvgProps & { isIcon?: boolean; showFoldedPage?: boolean; showArrow?: boolean; transform?: string }
+  __props: NodeSvgProps & {
+    isIcon?: boolean;
+    showFoldedPage?: boolean;
+    showArrow?: boolean;
+    transform?: string;
+  }
 ) {
   const {
     x,
@@ -125,7 +144,9 @@ export const NODE_COLORS = {
   },
 } as const;
 
-export function StartEventNodeSvg(__props: NodeSvgProps & { variant: EventVariant | "none"; isInterrupting: boolean }) {
+export function StartEventNodeSvg(
+  __props: NodeSvgProps & { variant: EventVariant | "none"; isInterrupting: boolean; exportedSvgId?: string }
+) {
   const {
     x,
     y,
@@ -135,7 +156,7 @@ export function StartEventNodeSvg(__props: NodeSvgProps & { variant: EventVarian
     props: { ..._props },
   } = normalize(__props);
 
-  const { variant, isInterrupting, ...props } = { ..._props };
+  const { variant, isInterrupting, exportedSvgId, ...props } = { ..._props };
 
   const cx = x + width / 2;
   const cy = y + height / 2;
@@ -144,19 +165,44 @@ export function StartEventNodeSvg(__props: NodeSvgProps & { variant: EventVarian
 
   return (
     <>
-      <circle
-        cx={cx}
-        cy={cy}
-        strokeWidth={strokeWidth}
-        strokeDasharray={isInterrupting ? undefined : "9px 9px"}
-        width={width}
-        height={height}
-        fill={NODE_COLORS.startEvent.background}
-        stroke={NODE_COLORS.startEvent.foreground}
-        strokeLinejoin={"round"}
-        r={r}
-        {...props}
-      />
+      <g>
+        {/* 
+            Without this `g` element encapsulating the `circle` the Kogito SVG Add-on breaks,
+            as the BACKGROUND and BORDER shapes can't be in the same level.
+          */}
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BACKGROUND` } : {})}
+          cx={cx}
+          cy={cy}
+          strokeWidth={strokeWidth}
+          strokeDasharray={isInterrupting ? undefined : "9px 9px"}
+          width={width}
+          height={height}
+          fill={NODE_COLORS.startEvent.background}
+          stroke={NODE_COLORS.startEvent.foreground}
+          strokeLinejoin={"round"}
+          r={r}
+          {...props}
+        />
+      </g>
+
+      {exportedSvgId && (
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BORDER&renderType=STROKE` } : {})}
+          cx={cx}
+          cy={cy}
+          strokeWidth={strokeWidth}
+          strokeDasharray={isInterrupting ? undefined : "9px 9px"}
+          width={width}
+          height={height}
+          fill={"transparent"}
+          stroke={NODE_COLORS.startEvent.foreground}
+          strokeLinejoin={"round"}
+          r={r}
+          {...props}
+        />
+      )}
+
       <EventVariantSymbolSvg
         variant={variant}
         fill={NODE_COLORS.startEvent.background}
@@ -173,7 +219,12 @@ export function StartEventNodeSvg(__props: NodeSvgProps & { variant: EventVarian
   );
 }
 export function IntermediateCatchEventNodeSvg(
-  __props: NodeSvgProps & { rimWidth?: number; variant: EventVariant | "none"; isInterrupting: boolean }
+  __props: NodeSvgProps & {
+    rimWidth?: number;
+    variant: EventVariant | "none";
+    isInterrupting: boolean;
+    exportedSvgId?: string;
+  }
 ) {
   const {
     x,
@@ -184,7 +235,7 @@ export function IntermediateCatchEventNodeSvg(
     props: { ..._props },
   } = normalize(__props);
 
-  const { rimWidth, variant, isInterrupting, ...props } = { ..._props };
+  const { rimWidth, variant, isInterrupting, exportedSvgId, ...props } = { ..._props };
 
   const outerCircleRadius = width / 2;
   const innerCircleRadius = outerCircleRadius - (rimWidth ?? 5);
@@ -194,19 +245,44 @@ export function IntermediateCatchEventNodeSvg(
 
   return (
     <>
-      <circle
-        cx={cx}
-        cy={cy}
-        strokeWidth={strokeWidth}
-        width={width}
-        height={height}
-        strokeDasharray={isInterrupting ? undefined : "9px 9px"}
-        fill={NODE_COLORS.intermediateCatchEvent.background}
-        stroke={NODE_COLORS.intermediateCatchEvent.foreground}
-        strokeLinejoin={"round"}
-        r={outerCircleRadius}
-        {...props}
-      />
+      <g>
+        {/* 
+            Without this `g` element encapsulating the `circle` the Kogito SVG Add-on breaks,
+            as the BACKGROUND and BORDER shapes can't be in the same level.
+          */}
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BACKGROUND` } : {})}
+          cx={cx}
+          cy={cy}
+          strokeWidth={strokeWidth}
+          width={width}
+          height={height}
+          strokeDasharray={isInterrupting ? undefined : "9px 9px"}
+          fill={NODE_COLORS.intermediateCatchEvent.background}
+          stroke={NODE_COLORS.intermediateCatchEvent.foreground}
+          strokeLinejoin={"round"}
+          r={outerCircleRadius}
+          {...props}
+        />
+      </g>
+
+      {exportedSvgId && (
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BORDER&renderType=STROKE` } : {})}
+          cx={cx}
+          cy={cy}
+          strokeWidth={strokeWidth}
+          width={width}
+          height={height}
+          strokeDasharray={isInterrupting ? undefined : "9px 9px"}
+          fill={"transparent"}
+          stroke={NODE_COLORS.intermediateCatchEvent.foreground}
+          strokeLinejoin={"round"}
+          r={outerCircleRadius}
+          {...props}
+        />
+      )}
+
       <circle
         cx={cx}
         cy={cy}
@@ -236,7 +312,7 @@ export function IntermediateCatchEventNodeSvg(
   );
 }
 export function IntermediateThrowEventNodeSvg(
-  __props: NodeSvgProps & { rimWidth?: number; variant: EventVariant | "none" }
+  __props: NodeSvgProps & { rimWidth?: number; variant: EventVariant | "none"; exportedSvgId?: string }
 ) {
   const {
     x,
@@ -247,7 +323,7 @@ export function IntermediateThrowEventNodeSvg(
     props: { ..._props },
   } = normalize(__props);
 
-  const { rimWidth, variant, ...props } = { ..._props };
+  const { rimWidth, variant, exportedSvgId, ...props } = { ..._props };
 
   const outerCircleRadius = width / 2;
   const innerCircleRadius = outerCircleRadius - (rimWidth ?? 5);
@@ -257,18 +333,42 @@ export function IntermediateThrowEventNodeSvg(
 
   return (
     <>
-      <circle
-        cx={x + width / 2}
-        cy={y + height / 2}
-        strokeWidth={strokeWidth}
-        width={width}
-        height={height}
-        fill={NODE_COLORS.intermediateThrowEvent.background}
-        stroke={NODE_COLORS.intermediateThrowEvent.foreground}
-        strokeLinejoin={"round"}
-        r={outerCircleRadius}
-        {...props}
-      />
+      <g>
+        {/* 
+            Without this `g` element encapsulating the `circle` the Kogito SVG Add-on breaks,
+            as the BACKGROUND and BORDER shapes can't be in the same level.
+          */}
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BACKGROUND` } : {})}
+          cx={x + width / 2}
+          cy={y + height / 2}
+          strokeWidth={strokeWidth}
+          width={width}
+          height={height}
+          fill={NODE_COLORS.intermediateThrowEvent.background}
+          stroke={NODE_COLORS.intermediateThrowEvent.foreground}
+          strokeLinejoin={"round"}
+          r={outerCircleRadius}
+          {...props}
+        />
+      </g>
+
+      {exportedSvgId && (
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BORDER&renderType=STROKE` } : {})}
+          cx={x + width / 2}
+          cy={y + height / 2}
+          strokeWidth={strokeWidth}
+          width={width}
+          height={height}
+          fill={"transparent"}
+          stroke={NODE_COLORS.intermediateThrowEvent.foreground}
+          strokeLinejoin={"round"}
+          r={outerCircleRadius}
+          {...props}
+        />
+      )}
+
       <circle
         cx={x + width / 2}
         cy={y + height / 2}
@@ -296,7 +396,7 @@ export function IntermediateThrowEventNodeSvg(
     </>
   );
 }
-export function EndEventNodeSvg(__props: NodeSvgProps & { variant: EventVariant | "none" }) {
+export function EndEventNodeSvg(__props: NodeSvgProps & { variant: EventVariant | "none"; exportedSvgId?: string }) {
   const {
     x,
     y,
@@ -306,7 +406,7 @@ export function EndEventNodeSvg(__props: NodeSvgProps & { variant: EventVariant 
     props: { ..._props },
   } = normalize(__props);
 
-  const { variant, ...props } = { ..._props };
+  const { variant, exportedSvgId, ...props } = { ..._props };
 
   const cx = x + width / 2;
   const cy = y + height / 2;
@@ -315,18 +415,42 @@ export function EndEventNodeSvg(__props: NodeSvgProps & { variant: EventVariant 
 
   return (
     <>
-      <circle
-        cx={cx}
-        cy={cy}
-        strokeWidth={strokeWidth}
-        width={width}
-        height={height}
-        fill={NODE_COLORS.endEvent.background}
-        stroke={NODE_COLORS.endEvent.foreground}
-        strokeLinejoin={"round"}
-        r={r}
-        {...props}
-      />
+      <g>
+        {/* 
+            Without this `g` element encapsulating the `circle` the Kogito SVG Add-on breaks,
+            as the BACKGROUND and BORDER shapes can't be in the same level.
+          */}
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BACKGROUND` } : {})}
+          cx={cx}
+          cy={cy}
+          strokeWidth={strokeWidth}
+          width={width}
+          height={height}
+          fill={NODE_COLORS.endEvent.background}
+          stroke={NODE_COLORS.endEvent.foreground}
+          strokeLinejoin={"round"}
+          r={r}
+          {...props}
+        />
+      </g>
+
+      {exportedSvgId && (
+        <circle
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BORDER&renderType=STROKE` } : {})}
+          cx={cx}
+          cy={cy}
+          strokeWidth={strokeWidth}
+          width={width}
+          height={height}
+          fill={"transparent"}
+          stroke={NODE_COLORS.endEvent.foreground}
+          strokeLinejoin={"round"}
+          r={r}
+          {...props}
+        />
+      )}
+
       <EventVariantSymbolSvg
         variant={variant}
         fill={NODE_COLORS.endEvent.background}
@@ -348,6 +472,7 @@ export function TaskNodeSvg(
     variant?: TaskVariant | "task" | "callActivity" | "none";
     isIcon?: boolean;
     icon?: React.ReactNode;
+    exportedSvgId?: string;
   }
 ) {
   const {
@@ -359,7 +484,7 @@ export function TaskNodeSvg(
     props: { ..._props },
   } = normalize(__props);
 
-  const { markers: _markers, variant: _variant, variant, isIcon, icon } = { ..._props };
+  const { markers: _markers, variant: _variant, variant, isIcon, icon, exportedSvgId } = { ..._props };
 
   const markers = useMemo(() => new Set(_markers), [_markers]);
   const iconSize = 200;
@@ -375,18 +500,43 @@ export function TaskNodeSvg(
   return (
     <>
       {!isIcon && (
-        <rect
-          x={x}
-          y={y}
-          strokeWidth={strokeWidth}
-          width={width}
-          height={height}
-          fill={DEFAULT_NODE_FILL}
-          stroke={DEFAULT_NODE_STROKE_COLOR}
-          strokeLinejoin={"round"}
-          rx="3"
-          ry="3"
-        />
+        <>
+          <g>
+            {/* 
+                Without this `g` element encapsulating the `rect` the Kogito SVG Add-on breaks,
+                as the BACKGROUND and BORDER shapes can't be in the same level.
+              */}
+            <rect
+              {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BACKGROUND` } : {})}
+              x={x}
+              y={y}
+              strokeWidth={strokeWidth}
+              width={width}
+              height={height}
+              fill={DEFAULT_NODE_FILL}
+              stroke={DEFAULT_NODE_STROKE_COLOR}
+              strokeLinejoin={"round"}
+              rx="3"
+              ry="3"
+            />
+          </g>
+
+          {exportedSvgId && (
+            <rect
+              {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BORDER&renderType=STROKE` } : {})}
+              x={x}
+              y={y}
+              strokeWidth={0}
+              width={width}
+              height={height}
+              fill={"transparent"}
+              stroke={DEFAULT_NODE_STROKE_COLOR}
+              strokeLinejoin={"round"}
+              rx="3"
+              ry="3"
+            />
+          )}
+        </>
       )}
 
       {icon && <g transform={`translate(${iconOffsets.scriptTask.cx}, ${iconOffsets.scriptTask.cy})`}>{icon}</g>}
@@ -693,7 +843,9 @@ export function UserTaskSvg({ stroke, size }: { stroke: string; size: number }) 
     </svg>
   );
 }
-export function GatewayNodeSvg(__props: NodeSvgProps & { variant: GatewayVariant | "none"; isIcon?: boolean }) {
+export function GatewayNodeSvg(
+  __props: NodeSvgProps & { variant: GatewayVariant | "none"; isIcon?: boolean; exportedSvgId?: string }
+) {
   const {
     x,
     y,
@@ -703,20 +855,45 @@ export function GatewayNodeSvg(__props: NodeSvgProps & { variant: GatewayVariant
     props: { ..._props },
   } = normalize(__props);
 
-  const { variant, isIcon, ...props } = { ..._props };
+  const { variant, isIcon, exportedSvgId, ...props } = { ..._props };
   const iconOffset = isIcon ? 25 : 0;
 
   return (
     <>
       {!isIcon && (
+        <g>
+          {/* 
+              Without this `g` element encapsulating the `rect` the Kogito SVG Add-on breaks,
+              as the BACKGROUND and BORDER shapes can't be in the same level.
+            */}
+          <rect
+            {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BACKGROUND` } : {})}
+            x={8 + x}
+            y={8 + y}
+            transform={`rotate(45,${x + width / 2},${y + height / 2})`}
+            strokeWidth={strokeWidth}
+            width={width / 1.4} // sqrt(2)
+            height={height / 1.4} // sqrt(2)
+            fill={NODE_COLORS.gateway.background}
+            stroke={NODE_COLORS.gateway.foreground}
+            strokeLinejoin={"round"}
+            rx="5"
+            ry="5"
+            {...props}
+          />
+        </g>
+      )}
+
+      {exportedSvgId && (
         <rect
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BORDER&renderType=STROKE` } : {})}
           x={8 + x}
           y={8 + y}
           transform={`rotate(45,${x + width / 2},${y + height / 2})`}
           strokeWidth={strokeWidth}
           width={width / 1.4} // sqrt(2)
           height={height / 1.4} // sqrt(2)
-          fill={NODE_COLORS.gateway.background}
+          fill={"transparent"}
           stroke={NODE_COLORS.gateway.foreground}
           strokeLinejoin={"round"}
           rx="5"
@@ -724,6 +901,7 @@ export function GatewayNodeSvg(__props: NodeSvgProps & { variant: GatewayVariant
           {...props}
         />
       )}
+
       {variant === "parallelGateway" && (
         <ParallelGatewaySvg
           stroke={NODE_COLORS.gateway.foreground}
@@ -994,6 +1172,7 @@ export const SubProcessNodeSvg = React.forwardRef<
     rimWidth?: number;
     icons?: ActivityNodeMarker[];
     variant?: SubProcessVariant;
+    exportedSvgId?: string;
   }
 >((__props, ref) => {
   const {
@@ -1001,8 +1180,10 @@ export const SubProcessNodeSvg = React.forwardRef<
     borderRadius: _borderRadius,
     icons: _icons,
     variant: _variant,
+    exportedSvgId: _exportedSvgId,
     ..._props
   } = { ...__props };
+
   const { x, y, width, height, strokeWidth, props } = normalize(_props);
 
   const {
@@ -1020,6 +1201,7 @@ export const SubProcessNodeSvg = React.forwardRef<
   const variant = _variant ?? "other";
   const rimWidth = variant === "transaction" ? _rimWidth ?? 5 : 0;
   const borderRadius = variant === "transaction" ? _borderRadius ?? 10 : 2;
+  const exportedSvgId = _exportedSvgId ?? undefined;
 
   return (
     <>
@@ -1039,37 +1221,68 @@ export const SubProcessNodeSvg = React.forwardRef<
           className={containerNodeVisibleRectCssClassName}
         />
       )}
-      <rect
-        {...props}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        strokeWidth={strokeWidth}
-        fill={"transparent"}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
-        strokeDasharray={variant === "event" ? "10,5" : undefined}
-        strokeLinejoin={"round"}
-        rx={borderRadius}
-        ry={borderRadius}
-        className={containerNodeVisibleRectCssClassName}
-      />
+
+      <g>
+        {/* 
+            Without this `g` element encapsulating the `rect` the Kogito SVG Add-on breaks,
+            as the BACKGROUND and BORDER shapes can't be in the same level.
+          */}
+        <rect
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BACKGROUND` } : {})}
+          {...props}
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          strokeWidth={strokeWidth}
+          fill={"transparent"}
+          stroke={DEFAULT_NODE_STROKE_COLOR}
+          strokeDasharray={variant === "event" ? "10,5" : undefined}
+          strokeLinejoin={"round"}
+          rx={borderRadius}
+          ry={borderRadius}
+          className={containerNodeVisibleRectCssClassName}
+        />
+      </g>
+
+      {exportedSvgId && (
+        <rect
+          {...(exportedSvgId ? { id: `${exportedSvgId}?shapeType=BORDER&renderType=STROKE` } : {})}
+          {...props}
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          strokeWidth={strokeWidth}
+          fill={"transparent"}
+          stroke={DEFAULT_NODE_STROKE_COLOR}
+          strokeDasharray={variant === "event" ? "10,5" : undefined}
+          strokeLinejoin={"round"}
+          rx={borderRadius}
+          ry={borderRadius}
+          className={containerNodeVisibleRectCssClassName}
+        />
+      )}
+
       {/* ↓ interaction rect */}
-      <rect
-        {...interactionRectProps}
-        ref={ref}
-        x={interactionRectX}
-        y={interactionRectY}
-        width={interactionRectWidth}
-        height={interactionRectHeight}
-        strokeWidth={interactionRectStrokeWidth}
-        fill={"transparent"}
-        stroke={"transparent"}
-        strokeLinejoin={"round"}
-        rx={"0"}
-        ry={"0"}
-        className={containerNodeInteractionRectCssClassName}
-      />
+      {!exportedSvgId && (
+        <rect
+          {...interactionRectProps}
+          ref={ref}
+          x={interactionRectX}
+          y={interactionRectY}
+          width={interactionRectWidth}
+          height={interactionRectHeight}
+          strokeWidth={interactionRectStrokeWidth}
+          fill={"transparent"}
+          stroke={"transparent"}
+          strokeLinejoin={"round"}
+          rx={"0"}
+          ry={"0"}
+          className={containerNodeInteractionRectCssClassName}
+        />
+      )}
+
       <ActivityNodeIcons x={x} y={y} width={width} height={height} icons={icons} />
     </>
   );

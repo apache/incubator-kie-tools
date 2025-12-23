@@ -26,6 +26,7 @@ import {
   BpmnNodeType,
   EventVariant,
   GatewayVariant,
+  MIN_NODE_SIZES,
   SubProcessVariant,
   TaskVariant,
 } from "../diagram/BpmnDiagramDomain";
@@ -51,7 +52,7 @@ import {
   UnknownNodeSvg,
 } from "../diagram/nodes/NodeSvgs";
 import { NODE_TYPES } from "../diagram/BpmnDiagramDomain";
-import { SnapGrid } from "@kie-tools/xyflow-react-kie-diagram/dist/snapgrid/SnapGrid";
+import { snapBounds, SnapGrid } from "@kie-tools/xyflow-react-kie-diagram/dist/snapgrid/SnapGrid";
 import { NodeLabelPosition } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/NodeSvgs";
 import { AssociationPath, SequenceFlowPath } from "../diagram/edges/EdgeSvgs";
 import { getShouldDisplayIsInterruptingFlag } from "../propertiesPanel/singleNodeProperties/StartEventProperties";
@@ -137,14 +138,16 @@ export function BpmnDiagramSvg({
           : "";
 
       return (
-        <g data-kie-bpmn-node-id={node.id} key={node.id}>
+        // bpmn2nodeid is necessary for the Kogito SVG Add-on
+        <g id={node.id} data-kie-bpmn-node-id={node.id} key={node.id} {...({ bpmn2nodeid: node.id } as any)}>
           {node.type === NODE_TYPES.dataObject && (
             <DataObjectNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               showFoldedPage={true}
+              // Doesn't need to be painted by the Kogito SVG Add-on
               {...style}
             />
           )}
@@ -154,11 +157,12 @@ export function BpmnDiagramSvg({
               bpmnElement={node?.data?.bpmnElement as BpmnElementActivitytIcons}
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.task>(NODE_TYPES.task, node?.data?.bpmnElement)}
               strokeWidth={node?.data?.bpmnElement?.__$$element === "callActivity" ? 5 : undefined}
               customTasks={customTasks}
+              exportedSvgId={node.id}
               {...style}
             />
           )}
@@ -166,9 +170,10 @@ export function BpmnDiagramSvg({
             <GroupNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               strokeWidth={3}
+              // Doesn't need to be painted by the Kogito SVG Add-on
               {...style}
             />
           )}
@@ -176,8 +181,9 @@ export function BpmnDiagramSvg({
             <TextAnnotationNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
+              // Doesn't need to be painted by the Kogito SVG Add-on
               {...style}
             />
           )}
@@ -185,8 +191,8 @@ export function BpmnDiagramSvg({
             <StartEventNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.startEvent>(NODE_TYPES.startEvent, node?.data?.bpmnElement)}
               isInterrupting={
                 getShouldDisplayIsInterruptingFlag(
@@ -197,6 +203,7 @@ export function BpmnDiagramSvg({
                     START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE
                   : START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE
               }
+              exportedSvgId={node.id}
               {...style}
             />
           )}
@@ -204,8 +211,8 @@ export function BpmnDiagramSvg({
             <IntermediateCatchEventNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.intermediateCatchEvent>(
                 NODE_TYPES.intermediateCatchEvent,
                 node?.data?.bpmnElement
@@ -215,6 +222,7 @@ export function BpmnDiagramSvg({
                   ? node?.data?.bpmnElement["@_cancelActivity"] ?? BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE
                   : true
               }
+              exportedSvgId={node.id}
               {...style}
             />
           )}
@@ -222,12 +230,13 @@ export function BpmnDiagramSvg({
             <IntermediateThrowEventNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.intermediateThrowEvent>(
                 NODE_TYPES.intermediateThrowEvent,
                 node?.data?.bpmnElement
               )}
+              exportedSvgId={node.id}
               {...style}
             />
           )}
@@ -235,9 +244,10 @@ export function BpmnDiagramSvg({
             <GatewayNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.gateway>(NODE_TYPES.gateway, node?.data?.bpmnElement)}
+              exportedSvgId={node.id}
               {...style}
             />
           )}
@@ -245,10 +255,11 @@ export function BpmnDiagramSvg({
             <EndEventNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.endEvent>(NODE_TYPES.endEvent, node?.data?.bpmnElement)}
               strokeWidth={6}
+              exportedSvgId={node.id}
               {...style}
             />
           )}
@@ -259,9 +270,10 @@ export function BpmnDiagramSvg({
               bpmnElement={node?.data?.bpmnElement as BpmnElementActivitytIcons}
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.subProcess>(NODE_TYPES.subProcess, node?.data?.bpmnElement)}
+              exportedSvgId={node.id}
               {...style}
             />
           )}
@@ -269,8 +281,9 @@ export function BpmnDiagramSvg({
             <LaneNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
+              // Doesn't need to be painted by the Kogito SVG Add-on
               {...style}
             />
           )}
@@ -278,8 +291,9 @@ export function BpmnDiagramSvg({
             <UnknownNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position!.x}
+              y={node.position!.y}
+              // Doesn't need to be painted by the Kogito SVG Add-on
               {...style}
             />
           )}
@@ -314,29 +328,37 @@ export function BpmnDiagramSvg({
       {edges.map((e) => {
         const s = nodesById?.get(e.source);
         const t = nodesById?.get(e.target);
+
         const { path } = getSnappedMultiPointAnchoredEdgePath({
-          snapGrid,
+          snapGrid: {
+            isEnabled: snapGrid.isEnabled,
+            x: snapGrid.x / 2,
+            y: snapGrid.y / 2,
+          },
           edge: e.data?.bpmnEdge,
+          snappedSourceNodeBounds: snapBounds(
+            snapGrid,
+            s?.data.shape?.["dc:Bounds"],
+            e.data?.bpmnSourceType
+              ? MIN_NODE_SIZES[e.data?.bpmnSourceType]({ snapGrid })
+              : { "@_height": 0, "@_width": 0 }
+          ),
+          snappedTargetNodeBounds: snapBounds(
+            snapGrid,
+            t?.data.shape?.["dc:Bounds"],
+            e.data?.bpmnTargetType
+              ? MIN_NODE_SIZES[e.data?.bpmnTargetType]({ snapGrid })
+              : { "@_height": 0, "@_width": 0 }
+          ),
           shapeSource: e.data?.bpmnShapeSource,
           shapeTarget: e.data?.bpmnShapeTarget,
-          snappedSourceNodeBounds: {
-            x: s?.positionAbsolute?.x,
-            y: s?.positionAbsolute?.y,
-            width: s?.width,
-            height: s?.height,
-          },
-          snappedTargetNodeBounds: {
-            x: t?.positionAbsolute?.x,
-            y: t?.positionAbsolute?.y,
-            width: t?.width,
-            height: t?.height,
-          },
         });
         return (
-          <React.Fragment key={e.id}>
+          // bpmn2nodeid is necessary for the Kogito SVG Add-on
+          <g key={e.id} id={e.id} {...({ bpmn2nodeid: e.id } as any)}>
             {e.type === EDGE_TYPES.sequenceFlow && <SequenceFlowPath d={path} />}
             {e.type === EDGE_TYPES.association && <AssociationPath d={path} />}
-          </React.Fragment>
+          </g>
         );
       })}
       {nodesSvg}
