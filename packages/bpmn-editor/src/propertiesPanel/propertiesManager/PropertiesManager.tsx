@@ -61,6 +61,7 @@ import { deleteEscalation } from "../../mutations/deleteEscalation";
 import { renameEscalation } from "../../mutations/renameEscalation";
 import { deleteError } from "../../mutations/deleteError";
 import { renameError } from "../../mutations/renameError";
+import { useBpmnEditorI18n } from "../../i18n";
 
 export type WithVariables = Normalized<
   | ElementFilter<Unpacked<NonNullable<BPMN20__tDefinitions["rootElement"]>>, "process">
@@ -72,6 +73,7 @@ export type WithVariables = Normalized<
 
 export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
+  const { i18n } = useBpmnEditorI18n();
 
   const isReadOnly = useBpmnEditorStore((s) => s.settings.isReadOnly);
   const errors = useBpmnEditorStore((s) =>
@@ -110,14 +112,18 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
   return (
     <>
       <Tabs activeKey={activeTab} onSelect={onSelectTab} isBox={false} aria-label={"Properties tabs"}>
-        <Tab eventKey={0} title={<TabTitleText>Data Types</TabTitleText>} aria-label="Properties - Data Types">
+        <Tab
+          eventKey={0}
+          title={<TabTitleText>{i18n.propertiesManager.dataTypes}</TabTitleText>}
+          aria-label="Properties - Data Types"
+        >
           {((itemDefinitions?.length ?? 0) > 0 && (
             <>
               <div style={{ padding: "0 8px" }}>
                 <Grid md={12} style={{ alignItems: "center", columnGap: "12px" }}>
                   <GridItem span={11}>
                     <div style={entryColumnStyle}>
-                      <b>{"Data Type"}</b>
+                      <b>{i18n.propertiesManager.dataType}</b>
                     </div>
                   </GridItem>
                   <GridItem span={1}>
@@ -153,7 +159,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         autoFocus={true}
                         style={entryColumnStyle}
                         type="text"
-                        placeholder="Data Type name..."
+                        placeholder={i18n.propertiesManager.dataTypeplaceholder}
                         value={entry["@_structureRef"]}
                         onChange={(e) => {
                           bpmnEditorStoreApi.setState((s) => {
@@ -200,11 +206,11 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                     style={{ marginTop: "20px" }}
                   />
                   <Title headingLevel="h4" style={{ paddingTop: "33px" }}>
-                    {isReadOnly ? `No Data Type properties` : `No Data Type properties yet`}
+                    {isReadOnly
+                      ? i18n.propertiesManager.noDataTypeProperties
+                      : i18n.propertiesManager.noDataTypePropertiesYet}
                   </Title>
-                  <EmptyStateBody style={{ padding: "0 25%" }}>
-                    {`Your model doesn't have any Data Type property.`}
-                  </EmptyStateBody>
+                  <EmptyStateBody style={{ padding: "0 25%" }}>{i18n.propertiesManager.noProperty}</EmptyStateBody>
                   <br />
                   <EmptyStateActions>
                     <Button
@@ -215,7 +221,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         });
                       }}
                     >
-                      {`Add Data Type`}
+                      {i18n.propertiesManager.addDataType}
                     </Button>
                   </EmptyStateActions>
                 </EmptyState>
@@ -224,14 +230,18 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
           )}
         </Tab>
 
-        <Tab eventKey={1} title={<TabTitleText>Messages</TabTitleText>} aria-label="Properties - Messages">
+        <Tab
+          eventKey={1}
+          title={<TabTitleText>{i18n.propertiesManager.messages}</TabTitleText>}
+          aria-label="Properties - Messages"
+        >
           {((messages?.length ?? 0) > 0 && (
             <>
               <div style={{ padding: "0 8px" }}>
                 <Grid md={12} style={{ alignItems: "center", columnGap: "12px" }}>
                   <GridItem span={11}>
                     <div style={entryColumnStyle}>
-                      <b>{"Messages"}</b>
+                      <b>{i18n.propertiesManager.messages}</b>
                     </div>
                   </GridItem>
                   <GridItem span={1}>
@@ -267,7 +277,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         autoFocus={true}
                         style={entryColumnStyle}
                         type="text"
-                        placeholder="Name..."
+                        placeholder={i18n.propertiesManager.name}
                         value={entry["@_name"]}
                         onChange={(e) => {
                           bpmnEditorStoreApi.setState((s) => {
@@ -324,10 +334,12 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                       </svg>
                     )}
                   />
-                  <Title headingLevel="h4">{isReadOnly ? `No message properties` : `No message properties yet`}</Title>
-                  <EmptyStateBody style={{ padding: "0 25%" }}>
-                    {`Your model doesn't have any message property.`}
-                  </EmptyStateBody>
+                  <Title headingLevel="h4">
+                    {isReadOnly
+                      ? i18n.propertiesManager.noMessageproperties
+                      : i18n.propertiesManager.noMessagepropertiesYet}
+                  </Title>
+                  <EmptyStateBody style={{ padding: "0 25%" }}>{i18n.propertiesManager.anyMessage}</EmptyStateBody>
                   <br />
                   <EmptyStateActions>
                     <Button
@@ -338,7 +350,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         });
                       }}
                     >
-                      {`Add message`}
+                      {i18n.propertiesManager.addMessage}
                     </Button>
                   </EmptyStateActions>
                 </EmptyState>
@@ -347,14 +359,18 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
           )}
         </Tab>
 
-        <Tab eventKey={2} title={<TabTitleText>Signals</TabTitleText>} aria-label="Properties - Signals">
+        <Tab
+          eventKey={2}
+          title={<TabTitleText>{i18n.propertiesManager.signals}</TabTitleText>}
+          aria-label="Properties - Signals"
+        >
           {((signals?.length ?? 0) > 0 && (
             <>
               <div style={{ padding: "0 8px" }}>
                 <Grid md={12} style={{ alignItems: "center", columnGap: "12px" }}>
                   <GridItem span={11}>
                     <div style={entryColumnStyle}>
-                      <b>{"Signals"}</b>
+                      <b>{i18n.propertiesManager.signals}</b>
                     </div>
                   </GridItem>
                   <GridItem span={1}>
@@ -390,7 +406,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         autoFocus={true}
                         style={entryColumnStyle}
                         type="text"
-                        placeholder="Name..."
+                        placeholder={i18n.propertiesManager.name}
                         value={entry["@_name"]}
                         onChange={(e) => {
                           bpmnEditorStoreApi.setState((s) => {
@@ -449,10 +465,12 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                       </svg>
                     )}
                   />
-                  <Title headingLevel="h4">{isReadOnly ? `No signal properties` : `No signal properties yet`}</Title>
-                  <EmptyStateBody style={{ padding: "0 25%" }}>
-                    {`Your model doesn't have any signal property.`}
-                  </EmptyStateBody>
+                  <Title headingLevel="h4">
+                    {isReadOnly
+                      ? i18n.propertiesManager.noSignalproperties
+                      : i18n.propertiesManager.noSignalpropertiesYet}
+                  </Title>
+                  <EmptyStateBody style={{ padding: "0 25%" }}>{i18n.propertiesManager.anySignal}</EmptyStateBody>
                   <br />
                   <EmptyStateActions>
                     <Button
@@ -463,7 +481,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         });
                       }}
                     >
-                      {`Add signal`}
+                      {i18n.propertiesManager.addSignal}
                     </Button>
                   </EmptyStateActions>
                 </EmptyState>
@@ -472,14 +490,18 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
           )}
         </Tab>
 
-        <Tab eventKey={3} title={<TabTitleText>Escalations</TabTitleText>} aria-label="Properties - Escalations">
+        <Tab
+          eventKey={3}
+          title={<TabTitleText>{i18n.propertiesManager.escalations}</TabTitleText>}
+          aria-label="Properties - Escalations"
+        >
           {((escalations?.length ?? 0) > 0 && (
             <>
               <div style={{ padding: "0 8px" }}>
                 <Grid md={12} style={{ alignItems: "center", columnGap: "12px" }}>
                   <GridItem span={11}>
                     <div style={entryColumnStyle}>
-                      <b>{"Escalations"}</b>
+                      <b>{i18n.propertiesManager.escalations}</b>
                     </div>
                   </GridItem>
                   <GridItem span={1}>
@@ -515,7 +537,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         autoFocus={true}
                         style={entryColumnStyle}
                         type="text"
-                        placeholder="Name..."
+                        placeholder={i18n.propertiesManager.name}
                         value={entry["@_name"]}
                         onChange={(e) => {
                           bpmnEditorStoreApi.setState((s) => {
@@ -572,11 +594,11 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                     )}
                   />
                   <Title headingLevel="h4">
-                    {isReadOnly ? `No escalation properties` : `No escalation properties yet`}
+                    {isReadOnly
+                      ? i18n.propertiesManager.noEscalationproperties
+                      : i18n.propertiesManager.noEscalationpropertiesYet}
                   </Title>
-                  <EmptyStateBody style={{ padding: "0 26%" }}>
-                    {`Your model doesn't have any escalation property.`}
-                  </EmptyStateBody>
+                  <EmptyStateBody style={{ padding: "0 26%" }}>{i18n.propertiesManager.anyEscalation}</EmptyStateBody>
                   <br />
                   <EmptyStateActions>
                     <Button
@@ -587,7 +609,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         });
                       }}
                     >
-                      {`Add escalation`}
+                      {i18n.propertiesManager.addEscalation}
                     </Button>
                   </EmptyStateActions>
                 </EmptyState>
@@ -596,14 +618,18 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
           )}
         </Tab>
 
-        <Tab eventKey={4} title={<TabTitleText>Errors</TabTitleText>} aria-label="Properties - Errors">
+        <Tab
+          eventKey={4}
+          title={<TabTitleText>{i18n.propertiesManager.errors}</TabTitleText>}
+          aria-label="Properties - Errors"
+        >
           {((errors?.length ?? 0) > 0 && (
             <>
               <div style={{ padding: "0 8px" }}>
                 <Grid md={12} style={{ alignItems: "center", columnGap: "12px" }}>
                   <GridItem span={11}>
                     <div style={entryColumnStyle}>
-                      <b>{"Errors"}</b>
+                      <b>{i18n.propertiesManager.errors}</b>
                     </div>
                   </GridItem>
                   <GridItem span={1}>
@@ -639,7 +665,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         autoFocus={true}
                         style={entryColumnStyle}
                         type="text"
-                        placeholder="Name..."
+                        placeholder={i18n.propertiesManager.name}
                         value={entry["@_name"]}
                         onChange={(e) => {
                           bpmnEditorStoreApi.setState((s) => {
@@ -696,10 +722,12 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                       </svg>
                     )}
                   />
-                  <Title headingLevel="h4">{isReadOnly ? `No error properties` : `No error properties yet`}</Title>
-                  <EmptyStateBody style={{ padding: "0 25%" }}>
-                    {`Your model doesn't have any error property.`}
-                  </EmptyStateBody>
+                  <Title headingLevel="h4">
+                    {isReadOnly
+                      ? i18n.propertiesManager.noErrorproperties
+                      : i18n.propertiesManager.noErrorpropertiesYet}
+                  </Title>
+                  <EmptyStateBody style={{ padding: "0 25%" }}>{i18n.propertiesManager.anyError}</EmptyStateBody>
                   <br />
                   <EmptyStateActions>
                     <Button
@@ -710,7 +738,7 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         });
                       }}
                     >
-                      {`Add error`}
+                      {i18n.propertiesManager.addError}
                     </Button>
                   </EmptyStateActions>
                 </EmptyState>

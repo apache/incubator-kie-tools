@@ -307,6 +307,36 @@ interface BpmnEditorDictionary
       createdBy: string;
       createdByPlaceholder: string;
     };
+    propertiesManager: {
+      dataTypeplaceholder: string;
+      dataType: string;
+      dataTypes: string;
+      noDataTypeProperties: string;
+      noDataTypePropertiesYet: string;
+      noProperty: string;
+      addDataType: string;
+      messages: string;
+      name: string;
+      noMessageproperties: string;
+      noMessagepropertiesYet: string;
+      anyMessage: string;
+      addMessage: string;
+      signals: string;
+      noSignalproperties: string;
+      noSignalpropertiesYet: string;
+      anySignal: string;
+      addSignal: string;
+      escalations: string;
+      noEscalationproperties: string;
+      noEscalationpropertiesYet: string;
+      anyEscalation: string;
+      addEscalation: string;
+      errors: string;
+      noErrorproperties: string;
+      noErrorpropertiesYet: string;
+      anyError: string;
+      addError: string;
+    };
   }> {}
 
 export interface BpmnEditorI18n extends BpmnEditorDictionary, CommonI18n {}
