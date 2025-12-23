@@ -194,11 +194,12 @@ export function UserTaskProperties({
             type={"text"}
             isDisabled={settings.isReadOnly}
             value={
-              userTask?.resourceRole?.find((role) => role.__$$element === "potentialOwner")
-                ?.resourceAssignmentExpression?.expression?.__$$element === "formalExpression"
-                ? userTask?.resourceRole?.find((role) => role.__$$element === "potentialOwner")
-                    ?.resourceAssignmentExpression?.expression.__$$text ?? ""
-                : ""
+              userTask?.resourceRole
+                ?.filter((role) => role.__$$element === "potentialOwner")
+                .map((potentialOwner) => {
+                  return potentialOwner?.resourceAssignmentExpression?.expression?.__$$text;
+                })
+                .join(",") ?? ""
             }
             onChange={(e, newValue) =>
               bpmnEditorStoreApi.setState((s) => {
@@ -210,20 +211,27 @@ export function UserTaskProperties({
                   if (e["@_id"] === userTask?.["@_id"] && e.__$$element === userTask.__$$element) {
                     if (newValue) {
                       e.resourceRole ??= [];
-                      e.resourceRole[0] ??= {
-                        "@_id": generateUuid(),
-                        __$$element: "potentialOwner",
-                      };
-                      e.resourceRole[0].resourceAssignmentExpression ??= {
-                        "@_id": generateUuid(),
-                        expression: {
+                      const resourceRoleList: typeof e.resourceRole = [];
+                      newValue.split(",").forEach((actorName) => {
+                        resourceRoleList.push({
                           "@_id": generateUuid(),
-                          __$$element: "formalExpression",
-                        },
-                      };
-                      e.resourceRole[0].resourceAssignmentExpression.expression.__$$text = newValue;
+                          __$$element: "potentialOwner",
+                          resourceAssignmentExpression: {
+                            "@_id": generateUuid(),
+                            expression: {
+                              "@_id": generateUuid(),
+                              __$$element: "formalExpression",
+                              __$$text: actorName.trimStart(),
+                            },
+                          },
+                        });
+                      });
+                      e.resourceRole = resourceRoleList;
                     } else if (e.resourceRole) {
-                      delete e.resourceRole;
+                      e.resourceRole = e.resourceRole.filter((role) => role.__$$element !== "potentialOwner");
+                      if (!e.resourceRole.length) {
+                        delete e.resourceRole;
+                      }
                     }
                   }
                 });
