@@ -30,6 +30,7 @@ import { useBpmnEditorStore } from "../store/StoreContext";
 import "./PropertiesPanel.css";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { bpmnEditorDictionaries, BpmnEditorI18nContext, bpmnEditorI18nDefaults } from "../i18n";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export function PropertiesPanel() {
   const selectedNodesById = useBpmnEditorStore((s) => s.computed(s).getDiagramData().selectedNodesById);
@@ -48,7 +49,14 @@ export function PropertiesPanel() {
           isResizable={true}
           minSize={"300px"}
           defaultSize={"500px"}
-          onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+          onKeyDown={(e) => {
+            // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+            // See https://github.com/apache/incubator-kie-issues/issues/1164
+            if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+              // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+              e.stopPropagation();
+            }
+          }}
         >
           <DrawerPanelBody>
             <>

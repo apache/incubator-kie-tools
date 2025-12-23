@@ -14,6 +14,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
+    "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/switch-expression-ts": "workspace:*",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",

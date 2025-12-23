@@ -715,6 +715,7 @@ digraph G {
   "@kie-tools/xml-parser-ts" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/xml-parser-ts" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/xml-parser-ts-codegen" -> "@kie-tools/xml-parser-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools-core/switch-expression-ts" [ style = "solid", color = "blue" ];
   "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools/i18n-common-dictionary" [ style = "dashed", color = "blue" ];
   "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools/xml-parser-ts" [ style = "dashed", color = "blue" ];

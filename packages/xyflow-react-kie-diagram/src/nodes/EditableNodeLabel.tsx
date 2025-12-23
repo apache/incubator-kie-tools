@@ -23,6 +23,7 @@ import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { NodeLabelPosition } from "../nodes/NodeSvgs";
 import "./EditableNodeLabel.css";
 import { KieDiagramI18n, useKieDiagramI18n } from "../i18n";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export const INVALID_NAME_CSS_PROPS = {
   color: "red",
@@ -138,8 +139,11 @@ export function EditableNodeLabel({
   // Finish editing on `Enter` pressed.
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      e.stopPropagation();
-
+      // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
+      if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+        e.stopPropagation();
+      }
       if (e.key === "Enter") {
         if (!isValid) {
           return; // Simply ignore and don't allow user to go outside the component using only the keyboard.

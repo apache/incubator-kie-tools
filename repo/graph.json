@@ -1016,6 +1016,11 @@
       },
       {
         "source": "@kie-tools/xyflow-react-kie-diagram",
+        "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/xyflow-react-kie-diagram",
         "target": "@kie-tools-core/switch-expression-ts",
         "weight": 1
       },
