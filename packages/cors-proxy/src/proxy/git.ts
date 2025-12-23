@@ -87,35 +87,36 @@ export const GIT_CORS_CONFIG: CorsConfig = {
 };
 
 export const isGitOperation = (targetUrl: string, method: string, headers: Record<string, string> = {}) => {
-  const parsedUrl = url.parse(targetUrl, true);
+  const targetURL = new URL(targetUrl);
+  const searchParams = new URLSearchParams(targetURL.search);
 
   return (
-    isPreflightInfoRefs(parsedUrl, method) ||
-    isInfoRefs(parsedUrl, method) ||
-    isPreflightPull(parsedUrl, method, headers) ||
-    isPull(parsedUrl, method, headers) ||
-    isPreflightPush(parsedUrl, method, headers) ||
-    isPush(parsedUrl, method, headers)
+    isPreflightInfoRefs(targetURL, searchParams, method) ||
+    isInfoRefs(targetURL, searchParams, method) ||
+    isPreflightPull(targetURL, method, headers) ||
+    isPull(targetURL, method, headers) ||
+    isPreflightPush(targetURL, method, headers) ||
+    isPush(targetURL, method, headers)
   );
 };
 
-function isPreflightInfoRefs(url: url.UrlWithParsedQuery, method: string) {
+function isPreflightInfoRefs(url: URL, searchParams: URLSearchParams, method: string) {
   return (
     method === GIT_HTTP_METHODS.OPTIONS &&
     url.pathname!.endsWith(GIT_CONSTS.INFO_REFS) &&
-    [GIT_CONSTS.GIT_UPLOAD_PACK, GIT_CONSTS.GIT_RECEIVE_PACK].includes(url.query.service as string)
+    [GIT_CONSTS.GIT_UPLOAD_PACK, GIT_CONSTS.GIT_RECEIVE_PACK].includes(searchParams.get("service") as string)
   );
 }
 
-function isInfoRefs(url: url.UrlWithParsedQuery, method: string) {
+function isInfoRefs(url: URL, searchParams: URLSearchParams, method: string) {
   return (
     method === GIT_HTTP_METHODS.GET &&
     url.pathname!.endsWith(GIT_CONSTS.INFO_REFS) &&
-    [GIT_CONSTS.GIT_UPLOAD_PACK, GIT_CONSTS.GIT_RECEIVE_PACK].includes(url.query.service as string)
+    [GIT_CONSTS.GIT_UPLOAD_PACK, GIT_CONSTS.GIT_RECEIVE_PACK].includes(searchParams.get("service") as string)
   );
 }
 
-function isPreflightPull(url: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
+function isPreflightPull(url: URL, method: string, headers: Record<string, string>) {
   return (
     method === GIT_HTTP_METHODS.OPTIONS &&
     headers[GIT_CONSTS.ACCESS_CONTROL_HEADERS] === GIT_CONSTS.CONTENT_TYPE &&
@@ -123,7 +124,7 @@ function isPreflightPull(url: url.UrlWithParsedQuery, method: string, headers: R
   );
 }
 
-function isPull(url: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
+function isPull(url: URL, method: string, headers: Record<string, string>) {
   return (
     method === GIT_HTTP_METHODS.POST &&
     headers[GIT_CONSTS.CONTENT_TYPE] === GIT_CONSTS.X_GIT_UPLOAD_PACK_REQUEST &&
@@ -131,7 +132,7 @@ function isPull(url: url.UrlWithParsedQuery, method: string, headers: Record<str
   );
 }
 
-function isPreflightPush(url: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
+function isPreflightPush(url: URL, method: string, headers: Record<string, string>) {
   return (
     method === GIT_HTTP_METHODS.OPTIONS &&
     headers[GIT_CONSTS.ACCESS_CONTROL_HEADERS] === GIT_CONSTS.CONTENT_TYPE &&
@@ -139,10 +140,10 @@ function isPreflightPush(url: url.UrlWithParsedQuery, method: string, headers: R
   );
 }
 
-function isPush(u: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
+function isPush(url: URL, method: string, headers: Record<string, string>) {
   return (
     method === GIT_HTTP_METHODS.POST &&
     headers[GIT_CONSTS.CONTENT_TYPE] === GIT_CONSTS.X_GIT_RECEIVE_PACK_REQUEST &&
-    u.pathname!.endsWith(GIT_CONSTS.GIT_RECEIVE_PACK)
+    url.pathname!.endsWith(GIT_CONSTS.GIT_RECEIVE_PACK)
   );
 }

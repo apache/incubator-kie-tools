@@ -211,7 +211,7 @@ export function ItemComponentsTable({
                           type: "DMN16__tDefinitions",
                           attr: "itemDefinition",
                         })
-                        .randomize();
+                        .randomize({ skipAlreadyAttributedIds: false });
 
                       for (const itemDefinition of clipboard.itemDefinitions) {
                         addItemComponent(parent.itemDefinition["@_id"]!, "unshift", itemDefinition);
@@ -615,7 +615,7 @@ export function ItemComponentsTable({
                                             type: "DMN16__tDefinitions",
                                             attr: "itemDefinition",
                                           })
-                                          .randomize();
+                                          .randomize({ skipAlreadyAttributedIds: false });
 
                                         for (const itemDefinition of clipboard.itemDefinitions) {
                                           addItemComponent(dt.itemDefinition["@_id"]!, "unshift", itemDefinition);

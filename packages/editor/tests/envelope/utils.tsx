@@ -33,7 +33,7 @@ import {
   EditorEnvelopeI18nContext,
   editorEnvelopeI18nDefaults,
   editorEnvelopeI18nDictionaries,
-} from "@kie-tools-core/editor/dist/envelope/i18n";
+} from "@kie-tools-core/editor/dist/i18n";
 
 export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<
   KogitoEditorEnvelopeApi,

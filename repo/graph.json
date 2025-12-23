@@ -17,14 +17,14 @@
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools/eslint" },
       { "id": "@kie-tools/root-env" },
-      { "id": "@kie-tools-core/editor" },
-      { "id": "@kie-tools-core/vscode-java-code-completion" },
       { "id": "@kie-tools/dmn-language-service" },
+      { "id": "@kie-tools/kie-bc-editors-common" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "@kie-tools-examples/dmn-editor-classic-on-webapp" },
       { "id": "@kie-tools-examples/dmn-editor-on-webapp" },
       { "id": "@kie-tools/dmn-editor-envelope" },
+      { "id": "@kie-tools-core/editor" },
       { "id": "@kie-tools/dmn-editor" },
       { "id": "@kie-tools-examples/dmn-editor-standalone-on-webapp" },
       { "id": "@kie-tools/dmn-editor-standalone" },
@@ -50,6 +50,7 @@
         "id": "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension"
       },
       { "id": "@kie-tools-core/vscode-extension" },
+      { "id": "@kie-tools-core/vscode-java-code-completion" },
       {
         "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view"
       },
@@ -240,6 +241,7 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" },
+      { "id": "@kie-tools/serverless-workflow-editor" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
@@ -336,17 +338,12 @@
       },
       {
         "source": "@kie-tools/kie-bc-editors",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-bc-editors",
-        "target": "@kie-tools-core/vscode-java-code-completion",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-bc-editors",
         "target": "@kie-tools/dmn-language-service",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-bc-editors",
+        "target": "@kie-tools/kie-bc-editors-common",
         "weight": 1
       },
       {
@@ -360,41 +357,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/envelope",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/keyboard-shortcuts",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/notifications",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/patternfly-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/vscode-java-code-completion",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/vscode-java-code-completion",
-        "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/vscode-java-code-completion",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/dmn-language-service",
         "target": "@kie-tools/dmn-feel-antlr4-parser",
         "weight": 1
@@ -402,6 +364,16 @@
       {
         "source": "@kie-tools/dmn-language-service",
         "target": "@kie-tools-core/switch-expression-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-bc-editors-common",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-bc-editors-common",
+        "target": "@kie-tools-core/vscode-java-code-completion",
         "weight": 1
       },
       {
@@ -457,6 +429,26 @@
       {
         "source": "@kie-tools/dmn-editor-envelope",
         "target": "@kie-tools/dmn-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/editor",
+        "target": "@kie-tools-core/envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/editor",
+        "target": "@kie-tools-core/keyboard-shortcuts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/editor",
+        "target": "@kie-tools-core/notifications",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/editor",
+        "target": "@kie-tools-core/patternfly-base",
         "weight": 1
       },
       {
@@ -592,6 +584,21 @@
       {
         "source": "@kie-tools-core/vscode-extension",
         "target": "@kie-tools-core/vscode-java-code-completion",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/vscode-java-code-completion",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/vscode-java-code-completion",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/vscode-java-code-completion",
+        "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
@@ -2641,7 +2648,7 @@
       },
       {
         "source": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "target": "@kie-tools/kie-bc-editors",
+        "target": "@kie-tools/kie-bc-editors-common",
         "weight": 1
       },
       {
@@ -2657,6 +2664,46 @@
       {
         "source": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
         "target": "@kie-tools/dashbuilder-client",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/switch-expression-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/xml-parser-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/playwright-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/storybook-base",
         "weight": 1
       },
       {
@@ -2964,6 +3011,7 @@
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
+    ["@kie-tools/kie-bc-editors-common", "packages/kie-bc-editors-common"],
     ["kie-editors-dev-vscode-extension", "packages/kie-editors-dev-vscode-extension"],
     ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],
     ["@kie-tools/kie-sandbox-accelerator-quarkus", "packages/kie-sandbox-accelerator-quarkus"],
@@ -3054,6 +3102,7 @@
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
+    ["@kie-tools/serverless-workflow-editor", "packages/serverless-workflow-editor"],
     ["@kie-tools/serverless-workflow-jq-expressions", "packages/serverless-workflow-jq-expressions"],
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],

@@ -25,7 +25,7 @@
   "dependencies": {
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@types/js-yaml": "^4.0.5",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "lodash": "^4.17.21",
     "openapi-types": "^7.0.1",
     "path-browserify": "^1.0.1"

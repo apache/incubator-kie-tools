@@ -33,7 +33,7 @@ import {
   getNextAvailablePrefixedName,
   Normalized,
 } from "../../api";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { BoxedExpressionEditorI18n, useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useApportionedColumnWidthsIfNestedTable, useNestedTableLastColumnMinWidth } from "../../resizing/Hooks";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
@@ -102,7 +102,7 @@ function createAnnotationEntry(): Unpacked<Normalized<DMN_LATEST__tDecisionRule[
   };
 }
 
-const createDefaultRule = (): Normalized<DMN_LATEST__tDecisionRule> => {
+const createDefaultRule = (i18n: BoxedExpressionEditorI18n): Normalized<DMN_LATEST__tDecisionRule> => {
   const defaultRowToAdd: Normalized<DMN_LATEST__tDecisionRule> = {
     "@_id": generateUuid(),
     inputEntry: [
@@ -117,7 +117,7 @@ const createDefaultRule = (): Normalized<DMN_LATEST__tDecisionRule> => {
         text: { __$$text: "" },
       },
     ],
-    annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+    annotationEntry: [{ text: { __$$text: i18n.yourAnnotationsHere } }],
   };
   return defaultRowToAdd;
 };
@@ -457,10 +457,10 @@ export function DecisionTableExpression({
       );
     };
     if (!decisionTableExpression.rule || decisionTableExpression.rule.length === 0) {
-      return [mapRuleToRow(createDefaultRule())];
+      return [mapRuleToRow(createDefaultRule(i18n))];
     }
     return decisionTableExpression.rule.map(mapRuleToRow);
-  }, [decisionTableExpression.rule, decisionTableExpression.output.length, beeTableColumns]);
+  }, [decisionTableExpression.rule, decisionTableExpression.output.length, beeTableColumns, i18n]);
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
@@ -468,7 +468,7 @@ export function DecisionTableExpression({
         setExpressionAction: (prev: Normalized<BoxedDecisionTable>) => {
           let previousExpression: Normalized<BoxedDecisionTable> = { ...prev };
           if (!previousExpression.rule || previousExpression.rule.length === 0) {
-            previousExpression.rule = [createDefaultRule()];
+            previousExpression.rule = [createDefaultRule(i18n)];
           }
           cellUpdates.forEach((cellUpdate) => {
             const newRules = [...(previousExpression.rule ?? [])];
@@ -528,7 +528,7 @@ export function DecisionTableExpression({
         expressionChangedArgs: { action: Action.DecisionTableCellsUpdated },
       });
     },
-    [setExpression]
+    [i18n, setExpression]
   );
 
   const getExpressionChangedArgsFromColumnUpdates = useCallback(
@@ -746,7 +746,7 @@ export function DecisionTableExpression({
         setExpressionAction: (prev: Normalized<BoxedDecisionTable>) => {
           let newRules = [...(prev.rule ?? [])];
           if (newRules.length === 0) {
-            newRules = [createDefaultRule()];
+            newRules = [createDefaultRule(i18n)];
           }
 
           const newItems: Normalized<DMN_LATEST__tDecisionRule>[] = [];
@@ -780,7 +780,7 @@ export function DecisionTableExpression({
         expressionChangedArgs: { action: Action.RowsAdded, rowIndex: args.beforeIndex, rowsCount: args.rowsCount },
       });
     },
-    [setExpression]
+    [i18n, setExpression]
   );
 
   const getLocalIndexInsideGroupType = useCallback(

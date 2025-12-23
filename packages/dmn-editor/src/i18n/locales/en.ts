@@ -19,7 +19,6 @@
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { DmnEditorI18n } from "../DmnEditorI18n";
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
 
 export const en: DmnEditorI18n = {
   ...en_common,
@@ -34,6 +33,7 @@ export const en: DmnEditorI18n = {
   import: "Import",
   cancel: "Cancel",
   with: "with",
+  kind: "Kind",
   dataTypes: {
     days: "Days",
     hours: "Hours",
@@ -52,21 +52,19 @@ export const en: DmnEditorI18n = {
     addValue: "Add value",
     removeEnumValue: "Remove enum value",
     equivalentFeelExpression: "Equivalent FEEL expression:",
-    nextValidDate: (value: string, operator: string): string =>
-      `The next valid number is: (${value} ${operator} 1 Day).`,
-    nextValidDateTime: (value: string, operator: string): string =>
+    nextValidDate: (value: string, operator: string) => `The next valid number is: (${value} ${operator} 1 Day).`,
+    nextValidDateTime: (value: string, operator: string) =>
       `The next valid number is: (${value} ${operator} 1 Second).`,
-    nextValidNumber: (value: string, operator: string): string =>
-      `The next valid number is: (${value} ${operator} 2e-52).`,
-    nextValidYearsAndMonths: (value: string, operator: string): string =>
+    nextValidNumber: (value: string, operator: string) => `The next valid number is: (${value} ${operator} 2e-52).`,
+    nextValidYearsAndMonths: (value: string, operator: string) =>
       `The next valid number is: (${value} ${operator} 1 Month).`,
     start: "Start",
-    clickToRemoveValue: "Click to remove value from the range",
-    clickToIncludeValue: "Click to include value in the range",
+    clickToRemoveValue: "Click here to remove a value from the range",
+    clickToIncludeValue: "Click here to include a value in the range",
     startingValueIncluded: "The starting value will be included in the range.",
     startingValueNotIncluded: "The starting value will not be included in the range.",
-    clickToRemoveValueFromRange: "Click to remove value from the range",
-    clickToIncludeInRange: "Click to include value in the range",
+    clickToRemoveValueFromRange: "Click here to remove a value from the range",
+    clickToIncludeInRange: "Click here to include a value in the range",
     endsWith: "Ends with",
     endingValueIncludedInRange: "The ending value will be included in the range.",
     endingValueNotIncludedInRange: "The ending value will not be included in the range.",
@@ -106,7 +104,7 @@ export const en: DmnEditorI18n = {
     pasteDataType: "Paste data type",
     externalDataTypeConflicts: "External Data Type Conflicts",
     externalSources: "These types come from external sources and cannot be replaced.",
-    propertiesInDefinition: (definitionName: string): string => `Properties in '${definitionName}'`,
+    propertiesInDefinition: (definitionName: string) => `Properties in '${definitionName}'`,
     addItemComponent: "Add item component (at the top)",
     expandAll: "Expand all",
     collapseAll: "Collapse all",
@@ -115,39 +113,16 @@ export const en: DmnEditorI18n = {
     view: "View",
     extractDataType: "Extract data type",
     cut: "Cut",
-    addPropertiesToDefinition: (definitionName: string): string => `Add property to '${definitionName}'`,
+    addPropertiesToDefinition: (definitionName: string) => `Add property to '${definitionName}'`,
     builtIn: "Built-in",
     custom: "Custom",
     jumpToDefinition: "Jump to definition",
     selectDataType: "Select a data type...",
-    checkFeelHandbook: [
-      "Check the FEEL handbook ",
-      wrapped("feelHandBook"),
-      " to help you on creating your expressions.",
-    ],
-    dmnTypeConstraintText: [
-      "As per the DMN specification, the ",
-      wrapped("typeConstraint"),
-      " attribute lists the possible values",
-      wrapped("lineBreak"),
-      "or ranges of values in the base type that are allowed in this ItemDefinition.",
-    ],
+    checkFeelHandbook: `Check the FEEL handbook ${"{feelHandBook}"} to help you on creating your expressions.`,
+    dmnTypeConstraintText: `As per the DMN specification, the ${"{typeConstraint}"} attribute lists the possible values${"{lineBreak}"}or ranges of values in the base type that are allowed in this ItemDefinition.`,
     typeConstraint: "Type Constraint",
     constraints: "Constraints",
-    identifierRenameMessage: [
-      "The identifier ",
-      wrapped("fromIdentifier"),
-      " was renamed to ",
-      wrapped("toIdentifier"),
-      ", and it is used by one or more expressions.",
-      wrapped("lineBreak"),
-      wrapped("lineBreak"),
-      "Would you like to automatically replace all occurrences of ",
-      wrapped("fromIdentifier"),
-      " with ",
-      wrapped("toIdentifier"),
-      "?",
-    ],
+    identifierRenameMessage: `The identifier ${"{fromIdentifier}"} was renamed to ${"{toIdentifier}"}, and it is used by one or more expressions.${"{lineBreak}"}${"{lineBreak}"}Would you like to automatically replace all occurrences of ${"{fromIdentifier}"} with ${"{toIdentifier}"}?`,
   },
   nodes: {
     view: "View",
@@ -176,20 +151,20 @@ export const en: DmnEditorI18n = {
     newDecisionWithInputData: "New Decision with Input Data...",
     overlays: "Overlays",
     propertiesPanel: "Properties panel",
-    nodesSelected: (selectedNodesCount: number): string => `${selectedNodesCount} nodes selected`,
-    edgesSelected: (selectedEdgesCount: number): string => `${selectedEdgesCount} edges selected`,
-    nodeSelected: (nodeCount: number): string => `${nodeCount} node`,
-    edgeSelected: (edgeCount: number): string => `${edgeCount} edge`,
-    nodes: (nodeCount: number): string => `${nodeCount} nodes`,
-    edges: (edgeCount: number): string => `${edgeCount} edges`,
+    nodesSelected: (selectedNodesCount: number) => `${selectedNodesCount} nodes selected`,
+    edgesSelected: (selectedEdgesCount: number) => `${selectedEdgesCount} edges selected`,
+    nodeSelected: (nodeCount: number) => `${nodeCount} node`,
+    edgeSelected: (edgeCount: number) => `${edgeCount} edge`,
+    nodes: (nodeCount: number) => `${nodeCount} nodes`,
+    edges: (edgeCount: number) => `${edgeCount} edges`,
     selected: "selected",
-    dmnversion: (latestVersion: string): string => `DMN ${latestVersion}`,
-    originallyImportedDmn: (version: string, latestVersion: string): string =>
+    dmnversion: (latestVersion: string) => `DMN ${latestVersion}`,
+    originallyImportedDmn: (version: string, latestVersion: string) =>
       `This DMN was originally imported as DMN ${version}, but was converted to DMN ${latestVersion} to enable new features.`,
     drds: "DRDs",
     newDrd: "new DRD",
     versionUpgraded: "Version upgraded!",
-    newInDmn: (latestVersion: string): string => `See what's new on DMN ${latestVersion}`,
+    newInDmn: (latestVersion: string) => `See what's new on DMN ${latestVersion}`,
     defaultDrd: "You're on the default DRD",
     addingNodesMakingChanges: "Adding nodes or making changes to the Diagram will automatically create a DRD for you.",
     removeDrd: "Remove DRD",
@@ -221,7 +196,7 @@ export const en: DmnEditorI18n = {
     decision: "Decision",
     inputData: "Input Data",
     unknown: "Unknown",
-    externalModelTooltip: (nodeTypeTooltipDescription: string, namespace: string): string =>
+    externalModelTooltip: (nodeTypeTooltipDescription: string, namespace: string) =>
       `This ${nodeTypeTooltipDescription} node is from an external model that is not included in this one. Namespace: ${namespace}`,
     noExternalNodesAvailable: "No external nodes available",
     IncludedModelsHaveNoExportedNodes:
@@ -230,15 +205,15 @@ export const en: DmnEditorI18n = {
     externalNodesTitle: "External nodes",
   },
   includedModels: {
-    errorOccuredParsing: (selectedPathRelativeToThisDmn: string): string =>
+    errorOccuredParsing: (selectedPathRelativeToThisDmn: string) =>
       `An error occurred when parsing the selected model '${selectedPathRelativeToThisDmn}'. Please double-check it is a non-empty valid model.`,
     includeModel: "Include model",
     cancel: "Cancel",
     model: "Model",
     selectModelToInclude: "Select a model to include...",
-    allModelsAvailablewithName: (externalContextName: string): string =>
+    allModelsAvailablewithName: (externalContextName: string) =>
       `All models available in '${externalContextName}' are already included.`,
-    noAvailableModelswithName: (externalContextName: string): string =>
+    noAvailableModelswithName: (externalContextName: string) =>
       `There's no available models in '${externalContextName}' to be included.`,
     allModelsAvailable: "All models available are already included.",
     noAvailableModels: "There's no available models to be included.",
@@ -247,7 +222,7 @@ export const en: DmnEditorI18n = {
     externalModelsEmptyMessage:
       "Included models are externally defined models that have been added to this DMN file. Included DMN models have their decision requirements diagram (DRD) or decision requirements graph (DRG) components available in this DMN file. Included PMML models can be invoked through DMN Boxed Functions, usually inside Business Knowledge Model nodes (BKMs)",
     actionHaveMajorImpact: "This action have major impact to your model",
-    removeIncludedModel: (extension: string): string => `Yes, remove included ${extension}`,
+    removeIncludedModel: (extension: string) => `Yes, remove included ${extension}`,
     removeDmnMessage:
       "Removing an included DMN will erase all its imported nodes and connected edges from your model. The references to item definitions, Business Knowledge Model functions, and Decision expressions will remain, requiring to be manually removed.",
     removePmmlMessage:
@@ -270,12 +245,14 @@ export const en: DmnEditorI18n = {
       "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes.",
   },
   propertiesPanel: {
+    nothingToShow: "Nothing to show",
     inputExpression: "Input Expression",
     constraint: "Constraint",
     inputValues: "Input Values",
     id: "ID",
-    alternativeFieldName: (name: string): string => `${name} Name`,
-    alternativeFieldType: (name: string): string => `${name} Type`,
+    documentationLinks: "Documentation links",
+    alternativeFieldName: (name: string) => `${name} Name`,
+    alternativeFieldType: (name: string) => `${name} Type`,
     defaultOutputEntry: "Default Output Entry",
     outputValues: "Output Values",
     outputHeaderType: "Output header type",
@@ -284,11 +261,11 @@ export const en: DmnEditorI18n = {
     outputLabel: "Output Label",
     outputLabelPlaceholder: "Enter a output label...",
     emptyParameters: "Empty parameters list",
-    parameter: ["Parameter ", wrapped("name")],
+    parameter: `Parameter ${"{name}"}`,
     boxedConditional: "Boxed Conditional",
     functionToBeCalled: "Function to be called",
     functionNamePlaceholder: "Enter the function name...",
-    variableToIterateOver: "Variable to interate over",
+    variableToIterateOver: "Variable to iterate over",
     variableNamePlaceholder: "Enter the variable name...",
     selectExpression: "Select expression",
     selectedCell: "The selected cell still doesn't have an expresison associate with it.",
@@ -336,8 +313,8 @@ export const en: DmnEditorI18n = {
     sourceTypePlaceHolder: "Enter source type...",
     locationUri: "Location URI",
     locationUriPlaceholder: "Enter location URI...",
-    multiplenodesSize: (size: number): string => `Multiple nodes selected (${size})`,
-    expandCollapseTitle: (title: string): string => `Expand / collapse ${title}`,
+    multiplenodesSize: (size: number) => `Multiple nodes selected (${size})`,
+    expandCollapseTitle: (title: string) => `Expand / collapse ${title}`,
     shape: "Shape",
     resetShape: "Reset shape",
     style: "Style",
@@ -355,11 +332,12 @@ export const en: DmnEditorI18n = {
     textPlaceholder: "Enter text...",
     nodeReferenceMessage: `This node references an external node with a namespace that is not declared at this DMN.`,
     externalDmnNodeReference: `This node references an external node from a namespace that is not provided on this DMN's external DMNs mapping. `,
-    nameNotExists: (name: string): string => `This node references a DRG element from '${name}' that doesn't exist.`,
-    goToName: (name: string): string => `Go to '${name}'`,
+    nameNotExists: (name: string) => `This node references a DRG element from '${name}' that doesn't exist.`,
+    goToName: (name: string) => `Go to '${name}'`,
     reference: "Reference:",
     unknownNodePlaceholder: "This is a placeholder for an unknown node",
     expressionLangPlaceholder: "Enter an expression language...",
+    inputHeaderType: "Input header type",
   },
   boxedExpressionPropertiesPanelTitle: {
     boxedConditional: "Boxed Conditional",
@@ -392,8 +370,6 @@ export const en: DmnEditorI18n = {
   renamingIdentifier: "Renaming identifier",
   renameAndReplace: "Yes, rename and replace",
   justRename: "No, just rename",
-  theIdentifier: "The identifier",
-  renamedTo: "was renamed to",
   undefined: "<undefined>",
   usedByOneOrMoreExpressions: ", and it is used by one or more expressions.",
   automaticallyReplaceAll: "Would you like to automatically replace all occurrences of",
