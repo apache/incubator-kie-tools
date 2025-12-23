@@ -17,7 +17,15 @@
 
 ## @kie-tools/bpmn-editor-envelope
 
-Package responsible for creating the necessary pumbling for [@kie-tools/bpmn-editor](../bpmn-editor/README.md) to be used inside an Envelope.
+Package responsible for creating the necessary pumbling for [@kie-tools/bpmn-editor](../bpmn-editor/README.md) to be used inside an Envelope in Multiplying Architecture.
+
+---
+
+## For development information see:
+
+- 👉 [DEV.md](./docs/DEV.md)
+- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---
 

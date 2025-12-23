@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## xfylow React KIE Diagram
+## @kie-tools/xyflow-react-kie-diagram
 
 This package exposes React components and utility functions aimed at creating visual diagram-based Editors.
 
@@ -25,9 +25,13 @@ This package exposes React components and utility functions aimed at creating vi
 
 ### Usage
 
+// TODO
+
 ---
 
 ### Examples
+
+// TODO
 
 ---
 
