@@ -16,6 +16,9 @@
   "dependencies": {
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/switch-expression-ts": "workspace:*",
+    "@patternfly/react-core": "^5.4.1",
+    "@patternfly/react-icons": "^5.4.1",
+    "@patternfly/react-styles": "^5.4.0",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "immer": "^10.0.3",
@@ -49,10 +52,7 @@
     "webpack-merge": "^5.9.0"
   },
   "peerDependencies": {
-    "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.1",
-    "@patternfly/react-styles": "^5.4.1",
-    "react": "^17.0.2",
+    "react": ">=17.0.2 <19.0.0",
     "reactflow": "^11.8.3"
   }
 }

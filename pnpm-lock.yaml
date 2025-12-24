@@ -1448,6 +1448,15 @@ importers:
       '@kie-tools/xyflow-react-kie-diagram':
         specifier: workspace:*
         version: link:../xyflow-react-kie-diagram
+      '@patternfly/react-core':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-icons':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-styles':
+        specifier: ^5.4.0
+        version: 5.4.1
       '@visx/text':
         specifier: ^3.3.0
         version: 3.3.0(react@17.0.2)
@@ -1518,15 +1527,6 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@patternfly/react-core':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-icons':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-styles':
-        specifier: ^5.4.0
-        version: 5.4.1
       '@playwright/test':
         specifier: ^1.45.2
         version: 1.45.2
@@ -10094,10 +10094,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-table:
         specifier: ^7.6.2
@@ -14214,7 +14214,7 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-styles':
-        specifier: ^5.4.1
+        specifier: ^5.4.0
         version: 5.4.1
       d3-drag:
         specifier: ^3.0.0
@@ -14226,7 +14226,7 @@ importers:
         specifier: ^10.0.3
         version: 10.0.3(patch_hash=utu5oov26wz5mjuays57tp3ybu)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       reactflow:
         specifier: ^11.8.3
