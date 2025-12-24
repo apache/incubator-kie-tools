@@ -1,0 +1,195 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/* edge selection / hover */
+.react-flow__edge > .xyflow-react-kie-diagram--edge {
+  pointer-events: none;
+}
+.react-flow__edge.selected > .xyflow-react-kie-diagram--edge {
+  fill: #006ba4 !important;
+  stroke: #006ba4 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(2px 2px 2px #006ba477);
+}
+.react-flow__edge.selected .react-flow__edge-interaction.normal {
+  cursor: crosshair;
+}
+.react-flow__edge.selected .react-flow__edge-interaction.dragging-waypoint,
+.react-flow__edge.selected
+  .react-flow__edge-interaction.dragging-waypoint
+  ~ .xyflow-react-kie-diagram--diagram-edge-waypoints
+  circle {
+  cursor: grabbing;
+}
+.react-flow__edge:not(.selected) .xyflow-react-kie-diagram--edge:hover,
+.react-flow__edge:not(.selected) .react-flow__edge-interaction:hover + .xyflow-react-kie-diagram--edge {
+  stroke-width: 2px !important;
+}
+
+/* nodes selection / hover */
+.react-flow__node > div.normal {
+  outline: none !important;
+}
+.react-flow__node:not(.selected):hover > .xyflow-react-kie-diagram--node-shape.normal {
+  filter: drop-shadow(2px 2px 2px rgb(127, 127, 127));
+}
+.react-flow__node.selected {
+  color: #006ba4 !important;
+}
+.react-flow__node
+  > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid
+  ~ .xyflow-react-kie-diagram--node
+  > g {
+  border-color: red !important;
+  color: red !important;
+  opacity: 0.4;
+}
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid > g {
+  border-color: red !important;
+}
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside-invalid > g > * {
+  stroke: rgba(255, 0, 0, 0.2) !important;
+  fill: rgba(164, 0, 0, 0.1) !important;
+}
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside ~ .xyflow-react-kie-diagram--node {
+  color: #006ba4 !important;
+}
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside,
+.react-flow__node.selected > .xyflow-react-kie-diagram--node-shape.normal {
+  border-color: #006ba4 !important;
+  filter: drop-shadow(2px 2px 2px #006ba477);
+}
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-inside > g > * {
+  stroke: #006ba4 !important;
+  fill: rgba(0, 107, 164, 0.1) !important;
+}
+
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-border > g > * {
+  stroke: #006ba4 !important;
+  stroke-width: 20px;
+}
+
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-border-invalid > g > * {
+  /* Empty on purpose. We don't want any CSS style for when an invalid node is dragged to another's border */
+  content: ""; /* <-- Only here to stop warnings of empty CSS rule */
+}
+
+.react-flow__node > .xyflow-react-kie-diagram--node-shape.drop-target-invalid-non-container > g > * {
+  opacity: 0.4;
+}
+
+.react-flow__node.selected:not(.react-flow__node-node_unknown):not(.react-flow__node-node_textAnnotation)
+  > .xyflow-react-kie-diagram--node-shape
+  > g
+  > * {
+  stroke: #006ba4 !important;
+}
+
+/* hierarchy view */
+
+.react-flow__node.hierarchy.up::after,
+.react-flow__node.hierarchy.down::after {
+  content: "";
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  border-radius: 24px;
+}
+.react-flow__node.hierarchy.up::after {
+  background-color: rgba(0, 131, 164, 0.15);
+}
+.react-flow__node.hierarchy.down::after {
+  background-color: rgb(0 1 128 / 10%);
+}
+.react-flow__edge.hierarchy.up .react-flow__edge-interaction {
+  stroke: rgba(0, 131, 164, 0.15);
+}
+.react-flow__edge.hierarchy.down .react-flow__edge-interaction {
+  stroke: rgb(0 1 128 / 10%);
+}
+
+/* selection rect */
+.react-flow__nodesselection-rect {
+  display: none;
+}
+
+/* controls */
+.react-flow__controls {
+  border-radius: 20px;
+  border: 1px solid black;
+  background: white;
+  margin-bottom: 24px;
+}
+.react-flow__controls:hover {
+  box-shadow: -4px -4px 2px 0px rgb(127 127 127);
+}
+.react-flow__controls > button {
+  border-radius: 20px;
+}
+.react-flow__controls > button:hover {
+  filter: brightness(95%);
+}
+.react-flow__controls > button:active {
+  filter: brightness(90%);
+}
+.react-flow__controls {
+  border-radius: 1000px;
+}
+.react-flow__controls-button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 1000px;
+}
+.react-flow__resize-control {
+  z-index: 10000;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__selection.react-flow__container {
+  pointer-events: none;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__connectionline {
+  z-index: 10000;
+}
+
+/* edge updaters */
+.react-flow__edgeupdater {
+  z-index: 9000;
+  fill: white;
+  stroke: #006ba4;
+  stroke-width: 2px;
+  cursor: grab;
+}
+.react-flow__edge:not(.selected:hover) .react-flow__edgeupdater,
+.react-flow__edgeupdater.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.react-flow__pane.selection {
+  cursor: crosshair;
+}
+/* attribution*/
+.react-flow__attribution {
+  margin-right: 7px;
+}

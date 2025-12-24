@@ -1,0 +1,153 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.kie-bpmn-editor--correlations .pf-c-form__section {
+  margin-top: 0;
+}
+
+.kie-bpmn-editor--correlations--properties--spacer .pf-c-form__label {
+  visibility: hidden;
+}
+
+.kie-bpmn-editor--correlations--empty-state {
+  padding: 10px;
+  background: #eee;
+  border-radius: 10px;
+  text-align: center;
+  height: 100%;
+}
+.kie-bpmn-editor--correlations--empty-state .pf-c-empty-state {
+  height: 100%;
+}
+.kie-bpmn-editor--correlations--empty-state .pf-c-empty-state__body {
+  padding: 0 !important;
+  width: 400px;
+}
+
+.kie-bpmn-editor--correlations--properties,
+.kie-bpmn-editor--correlations--keys {
+  width: 200px;
+}
+
+.kie-bpmn-editor--correlations--keys--properties,
+.kie-bpmn-editor--correlations--properties--data-type {
+  width: 300px;
+}
+
+.kie-bpmn-editor--correlations--properties--bindings,
+.kie-bpmn-editor--correlations--keys--subscriptions {
+  width: 600px;
+}
+
+.kie-bpmn-editor--correlations--properties li,
+.kie-bpmn-editor--correlations--keys li,
+.kie-bpmn-editor--correlations--keys--properties li:not(:last-child) {
+  font-size: 1.1em;
+  padding: 4px 12px;
+  margin: 2px 0;
+  border-radius: 12px;
+}
+
+.kie-bpmn-editor--correlations--properties li,
+.kie-bpmn-editor--correlations--keys li {
+  position: relative;
+}
+.kie-bpmn-editor--correlations--properties li button,
+.kie-bpmn-editor--correlations--keys li button,
+.kie-bpmn-editor--correlations--keys--properties--property button {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.kie-bpmn-editor--correlations--properties li:hover button,
+.kie-bpmn-editor--correlations--keys li:hover button,
+.kie-bpmn-editor--correlations--keys--properties--property:hover button {
+  visibility: visible;
+}
+
+.kie-bpmn-editor--correlations--properties li:active,
+.kie-bpmn-editor--correlations--keys li:active {
+  font-size: bold;
+}
+
+.kie-bpmn-editor--correlations--properties li:hover,
+.kie-bpmn-editor--correlations--keys li:hover,
+.kie-bpmn-editor--correlations--keys--properties li:hover,
+.kie-bpmn-editor--correlations--keys--properties li:not(:last-child) {
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.kie-bpmn-editor--correlations--keys--properties li:last-child select.primary {
+  background: var(--pf-global--primary-color--100);
+  color: white;
+}
+.kie-bpmn-editor--correlations--keys--properties li:last-child select.primary:hover {
+  background: var(--pf-global--primary-color--200);
+}
+
+.kie-bpmn-editor--correlations--keys--subscriptions--subscription,
+.kie-bpmn-editor--correlations--properties--bindings--binding {
+  box-shadow: lightgray 0px 0px 6px 3px;
+}
+
+.kie-bpmn-editor--correlations--keys--subscriptions--subscription:not(:nth-last-child(2))::before,
+.kie-bpmn-editor--correlations--properties--bindings--binding:not(:nth-last-child(2))::before {
+  content: "or";
+  position: absolute;
+  font-style: italic;
+  bottom: -30px;
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+
+.kie-bpmn-editor--correlations--properties li:hover,
+.kie-bpmn-editor--correlations--keys li:hover,
+.kie-bpmn-editor--correlations--keys--properties li:hover {
+  backdrop-filter: brightness(0.95);
+}
+
+.kie-bpmn-editor--correlations--properties li.selected,
+.kie-bpmn-editor--correlations--keys li.selected {
+  backdrop-filter: brightness(0.9);
+  color: #0067cc;
+}
+.kie-bpmn-editor--correlations--properties li.selected:hover,
+.kie-bpmn-editor--correlations--keys li.selected:hover {
+  backdrop-filter: brightness(0.85);
+}
+
+.kie-bpmn-editor--correlations--properties .pf-c-form__group-label span,
+.kie-bpmn-editor--correlations--keys .pf-c-form__group-label span {
+  font-size: 1.4em;
+}
+
+/* bindings */
+.kie-bpmn-editor--correlations--properties--bindings--binding .pf-c-input-group * {
+  border: 0 !important;
+}
+
+/* bindings */
+.kie-bpmn-editor--correlations--properties--bindings--binding .expression-label {
+  color: black;
+  font-size: 1.4em;
+  padding: 0 4px 0 4px;
+}

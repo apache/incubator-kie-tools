@@ -1,0 +1,57 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.xyflow-react-kie-diagram--node-containerNode-interactionRect {
+  pointer-events: stroke !important;
+  opacity: 0;
+  /* ⬇ Uncomment for debugging purposes:*/
+  /* stroke: purple;
+    opacity: 0.2; */
+}
+.xyflow-react-kie-diagram--node-containerNode-visibleRect {
+  pointer-events: none;
+}
+
+/* (begin) containerNodes */
+/* CONTAINER NODES HAVE A SPECIFIC SELECTION MECHANISM TO ALLOW EDITING EDGES INSIDE THEM */
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside {
+  pointer-events: none !important;
+  background: transparent;
+  box-shadow: none !important;
+}
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside:not(.selected) .xyflow-react-kie-diagram--node-shape {
+  filter: none !important;
+}
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside
+  .xyflow-react-kie-diagram--editable-node-name-input
+  span,
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside .xyflow-react-kie-diagram--info-node-panel,
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside .react-flow__resize-control div {
+  pointer-events: all !important;
+}
+
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside:not(.selected):hover
+  .xyflow-react-kie-diagram--node-shape {
+  filter: drop-shadow(2px 2px 3px #006ba47b) !important;
+}
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside.selected:hover .xyflow-react-kie-diagram--node-shape {
+  filter: drop-shadow(2px 2px 3px #004e77d6) !important;
+}
+
+/* (end) containerNodes */

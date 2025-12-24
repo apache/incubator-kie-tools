@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:drools="http://www.jboss.org/drools"
+  targetNamespace="https://kie.apache.org/bpmn/_441CE811-12A2-4BD3-B27E-548D40DED70F"
+  expressionLanguage=""
+  id="_C5A3595B-DDAE-4C9B-BA4D-1A21A53B74DA"
+>
+  <category id="_2F7FAE78-0810-4F00-97E0-301E1A8B996F">
+    <categoryValue id="_AECB318C-E79A-434B-A8FC-46398206D17E" value="Group" />
+  </category>
+  <process id="_67E61E24-B584-4D22-8698-1BFD01975F96">
+    <laneSet id="_28FCEEFB-7656-4549-AFB9-9FE6200C4DC9">
+      <lane id="_B9340EA6-A8B6-48CE-AE24-6162F3AFA9FE" name="Lane" />
+    </laneSet>
+    <startEvent id="_355E6451-2A9E-4C8E-8A62-669EE7440DD3" name="Start event" />
+    <startEvent id="_C5CB27A9-805E-473A-A74F-2FB64C6E6815" name="Start event - Message">
+      <messageEventDefinition id="_FC9C8A55-BD94-4DDB-A6CA-CD274A766FFC" />
+    </startEvent>
+    <startEvent id="_AA839227-DF32-4BA0-873D-548998076E88" name="Start event - Timer">
+      <timerEventDefinition id="_04A16BA7-113F-4F78-A905-9726800666F4" />
+    </startEvent>
+    <startEvent id="_9E4E6844-6E85-4CB0-9156-172A1C31EABE" name="Start event - Conditional">
+      <conditionalEventDefinition id="_58AAB624-A028-47C1-91D2-1EA7A075848F" />
+    </startEvent>
+    <startEvent id="_14BAC5B2-34DC-4398-9A39-0E535F73C14A" name="Start event - Signal">
+      <signalEventDefinition id="_8020344C-2480-406F-8D3F-56D40C5F67E6" />
+    </startEvent>
+    <intermediateCatchEvent id="_785537CC-1C34-46D8-B09B-591FE9BEDB74" name="Intermediate catch event - Message">
+      <messageEventDefinition id="_AAD2D96D-3625-47DD-9C05-D529171AF6D2" />
+    </intermediateCatchEvent>
+    <intermediateCatchEvent id="_8FFB6229-F43C-43D2-8EEC-5AE79506911C" name="Intermediate catch event - Timer">
+      <timerEventDefinition id="_853557E7-3183-406E-9532-D5904C82C402" />
+    </intermediateCatchEvent>
+    <intermediateCatchEvent id="_3AEDA8EE-64FE-45AC-AB5E-DC74656CA6E0" name="Intermediate throw event - Conditional">
+      <conditionalEventDefinition id="_3279A566-9C56-433B-8E38-67E0949ECFD2" />
+    </intermediateCatchEvent>
+    <intermediateCatchEvent id="_68916F71-0C92-470C-8D8A-6FA84E22194B" name="Intermediate throw event - Link">
+      <linkEventDefinition id="_AB77A2A7-CEBA-4AE3-B276-67379B397F33" />
+    </intermediateCatchEvent>
+    <intermediateCatchEvent id="_2313603A-C620-4E5A-BB01-CA0535C80FD8" name="Intermediate throw event - Signal">
+      <signalEventDefinition id="_CAEEFD53-8BCD-445D-9CEB-558F6B0C14BF" />
+    </intermediateCatchEvent>
+    <intermediateThrowEvent id="_8B819378-30BC-4A23-B588-EC0C988B1F5B" name="Intermediate throw event" />
+    <intermediateThrowEvent id="_75896870-D2D5-4E5D-B0C1-55D5E2E36EC2" name="Intermediate throw event - Message">
+      <messageEventDefinition id="_8312822F-DBBB-4470-8289-9634BDCDD900" />
+    </intermediateThrowEvent>
+    <intermediateThrowEvent id="_4A355A4E-41C0-46D9-97E7-8902B0CB7F59" name="Intermediate throw event - Escalation">
+      <escalationEventDefinition id="_4321684B-1163-4658-A9CF-0A51BF761BB0" />
+    </intermediateThrowEvent>
+    <intermediateThrowEvent id="_8B4AFA29-6F99-4C5C-ABC7-FD2C2DADBE8F" name="Intermediate throw event - Compensation">
+      <compensateEventDefinition id="_AF25F6BC-0792-4287-ADA5-7315062E696D" />
+    </intermediateThrowEvent>
+    <intermediateThrowEvent id="_03B3FDA9-F9B9-4051-BD81-66405D606F3F" name="Intermediate throw event - Link">
+      <linkEventDefinition id="_AED64011-BA1E-4C0C-B54A-755319258B08" />
+    </intermediateThrowEvent>
+    <intermediateThrowEvent id="_1788AA7E-ABE2-417A-BD2B-CA0DA453585B" name="Intermediate throw event - Signal">
+      <signalEventDefinition id="_CC67F013-6050-440A-AEF9-C56B0FD4B2CE" />
+    </intermediateThrowEvent>
+    <endEvent id="_4EA38011-3D08-4813-B36F-E1EDE76D013E" name="End event" />
+    <endEvent id="_60BE1012-B545-4098-BF8D-41B0E0E1EDDD" name="End event - Message">
+      <messageEventDefinition id="_5B5F4219-078F-47E8-8094-E5ABF04684EA" />
+    </endEvent>
+    <endEvent id="_A2A18027-1E52-404D-BF46-31E9884764D4" name="End event - Error">
+      <errorEventDefinition id="_B236277F-C84D-4D81-B4AD-785E78B1B72D" />
+    </endEvent>
+    <endEvent id="_B32D6761-6613-4F92-A05E-3B4E8904DC2B" name="End event - Escalation">
+      <escalationEventDefinition id="_7E2D049D-15A5-4483-8D50-1C62DB547C0D" />
+    </endEvent>
+    <endEvent id="_D079C67F-B5CD-47E0-9806-083404A68416" name="End event - Compensation">
+      <compensateEventDefinition id="_FBE86481-8746-456A-8497-45BE91268F93" />
+    </endEvent>
+    <endEvent id="_602C77E3-0242-452D-A0DC-B50047903558" name="End event - Signal">
+      <signalEventDefinition id="_71DC0C5B-F1EF-45E4-A5F4-03225BFBA52D" />
+    </endEvent>
+    <endEvent id="_81F86332-EA7D-40B9-BD94-DF03816F70C7" name="End event - Terminate">
+      <terminateEventDefinition id="_358B9CB9-AFC9-4676-BF7F-4F029DFFAFD9" />
+    </endEvent>
+    <task id="_97421895-3C47-41F9-8926-397545B7EC29" name="Task" />
+    <userTask id="_3F0ED11D-C87C-4D05-A75C-48ED53317AF5" name="User Task" />
+    <businessRuleTask id="_DAB50017-3666-4089-B473-46CA7B65BBA0" name="Business Rule Task" />
+    <serviceTask id="_D73B8483-5F84-4C38-9CB0-88430BCAA524" name="Service Task" />
+    <scriptTask id="_1911D405-38B6-4D44-9FE0-14FB22E9BFB7" name="Script Task" />
+    <callActivity id="_CCE67AA2-069C-4677-BB75-3ECE81E951A4" name="Call Activity" />
+    <subProcess id="_B0B6AA68-C3C2-4EB3-A782-230295F3B019" name="Sub-process" />
+    <subProcess id="_3D012B08-965F-4B21-9625-5D3B79CEE5AA" name="Event sub-process" triggeredByEvent="true" />
+    <subProcess id="_D768BD48-3BA1-4D98-AEBF-07812916A09B" name="Sub-process -- Multi-instance">
+      <multiInstanceLoopCharacteristics id="_6D9A70D2-D64B-40EB-814C-CD5E836CB5DF" />
+    </subProcess>
+    <adHocSubProcess id="_E41A58A2-6717-4487-B7DF-8F9E5B7E6761" name="Ad-hoc sub-process" />
+    <userTask id="_0E1B5454-EC72-4C21-880C-585DD299C46E" name="User Task -- Multi-instance">
+      <multiInstanceLoopCharacteristics id="_19554BBE-FFDA-4457-85A1-F8A74457589F" />
+    </userTask>
+    <serviceTask id="_2D8B6D8D-FFBB-4C13-B471-345C223235AE" name="Service Task -- Multi-instance">
+      <multiInstanceLoopCharacteristics id="_FF5C29FF-997B-4A65-9FB6-D773C3C63C81" />
+    </serviceTask>
+    <callActivity id="_E745CAAC-DFBB-446E-AB7C-3B9C2C7E63C0" name="Call Activity -- Multi-instance">
+      <multiInstanceLoopCharacteristics id="_4C790CB2-ACB5-4FED-8C07-4D968282D7E3" />
+    </callActivity>
+    <exclusiveGateway id="_FB23E5B8-14AD-4D2D-BA29-0AB64BE0F25C" name="Exclusive gateway" />
+    <parallelGateway id="_AE2ECF81-D97C-4B2A-AD1A-CC491DE6F2FC" name="Parallel gateway" />
+    <inclusiveGateway id="_31AF994C-2820-454D-A101-4FB275CD93E0" name="Inclusive gateway" />
+    <eventBasedGateway id="_40D88D51-1A1A-49B2-B9FD-68D769FE06D2" name="Event-based gateway" />
+    <complexGateway id="_973CD3A4-10F3-4459-9022-FF64A6933DF2" name="Complex gateway" />
+    <dataObject id="_0258E173-C8AE-4581-917E-4B524B762E2F" name="Data Object" />
+    <group id="_3CE9926A-0B44-47C6-A7DB-8D8EDAAC0110" categoryValueRef="Group" />
+    <textAnnotation id="_05FF444B-DFBF-42F7-BF97-E110403E1B52">
+      <text>Text Annotation</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="_C10B4FA4-DA05-49E6-8D1B-58E6056197C0">
+    <bpmndi:BPMNPlane id="_1229F863-345A-4BF0-84D4-0715C4C628D5">
+      <bpmndi:BPMNShape id="_6C9AFEB7-BEE5-42CE-8200-86E3EAC134BA" bpmnElement="_355E6451-2A9E-4C8E-8A62-669EE7440DD3">
+        <dc:Bounds x="60" y="-200" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9DE3F62E-A588-407E-BF11-20DC1C0CD824" bpmnElement="_C5CB27A9-805E-473A-A74F-2FB64C6E6815">
+        <dc:Bounds x="160" y="-200" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_519E0B92-8243-4E1E-9515-472FF197449E" bpmnElement="_AA839227-DF32-4BA0-873D-548998076E88">
+        <dc:Bounds x="260" y="-200" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8E44E080-3867-4BB2-B992-23034F916BCD" bpmnElement="_9E4E6844-6E85-4CB0-9156-172A1C31EABE">
+        <dc:Bounds x="661" y="-200" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_5BC3B80F-CFE6-4200-B752-AD46863B61C0" bpmnElement="_14BAC5B2-34DC-4398-9A39-0E535F73C14A">
+        <dc:Bounds x="860" y="-200" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BD1682C5-89E0-4E2A-8B29-9073571387C7" bpmnElement="_785537CC-1C34-46D8-B09B-591FE9BEDB74">
+        <dc:Bounds x="159" y="-40" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_0DF11DA7-2816-4DE8-B69F-7B7F23505BE6" bpmnElement="_8FFB6229-F43C-43D2-8EEC-5AE79506911C">
+        <dc:Bounds x="260" y="-40" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_0D468FE8-F06D-4ADE-910D-9E1508C6F774" bpmnElement="_3AEDA8EE-64FE-45AC-AB5E-DC74656CA6E0">
+        <dc:Bounds x="660" y="-40" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_B90FB57F-0343-4681-BE58-5BB405E9E0B8" bpmnElement="_68916F71-0C92-470C-8D8A-6FA84E22194B">
+        <dc:Bounds x="760" y="-40" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_A4F23656-A421-4CBC-8440-CECC3F890CDB" bpmnElement="_2313603A-C620-4E5A-BB01-CA0535C80FD8">
+        <dc:Bounds x="860" y="-40" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_2B79EB7B-62FD-494A-9BC3-C7B539DFFC0F" bpmnElement="_8B819378-30BC-4A23-B588-EC0C988B1F5B">
+        <dc:Bounds x="60" y="140" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_21877E41-60BE-4D30-A1ED-4375D218BE0A" bpmnElement="_75896870-D2D5-4E5D-B0C1-55D5E2E36EC2">
+        <dc:Bounds x="160" y="140" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_4EBA9B42-77F8-49B0-8B26-1FDF2DE06C78" bpmnElement="_4A355A4E-41C0-46D9-97E7-8902B0CB7F59">
+        <dc:Bounds x="459" y="140" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BFF722F3-0899-48C9-B02D-A1AA72E9F957" bpmnElement="_8B4AFA29-6F99-4C5C-ABC7-FD2C2DADBE8F">
+        <dc:Bounds x="560" y="140" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_AD5E397E-EC86-45CD-8865-7DAC073E1EC9" bpmnElement="_03B3FDA9-F9B9-4051-BD81-66405D606F3F">
+        <dc:Bounds x="760" y="140" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_283FC68D-4A95-4ED5-A78E-B6B3A9A589F9" bpmnElement="_1788AA7E-ABE2-417A-BD2B-CA0DA453585B">
+        <dc:Bounds x="860" y="140" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_CF87BCB0-106C-4275-BB3F-3AB8D443E7FE" bpmnElement="_4EA38011-3D08-4813-B36F-E1EDE76D013E">
+        <dc:Bounds x="60" y="340" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9C79A5B0-50B5-4DFF-89EF-93565685B2A3" bpmnElement="_60BE1012-B545-4098-BF8D-41B0E0E1EDDD">
+        <dc:Bounds x="160" y="340" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_CDACF69F-F969-4116-8F52-2C18DE2159A7" bpmnElement="_A2A18027-1E52-404D-BF46-31E9884764D4">
+        <dc:Bounds x="360" y="340" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8FC1B071-39FF-4F45-BE4D-2459B6854F0E" bpmnElement="_B32D6761-6613-4F92-A05E-3B4E8904DC2B">
+        <dc:Bounds x="460" y="340" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_CB7979F9-FC5D-4BEE-84CD-1F1F5D83A4FA" bpmnElement="_D079C67F-B5CD-47E0-9806-083404A68416">
+        <dc:Bounds x="561" y="340" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_D6FB5FA9-0937-4B7F-BEA5-B829C666D381" bpmnElement="_602C77E3-0242-452D-A0DC-B50047903558">
+        <dc:Bounds x="860" y="340" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_956078E3-BA2E-4570-8BC5-5F8545F8A0CD" bpmnElement="_81F86332-EA7D-40B9-BD94-DF03816F70C7">
+        <dc:Bounds x="960" y="340" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_22119645-DBC0-4E51-BE0D-54A39FDD582B" bpmnElement="_97421895-3C47-41F9-8926-397545B7EC29">
+        <dc:Bounds x="60" y="520" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_EF7C3FC3-BB1E-4243-B66D-E03857D5688C" bpmnElement="_3F0ED11D-C87C-4D05-A75C-48ED53317AF5">
+        <dc:Bounds x="60" y="660" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_61D38BFE-735D-4DC8-9FF6-6E91BA5B5257" bpmnElement="_DAB50017-3666-4089-B473-46CA7B65BBA0">
+        <dc:Bounds x="60" y="800" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_FEB337B7-6F10-418F-83F1-5EFD12291C2B" bpmnElement="_D73B8483-5F84-4C38-9CB0-88430BCAA524">
+        <dc:Bounds x="60" y="940" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_D676E922-396E-4E70-B7C6-3FA289F4F0A6" bpmnElement="_1911D405-38B6-4D44-9FE0-14FB22E9BFB7">
+        <dc:Bounds x="60" y="1080" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9586C2A7-B0CC-4E91-95B1-83B424F8180A" bpmnElement="_CCE67AA2-069C-4677-BB75-3ECE81E951A4">
+        <dc:Bounds x="60" y="1220" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_251EE882-EC39-4C9C-A100-11DB0A6E2BCE" bpmnElement="_B0B6AA68-C3C2-4EB3-A782-230295F3B019">
+        <dc:Bounds x="520" y="520" width="540" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_4C6F566E-827E-4F0E-95B5-231E2D554A80" bpmnElement="_3D012B08-965F-4B21-9625-5D3B79CEE5AA">
+        <dc:Bounds x="520" y="660" width="540" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_B8174C1F-C085-4208-BCE3-61ED926117CB" bpmnElement="_D768BD48-3BA1-4D98-AEBF-07812916A09B">
+        <dc:Bounds x="1080" y="520" width="540" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_B09B8C01-344F-428C-BF09-0D791082FBA1" bpmnElement="_E41A58A2-6717-4487-B7DF-8F9E5B7E6761">
+        <dc:Bounds x="520" y="800" width="540" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_24E636FD-7580-47E7-9365-AB3DEF9E80E8" bpmnElement="_0E1B5454-EC72-4C21-880C-585DD299C46E">
+        <dc:Bounds x="280" y="660" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_41E1F642-AC3D-481B-A266-F21666D494D4" bpmnElement="_2D8B6D8D-FFBB-4C13-B471-345C223235AE">
+        <dc:Bounds x="280" y="940" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_1EC96A36-3BC3-499D-949D-31B075F57B72" bpmnElement="_E745CAAC-DFBB-446E-AB7C-3B9C2C7E63C0">
+        <dc:Bounds x="280" y="1220" width="180" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_E9ED6AE1-0A24-4281-922E-8A2A1CA38D77" bpmnElement="_B9340EA6-A8B6-48CE-AE24-6162F3AFA9FE">
+        <dc:Bounds x="520" y="940" width="540" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_49440022-FD80-4628-81AC-7FDD14D3379E" bpmnElement="_FB23E5B8-14AD-4D2D-BA29-0AB64BE0F25C">
+        <dc:Bounds x="80" y="1380" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_723DC7F1-7D74-4BA9-A501-97C56F52643B" bpmnElement="_AE2ECF81-D97C-4B2A-AD1A-CC491DE6F2FC">
+        <dc:Bounds x="180" y="1380" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_3551737D-F450-4E2C-9398-BAEDF699BA2F" bpmnElement="_31AF994C-2820-454D-A101-4FB275CD93E0">
+        <dc:Bounds x="280" y="1380" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8125A19E-F7AF-4A02-A029-FC4F9A94E1F2" bpmnElement="_40D88D51-1A1A-49B2-B9FD-68D769FE06D2">
+        <dc:Bounds x="380" y="1380" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_CEADB576-98C2-4DF6-8265-93D88102EA99" bpmnElement="_973CD3A4-10F3-4459-9022-FF64A6933DF2">
+        <dc:Bounds x="480" y="1380" width="60" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9838692B-1BF4-4B6F-B457-F78E2DE4D004" bpmnElement="_0258E173-C8AE-4581-917E-4B524B762E2F">
+        <dc:Bounds x="1100" y="1240" width="60" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_F9C0772A-CEE3-49ED-AD8F-350DB4A4C35E" bpmnElement="_3CE9926A-0B44-47C6-A7DB-8D8EDAAC0110">
+        <dc:Bounds x="1080" y="1440" width="240" height="240" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_774648C2-32A1-453E-83D6-C16B74389630" bpmnElement="_05FF444B-DFBF-42F7-BF97-E110403E1B52">
+        <dc:Bounds x="1100" y="1740" width="180" height="180" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
