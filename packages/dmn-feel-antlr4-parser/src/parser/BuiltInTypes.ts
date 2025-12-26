@@ -159,4 +159,52 @@ export class BuiltInTypes {
       feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
     },
   };
+
+  public static readonly List: DataType = {
+    uuid: generateUuid(),
+    name: "list",
+    typeRef: "list",
+    properties: new Map(),
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "list",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
+  };
+
+  public static readonly Any: DataType = {
+    uuid: generateUuid(),
+    name: "any",
+    typeRef: "any",
+    properties: new Map(),
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "any",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
+  };
+
+  public static readonly Context: DataType = {
+    uuid: generateUuid(),
+    name: "context",
+    typeRef: "context",
+    properties: new Map(),
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "context",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
+  };
+
+  public static readonly Range: DataType = {
+    uuid: generateUuid(),
+    name: "range",
+    typeRef: "range",
+    properties: new Map(),
+    source: {
+      expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      value: "range",
+      feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+    },
+  };
 }
