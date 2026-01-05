@@ -26,8 +26,8 @@
 //DEPS org.junit.jupiter:junit-jupiter-engine:5.10.1
 
 // testcontainers
-//DEPS org.testcontainers:testcontainers:2.0.1
-//DEPS org.testcontainers:testcontainers-junit-jupiter:2.0.1
+//DEPS org.testcontainers:testcontainers:2.0.3
+//DEPS org.testcontainers:testcontainers-junit-jupiter:2.0.3
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
