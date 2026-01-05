@@ -33,17 +33,9 @@ const customConfig = defineConfig({
   webServer: {
     command: "pnpm start",
     url: `http://localhost:${buildEnv.scesimEditor.storybook.port}/iframe.html?args=&id=misc-empty--empty&viewMode=story`,
-    reuseExistingServer: !process.env.CI || true,
+    reuseExistingServer: true,
     stdout: "pipe",
     timeout: 180000,
-  },
-
-  expect: {
-    toHaveScreenshot: {
-      // An acceptable ratio of pixels that are different to the
-      // total amount of pixels, between 0 and 1.
-      maxDiffPixelRatio: 0.1,
-    },
   },
 });
 
