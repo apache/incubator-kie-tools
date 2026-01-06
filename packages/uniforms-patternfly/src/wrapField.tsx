@@ -50,7 +50,7 @@ filterDOMProps.register(
 
 type WrapperProps = {
   id: string;
-  error?: boolean;
+  error?: boolean | object;
   errorMessage?: string;
   help?: string;
   showInlineError?: boolean;
@@ -99,7 +99,7 @@ export default function wrapField(
       {...filterDOMProps(props)}
     >
       {children}
-      {error === true ? (
+      {error === true || (error && typeof error === "object") ? (
         <FormHelperText>
           <HelperText>
             <HelperTextItem variant="error">{errorMessage}</HelperTextItem>
