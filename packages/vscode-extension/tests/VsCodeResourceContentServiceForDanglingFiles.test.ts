@@ -19,7 +19,6 @@
 
 import * as __path from "path";
 import { VsCodeResourceContentServiceForDanglingFiles } from "@kie-tools-core/vscode-extension/dist/workspace/VsCodeResourceContentServiceForDanglingFiles";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const testWorkspaceAbsoluteFsPath = __path.resolve(__dirname, "test-workspace") + __path.sep;
 
