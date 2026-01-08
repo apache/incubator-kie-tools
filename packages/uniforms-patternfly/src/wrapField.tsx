@@ -48,9 +48,18 @@ filterDOMProps.register(
   "menuAppendTo"
 );
 
+interface ValidationError {
+  instancePath: string;
+  message: string;
+  keyword: string;
+  params: Record<string, any>;
+  schemaPath?: string;
+  data?: any;
+}
+
 type WrapperProps = {
   id: string;
-  error?: boolean | object;
+  error?: boolean | ValidationError;
   errorMessage?: string;
   help?: string;
   showInlineError?: boolean;
@@ -99,7 +108,7 @@ export default function wrapField(
       {...filterDOMProps(props)}
     >
       {children}
-      {error === true || (error && typeof error === "object") ? (
+      {error ? (
         <FormHelperText>
           <HelperText>
             <HelperTextItem variant="error">{errorMessage}</HelperTextItem>
