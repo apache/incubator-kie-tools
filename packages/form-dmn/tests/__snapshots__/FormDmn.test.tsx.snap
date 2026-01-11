@@ -756,11 +756,13 @@ exports[`FormDmn tests should validate the formInputs - invalid 1`] = `
               class="pf-v5-c-helper-text"
             >
               <div
-                class="pf-v5-c-helper-text__item"
+                class="pf-v5-c-helper-text__item pf-m-error"
               >
                 <span
                   class="pf-v5-c-helper-text__item-text"
-                />
+                >
+                  should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)
+                </span>
               </div>
             </div>
           </div>
@@ -1255,11 +1257,13 @@ exports[`FormDmn tests shouldn't submit the formInputs 1`] = `
               class="pf-v5-c-helper-text"
             >
               <div
-                class="pf-v5-c-helper-text__item"
+                class="pf-v5-c-helper-text__item pf-m-error"
               >
                 <span
                   class="pf-v5-c-helper-text__item-text"
-                />
+                >
+                  should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)
+                </span>
               </div>
             </div>
           </div>
