@@ -19,7 +19,7 @@
 
 Builds Drools, OptaPlanner, Kogito Runtimes, and Kogito Apps without installing any Maven artifacts to the local Maven repository. This package will skip the `install` phase and deploy the build result to `./dist/1st-party-m2`, so that there's no pollution of the local Maven repository.
 
-A build is only triggered when the Kogito version (defined in `@kie-tools/root-env`, via `KOGITO_RUNTIME_version`) ends with `-local` (E.g., `999-20250706-local`). Otherwise, this package assumes that the version is coming from a remote Maven repository, or is already installed locally in the local Maven repository. For versions not ending on `-local`, you can still have this package trigger a build by using the `DROOLS_AND_KOGITO__forceBuild` env var.
+A build is only triggered when the Kogito version (defined in [@kie-tools/root-env](../root-env/README.md), via `KOGITO_RUNTIME_version`) ends with `-local` (E.g., `999-20250706-local`). Otherwise, this package assumes that the version is coming from a remote Maven repository, or is already installed locally in the local Maven repository. For versions not ending on `-local`, you can still have this package trigger a build by using the `DROOLS_AND_KOGITO__forceBuild` env var.
 
 This package has no build scripts, rather a single `install` script, meant to run when the `kie-tools` repository is bootstrapping via `pnpm bootstrap`.
 
