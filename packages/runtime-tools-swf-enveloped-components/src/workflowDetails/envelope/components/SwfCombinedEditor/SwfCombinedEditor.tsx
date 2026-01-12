@@ -41,7 +41,7 @@ import { ServerlessWorkflowCombinedEditorEnvelopeApi } from "@kie-tools/serverle
 import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 interface ISwfCombinedEditorProps {
-  workflowInstance: Pick<WorkflowInstance, "source" | "nodes" | "error">;
+  workflowInstance: Pick<WorkflowInstance, "source" | "nodes" | "error" | "nodeDefinitions">;
   width?: number;
   height?: number;
 }
@@ -53,7 +53,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
 }) => {
-  const { source, nodes, error } = workflowInstance;
+  const { source, nodes, error, nodeDefinitions } = workflowInstance;
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [isReady, setReady] = useState<boolean>(false);
 
@@ -152,6 +152,11 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
 
     nodes.forEach((node) => {
       nodeNames.push(node.name);
+      const nodeDefinition = nodeDefinitions?.find((def) => def.id === node.definitionId);
+      const stateName = nodeDefinition?.metadata?.state;
+      if (stateName) {
+        nodeNames.push(stateName);
+      }
     });
 
     const colorConnectedEnds = nodeNames.includes("End");
@@ -181,7 +186,74 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
         });
       });
     }
-  }, [editor, nodes, embeddedFile]);
+  }, [editor, nodes, embeddedFile, nodeDefinitions, error]);
+
+  // useEffect(() => {
+  //   if (!embeddedFile || !editor) {
+  //     return;
+  //   }
+
+  //   const combinedEditorChannelApi = editor.getEnvelopeServer()
+  //     .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>;
+
+  //   const combinedEditorEnvelopeApi = editor.getEnvelopeServer()
+  //     .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorEnvelopeApi>;
+
+  //   if (!combinedEditorChannelApi || !combinedEditorEnvelopeApi) {
+  //     return;
+  //   }
+
+  //   const nodeNamesToColor: string[] = [];
+  //   nodes.forEach((node) => {
+  //     if (node.name === "Start" || node.name === "End") {
+  //       nodeNamesToColor.push(node.name);
+  //       return;
+  //     }
+  //     const nodeDefinition = nodeDefinitions?.find((def) => def.id === node.definitionId);
+
+  //     const stateName = nodeDefinition?.metadata?.state ?? undefined;
+
+  //     if (stateName) {
+  //       nodeNamesToColor.push(stateName);
+  //     }
+  //   });
+
+  //   const colorConnectedEnds = nodeNamesToColor.includes("End");
+
+  //   if (!nodeNamesToColor.includes("Start")) {
+  //     nodeNamesToColor.push("Start");
+  //   }
+  //   let errorNodeName: string | undefined;
+
+  //   if (error) {
+  //     const errorNode = nodes.find((node) => node.nodeId === error.nodeDefinitionId);
+
+  //     if (errorNode) {
+  //       if (errorNode.name === "Start" || errorNode.name === "End") {
+  //         errorNodeName = errorNode.name;
+  //       } else {
+  //         const errorNodeDefinition = nodeDefinitions?.find((def) => def.id === errorNode.definitionId);
+  //         errorNodeName = errorNodeDefinition?.metadata?.state ?? undefined;
+  //       }
+  //     }
+  //   }
+  //   combinedEditorChannelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.subscribe(() => {
+  //     if (errorNodeName) {
+  //       combinedEditorEnvelopeApi.notifications.kogitoSwfCombinedEditor_colorNodes.send({
+  //         nodeNames: [errorNodeName],
+  //         color: "#f4d5d5",
+  //         colorConnectedEnds,
+  //       });
+  //     }
+  //     const successNodes = errorNodeName ? nodeNamesToColor.filter((name) => name !== errorNodeName) : nodeNamesToColor;
+
+  //     combinedEditorEnvelopeApi.notifications.kogitoSwfCombinedEditor_colorNodes.send({
+  //       nodeNames: successNodes,
+  //       color: "#d5f4e6",
+  //       colorConnectedEnds,
+  //     });
+  //   });
+  // }, [editor, embeddedFile, nodes, nodeDefinitions, error]);
 
   return (
     <Card style={{ height: height, width: width }} {...componentOuiaProps(ouiaId, "swf-diagram", ouiaSafe)}>
