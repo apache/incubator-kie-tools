@@ -67,7 +67,24 @@ describe("SwfCombinedEditor - ForEach node coloring", () => {
       processId: "foreach",
       state: WorkflowInstanceState.Completed,
       endpoint: "http://localhost:4000/foreach",
-      nodes: [],
+      nodes: [
+        {
+          id: "1",
+          nodeId: "n1",
+          name: "ForEach",
+          definitionId: "3",
+          type: "ForEachNode",
+          enter: new Date("2024-10-18T12:25:00.192Z"),
+        },
+        {
+          id: "2",
+          nodeId: "n2",
+          name: "End",
+          definitionId: "2",
+          type: "EndNode",
+          enter: new Date("2024-10-18T12:26:00.192Z"),
+        },
+      ],
       start: new Date("2024-10-18T12:25:00.192Z"),
       lastUpdate: new Date("2024-10-18T12:25:00.192Z"),
       source:
