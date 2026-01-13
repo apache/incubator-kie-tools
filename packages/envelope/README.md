@@ -17,6 +17,24 @@
 
 ## Envelope
 
+TODO: Description
+
+---
+
+### Usage
+
+---
+
+### Examples
+
+---
+
+## For development information see:
+
+- 👉 [DEV.md](./docs/DEV.md)
+- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
