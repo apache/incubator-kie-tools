@@ -23,8 +23,6 @@ import { Request, Response } from "express";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import * as minimatch from "minimatch";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
-import { Readable } from "stream";
-import * as WebStream from "stream/web";
 import { CorsProxyHeaderKeys, CorsConfig, CorsProxy } from "@kie-tools/cors-proxy-api/dist";
 
 const BANNED_PROXY_HEADERS = [
@@ -131,28 +129,8 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
       this.logger.debug("Streaming response to client...");
 
-      // Robust streaming: handle both Node streams and WHATWG streams
-      const body = proxyResponse.body;
-
-      let nodeStream;
-
       try {
-        // Prefer native Node streams (safer, less likely to be truncated)
-        if (body && typeof body.pipe === "function") {
-          nodeStream = body;
-        }
-        // Fallback to WHATWG stream -> convert using Readable.fromWeb
-        else if (body && typeof (body as any).getReader === "function") {
-          try {
-            nodeStream = Readable.fromWeb(body as unknown as WebStream.ReadableStream<any>);
-          } catch (err) {
-            this.logger.warn("Failed converting WHATWG stream to Node stream, falling back to raw stream:", err);
-            // last resort: pass the body directly (may be a runtime-compatible stream)
-            nodeStream = body;
-          }
-        }
-
-        if (nodeStream) {
+        if (proxyResponse.body) {
           // Prevent client-side truncation due to mismatched content-length
           try {
             res.removeHeader("content-encoding");
@@ -161,7 +139,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
             // ignore if not settable
           }
 
-          nodeStream.on("error", (e: any) => {
+          proxyResponse.body.on("error", (e: any) => {
             this.logger.warn("Stream error while proxying response: ", e);
             // make sure connection is closed and middleware chain proceeds
             try {
@@ -176,7 +154,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
           });
 
           // Pipe and let Node manage ending the response
-          nodeStream.pipe(res).on("finish", () => {
+          proxyResponse.body.pipe(res).on("finish", () => {
             this.logger.log("Request successfully proxied!");
           });
         } else {
