@@ -97,7 +97,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         headers: outHeaders,
         redirect: "manual",
         // pass the original request stream for non-GET/HEAD methods
-        body: req.method !== "GET" && req.method !== "HEAD" ? (req as any) : undefined,
+        body: req.method !== "GET" && req.method !== "HEAD" ? req : undefined,
         agent: this.getProxyAgent(info),
       });
       this.logger.debug("Proxy Response status: ", proxyResponse.status);
@@ -134,11 +134,11 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       // Robust streaming: handle both Node streams and WHATWG streams
       const body = proxyResponse.body;
 
-      let nodeStream: any = null;
+      let nodeStream;
 
       try {
         // Prefer native Node streams (safer, less likely to be truncated)
-        if (body && typeof (body as any).pipe === "function") {
+        if (body && typeof body.pipe === "function") {
           nodeStream = body;
         }
         // Fallback to WHATWG stream -> convert using Readable.fromWeb
@@ -148,7 +148,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
           } catch (err) {
             this.logger.warn("Failed converting WHATWG stream to Node stream, falling back to raw stream:", err);
             // last resort: pass the body directly (may be a runtime-compatible stream)
-            nodeStream = body as any;
+            nodeStream = body;
           }
         }
 
@@ -165,7 +165,9 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
             this.logger.warn("Stream error while proxying response: ", e);
             // make sure connection is closed and middleware chain proceeds
             try {
-              if (!res.headersSent) res.status(502);
+              if (!res.headersSent) {
+                res.status(502);
+              }
               res.end();
             } catch (err) {
               // ignore
