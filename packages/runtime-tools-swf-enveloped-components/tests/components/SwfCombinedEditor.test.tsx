@@ -70,15 +70,23 @@ describe("SwfCombinedEditor - ForEach node coloring", () => {
       nodes: [
         {
           id: "1",
-          nodeId: "n1",
+          nodeId: "1",
+          name: "Start",
+          definitionId: "1",
+          type: "StartNode",
+          enter: new Date("2024-10-18T12:25:00.192Z"),
+        },
+        {
+          id: "2",
+          nodeId: "2",
           name: "ForEach",
           definitionId: "3",
           type: "ForEachNode",
           enter: new Date("2024-10-18T12:25:00.192Z"),
         },
         {
-          id: "2",
-          nodeId: "n2",
+          id: "3",
+          nodeId: "3",
           name: "End",
           definitionId: "2",
           type: "EndNode",

@@ -138,6 +138,13 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
     [channelApiImpl, swfPreviewOptionsChannelApiImpl]
   );
 
+  const nodeDefinitionsMap = useMemo(() => {
+    if (!nodeDefinitions) {
+      return new Map();
+    }
+    return new Map(nodeDefinitions.map((def) => [def.id, def]));
+  }, [nodeDefinitions]);
+
   useEffect(() => {
     const combinedEditorChannelApi = embeddedFile
       ? (editor?.getEnvelopeServer()
@@ -152,7 +159,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
 
     nodes.forEach((node) => {
       nodeNames.push(node.name);
-      const nodeDefinition = nodeDefinitions?.find((def) => def.id === node.definitionId);
+      const nodeDefinition = nodeDefinitionsMap.get(node.definitionId);
       const stateName = nodeDefinition?.metadata?.state;
       if (stateName) {
         nodeNames.push(stateName);
