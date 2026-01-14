@@ -21,7 +21,7 @@ import { encoder } from "../encoderdecoder/EncoderDecoder";
 import { downloadZip, predictLength } from "client-zip";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
-import { basename, join, relative } from "path";
+import { join, relative } from "path";
 import { Minimatch } from "minimatch";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { BroadcasterDispatch } from "./FsService";
@@ -105,15 +105,20 @@ export class WorkspaceService {
     workspaceId: string,
     globPattern?: string
   ): Promise<WorkspaceWorkerFileDescriptor[]> {
+    const isGlobPatternSlashPrefixed = globPattern?.startsWith("/");
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const gitDirAbsolutePath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
+    const workspaceBaseAbsolutePath = this.getAbsolutePath({ workspaceId });
 
     return this.storageService.walk({
       schema,
-      baseAbsolutePath: this.getAbsolutePath({ workspaceId }),
+      baseAbsolutePath: workspaceBaseAbsolutePath,
       shouldExcludeAbsolutePath: (absolutePath) => absolutePath.startsWith(gitDirAbsolutePath),
-      onVisit: async ({ relativePath }) => {
-        if (matcher && !matcher.match(basename(relativePath))) {
+      onVisit: async ({ absolutePath, relativePath }) => {
+        const searchedPath = isGlobPatternSlashPrefixed
+          ? absolutePath.slice(workspaceBaseAbsolutePath.length)
+          : relativePath;
+        if (matcher && !matcher.match(searchedPath)) {
           return undefined;
         } else {
           return { workspaceId, relativePath };
