@@ -43,7 +43,7 @@
     "monaco-editor": "^0.39.0",
     "react-datetime-picker": "^3.5.0",
     "react-moment": "0.9.7",
-    "react-router-dom": "^6.29.0",
+    "react-router-dom": "^6.30.2",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2",
     "uuid": "^8.3.2"
