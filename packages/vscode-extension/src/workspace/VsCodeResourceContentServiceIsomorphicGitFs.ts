@@ -83,4 +83,13 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
       console.debug("ERROR on vscode.workspace.fs.stat", "error:", error, "path:", contentPath);
     }
   }
+
+  async exists(path: string): Promise<boolean> {
+    try {
+      await vscode.workspace.fs.stat(vscode.Uri.file(path));
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }

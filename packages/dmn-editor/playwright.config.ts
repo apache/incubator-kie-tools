@@ -32,7 +32,7 @@ const customConfig = defineConfig({
   webServer: {
     command: "pnpm start",
     url: `http://localhost:${buildEnv.dmnEditor.storybook.port}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`,
-    reuseExistingServer: !process.env.CI || true,
+    reuseExistingServer: true,
     stdout: "pipe",
     timeout: 180000,
   },
