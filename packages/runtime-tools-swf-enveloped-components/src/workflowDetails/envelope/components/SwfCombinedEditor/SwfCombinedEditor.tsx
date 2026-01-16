@@ -41,7 +41,7 @@ import { ServerlessWorkflowCombinedEditorEnvelopeApi } from "@kie-tools/serverle
 import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 interface ISwfCombinedEditorProps {
-  workflowInstance: Pick<WorkflowInstance, "source" | "nodes" | "error">;
+  workflowInstance: Pick<WorkflowInstance, "source" | "nodes" | "error" | "nodeDefinitions">;
   width?: number;
   height?: number;
 }
@@ -53,7 +53,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
 }) => {
-  const { source, nodes, error } = workflowInstance;
+  const { source, nodes, error, nodeDefinitions } = workflowInstance;
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [isReady, setReady] = useState<boolean>(false);
 
@@ -138,6 +138,13 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
     [channelApiImpl, swfPreviewOptionsChannelApiImpl]
   );
 
+  const nodeDefinitionsMap = useMemo(() => {
+    if (!nodeDefinitions) {
+      return new Map();
+    }
+    return new Map(nodeDefinitions.map((def) => [def.id, def]));
+  }, [nodeDefinitions]);
+
   useEffect(() => {
     const combinedEditorChannelApi = embeddedFile
       ? (editor?.getEnvelopeServer()
@@ -152,6 +159,11 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
 
     nodes.forEach((node) => {
       nodeNames.push(node.name);
+      const nodeDefinition = nodeDefinitionsMap.get(node.definitionId);
+      const stateName = nodeDefinition?.metadata?.state;
+      if (stateName) {
+        nodeNames.push(stateName);
+      }
     });
 
     const colorConnectedEnds = nodeNames.includes("End");
@@ -181,7 +193,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
         });
       });
     }
-  }, [editor, nodes, embeddedFile]);
+  }, [editor, nodes, embeddedFile, nodeDefinitionsMap, error]);
 
   return (
     <Card style={{ height: height, width: width }} {...componentOuiaProps(ouiaId, "swf-diagram", ouiaSafe)}>

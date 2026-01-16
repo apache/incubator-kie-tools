@@ -112,6 +112,18 @@ export const GET_PROCESS_INSTANCE = gql`
         type
         definitionId
       }
+      nodeDefinitions {
+        id
+        name
+        type
+        uniqueId
+        metadata {
+          UniqueId
+          state
+          branch
+          action
+        }
+      }
       milestones {
         id
         name

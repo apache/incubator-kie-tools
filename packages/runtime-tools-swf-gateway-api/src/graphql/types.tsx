@@ -1611,6 +1611,18 @@ export namespace GraphQL {
           type
           definitionId
         }
+        nodeDefinitions {
+          id
+          name
+          type
+          uniqueId
+          metadata {
+            UniqueId
+            state
+            branch
+            action
+          }
+        }
         milestones {
           id
           name
