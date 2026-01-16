@@ -195,6 +195,7 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
             </Icon>
           </button>
         </aside>
+
         <aside
           className={"kie-bpmn-editor--variables-panel-toggle"}
           style={{ position: "relative", pointerEvents: "all" }}
@@ -332,7 +333,7 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
             <LaneIcon />
           </div>
         </aside>
-        <br />
+
         <aside className={`kie-bpmn-editor--palette ${pulse ? "pulse" : ""}`} style={{ pointerEvents: "all" }}>
           <div
             title={i18n.bpmnPalette.dataObject}
@@ -344,7 +345,7 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
             <DataObjectIcon />
           </div>
         </aside>
-        <br />
+
         <aside className={`kie-bpmn-editor--palette ${pulse ? "pulse" : ""}`} style={{ pointerEvents: "all" }}>
           <div
             title={i18n.bpmnPalette.group}
@@ -365,9 +366,9 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
             <TextAnnotationIcon />
           </div>
         </aside>
+
         {customTasks && (
           <>
-            <br />
             <aside className={`kie-bpmn-editor--palette ${pulse ? "pulse" : ""}`} style={{ pointerEvents: "all" }}>
               <div
                 title={i18n.bpmnPalette.customTasks}

@@ -119,6 +119,8 @@
   background: #fff;
   border-radius: 40px;
   border: 1px solid black;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 .kie-bpmn-editor--palette:hover {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
@@ -144,7 +146,6 @@
 
 .kie-bpmn-editor--palette-button {
   margin: 0;
-  margin-bottom: 8px;
   padding: 0;
   width: 40px;
   height: 40px;
