@@ -112,7 +112,12 @@ export function GroupProperties({ group }: { group: Normalized<BPMN20__tGroup> &
           </FormGroup>
 
           <FormGroup label={i18n.propertiesPanel.id}>
-            <ClipboardCopy isReadOnly={settings.isReadOnly} hoverTip="Copy" clickTip="Copied">
+            <ClipboardCopy
+              isReadOnly={settings.isReadOnly}
+              hoverTip={i18n.propertiesPanel.copy}
+              clickTip={i18n.propertiesPanel.copied}
+            >
+              {" "}
               {group["@_id"]}
             </ClipboardCopy>
           </FormGroup>

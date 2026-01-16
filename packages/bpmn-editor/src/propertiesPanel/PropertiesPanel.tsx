@@ -28,8 +28,6 @@ import { SingleEdgeProperties } from "./SingleEdgeProperties";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { useBpmnEditorStore } from "../store/StoreContext";
 import "./PropertiesPanel.css";
-import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
-import { bpmnEditorDictionaries, BpmnEditorI18nContext, bpmnEditorI18nDefaults } from "../i18n";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export function PropertiesPanel() {
@@ -38,38 +36,31 @@ export function PropertiesPanel() {
 
   return (
     <>
-      <I18nDictionariesProvider
-        defaults={bpmnEditorI18nDefaults}
-        dictionaries={bpmnEditorDictionaries}
-        initialLocale={navigator.language}
-        ctx={BpmnEditorI18nContext}
+      <DrawerPanelContent
+        data-testid={"kie-tools--bpmn-editor--properties-panel-container"}
+        isResizable={true}
+        minSize={"300px"}
+        defaultSize={"500px"}
+        onKeyDown={(e) => {
+          // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+          // See https://github.com/apache/incubator-kie-issues/issues/1164
+          if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+            // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+            e.stopPropagation();
+          }
+        }}
       >
-        <DrawerPanelContent
-          data-testid={"kie-tools--bpmn-editor--properties-panel-container"}
-          isResizable={true}
-          minSize={"300px"}
-          defaultSize={"500px"}
-          onKeyDown={(e) => {
-            // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
-            // See https://github.com/apache/incubator-kie-issues/issues/1164
-            if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
-              // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
-              e.stopPropagation();
-            }
-          }}
-        >
-          <DrawerPanelBody>
-            <>
-              {selectedEdgesById.size <= 0 && selectedNodesById.size <= 0 && <GlobalProperties />}
-              {selectedEdgesById.size <= 0 && selectedNodesById.size === 1 && <SingleNodeProperties />}
-              {selectedEdgesById.size <= 0 && selectedNodesById.size > 1 && <MultipleNodeProperties />}
-              {selectedEdgesById.size === 1 && selectedNodesById.size <= 0 && <SingleEdgeProperties />}
-              {selectedEdgesById.size > 1 && selectedNodesById.size <= 0 && <MultipleEdgesProperties />}
-              {selectedEdgesById.size >= 1 && selectedNodesById.size >= 1 && <MixedNodesAndEdgesProperties />}
-            </>
-          </DrawerPanelBody>
-        </DrawerPanelContent>
-      </I18nDictionariesProvider>
+        <DrawerPanelBody>
+          <>
+            {selectedEdgesById.size <= 0 && selectedNodesById.size <= 0 && <GlobalProperties />}
+            {selectedEdgesById.size <= 0 && selectedNodesById.size === 1 && <SingleNodeProperties />}
+            {selectedEdgesById.size <= 0 && selectedNodesById.size > 1 && <MultipleNodeProperties />}
+            {selectedEdgesById.size === 1 && selectedNodesById.size <= 0 && <SingleEdgeProperties />}
+            {selectedEdgesById.size > 1 && selectedNodesById.size <= 0 && <MultipleEdgesProperties />}
+            {selectedEdgesById.size >= 1 && selectedNodesById.size >= 1 && <MixedNodesAndEdgesProperties />}
+          </>
+        </DrawerPanelBody>
+      </DrawerPanelContent>
     </>
   );
 }
