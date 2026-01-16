@@ -37,7 +37,7 @@ export function addEdgeWaypoint({
 
   const diagramElement = diagramElements[__readonly_edgeIndex];
   if (diagramElement.__$$element !== "bpmndi:BPMNEdge") {
-    throw new Error("BPMN MUTATION: Can't remove a waypoint from an element that is not a BPMNEdge.");
+    throw new Error("BPMN MUTATION: Can't add a waypoint to an element that is not a BPMNEdge.");
   }
 
   if (__readonly_beforeIndex > (diagramElement["di:waypoint"]?.length ?? 0) - 1) {

@@ -260,7 +260,7 @@ interface BpmnEditorDictionary
       adhocOrdering: string;
       parallel: string;
       adhocActivationCondition: string;
-      adhocCompletionCondiion: string;
+      adhocCompletionCondition: string;
       boundaryEvent: string;
       cancelActivity: string;
       businessRuleTask: string;

@@ -265,7 +265,7 @@ export const en: BpmnEditorI18n = {
     adhocOrdering: "Ad-hoc ordering",
     parallel: "Parallel",
     adhocActivationCondition: "Ad-hoc activation condition",
-    adhocCompletionCondiion: "Ad-hoc completion condition",
+    adhocCompletionCondition: "Ad-hoc completion condition",
     boundaryEvent: "Boundary event",
     cancelActivity: "Should cancel Activity?",
     businessRuleTask: "Business rule task",
