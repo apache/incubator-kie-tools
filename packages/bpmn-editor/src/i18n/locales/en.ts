@@ -361,4 +361,9 @@ export const en: BpmnEditorI18n = {
     anyError: `Your model doesn't have any error property.`,
     addError: "Add error",
   },
+  overlaysPanel: {
+    snapping: "Snapping",
+    horizontal: "Horizontal",
+    vertical: "Vertical",
+  },
 };

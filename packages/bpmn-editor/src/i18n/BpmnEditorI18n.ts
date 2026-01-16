@@ -356,6 +356,11 @@ interface BpmnEditorDictionary
       anyError: string;
       addError: string;
     };
+    overlaysPanel: {
+      snapping: string;
+      horizontal: string;
+      vertical: string;
+    };
   }> {}
 
 export interface BpmnEditorI18n extends BpmnEditorDictionary, CommonI18n {}

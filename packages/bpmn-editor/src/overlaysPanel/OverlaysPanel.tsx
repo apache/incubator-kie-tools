@@ -61,7 +61,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
         style={{ width: "300px" }}
       >
-        <FormGroup label="Snapping">
+        <FormGroup label={i18n.overlaysPanel.snapping}>
           <Switch
             aria-label={"Snapping"}
             isChecked={snapGrid.isEnabled}
@@ -72,7 +72,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label="Horizontal">
+        <FormGroup label={i18n.overlaysPanel.horizontal}>
           <Slider
             data-testid={"kie-tools--bpmn-editor--horizontal-snapping-control"}
             className={"kie-bpmn-editor--snap-slider"}
@@ -95,7 +95,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label="Vertical">
+        <FormGroup label={i18n.overlaysPanel.vertical}>
           <Slider
             data-testid={"kie-tools--bpmn-editor--vertical-snapping-control"}
             className={"kie-bpmn-editor--snap-slider"}
