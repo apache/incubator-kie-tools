@@ -193,7 +193,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
         });
       });
     }
-  }, [editor, nodes, embeddedFile, nodeDefinitions, error]);
+  }, [editor, nodes, embeddedFile, nodeDefinitionsMap, error]);
 
   return (
     <Card style={{ height: height, width: width }} {...componentOuiaProps(ouiaId, "swf-diagram", ouiaSafe)}>
