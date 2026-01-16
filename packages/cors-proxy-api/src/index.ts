@@ -21,6 +21,7 @@ export enum CorsProxyHeaderKeys {
   TARGET_URL = "target-url",
   INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurely-disable-tls-certificate-validation",
   DISABLE_ENCODING = "disable-encoding",
+  ADD_PROXIED_URL_AS_ORIGIN = "add-proxied-url-as-origin",
 }
 
 export type CorsConfig = {

@@ -46,8 +46,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   ) {
     this.logger = new Logger(args.verbose);
 
-    this.logger.debug("");
-    this.logger.debug("Proxy Configuration:");
+    this.logger.debug("\nProxy Configuration:");
     this.logger.debug("* Verbose: ", args.verbose);
     this.logger.debug("");
   }
@@ -60,24 +59,31 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       this.logger.debugEscapeNewLines("Request Method: ", req.method);
       this.logger.debugEscapeNewLines("Request Headers: ", req.headers);
 
-      // Creating the headers for the new request
+      // Build outgoing headers
       const outHeaders: Record<string, string> = { ...info?.corsConfig?.customHeaders };
 
       Object.keys(req.headers).forEach((header) => {
         if (!BANNED_PROXY_HEADERS.includes(header) && !outHeaders[header]) {
           if (!info.corsConfig || info.corsConfig.allowHeaders.includes(header)) {
-            outHeaders[header] = req.headers[header] as string;
+            const value = req.headers[header];
+            // header value can be string | string[] | undefined
+            if (Array.isArray(value)) {
+              outHeaders[header] = value.join(", ");
+            } else if (typeof value === "string") {
+              outHeaders[header] = value;
+            }
           }
         }
       });
 
-      // TO DO: Figure out why this gzip encoding is broken with insecure tls certificates!
-      if (req.headers[CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true") {
-        outHeaders["accept-encoding"] = "identity";
-      }
       // Force uncompressed response if encoding is disabled via header
       if (req.headers[CorsProxyHeaderKeys.DISABLE_ENCODING] === "true") {
         outHeaders["accept-encoding"] = "identity";
+      }
+
+      // Useful for Atlassian Bitbucket Data Center XSRF-check-failed issue
+      if (req.headers[CorsProxyHeaderKeys.ADD_PROXIED_URL_AS_ORIGIN] === "true") {
+        outHeaders["Origin"] = info.proxyUrl.origin;
       }
 
       this.logger.log("Proxying to: ", info.proxyUrl.toString());
@@ -88,6 +94,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         method: req.method,
         headers: outHeaders,
         redirect: "manual",
+        // pass the original request stream for non-GET/HEAD methods
         body: req.method !== "GET" && req.method !== "HEAD" ? req : undefined,
         agent: this.getProxyAgent(info),
       });
@@ -102,6 +109,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         proxyResponse.headers.set("location", info.targetUrl);
       }
 
+      // Copy allowed headers to response
       proxyResponse.headers.forEach((value, header) => {
         if (header.toLowerCase() === "access-control-allow-origin") {
           return;
@@ -119,23 +127,46 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
       res.status(proxyResponse.status);
 
-      this.logger.debug("Writing Response...");
-      if (proxyResponse.body) {
-        const stream = proxyResponse.body.pipe(res);
-        stream.on("close", () => {
-          this.logger.log("Request succesfully proxied!");
+      this.logger.debug("Streaming response to client...");
+
+      try {
+        if (proxyResponse.body) {
+          // Prevent client-side truncation due to mismatched content-length
+          try {
+            res.removeHeader("content-encoding");
+            res.removeHeader("content-length");
+          } catch (e) {
+            // ignore if not settable
+          }
+
+          proxyResponse.body.on("error", (e: any) => {
+            this.logger.warn("Stream error while proxying response: ", e);
+            // make sure connection is closed and middleware chain proceeds
+            try {
+              if (!res.headersSent) {
+                res.status(502);
+              }
+              res.end();
+            } catch (err) {
+              // ignore
+            }
+            next();
+          });
+
+          // Pipe and let Node manage ending the response
+          proxyResponse.body.pipe(res).on("finish", () => {
+            this.logger.log("Request successfully proxied!");
+          });
+        } else {
+          this.logger.log("Request successfully proxied (no body).");
           res.end();
-        });
-        stream.on("error", (e) => {
-          this.logger.warn("Something went wrong when writting the new response... ", e);
-          next();
-        });
-      } else {
-        this.logger.log("Request succesfully proxied!");
-        res.end();
+        }
+      } catch (err: any) {
+        this.logger.warn("Unexpected error while streaming response: ", err);
+        next();
       }
-    } catch (err) {
-      this.logger.warn("Couldn't handle request correctly due to: ", err.message);
+    } catch (err: any) {
+      this.logger.warn("Couldn't handle request correctly due to: ", err?.message ?? err);
       next();
     }
   }

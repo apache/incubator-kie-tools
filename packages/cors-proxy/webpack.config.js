@@ -27,6 +27,6 @@ module.exports = (webpackEnv, webpackArgv) => [
     },
     target: "node",
     // FIXME: Ignoring warnings for express due to: https://github.com/webpack/webpack/issues/1576
-    ignoreWarnings: [/express/],
+    ignoreWarnings: [/express/, /https-proxy-agent/, /agent-base/],
   }),
 ];
