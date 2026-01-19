@@ -237,6 +237,7 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" },
+      { "id": "@kie-tools/serverless-workflow-editor" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
@@ -949,6 +950,11 @@
       {
         "source": "@kie-tools/playwright-base",
         "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/playwright-base",
+        "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
@@ -2602,6 +2608,46 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools-core/switch-expression-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/xml-parser-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/playwright-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-editor",
+        "target": "@kie-tools/storybook-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-jq-expressions",
         "target": "@kie-tools/serverless-workflow-service-catalog",
         "weight": 1
@@ -2994,6 +3040,7 @@
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
+    ["@kie-tools/serverless-workflow-editor", "packages/serverless-workflow-editor"],
     ["@kie-tools/serverless-workflow-jq-expressions", "packages/serverless-workflow-jq-expressions"],
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],

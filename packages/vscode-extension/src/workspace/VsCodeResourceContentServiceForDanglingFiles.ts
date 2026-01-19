@@ -18,7 +18,6 @@
  */
 
 import {
-  ContentType,
   ResourceContent,
   ResourceContentOptions,
   ResourceContentService,

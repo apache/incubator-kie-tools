@@ -19,7 +19,8 @@
 * Start Docker in Docker (DinD)
 */
 def startDockerInDocker() {
-    sh '''#!/bin/bash -el
+    sh '''
+    #!/bin/bash -el
     sudo entrypoint.sh
     sudo service dbus start
     '''.trim()
@@ -29,7 +30,8 @@ def startDockerInDocker() {
 * Start Xvfb X server required for KIE-Tools E2E tests
 */
 def startXvfb() {
-    sh '''#!/bin/bash -el
+    sh '''
+    #!/bin/bash -el
     Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
     '''.trim()
 }
@@ -38,7 +40,8 @@ def startXvfb() {
 * Start Fluxbox window manager required for KIE-Tools E2E tests
 */
 def startFluxbox() {
-    sh '''#!/bin/bash -el
+    sh '''
+    #!/bin/bash -el
     fluxbox -display :99 > /dev/null 2>&1 &
     '''.trim()
 }
@@ -47,16 +50,18 @@ def startFluxbox() {
 * Setup PNPM parameters for building KIE-Tools
 */
 def setupPnpm(String mavenSettingsFileId = '') {
-    sh """#!/bin/bash -el
+    sh """
+    #!/bin/bash -el
     pnpm config set network-timeout 1000000
     pnpm -r exec 'bash' '-c' 'mkdir .mvn'
     pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
-    pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
+    pnpm -r exec 'bash' '-c' 'echo -Xmx3g > .mvn/jvm.config'
     """.trim()
 
     if (mavenSettingsFileId) {
         configFileProvider([configFile(fileId: mavenSettingsFileId, variable: 'MAVEN_SETTINGS_FILE')]) {
-            sh """#!/bin/bash -el
+            sh """
+            #!/bin/bash -el
             cp ${MAVEN_SETTINGS_FILE} ${WORKSPACE}/kie-settings.xml
             pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
             """.trim()
@@ -68,8 +73,9 @@ def setupPnpm(String mavenSettingsFileId = '') {
 * PNPM Bootsrap
 */
 def pnpmBootstrap(String filters = '', String mavenArgs = '') {
-    sh """#!/bin/bash -el
-    export MAVEN_ARGS=${mavenArgs}
+    sh """
+    #!/bin/bash -el
+    export MAVEN_ARGS="${mavenArgs}"
     pnpm bootstrap ${filters}
     """.trim()
 }
@@ -78,7 +84,8 @@ def pnpmBootstrap(String filters = '', String mavenArgs = '') {
 * PNPM build all packages
 */
 def pnpmBuildFull(Integer workspaceConcurrency = 1) {
-    sh """#!/bin/bash -el
+    sh """
+    #!/bin/bash -el    
     pnpm -r --workspace-concurrency=${workspaceConcurrency} build:prod
     """.trim()
 }
@@ -86,17 +93,26 @@ def pnpmBuildFull(Integer workspaceConcurrency = 1) {
 /**
 * PNPM build a set of packages
 */
-def pnpmBuild(String filters, Integer workspaceConcurrency = 1) {
-    sh """#!/bin/bash -el
-    pnpm ${filters} --workspace-concurrency=${workspaceConcurrency} build:prod
-    """.trim()
+def pnpmBuild(String filters, String mavenArgs = '') {
+    sh """
+    #!/bin/bash -el
+    echo "Initializing git email and name with:"
+    echo "git config user.email asf-ci-kie@jenkins.kie.apache.org"
+    echo "git config user.name asf-ci-kie"
+    git config user.email asf-ci-kie@jenkins.kie.apache.org
+    git config user.name asf-ci-kie
+    export MAVEN_ARGS="${mavenArgs}"
+    pnpm ${filters} --workspace-concurrency=1 build:prod
+    """.trim()    
 }
 
 /**
 * PNPM update project version to
 */
-def pnpmUpdateProjectVersion(String projectVersion) {
-    sh """#!/bin/bash -el
+def pnpmUpdateProjectVersion(String projectVersion, String mavenArgs = '') {
+    sh """
+    #!/bin/bash -el
+    export MAVEN_ARGS="${mavenArgs}"
     pnpm update-version-to ${projectVersion}
     """.trim()
 }
@@ -104,8 +120,10 @@ def pnpmUpdateProjectVersion(String projectVersion) {
 /**
 * PNPM update kogito version to
 */
-def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag) {
-    sh """#!/bin/bash -el
+def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag, String mavenArgs = '') {
+    sh """
+    #!/bin/bash -el
+    export MAVEN_ARGS="${mavenArgs}"
     pnpm update-kogito-version-to --maven ${kogitoVersion}
     """.trim()
 }
@@ -113,8 +131,10 @@ def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag) {
 /**
 * PNPM update stream name to
 */
-def pnpmUpdateStreamName(String streamName) {
-    sh """#!/bin/bash -el
+def pnpmUpdateStreamName(String streamName, String mavenArgs = '') {
+    sh """
+    #!/bin/bash -el
+    export MAVEN_ARGS="${mavenArgs}"
     pnpm update-stream-name-to ${streamName}
     """.trim()
 }

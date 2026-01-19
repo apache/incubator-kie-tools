@@ -42,12 +42,28 @@ function getAllowedOrigins(): string[] {
   return originsList;
 }
 
+function getAllowedHosts(): string[] {
+  const hosts = process.env.CORS_PROXY_ALLOWED_HOSTS || "localhost,*.github.com";
+  const hostsList = hosts.split(",").map((o) => o.trim());
+
+  if (hostsList.some((o) => o === "")) {
+    throw new Error("Invalid host: empty hosts are not allowed in CORS_PROXY_ALLOWED_HOSTS.");
+  }
+
+  if (hostsList.some((o) => o === "*")) {
+    console.warn('Wildcard alone "*" is strongly discouraged in CORS_PROXY_ALLOWED_HOSTS production environments.');
+  }
+
+  return hostsList;
+}
+
 export const run = () => {
   startServer({
     allowedOrigins: getAllowedOrigins(),
     port: getPort(),
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
     hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
+    allowedHosts: getAllowedHosts(),
   });
 };
 
