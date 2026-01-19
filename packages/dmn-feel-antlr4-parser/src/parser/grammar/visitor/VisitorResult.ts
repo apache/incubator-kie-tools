@@ -42,19 +42,4 @@ export class VisitorResult {
   get text(): string {
     return this._text;
   }
-
-  // pode ser um terminal node
-  // OU
-  // alguma coisa que retorna algo de um certo DataType
-
-  // E aí vai montando, pq no fim, na real, a expressão retorna uma coisa só
-
-  // Vai populando uma lista de SemanticTokens, conforme vai identificando e percorrendo a árvore.
-  // Por exemplo, achou date("123123123").day. Eu sei que "date("123123123")" retorna um date.
-  // E eu tbm sei que "day" é uma propriedade existente no date.
-
-  // Na real, cada nodo vai retornar somente UM VisitorResult, mas pode ter N SemanticTokens
-  // O VisitorResult pode ser:
-  // 1. Terminal Node
-  // 2. Algum DataType.
 }

@@ -36,10 +36,12 @@ import { FeelFunctionReturningTypes } from "../../FeelFunctionReturningTypes";
 import { FeelSyntacticSymbolNature } from "../../FeelSyntacticSymbolNature";
 import { VisitorResult } from "./VisitorResult";
 import { BuiltInTypes } from "../../BuiltInTypes";
+import { DataType } from "../../DataType";
 
 export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
   private readonly handlers: Map<Function, (node: ParseTree) => VisitorResult>;
   private readonly _semanticTokens: Array<SemanticToken>;
+  private readonly _normalizedFeelFunctionReturningTypes: ReadonlyMap<string, DataType>;
 
   public constructor() {
     super();
@@ -52,6 +54,10 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
       [PrimaryParensContext, this.visitPrimaryParens.bind(this)],
       [UenpmPrimaryContext, this.visitUenpmPrimary.bind(this)],
     ]);
+
+    this._normalizedFeelFunctionReturningTypes = new Map(
+      Array.from(FeelFunctionReturningTypes.Index, ([key, value]) => [key.replaceAll(" ", ""), value])
+    );
   }
 
   private getSpecializedHandlerIfPresent(tree: ParseTree) {
@@ -149,7 +155,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
       const text = afterDot[afterDot.length - 1].text;
 
       // Each expression has a type of expected parameters.
-      if (FeelFunctionReturningTypes.Index.has(text)) {
+      if (this._normalizedFeelFunctionReturningTypes.has(text)) {
         this._semanticTokens.push(
           new SemanticToken({
             startIndex: lastChildren.LPAREN().symbol.start,
@@ -157,12 +163,15 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
             startLine: lastChildren.LPAREN().symbol.line,
             endLine: lastChildren.RPAREN().symbol.line,
             symbolNature: FeelSyntacticSymbolNature.FunctionCall,
-            dataTypeReturn: FeelFunctionReturningTypes.Index.get(text)!,
+            dataTypeReturn: this._normalizedFeelFunctionReturningTypes.get(text)!,
             text: "", // Empty string. It doesn't have a text.
           })
         );
 
-        return new VisitorResult({ text: ctx.getText(), dataType: FeelFunctionReturningTypes.Index.get(text) });
+        return new VisitorResult({
+          text: ctx.getText(),
+          dataType: this._normalizedFeelFunctionReturningTypes.get(text),
+        });
       }
     }
 
@@ -248,7 +257,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
 
     // Each expression has a type of expected parameters.
     if (
-      FeelFunctionReturningTypes.Index.has(left) &&
+      this._normalizedFeelFunctionReturningTypes.has(left) &&
       (right instanceof ParametersPositionalContext ||
         right instanceof ParametersEmptyContext ||
         right instanceof ParametersNamedContext)
@@ -260,12 +269,12 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
           startLine: right.LPAREN().symbol.line,
           endLine: right.RPAREN().symbol.line,
           symbolNature: FeelSyntacticSymbolNature.FunctionCall,
-          dataTypeReturn: FeelFunctionReturningTypes.Index.get(left)!,
+          dataTypeReturn: this._normalizedFeelFunctionReturningTypes.get(left)!,
           text: "", // Empty string. It doesn't have a text.
         })
       );
 
-      return new VisitorResult({ text: ctx.getText(), dataType: FeelFunctionReturningTypes.Index.get(left) });
+      return new VisitorResult({ text: ctx.getText(), dataType: this._normalizedFeelFunctionReturningTypes.get(left) });
     } else {
       return this.visit(right);
     }
