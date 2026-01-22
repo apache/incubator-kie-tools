@@ -22,7 +22,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
-const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (webpackEnv) =>
@@ -38,26 +37,14 @@ module.exports = async (webpackEnv) =>
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "src/index.html"),
         filename: "index.html",
-        chunks: ["app"],
+        templateParameters: {
+          KOGITO_DATA_INDEX_WEBAPP_TITLE: env.kogitoDataIndexWebapp.title,
+          KOGITO_DATA_INDEX_WEBAPP_LOGO: env.kogitoDataIndexWebapp.logo,
+          KOGITO_DATA_INDEX_WEBAPP_DOCLINK_HREF: env.kogitoDataIndexWebapp.docLink.href,
+          KOGITO_DATA_INDEX_WEBAPP_DOCLINK_TEXT: env.kogitoDataIndexWebapp.docLink.text,
+          KOGITO_DATA_INDEX_WEBAPP_VERSION: env.kogitoDataIndexWebapp.version,
+        },
       }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_TITLE}/g,
-          replacement: () => env.kogitoDataIndexWebapp.title ?? "",
-        },
-        {
-          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_LOGO}/g,
-          replacement: () => env.kogitoDataIndexWebapp.logo ?? "",
-        },
-        {
-          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_DOCLINK_HREF}/g,
-          replacement: () => env.kogitoDataIndexWebapp.docLink.href ?? "",
-        },
-        {
-          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_DOCLINK_TEXT}/g,
-          replacement: () => env.kogitoDataIndexWebapp.docLink.text ?? "",
-        },
-      ]),
     ],
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {

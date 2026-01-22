@@ -37,6 +37,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "GraphQL DOCS",
       description: "Documentation link text",
     },
+    KOGITO_DATA_INDEX_WEBAPP_version: {
+      default: "1.0.0",
+      description: "Version",
+    },
   }),
   get env() {
     return {
@@ -50,6 +54,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           href: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_docLinkHref),
           text: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_docLinkText),
         },
+        version: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_version),
       },
     };
   },
