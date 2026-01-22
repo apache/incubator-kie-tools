@@ -77,7 +77,6 @@ export const defaultEnvJson: EnvJson = {
       enabled: true,
       iconPath: routes.static.images.gitlabLogo.path({}),
       group: AuthProviderGroup.GIT,
-      disableEncoding: true,
     },
     {
       id: "bitbucket_dot_org",
