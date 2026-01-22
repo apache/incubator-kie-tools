@@ -22,22 +22,22 @@ export function ServiceYaml() {
 kind: Service
 apiVersion: v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
+  name: \${{ $.devDeployment.uniqueName }}
+  namespace: \${{ $.devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
 spec:
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
   selector:
-    app: \${{ devDeployment.uniqueName }}
-    deploymentconfig: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    deploymentconfig: \${{ $.devDeployment.uniqueName }}
   type: ClusterIP
 `;
 }

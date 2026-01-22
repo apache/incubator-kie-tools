@@ -17,28 +17,14 @@
  * under the License.
  */
 
-export function RouteYaml() {
-  return `
-kind: Route
-apiVersion: route.openshift.io/v1
-metadata:
-  name: \${{ $.devDeployment.uniqueName }}
-  namespace: \${{ $.devDeployment.kubernetes.namespace }}
-  labels:
-    app: \${{ $.devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
-spec:
-  subdomain: \${{ $.devDeployment.uniqueName }}
-  to:
-    name: \${{ $.devDeployment.uniqueName }}
-    kind: Service
-  port:
-    targetPort: 8080
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: None
-`;
-}
+const { config, babelTransform, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
+  ...config,
+  testEnvironment: "node",
+  transform: {
+    ...babelTransform,
+    ...typescriptTransform,
+  },
+};
