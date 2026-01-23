@@ -41,13 +41,13 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: require("../package.json").version,
       description: "Kogito Data Index Version",
     },
-    KOGITO_DATA_INDEX_WEBAPP_graphqluiHref: {
+    KOGITO_DATA_INDEX_WEBAPP_graphqlUiHref: {
       default: "/q/graphql-ui",
-      description: "GraphQL Dev UI Console link",
+      description: "GraphQL UI link URL",
     },
-    KOGITO_DATA_INDEX_WEBAPP_graphqluiText: {
+    KOGITO_DATA_INDEX_WEBAPP_graphqlUiText: {
       default: "GraphQL UI",
-      description: "GraphQL Dev UI Console link text",
+      description: "GraphQL UI link text",
     },
   }),
   get env() {
@@ -64,8 +64,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         },
         version: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_version),
         graphqlUi: {
-          href: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_graphqluiHref),
-          text: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_graphqluiText),
+          href: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_graphqlUiHref),
+          text: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_graphqlUiText),
         },
       },
     };
