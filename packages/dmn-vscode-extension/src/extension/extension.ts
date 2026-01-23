@@ -27,28 +27,6 @@ export function activate(context: vscode.ExtensionContext) {
   KogitoVsCode.startExtension({
     extensionName: "kie-group.dmn-vscode-extension",
     context: context,
-    viewType: "kieKogitoWebviewEditorsDmn",
-    generateSvgCommandId: "extension.kogito.getPreviewSvgDmn",
-    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgDmn",
-    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping({
-        type: "dmn",
-        filePathGlob: "**/*.dmn",
-        resourcesPathPrefix: "dist/webview/editors/dmn",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/DmnEditorEnvelopeApp.js" },
-      }),
-      new EnvelopeMapping({
-        type: "scesim",
-        filePathGlob: "**/*.scesim",
-        resourcesPathPrefix: "dist/webview/editors/scesim",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/SceSimEditorEnvelopeApp.js" },
-      }),
-    ]),
-  });
-
-  KogitoVsCode.startExtension({
-    extensionName: "kie-group.dmn-vscode-extension",
-    context: context,
     viewType: "kieToolsDmnEditor",
     generateSvgCommandId: "extension.kie.tools.generatePreviewSvgDmn",
     silentlyGenerateSvgCommandId: "extension.kie.tools.silentlyGenerateSvgDmn",

@@ -558,14 +558,6 @@ default-global.wid
 Log.wid
 # packages/kie-editors-dev-vscode-extension/e2e-tests/resources/src/main/java/org/kie/businessapp/Email.wid
 Email.wid
-# packages/kie-editors-standalone/e2e-tests/cypress/fixtures/default.wid
-default.wid
-# packages/kie-editors-standalone/e2e-tests/src/resources/widDefinitions.wid
-widDefinitions.wid
-# packages/kie-editors-standalone/resources/bpmn/bpmnEnvelopeIndex.template
-bpmnEnvelopeIndex.template
-# packages/kie-editors-standalone/resources/dmn/dmnEnvelopeIndex.template
-dmnEnvelopeIndex.template
 # packages/kie-sandbox-distribution/.env
 .env
 # packages/kie-sandbox-fs/src/DefaultBackend.js
