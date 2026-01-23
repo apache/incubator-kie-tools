@@ -43,6 +43,8 @@ module.exports = async (webpackEnv) =>
           KOGITO_DATA_INDEX_WEBAPP_DOCLINK_HREF: env.kogitoDataIndexWebapp.docLink.href,
           KOGITO_DATA_INDEX_WEBAPP_DOCLINK_TEXT: env.kogitoDataIndexWebapp.docLink.text,
           KOGITO_DATA_INDEX_WEBAPP_VERSION: env.kogitoDataIndexWebapp.version,
+          KOGITO_DATA_INDEX_WEBAPP_GRAPHQLUI_HREF: env.kogitoDataIndexWebapp.graphqlUi.href,
+          KOGITO_DATA_INDEX_WEBAPP_GRAPHQLUI_LINK_TEXT: env.kogitoDataIndexWebapp.graphqlUi.text,
         },
       }),
     ],

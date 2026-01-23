@@ -34,7 +34,7 @@
 
           <div style="display: flex; flex-direction: column; gap: 4px">
             <h1 style="margin: 0"><%= KOGITO_DATA_INDEX_WEBAPP_TITLE %></h1>
-            <h6 style="margin: 0; font-weight: normal"><%= KOGITO_DATA_INDEX_WEBAPP_VERSION %></h6>
+            <h6 style="margin: 0; font-weight: normal" class="versionInfo"><%= KOGITO_DATA_INDEX_WEBAPP_VERSION %></h6>
           </div>
         </div>
         <div>
@@ -49,7 +49,9 @@
           <a href="<%= KOGITO_DATA_INDEX_WEBAPP_DOCLINK_HREF %>" class="btn" target="_blank"
             ><%= KOGITO_DATA_INDEX_WEBAPP_DOCLINK_TEXT %></a
           >
-          <a href="http://0.0.0.0:8080/q/graphql-ui" class="btn" target="_blank">GraphQL UI</a>
+          <a href="<%= KOGITO_DATA_INDEX_WEBAPP_GRAPHQLUI_HREF %>" class="btn" target="_blank"
+            ><%= KOGITO_DATA_INDEX_WEBAPP_GRAPHQLUI_LINK_TEXT %></a
+          >
         </div>
       </div>
     </div>
