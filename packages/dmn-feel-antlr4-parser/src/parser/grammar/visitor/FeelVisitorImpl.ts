@@ -37,6 +37,7 @@ import { FeelSyntacticSymbolNature } from "../../FeelSyntacticSymbolNature";
 import { VisitorResult } from "./VisitorResult";
 import { BuiltInTypes } from "../../BuiltInTypes";
 import { DataType } from "../../DataType";
+import FEEL_1_1Lexer from "../generated-parser/FEEL_1_1Lexer";
 
 export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
   private readonly handlers: Map<Function, (node: ParseTree) => VisitorResult>;
@@ -282,13 +283,15 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
 
   private getBuiltInTypeFromNodeType(nodeType: number) {
     switch (nodeType) {
-      case 1:
+      case FEEL_1_1Lexer.BooleanLiteral:
         return BuiltInTypes.Boolean;
-      case 22:
-      case 23:
+      case FEEL_1_1Lexer.IntegerLiteral:
+      case FEEL_1_1Lexer.FloatingPointLiteral:
         return BuiltInTypes.Number;
-      case 24:
+      case FEEL_1_1Lexer.StringLiteral:
         return BuiltInTypes.String;
+
+      // The other types we just don't care
       default:
         return BuiltInTypes.Any;
     }
