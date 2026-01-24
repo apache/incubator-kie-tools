@@ -155,11 +155,4 @@ export class VsCodeKieEditorControllerFactory {
   private getWebviewPath(webview: Webview, relativeUriPath: string) {
     return webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, relativeUriPath)).toString();
   }
-
-  private getParentFolder(absoluteFsPath: string) {
-    if (absoluteFsPath.includes(__path.sep)) {
-      return absoluteFsPath.substring(0, absoluteFsPath.lastIndexOf(__path.sep) + 1);
-    }
-    return "";
-  }
 }

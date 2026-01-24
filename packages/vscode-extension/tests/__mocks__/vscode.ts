@@ -20,6 +20,7 @@
 // vscode.js
 
 import * as fs from "fs";
+import * as __path from "path";
 
 const languages = {
   createDiagnosticCollection: jest.fn(),
@@ -36,9 +37,11 @@ const vscodeWindow = {
   createTextEditorDecorationType: jest.fn(),
 };
 
-const workspace = {
+const wsRoot = __path.resolve(__dirname, "..", "test-workspace");
+
+export const workspace = {
   getConfiguration: jest.fn(),
-  workspaceFolders: [],
+  workspaceFolders: [{ uri: { fsPath: wsRoot } }],
   onDidSaveTextDocument: jest.fn(),
   fs: {
     readDirectory: (uri: any) => ({
@@ -64,6 +67,23 @@ const workspace = {
       },
     }),
   },
+
+  asRelativePath: jest.fn((uri: string | { fsPath: string }, _includeWorkspace?: boolean) => {
+    const abs = typeof uri === "string" ? uri : uri.fsPath;
+    console.debug(wsRoot);
+    console.debug(uri);
+    let rel = abs.startsWith(wsRoot + __path.sep) ? abs.slice(wsRoot.length + 1) : abs;
+    return rel.replace(/\\/g, "/");
+  }),
+
+  /**
+   * This is mock for unit testing. I do not want to implement any search mechanism.
+   * We do not want to test correctnes of the VSCode implementation in Apache KIE test suite
+   * We just want to be able assert `findFiles` parameters
+   */
+  findFiles: jest.fn(async (include: RelativePattern, exclude?: any, maxResults?: number, token?: any) => {
+    return [];
+  }),
 };
 
 const OverviewRulerLane = {
@@ -87,6 +107,14 @@ const commands = {
   executeCommand: jest.fn(),
 };
 
+/** Just te get unit test working and be able assert `base` and `pattern` */
+class RelativePattern {
+  constructor(
+    public base: string,
+    public pattern: string
+  ) {}
+}
+
 const vscode = {
   languages,
   StatusBarAlignment,
@@ -99,6 +127,7 @@ const vscode = {
   DiagnosticSeverity,
   debug,
   commands,
+  RelativePattern,
 };
 
 module.exports = vscode;

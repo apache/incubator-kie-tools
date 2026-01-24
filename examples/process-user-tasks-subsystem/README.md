@@ -102,7 +102,7 @@ If the task name is `hr_interview` the assigned user will be "recruiter". For th
 
 - Java 17 installed
 - Environment variable `JAVA_HOME` set accordingly
-- Maven 3.9.6 installed
+- Maven 3.9.11 installed
 - Docker and Docker Compose to run the required example infrastructure.
 
 ### Compile and Run in local development mode

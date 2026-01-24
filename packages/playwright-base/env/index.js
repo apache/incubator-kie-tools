@@ -25,11 +25,52 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "false",
       description: "Toggles the installation of Playwright dependencies. Can be `true` or `false`.",
     },
+    PLAYWRIGHT_BASE__enableChromiumProject: {
+      default: "true",
+      description: "Enable or disable Chromium project",
+    },
+    PLAYWRIGHT_BASE__enableGoogleChromeProject: {
+      default: "true",
+      description: "Enable or disable Google Chrome project",
+    },
+    PLAYWRIGHT_BASE__enableWebkitProject: {
+      default: "true",
+      description: "Enable or disable Webkit project",
+    },
+    PLAYWRIGHT_BASE__projectTimeout: {
+      default: "90000",
+      description: "The timeout of a test in the project (Chromium, Google Chrome and Webkit)",
+    },
+    PLAYWRIGHT_BASE__expectTimeout: {
+      default: "30000",
+      description: "The timeout of an expect assertion",
+    },
+    PLAYWRIGHT_BASE__maxDiffPixelRatio: {
+      default: "0.001",
+      description:
+        "The threshold of the maximum pixel difference on screenshot comparisons (percentage in decimal form)",
+    },
+    PLAYWRIGHT_BASE__retries: {
+      default: "0",
+      description: "The amount of times a test will re-run if it fails",
+    },
+    PLAYWRIGHT_BASE__workers: {
+      default: "2",
+      description: "The number of workers that will be used to run the tests",
+    },
   }),
   get env() {
     return {
       playwrightBase: {
         installDeps: str2bool(getOrDefault(this.vars.PLAYWRIGHT_BASE__installDeps)),
+        enableChromiumProject: str2bool(getOrDefault(this.vars.PLAYWRIGHT_BASE__enableChromiumProject)),
+        enableGoogleChromeProject: str2bool(getOrDefault(this.vars.PLAYWRIGHT_BASE__enableGoogleChromeProject)),
+        enableWebkitProject: str2bool(getOrDefault(this.vars.PLAYWRIGHT_BASE__enableWebkitProject)),
+        projectTimeout: getOrDefault(this.vars.PLAYWRIGHT_BASE__projectTimeout),
+        expectTimeout: getOrDefault(this.vars.PLAYWRIGHT_BASE__expectTimeout),
+        maxDiffPixelRatio: getOrDefault(this.vars.PLAYWRIGHT_BASE__maxDiffPixelRatio),
+        retries: getOrDefault(this.vars.PLAYWRIGHT_BASE__retries),
+        workers: getOrDefault(this.vars.PLAYWRIGHT_BASE__workers),
       },
     };
   },

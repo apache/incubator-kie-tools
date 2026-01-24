@@ -957,6 +957,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/playwright-base",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/storybook-base",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1

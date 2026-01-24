@@ -38,7 +38,6 @@ import (
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
-	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
@@ -146,10 +145,6 @@ func main() {
 		tlsOpts = append(tlsOpts, disableHTTP2)
 	}
 
-	webhookServer := webhook.NewServer(webhook.Options{
-		TLSOpts: tlsOpts,
-	})
-
 	config := ctrl.GetConfigOrDie()
 	config.QPS = float32(*qps)
 	config.Burst = *burst
@@ -160,7 +155,6 @@ func main() {
 			SecureServing: secureMetrics,
 			TLSOpts:       tlsOpts,
 		},
-		WebhookServer:          webhookServer,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "1be5e57d.kie.org",

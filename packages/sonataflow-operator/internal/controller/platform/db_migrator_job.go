@@ -80,6 +80,8 @@ const (
 	quarkusDataSourceJobsServiceUserName = "QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME"
 	quarkusDataSourceJobsServicePassword = "QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD"
 	quarkusFlywayJobsServiceSchemas      = "QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS"
+	defaultPostgreSqlUserKey             = "POSTGRESQL_USER"
+	defaultPostgreSqlPassworkdKey        = "POSTGRESQL_PASSWORD"
 )
 
 type DBMigrationJobCfg struct {
@@ -106,8 +108,14 @@ func getQuarkusDSFromServicePersistence(platform *operatorapi.SonataFlowPlatform
 	env := persistence.ConfigurePostgreSQLEnv(persistenceOptionsSpec.PostgreSQL, defaultSchemaName, platform.Namespace, false)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
 	quarkusDataSource.SecretRefName = persistenceOptionsSpec.PostgreSQL.SecretRef.Name
-	quarkusDataSource.SecretUserKey = persistenceOptionsSpec.PostgreSQL.SecretRef.UserKey
-	quarkusDataSource.SecretPasswordKey = persistenceOptionsSpec.PostgreSQL.SecretRef.PasswordKey
+	quarkusDataSource.SecretUserKey = defaultPostgreSqlUserKey
+	if len(persistenceOptionsSpec.PostgreSQL.SecretRef.UserKey) > 0 {
+		quarkusDataSource.SecretUserKey = persistenceOptionsSpec.PostgreSQL.SecretRef.UserKey
+	}
+	quarkusDataSource.SecretPasswordKey = defaultPostgreSqlPassworkdKey
+	if len(persistenceOptionsSpec.PostgreSQL.SecretRef.PasswordKey) > 0 {
+		quarkusDataSource.SecretPasswordKey = persistenceOptionsSpec.PostgreSQL.SecretRef.PasswordKey
+	}
 	quarkusDataSource.Schema = persistence.GetDBSchemaName(persistenceOptionsSpec.PostgreSQL, defaultSchemaName)
 	return quarkusDataSource
 }
@@ -121,8 +129,14 @@ func getQuarkusDSFromPlatformPersistence(platform *operatorapi.SonataFlowPlatfor
 	env := persistence.ConfigurePostgreSQLEnv(postgresql, defaultSchemaName, platform.Namespace, false)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
 	quarkusDataSource.SecretRefName = platform.Spec.Persistence.PostgreSQL.SecretRef.Name
-	quarkusDataSource.SecretUserKey = platform.Spec.Persistence.PostgreSQL.SecretRef.UserKey
-	quarkusDataSource.SecretPasswordKey = platform.Spec.Persistence.PostgreSQL.SecretRef.PasswordKey
+	quarkusDataSource.SecretUserKey = defaultPostgreSqlUserKey
+	if len(platform.Spec.Persistence.PostgreSQL.SecretRef.UserKey) > 0 {
+		quarkusDataSource.SecretUserKey = platform.Spec.Persistence.PostgreSQL.SecretRef.UserKey
+	}
+	quarkusDataSource.SecretPasswordKey = defaultPostgreSqlPassworkdKey
+	if len(platform.Spec.Persistence.PostgreSQL.SecretRef.PasswordKey) > 0 {
+		quarkusDataSource.SecretPasswordKey = platform.Spec.Persistence.PostgreSQL.SecretRef.PasswordKey
+	}
 	quarkusDataSource.Schema = persistence.GetDBSchemaName(postgresql, defaultSchemaName)
 	return quarkusDataSource
 }
@@ -280,6 +294,75 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 
 	lbl, _ := getServicesLabelsMap(platform.Name, platform.Namespace, fmt.Sprintf("%s-%s", "sonataflow-db-job", dbMigrationJobCfg.JobName), dbMigrationJobCfg.JobName, fmt.Sprintf("%s-%s", platform.Name, dbMigrationJobCfg.JobName), platform.Name, "sonataflow-operator")
 
+	envVars := make([]corev1.EnvVar, 0)
+	envVars = append(envVars, corev1.EnvVar{
+		Name:  migrateDBDataIndex,
+		Value: strconv.FormatBool(dbmj.MigrateDBDataIndex),
+	})
+	if dbmj.MigrateDBDataIndex {
+		envVars = append(envVars,
+			corev1.EnvVar{
+				Name:  quarkusDataSourceDataIndexJdbcURL,
+				Value: diQuarkusDataSource.JdbcUrl,
+			},
+			corev1.EnvVar{
+				Name: quarkusDataSourceDataIndexUserName,
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						Key:                  diQuarkusDataSource.SecretUserKey,
+						LocalObjectReference: diDBSecretRef,
+					},
+				},
+			},
+			corev1.EnvVar{
+				Name: quarkusDataSourceDataIndexPassword,
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						Key:                  diQuarkusDataSource.SecretPasswordKey,
+						LocalObjectReference: diDBSecretRef,
+					},
+				},
+			},
+			corev1.EnvVar{
+				Name:  quarkusFlywayDataIndexSchemas,
+				Value: diQuarkusDataSource.Schema,
+			})
+	}
+
+	envVars = append(envVars, corev1.EnvVar{
+		Name:  migrateDBJobsService,
+		Value: strconv.FormatBool(dbmj.MigrateDBJobsService),
+	})
+	if dbmj.MigrateDBJobsService {
+		envVars = append(envVars,
+			corev1.EnvVar{
+				Name:  quarkusDataSourceJobsServiceJdbcURL,
+				Value: jsQuarkusDataSource.JdbcUrl,
+			},
+			corev1.EnvVar{
+				Name: quarkusDataSourceJobsServiceUserName,
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						Key:                  jsQuarkusDataSource.SecretUserKey,
+						LocalObjectReference: jsDBSecretRef,
+					},
+				},
+			},
+			corev1.EnvVar{
+				Name: quarkusDataSourceJobsServicePassword,
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						Key:                  jsQuarkusDataSource.SecretPasswordKey,
+						LocalObjectReference: jsDBSecretRef,
+					},
+				},
+			},
+			corev1.EnvVar{
+				Name:  quarkusFlywayJobsServiceSchemas,
+				Value: jsQuarkusDataSource.Schema,
+			})
+	}
+
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      dbMigrationJobCfg.JobName,
@@ -293,68 +376,7 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 						{
 							Name:  dbMigrationJobCfg.ContainerName,
 							Image: dbMigrationJobCfg.ToolImageName,
-							Env: []corev1.EnvVar{
-								{
-									Name:  migrateDBDataIndex,
-									Value: strconv.FormatBool(dbmj.MigrateDBDataIndex),
-								},
-								{
-									Name:  quarkusDataSourceDataIndexJdbcURL,
-									Value: diQuarkusDataSource.JdbcUrl,
-								},
-								{
-									Name: quarkusDataSourceDataIndexUserName,
-									ValueFrom: &corev1.EnvVarSource{
-										SecretKeyRef: &corev1.SecretKeySelector{
-											Key:                  diQuarkusDataSource.SecretUserKey,
-											LocalObjectReference: diDBSecretRef,
-										},
-									},
-								},
-								{
-									Name: quarkusDataSourceDataIndexPassword,
-									ValueFrom: &corev1.EnvVarSource{
-										SecretKeyRef: &corev1.SecretKeySelector{
-											Key:                  diQuarkusDataSource.SecretPasswordKey,
-											LocalObjectReference: diDBSecretRef,
-										},
-									},
-								},
-								{
-									Name:  quarkusFlywayDataIndexSchemas,
-									Value: diQuarkusDataSource.Schema,
-								},
-								{
-									Name:  migrateDBJobsService,
-									Value: strconv.FormatBool(dbmj.MigrateDBJobsService),
-								},
-								{
-									Name:  quarkusDataSourceJobsServiceJdbcURL,
-									Value: jsQuarkusDataSource.JdbcUrl,
-								},
-								{
-									Name: quarkusDataSourceJobsServiceUserName,
-									ValueFrom: &corev1.EnvVarSource{
-										SecretKeyRef: &corev1.SecretKeySelector{
-											Key:                  jsQuarkusDataSource.SecretUserKey,
-											LocalObjectReference: jsDBSecretRef,
-										},
-									},
-								},
-								{
-									Name: quarkusDataSourceJobsServicePassword,
-									ValueFrom: &corev1.EnvVarSource{
-										SecretKeyRef: &corev1.SecretKeySelector{
-											Key:                  jsQuarkusDataSource.SecretPasswordKey,
-											LocalObjectReference: jsDBSecretRef,
-										},
-									},
-								},
-								{
-									Name:  quarkusFlywayJobsServiceSchemas,
-									Value: jsQuarkusDataSource.Schema,
-								},
-							},
+							Env:   envVars,
 						},
 					},
 					RestartPolicy: "Never",

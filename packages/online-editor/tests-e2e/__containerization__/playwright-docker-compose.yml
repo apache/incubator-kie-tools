@@ -32,7 +32,14 @@ services:
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
       - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
-      - ONLINE_EDITOR__skipPlaywrightTestsForArm64=${ONLINE_EDITOR__skipPlaywrightTestsForArm64}
+      - PLAYWRIGHT_BASE__enableChromiumProject=${PLAYWRIGHT_BASE__enableChromiumProject}
+      - PLAYWRIGHT_BASE__enableGoogleChromeProject=${PLAYWRIGHT_BASE__enableGoogleChromeProject}
+      - PLAYWRIGHT_BASE__enableWebkitProject=${PLAYWRIGHT_BASE__enableWebkitProject}
+      - PLAYWRIGHT_BASE__projectTimeout=${PLAYWRIGHT_BASE__projectTimeout}
+      - PLAYWRIGHT_BASE__expectTimeout=${PLAYWRIGHT_BASE__expectTimeout}
+      - PLAYWRIGHT_BASE__maxDiffPixelRatio=${PLAYWRIGHT_BASE__maxDiffPixelRatio}
+      - PLAYWRIGHT_BASE__retries=${PLAYWRIGHT_BASE__retries}
+      - PLAYWRIGHT_BASE__workers=${PLAYWRIGHT_BASE__workers}
     volumes:
       - type: bind
         source: ./../../../../

@@ -95,13 +95,13 @@ RUN curl -s "https://get.sdkman.io" | bash && \
     source "$HOME/.sdkman/bin/sdkman-init.sh" && \
     sdk install java 17.0.11-tem && \
     sudo update-alternatives --install /usr/local/bin/java java $(which java) 1 && \
-    sdk install maven 3.9.6 && \
+    sdk install maven 3.9.11 && \
     sudo update-alternatives --install /usr/local/bin/mvn mvn $(which mvn) 1 && \
     sdk flush
 
 # Golang setup
-RUN wget https://go.dev/dl/go1.24.10.linux-amd64.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/go1.24.10.linux-amd64.tar.gz -C /opt && rm /tmp/go1.24.10.linux-amd64.tar.gz && \
+RUN wget https://go.dev/dl/go1.24.11.linux-amd64.tar.gz -P /tmp && \
+    sudo tar xzf /tmp/go1.24.11.linux-amd64.tar.gz -C /opt && rm /tmp/go1.24.11.linux-amd64.tar.gz && \
     echo 'export GOPATH=${HOME}/go' | sudo tee /etc/profile.d/go.sh && \
     echo 'export PATH=${PATH}:/opt/go/bin:${GOPATH}/bin' | sudo tee -a /etc/profile.d/go.sh && \
     echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc && \
