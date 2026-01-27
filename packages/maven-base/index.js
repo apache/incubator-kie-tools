@@ -143,7 +143,7 @@ module.exports = {
     console.time(`[maven-base] Setting property '${key}' with value '${value}'...`);
 
     // Using "sed" instead of "mvn versions:set-property" because Maven fails if the pom.xml is invalid before setting the property.
-    // This may happen if you're bootstraping the repo with a new Kogito version before building the previous one.
+    // This may happen if you're bootstraping the repo with a new "KOGITO_RUNTIME_version" value before building "packages/drools-and-kogito" with the previous one, for example.
     const cmd = `sed -i 's|<${key}>.*</${key}>|<${key}>${value}</${key}>|g' pom.xml`;
 
     if (process.platform === "win32") {
