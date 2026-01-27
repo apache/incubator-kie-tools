@@ -142,10 +142,15 @@ module.exports = {
     console.info(`[maven-base] Setting property '${key}' with value '${value}'...`);
     console.time(`[maven-base] Setting property '${key}' with value '${value}'...`);
 
-    const cmd = `mvn versions:set-property -Dproperty=${key} -DnewVersion=${value} -DgenerateBackupPoms=false ${BOOTSTRAP_CLI_ARGS}`;
+    // Using "sed" instead of "mvn versions:set-property" because Maven fails if the pom.xml is invalid before setting the property.
+    // This may happen if you're bootstraping the repo with a new Kogito version before building the previous one.
+    const cmd = `sed -i 's|<${key}>.*</${key}>|<${key}>${value}</${key}>|g' pom.xml`;
 
     if (process.platform === "win32") {
       cp.execSync(cmd.replaceAll(" -", " `-"), { stdio: "inherit", shell: "powershell.exe" });
+    } else if (process.platform === "darwin") {
+      // Account for macOS BSD sed implementation
+      cp.execSync(cmd.replace("-i", "-i ''"), { stdio: "inherit" });
     } else {
       cp.execSync(cmd, { stdio: "inherit" });
     }
