@@ -765,7 +765,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -1090,7 +1090,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -3195,7 +3195,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -3350,7 +3350,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -6516,7 +6516,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7101,9 +7101,6 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
-      html-replace-webpack-plugin:
-        specifier: ^2.6.0
-        version: 2.6.0
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.3.2(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
@@ -7455,7 +7452,7 @@ importers:
         version: 11.4.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-virtualized-auto-sizer:
         specifier: ^1.0.7
         version: 1.0.7(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -7748,7 +7745,7 @@ importers:
         version: 7.2.4(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-sortable-hoc:
         specifier: ^2.0.0
         version: 2.0.0(prop-types@15.8.1)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -8129,7 +8126,7 @@ importers:
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
         version: 3.10.2(react@17.0.2)
@@ -8272,7 +8269,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -8531,7 +8528,7 @@ importers:
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       util:
         specifier: ^0.12.5
         version: 0.12.5
@@ -9175,7 +9172,7 @@ importers:
         version: 17.0.2
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -10049,7 +10046,7 @@ importers:
         version: 4.1.4(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       short-unique-id:
         specifier: ^4.4.4
         version: 4.4.4
@@ -10563,7 +10560,7 @@ importers:
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -11776,7 +11773,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -12117,7 +12114,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-router-dom:
         specifier: ^6.30.2
-        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -19636,8 +19633,8 @@ packages:
       selenium-webdriver: '>=4.6.1'
       typescript: '>=4.6.2'
 
-  '@remix-run/router@1.23.0':
-    resolution: {integrity: sha512-O3rHJzAQKamUz1fvE0Qaw0xSFqsA/yafi2iqeE0pvdFtCO1viYx8QL6f3Ln/aCCTLxs68SLf0KPM9eSeM8yBnA==}
+  '@remix-run/router@1.23.2':
+    resolution: {integrity: sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==}
     engines: {node: '>=14.0.0'}
 
   '@repeaterjs/repeater@3.0.4':
@@ -28956,15 +28953,15 @@ packages:
       react: 0.14.x || 15.x || 16.x || 17.x
       react-dom: 0.14.x || 15.x || 16.x || 17.x
 
-  react-router-dom@6.30.0:
-    resolution: {integrity: sha512-x30B78HV5tFk8ex0ITwzC9TTZMua4jGyA9IUlH1JLQYQTFyxr/ZxwOJq7evg1JX1qGVUcvhsmQSKdPncQrjTgA==}
+  react-router-dom@6.30.3:
+    resolution: {integrity: sha512-pxPcv1AczD4vso7G4Z3TKcvlxK7g7TNt3/FNGMhfqyntocvYKj+GCatfigGDjbLozC4baguJ0ReCigoDJXb0ag==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
 
-  react-router@6.30.0:
-    resolution: {integrity: sha512-D3X8FyH9nBcTSHGdEKurK7r8OYE1kKFn3d/CF+CoxbSHkxU7o37+Uh7eAHRXr6k2tSExXYO++07PeXJtA/dEhQ==}
+  react-router@6.30.3:
+    resolution: {integrity: sha512-XRnlbKMTmktBkjCLE8/XcZFlnHvr2Ltdr1eJX4idL55/9BbORzyZEaIkBFDhFGCEWBBItsVrDxwx3gnisMitdw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
@@ -42137,7 +42134,7 @@ snapshots:
       type-fest: 4.30.1
       typescript: 5.5.3
 
-  '@remix-run/router@1.23.0': {}
+  '@remix-run/router@1.23.2': {}
 
   '@repeaterjs/repeater@3.0.4': {}
 
@@ -56386,16 +56383,16 @@ snapshots:
       react-dom: 17.0.2(react@17.0.2)
       react-draggable: 4.4.4(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
 
-  react-router-dom@6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
+  react-router-dom@6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
-      '@remix-run/router': 1.23.0
+      '@remix-run/router': 1.23.2
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      react-router: 6.30.0(react@17.0.2)
+      react-router: 6.30.3(react@17.0.2)
 
-  react-router@6.30.0(react@17.0.2):
+  react-router@6.30.3(react@17.0.2):
     dependencies:
-      '@remix-run/router': 1.23.0
+      '@remix-run/router': 1.23.2
       react: 17.0.2
 
   react-shallow-renderer@16.15.0(react@17.0.2):
