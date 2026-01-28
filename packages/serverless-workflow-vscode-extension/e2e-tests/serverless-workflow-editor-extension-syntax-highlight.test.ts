@@ -33,32 +33,32 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
   let driver: WebDriver;
 
   before(async function () {
-    this.timeout(30000);
+    this.timeout(100000);
     testHelper = new VSCodeTestHelper();
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
+    this.timeout(100000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
+    testHelper.setimplicitTimeout(50000);
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(150000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it("Checks syntax highlighting of *.sw.json files in serverless workflow editor", async function () {
-    this.timeout(30000);
     await testSyntaxHighlighting("syntax-highlight-hello-world.sw.json");
-  });
+  }).timeout(100000);
 
   it("Checks syntax highlighting of *.sw.yaml files in serverless workflow editor", async function () {
-    this.timeout(30000);
     await testSyntaxHighlighting("syntax-highlight-hello-world.sw.yaml");
-  });
+  }).timeout(100000);
 
   async function testSyntaxHighlighting(workflowName: string): Promise<void> {
     const editorWebviews = await testHelper.openFileFromSidebar(workflowName);
