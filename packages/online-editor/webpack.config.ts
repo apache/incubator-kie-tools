@@ -149,6 +149,10 @@ export default async (webpackEnv: any, webpackArgv: any) => {
             // The @kubernetes-models sub-packages source maps are not published, so we need to ignore their warnings for now.
             module: /@kubernetes-models/,
           },
+          {
+            // The jsonpath-rfc9535 package source maps are not published, so we ignore their warnings.
+            module: /jsonpath-rfc9535/,
+          },
         ],
       }),
       devServer: {

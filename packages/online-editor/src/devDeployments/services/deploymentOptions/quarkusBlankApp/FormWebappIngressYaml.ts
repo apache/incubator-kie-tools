@@ -22,14 +22,14 @@ export function FormWebappIngressYaml() {
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-  namespace: \${{ devDeployment.kubernetes.namespace }}
+  name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+  namespace: \${{ $.devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -38,11 +38,11 @@ spec:
   rules:
     - http:
         paths:
-          - path: /\${{ devDeployment.uniqueName }}/form-webapp(/|$)(.*)
+          - path: /\${{ $.devDeployment.uniqueName }}/form-webapp(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+                name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
                 port:
                   number: 8081
 `;

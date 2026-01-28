@@ -22,22 +22,22 @@ export function FormWebappServiceYaml() {
 kind: Service
 apiVersion: v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-  namespace: \${{ devDeployment.kubernetes.namespace }}
+  name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+  namespace: \${{ $.devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
 spec:
   ports:
     - protocol: TCP
       port: 8081
       targetPort: 8081
   selector:
-    app: \${{ devDeployment.uniqueName }}
-    deploymentconfig: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    deploymentconfig: \${{ $.devDeployment.uniqueName }}
   type: ClusterIP
 `;
 }

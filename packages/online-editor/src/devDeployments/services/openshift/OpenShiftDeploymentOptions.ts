@@ -44,7 +44,7 @@ export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<De
                 op: "add",
                 path: "/spec/template/spec/containers/-",
                 value: {
-                  name: "${{ devDeployment.uniqueName }}-dmn-form-webapp",
+                  name: "${{ $.devDeployment.uniqueName }}-dmn-form-webapp",
                   image: args.dmnFormWebappImageUrl,
                   imagePullPolicy: args.imagePullPolicy,
                   ports: [{ containerPort: 8081, protocol: "TCP" }],

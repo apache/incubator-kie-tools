@@ -34,10 +34,12 @@ export const requiredAnnotations = {
 export function KieSandboxDevDeploymentRequiredPatches(): ResourcePatch[] {
   return [
     {
-      jsonPatches: [
-        { op: "checkType", path: "/metadata/labels", type: "null" },
-        { op: "add", path: "/metadata/labels", value: {} },
-      ],
+      testFilters: [{ op: "test", path: "/metadata/labels", value: undefined }],
+      jsonPatches: [{ op: "add", path: "/metadata/labels", value: {} }],
+    },
+    {
+      testFilters: [{ op: "test", path: "/metadata/labels", value: null }],
+      jsonPatches: [{ op: "add", path: "/metadata/labels", value: {} }],
     },
     {
       jsonPatches: [
@@ -49,27 +51,29 @@ export function KieSandboxDevDeploymentRequiredPatches(): ResourcePatch[] {
         {
           op: "add",
           path: `/metadata/labels/${encodeJsonPatchSubpath(requiredLabels.partOf)}`,
-          value: "${{ devDeployment.uniqueName }}",
+          value: "${{ $.devDeployment.uniqueName }}",
         },
       ],
     },
     {
-      jsonPatches: [
-        { op: "checkType", path: "/metadata/annotations", type: "null" },
-        { op: "add", path: "/metadata/annotations", value: {} },
-      ],
+      testFilters: [{ op: "test", path: "/metadata/annotations", value: undefined }],
+      jsonPatches: [{ op: "add", path: "/metadata/annotations", value: {} }],
+    },
+    {
+      testFilters: [{ op: "test", path: "/metadata/annotations", value: null }],
+      jsonPatches: [{ op: "add", path: "/metadata/annotations", value: {} }],
     },
     {
       jsonPatches: [
         {
           op: "add",
           path: `/metadata/annotations/${encodeJsonPatchSubpath(requiredAnnotations.workspaceId)}`,
-          value: "${{ devDeployment.workspace.id }}",
+          value: "${{ $.devDeployment.workspace.id }}",
         },
         {
           op: "add",
           path: `/metadata/annotations/${encodeJsonPatchSubpath(requiredAnnotations.workspaceName)}`,
-          value: "${{ devDeployment.workspace.name }}",
+          value: "${{ $.devDeployment.workspace.name }}",
         },
       ],
     },

@@ -21,7 +21,11 @@ Library to map Kubernetes API resources and apply resource YAMLs
 
 ## Features
 
-- interpolateK8sResourceYamls(): Given an YAML and a tokens map, interpolate the YAML content with values provided by the token map. Tokens are represented with `${{token.path.name}}`.
+- interpolateK8sResourceYamls(): Given a YAML and a tokens map, interpolate the YAML content with values provided by the token map. Tokens are represented with `${{ keyName }}` for simple flat keys or `${{ $.path.to.value }}` for JSON path queries. Supports recursive/nested token references. Uses [RFC 9535](https://datatracker.ietf.org/doc/html/rfc9535) compliant JSON path syntax via [`jsonpath-rfc9535`](https://www.npmjs.com/package/jsonpath-rfc9535).
+  - Example (simple): `${{ serviceName }}` or `${{ $.serviceName }}`
+  - Example (JSON path nested): `${{ $.deployment.metadata.name }}`
+  - Example (recursive/nested): `${{ $.resources['${{ $.resourceType }}'].host }}`
+- patchK8sResourceYaml(): Apply JSON Patch operations to Kubernetes resource YAMLs with token interpolation support.
 - parseK8sResourceYaml(): Given a YAML file, return an array of JSON objects parsed.
 - buildK8sApiServerEndpointsByResourceKind(): Generates a map of Kubernetes resources and their API endpoints.
 - callK8sApiServer(): Make the requests to the Kubernetes APIServer in order to create given resources.

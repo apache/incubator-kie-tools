@@ -236,7 +236,8 @@ export class KubernetesService {
 
       args.actions?.forEach(({ resourcePatches }) => {
         if (resourcePatches) {
-          resultYaml = patchK8sResourceYaml(resultYaml, resourcePatches, args.parametersTokens);
+          const mergedTokens = { ...args.parametersTokens, ...args.tokens };
+          resultYaml = patchK8sResourceYaml(resultYaml, resourcePatches, mergedTokens);
         }
       });
 

@@ -22,22 +22,22 @@ export function FormWebappRouteYaml() {
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-  namespace: \${{ devDeployment.kubernetes.namespace }}
+  name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+  namespace: \${{ $.devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
     type: sharded
   annotations:
     haproxy.router.openshift.io/rewrite-target: /
 spec:
-  subdomain: \${{ devDeployment.uniqueName }}
+  subdomain: \${{ $.devDeployment.uniqueName }}
   path: /form-webapp
   to:
-    name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    name: \${{ $.devDeployment.uniqueName }}-dmn-form-webapp
     kind: Service
   port:
     targetPort: 8081
