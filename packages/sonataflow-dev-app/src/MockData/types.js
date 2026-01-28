@@ -103,6 +103,14 @@ module.exports = typeDefs = gql`
     name: String!
     type: String!
     uniqueId: String!
+    metadata: NodeMetadata
+  }
+
+  type NodeMetadata {
+    UniqueId: String!
+    state: String
+    branch: String
+    action: String
   }
 
   type Milestones {
