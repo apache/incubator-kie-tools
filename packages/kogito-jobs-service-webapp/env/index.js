@@ -45,6 +45,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "SonataFlow Jobs Service docs",
       description: "Documentation link text",
     },
+    KOGITO_JOBS_SERVICE_WEBAPP_version: {
+      default: require("../package.json").version,
+      description: "Kogito Jobs Service Version",
+    },
   }),
   get env() {
     return {
@@ -62,6 +66,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           href: getOrDefault(this.vars.SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkHref),
           text: getOrDefault(this.vars.SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkText),
         },
+        version: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_version),
       },
     };
   },
