@@ -1,0 +1,58 @@
+{
+  "name": "@kie-tools/xyflow-react-kie-diagram",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
+    "build:prod": "rimraf dist && pnpm lint && pnpm copy:css && tsc -p tsconfig.json",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
+  },
+  "dependencies": {
+    "@kie-tools-core/operating-system": "workspace:*",
+    "@kie-tools-core/switch-expression-ts": "workspace:*",
+    "@patternfly/react-core": "^5.4.1",
+    "@patternfly/react-icons": "^5.4.1",
+    "@patternfly/react-styles": "^5.4.0",
+    "d3-drag": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "immer": "^10.0.3",
+    "uuid": "^8.3.2",
+    "zustand": "^4.4.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@kie-tools/xml-parser-ts": "workspace:*",
+    "@types/d3-drag": "^3.0.3",
+    "@types/d3-selection": "^3.0.6",
+    "@types/react": "^17.0.6",
+    "@types/uuid": "^8.3.0",
+    "copyfiles": "^2.4.1",
+    "fast-deep-equal": "^3.1.3",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "start-server-and-test": "^2.0.3",
+    "storybook": "^7.3.2",
+    "typescript": "^5.5.3",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.2",
+    "webpack-merge": "^5.9.0"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "reactflow": "^11.8.3"
+  }
+}

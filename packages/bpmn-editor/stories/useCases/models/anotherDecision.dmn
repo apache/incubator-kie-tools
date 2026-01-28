@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_D2084CF3-1945-4D7C-8773-962579C714B0"
+  id="_4313DCFB-8E64-4E82-9DDC-816A15A0D9F0"
+  name="another_decision"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+>
+  <decision name="Another decision" id="_90FA8DA5-B643-4DFD-9D87-C4E7F50A4650">
+    <variable name="Another decision" id="_F7408605-BC1D-42B8-A34F-ECA9649D1CB5" typeRef="string" />
+    <literalExpression id="_4D9C8F8C-0D26-46B1-B487-216AC564ED28" typeRef="string" label="Another decision">
+      <text>&quot;Another decision&quot;</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram
+      id="_ABCAEA8B-B4BB-47F9-A487-0B4E79A874A7"
+      name="Default DRD"
+      useAlternativeInputDataShape="false"
+    >
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_4D9C8F8C-0D26-46B1-B487-216AC564ED28">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape
+        id="_B3A33372-3BAC-45D3-9196-D8DE97B00406"
+        dmnElementRef="_90FA8DA5-B643-4DFD-9D87-C4E7F50A4650"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="120" y="120" width="160" height="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

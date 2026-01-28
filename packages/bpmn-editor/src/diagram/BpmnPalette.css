@@ -1,0 +1,95 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * License); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing;
+  * software distributed under the License is distributed on an
+ * AS IS BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.kie-bpmn-editor--top-left-panel {
+  pointer-events: none !important;
+}
+
+.kie-bpmn-editor--palette-nodes-popover.variables {
+  top: 0;
+  padding: 12px;
+  max-height: calc(100vh - 200px - 115px);
+  min-width: 900px;
+}
+.kie-bpmn-editor--palette-nodes-popover.correlations {
+  top: 0;
+  padding: 12px;
+  max-height: calc(100vh - 200px - 57px);
+  min-width: 900px;
+}
+.kie-bpmn-editor--palette-nodes-popover.properties-manager {
+  top: 0;
+  padding: 12px;
+  max-height: calc(100vh - 200px - 57px);
+  min-width: 520px;
+}
+.kie-bpmn-editor--palette-nodes-popover.custom-tasks {
+  top: 0;
+  padding: 12px;
+  max-height: calc(100vh - 200px - 115px);
+  width: 240px;
+}
+
+.kie-bpmn-editor--palette-nodes-popover {
+  position: absolute;
+  left: 58px;
+  overflow: auto;
+  box-shadow: 0px 5px 10px 0px lightgray;
+  background: rgb(255, 255, 255, 90%);
+  backdrop-filter: blur(4px);
+}
+
+.kie-bpmn-editor--palette-custom-tasks-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  cursor: pointer !important;
+}
+
+.kie-bpmn-editor--variables-panel-toggle {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-bpmn-editor--variables-panel-toggle-button.active,
+.kie-bpmn-editor--variables-panel-toggle:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-bpmn-editor--variables-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-bpmn-editor--variables-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-bpmn-editor--variables-panel-toggle-button.active,
+.kie-bpmn-editor--variables-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+.kie-bpmn-editor--variables-panel-toggle-button.active {
+  color: #006ba4;
+}

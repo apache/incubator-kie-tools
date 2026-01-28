@@ -1,0 +1,254 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/* (begin) global */
+.kie-bpmn-editor--root {
+  height: 100%;
+}
+
+.kie-bpmn-editor--diagram-container {
+  height: 100%;
+  position: relative;
+}
+/* (end) global */
+
+/* (begin) diagram empty state */
+.kie-bpmn-editor--diagram-empty-state {
+  border: 1px solid lightgray;
+  backdrop-filter: blur(4px);
+  background: rgb(255, 255, 255, 60%);
+  border-radius: 16px;
+  padding: 16px;
+  pointer-events: all;
+  box-shadow: 0 0 60px 20px #e1e1e1;
+}
+/* (end) diagram empty state */
+
+/* (begin) nodes */
+.kie-bpmn-editor--data-object-node.dimmed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.kie-bpmn-editor--data-object-node {
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+.kie-bpmn-editor--text-annotation-node {
+  text-align: left;
+  display: block;
+}
+.kie-bpmn-editor--unknown-node {
+  color: red;
+}
+.kie-bpmn-editor--lane-node::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  opacity: 0.05;
+}
+/* (end) nodes */
+
+/* (begin) data object node */
+.kie-bpmn-editor--data-object-node-content.selected:before {
+  content: "";
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 6px;
+  top: -18px;
+  left: -18px;
+  width: calc(100% + 36px);
+  height: var(--selected-data-object-node-shape--height);
+  backdrop-filter: blur(8px);
+}
+.kie-bpmn-editor--data-object-node-content.selected:before {
+  border: 1px dashed #006ba4;
+  background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
+}
+/* (end) data object node */
+
+/* (begin) textAnnotation, and unknown nodes */
+.react-flow__node-node_unknown.selected:before,
+.react-flow__node-node_textAnnotation.selected:before {
+  content: "";
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 6px;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  backdrop-filter: blur(8px);
+}
+.react-flow__node-node_textAnnotation.selected:before {
+  border: 1px dashed #006ba4;
+  background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
+}
+.react-flow__node-node_unknown.selected:before {
+  border: 1px dashed #a40000;
+  background-color: rgb(255 161 161 / 20%); /* Very slightly red hue */
+}
+/* (end) textAnnotation, and unknown nodes */
+
+/* (begin) palette */
+.kie-bpmn-editor--palette {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.kie-bpmn-editor--palette:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-bpmn-editor--palette.pulse {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+  }
+
+  70% {
+    box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.kie-bpmn-editor--palette-button {
+  margin: 0;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-bpmn-editor--palette-button:hover {
+  filter: brightness(95%);
+  cursor: grab;
+}
+.kie-bpmn-editor--palette-button:active {
+  filter: brightness(90%);
+  cursor: grabbing;
+}
+/* (end) palette */
+
+/* (begin) properties panel toggle */
+.kie-bpmn-editor--properties-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-bpmn-editor--properties-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-bpmn-editor--properties-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-bpmn-editor--properties-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-bpmn-editor--properties-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+/* (end) properties panel toggle */
+
+/* (begin) version popover */
+.kie-bpmn-editor--version-popover .pf-c-popover__body {
+  padding: 0;
+}
+/* (end) version popover */
+
+/* (begin) overlays panel toggle */
+.kie-bpmn-editor--overlays-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-bpmn-editor--overlays-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
+.kie-bpmn-editor--overlays-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-bpmn-editor--overlays-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-bpmn-editor--overlays-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-bpmn-editor--overlays-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+
+.kie-bpmn-editor--snap-slider .pf-c-slider__value > input {
+  max-width: 60px;
+  min-width: 60px;
+  width: 60px;
+}
+/* (end) overlays panel toggle */
+
+/* (begin) misc */
+.kie-bpmn-editor--sticky-top-glass-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background: rgb(255, 255, 255, 60%);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid lightgray;
+}
+/* (end) misc */
+
+/* (begin) node-morphing-panel on container nodes */
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside .kie-bpmn-editor--node-morphing-panel-toggle,
+.react-flow__node.xyflow-react-kie-diagram--containerNode--inside .kie-bpmn-editor--node-morphing-panel {
+  pointer-events: all !important;
+}
+/* (end) node-morphing-panel on container nodes */
