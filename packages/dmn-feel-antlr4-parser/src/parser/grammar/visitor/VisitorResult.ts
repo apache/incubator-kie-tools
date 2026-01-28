@@ -17,30 +17,29 @@
  * under the License.
  */
 
-import { FeelFunctionReturningTypes } from "./FeelFunctionReturningTypes";
+import { DataType } from "../../DataType";
+import { BuiltInTypes } from "../../BuiltInTypes";
 
-export class ReservedWords {
-  public static readonly FeelKeywords: ReadonlySet<string> = new Set<string>([
-    "and",
-    "between",
-    "else",
-    "every",
-    "external",
-    "false",
-    "for",
-    "function",
-    "if",
-    "in",
-    "instance of",
-    "not",
-    "null",
-    "or",
-    "return",
-    "then",
-    "satisfies",
-    "some",
-    "true",
-  ]);
+export class VisitorResult {
+  private readonly _dataType?: DataType;
+  private readonly _isTerminalNode: boolean;
+  private readonly _text: string;
 
-  public static readonly FeelFunctions: ReadonlySet<string> = new Set<string>(FeelFunctionReturningTypes.Index.keys());
+  constructor(args: { text: string; dataType?: DataType }) {
+    this._text = args.text;
+    this._isTerminalNode = !args.dataType;
+    this._dataType = args.dataType;
+  }
+
+  get dataType(): DataType {
+    return this._dataType ?? BuiltInTypes.Any;
+  }
+
+  get isTerminalNode(): boolean {
+    return this._isTerminalNode;
+  }
+
+  get text(): string {
+    return this._text;
+  }
 }

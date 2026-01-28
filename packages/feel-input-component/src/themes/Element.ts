@@ -28,4 +28,14 @@ export enum Element {
   UnknownVariable,
   FunctionParameterVariable,
   DynamicVariable,
+
+  /**
+   * NonColorizedElement is an element that have semantic value, but it doesn't have custom colors.
+   * For example: date("2025-12-30").day
+   * date = FeelFunction
+   * ("2025-12-30") = NonColorizedElement
+   * . = dot
+   * day = FeelKeyword, in this case, a property of the result of the date("2025-12-30")
+   */
+  NonColorizedElement,
 }
