@@ -2122,8 +2122,10 @@ empty.yard.yml
 immer@10.0.3.patch
 # patches/karma-firefox-launcher@2.1.2.patch
 karma-firefox-launcher@2.1.2.patch
-# patches/selenium-webdriver@4.15.0.patch
-selenium-webdriver@4.15.0.patch
+# patches/run-script-os@1.1.6.patch
+run-script-os@1.1.6.patch
+# packages/python-venv/patches/cekit@4.15.0.patch
+cekit@4.15.0.patch
 # patches/zustand@4.4.2.patch
 zustand@4.4.2.patch
 # repo/graph.dot

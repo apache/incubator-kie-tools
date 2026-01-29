@@ -18,7 +18,6 @@
  */
 
 import * as __http from "http";
-import * as __url from "url";
 import * as __path from "path";
 import * as __fs from "fs";
 import { spawn as __spawn } from "child_process";
@@ -114,7 +113,7 @@ const gitHttpBackendVariableNames = [
 ];
 
 function getEnvForGitHttpBackend(req) {
-  const url = __url.parse(req.url);
+  const url = new URL(req.url);
   const envVars = {};
 
   for (let header in req.headers) {

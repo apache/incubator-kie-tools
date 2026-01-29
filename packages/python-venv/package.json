@@ -7,7 +7,8 @@
   "keywords": [],
   "scripts": {
     "install": "python3 -m venv ./venv && run-script-os",
-    "install:linux:darwin": ". ./venv/bin/activate && pnpm install:pip",
+    "install:apply-patches": "patch --reject-file=- --forward ./venv/lib/python3.12/site-packages/cekit/builders/docker_builder.py patches/cekit@4.15.0.patch || true",
+    "install:linux:darwin": ". ./venv/bin/activate && pnpm install:pip && pnpm install:apply-patches",
     "install:pip": "pip3 install -r requirements.txt",
     "install:win32": ".\\venv\\Scripts\\Activate.bat && pnpm install:pip"
   },

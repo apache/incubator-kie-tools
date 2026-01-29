@@ -30,13 +30,13 @@
     "install:deps": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
   },
   "dependencies": {
-    "yargs": "^17.0.1"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@playwright/test": "^1.45.2",
-    "@types/yargs": "^17.0.1",
+    "@types/yargs": "^17.0.35",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "typescript": "^5.5.3"
