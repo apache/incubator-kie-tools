@@ -33,6 +33,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
+    "@kie-tools-scripts/run-script-if": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@playwright/test": "^1.45.2",

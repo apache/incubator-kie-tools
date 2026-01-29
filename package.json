@@ -38,7 +38,9 @@
     "onlyBuiltDependencies": [
       "@apollo/protobufjs",
       "@jbangdev/jbang",
+      "@parcel/watcher",
       "@playwright/browser-chromium",
+      "@scarf/scarf",
       "@swc/core",
       "@vscode/vsce-sign",
       "core-js",

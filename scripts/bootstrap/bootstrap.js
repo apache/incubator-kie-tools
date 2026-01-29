@@ -34,7 +34,7 @@ const execOpts = { stdio: "inherit" };
 
 console.info("\n\n[bootstrap] Installing packages dependencies...");
 execSync(
-  `pnpm install --strict-peer-dependencies=false -F !kie-tools-root... -F !@kie-tools-scripts/* ${pnpmFilterStringForInstalling}`,
+  `pnpm install --strict-peer-dependencies=false -F !kie-tools-root... ${pnpmFilterStringForInstalling}`,
   execOpts
 );
 
