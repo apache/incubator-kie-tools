@@ -22,7 +22,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
-const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (webpackEnv) =>
@@ -38,34 +37,16 @@ module.exports = async (webpackEnv) =>
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "src/index.html"),
         filename: "index.html",
-        chunks: ["app"],
+        templateParameters: {
+          KOGITO_JOBS_SERVICE_WEBAPP_TITLE: env.kogitoJobsServiceWebapp.title,
+          KOGITO_JOBS_SERVICE_WEBAPP_LOGO: env.kogitoJobsServiceWebapp.logo,
+          KOGITO_JOBS_SERVICE_WEBAPP_DOCLINK_HREF: env.kogitoJobsServiceWebapp.docLinkKogito.href,
+          KOGITO_JOBS_SERVICE_WEBAPP_DOCLINK_TEXT: env.kogitoJobsServiceWebapp.docLinkKogito.text,
+          SONATAFLOW_JOBS_SERVICE_WEBAPP_DOCLINK_HREF: env.kogitoJobsServiceWebapp.docLinkSonataflow.href,
+          SONATAFLOW_JOBS_SERVICE_WEBAPP_DOCLINK_TEXT: env.kogitoJobsServiceWebapp.docLinkSonataflow.text,
+          KOGITO_JOBS_SERVICE_WEBAPP_VERSION: env.kogitoJobsServiceWebapp.version,
+        },
       }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_TITLE}/g,
-          replacement: () => env.kogitoJobsServiceWebapp.title ?? "",
-        },
-        {
-          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_LOGO}/g,
-          replacement: () => env.kogitoJobsServiceWebapp.logo ?? "",
-        },
-        {
-          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_DOCLINK_HREF}/g,
-          replacement: () => env.kogitoJobsServiceWebapp.docLinkKogito.href ?? "",
-        },
-        {
-          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_DOCLINK_TEXT}/g,
-          replacement: () => env.kogitoJobsServiceWebapp.docLinkKogito.text ?? "",
-        },
-        {
-          pattern: /\${SONATAFLOW_JOBS_SERVICE_WEBAPP_DOCLINK_HREF}/g,
-          replacement: () => env.kogitoJobsServiceWebapp.docLinkSonataflow.href ?? "",
-        },
-        {
-          pattern: /\${SONATAFLOW_JOBS_SERVICE_WEBAPP_DOCLINK_TEXT}/g,
-          replacement: () => env.kogitoJobsServiceWebapp.docLinkSonataflow.text ?? "",
-        },
-      ]),
     ],
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
