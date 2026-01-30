@@ -27,7 +27,7 @@
     "@kie-tools/form-code-generator": "workspace:*",
     "@kie-tools/form-code-generator-bootstrap4-theme": "workspace:*",
     "@kie-tools/form-code-generator-patternfly-theme": "workspace:*",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2"
   },

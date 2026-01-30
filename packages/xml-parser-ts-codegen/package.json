@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.23"
   },
   "devDependencies": {
     "@kie-tools/eslint": "workspace:*",
