@@ -53,7 +53,6 @@ function getSedFlavor() {
       return "gnu";
     }
   } catch (e) {
-    console.log(e);
     // BSD sed fails on --version and exits with non-zero
     return "bsd";
   }
