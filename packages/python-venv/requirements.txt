@@ -1,5 +1,5 @@
 requests<2.32.0
-cekit==4.15.0
+cekit==4.16.0
 behave==1.2.6
 lxml==5.2.1
 docker==7.1.0
