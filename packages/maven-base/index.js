@@ -45,6 +45,21 @@ const DEFAULT_LOCAL_REPO = String(
 
 const BOOTSTRAP_CLI_ARGS = `-P-include-1st-party-dependencies --settings=${SETTINGS_XML_PATH}`;
 
+function getSedFlavor() {
+  try {
+    // GNU sed supports --version and exits with 0
+    const output = cp.execSync("sed --version", { stdio: "pipe" }).toString();
+    if (output.includes("GNU")) {
+      return "gnu";
+    }
+  } catch (e) {
+    console.log(e);
+    // BSD sed fails on --version and exits with non-zero
+    return "bsd";
+  }
+  return "unknown";
+}
+
 module.exports = {
   /**
    * Evaluation of ${settings.localRepository}.
@@ -148,7 +163,7 @@ module.exports = {
 
     if (process.platform === "win32") {
       cp.execSync(cmd.replaceAll(" -", " `-"), { stdio: "inherit", shell: "powershell.exe" });
-    } else if (process.platform === "darwin") {
+    } else if (getSedFlavor() === "bsd") {
       // Account for macOS BSD sed implementation
       cp.execSync(cmd.replace("-i", "-i ''"), { stdio: "inherit" });
     } else {
