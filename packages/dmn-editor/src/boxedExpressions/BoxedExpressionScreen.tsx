@@ -153,31 +153,6 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return drgElement;
   }, [drgElementIndex, thisDmn.model.definitions.drgElement]);
 
-  // Aggregate evaluation hitIds for BKMs from all decisions that invoke them
-  const bkmEvaluationResults = useMemo(() => {
-    if (!activeDrgElementId || !drgElement || drgElement.__$$element !== "businessKnowledgeModel") {
-      return undefined;
-    }
-
-    const evaluationHitsCountByRuleOrRowId = new Map<string, number>();
-
-    (thisDmn.model.definitions.drgElement ?? []).forEach((element) => {
-      if (
-        element.__$$element === "decision" &&
-        element.knowledgeRequirement?.some(
-          (knowledgeReq) => knowledgeReq.requiredKnowledge?.["@_href"] === `#${activeDrgElementId}`
-        )
-      ) {
-        const decisionEvaluationResults = evaluationResultsByNodeId?.get(element["@_id"]);
-        decisionEvaluationResults?.evaluationHitsCountByRuleOrRowId?.forEach((count, ruleId) => {
-          evaluationHitsCountByRuleOrRowId.set(ruleId, (evaluationHitsCountByRuleOrRowId.get(ruleId) ?? 0) + count);
-        });
-      }
-    });
-
-    return evaluationHitsCountByRuleOrRowId.size > 0 ? evaluationHitsCountByRuleOrRowId : undefined;
-  }, [activeDrgElementId, drgElement, thisDmn.model.definitions.drgElement, evaluationResultsByNodeId]);
-
   // BEGIN (setState batching for `expression` and `widthsById`)
   //
   // These hooks are responsible for building the `expression` and `widthsById` values, passed
@@ -572,9 +547,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             isReadOnly={settings.isReadOnly}
             evaluationHitsCountById={
               isEvaluationHighlightsEnabled
-                ? drgElement?.__$$element === "businessKnowledgeModel"
-                  ? bkmEvaluationResults
-                  : evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCountByRuleOrRowId
+                ? evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCountByRuleOrRowId
                 : undefined
             }
             locale={locale}
