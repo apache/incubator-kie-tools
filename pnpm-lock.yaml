@@ -7366,6 +7366,9 @@ importers:
       '@kie-tools/dmn-language-service':
         specifier: workspace:*
         version: link:../dmn-language-service
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       '@kie-tools/dmn-runner':
         specifier: workspace:*
         version: link:../dmn-runner
