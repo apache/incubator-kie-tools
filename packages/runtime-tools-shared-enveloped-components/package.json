@@ -42,7 +42,7 @@
     "@patternfly/react-table": "^5.4.1",
     "copyfiles": "^2.4.1",
     "dangerously-set-html-content": "^1.0.13",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "monaco-editor": "^0.39.0",
     "react-helmet": "^6.1.0",
     "react-inlinesvg": "^2.3.0",

@@ -36,7 +36,7 @@
     "ajv-errors": "^1.0.1",
     "ajv-formats": "^3.0.1",
     "deep-object-diff": "^1.1.9",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2"
   },

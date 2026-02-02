@@ -42,7 +42,7 @@
     "ajv-errors": "^1.0.1",
     "ajv-formats": "^3.0.1",
     "deep-object-diff": "^1.1.9",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.29.4",
     "react-id-generator": "^3.0.1",
     "react-table": "^7.6.2",
