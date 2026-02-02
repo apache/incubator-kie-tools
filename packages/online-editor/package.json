@@ -51,6 +51,7 @@
     "@kie-tools/cors-proxy-api": "workspace:*",
     "@kie-tools/dmn-editor-envelope": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
+    "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/dmn-runner": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
     "@kie-tools/extended-services-api": "workspace:*",
