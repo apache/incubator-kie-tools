@@ -39,7 +39,7 @@
     "axios": "^1.12.2",
     "copyfiles": "^2.4.1",
     "keycloak-js": "^23.0.5",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "monaco-editor": "^0.39.0",
     "react-datetime-picker": "^3.5.0",
     "react-moment": "0.9.7",

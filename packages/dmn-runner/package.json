@@ -34,7 +34,7 @@
     "ajv-formats": "^3.0.1",
     "deep-object-diff": "^1.1.9",
     "json-refs": "^3.0.15",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.29.4",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2"

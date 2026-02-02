@@ -90,6 +90,7 @@ import type { JSONSchema4 } from "json-schema";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 import { NewDmnEditorTypes } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorTypes";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 
 interface Props {
   isEditorReady?: boolean;
@@ -169,7 +170,8 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
  */
 function transformExtendedServicesDmnResult(
   result: ExtendedServicesDmnResult,
-  evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
+  evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId,
+  dmnDefinitions?: DMN_LATEST__tDefinitions
 ) {
   result.decisionResults?.forEach((dr) => {
     const evaluationHitsCountByRuleOrRowId = new Map<string, number>();
@@ -208,6 +210,48 @@ function transformExtendedServicesDmnResult(
       });
     }
   });
+
+  // Aggregate BKM evaluation results if dmnDefinitions are provided
+  if (dmnDefinitions) {
+    (dmnDefinitions.drgElement ?? []).forEach((element) => {
+      if (element.__$$element === "businessKnowledgeModel") {
+        const bkmId = element["@_id"];
+        if (!bkmId) {
+          return;
+        }
+
+        const evaluationHitsCountByRuleOrRowId = new Map<string, number>();
+        let evaluationResult: NewDmnEditorTypes.EvaluationResult | undefined = undefined;
+
+        // Find all decisions that invoke this BKM
+        (dmnDefinitions.drgElement ?? []).forEach((decisionElement) => {
+          const decisionId = decisionElement["@_id"];
+          if (
+            decisionElement.__$$element === "decision" &&
+            decisionId &&
+            decisionElement.knowledgeRequirement?.some(
+              (knowledgeReq) => knowledgeReq.requiredKnowledge?.["@_href"] === `#${bkmId}`
+            )
+          ) {
+            const decisionEvaluationResults = evaluationResultsByNodeId.get(decisionId);
+            decisionEvaluationResults?.evaluationHitsCountByRuleOrRowId?.forEach((count, ruleId) => {
+              evaluationHitsCountByRuleOrRowId.set(ruleId, (evaluationHitsCountByRuleOrRowId.get(ruleId) ?? 0) + count);
+            });
+            if (decisionEvaluationResults?.evaluationResult) {
+              evaluationResult = theWorstEvaluationResult(evaluationResult, decisionEvaluationResults.evaluationResult);
+            }
+          }
+        });
+
+        if (evaluationHitsCountByRuleOrRowId.size > 0) {
+          evaluationResultsByNodeId.set(bkmId, {
+            evaluationResult: evaluationResult ?? "succeeded",
+            evaluationHitsCountByRuleOrRowId,
+          });
+        }
+      }
+    });
+  }
 
   return evaluationResultsByNodeId;
 }
@@ -367,75 +411,97 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           return;
         }
 
-        Promise.all(
-          dmnRunnerInputs.map((dmnRunnerInput) => {
-            // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
-            // in the useLayoutEffect, making this effect to be triggered with the previous file.
-            const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
-            return extendedServicesModelPayload(input);
-          })
+        // Get the DMN definitions first
+        getImportIndex(
+          workspaces,
+          props.workspaceFile.workspaceId,
+          props.workspaceFile.relativePath,
+          props.dmnLanguageService
         )
-          .then((payloads) =>
-            Promise.all(
-              payloads.map((payload) => {
-                if (canceled.get() || payload === undefined) {
-                  return;
-                }
-                return extendedServices.client.result(payload);
-              })
-            )
-          )
-          .then((results) => {
+          .then((importIndex) => {
             if (canceled.get()) {
               return;
             }
-            if (dmnRunnerMode === DmnRunnerMode.TABLE) {
-              const messagesWithRowNumbers = results.flatMap((result, rowIndex) =>
-                (result?.messages || []).map((message) => ({
-                  ...message,
-                  message: `Row ${rowIndex + 1} : ${message.messageType}: ${message.message}`,
-                }))
-              );
-              setCurrentResponseMessages(messagesWithRowNumbers);
-            } else {
-              const messagesWithTypes =
-                results[currentInputIndex]?.messages?.map((message) => ({
-                  ...message,
-                  message: `${message.messageType}: ${message.message}`,
-                })) || [];
-              setCurrentResponseMessages(messagesWithTypes);
-            }
+            const dmnDefinitions = importIndex?.models.get(props.workspaceFile.relativePath)?.definitions;
 
-            const invalidElements: string[][] = [];
-            const runnerResults: Array<DecisionResult[] | undefined> = [];
-            for (const result of results) {
-              if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-                setExtendedServicesError(true);
-                break;
-              }
-              if (result) {
-                invalidElements.push(...result.invalidElementPaths);
-                runnerResults.push(result.decisionResults);
-              }
-            }
-            setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
-            setInvalidElementPaths(invalidElements);
+            return Promise.all(
+              dmnRunnerInputs.map((dmnRunnerInput) => {
+                // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
+                // in the useLayoutEffect, making this effect to be triggered with the previous file.
+                const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
+                return extendedServicesModelPayload(input);
+              })
+            )
+              .then((payloads) =>
+                Promise.all(
+                  payloads.map((payload) => {
+                    if (canceled.get() || payload === undefined) {
+                      return;
+                    }
+                    return extendedServices.client.result(payload);
+                  })
+                )
+              )
+              .then((results) => {
+                if (canceled.get()) {
+                  return;
+                }
+                if (dmnRunnerMode === DmnRunnerMode.TABLE) {
+                  const messagesWithRowNumbers = results.flatMap((result, rowIndex) =>
+                    (result?.messages || []).map((message) => ({
+                      ...message,
+                      message: `Row ${rowIndex + 1} : ${message.messageType}: ${message.message}`,
+                    }))
+                  );
+                  setCurrentResponseMessages(messagesWithRowNumbers);
+                } else {
+                  const messagesWithTypes =
+                    results[currentInputIndex]?.messages?.map((message) => ({
+                      ...message,
+                      message: `${message.messageType}: ${message.message}`,
+                    })) || [];
+                  setCurrentResponseMessages(messagesWithTypes);
+                }
 
-            const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
-            if (dmnRunnerMode === DmnRunnerMode.FORM && results[currentInputIndex]) {
-              transformExtendedServicesDmnResult(results[currentInputIndex], evaluationResultsByNodeId);
-            } else {
-              for (const result of results) {
-                if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-                  break;
+                const invalidElements: string[][] = [];
+                const runnerResults: Array<DecisionResult[] | undefined> = [];
+                for (const result of results) {
+                  if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+                    setExtendedServicesError(true);
+                    break;
+                  }
+                  if (result) {
+                    invalidElements.push(...result.invalidElementPaths);
+                    runnerResults.push(result.decisionResults);
+                  }
                 }
-                if (result) {
-                  transformExtendedServicesDmnResult(result, evaluationResultsByNodeId);
+                setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
+                setInvalidElementPaths(invalidElements);
+
+                const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
+                if (dmnRunnerMode === DmnRunnerMode.FORM && results[currentInputIndex]) {
+                  transformExtendedServicesDmnResult(
+                    results[currentInputIndex],
+                    evaluationResultsByNodeId,
+                    dmnDefinitions
+                  );
+                } else {
+                  for (const result of results) {
+                    if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+                      break;
+                    }
+                    if (result) {
+                      transformExtendedServicesDmnResult(result, evaluationResultsByNodeId, dmnDefinitions);
+                    }
+                  }
                 }
-              }
-            }
-            const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
-            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsByNodeId);
+
+                const newDmnEditorEnvelopeApi =
+                  envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(
+                  evaluationResultsByNodeId
+                );
+              });
           })
           .catch((err) => {
             console.log(err);
@@ -444,6 +510,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       },
       [
         props.workspaceFile.extension,
+        props.workspaceFile.workspaceId,
+        props.workspaceFile.relativePath,
+        props.dmnLanguageService,
         extendedServices.status,
         extendedServices.client,
         dmnRunnerInputs,
@@ -451,6 +520,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         dmnRunnerMode,
         currentInputIndex,
         envelopeServer?.envelopeApi,
+        workspaces,
       ]
     )
   );
