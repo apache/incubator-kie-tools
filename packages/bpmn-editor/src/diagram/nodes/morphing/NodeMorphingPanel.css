@@ -1,0 +1,148 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/* (begin) toggle */
+.kie-bpmn-editor--node-morphing-panel-toggle {
+  position: absolute;
+  top: calc(100% - 28px);
+  left: -23px;
+  padding: 0;
+  padding-right: 21px;
+  padding-top: 6px;
+  padding-bottom: 4px;
+}
+.kie-bpmn-editor--node-morphing-panel-toggle > div {
+  cursor: pointer;
+  background: white;
+  color: black;
+  font-weight: bold;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  border: 1px solid black;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 0;
+  height: 19px;
+  width: 19px;
+  padding: 4px;
+}
+.kie-bpmn-editor--node-morphing-panel-toggle > div.expanded {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 6px;
+}
+.kie-bpmn-editor--node-morphing-panel-toggle > div > svg {
+  width: 12px;
+  height: 12px;
+}
+.kie-bpmn-editor--node-morphing-panel-toggle > div:hover {
+  filter: brightness(95%);
+}
+.kie-bpmn-editor--node-morphing-panel-toggle > div:active {
+  filter: brightness(90%);
+}
+/* (end) toggle */
+
+/* (begin) panel */
+.kie-bpmn-editor--node-morphing-panel {
+  position: absolute;
+  top: calc(100% + 0px);
+  left: -23px;
+  padding-top: 10px;
+}
+.kie-bpmn-editor--node-morphing-panel > div {
+  padding: 8px;
+  align-content: flex-start;
+  min-width: 170px;
+  display: flex;
+  z-index: 3000;
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 6px;
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+/* (end) panel */
+
+.kie-bpmn-editor--node-morphing-panel > div > div {
+  pointer-events: all;
+  border-radius: 20px;
+  width: 34px;
+  height: 34px;
+  padding: 0px;
+  margin: 2px;
+  position: relative;
+}
+
+.kie-bpmn-editor--node-morphing-panel > div > div:active::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid currentColor;
+  z-index: 1000;
+}
+
+.kie-bpmn-editor--node-morphing-panel > div > div:hover::before,
+.kie-bpmn-editor--node-morphing-panel > div > div.selected::before {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid currentColor;
+  z-index: 1000;
+}
+
+.kie-bpmn-editor--node-morphing-panel > div > div:not(.selected).disabled {
+  background: unset !important;
+  border: 2px solid currentColor;
+  filter: contrast(0) sepia(100%) saturate(2000%) brightness(100%) grayscale(1);
+  opacity: 0.2;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* key badge */
+
+.kie-bpmn-editor--node-morphing-panel > div > div.selected > div {
+  background: #c7ebff;
+}
+
+.kie-bpmn-editor--node-morphing-panel > div > div > div {
+  top: -2px;
+  right: -2px;
+  position: absolute;
+  color: white;
+  font-size: 0.6em;
+  width: 12px;
+  height: 12px;
+  background: white;
+  padding: 2px;
+  z-index: 2000;
+  line-height: calc(0.6em + 3px);
+  border-radius: 9999px;
+}
