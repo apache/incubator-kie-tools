@@ -250,6 +250,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
 
   public override visitFnInvocation = (ctx: FnInvocationContext) => {
     if (ctx.children?.length != 2) {
+      // It is a malformed expression.
       return undefined!;
     }
 
