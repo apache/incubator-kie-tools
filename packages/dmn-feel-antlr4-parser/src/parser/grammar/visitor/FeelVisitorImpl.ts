@@ -39,7 +39,7 @@ import { BuiltInTypes } from "../../BuiltInTypes";
 import { DataType } from "../../DataType";
 import FEEL_1_1Lexer from "../generated-parser/FEEL_1_1Lexer";
 
-export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
+export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult | undefined> {
   private readonly handlers: Map<Function, (node: ParseTree) => VisitorResult>;
   private readonly _semanticTokens: Array<SemanticToken>;
   private readonly _normalizedFeelFunctionReturningTypes: ReadonlyMap<string, DataType>;
@@ -84,7 +84,10 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
       if (child instanceof NameRefContext || child instanceof QualifiedNameContext) {
         resolvedNames.push(...this.resolveNames(child));
       } else {
-        resolvedNames.push(this.visit(child));
+        const visited = this.visit(child);
+        if (visited) {
+          resolvedNames.push();
+        }
       }
     }
 
@@ -102,12 +105,12 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
     } else if (tree instanceof TerminalNode) {
       return new VisitorResult({ text: tree.getText(), dataType: this.getBuiltInTypeFromNodeType(tree.symbol.type) });
     }
-    return undefined!;
+    return undefined;
   };
 
   public override visitChildren(ctx: ParserRuleContext) {
     if (!ctx.children) {
-      return undefined!;
+      return undefined;
     }
 
     const result = new Array<VisitorResult>();
@@ -132,7 +135,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
     const afterDot = this.resolveNames(ctx.qualifiedName());
 
     // Here, we care about the first result after dot
-    if (beforeDot.dataType.properties.has(afterDot[0].text)) {
+    if (beforeDot && beforeDot.dataType.properties.has(afterDot[0].text)) {
       const startIndex = ctx.qualifiedName().start.start - 1;
       this._semanticTokens.push(
         new SemanticToken({
@@ -176,7 +179,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
       }
     }
 
-    return new VisitorResult({ text: ctx.getText(), dataType: beforeDot.dataType.properties.get(afterDot[0].text) });
+    return new VisitorResult({ text: ctx.getText(), dataType: beforeDot?.dataType.properties.get(afterDot[0].text) });
   };
 
   public override visitPrimaryParens = (ctx: PrimaryParensContext) => {
@@ -189,7 +192,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
         startLine: ctx.RPAREN().symbol.line,
         endLine: ctx.RPAREN().symbol.line,
         symbolNature: FeelSyntacticSymbolNature.FunctionCall,
-        dataTypeReturn: innerExpressionResult.dataType,
+        dataTypeReturn: innerExpressionResult?.dataType ?? BuiltInTypes.Any,
         text: ")",
       })
     );
@@ -204,7 +207,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
     const addResult = this.visit(additiveExpression);
     const multResult = this.visit(multiplicativeExpression);
 
-    if (addResult.dataType === multResult.dataType) {
+    if (addResult && multResult && addResult?.dataType === multResult?.dataType) {
       if (addResult.dataType === BuiltInTypes.Date) {
         return new VisitorResult({ text: ctx.getText(), dataType: BuiltInTypes.DaysAndTimeDuration });
       } else {
@@ -213,7 +216,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
     } else {
       // We return he right-most result, because the expression is inconsistent.
       // In this case, we can assume that the user is typing.
-      return new VisitorResult({ text: ctx.getText(), dataType: multResult.dataType });
+      return new VisitorResult({ text: ctx.getText(), dataType: multResult?.dataType });
     }
   };
 
@@ -230,7 +233,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
     const afterDot = this.resolveNames(ctx.qualifiedName());
 
     // Here, we care about the first result after dot
-    if (beforeDot.dataType.properties.has(afterDot[0].text)) {
+    if (beforeDot?.dataType.properties.has(afterDot[0].text)) {
       const startIndex = ctx.qualifiedName().start.start - 1;
       this._semanticTokens.push(
         new SemanticToken({
@@ -245,13 +248,13 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult> {
       );
     }
 
-    return new VisitorResult({ text: ctx.getText(), dataType: beforeDot.dataType.properties.get(afterDot[0].text) });
+    return new VisitorResult({ text: ctx.getText(), dataType: beforeDot?.dataType.properties.get(afterDot[0].text) });
   };
 
   public override visitFnInvocation = (ctx: FnInvocationContext) => {
     if (ctx.children?.length != 2) {
       // It is a malformed expression.
-      return undefined!;
+      return undefined;
     }
 
     const left = ctx.getChild(0).getText();
