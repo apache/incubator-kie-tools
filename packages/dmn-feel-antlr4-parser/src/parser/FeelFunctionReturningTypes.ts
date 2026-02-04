@@ -120,6 +120,6 @@ export class FeelFunctionReturningTypes {
     ["union", BuiltInTypes.List],
     ["upper case", BuiltInTypes.String],
     ["week of year", BuiltInTypes.Number],
-    ["years and months duration", BuiltInTypes.Any],
+    ["years and months duration", BuiltInTypes.YearsAndMonthsDuration],
   ]);
 }
