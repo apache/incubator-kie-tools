@@ -2828,7 +2828,7 @@
   },
   "serializedPackagesLocationByName": [
     ["kie-tools-root", ""],
-    ["@kie-tools-examples/bpmn-editor-on-webapp", "examples/bpmn-editor-on-webapp  "],
+    ["@kie-tools-examples/bpmn-editor-on-webapp", "examples/bpmn-editor-on-webapp"],
     ["@kie-tools-examples/dmn-editor-on-webapp", "examples/dmn-editor-on-webapp"],
     ["@kie-tools-examples/dmn-editor-standalone-on-webapp", "examples/dmn-editor-standalone-on-webapp"],
     [
