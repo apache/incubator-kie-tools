@@ -21,6 +21,7 @@ import {
   NodeInstance,
   Milestone,
   TriggerableNode,
+  NodeDefinition,
   OrderBy,
   JsonType,
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
@@ -116,7 +117,7 @@ export interface WorkflowInstance {
   errorMessage?: string;
   isOpen?: boolean;
   diagram?: string;
-  nodeDefinitions?: TriggerableNode[];
+  nodeDefinitions?: NodeDefinition[];
   source?: string;
 }
 

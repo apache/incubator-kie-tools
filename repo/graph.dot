@@ -58,7 +58,12 @@ digraph G {
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/playwright-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/storybook-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/bpmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/xyflow-react-kie-diagram" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/bpmn-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/bpmn-editor-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/xml-parser-ts-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "bpmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-code-generator-vscode-command" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -108,7 +113,6 @@ digraph G {
   "@kie-tools/maven-m2-repo-via-http-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-feel-antlr4-parser" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -281,6 +285,14 @@ digraph G {
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/playwright-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/storybook-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/bpmn-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/xyflow-react-kie-diagram" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor-envelope" -> "@kie-tools/bpmn-editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor-standalone" -> "@kie-tools/bpmn-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/bpmn-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools/form-code-generator-vscode-command" [ style = "solid", color = "blue" ];
@@ -716,6 +728,10 @@ digraph G {
   "@kie-tools/xml-parser-ts" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/xml-parser-ts" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/xml-parser-ts-codegen" -> "@kie-tools/xml-parser-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools-core/switch-expression-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools/i18n-common-dictionary" [ style = "dashed", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools/xml-parser-ts" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];

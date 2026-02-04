@@ -17,6 +17,26 @@
 
 ## @kie-tools/bpmn-marshaller
 
+A type-safe marshaller for XML <--> JSON conversation for BPMN models.
+
+Features include:
+
+---
+
+### Usage
+
+---
+
+### Examples
+
+---
+
+## For development information see:
+
+- 👉 [DEV.md](./docs/DEV.md)
+- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

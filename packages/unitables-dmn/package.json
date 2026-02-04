@@ -36,7 +36,7 @@
     "@patternfly/react-icons": "^5.4.1",
     "@types/lodash": "^4.14.168",
     "@types/react-table": "^7.0.25",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "react-id-generator": "^3.0.1",
     "react-table": "^7.6.2",
     "uniforms": "^3.10.2",
