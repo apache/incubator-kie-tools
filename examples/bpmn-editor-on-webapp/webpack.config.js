@@ -28,7 +28,7 @@ module.exports = (webpackEnv) => [
   merge(common(webpackEnv), {
     entry: {
       index: "./src/index.tsx",
-      "bpmn-editor-envelope": "./src/bpmnEditorEnvelope.ts",
+      "bpmn-editor-envelope": "./src/BpmnEditorEnvelope.ts",
     },
     output: {
       publicPath: "/",
