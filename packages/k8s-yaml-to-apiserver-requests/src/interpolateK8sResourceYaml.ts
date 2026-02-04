@@ -20,7 +20,7 @@
 import { query as jsonPathQuery } from "jsonpath-rfc9535";
 
 export type TokenMap = {
-  [x: string]: string | number | boolean | TokenMap;
+  [x: string]: string | number | boolean | TokenMap | TokenMap[];
 };
 
 type FlattenedTokenMap = Record<string, string>;

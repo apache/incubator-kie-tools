@@ -17,99 +17,244 @@
  * under the License.
  */
 
-export const YAML_FIXTURES = {
-  // Basic token interpolation fixtures
-  simpleToken: `
+import { TokenMap } from "../../src/interpolateK8sResourceYaml";
+
+type BaseTestCase = {
+  name: string;
+  given: {
+    yaml: string;
+    tokenMap: TokenMap;
+  };
+};
+
+type TestCase = BaseTestCase & {
+  expected: string | string[];
+};
+
+type ErrorTestCase = BaseTestCase & {
+  shouldThrow: true;
+};
+
+export const BASIC_TOKEN_TEST_CASES: TestCase[] = [
+  {
+    name: "should replace simple tokens",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ serviceName }}
 `,
-
-  multipleTokens: `
+      tokenMap: {
+        serviceName: "my-service",
+      },
+    },
+    expected: "name: my-service",
+  },
+  {
+    name: "should replace multiple tokens",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ serviceName }}
   namespace: \${{ namespace }}
 `,
+      tokenMap: {
+        serviceName: "my-service",
+        namespace: "default",
+      },
+    },
+    expected: ["name: my-service", "namespace: default"],
+  },
+];
 
-  // JSON Path token interpolation fixtures
-  jsonPathSimple: `
+export const JSON_PATH_TEST_CASES: TestCase[] = [
+  {
+    name: "should resolve JSON Path expressions",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ $.deployment.name }}
 `,
-
-  jsonPathNested: `
+      tokenMap: {
+        deployment: {
+          name: "my-deployment",
+        },
+      },
+    },
+    expected: "name: my-deployment",
+  },
+  {
+    name: "should resolve nested JSON Path expressions",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ $.deployment.metadata.name }}
 `,
-
-  jsonPathArray: `
+      tokenMap: {
+        deployment: {
+          metadata: {
+            name: "nested-deployment",
+          },
+        },
+      },
+    },
+    expected: "name: nested-deployment",
+  },
+  {
+    name: "should resolve array access in JSON Path",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ $.deployments[0].name }}
 `,
+      tokenMap: {
+        deployments: [{ name: "first-deployment" }, { name: "second-deployment" }],
+      },
+    },
+    expected: "name: first-deployment",
+  },
+];
 
-  // Recursive token interpolation fixtures
-  recursiveSimple: `
+export const RECURSIVE_TOKEN_TEST_CASES: TestCase[] = [
+  {
+    name: "should resolve nested tokens",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ $.resources.Route['\${{ $.uniqueName }}'].host }}
 `,
-
-  recursiveDeeplyNested: `
+      tokenMap: {
+        uniqueName: "my-route",
+        resources: {
+          Route: {
+            "my-route": {
+              host: "my-route.example.com",
+            },
+          },
+        },
+      },
+    },
+    expected: "name: my-route.example.com",
+  },
+  {
+    name: "should resolve deeply nested tokens",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ $.resources['\${{ $.kind }}']['\${{ $.name }}'].host }}
 `,
+      tokenMap: {
+        kind: "Route",
+        name: "my-route",
+        resources: {
+          Route: {
+            "my-route": {
+              host: "deeply-nested.example.com",
+            },
+          },
+        },
+      },
+    },
+    expected: "name: deeply-nested.example.com",
+  },
+];
 
-  recursiveMaxDepth: `
+export const MAX_DEPTH_TEST_CASE: ErrorTestCase = {
+  name: "should throw error when max depth is exceeded",
+  given: {
+    yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: \${{ $.a }}
 `,
+    tokenMap: {
+      a: "${{ $.b }}",
+      b: "${{ $.c }}",
+      c: "${{ $.a }}",
+    },
+  },
+  shouldThrow: true,
+};
 
-  // Edge case fixtures
-  noTokens: `
+export const EDGE_CASE_TEST_CASES: TestCase[] = [
+  {
+    name: "should handle empty token map",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
   name: static-name
   namespace: default
 `,
-
-  unresolvableToken: `
+      tokenMap: {},
+    },
+    expected: "name: static-name",
+  },
+  {
+    name: "should handle YAML without tokens",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
-  name: \${{ $.nonexistent }}
+  name: static-name
+  namespace: default
 `,
-
-  numericValue: `
+      tokenMap: {
+        unused: "value",
+      },
+    },
+    expected: ["name: static-name", "namespace: default"],
+  },
+  {
+    name: "should handle numeric values",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 spec:
   replicas: \${{ $.replicas }}
 `,
-
-  booleanValue: `
+      tokenMap: {
+        replicas: 3,
+      },
+    },
+    expected: "replicas: 3",
+  },
+  {
+    name: "should handle boolean values",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 spec:
   enabled: \${{ $.enabled }}
 `,
-
-  // Mixed flat and JSONPath tokens
-  mixedTokens: `
+      tokenMap: {
+        enabled: true,
+      },
+    },
+    expected: "enabled: true",
+  },
+  {
+    name: "should handle mixed flat and JSONPath tokens in same YAML",
+    given: {
+      yaml: `
 apiVersion: v1
 kind: Service
 metadata:
@@ -119,114 +264,33 @@ metadata:
     app: \${{ appLabel }}
     version: \${{ $.deployment.version }}
 `,
-};
-
-export const TOKEN_MAPS = {
-  // Basic token maps
-  simpleService: {
-    serviceName: "my-service",
-  },
-
-  multipleValues: {
-    serviceName: "my-service",
-    namespace: "default",
-  },
-
-  // JSON Path token maps
-  deploymentSimple: {
-    deployment: {
-      name: "my-deployment",
-    },
-  },
-
-  deploymentNested: {
-    deployment: {
-      metadata: {
-        name: "nested-deployment",
-      },
-    },
-  },
-
-  deploymentsArray: {
-    deployments: [{ name: "first-deployment" }, { name: "second-deployment" }],
-  },
-
-  // Recursive token maps
-  routeResources: {
-    uniqueName: "my-route",
-    resources: {
-      Route: {
-        "my-route": {
-          host: "my-route.example.com",
+      tokenMap: {
+        serviceName: "mixed-service",
+        appLabel: "my-app",
+        config: {
+          namespace: "production",
+        },
+        deployment: {
+          version: "v1.2.3",
         },
       },
     },
+    expected: ["name: mixed-service", "namespace: production", "app: my-app", "version: v1.2.3"],
   },
+];
 
-  dynamicResources: {
-    kind: "Route",
-    name: "my-route",
-    resources: {
-      Route: {
-        "my-route": {
-          host: "deeply-nested.example.com",
-        },
-      },
+export const UNRESOLVABLE_TOKEN_TEST_CASE: ErrorTestCase = {
+  name: "should throw error for unresolvable tokens",
+  given: {
+    yaml: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: \${{ $.nonexistent }}
+`,
+    tokenMap: {
+      other: "value",
     },
   },
-
-  circularReference: {
-    a: "${{ $.b }}",
-    b: "${{ $.c }}",
-    c: "${{ $.a }}",
-  },
-
-  // Edge case token maps
-  empty: {},
-
-  unused: {
-    unused: "value",
-  },
-
-  nonexistent: {
-    other: "value",
-  },
-
-  numeric: {
-    replicas: 3,
-  },
-
-  boolean: {
-    enabled: true,
-  },
-
-  mixed: {
-    serviceName: "mixed-service",
-    appLabel: "my-app",
-    config: {
-      namespace: "production",
-    },
-    deployment: {
-      version: "v1.2.3",
-    },
-  },
-};
-
-export const EXPECTED_RESULTS = {
-  simpleService: "name: my-service",
-  multipleTokensName: "name: my-service",
-  multipleTokensNamespace: "namespace: default",
-  jsonPathSimple: "name: my-deployment",
-  jsonPathNested: "name: nested-deployment",
-  jsonPathArray: "name: first-deployment",
-  recursiveSimple: "name: my-route.example.com",
-  recursiveDeeplyNested: "name: deeply-nested.example.com",
-  noTokensName: "name: static-name",
-  noTokensNamespace: "namespace: default",
-  numericValue: "replicas: 3",
-  booleanValue: "enabled: true",
-  mixedTokensName: "name: mixed-service",
-  mixedTokensNamespace: "namespace: production",
-  mixedTokensApp: "app: my-app",
-  mixedTokensVersion: "version: v1.2.3",
+  shouldThrow: true,
 };

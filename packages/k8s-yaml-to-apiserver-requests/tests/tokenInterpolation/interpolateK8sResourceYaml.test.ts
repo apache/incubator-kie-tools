@@ -18,100 +18,71 @@
  */
 
 import { interpolateK8sResourceYaml } from "../../src/interpolateK8sResourceYaml";
-import { YAML_FIXTURES, TOKEN_MAPS, EXPECTED_RESULTS } from "./fixtures";
+import {
+  BASIC_TOKEN_TEST_CASES,
+  JSON_PATH_TEST_CASES,
+  RECURSIVE_TOKEN_TEST_CASES,
+  MAX_DEPTH_TEST_CASE,
+  EDGE_CASE_TEST_CASES,
+  UNRESOLVABLE_TOKEN_TEST_CASE,
+} from "./fixtures";
 
 describe("Token Interpolation", () => {
   describe("Basic Token Interpolation", () => {
-    it("should replace simple tokens", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.simpleToken, TOKEN_MAPS.simpleService);
+    BASIC_TOKEN_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
 
-      expect(result).toContain(EXPECTED_RESULTS.simpleService);
-    });
-
-    it("should replace multiple tokens", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.multipleTokens, TOKEN_MAPS.multipleValues);
-
-      expect(result).toContain(EXPECTED_RESULTS.multipleTokensName);
-      expect(result).toContain(EXPECTED_RESULTS.multipleTokensNamespace);
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
   });
 
   describe("JSON Path Token Interpolation", () => {
-    it("should resolve JSON Path expressions", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.jsonPathSimple, TOKEN_MAPS.deploymentSimple);
-
-      expect(result).toContain(EXPECTED_RESULTS.jsonPathSimple);
-    });
-
-    it("should resolve nested JSON Path expressions", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.jsonPathNested, TOKEN_MAPS.deploymentNested);
-
-      expect(result).toContain(EXPECTED_RESULTS.jsonPathNested);
-    });
-
-    it("should resolve array access in JSON Path", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.jsonPathArray, TOKEN_MAPS.deploymentsArray as any);
-
-      expect(result).toContain(EXPECTED_RESULTS.jsonPathArray);
+    JSON_PATH_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
+        expect(result).toContain(expected);
+      });
     });
   });
 
   describe("Recursive Token Interpolation", () => {
-    it("should resolve nested tokens", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.recursiveSimple, TOKEN_MAPS.routeResources);
-
-      expect(result).toContain(EXPECTED_RESULTS.recursiveSimple);
+    RECURSIVE_TOKEN_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
+        expect(result).toContain(expected);
+      });
     });
 
-    it("should resolve deeply nested tokens", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.recursiveDeeplyNested, TOKEN_MAPS.dynamicResources);
-
-      expect(result).toContain(EXPECTED_RESULTS.recursiveDeeplyNested);
-    });
-
-    it("should throw error when max depth is exceeded", () => {
-      // This should throw an error about max depth
-      expect(() => interpolateK8sResourceYaml(YAML_FIXTURES.recursiveMaxDepth, TOKEN_MAPS.circularReference)).toThrow();
+    it(MAX_DEPTH_TEST_CASE.name, () => {
+      expect(() =>
+        interpolateK8sResourceYaml(MAX_DEPTH_TEST_CASE.given.yaml, MAX_DEPTH_TEST_CASE.given.tokenMap)
+      ).toThrow();
     });
   });
 
   describe("Edge Cases", () => {
-    it("should handle empty token map", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.noTokens, TOKEN_MAPS.empty);
+    EDGE_CASE_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
 
-      expect(result).toContain(EXPECTED_RESULTS.noTokensName);
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
 
-    it("should handle YAML without tokens", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.noTokens, TOKEN_MAPS.unused);
-
-      expect(result).toContain(EXPECTED_RESULTS.noTokensName);
-      expect(result).toContain(EXPECTED_RESULTS.noTokensNamespace);
-    });
-
-    it("should throw error for unresolvable tokens", () => {
-      expect(() => interpolateK8sResourceYaml(YAML_FIXTURES.unresolvableToken, TOKEN_MAPS.nonexistent)).toThrow();
-    });
-
-    it("should handle numeric values", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.numericValue, TOKEN_MAPS.numeric);
-
-      expect(result).toContain(EXPECTED_RESULTS.numericValue);
-    });
-
-    it("should handle boolean values", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.booleanValue, TOKEN_MAPS.boolean);
-
-      expect(result).toContain(EXPECTED_RESULTS.booleanValue);
-    });
-
-    it("should handle mixed flat and JSONPath tokens in same YAML", () => {
-      const result = interpolateK8sResourceYaml(YAML_FIXTURES.mixedTokens, TOKEN_MAPS.mixed);
-
-      expect(result).toContain(EXPECTED_RESULTS.mixedTokensName);
-      expect(result).toContain(EXPECTED_RESULTS.mixedTokensNamespace);
-      expect(result).toContain(EXPECTED_RESULTS.mixedTokensApp);
-      expect(result).toContain(EXPECTED_RESULTS.mixedTokensVersion);
+    it(UNRESOLVABLE_TOKEN_TEST_CASE.name, () => {
+      expect(() =>
+        interpolateK8sResourceYaml(UNRESOLVABLE_TOKEN_TEST_CASE.given.yaml, UNRESOLVABLE_TOKEN_TEST_CASE.given.tokenMap)
+      ).toThrow();
     });
   });
 });

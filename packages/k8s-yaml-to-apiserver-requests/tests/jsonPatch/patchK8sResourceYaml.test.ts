@@ -18,146 +18,112 @@
  */
 
 import { patchK8sResourceYaml } from "../../src/patchK8sResourceYaml";
-import { YAML_FIXTURES, JSON_PATCHES, RESOURCE_PATCHES, EXPECTED_RESULTS, TOKEN_MAPS } from "./fixtures";
+import {
+  ADD_OPERATION_TEST_CASES,
+  REPLACE_OPERATION_TEST_CASES,
+  REMOVE_OPERATION_TEST_CASES,
+  TEST_OPERATION_TEST_CASES,
+  MULTIPLE_PATCHES_TEST_CASES,
+  EDGE_CASE_TEST_CASES,
+  TOKEN_INTERPOLATION_TEST_CASES,
+} from "./fixtures";
 
 describe("JSON Patch Operations", () => {
   describe("Add Operations", () => {
-    it("should add a label to existing labels", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithLabels, [{ jsonPatches: JSON_PATCHES.addLabel }]);
+    ADD_OPERATION_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
 
-      expect(result).toContain(EXPECTED_RESULTS.hasEnvironmentLabel);
-    });
-
-    it("should add multiple labels", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithLabels, [
-        { jsonPatches: JSON_PATCHES.addMultipleLabels },
-      ]);
-
-      expect(result).toContain(EXPECTED_RESULTS.hasEnvironmentLabel);
-      expect(result).toContain(EXPECTED_RESULTS.hasTeamLabel);
-    });
-
-    it("should add an annotation to existing annotations", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithAnnotations, [
-        { jsonPatches: JSON_PATCHES.addAnnotation },
-      ]);
-
-      expect(result).toContain(EXPECTED_RESULTS.hasVersionAnnotation);
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
   });
 
   describe("Replace Operations", () => {
-    it("should replace replicas value", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.basicDeployment, [
-        { jsonPatches: JSON_PATCHES.replaceReplicas },
-      ]);
+    REPLACE_OPERATION_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
 
-      expect(result).toContain(EXPECTED_RESULTS.hasThreeReplicas);
-    });
-
-    it("should replace metadata name", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.basicDeployment, [{ jsonPatches: JSON_PATCHES.replaceName }]);
-
-      expect(result).toContain(EXPECTED_RESULTS.hasNewName);
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
   });
 
   describe("Remove Operations", () => {
-    it("should remove a label", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithLabels, [
-        { jsonPatches: JSON_PATCHES.removeLabel },
-      ]);
+    REMOVE_OPERATION_TEST_CASES.forEach(({ name, given, notExpected }) => {
+      it(name, () => {
+        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
 
-      expect(result).not.toContain(EXPECTED_RESULTS.hasAppLabel);
-    });
-
-    it("should remove an annotation", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithAnnotations, [
-        { jsonPatches: JSON_PATCHES.removeAnnotation },
-      ]);
-
-      expect(result).not.toContain(EXPECTED_RESULTS.hasDescriptionAnnotation);
+        if (Array.isArray(notExpected)) {
+          notExpected.forEach((exp) => expect(result).not.toContain(exp));
+        } else {
+          expect(result).not.toContain(notExpected);
+        }
+      });
     });
   });
 
   describe("Test Operations with ResourcePatch", () => {
-    it("should apply patch when labels are undefined", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.basicDeployment, [RESOURCE_PATCHES.addLabelsIfUndefined]);
+    TEST_OPERATION_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
 
-      expect(result).toContain(EXPECTED_RESULTS.hasEmptyLabels);
-    });
-
-    it("should apply patch when labels are null", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithNullLabels, [RESOURCE_PATCHES.addLabelsIfNull]);
-
-      expect(result).toContain(EXPECTED_RESULTS.hasEmptyLabels);
-    });
-
-    it("should not apply patch when test filter fails", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithLabels, [RESOURCE_PATCHES.addLabelsIfUndefined]);
-
-      // Should still have the original labels, not replaced with empty object
-      expect(result).toContain(EXPECTED_RESULTS.hasAppLabel);
-    });
-
-    it("should apply patch without test filters", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithLabels, [RESOURCE_PATCHES.addEnvironmentLabel]);
-
-      expect(result).toContain(EXPECTED_RESULTS.hasEnvironmentLabel);
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
   });
 
   describe("Multiple ResourcePatches", () => {
-    it("should apply multiple resource patches in order", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.basicDeployment, [
-        RESOURCE_PATCHES.addLabelsIfUndefined,
-        RESOURCE_PATCHES.addEnvironmentLabel,
-        RESOURCE_PATCHES.updateReplicas,
-      ]);
+    MULTIPLE_PATCHES_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
 
-      // First patch adds labels: {}, second patch adds environment label to it
-      expect(result).toContain(EXPECTED_RESULTS.hasEnvironmentLabel);
-      expect(result).toContain(EXPECTED_RESULTS.hasFiveReplicas);
-      // Should have labels section (not empty after environment label is added)
-      expect(result).toContain(EXPECTED_RESULTS.hasLabelsSection);
-    });
-
-    it("should skip patches when test filters fail", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.deploymentWithLabels, [
-        RESOURCE_PATCHES.addLabelsIfUndefined, // Should skip - labels exist
-        RESOURCE_PATCHES.addEnvironmentLabel, // Should apply
-      ]);
-
-      expect(result).toContain(EXPECTED_RESULTS.hasAppLabel); // Original label preserved
-      expect(result).toContain(EXPECTED_RESULTS.hasEnvironmentLabel); // New label added
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
   });
 
   describe("Edge Cases", () => {
-    it("should handle empty patches array", () => {
-      const result = patchK8sResourceYaml(YAML_FIXTURES.basicDeployment, []);
+    EDGE_CASE_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
 
-      expect(result).toContain(EXPECTED_RESULTS.hasMyAppName);
-      expect(result).toContain(EXPECTED_RESULTS.hasOneReplica);
-    });
-
-    it("should silently skip invalid patch paths", () => {
-      // Should not throw, just skip the invalid patch
-      const result = patchK8sResourceYaml(YAML_FIXTURES.basicDeployment, [RESOURCE_PATCHES.invalidPath]);
-      expect(result).toContain(EXPECTED_RESULTS.hasMyAppName);
-      expect(result).toContain(EXPECTED_RESULTS.hasOneReplica);
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
   });
 
   describe("Token Interpolation in Patches", () => {
-    it("should interpolate tokens in patch values", () => {
-      const result = patchK8sResourceYaml(
-        YAML_FIXTURES.deploymentWithLabels,
-        [RESOURCE_PATCHES.addLabelWithToken],
-        TOKEN_MAPS.devDeploymentUniqueName
-      );
+    TOKEN_INTERPOLATION_TEST_CASES.forEach(({ name, given, expected }) => {
+      it(name, () => {
+        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
 
-      expect(result).toContain(EXPECTED_RESULTS.hasPartOfLabel);
+        if (Array.isArray(expected)) {
+          expected.forEach((exp) => expect(result).toContain(exp));
+        } else {
+          expect(result).toContain(expected);
+        }
+      });
     });
   });
 });
