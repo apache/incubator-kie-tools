@@ -100,12 +100,23 @@ export type CommonDictionary = {
     b: string;
     x: string;
     y: string;
+    e: string;
+    r: string;
+    w: string;
+    q: string;
+    t: string;
+    d: string;
+    m: string;
     shiftUp: string;
     shiftDown: string;
     shiftLeft: string;
     shiftRight: string;
     space: string;
     shift: string;
+    edit: string;
+    misc: string;
+    move: string;
+    navigate: string;
   };
 };
 

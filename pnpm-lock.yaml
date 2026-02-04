@@ -1398,6 +1398,494 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
+  packages/bpmn-editor:
+    dependencies:
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@kie-tools-core/monaco-editor':
+        specifier: workspace:*
+        version: link:../monaco-editor
+      '@kie-tools-core/operating-system':
+        specifier: workspace:*
+        version: link:../operating-system
+      '@kie-tools-core/patternfly-base':
+        specifier: workspace:*
+        version: link:../patternfly-base
+      '@kie-tools-core/react-hooks':
+        specifier: workspace:*
+        version: link:../react-hooks
+      '@kie-tools-core/switch-expression-ts':
+        specifier: workspace:*
+        version: link:../switch-expression-ts
+      '@kie-tools/boxed-expression-component':
+        specifier: workspace:*
+        version: link:../boxed-expression-component
+      '@kie-tools/bpmn-marshaller':
+        specifier: workspace:*
+        version: link:../bpmn-marshaller
+      '@kie-tools/dmn-feel-antlr4-parser':
+        specifier: workspace:*
+        version: link:../dmn-feel-antlr4-parser
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
+      '@kie-tools/feel-input-component':
+        specifier: workspace:*
+        version: link:../feel-input-component
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
+      '@kie-tools/pmml-editor-marshaller':
+        specifier: workspace:*
+        version: link:../pmml-editor-marshaller
+      '@kie-tools/xml-parser-ts':
+        specifier: workspace:*
+        version: link:../xml-parser-ts
+      '@kie-tools/xyflow-react-kie-diagram':
+        specifier: workspace:*
+        version: link:../xyflow-react-kie-diagram
+      '@patternfly/react-core':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-icons':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-styles':
+        specifier: ^5.4.0
+        version: 5.4.1
+      '@visx/text':
+        specifier: ^3.3.0
+        version: 3.3.0(react@17.0.2)
+      d3-drag:
+        specifier: ^3.0.0
+        version: 3.0.0
+      d3-selection:
+        specifier: ^3.0.0
+        version: 3.0.0
+      elkjs:
+        specifier: ^0.9.1
+        version: 0.9.1
+      fast-deep-equal:
+        specifier: ^3.1.3
+        version: 3.1.3
+      immer:
+        specifier: ^10.0.3
+        version: 10.0.3(patch_hash=c64b5311f0e912edb362cdb76fd2894d78fab70e26f770a47a4ce516fd2afc19)
+      moment:
+        specifier: ^2.29.4
+        version: 2.29.4
+      react:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      react-error-boundary:
+        specifier: ^4.1.2
+        version: 4.1.2(react@17.0.2)
+      reactflow:
+        specifier: ^11.8.3
+        version: 11.10.1(@types/react@17.0.21)(immer@10.0.3(patch_hash=c64b5311f0e912edb362cdb76fd2894d78fab70e26f770a47a4ce516fd2afc19))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
+      zustand:
+        specifier: ^4.4.2
+        version: 4.4.2(patch_hash=5c5bf0e87d873c263d03537e4be9624274aa0d3a87a7d907599335802ca0d236)(@types/react@17.0.21)(immer@10.0.3(patch_hash=c64b5311f0e912edb362cdb76fd2894d78fab70e26f770a47a4ce516fd2afc19))(react@17.0.2)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.16.0
+        version: 7.26.10
+      '@babel/preset-env':
+        specifier: ^7.16.0
+        version: 7.26.9(@babel/core@7.26.10)
+      '@babel/preset-react':
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.26.10)
+      '@babel/preset-typescript':
+        specifier: ^7.22.5
+        version: 7.23.0(@babel/core@7.26.10)
+      '@kie-tools-core/webpack-base':
+        specifier: workspace:*
+        version: link:../webpack-base
+      '@kie-tools/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@kie-tools/playwright-base':
+        specifier: workspace:*
+        version: link:../playwright-base
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/storybook-base':
+        specifier: workspace:*
+        version: link:../storybook-base
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@playwright/test':
+        specifier: ^1.45.2
+        version: 1.45.2
+      '@storybook/addon-links':
+        specifier: ^7.3.2
+        version: 7.6.13(react@17.0.2)
+      '@storybook/addon-webpack5-compiler-babel':
+        specifier: ^3.0.5
+        version: 3.0.5(webpack@5.94.0)
+      '@storybook/blocks':
+        specifier: ^7.3.2
+        version: 7.6.13(@types/react-dom@17.0.8)(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@storybook/manager-api':
+        specifier: ^7.3.2
+        version: 7.6.13(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@storybook/preview-api':
+        specifier: ^7.3.2
+        version: 7.6.13
+      '@storybook/react':
+        specifier: ^7.3.2
+        version: 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
+      '@storybook/react-webpack5':
+        specifier: ^7.3.2
+        version: 7.6.13(@babel/core@7.26.10)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.41.0)(typescript@5.5.3)(webpack-cli@4.10.0)(webpack-dev-server@4.15.2)(webpack-hot-middleware@2.25.4)
+      '@types/d3-drag':
+        specifier: ^3.0.3
+        version: 3.0.7
+      '@types/d3-selection':
+        specifier: ^3.0.6
+        version: 3.0.10
+      '@types/lodash':
+        specifier: ^4.14.168
+        version: 4.14.202
+      '@types/node':
+        specifier: ^22.14.1
+        version: 22.18.8
+      '@types/react':
+        specifier: ^17.0.6
+        version: 17.0.21
+      '@types/react-dom':
+        specifier: ^17.0.5
+        version: 17.0.8
+      '@types/uuid':
+        specifier: ^8.3.0
+        version: 8.3.0
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.94.0)
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      deep-object-diff:
+        specifier: ^1.1.9
+        version: 1.1.9
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.94.0)
+      lodash:
+        specifier: ^4.17.23
+        version: 4.17.23
+      raw-loader:
+        specifier: ^4.0.2
+        version: 4.0.2(webpack@5.94.0)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+      start-server-and-test:
+        specifier: ^2.0.3
+        version: 2.0.3
+      storybook:
+        specifier: ^7.3.2
+        version: 7.6.13(encoding@0.1.13)
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+      webpack:
+        specifier: ^5.94.0
+        version: 5.94.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.2)(webpack@5.94.0)
+      webpack-dev-server:
+        specifier: ^4.15.2
+        version: 4.15.2(webpack-cli@4.10.0)(webpack@5.94.0)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.10.0
+
+  packages/bpmn-editor-envelope:
+    dependencies:
+      '@kie-tools-core/editor':
+        specifier: workspace:*
+        version: link:../editor
+      '@kie-tools-core/envelope':
+        specifier: workspace:*
+        version: link:../envelope
+      '@kie-tools-core/envelope-bus':
+        specifier: workspace:*
+        version: link:../envelope-bus
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@kie-tools-core/keyboard-shortcuts':
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
+      '@kie-tools-core/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      '@kie-tools-core/react-hooks':
+        specifier: workspace:*
+        version: link:../react-hooks
+      '@kie-tools-core/workspace':
+        specifier: workspace:*
+        version: link:../workspace
+      '@kie-tools/bpmn-editor':
+        specifier: workspace:*
+        version: link:../bpmn-editor
+      '@kie-tools/bpmn-marshaller':
+        specifier: workspace:*
+        version: link:../bpmn-marshaller
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
+      '@kie-tools/xml-parser-ts':
+        specifier: workspace:*
+        version: link:../xml-parser-ts
+      '@kie-tools/xyflow-react-kie-diagram':
+        specifier: workspace:*
+        version: link:../xyflow-react-kie-diagram
+      '@patternfly/react-core':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      react:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2
+      react-dom:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2(react@17.0.2)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.16.0
+        version: 7.26.10
+      '@babel/preset-env':
+        specifier: ^7.16.0
+        version: 7.26.9(@babel/core@7.26.10)
+      '@babel/preset-react':
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.26.10)
+      '@kie-tools/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^17.0.6
+        version: 17.0.21
+      '@types/react-dom':
+        specifier: ^17.0.5
+        version: 17.0.8
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+
+  packages/bpmn-editor-standalone:
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.16.0
+        version: 7.26.10
+      '@babel/preset-env':
+        specifier: ^7.16.0
+        version: 7.26.9(@babel/core@7.26.10)
+      '@babel/preset-react':
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.26.10)
+      '@babel/preset-typescript':
+        specifier: ^7.22.5
+        version: 7.23.0(@babel/core@7.26.10)
+      '@kie-tools-core/editor':
+        specifier: workspace:*
+        version: link:../editor
+      '@kie-tools-core/envelope-bus':
+        specifier: workspace:*
+        version: link:../envelope-bus
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@kie-tools-core/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      '@kie-tools-core/patternfly-base':
+        specifier: workspace:*
+        version: link:../patternfly-base
+      '@kie-tools-core/webpack-base':
+        specifier: workspace:*
+        version: link:../webpack-base
+      '@kie-tools-core/workspace':
+        specifier: workspace:*
+        version: link:../workspace
+      '@kie-tools/boxed-expression-component':
+        specifier: workspace:*
+        version: link:../boxed-expression-component
+      '@kie-tools/bpmn-editor':
+        specifier: workspace:*
+        version: link:../bpmn-editor
+      '@kie-tools/bpmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../bpmn-editor-envelope
+      '@kie-tools/bpmn-marshaller':
+        specifier: workspace:*
+        version: link:../bpmn-marshaller
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
+      '@kie-tools/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@kie-tools/playwright-base':
+        specifier: workspace:*
+        version: link:../playwright-base
+      '@kie-tools/pmml-editor-marshaller':
+        specifier: workspace:*
+        version: link:../pmml-editor-marshaller
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/storybook-base':
+        specifier: workspace:*
+        version: link:../storybook-base
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@patternfly/react-core':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@playwright/test':
+        specifier: ^1.45.2
+        version: 1.45.2
+      '@storybook/addon-links':
+        specifier: ^7.3.2
+        version: 7.6.13(react@17.0.2)
+      '@storybook/addon-webpack5-compiler-babel':
+        specifier: ^3.0.5
+        version: 3.0.5(webpack@5.94.0)
+      '@storybook/blocks':
+        specifier: ^7.3.2
+        version: 7.6.13(@types/react-dom@17.0.8)(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@storybook/manager-api':
+        specifier: ^7.3.2
+        version: 7.6.13(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@storybook/preview-api':
+        specifier: ^7.3.2
+        version: 7.6.13
+      '@storybook/react':
+        specifier: ^7.3.2
+        version: 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
+      '@storybook/react-webpack5':
+        specifier: ^7.3.2
+        version: 7.6.13(@babel/core@7.26.10)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.41.0)(typescript@5.5.3)(webpack-cli@4.10.0)(webpack-dev-server@4.15.2)(webpack-hot-middleware@2.25.4)
+      '@types/jest-when':
+        specifier: ^3.5.5
+        version: 3.5.5
+      '@types/lodash':
+        specifier: ^4.14.168
+        version: 4.14.202
+      '@types/minimatch':
+        specifier: ^3.0.5
+        version: 3.0.5
+      '@types/node':
+        specifier: ^22.14.1
+        version: 22.18.8
+      '@types/react':
+        specifier: ^17.0.6
+        version: 17.0.21
+      '@types/react-dom':
+        specifier: ^17.0.5
+        version: 17.0.8
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      deep-object-diff:
+        specifier: ^1.1.9
+        version: 1.1.9
+      dts-bundle-generator:
+        specifier: ^9.5.1
+        version: 9.5.1
+      html-webpack-plugin:
+        specifier: ^5.3.2
+        version: 5.6.4(webpack@5.94.0)
+      junit-report-merger:
+        specifier: ^4.0.0
+        version: 4.0.0
+      lodash:
+        specifier: ^4.17.23
+        version: 4.17.23
+      minimatch:
+        specifier: ^3.0.5
+        version: 3.1.2
+      nodemon:
+        specifier: ^3.1.4
+        version: 3.1.4
+      prettier:
+        specifier: ^3.3.2
+        version: 3.3.2
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
+      raw-loader:
+        specifier: ^4.0.2
+        version: 4.0.2(webpack@5.94.0)
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+      storybook:
+        specifier: ^7.3.2
+        version: 7.6.13(encoding@0.1.13)
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+      webpack:
+        specifier: ^5.94.0
+        version: 5.94.0(webpack-cli@4.10.0)
+      webpack-bundle-analyzer:
+        specifier: ^4.10.2
+        version: 4.10.2
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.94.0)
+      webpack-dev-server:
+        specifier: ^4.15.2
+        version: 4.15.2(webpack-cli@4.10.0)(webpack@5.94.0)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.10.0
+
   packages/bpmn-marshaller:
     dependencies:
       '@kie-tools/xml-parser-ts':
@@ -13702,6 +14190,118 @@ importers:
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
+
+  packages/xyflow-react-kie-diagram:
+    dependencies:
+      '@kie-tools-core/operating-system':
+        specifier: workspace:*
+        version: link:../operating-system
+      '@kie-tools-core/switch-expression-ts':
+        specifier: workspace:*
+        version: link:../switch-expression-ts
+      '@patternfly/react-core':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-icons':
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-styles':
+        specifier: ^5.4.0
+        version: 5.4.1
+      d3-drag:
+        specifier: ^3.0.0
+        version: 3.0.0
+      d3-selection:
+        specifier: ^3.0.0
+        version: 3.0.0
+      immer:
+        specifier: ^10.0.3
+        version: 10.0.3(patch_hash=c64b5311f0e912edb362cdb76fd2894d78fab70e26f770a47a4ce516fd2afc19)
+      react:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2
+      reactflow:
+        specifier: ^11.8.3
+        version: 11.10.1(@types/react@17.0.21)(immer@10.0.3(patch_hash=c64b5311f0e912edb362cdb76fd2894d78fab70e26f770a47a4ce516fd2afc19))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
+      zustand:
+        specifier: ^4.4.2
+        version: 4.4.2(patch_hash=5c5bf0e87d873c263d03537e4be9624274aa0d3a87a7d907599335802ca0d236)(@types/react@17.0.21)(immer@10.0.3(patch_hash=c64b5311f0e912edb362cdb76fd2894d78fab70e26f770a47a4ce516fd2afc19))(react@17.0.2)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.16.0
+        version: 7.26.10
+      '@babel/preset-env':
+        specifier: ^7.16.0
+        version: 7.26.9(@babel/core@7.26.10)
+      '@babel/preset-react':
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.26.10)
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@kie-tools/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@kie-tools/xml-parser-ts':
+        specifier: workspace:*
+        version: link:../xml-parser-ts
+      '@types/d3-drag':
+        specifier: ^3.0.3
+        version: 3.0.7
+      '@types/d3-selection':
+        specifier: ^3.0.6
+        version: 3.0.10
+      '@types/react':
+        specifier: ^17.0.6
+        version: 17.0.21
+      '@types/uuid':
+        specifier: ^8.3.0
+        version: 8.3.0
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      fast-deep-equal:
+        specifier: ^3.1.3
+        version: 3.1.3
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+      start-server-and-test:
+        specifier: ^2.0.3
+        version: 2.0.3
+      storybook:
+        specifier: ^7.3.2
+        version: 7.6.13(encoding@0.1.13)
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+      webpack:
+        specifier: ^5.94.0
+        version: 5.94.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.2)(webpack@5.94.0)
+      webpack-dev-server:
+        specifier: ^4.15.2
+        version: 4.15.2(webpack-cli@4.10.0)(webpack@5.94.0)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.10.0
 
   packages/yaml-language-server:
     dependencies:
