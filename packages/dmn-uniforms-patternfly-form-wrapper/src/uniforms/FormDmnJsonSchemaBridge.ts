@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormJsonSchemaBridge } from "@kie-tools/form/dist/uniforms/FormJsonSchemaBridge";
+import { FormJsonSchemaBridge } from "@kie-tools/uniforms-patternfly-form-wrapper/dist/uniforms/FormJsonSchemaBridge";
 import { FormDmnI18n } from "../i18n";
 import { DmnInputFieldProperties, ExtendedServicesFormSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/dmnFormats";
