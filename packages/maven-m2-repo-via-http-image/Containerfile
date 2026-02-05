@@ -32,7 +32,8 @@ RUN echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
  && sed -i "s/Options Indexes FollowSymLinks/Options +Indexes +FollowSymLinks/" /etc/httpd/conf/httpd.conf \
  && sed -i "$ a ServerTokens Prod" /etc/httpd/conf/httpd.conf \
  && sed -i "$ a ServerSignature Off" /etc/httpd/conf/httpd.conf \
- && sed -i "\$ a <Directory \"/var/www/html\">\n    Options +Indexes +FollowSymLinks\n    AllowOverride None\n    Require all granted\n    IndexOptions FancyIndexing SuppressDescription SuppressHTMLPreamble SuppressLastModified SuppressSize NameWidth=* SuppressColumnSorting SuppressIcon SuppressRules\n    HeaderName /header.html\n    ReadmeName /readme.html\n</Directory>" /etc/httpd/conf/httpd.conf
+ && sed -i "\$ a <Directory \"/var/www/html\">\n    Options +Indexes +FollowSymLinks\n    AllowOverride None\n    Require all granted\n    IndexOptions FancyIndexing SuppressDescription SuppressHTMLPreamble SuppressLastModified SuppressSize NameWidth=* SuppressColumnSorting SuppressIcon SuppressRules\n    HeaderName /header.html\n    ReadmeName /readme.html\n</Directory>" /etc/httpd/conf/httpd.conf \
+ && sed -i "\$ a # Fallback: serve maven-metadata-local.xml when maven-metadata.xml is requested but not found\nLoadModule rewrite_module modules/mod_rewrite.so\nRewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_URI} maven-metadata\\\\.xml\$\nRewriteRule ^(.*)maven-metadata\\\\.xml\$ \$1maven-metadata-local.xml [L]" /etc/httpd/conf/httpd.conf 
 
 VOLUME /var/www/html/
 

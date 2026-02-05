@@ -460,6 +460,7 @@ digraph G {
   "@kie-tools/jest-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/cors-proxy-api" [ style = "dashed", color = "purple" ];
+  "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools/dmn-language-service" [ style = "solid", color = "blue" ];

@@ -43,7 +43,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
                 op: "add",
                 path: "/spec/template/spec/containers/-",
                 value: {
-                  name: "${{ devDeployment.uniqueName }}-dmn-form-webapp",
+                  name: "${{ $.devDeployment.uniqueName }}-dmn-form-webapp",
                   image: args.dmnFormWebappImageUrl,
                   imagePullPolicy: args.imagePullPolicy,
                   ports: [{ containerPort: 8081, protocol: "TCP" }],
@@ -62,12 +62,12 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "ROOT_PATH", value: "/${{ devDeployment.uniqueName }}" },
+            value: { name: "ROOT_PATH", value: "/${{ $.devDeployment.uniqueName }}" },
           },
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH", value: "${{ devDeployment.uniqueName }}" },
+            value: { name: "DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH", value: "${{ $.devDeployment.uniqueName }}" },
           },
         ],
       },
@@ -80,7 +80,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
         id: "command",
         name: "Command",
         description: "The command to be executed when the container starts",
-        defaultValue: "./mvnw quarkus:dev -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
+        defaultValue: "./mvnw quarkus:dev -Dquarkus.http.root-path=/${{ $.devDeployment.uniqueName }}",
         type: "text",
         resourcePatches: [
           {
@@ -104,12 +104,12 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "ROOT_PATH", value: "/${{ devDeployment.uniqueName }}" },
+            value: { name: "ROOT_PATH", value: "/${{ $.devDeployment.uniqueName }}" },
           },
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH", value: "${{ devDeployment.uniqueName }}" },
+            value: { name: "DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH", value: "${{ $.devDeployment.uniqueName }}" },
           },
         ],
       },

@@ -1902,6 +1902,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
         "source": "kie-editors-dev-vscode-extension",
         "target": "@kie-tools-core/vscode-extension",
         "weight": 1

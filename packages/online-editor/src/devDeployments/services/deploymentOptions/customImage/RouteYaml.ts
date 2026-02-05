@@ -21,18 +21,18 @@ export const RouteYaml = () => `
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
+  name: \${{ $.devDeployment.uniqueName }}
+  namespace: \${{ $.devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
 spec:
-  subdomain: \${{ devDeployment.uniqueName }}
+  subdomain: \${{ $.devDeployment.uniqueName }}
   to:
-    name: \${{ devDeployment.uniqueName }}
+    name: \${{ $.devDeployment.uniqueName }}
     kind: Service
   port:
     targetPort: 8080
