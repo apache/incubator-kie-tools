@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { load as yamlLoad } from "js-yaml";
 import { interpolateK8sResourceYaml } from "../../src/interpolateK8sResourceYaml";
 import {
   BASIC_TOKEN_TEST_CASES,
@@ -28,55 +29,27 @@ import {
 } from "./fixtures";
 
 describe("Token Interpolation", () => {
-  describe("Basic Token Interpolation", () => {
-    BASIC_TOKEN_TEST_CASES.forEach(({ name, given, expected }) => {
+  describe.each([
+    ["Basic Token Interpolation", BASIC_TOKEN_TEST_CASES],
+    ["JSON Path Token Interpolation", JSON_PATH_TEST_CASES],
+    ["Recursive Token Interpolation", RECURSIVE_TOKEN_TEST_CASES],
+    ["Edge Cases", EDGE_CASE_TEST_CASES],
+  ])("%s", (_suiteName, testCases) => {
+    testCases.forEach(({ name, given, expected }) => {
       it(name, () => {
         const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
+        const resultParsed = yamlLoad(result);
+        const expectedParsed = yamlLoad(expected);
+        expect(resultParsed).toEqual(expectedParsed);
       });
     });
   });
 
-  describe("JSON Path Token Interpolation", () => {
-    JSON_PATH_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
-        expect(result).toContain(expected);
-      });
-    });
-  });
-
-  describe("Recursive Token Interpolation", () => {
-    RECURSIVE_TOKEN_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
-        expect(result).toContain(expected);
-      });
-    });
-
+  describe("Error Cases", () => {
     it(MAX_DEPTH_TEST_CASE.name, () => {
       expect(() =>
         interpolateK8sResourceYaml(MAX_DEPTH_TEST_CASE.given.yaml, MAX_DEPTH_TEST_CASE.given.tokenMap)
       ).toThrow();
-    });
-  });
-
-  describe("Edge Cases", () => {
-    EDGE_CASE_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = interpolateK8sResourceYaml(given.yaml, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
-      });
     });
 
     it(UNRESOLVABLE_TOKEN_TEST_CASE.name, () => {

@@ -28,7 +28,7 @@ type BaseTestCase = {
 };
 
 type TestCase = BaseTestCase & {
-  expected: string | string[];
+  expected: string;
 };
 
 type ErrorTestCase = BaseTestCase & {
@@ -49,7 +49,12 @@ metadata:
         serviceName: "my-service",
       },
     },
-    expected: "name: my-service",
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+`,
   },
   {
     name: "should replace multiple tokens",
@@ -66,7 +71,13 @@ metadata:
         namespace: "default",
       },
     },
-    expected: ["name: my-service", "namespace: default"],
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  namespace: default
+`,
   },
 ];
 
@@ -86,7 +97,12 @@ metadata:
         },
       },
     },
-    expected: "name: my-deployment",
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-deployment
+`,
   },
   {
     name: "should resolve nested JSON Path expressions",
@@ -105,7 +121,12 @@ metadata:
         },
       },
     },
-    expected: "name: nested-deployment",
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: nested-deployment
+`,
   },
   {
     name: "should resolve array access in JSON Path",
@@ -120,7 +141,12 @@ metadata:
         deployments: [{ name: "first-deployment" }, { name: "second-deployment" }],
       },
     },
-    expected: "name: first-deployment",
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: first-deployment
+`,
   },
 ];
 
@@ -145,7 +171,12 @@ metadata:
         },
       },
     },
-    expected: "name: my-route.example.com",
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-route.example.com
+`,
   },
   {
     name: "should resolve deeply nested tokens",
@@ -168,7 +199,12 @@ metadata:
         },
       },
     },
-    expected: "name: deeply-nested.example.com",
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: deeply-nested.example.com
+`,
   },
 ];
 
@@ -203,7 +239,13 @@ metadata:
 `,
       tokenMap: {},
     },
-    expected: "name: static-name",
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-name
+  namespace: default
+`,
   },
   {
     name: "should handle YAML without tokens",
@@ -219,7 +261,13 @@ metadata:
         unused: "value",
       },
     },
-    expected: ["name: static-name", "namespace: default"],
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-name
+  namespace: default
+`,
   },
   {
     name: "should handle numeric values",
@@ -234,7 +282,12 @@ spec:
         replicas: 3,
       },
     },
-    expected: "replicas: 3",
+    expected: `
+apiVersion: v1
+kind: Service
+spec:
+  replicas: 3
+`,
   },
   {
     name: "should handle boolean values",
@@ -249,7 +302,12 @@ spec:
         enabled: true,
       },
     },
-    expected: "enabled: true",
+    expected: `
+apiVersion: v1
+kind: Service
+spec:
+  enabled: true
+`,
   },
   {
     name: "should handle mixed flat and JSONPath tokens in same YAML",
@@ -275,7 +333,16 @@ metadata:
         },
       },
     },
-    expected: ["name: mixed-service", "namespace: production", "app: my-app", "version: v1.2.3"],
+    expected: `
+apiVersion: v1
+kind: Service
+metadata:
+  name: mixed-service
+  namespace: production
+  labels:
+    app: my-app
+    version: v1.2.3
+`,
   },
 ];
 

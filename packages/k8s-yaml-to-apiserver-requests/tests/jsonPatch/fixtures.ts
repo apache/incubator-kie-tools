@@ -30,11 +30,11 @@ type BaseTestCase = {
 };
 
 type TestCase = BaseTestCase & {
-  expected: string | string[];
+  expected: string;
 };
 
 type NegativeTestCase = BaseTestCase & {
-  notExpected: string | string[];
+  expected: string;
 };
 
 // ADD OPERATION TEST CASES
@@ -65,7 +65,17 @@ spec:
         },
       ],
     },
-    expected: "environment: production",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+    environment: production
+spec:
+  replicas: 1
+`,
   },
   {
     name: "should add multiple labels",
@@ -97,7 +107,18 @@ spec:
         },
       ],
     },
-    expected: ["environment: production", "team: platform"],
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+    environment: production
+    team: platform
+spec:
+  replicas: 1
+`,
   },
   {
     name: "should add an annotation to existing annotations",
@@ -124,7 +145,17 @@ spec:
         },
       ],
     },
-    expected: "version: 1.0.0",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  annotations:
+    description: "My application"
+    version: 1.0.0
+spec:
+  replicas: 1
+`,
   },
 ];
 
@@ -157,7 +188,17 @@ spec:
         },
       ],
     },
-    expected: "replicas: 3",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+`,
   },
   {
     name: "should replace metadata name",
@@ -185,7 +226,17 @@ spec:
         },
       ],
     },
-    expected: "name: new-app-name",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: new-app-name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+`,
   },
 ];
 
@@ -216,7 +267,15 @@ spec:
         },
       ],
     },
-    notExpected: "app: my-app",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels: {}
+spec:
+  replicas: 1
+`,
   },
   {
     name: "should remove an annotation",
@@ -242,7 +301,15 @@ spec:
         },
       ],
     },
-    notExpected: 'description: "My application"',
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  annotations: {}
+spec:
+  replicas: 1
+`,
   },
 ];
 
@@ -282,7 +349,18 @@ spec:
         },
       ],
     },
-    expected: "labels: {}",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels: {}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+`,
   },
   {
     name: "should apply patch when labels are null",
@@ -315,7 +393,15 @@ spec:
         },
       ],
     },
-    expected: "labels: {}",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels: {}
+spec:
+  replicas: 1
+`,
   },
   {
     name: "should not apply patch when test filter fails",
@@ -349,7 +435,16 @@ spec:
         },
       ],
     },
-    expected: "app: my-app",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 1
+`,
   },
   {
     name: "should apply patch without test filters",
@@ -376,7 +471,17 @@ spec:
         },
       ],
     },
-    expected: "environment: production",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+    environment: production
+spec:
+  replicas: 1
+`,
   },
 ];
 
@@ -434,7 +539,19 @@ spec:
         },
       ],
     },
-    expected: ["environment: production", "replicas: 5", "labels:"],
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    environment: production
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: my-app
+`,
   },
   {
     name: "should skip patches when test filters fail",
@@ -477,7 +594,17 @@ spec:
         },
       ],
     },
-    expected: ["app: my-app", "environment: production"],
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+    environment: production
+spec:
+  replicas: 1
+`,
   },
 ];
 
@@ -500,7 +627,17 @@ spec:
 `,
       patches: [],
     },
-    expected: ["name: my-app", "replicas: 1"],
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+`,
   },
   {
     name: "should silently skip invalid patch paths",
@@ -528,7 +665,17 @@ spec:
         },
       ],
     },
-    expected: ["name: my-app", "replicas: 1"],
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+`,
   },
 ];
 
@@ -565,6 +712,16 @@ spec:
         },
       },
     },
-    expected: "partOf: my-unique-name",
+    expected: `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+    partOf: my-unique-name
+spec:
+  replicas: 1
+`,
   },
 ];

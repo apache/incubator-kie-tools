@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { load as yamlLoad } from "js-yaml";
 import { patchK8sResourceYaml } from "../../src/patchK8sResourceYaml";
 import {
   ADD_OPERATION_TEST_CASES,
@@ -29,100 +30,21 @@ import {
 } from "./fixtures";
 
 describe("JSON Patch Operations", () => {
-  describe("Add Operations", () => {
-    ADD_OPERATION_TEST_CASES.forEach(({ name, given, expected }) => {
+  describe.each([
+    ["Add Operations", ADD_OPERATION_TEST_CASES],
+    ["Replace Operations", REPLACE_OPERATION_TEST_CASES],
+    ["Remove Operations", REMOVE_OPERATION_TEST_CASES],
+    ["Test Operations with ResourcePatch", TEST_OPERATION_TEST_CASES],
+    ["Multiple ResourcePatches", MULTIPLE_PATCHES_TEST_CASES],
+    ["Edge Cases", EDGE_CASE_TEST_CASES],
+    ["Token Interpolation in Patches", TOKEN_INTERPOLATION_TEST_CASES],
+  ])("%s", (_suiteName, testCases) => {
+    testCases.forEach(({ name, given, expected }) => {
       it(name, () => {
         const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
-      });
-    });
-  });
-
-  describe("Replace Operations", () => {
-    REPLACE_OPERATION_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
-      });
-    });
-  });
-
-  describe("Remove Operations", () => {
-    REMOVE_OPERATION_TEST_CASES.forEach(({ name, given, notExpected }) => {
-      it(name, () => {
-        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
-
-        if (Array.isArray(notExpected)) {
-          notExpected.forEach((exp) => expect(result).not.toContain(exp));
-        } else {
-          expect(result).not.toContain(notExpected);
-        }
-      });
-    });
-  });
-
-  describe("Test Operations with ResourcePatch", () => {
-    TEST_OPERATION_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
-      });
-    });
-  });
-
-  describe("Multiple ResourcePatches", () => {
-    MULTIPLE_PATCHES_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
-      });
-    });
-  });
-
-  describe("Edge Cases", () => {
-    EDGE_CASE_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
-      });
-    });
-  });
-
-  describe("Token Interpolation in Patches", () => {
-    TOKEN_INTERPOLATION_TEST_CASES.forEach(({ name, given, expected }) => {
-      it(name, () => {
-        const result = patchK8sResourceYaml(given.yaml, given.patches, given.tokenMap);
-
-        if (Array.isArray(expected)) {
-          expected.forEach((exp) => expect(result).toContain(exp));
-        } else {
-          expect(result).toContain(expected);
-        }
+        const resultParsed = yamlLoad(result);
+        const expectedParsed = yamlLoad(expected);
+        expect(resultParsed).toEqual(expectedParsed);
       });
     });
   });
