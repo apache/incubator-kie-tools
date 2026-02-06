@@ -49,7 +49,7 @@ To build and test all packages on this repository, you're going to need:
 - pnpm `9.3.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
 - Maven `3.9.11`
 - Java `17`
-- Go `1.24.11` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.24.13` _(To install, follow these instructions: https://go.dev/doc/install)_
 - Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 - Make
