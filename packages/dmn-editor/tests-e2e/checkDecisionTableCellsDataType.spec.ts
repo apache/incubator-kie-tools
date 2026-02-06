@@ -56,8 +56,8 @@ test.describe("Decision Table - Cells Data Type", () => {
     }) => {
       await editor.changeTab({ tab: TabName.DATA_TYPES });
       await dataTypes.createFirstCustonDataType();
-      await dataTypes.changeDataTypeName({ newName: "testType" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
+      await dataTypes.changeName({ newName: "testType" });
+      await dataTypes.changeBaseType({ newBaseType: DataType.String });
       await editor.changeTab({ tab: TabName.EDITOR });
 
       await beePropertiesPanel.open();
@@ -222,29 +222,29 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
       // create string data type with enum constraint;
       await editor.changeTab({ tab: TabName.DATA_TYPES });
       await dataTypes.createFirstCustonDataType();
-      await dataTypes.changeDataTypeName({ newName: "enumType" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
+      await dataTypes.changeName({ newName: "enumType" });
+      await dataTypes.changeBaseType({ newBaseType: DataType.String });
       await dataTypes.getEnumerationConstraintButton().click();
       await dataTypes.addEnumerationConstraint({ values: ["foo", "bar", "baz"] });
 
       // create number data type with range constraint;
       await dataTypes.createNewDataType();
-      await dataTypes.changeDataTypeName({ newName: "rangeType" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
+      await dataTypes.changeName({ newName: "rangeType" });
+      await dataTypes.changeBaseType({ newBaseType: DataType.Number });
       await dataTypes.getRangeConstraintButton().click();
       await dataTypes.addRangeConstraint({ values: ["10", "200"] });
 
       // create number data type with expression constraint;
       await dataTypes.createNewDataType();
-      await dataTypes.changeDataTypeName({ newName: "expressionType" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
+      await dataTypes.changeName({ newName: "expressionType" });
+      await dataTypes.changeBaseType({ newBaseType: DataType.Number });
       await dataTypes.getExpressionConstraintButton().click();
       await dataTypes.addExpressionConstraint({ value: "> 20" });
 
       // create date data type without constraint;
       await dataTypes.createNewDataType();
-      await dataTypes.changeDataTypeName({ newName: "noneType" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
+      await dataTypes.changeName({ newName: "noneType" });
+      await dataTypes.changeBaseType({ newBaseType: DataType.Date });
 
       await editor.changeTab({ tab: TabName.EDITOR });
     });
