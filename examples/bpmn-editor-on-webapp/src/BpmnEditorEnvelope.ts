@@ -18,12 +18,10 @@
  */
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { VsCodeNewDmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/vscode";
-
-declare const acquireVsCodeApi: any;
+import { BpmnMultiplyingArchitectureEditorFactory } from "@kie-tools/bpmn-editor-envelope/dist/BpmnMultiplyingArchitectureEditorFactory";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  bus: acquireVsCodeApi(),
-  editorFactory: new VsCodeNewDmnEditorFactory(),
+  bus: { postMessage: (message, targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
+  editorFactory: new BpmnMultiplyingArchitectureEditorFactory(),
 });

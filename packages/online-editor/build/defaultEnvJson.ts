@@ -123,8 +123,8 @@ export const defaultEnvJson: EnvJson = {
       extension: FileTypes.BPMN,
       filePathGlob: GLOB_PATTERN.bpmn,
       editor: {
-        resourcesPathPrefix: "gwt-editors/bpmn",
-        path: "bpmn-envelope.html",
+        resourcesPathPrefix: "",
+        path: "bpmn-editor-envelope.html",
       },
       card: {
         title: "Workflow",

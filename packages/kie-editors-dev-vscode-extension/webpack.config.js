@@ -22,7 +22,6 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const { ProvidePlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const stunnerEditors = require("@kie-tools/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 
 module.exports = async (webpackEnv) => [
@@ -88,21 +87,6 @@ module.exports = async (webpackEnv) => [
       new CopyWebpackPlugin({
         patterns: [
           { from: "./static", to: "static" },
-          {
-            from: stunnerEditors.dmnEditorPath(),
-            to: "webview/editors/dmn",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
-          {
-            from: stunnerEditors.bpmnEditorPath(),
-            to: "webview/editors/bpmn",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
-          {
-            from: stunnerEditors.scesimEditorPath(),
-            to: "webview/editors/scesim",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
           {
             from: vscodeJavaCodeCompletionExtensionPlugin.path(),
             to: "server/",

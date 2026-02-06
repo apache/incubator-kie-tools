@@ -20,7 +20,6 @@
 import * as path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 import { merge } from "webpack-merge";
-import * as stunnerEditors from "@kie-tools/stunner-editors";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { ProvidePlugin, EnvironmentPlugin } from "webpack";
 import { defaultEnvJson } from "./build/defaultEnvJson";
@@ -75,8 +74,7 @@ export default async (webpackEnv: any, webpackArgv: any) => {
       ...merge(common(webpackEnv), {
         entry: {
           index: "./src/index.tsx",
-          "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
-          "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+          "bpmn-editor-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
           "new-dmn-editor-envelope": "./src/envelope/NewDmnEditorEnvelopeApp.ts",
           "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
         },
@@ -108,20 +106,10 @@ export default async (webpackEnv: any, webpackArgv: any) => {
                 to: "./env.json",
                 transform: () => JSON.stringify(defaultEnvJson, null, 2),
               },
-              {
-                from: stunnerEditors.dmnEditorPath(),
-                to: "./gwt-editors/dmn",
-                globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-              },
-              {
-                from: stunnerEditors.bpmnEditorPath(),
-                to: "./gwt-editors/bpmn",
-                globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-              },
               { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
-              { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
               { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
               { from: "./static/envelope/new-dmn-editor-envelope.html", to: "./new-dmn-editor-envelope.html" },
+              { from: "./static/envelope/bpmn-editor-envelope.html", to: "./bpmn-editor-envelope.html" },
               {
                 from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
                 to: "./images",

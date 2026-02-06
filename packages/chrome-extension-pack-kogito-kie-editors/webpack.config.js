@@ -23,7 +23,6 @@ const packageJson = require("./package.json");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const stunnerEditors = require("@kie-tools/stunner-editors");
 const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
 const path = require("path");
 const { env } = require("./env");
@@ -81,23 +80,6 @@ module.exports = async (webpackEnv) => {
           { from: "./static", to: "." },
           { from: `./${manifestFile}`, to: "./manifest.json" },
           { from: `./rules.json`, to: "./rules.json" },
-
-          // These are used for development only.
-          {
-            from: stunnerEditors.dmnEditorPath(),
-            to: "dmn",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
-          {
-            from: stunnerEditors.bpmnEditorPath(),
-            to: "bpmn",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
-          {
-            from: stunnerEditors.scesimEditorPath(),
-            to: "scesim",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
         ],
       }),
       new ZipPlugin({

@@ -17,13 +17,9 @@
  * under the License.
  */
 
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { VsCodeNewDmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/vscode";
+import "@patternfly/react-core/dist/styles/base.css";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { BpmnEditorPage } from "./BpmnEditorPage";
 
-declare const acquireVsCodeApi: any;
-
-EditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  bus: acquireVsCodeApi(),
-  editorFactory: new VsCodeNewDmnEditorFactory(),
-});
+ReactDOM.render(<BpmnEditorPage />, document.getElementById("app"));

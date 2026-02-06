@@ -15,55 +15,23 @@
    under the License.
 -->
 
-## @kie-tools/bpmn-editor
+# Example :: BPMN Editor on webapp
 
-The Apache KIE BPMN Editor.
+This package contains a web application that features the BPMN Editor wrapped inside a Micro-frontend Multiplying Architecture Envelope.
 
-This package exposes the `<BpmnEditor>` React component. Features include:
+### Building the dependencies
 
-- Support for the BPMN 2.0 specification
-- Backwards compatibility with the [Apache KIE BPMN Editor (classic)](https://www.npmjs.com/package/@kie-tools/kie-editors-standalone) — no longer available (last available in Apache KIE 10.1).
-- Extension points compatible with the jBPM Engine and Kogito.
-  - WorkItemDefinition (`.wid`) files for bindings with WorkItemHandlers (WIHs).
-  - Acitivity SLAs
-  - onEntry/onExit scripts
-- Integration with the Drools Engine and Kogito via the Business Rule Task
-  - DMN-based Decisions (incl. auto-fill)
-  - DRL-based Rules
-- Custom Tasks with custom Properties Panel components
-- Correlations panel dedicated for event-driven workflows
-- Exporting the BPMN diagram to SVG
-- Built in the "[Controlled component](https://legacy.reactjs.org/docs/forms.html#controlled-components)" pattern
-- Type-safe model representation (incl. extension points) powered by [@kie-tools/bpmn-marshaller](../bpmn-marshaller/README.md)
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
 
-The Apache KIE BPMN Editor is built with [Reactflow](https://reactflow.dev/) and shares a lot of good qualities from the Apache KIE DMN Editor, like:
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/bpmn-editor-on-webapp^... build:dev
+```
 
-- Grid snapping
-- Commands-based programmatic API (E.g., Binding to keyboard shortcuts)
-- Infinite canvas
-- Multi-node and edge selection
+### Running
 
----
-
-### Usage
-
-- Add the `<BpmnEditor>` component to your React application; _or_
-- Use the Apache KIE BPMN Editor as a standalone JavaScript/TypeScript library. See [@kie-tools/bpmn-editor-standalone](../bpmn-editor-standalone/README.md).
-
----
-
-### Screenshots
-
-> ![A screenshot of a Hiring process modeled with Apache KIE BPMN Editor](docs/images/readme/hiring.bpmn.png)
-> A screenshot of a Hiring process created with Apache KIE BPMN Editor
-
----
-
-## For development information see:
-
-- 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
-- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+```shell script
+pnpm start
+```
 
 ---
 

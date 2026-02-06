@@ -18,11 +18,15 @@
  */
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { DmnEditorChannelApi, DmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/dmn/api";
-import { DmnEditor, DmnEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/dmn/envelope";
+import { NewDmnEditorInterface } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorFactory";
+import { NewDmnEditorChannelApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorChannelApi";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { NewDmnEditorEnvelopeApiImpl } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApiFactory";
 
-EditorEnvelope.initCustom<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi>({
+EditorEnvelope.initCustom<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  apiImplFactory: { create: (args) => new DmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
+  apiImplFactory: {
+    create: (args) => new NewDmnEditorEnvelopeApiImpl(args),
+  },
 });

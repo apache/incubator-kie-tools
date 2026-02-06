@@ -17,13 +17,15 @@
  * under the License.
  */
 
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { VsCodeNewDmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/vscode";
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-declare const acquireVsCodeApi: any;
-
-EditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  bus: acquireVsCodeApi(),
-  editorFactory: new VsCodeNewDmnEditorFactory(),
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {
+      bpmnEditorOnWebappExample: {
+        port: 7771,
+      },
+    };
+  },
 });

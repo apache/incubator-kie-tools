@@ -55,12 +55,6 @@ package-lock.json
 **/.env.production.local
 !packages/kie-sandbox-distribution/.env
 
-## kie-editors-standalone
-**/e2e-tests/**/videos
-**/e2e-tests/**/screenshots
-**/e2e-tests/**/results
-**/e2e-tests/**/downloads
-
 ## online-editor
 **/videos/
 !packages/online-editor/build
