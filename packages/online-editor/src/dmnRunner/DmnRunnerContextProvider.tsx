@@ -138,6 +138,64 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
 }
 
 /**
+ * Detects if an Input Data Node was renamed by analyzing the schema diff.
+ * A rename is detected when exactly one property is removed and one is added.
+ *
+ * @param schemaDiff - The diff object between previous and current JSON schemas
+ * @returns Map of old property names to new property names
+ */
+function detectRenamedProperties(schemaDiff: any): Map<string, string> {
+  const renamedProperties = new Map<string, string>();
+
+  const diffProperties = schemaDiff?.definitions?.InputSet?.properties;
+  if (!diffProperties || typeof diffProperties !== "object") {
+    return renamedProperties;
+  }
+
+  const removedProperties: string[] = [];
+  const addedProperties: string[] = [];
+
+  // Identify removed and added properties
+  Object.entries(diffProperties).forEach(([key, value]) => {
+    if (value === undefined) {
+      removedProperties.push(key);
+    } else if (value && typeof value === "object") {
+      addedProperties.push(key);
+    }
+  });
+
+  // If we have exactly one removed and one added property, it's likely a rename
+  if (removedProperties.length === 1 && addedProperties.length === 1) {
+    renamedProperties.set(removedProperties[0], addedProperties[0]);
+  }
+
+  return renamedProperties;
+}
+
+/**
+ * Applies renamed property values to the input object.
+ * Copies values from old property names to new property names.
+ */
+function applyRenamedPropertyValues(input: Record<string, any>, renamedProperties: Map<string, string>): void {
+  renamedProperties.forEach((newName, oldName) => {
+    if (oldName in input) {
+      input[newName] = input[oldName];
+    }
+  });
+}
+
+/**
+ * Ensures all schema properties exist in the input object with default values.
+ */
+function ensureAllPropertiesPresent(input: Record<string, any>, defaultValues: Record<string, any>): void {
+  Object.keys(defaultValues).forEach((key) => {
+    if (!(key in input)) {
+      input[key] = defaultValues[key];
+    }
+  });
+}
+
+/**
  * This transformation is needed for these reasons:
  * ### -1- ###
  * DMN Runner backend return upper case constants: "SUCCEEDED", "FAILED", "SKIPPED"
@@ -832,92 +890,25 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                       }
 
                       const validateInputs = dmnRunnerAjv.compile(modifiedSchema);
-
-                      // Detect renamed Input Data Nodes and preserve their values
                       const schemaDiff = diff(previousJsonSchema, modifiedSchema);
-                      const renamedProperties = new Map<string, string>(); // Map<oldName, newName>
+                      const renamedProperties = detectRenamedProperties(schemaDiff);
+                      const defaultValues = getDefaultValues(modifiedSchema);
 
-                      if (
-                        schemaDiff &&
-                        typeof schemaDiff === "object" &&
-                        "definitions" in schemaDiff &&
-                        schemaDiff.definitions &&
-                        typeof schemaDiff.definitions === "object" &&
-                        "InputSet" in schemaDiff.definitions &&
-                        schemaDiff.definitions.InputSet &&
-                        typeof schemaDiff.definitions.InputSet === "object" &&
-                        "properties" in schemaDiff.definitions.InputSet &&
-                        schemaDiff.definitions.InputSet.properties &&
-                        typeof schemaDiff.definitions.InputSet.properties === "object"
-                      ) {
-                        const diffProperties = schemaDiff.definitions.InputSet.properties as Record<string, any>;
-                        const removedProperties: string[] = [];
-                        const addedProperties: string[] = [];
-
-                        // Identify removed and added properties
-                        Object.entries(diffProperties).forEach(([key, value]) => {
-                          if (value === undefined) {
-                            removedProperties.push(key);
-                          } else if (value && typeof value === "object") {
-                            addedProperties.push(key);
-                          }
-                        });
-
-                        // If we have exactly one removed and one added property, it's likely a rename
-                        if (removedProperties.length === 1 && addedProperties.length === 1) {
-                          renamedProperties.set(removedProperties[0], addedProperties[0]);
-                        }
-                      }
-
-                      // Add default values and delete changed data types;
                       setDmnRunnerPersistenceJson({
                         newConfigInputs: (previousConfigInputs) => {
-                          // Start with default values for all properties in the schema
-                          const defaultValues = getDefaultValues(modifiedSchema);
                           const newConfigInputs = { ...defaultValues, ...cloneDeep(previousConfigInputs) };
-
-                          // Preserve values for renamed properties
-                          renamedProperties.forEach((newName, oldName) => {
-                            if (oldName in newConfigInputs) {
-                              newConfigInputs[newName] = newConfigInputs[oldName];
-                            }
-                          });
-
+                          applyRenamedPropertyValues(newConfigInputs, renamedProperties);
                           removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
-
-                          // Ensure all schema properties are present with default values if not set
-                          Object.keys(defaultValues).forEach((key) => {
-                            if (!(key in newConfigInputs)) {
-                              newConfigInputs[key] = defaultValues[key];
-                            }
-                          });
-
+                          ensureAllPropertiesPresent(newConfigInputs, defaultValues);
                           return newConfigInputs;
                         },
                         newInputsRow: (previousInputs) => {
                           return cloneDeep(previousInputs).map((input) => {
                             const id = input.id;
-                            const defaultValues = getDefaultValues(modifiedSchema);
-
-                            // Start with defaults, then apply existing values
                             const mergedInput = { ...defaultValues, ...input };
-
-                            // Preserve values for renamed properties
-                            renamedProperties.forEach((newName, oldName) => {
-                              if (oldName in mergedInput) {
-                                mergedInput[newName] = mergedInput[oldName];
-                              }
-                            });
-
+                            applyRenamedPropertyValues(mergedInput, renamedProperties);
                             removeChangedPropertiesAndAdditionalProperties(validateInputs, mergedInput);
-
-                            // Ensure all schema properties are present with default values if not set
-                            Object.keys(defaultValues).forEach((key) => {
-                              if (!(key in mergedInput)) {
-                                mergedInput[key] = defaultValues[key];
-                              }
-                            });
-
+                            ensureAllPropertiesPresent(mergedInput, defaultValues);
                             mergedInput.id = id;
                             return mergedInput;
                           });
@@ -952,11 +943,11 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
-        props.workspaceFile.extension,
-        setDmnRunnerPersistenceJson,
         props.dmnLanguageService,
+        props.workspaceFile.extension,
         props.workspaceFile.relativePath,
         props.workspaceFile.workspaceId,
+        setDmnRunnerPersistenceJson,
         workspaces,
       ]
     )
