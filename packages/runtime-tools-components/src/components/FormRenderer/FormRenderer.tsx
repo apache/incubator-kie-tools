@@ -58,7 +58,10 @@ export const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAPr
     });
 
     // Converting Dates that are in string format into JS Dates so they can be correctly bound to the uniforms DateField
-    const formData = ModelConversionTool.convertStringToDate(model, formSchema);
+    const formData = ModelConversionTool.applySchemaDefaults(
+      ModelConversionTool.convertStringToDate(model, formSchema),
+      formSchema
+    );
 
     const submitFormData = (): void => {
       formApiRef!.submit();
