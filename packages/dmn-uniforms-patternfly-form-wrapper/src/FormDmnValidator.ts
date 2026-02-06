@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Validator } from "@kie-tools/form/dist/Validator";
+import { Validator } from "@kie-tools/uniforms-patternfly-form-wrapper/dist/Validator";
 import { FormDmnI18n } from "./i18n";
 import { FormDmnJsonSchemaBridge } from "./uniforms";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/dmnFormats";

@@ -26,7 +26,7 @@ import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
-import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/form-dmn";
+import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/dmn-uniforms-patternfly-form-wrapper";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";

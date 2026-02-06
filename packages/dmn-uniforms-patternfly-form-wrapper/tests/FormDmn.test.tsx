@@ -21,7 +21,7 @@ import * as React from "react";
 import { act, render } from "@testing-library/react";
 import { FormDmn, InputRow } from "../src";
 import { formDmnI18n } from "../src/i18n";
-import { FormComponentProps } from "@kie-tools/form";
+import { FormComponentProps } from "@kie-tools/uniforms-patternfly-form-wrapper";
 import type { JSONSchema4 } from "json-schema";
 
 const schema: JSONSchema4 = {

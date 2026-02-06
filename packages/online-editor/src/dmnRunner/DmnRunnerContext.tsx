@@ -22,7 +22,7 @@ import { useContext } from "react";
 import { DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersistenceTypes";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { UnitablesInputsConfigs } from "@kie-tools/unitables";
-import { InputRow } from "@kie-tools/form-dmn";
+import { InputRow } from "@kie-tools/dmn-uniforms-patternfly-form-wrapper";
 import { DecisionResult } from "@kie-tools/extended-services-api";
 import { DmnRunnerProviderAction } from "./DmnRunnerTypes";
 import type { JSONSchema4 } from "json-schema";

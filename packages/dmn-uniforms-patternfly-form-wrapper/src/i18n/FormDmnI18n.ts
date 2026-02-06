@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormI18n } from "@kie-tools/form/dist/i18n/FormI18n";
+import { FormI18n } from "@kie-tools/uniforms-patternfly-form-wrapper/dist/i18n/FormI18n";
 
 export interface FormDmnI18n extends FormI18n {
   validation: {

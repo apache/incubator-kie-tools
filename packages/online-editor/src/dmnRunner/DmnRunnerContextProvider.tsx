@@ -38,7 +38,7 @@ import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerCont
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
-import { InputRow } from "@kie-tools/form-dmn";
+import { InputRow } from "@kie-tools/dmn-uniforms-patternfly-form-wrapper";
 import {
   DecisionResult,
   DmnEvaluationMessages,

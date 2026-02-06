@@ -510,9 +510,9 @@ SelectField.test.tsx.snap
 TextField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/UnsupportedField.test.tsx.snap
 UnsupportedField.test.tsx.snap
-# packages/form-dmn/tests/__snapshots__/FormDmn.test.tsx.snap
+# packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmn.test.tsx.snap
 FormDmn.test.tsx.snap
-# packages/form-dmn/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
+# packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
 FormDmnOutputs.test.tsx.snap
 # packages/image-builder/README.md
 README.md
