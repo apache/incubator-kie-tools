@@ -34,7 +34,7 @@
     "@types/selenium-webdriver": "^4.1.27",
     "mocha": "^10.6.0",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3",
+    "typescript": "^5.9.3",
     "vscode-extension-tester": "^8.10.0"
   },
   "peerDependencies": {

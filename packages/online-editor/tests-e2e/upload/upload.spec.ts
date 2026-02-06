@@ -37,7 +37,7 @@ test.describe("Upload", () => {
     });
 
     test("should upload file by 'Select files'", async ({ page, upload, kieSandbox }) => {
-      await upload.fileSelector(page.getByRole("button", { name: "Select files..." }), "testModel.dmn");
+      await upload.fileSelector(page.getByRole("button", { name: "Select files...", exact: true }), "testModel.dmn");
       await expect(page.getByRole("button", { name: "Decision testModel" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Decision testModel" })).toContainText("testModel");
       await expect(kieSandbox.getEditor().getByText("Test input data")).toBeAttached();
@@ -45,7 +45,7 @@ test.describe("Upload", () => {
 
     test("should upload file by 'Select folders'", async ({ page, upload }) => {
       test.skip(true, "https://github.com/microsoft/playwright/issues/6854");
-      await upload.fileSelector(page.getByRole("button", { name: "Select folder..." }), "testFolder");
+      await upload.fileSelector(page.getByRole("button", { name: "Select folder...", exact: true }), "testFolder");
       await expect(page.getByRole("button", { name: "Scorecard testScoreCard" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Scorecard testScoreCard" })).toContainText("testScoreCard");
     });

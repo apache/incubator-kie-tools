@@ -42,7 +42,7 @@
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.6",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": ">=17.0.2 <19.0.0"

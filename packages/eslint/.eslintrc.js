@@ -19,7 +19,7 @@
 
 module.exports = {
   root: true,
-  parser: "@typescript-eslint/parser",
+  parser: require.resolve("@typescript-eslint/parser"),
   overrides: [
     {
       files: ["*.ts", "*.tsx", "*.jsx"],

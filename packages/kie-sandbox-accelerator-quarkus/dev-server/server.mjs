@@ -18,9 +18,9 @@
  */
 
 import * as __http from "http";
-import * as __url from "url";
 import * as __path from "path";
 import * as __fs from "fs";
+import __url from "url";
 import { spawn as __spawn } from "child_process";
 import __serveStatic from "serve-static";
 import __finalhandler from "finalhandler";
@@ -56,7 +56,8 @@ const serveAsStaticContent = __serveStatic(contentRoot);
 __http
   .createServer((req, res) => {
     // bare git repos
-    if (req.url?.split("/")[1].endsWith(".git")) {
+    const [pathname, _] = req.url.split("?");
+    if (pathname?.split("/").at(-1).endsWith(".git")) {
       console.log(`[git-repo-http-dev-server] Received request for '${req.url}'...`);
       console.log(`[git-repo-http-dev-server] Serving as "smart" HTTP for Git.`);
       serveAsGitSmartHttp(req, res);
@@ -114,7 +115,7 @@ const gitHttpBackendVariableNames = [
 ];
 
 function getEnvForGitHttpBackend(req) {
-  const url = __url.parse(req.url);
+  const [pathname, queryString] = req.url.split("?");
   const envVars = {};
 
   for (let header in req.headers) {
@@ -125,11 +126,11 @@ function getEnvForGitHttpBackend(req) {
   }
 
   envVars["GIT_PROJECT_ROOT"] = contentRoot;
-  envVars["PATH_TRANSLATED"] = contentRoot + url.pathname;
-  envVars["PATH_INFO"] = url.pathname;
+  envVars["PATH_TRANSLATED"] = contentRoot + pathname;
+  envVars["PATH_INFO"] = pathname;
   envVars["REQUEST_METHOD"] = req.method;
   envVars["GIT_HTTP_EXPORT_ALL"] = "1";
-  envVars["QUERY_STRING"] = url.query;
+  envVars["QUERY_STRING"] = queryString;
 
   return envVars;
 }

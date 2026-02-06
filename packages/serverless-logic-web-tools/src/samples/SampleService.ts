@@ -154,7 +154,7 @@ export class SampleService {
               path: decodeURIComponent(response.path).split(
                 `${this.repositoryInfo.paths.samplesFolder}/${sampleId}`
               )[1],
-              fileContents: encoder.encode(response.content),
+              fileContents: encoder.encode(response.content) as Uint8Array<ArrayBufferLike>,
             };
           }
         })

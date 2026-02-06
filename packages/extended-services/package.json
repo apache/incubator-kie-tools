@@ -45,9 +45,9 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "start": "cross-env ENV=dev make start",
     "unpack:mvn:jitexecutor-native": "run-script-os",
-    "unpack:mvn:jitexecutor-native:darwin": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:999-20250511-SNAPSHOT:jar:binaries\"",
-    "unpack:mvn:jitexecutor-native:linux": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:999-20250511-SNAPSHOT:jar:binaries\"",
-    "unpack:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn dependency:unpack `-DoutputDirectory=dist-dev `-Dartifact=org.kie.kogito:jitexecutor-native-win32:999-20250511-SNAPSHOT:jar:binaries\""
+    "unpack:mvn:jitexecutor-native:darwin": "mvn clean dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:999-20250511-SNAPSHOT:jar:binaries\"",
+    "unpack:mvn:jitexecutor-native:linux": "mvn clean dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:999-20250511-SNAPSHOT:jar:binaries\"",
+    "unpack:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn clean dependency:unpack `-DoutputDirectory=dist-dev `-Dartifact=org.kie.kogito:jitexecutor-native-win32:999-20250511-SNAPSHOT:jar:binaries\""
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

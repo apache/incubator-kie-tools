@@ -16,9 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import * as url from "url";
-
 import { CorsConfig } from "@kie-tools/cors-proxy-api/dist";
 
 export enum GIT_HTTP_METHODS {

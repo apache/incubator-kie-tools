@@ -22,7 +22,6 @@
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
@@ -30,6 +29,6 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.9.3"
   }
 }

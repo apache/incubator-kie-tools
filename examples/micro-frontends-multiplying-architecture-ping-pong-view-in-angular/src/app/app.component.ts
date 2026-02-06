@@ -18,9 +18,12 @@
  */
 
 import { Component } from "@angular/core";
+import { PingPongComponent } from "./ping-pong/ping-pong.component";
 
 @Component({
+  standalone: true,
   selector: "app-root",
   template: "<app-ping-pong></app-ping-pong>",
+  imports: [PingPongComponent],
 })
 export class AppComponent {}

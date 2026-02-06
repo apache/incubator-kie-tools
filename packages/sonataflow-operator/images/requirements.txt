@@ -2,11 +2,11 @@
 # see: https://pip.pypa.io/en/stable/reference/requirements-file-format/
 
 requests<2.32.0
-cekit==4.11.0
+cekit==4.16.0
 behave==1.2.6
 lxml==5.2.1
-docker==7.0.0
-docker-squash==1.2.0
+docker==7.1.0
+docker-squash==1.2.2
 python-docker
 elementpath==4.4.0
 pyyaml==6.0.1

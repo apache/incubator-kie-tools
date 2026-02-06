@@ -1,0 +1,44 @@
+diff --git a/index.js b/index.js
+index 840f365..a8474c6 100644
+--- a/index.js
++++ b/index.js
+@@ -61,9 +61,10 @@ if (!(options[0] === "run" || options[0] === "run-script")) {
+  */
+ options[1] = expandShorthand(options[1]);
+
+-// Check for yarn without install command; fixes #13
++// Check for yarn/pnpm without install command; fixes #13
+ const isYarn = (process.env.npm_config_user_agent && process.env.npm_config_user_agent.includes('yarn')) ? true : false;
+-if (isYarn && !options[1]) options[1] = 'install';
++const isPnpm = (process.env.npm_config_user_agent && process.env.npm_config_user_agent.includes('pnpm')) ? true : false;
++if ((isYarn || isPnpm) && !options[1]) options[1] = 'install';
+
+ let osCommand = `${options[1]}:${platform}`;
+ let foundMatch = true;
+@@ -73,9 +74,9 @@ let event = process.env["npm_lifecycle_event"];
+
+ /**
+  * Yarn support
+- * Check for yarn without install command; fixes #13
++ * Check for yarn/pnpm without install command; fixes #13
+  */
+-if (isYarn && !argument) {
++if ((isYarn || isPnpm) && !argument) {
+   argument = 'install';
+ }
+
+@@ -134,12 +135,12 @@ if (!args.includes('--no-arguments')) {
+  */
+ let packageManagerCommand;
+
+-packageManagerCommand = isYarn ? "yarn" : "npm";
++packageManagerCommand = isPnpm ? "pnpm" : isYarn ? "yarn" : "npm";
+ if (platform === "win32") {
+   packageManagerCommand = packageManagerCommand + ".cmd";
+ }
+
+-const childProcess = spawn(packageManagerCommand, options, { shell: true, stdio: "inherit"});
++const childProcess = spawn(`${packageManagerCommand} ${options.join(' ')}`, { shell: true, stdio: "inherit"});
+
+ /**
+  * Finish the execution
