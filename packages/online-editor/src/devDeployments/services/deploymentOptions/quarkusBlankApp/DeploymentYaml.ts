@@ -24,30 +24,30 @@ export function DeploymentYaml(args: DeploymentOptionArgs) {
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
+  name: \${{ $.devDeployment.uniqueName }}
+  namespace: \${{ $.devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: \${{ devDeployment.uniqueName }}
+      app: \${{ $.devDeployment.uniqueName }}
   template:
     metadata:
       labels:
-        app: \${{ devDeployment.uniqueName }}
-        deploymentconfig: \${{ devDeployment.uniqueName }}
+        app: \${{ $.devDeployment.uniqueName }}
+        deploymentconfig: \${{ $.devDeployment.uniqueName }}
     spec:
       volumes:
-        - name: \${{ devDeployment.uniqueName }}-volume
+        - name: \${{ $.devDeployment.uniqueName }}-volume
           emptyDir: {}
       containers:
-        - name: \${{ devDeployment.uniqueName }}
+        - name: \${{ $.devDeployment.uniqueName }}
           image: ${args.quarkusBlankAppImageUrl}
           imagePullPolicy: ${args.imagePullPolicy}
           resources:
@@ -58,9 +58,9 @@ spec:
               protocol: TCP
           env:
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
-              value: \${{ devDeployment.uploadService.apiKey }}
+              value: \${{ $.devDeployment.uploadService.apiKey }}
           volumeMounts:
             - mountPath: /tmp/app
-              name: \${{ devDeployment.uniqueName }}-volume
+              name: \${{ $.devDeployment.uniqueName }}-volume
 `;
 }

@@ -77,10 +77,10 @@ runs:
         java-version: 17
         distribution: "temurin"
 
-    - name: "Set up GOLANG 1.24.11"
+    - name: "Set up GOLANG 1.24.13"
       uses: actions/setup-go@v5
       with:
-        go-version: "1.24.11"
+        go-version: "1.24.13"
 
     - name: "Set up Maven"
       uses: stCarolas/setup-maven@v5

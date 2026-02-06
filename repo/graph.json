@@ -1825,6 +1825,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/kie-bc-editors",
         "target": "@kie-tools/dmn-language-service",
         "weight": 1

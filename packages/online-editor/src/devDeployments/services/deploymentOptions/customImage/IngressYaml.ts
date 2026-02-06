@@ -22,14 +22,14 @@ export function IngressYaml() {
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
+  name: \${{ $.devDeployment.uniqueName }}
+  namespace: \${{ $.devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    app: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ $.devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ $.devDeployment.uniqueName }}
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -37,11 +37,11 @@ spec:
   rules:
     - http:
         paths:
-          - path: /\${{ devDeployment.uniqueName }}
+          - path: /\${{ $.devDeployment.uniqueName }}
             pathType: Prefix
             backend:
               service:
-                name: \${{ devDeployment.uniqueName }}
+                name: \${{ $.devDeployment.uniqueName }}
                 port:
                   number: 8080
 `;

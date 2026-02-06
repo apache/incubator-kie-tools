@@ -17,23 +17,15 @@
  * under the License.
  */
 
-import { Operation, TestOperation, applyPatch, getValueByPointer } from "fast-json-patch";
+import { Operation, TestOperation, applyPatch } from "fast-json-patch";
 import { parseK8sResourceYamls } from "./parseK8sResourceYamls";
 import * as jsYaml from "js-yaml";
 import { TokenMap, interpolateK8sResourceYaml } from "./interpolateK8sResourceYaml";
 import { consoleDebugMessage } from "./common";
 
-export type CheckTypeOperation = {
-  path: string;
-  op: "checkType";
-  type: "array" | "object" | "basic" | "null" | "undefined";
-};
-
-export type PatchOperation = Operation | CheckTypeOperation;
-
 export type ResourcePatch = {
   testFilters?: TestOperation<any>[];
-  jsonPatches: PatchOperation[];
+  jsonPatches: Operation[];
 };
 
 // Because the characters '~' (%x7E) and '/' (%x2F) have special
@@ -43,32 +35,6 @@ export type ResourcePatch = {
 // https://datatracker.ietf.org/doc/html/rfc6901#section-3
 export function encodeJsonPatchSubpath(path: string) {
   return path.replaceAll("~", "~0").replaceAll("/", "~1");
-}
-
-function isValueOfType(type: CheckTypeOperation["type"], value: any) {
-  switch (type) {
-    case "null":
-    case "undefined":
-      if (!value) {
-        return true;
-      }
-      return false;
-    case "array":
-      if (Array.isArray(value)) {
-        return true;
-      }
-      return false;
-    case "object":
-      if (typeof value === "object" && !Array.isArray(value)) {
-        return true;
-      }
-      return false;
-    case "basic":
-      if (typeof value === "boolean" || typeof value === "string" || typeof value === "number") {
-        return true;
-      }
-      return false;
-  }
 }
 
 export function patchK8sResourceYaml(k8sResourceYaml: string, patches: ResourcePatch[], parametersTokens?: TokenMap) {
@@ -81,14 +47,6 @@ export function patchK8sResourceYaml(k8sResourceYaml: string, patches: ResourceP
           : applyPatch(updatedResource, patch.testFilters, false, false).every(({ test }) => Boolean(test));
         if (testFiltersResults) {
           for (const jsonPatch of patch.jsonPatches) {
-            if (jsonPatch.op === "checkType") {
-              const value = getValueByPointer(updatedResource, jsonPatch.path);
-              if (isValueOfType(jsonPatch.type, value)) {
-                continue;
-              } else {
-                break;
-              }
-            }
             try {
               const { newDocument } = applyPatch(updatedResource, [jsonPatch], false, false);
               updatedResource = newDocument;
