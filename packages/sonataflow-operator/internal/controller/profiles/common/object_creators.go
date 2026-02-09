@@ -105,7 +105,7 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.Sonata
 			Labels:    lbl,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: getReplicasOrDefault(workflow),
+			Replicas: GetReplicasOrDefault(workflow),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: workflowproj.GetSelectorLabels(workflow),
 			},
@@ -165,7 +165,7 @@ func KServiceCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFl
 	return ksvc, nil
 }
 
-func getReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
+func GetReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
 	var dReplicas int32 = 1
 	if workflow.Spec.PodTemplate.Replicas == nil {
 		return &dReplicas
