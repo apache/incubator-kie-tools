@@ -46,7 +46,7 @@ This repository contains tooling applications and libraries for Apache KIE proje
 To build and test all packages on this repository, you're going to need:
 
 - Node.js `24` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
-- pnpm `10.28.2` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
+- pnpm `10.29.2` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
 - Maven `3.9.11`
 - Java `17`
 - Go `1.24.13` _(To install, follow these instructions: https://go.dev/doc/install)_
