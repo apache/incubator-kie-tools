@@ -33,7 +33,7 @@ test.describe("Upload", () => {
       await upload.dragAndDropFile(page.getByText("Drag & drop files and folders here..."), "testProcess.bpmn");
       await expect(page.getByRole("button", { name: "Workflow testProcess" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Workflow testProcess" })).toContainText("testProcess");
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "Start Events" })).toBeAttached();
+      await expect(kieSandbox.getEditor().getByTitle("Start Events")).toBeAttached();
     });
 
     test("should upload file by 'Select files'", async ({ page, upload, kieSandbox }) => {
