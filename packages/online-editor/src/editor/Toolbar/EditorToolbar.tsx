@@ -277,8 +277,6 @@ export function EditorToolbarWithWorkspace(
     [props.workspace.descriptor, props.workspace.files.length, props.workspaceGitStatusPromise]
   );
 
-  const [isNewDmnEditorDropdownOpen, setNewDmnEditorDropdownOpen] = useState(false);
-
   return (
     <>
       <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
@@ -331,36 +329,6 @@ export function EditorToolbarWithWorkspace(
             <Toolbar>
               <ToolbarContent style={{ paddingRight: 0 }}>
                 <ToolbarGroup>
-                  <>
-                    <Dropdown
-                      toggle={
-                        <DropdownToggle
-                          onToggle={(_event, val) => setNewDmnEditorDropdownOpen(val)}
-                          id="new-dmn-editor-dropdown-toggle"
-                          toggleIndicator={null}
-                        >
-                          <Label color="cyan" variant={"outline"}>
-                            &nbsp;{`Give Feedback`}&nbsp;&nbsp;
-                            <CaretDownIcon />
-                          </Label>
-                        </DropdownToggle>
-                      }
-                      onSelect={() => setNewDmnEditorDropdownOpen(false)}
-                      isOpen={isNewDmnEditorDropdownOpen}
-                      isPlain={true}
-                      dropdownItems={[
-                        <DropdownItem key="give-feedback" description={"We'd love to hear from you!"}>
-                          <small>
-                            <a href={env.KIE_SANDBOX_FEEDBACK_URL} target="_blank">
-                              Give feedback&nbsp;
-                              <ExternalLinkAltIcon />
-                            </a>
-                          </small>
-                        </DropdownItem>,
-                      ]}
-                    />
-                  </>
-
                   <ToolbarItem>
                     <AcceleratorsDropdown workspaceFile={props.workspaceFile} />
                   </ToolbarItem>

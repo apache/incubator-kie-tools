@@ -65,7 +65,7 @@ module.exports = composeEnv(
       },
       ONLINE_EDITOR__feedbackUrl: {
         default: "https://github.com/apache/incubator-kie-issues/issues/new",
-        description: "URL where users can give feedback, currently present in a dropdown for all editors.",
+        description: "URL where users can give feedback",
       },
       ONLINE_EDITOR__requireCustomCommitMessage: {
         default: `${false}`,
