@@ -257,7 +257,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   setIsFinalResult={setIsFinalResult}
                   viewExtendedProperties={viewExtendedProperties}
                   commit={onCommit}
-                  isDisabled={!name?.valid ?? true}
+                  isDisabled={!name?.valid}
                 />
               </FormGroup>
             </SplitItem>

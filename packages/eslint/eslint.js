@@ -23,9 +23,10 @@ const fs = require("fs");
 const configFileName = ".eslintrc.js";
 
 const lintPath = path.resolve(process.argv[2]);
+const defaultConfigPath = require.resolve(`./${configFileName}`);
 const localConfigPath = path.resolve(".", configFileName);
 const localConfigPathExists = fs.existsSync(localConfigPath);
-const configPath = localConfigPathExists ? localConfigPath : require.resolve(`./${configFileName}`);
+const configPath = localConfigPathExists ? localConfigPath : defaultConfigPath;
 const potentialIgnorePath = path.resolve(".", ".eslintignore");
 
 console.info("[kie-tools--eslint] Lint path: " + lintPath);
@@ -38,10 +39,13 @@ if (fs.existsSync(potentialIgnorePath)) {
 }
 
 try {
-  execSync(`pnpm eslint ${lintPath} --ext .ts,.tsx --config ${configPath} ${ignorePathArgument}`, {
-    stdio: "inherit",
-    cwd: __dirname,
-  });
+  execSync(
+    `pnpm eslint ${lintPath} --ext .ts,.tsx --config ${configPath} --resolve-plugins-relative-to ${defaultConfigPath} ${ignorePathArgument}`,
+    {
+      stdio: "inherit",
+      cwd: __dirname,
+    }
+  );
 } catch (e) {
   console.info("[kie-tools--eslint] Error.");
   process.exit(1);

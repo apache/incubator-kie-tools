@@ -141,7 +141,7 @@ export function DmnRunnerPersistenceDispatchContextProvider(props: React.PropsWi
       });
       return await persistenceJson
         ?.getFileContents()
-        .then((content) => new Blob([content], { type: "application/json" }));
+        .then((content) => new Blob([new Uint8Array(content)], { type: "application/json" }));
     },
     [dmnRunnerPersistenceService.companionFsService]
   );
