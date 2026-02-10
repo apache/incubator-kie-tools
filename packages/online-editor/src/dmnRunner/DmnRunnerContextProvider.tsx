@@ -83,6 +83,8 @@ import {
   dereferenceAndCheckForRecursion,
   removeChangedPropertiesAndAdditionalProperties,
   getDefaultValues,
+  detectRenamedProperties,
+  detectRenamedEnumValues,
 } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
@@ -138,41 +140,6 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
 }
 
 /**
- * Detects if an Input Data Node was renamed by analyzing the schema diff.
- * A rename is detected when exactly one property is removed and one is added.
- *
- * @param schemaDiff - The diff object between previous and current JSON schemas
- * @returns Map of old property names to new property names
- */
-function detectRenamedProperties(schemaDiff: any): Map<string, string> {
-  const renamedProperties = new Map<string, string>();
-
-  const diffProperties = schemaDiff?.definitions?.InputSet?.properties;
-  if (!diffProperties || typeof diffProperties !== "object") {
-    return renamedProperties;
-  }
-
-  const removedProperties: string[] = [];
-  const addedProperties: string[] = [];
-
-  // Identify removed and added properties
-  Object.entries(diffProperties).forEach(([key, value]) => {
-    if (value === undefined) {
-      removedProperties.push(key);
-    } else if (value && typeof value === "object") {
-      addedProperties.push(key);
-    }
-  });
-
-  // If we have exactly one removed and one added property, it's likely a rename
-  if (removedProperties.length === 1 && addedProperties.length === 1) {
-    renamedProperties.set(removedProperties[0], addedProperties[0]);
-  }
-
-  return renamedProperties;
-}
-
-/**
  * Applies renamed property values to the input object.
  * Copies values from old property names to new property names.
  */
@@ -180,6 +147,26 @@ function copyRenamedInputValue(input: Record<string, any>, renamedProperties: Ma
   renamedProperties.forEach((newName, oldName) => {
     if (oldName in input) {
       input[newName] = input[oldName];
+    }
+  });
+}
+
+/**
+ * Applies renamed enum values to the input object.
+ * Updates property values when enum values are renamed.
+ */
+function copyRenamedEnumValues(
+  input: Record<string, any>,
+  renamedEnumsByProperty: Map<string, Map<string, string>>
+): void {
+  renamedEnumsByProperty.forEach((enumRenames, propertyName) => {
+    if (propertyName in input) {
+      const currentValue = input[propertyName];
+      enumRenames.forEach((newEnumValue, oldEnumValue) => {
+        if (currentValue === oldEnumValue) {
+          input[propertyName] = newEnumValue;
+        }
+      });
     }
   });
 }
@@ -892,11 +879,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                         newInputsRow: (previousInputs) => {
                           return cloneDeep(previousInputs).map((input) => {
                             const id = input.id;
-                            const inputWithDefaultValues = { ...getDefaultValues(modifiedSchema), ...input };
-                            copyRenamedInputValue(inputWithDefaultValues, renamedProperties);
-                            removeChangedPropertiesAndAdditionalProperties(validateInputs, inputWithDefaultValues);
-                            inputWithDefaultValues.id = id;
-                            return inputWithDefaultValues;
+                            // Start with defaults, then apply existing values
+                            const mergedInput = { ...getDefaultValues(modifiedSchema), ...input };
+                            // Copy renamed properties (e.g., "InputA" -> "InputC")
+                            copyRenamedInputValue(mergedInput, renamedProperties);
+                            // Copy renamed enum values (e.g., "bar" -> "baz")
+                            copyRenamedEnumValues(
+                              mergedInput,
+                              detectRenamedEnumValues(previousJsonSchema, modifiedSchema, schemaDiff)
+                            );
+                            // Remove invalid properties and properties with changed types
+                            removeChangedPropertiesAndAdditionalProperties(validateInputs, mergedInput);
+                            mergedInput.id = id;
+                            return mergedInput;
                           });
                         },
                         cancellationToken: canceled,

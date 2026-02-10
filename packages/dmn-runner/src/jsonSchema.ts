@@ -154,3 +154,101 @@ export async function dereferenceAndCheckForRecursion(
     return;
   }
 }
+
+/**
+ * Detects if an Input Data Node was renamed by analyzing the schema diff.
+ * A rename is detected when exactly one property is removed and one is added.
+ *
+ * @param schemaDiff - The diff object between previous and current JSON schemas
+ * @returns Map of old property names to new property names
+ */
+export function detectRenamedProperties(schemaDiff: any): Map<string, string> {
+  const renamedProperties = new Map<string, string>();
+
+  const diffProperties = schemaDiff?.definitions?.InputSet?.properties;
+  if (!diffProperties || typeof diffProperties !== "object") {
+    return renamedProperties;
+  }
+
+  const removedProperties: string[] = [];
+  const addedProperties: string[] = [];
+
+  // Identify removed and added properties
+  Object.entries(diffProperties).forEach(([key, value]) => {
+    if (value === undefined) {
+      removedProperties.push(key);
+    } else if (value && typeof value === "object") {
+      addedProperties.push(key);
+    }
+  });
+
+  // If we have exactly one removed and one added property, it's likely a rename
+  if (removedProperties.length === 1 && addedProperties.length === 1) {
+    renamedProperties.set(removedProperties[0], addedProperties[0]);
+  }
+
+  return renamedProperties;
+}
+
+/**
+ * Detects renamed enum values within properties by analyzing the schema diff.
+ * Returns a map of property names to their enum value renames.
+ *
+ * @param previousSchema - The previous JSON schema
+ * @param currentSchema - The current JSON schema
+ * @param schemaDiff - The diff object between schemas
+ * @returns Map of property names to Map of old enum values to new enum values
+ */
+export function detectRenamedEnumValues(
+  previousSchema: JSONSchema4,
+  currentSchema: JSONSchema4,
+  schemaDiff: any
+): Map<string, Map<string, string>> {
+  const renamedEnumsByProperty = new Map<string, Map<string, string>>();
+
+  const diffProperties = schemaDiff?.definitions?.InputSet?.properties;
+  if (!diffProperties || typeof diffProperties !== "object") {
+    return renamedEnumsByProperty;
+  }
+
+  const previousProperties = previousSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
+  const currentProperties = currentSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
+
+  if (!previousProperties || !currentProperties) {
+    return renamedEnumsByProperty;
+  }
+
+  // Check each property that has changes
+  Object.entries(diffProperties).forEach(([propertyName, diffValue]) => {
+    if (!diffValue || typeof diffValue !== "object") {
+      return;
+    }
+
+    const previousProp = previousProperties[propertyName];
+    const currentProp = currentProperties[propertyName];
+
+    // Check if both have enum arrays
+    if (
+      previousProp?.enum &&
+      Array.isArray(previousProp.enum) &&
+      currentProp?.enum &&
+      Array.isArray(currentProp.enum)
+    ) {
+      const previousEnums = previousProp.enum as string[];
+      const currentEnums = currentProp.enum as string[];
+
+      // Find removed and added enum values
+      const removedEnums = previousEnums.filter((e) => !currentEnums.includes(e));
+      const addedEnums = currentEnums.filter((e) => !previousEnums.includes(e));
+
+      // If exactly one removed and one added, it's likely a rename
+      if (removedEnums.length === 1 && addedEnums.length === 1) {
+        const enumRenames = new Map<string, string>();
+        enumRenames.set(removedEnums[0], addedEnums[0]);
+        renamedEnumsByProperty.set(propertyName, enumRenames);
+      }
+    }
+  });
+
+  return renamedEnumsByProperty;
+}
