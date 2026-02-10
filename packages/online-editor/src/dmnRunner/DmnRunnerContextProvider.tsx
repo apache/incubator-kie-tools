@@ -176,21 +176,10 @@ function detectRenamedProperties(schemaDiff: any): Map<string, string> {
  * Applies renamed property values to the input object.
  * Copies values from old property names to new property names.
  */
-function applyRenamedPropertyValues(input: Record<string, any>, renamedProperties: Map<string, string>): void {
+function copyRenamedInputValue(input: Record<string, any>, renamedProperties: Map<string, string>): void {
   renamedProperties.forEach((newName, oldName) => {
     if (oldName in input) {
       input[newName] = input[oldName];
-    }
-  });
-}
-
-/**
- * Ensures all schema properties exist in the input object with default values.
- */
-function ensureAllPropertiesPresent(input: Record<string, any>, defaultValues: Record<string, any>): void {
-  Object.keys(defaultValues).forEach((key) => {
-    if (!(key in input)) {
-      input[key] = defaultValues[key];
     }
   });
 }
@@ -892,25 +881,22 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                       const validateInputs = dmnRunnerAjv.compile(modifiedSchema);
                       const schemaDiff = diff(previousJsonSchema, modifiedSchema);
                       const renamedProperties = detectRenamedProperties(schemaDiff);
-                      const defaultValues = getDefaultValues(modifiedSchema);
 
                       setDmnRunnerPersistenceJson({
                         newConfigInputs: (previousConfigInputs) => {
-                          const newConfigInputs = { ...defaultValues, ...cloneDeep(previousConfigInputs) };
-                          applyRenamedPropertyValues(newConfigInputs, renamedProperties);
+                          const newConfigInputs = cloneDeep(previousConfigInputs);
+                          copyRenamedInputValue(newConfigInputs, renamedProperties);
                           removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
-                          ensureAllPropertiesPresent(newConfigInputs, defaultValues);
                           return newConfigInputs;
                         },
                         newInputsRow: (previousInputs) => {
                           return cloneDeep(previousInputs).map((input) => {
                             const id = input.id;
-                            const mergedInput = { ...defaultValues, ...input };
-                            applyRenamedPropertyValues(mergedInput, renamedProperties);
-                            removeChangedPropertiesAndAdditionalProperties(validateInputs, mergedInput);
-                            ensureAllPropertiesPresent(mergedInput, defaultValues);
-                            mergedInput.id = id;
-                            return mergedInput;
+                            const inputWithDefaultValues = { ...getDefaultValues(modifiedSchema), ...input };
+                            copyRenamedInputValue(inputWithDefaultValues, renamedProperties);
+                            removeChangedPropertiesAndAdditionalProperties(validateInputs, inputWithDefaultValues);
+                            inputWithDefaultValues.id = id;
+                            return inputWithDefaultValues;
                           });
                         },
                         cancellationToken: canceled,
