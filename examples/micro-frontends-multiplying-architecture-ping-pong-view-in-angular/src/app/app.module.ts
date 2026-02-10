@@ -24,9 +24,7 @@ import { PingPongComponent } from "./ping-pong/ping-pong.component";
 import { BrowserModule } from "@angular/platform-browser";
 
 @NgModule({
-  declarations: [AppComponent],
   imports: [BrowserModule, PingPongComponent],
-  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.4/.schema/devbox.schema.json",
   "packages": {
     "temurin-bin-17": "17.0.9",
-    "nodejs": "22.14.0",
+    "nodejs": "24.12.0",
     "maven": "3.9.11",
     "kubernetes-helm": "3.13.3",
     "gnumake": "4.4.1",
