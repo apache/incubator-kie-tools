@@ -917,7 +917,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                       });
 
                       // This should be done to remove any previous errors or to add new errors
-                      if (Object.keys(diff(previousJsonSchema, modifiedSchema)).length > 0) {
+                      if (Object.keys(schemaDiff).length > 0) {
                         forceDmnRunnerReRender();
                       }
                       return modifiedSchema;
