@@ -38338,7 +38338,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.28.3
       '@babel/preset-env': 7.28.3(@babel/core@7.28.3)
-      '@babel/types': 7.29.0
+      '@babel/types': 7.28.6
       '@ndelangen/get-tarball': 3.0.9
       '@storybook/codemod': 7.6.13
       '@storybook/core-common': 7.6.13(encoding@0.1.13)
