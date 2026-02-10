@@ -953,12 +953,12 @@
       },
       {
         "source": "@kie-tools/playwright-base",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools-scripts/run-script-if",
         "weight": 1
       },
       {
         "source": "@kie-tools/playwright-base",
-        "target": "@kie-tools/tsconfig",
+        "target": "@kie-tools/root-env",
         "weight": 1
       },
       {

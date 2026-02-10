@@ -28,6 +28,6 @@
     "source-map-loader": "^2.0.2",
     "stream-browserify": "^3.0.0",
     "ts-loader": "^9.4.2",
-    "webpack": "^5.94.0"
+    "webpack": "^5.104.1"
   }
 }

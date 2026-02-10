@@ -190,7 +190,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const onChangeBold = useCallback(() => {
     setShapeStyles((shapes) => {
       shapes.forEach((shape) => {
-        shape["di:Style"]!["@_fontBold"] = !shape?.["di:Style"]?.["@_fontBold"] ?? true;
+        shape["di:Style"]!["@_fontBold"] = !shape?.["di:Style"]?.["@_fontBold"];
       });
     });
   }, [setShapeStyles]);
@@ -198,7 +198,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const onChangeItalic = useCallback(() => {
     setShapeStyles((shapes) => {
       shapes.forEach((shape) => {
-        shape["di:Style"]!["@_fontItalic"] = !shape?.["di:Style"]?.["@_fontItalic"] ?? true;
+        shape["di:Style"]!["@_fontItalic"] = !shape?.["di:Style"]?.["@_fontItalic"];
       });
     });
   }, [setShapeStyles]);
@@ -206,7 +206,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const onChangeUnderline = useCallback(() => {
     setShapeStyles((shapes) => {
       shapes.forEach((shape) => {
-        shape["di:Style"]!["@_fontUnderline"] = !shape?.["di:Style"]?.["@_fontUnderline"] ?? true;
+        shape["di:Style"]!["@_fontUnderline"] = !shape?.["di:Style"]?.["@_fontUnderline"];
       });
     });
   }, [setShapeStyles]);
@@ -214,7 +214,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const onChangeStrikeThrough = useCallback(() => {
     setShapeStyles((shapes) => {
       shapes.forEach((shape) => {
-        shape["di:Style"]!["@_fontStrikeThrough"] = !shape?.["di:Style"]?.["@_fontStrikeThrough"] ?? true;
+        shape["di:Style"]!["@_fontStrikeThrough"] = !shape?.["di:Style"]?.["@_fontStrikeThrough"];
       });
     });
   }, [setShapeStyles]);

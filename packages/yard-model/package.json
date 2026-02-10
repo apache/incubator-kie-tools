@@ -32,7 +32,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
-    "webpack": "^5.94.0"
+    "webpack": "^5.104.1"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

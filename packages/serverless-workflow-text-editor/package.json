@@ -55,9 +55,9 @@
     "monaco-editor-webpack-plugin": "^7.0.1",
     "rimraf": "^3.0.2",
     "start-server-and-test": "^2.0.3",
-    "typescript": "^5.5.3",
+    "typescript": "^5.9.3",
     "vscode-json-languageservice": "^4.2.1",
-    "webpack": "^5.94.0",
+    "webpack": "^5.104.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.2",
     "webpack-merge": "^5.9.0"

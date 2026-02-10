@@ -27,12 +27,12 @@
     "build:wc-lib": "tsc --project tsconfig.lib.json"
   },
   "dependencies": {
-    "@angular/common": "^18.1.2",
-    "@angular/compiler": "^18.1.2",
-    "@angular/core": "^18.1.2",
-    "@angular/elements": "^18.1.2",
-    "@angular/platform-browser": "^18.1.2",
-    "@angular/platform-browser-dynamic": "^18.1.2",
+    "@angular/common": "^20.3.16",
+    "@angular/compiler": "^20.3.16",
+    "@angular/core": "^20.3.16",
+    "@angular/elements": "^20.3.16",
+    "@angular/platform-browser": "^20.3.16",
+    "@angular/platform-browser-dynamic": "^20.3.16",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view": "workspace:*",
@@ -40,13 +40,13 @@
     "zone.js": "^0.14.8"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.1.2",
-    "@angular/cli": "^18.1.2",
-    "@angular/compiler-cli": "^18.1.2",
+    "@angular-devkit/build-angular": "^20.3.15",
+    "@angular/cli": "^20.3.15",
+    "@angular/compiler-cli": "^20.3.15",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3",
-    "webpack": "^5.94.0"
+    "typescript": "^5.9.3",
+    "webpack": "^5.104.1"
   }
 }

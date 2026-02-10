@@ -29,7 +29,7 @@ describe("kie-extensions", () => {
     const json = parser.parse();
 
     const attachments = (json.definitions.drgElement ?? [])
-      .filter((drgElement) => drgElement["__$$element"] === "knowledgeSource" ?? [])
+      .filter((drgElement) => drgElement["__$$element"] === "knowledgeSource")
       .flatMap((knowledgeSource: DMN14__tKnowledgeSource) => knowledgeSource.extensionElements?.["kie:attachment"]);
 
     expect(attachments.length).toStrictEqual(1);

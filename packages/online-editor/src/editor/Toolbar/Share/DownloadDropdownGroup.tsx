@@ -62,7 +62,7 @@ export const DownloadDropdownGroup = (props: Props) => {
     alertsDispatch.closeAll();
     props.workspaceFile.getFileContents().then((content) => {
       if (downloadRef.current) {
-        const fileBlob = new Blob([content], { type: "text/plain" });
+        const fileBlob = new Blob([new Uint8Array(content)], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
         downloadRef.current.click();
       }
