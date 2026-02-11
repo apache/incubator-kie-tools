@@ -82,7 +82,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(prettier@3.3.2)
 
-  examples/bpmn-editor-classic-on-webapp:
+  examples/bpmn-editor-on-webapp:
     devDependencies:
       '@kie-tools-core/editor':
         specifier: workspace:*
@@ -99,15 +99,15 @@ importers:
       '@kie-tools-core/webpack-base':
         specifier: workspace:*
         version: link:../../packages/webpack-base
-      '@kie-tools/kie-bc-editors':
+      '@kie-tools/bpmn-editor':
         specifier: workspace:*
-        version: link:../../packages/kie-bc-editors
+        version: link:../../packages/bpmn-editor
+      '@kie-tools/bpmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../../packages/bpmn-editor-envelope
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../../packages/root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../../packages/stunner-editors
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -126,81 +126,6 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.104.1)
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      webpack:
-        specifier: ^5.104.1
-        version: 5.104.1(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.2)(webpack@5.104.1)
-      webpack-dev-server:
-        specifier: ^4.15.2
-        version: 4.15.2(webpack-cli@4.10.0)(webpack@5.104.1)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.10.0
-
-  examples/dmn-editor-classic-on-webapp:
-    devDependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/react-hooks':
-        specifier: workspace:*
-        version: link:../../packages/react-hooks
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../../packages/kie-bc-editors
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../../packages/stunner-editors
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@patternfly/react-core':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-icons':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.104.1)
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -1959,12 +1884,12 @@ importers:
       '@kie-tools-core/vscode-extension':
         specifier: workspace:*
         version: link:../vscode-extension
+      '@kie-tools/bpmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../bpmn-editor-envelope
       '@kie-tools/form-code-generator-vscode-command':
         specifier: workspace:*
         version: link:../form-code-generator-vscode-command
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../kie-bc-editors
     devDependencies:
       '@kie-tools-core/webpack-base':
         specifier: workspace:*
@@ -1975,9 +1900,6 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../stunner-editors
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -2123,9 +2045,15 @@ importers:
       '@kie-tools-core/patternfly-base':
         specifier: workspace:*
         version: link:../patternfly-base
-      '@kie-tools/kie-bc-editors':
+      '@kie-tools/bpmn-editor-envelope':
         specifier: workspace:*
-        version: link:../kie-bc-editors
+        version: link:../bpmn-editor-envelope
+      '@kie-tools/dmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../dmn-editor-envelope
+      '@kie-tools/scesim-editor-envelope':
+        specifier: workspace:*
+        version: link:../scesim-editor-envelope
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -2151,9 +2079,6 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../stunner-editors
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -4999,9 +4924,6 @@ importers:
       '@kie-tools/dmn-editor-envelope':
         specifier: workspace:*
         version: link:../dmn-editor-envelope
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../kie-bc-editors
       '@kie-tools/scesim-editor-envelope':
         specifier: workspace:*
         version: link:../scesim-editor-envelope
@@ -5015,9 +4937,6 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../stunner-editors
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -6898,15 +6817,21 @@ importers:
       '@kie-tools-core/workspace':
         specifier: workspace:*
         version: link:../workspace
+      '@kie-tools/bpmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../bpmn-editor-envelope
+      '@kie-tools/dmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../dmn-editor-envelope
       '@kie-tools/form-code-generator-vscode-command':
         specifier: workspace:*
         version: link:../form-code-generator-vscode-command
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../kie-bc-editors
       '@kie-tools/pmml-editor':
         specifier: workspace:*
         version: link:../pmml-editor
+      '@kie-tools/scesim-editor-envelope':
+        specifier: workspace:*
+        version: link:../scesim-editor-envelope
       '@kie-tools/vscode-java-code-completion-extension-plugin':
         specifier: workspace:*
         version: link:../vscode-java-code-completion-extension-plugin
@@ -6935,9 +6860,6 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../stunner-editors
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -7010,159 +6932,6 @@ importers:
       webpack:
         specifier: ^5.104.1
         version: 5.104.1(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.2)(webpack@5.104.1)
-      webpack-dev-server:
-        specifier: ^4.15.2
-        version: 4.15.2(webpack-cli@4.10.0)(webpack@5.104.1)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.10.0
-
-  packages/kie-editors-standalone:
-    devDependencies:
-      '@babel/core':
-        specifier: ^7.16.0
-        version: 7.26.10
-      '@babel/preset-env':
-        specifier: ^7.16.0
-        version: 7.26.9(@babel/core@7.26.10)
-      '@babel/preset-react':
-        specifier: ^7.16.0
-        version: 7.22.15(@babel/core@7.26.10)
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../envelope-bus
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../i18n
-      '@kie-tools-core/notifications':
-        specifier: workspace:*
-        version: link:../notifications
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../patternfly-base
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../webpack-base
-      '@kie-tools-core/workspace':
-        specifier: workspace:*
-        version: link:../workspace
-      '@kie-tools/eslint':
-        specifier: workspace:*
-        version: link:../eslint
-      '@kie-tools/jest-base':
-        specifier: workspace:*
-        version: link:../jest-base
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../kie-bc-editors
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../stunner-editors
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/jest':
-        specifier: ^29.5.12
-        version: 29.5.12
-      '@types/jest-when':
-        specifier: ^3.5.5
-        version: 3.5.5
-      '@types/minimatch':
-        specifier: ^3.0.5
-        version: 3.0.5
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      '@types/underscore':
-        specifier: ^1.11.2
-        version: 1.11.2
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.104.1)
-      cypress:
-        specifier: ^13.13.0
-        version: 13.17.0
-      cypress-file-upload:
-        specifier: ^5.0.8
-        version: 5.0.8(cypress@13.17.0)
-      cypress-iframe:
-        specifier: ^1.0.1
-        version: 1.0.1(@types/cypress@1.1.3)
-      cypress-log-to-output:
-        specifier: ^1.1.2
-        version: 1.1.2
-      dts-bundle-generator:
-        specifier: ^9.5.1
-        version: 9.5.1
-      html-webpack-plugin:
-        specifier: ^5.3.2
-        version: 5.6.4(webpack@5.104.1)
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3))
-      jest-environment-jsdom:
-        specifier: ^29.7.0
-        version: 29.7.0
-      jest-junit:
-        specifier: ^16.0.0
-        version: 16.0.0
-      jest-when:
-        specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))
-      junit-report-merger:
-        specifier: ^4.0.0
-        version: 4.0.0
-      minimatch:
-        specifier: ^3.0.5
-        version: 3.1.2
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
-      raw-loader:
-        specifier: ^4.0.2
-        version: 4.0.2(webpack@5.104.1)
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-      react-router-dom:
-        specifier: ^6.30.2
-        version: 6.30.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
-      start-server-and-test:
-        specifier: ^2.0.3
-        version: 2.0.3
-      ts-jest:
-        specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))(typescript@5.9.3)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      underscore:
-        specifier: ^1.13.1
-        version: 1.13.1
-      webpack:
-        specifier: ^5.104.1
-        version: 5.104.1(@swc/core@1.3.92)(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.2)(webpack@5.104.1)
@@ -7982,6 +7751,9 @@ importers:
       '@kie-tools/boxed-expression-component':
         specifier: workspace:*
         version: link:../boxed-expression-component
+      '@kie-tools/bpmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../bpmn-editor-envelope
       '@kie-tools/cors-proxy-api':
         specifier: workspace:*
         version: link:../cors-proxy-api
@@ -8009,9 +7781,6 @@ importers:
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../kie-bc-editors
       '@kie-tools/pmml-editor':
         specifier: workspace:*
         version: link:../pmml-editor
@@ -8127,9 +7896,6 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../stunner-editors
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -17382,9 +17148,6 @@ packages:
 
   '@jridgewell/source-map@0.3.11':
     resolution: {integrity: sha512-ZMp1V8ZFcPG5dIWnQLr3NSI1MiCU7UETdS/A0G8V/XWHvJv3ZsFqutJn1Y5RPmAPX6F3BiE397OqveU/9NCuIA==}
-
-  '@jridgewell/source-map@0.3.6':
-    resolution: {integrity: sha512-1ZJTZebgqllO79ue2bm3rIGud/bOe0pP5BjSRCRxxYkEZS8STV7zN84UBbiYu7jy+eCKSnVIUgoWWE/tt+shMQ==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -35320,11 +35083,6 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@jridgewell/source-map@0.3.6':
-    dependencies:
-      '@jridgewell/gen-mapping': 0.3.13
-      '@jridgewell/trace-mapping': 0.3.31
-
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
   '@jridgewell/trace-mapping@0.3.31':
@@ -42551,7 +42309,7 @@ snapshots:
       glob-parent: 6.0.2
       globby: 13.2.2
       normalize-path: 3.0.0
-      schema-utils: 4.2.0
+      schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       webpack: 5.104.1(@swc/core@1.3.92)
 
@@ -42561,7 +42319,7 @@ snapshots:
       glob-parent: 6.0.2
       globby: 13.2.2
       normalize-path: 3.0.0
-      schema-utils: 4.2.0
+      schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       webpack: 5.104.1(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
@@ -51505,7 +51263,7 @@ snapshots:
 
   terser@5.31.6:
     dependencies:
-      '@jridgewell/source-map': 0.3.6
+      '@jridgewell/source-map': 0.3.11
       acorn: 8.15.0
       commander: 2.20.3
       source-map-support: 0.5.21
