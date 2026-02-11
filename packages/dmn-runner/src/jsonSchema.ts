@@ -54,11 +54,11 @@ function getFieldDefaultValue(dmnField: DmnInputFieldProperties): string | boole
  */
 export function getDefaultValues(jsonSchema: JSONSchema4) {
   return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {})?.reduce(
-    (acc, [key, field]: [string, Record<string, string>]) => {
-      acc[key] = getFieldDefaultValue(field);
+    (acc: Record<string, any>, [key, field]) => {
+      acc[key] = getFieldDefaultValue(field as any);
       return acc;
     },
-    {} as Record<string, any>
+    {}
   );
 }
 
@@ -162,7 +162,7 @@ export async function dereferenceAndCheckForRecursion(
  * @param schemaDiff - The diff object between previous and current JSON schemas
  * @returns Map of old property names to new property names
  */
-export function detectRenamedProperties(schemaDiff: any): Map<string, string> {
+export function detectRenamedProperties(schemaDiff: Record<string, any>): Map<string, string> {
   const renamedProperties = new Map<string, string>();
 
   const diffProperties = schemaDiff?.definitions?.InputSet?.properties;
@@ -197,13 +197,13 @@ export function detectRenamedProperties(schemaDiff: any): Map<string, string> {
  * @param schemaDiff - The diff object between previous and current JSON schemas
  * @returns Map of path prefixes to Maps of old property names to new property names
  */
-export function detectNestedPropertyRenames(schemaDiff: any): Map<string, Map<string, string>> {
+export function detectNestedPropertyRenames(schemaDiff: Record<string, any>): Map<string, Map<string, string>> {
   const nestedRenames = new Map<string, Map<string, string>>();
 
   /**
    * Recursively check for property renames at any depth
    */
-  function checkForRenames(obj: any, currentPath: string[]): void {
+  function checkForRenames(obj: Record<string, any>, currentPath: string[]): void {
     if (!obj || typeof obj !== "object") {
       return;
     }
@@ -328,25 +328,27 @@ export function detectRenamedEnumValues(
    * Recursively check for enum changes at each property path
    */
   function checkPropertiesForEnumChanges(
-    previousProps: Record<string, any>,
-    currentProps: Record<string, any>,
+    previousProperties: Record<string, any>,
+    currentProperties: Record<string, any>,
     currentPath: string[]
   ): void {
-    Object.keys(currentProps).forEach((propName) => {
-      const prevProp = previousProps[propName];
-      const currProp = currentProps[propName];
+    Object.keys(currentProperties).forEach((propertyName) => {
+      const prevProperty = previousProperties[propertyName];
+      const currProperty = currentProperties[propertyName];
 
-      if (!prevProp || !currProp) {
+      if (!prevProperty || !currProperty) {
         return;
       }
 
-      const propPath = [...currentPath, propName];
-      const pathKey = propPath.join(".");
-
       // Check if this property has enum arrays
-      if (prevProp?.enum && Array.isArray(prevProp.enum) && currProp?.enum && Array.isArray(currProp.enum)) {
-        const previousEnums = prevProp.enum as string[];
-        const currentEnums = currProp.enum as string[];
+      if (
+        prevProperty?.enum &&
+        Array.isArray(prevProperty.enum) &&
+        currProperty?.enum &&
+        Array.isArray(currProperty.enum)
+      ) {
+        const previousEnums = prevProperty.enum as string[];
+        const currentEnums = currProperty.enum as string[];
 
         // Find removed and added enum values
         const removedEnums = previousEnums.filter((e) => !currentEnums.includes(e));
@@ -359,6 +361,7 @@ export function detectRenamedEnumValues(
         }
 
         // Store both renames and the current valid values
+        const pathKey = [...currentPath, propertyName].join(".");
         enumChangesByPath.set(pathKey, {
           renames,
           validValues: currentEnums,
@@ -366,8 +369,13 @@ export function detectRenamedEnumValues(
       }
 
       // Recursively check nested properties for complex types
-      if (prevProp?.type === "object" && prevProp?.properties && currProp?.type === "object" && currProp?.properties) {
-        checkPropertiesForEnumChanges(prevProp.properties, currProp.properties, propPath);
+      if (
+        prevProperty?.type === "object" &&
+        prevProperty?.properties &&
+        currProperty?.type === "object" &&
+        currProperty?.properties
+      ) {
+        checkPropertiesForEnumChanges(prevProperty.properties, currProperty.properties, [...currentPath, propertyName]);
       }
     });
   }
@@ -419,8 +427,7 @@ export function copyRenamedEnumValues(
    */
   function updateEnumValuesRecursively(inputObj: Record<string, any>, currentPath: string[]): void {
     Object.keys(inputObj).forEach((key) => {
-      const propPath = [...currentPath, key];
-      const pathKey = propPath.join(".");
+      const pathKey = [...currentPath, key].join(".");
       let currentValue = inputObj[key];
 
       // Check if this property path has enum changes
@@ -446,7 +453,7 @@ export function copyRenamedEnumValues(
 
       // Recursively process nested objects
       if (inputObj[key] && typeof inputObj[key] === "object" && !Array.isArray(inputObj[key])) {
-        updateEnumValuesRecursively(inputObj[key], propPath);
+        updateEnumValuesRecursively(inputObj[key], [...currentPath, key]);
       }
     });
   }
