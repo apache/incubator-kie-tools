@@ -87,6 +87,8 @@ import {
   detectRenamedEnumValues,
   copyRenamedEnumValues,
   copyRenamedInputValue,
+  detectNestedPropertyRenames,
+  copyNestedPropertyRenames,
 } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
@@ -851,16 +853,18 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                         newInputsRow: (previousInputs) => {
                           return cloneDeep(previousInputs).map((input) => {
                             const id = input.id;
+
                             // Start with defaults, then apply existing values
                             const mergedInput = { ...getDefaultValues(modifiedSchema), ...input };
-
                             // Copy renamed properties (e.g., "InputA" -> "InputC")
                             copyRenamedInputValue(mergedInput, renamedProperties);
-
-                            // Copy renamed enum values (e.g., "S" -> "Sse") based on x-dmn-type
-                            const renamedEnumsByProperty = detectRenamedEnumValues(previousJsonSchema, modifiedSchema);
-                            copyRenamedEnumValues(mergedInput, renamedEnumsByProperty, modifiedSchema);
-
+                            // Copy renamed nested properties (e.g., "myInput3.nested" -> "myInput3.nested-test")
+                            copyNestedPropertyRenames(mergedInput, detectNestedPropertyRenames(schemaDiff));
+                            // Copy renamed enum values (e.g., "S" -> "Single")
+                            copyRenamedEnumValues(
+                              mergedInput,
+                              detectRenamedEnumValues(previousJsonSchema, modifiedSchema)
+                            );
                             // Remove invalid properties and properties with changed types
                             removeChangedPropertiesAndAdditionalProperties(validateInputs, mergedInput);
 
