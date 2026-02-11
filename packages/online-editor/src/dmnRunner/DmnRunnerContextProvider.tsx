@@ -85,6 +85,8 @@ import {
   getDefaultValues,
   detectRenamedProperties,
   detectRenamedEnumValues,
+  copyRenamedEnumValues,
+  copyRenamedInputValue,
 } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
@@ -137,38 +139,6 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
   } else {
     throw new Error("Invalid use of dmnRunnerResultDispatcher");
   }
-}
-
-/**
- * Applies renamed property values to the input object.
- * Copies values from old property names to new property names.
- */
-function copyRenamedInputValue(input: Record<string, any>, renamedProperties: Map<string, string>): void {
-  renamedProperties.forEach((newName, oldName) => {
-    if (oldName in input) {
-      input[newName] = input[oldName];
-    }
-  });
-}
-
-/**
- * Applies renamed enum values to the input object.
- * Updates property values when enum values are renamed.
- */
-function copyRenamedEnumValues(
-  input: Record<string, any>,
-  renamedEnumsByProperty: Map<string, Map<string, string>>
-): void {
-  renamedEnumsByProperty.forEach((enumRenames, propertyName) => {
-    if (propertyName in input) {
-      const currentValue = input[propertyName];
-      enumRenames.forEach((newEnumValue, oldEnumValue) => {
-        if (currentValue === oldEnumValue) {
-          input[propertyName] = newEnumValue;
-        }
-      });
-    }
-  });
 }
 
 /**
@@ -871,6 +841,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
                       setDmnRunnerPersistenceJson({
                         newConfigInputs: (previousConfigInputs) => {
+                          // Config inputs store UI configuration (e.g., column widths)
+                          // Only preserve renamed properties and remove invalid ones
                           const newConfigInputs = cloneDeep(previousConfigInputs);
                           copyRenamedInputValue(newConfigInputs, renamedProperties);
                           removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
@@ -881,15 +853,17 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                             const id = input.id;
                             // Start with defaults, then apply existing values
                             const mergedInput = { ...getDefaultValues(modifiedSchema), ...input };
+
                             // Copy renamed properties (e.g., "InputA" -> "InputC")
                             copyRenamedInputValue(mergedInput, renamedProperties);
-                            // Copy renamed enum values (e.g., "bar" -> "baz")
-                            copyRenamedEnumValues(
-                              mergedInput,
-                              detectRenamedEnumValues(previousJsonSchema, modifiedSchema, schemaDiff)
-                            );
+
+                            // Copy renamed enum values (e.g., "S" -> "Sse") based on x-dmn-type
+                            const renamedEnumsByProperty = detectRenamedEnumValues(previousJsonSchema, modifiedSchema);
+                            copyRenamedEnumValues(mergedInput, renamedEnumsByProperty, modifiedSchema);
+
                             // Remove invalid properties and properties with changed types
                             removeChangedPropertiesAndAdditionalProperties(validateInputs, mergedInput);
+
                             mergedInput.id = id;
                             return mergedInput;
                           });

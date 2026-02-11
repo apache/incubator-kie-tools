@@ -191,51 +191,41 @@ export function detectRenamedProperties(schemaDiff: any): Map<string, string> {
 }
 
 /**
- * Detects renamed enum values within properties by analyzing the schema diff.
- * Returns a map of property names to their enum value renames.
+ * Detects renamed enum values by comparing type definitions in the schema.
+ * Uses x-dmn-type to match types across the schema and find enum renames.
+ * Recursively checks nested properties within complex types.
+ * Returns a map of x-dmn-type identifiers to their enum value renames.
  *
  * @param previousSchema - The previous JSON schema
  * @param currentSchema - The current JSON schema
- * @param schemaDiff - The diff object between schemas
- * @returns Map of property names to Map of old enum values to new enum values
+ * @returns Map of x-dmn-type to Map of old enum values to new enum values
  */
 export function detectRenamedEnumValues(
   previousSchema: JSONSchema4,
-  currentSchema: JSONSchema4,
-  schemaDiff: any
+  currentSchema: JSONSchema4
 ): Map<string, Map<string, string>> {
-  const renamedEnumsByProperty = new Map<string, Map<string, string>>();
+  const renamedEnumsByType = new Map<string, Map<string, string>>();
 
-  const diffProperties = schemaDiff?.definitions?.InputSet?.properties;
-  if (!diffProperties || typeof diffProperties !== "object") {
-    return renamedEnumsByProperty;
+  const previousDefinitions = previousSchema?.definitions as Record<string, any> | undefined;
+  const currentDefinitions = currentSchema?.definitions as Record<string, any> | undefined;
+
+  if (!previousDefinitions || !currentDefinitions) {
+    return renamedEnumsByType;
   }
 
-  const previousProperties = previousSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
-  const currentProperties = currentSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
-
-  if (!previousProperties || !currentProperties) {
-    return renamedEnumsByProperty;
-  }
-
-  // Check each property that has changes
-  Object.entries(diffProperties).forEach(([propertyName, diffValue]) => {
-    if (!diffValue || typeof diffValue !== "object") {
-      return;
-    }
-
-    const previousProp = previousProperties[propertyName];
-    const currentProp = currentProperties[propertyName];
-
-    // Check if both have enum arrays
+  /**
+   * Recursively check for enum renames in a type definition and its nested properties
+   */
+  function checkTypeForEnumRenames(previousType: any, currentType: any): void {
+    // Check if the type itself has enum arrays
     if (
-      previousProp?.enum &&
-      Array.isArray(previousProp.enum) &&
-      currentProp?.enum &&
-      Array.isArray(currentProp.enum)
+      previousType?.enum &&
+      Array.isArray(previousType.enum) &&
+      currentType?.enum &&
+      Array.isArray(currentType.enum)
     ) {
-      const previousEnums = previousProp.enum as string[];
-      const currentEnums = currentProp.enum as string[];
+      const previousEnums = previousType.enum as string[];
+      const currentEnums = currentType.enum as string[];
 
       // Find removed and added enum values
       const removedEnums = previousEnums.filter((e) => !currentEnums.includes(e));
@@ -245,10 +235,126 @@ export function detectRenamedEnumValues(
       if (removedEnums.length === 1 && addedEnums.length === 1) {
         const enumRenames = new Map<string, string>();
         enumRenames.set(removedEnums[0], addedEnums[0]);
-        renamedEnumsByProperty.set(propertyName, enumRenames);
+
+        // Use x-dmn-type as the key
+        const typeKey = currentType["x-dmn-type"];
+        if (typeKey) {
+          renamedEnumsByType.set(typeKey, enumRenames);
+        }
       }
     }
+
+    // Recursively check nested properties for complex types
+    if (
+      previousType?.type === "object" &&
+      previousType?.properties &&
+      currentType?.type === "object" &&
+      currentType?.properties
+    ) {
+      Object.keys(currentType.properties).forEach((propName) => {
+        const prevProp = previousType.properties[propName];
+        const currProp = currentType.properties[propName];
+
+        if (prevProp && currProp) {
+          checkTypeForEnumRenames(prevProp, currProp);
+        }
+      });
+    }
+  }
+
+  // Check all type definitions
+  Object.keys(currentDefinitions).forEach((typeName) => {
+    const previousType = previousDefinitions[typeName];
+    const currentType = currentDefinitions[typeName];
+
+    // Skip if type doesn't exist in previous schema
+    if (!previousType) {
+      return;
+    }
+
+    checkTypeForEnumRenames(previousType, currentType);
   });
 
-  return renamedEnumsByProperty;
+  return renamedEnumsByType;
+}
+
+/**
+ * Copies renamed property values to the input object.
+ * Copies values from old property names to new property names.
+ *
+ * @param currentInputs - The input object to update
+ * @param renamedPropertiesMap - Map of old property names to new property names
+ */
+export function copyRenamedInputValue(
+  currentInputs: Record<string, any>,
+  renamedPropertiesMap: Map<string, string>
+): void {
+  renamedPropertiesMap.forEach((newName, oldName) => {
+    if (oldName in currentInputs) {
+      currentInputs[newName] = currentInputs[oldName];
+    }
+  });
+}
+
+/**
+ * Copies renamed enum values to the input object.
+ * Recursively searches through the input object and updates enum values
+ * based on their x-dmn-type match with the renamed enums map.
+ *
+ * @param currentInputs - The input object to update
+ * @param renamedEnumsByType - Map of x-dmn-type to their enum value renames
+ * @param jsonSchema - The JSON schema to use for type matching
+ */
+export function copyRenamedEnumValues(
+  currentInputs: Record<string, any>,
+  renamedEnumsByType: Map<string, Map<string, string>>,
+  jsonSchema?: JSONSchema4
+): void {
+  if (renamedEnumsByType.size === 0) {
+    return;
+  }
+
+  const inputSetProperties = jsonSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
+  if (!inputSetProperties) {
+    return;
+  }
+
+  /**
+   * Recursively update enum values in the input based on x-dmn-type
+   */
+  function updateEnumValuesRecursively(inputObj: Record<string, any>, schemaProps: Record<string, any>): void {
+    Object.keys(inputObj).forEach((key) => {
+      const schemaProp = schemaProps[key];
+      if (!schemaProp) {
+        return;
+      }
+
+      const xDmnType = schemaProp["x-dmn-type"];
+
+      // Check if this property's type has renamed enums
+      if (xDmnType && renamedEnumsByType.has(xDmnType)) {
+        const enumRenames = renamedEnumsByType.get(xDmnType)!;
+        const currentValue = inputObj[key];
+
+        // Update the value if it matches an old enum value
+        enumRenames.forEach((newEnumValue, oldEnumValue) => {
+          if (currentValue === oldEnumValue) {
+            inputObj[key] = newEnumValue;
+          }
+        });
+      }
+
+      // Recursively process nested objects
+      if (
+        schemaProp?.type === "object" &&
+        schemaProp?.properties &&
+        inputObj[key] &&
+        typeof inputObj[key] === "object"
+      ) {
+        updateEnumValuesRecursively(inputObj[key], schemaProp.properties);
+      }
+    });
+  }
+
+  updateEnumValuesRecursively(currentInputs, inputSetProperties);
 }
