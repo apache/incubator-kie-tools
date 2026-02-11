@@ -297,9 +297,10 @@ export function copyRenamedInputValue(
 }
 
 /**
- * Copies renamed enum values to the input object.
- * Recursively searches through the input object and updates enum values
- * based on their x-dmn-type match with the renamed enums map.
+ * Copies renamed enum values to the input object and removes invalid enum values.
+ * Recursively searches through the input object and:
+ * 1. Updates enum values based on their x-dmn-type match with the renamed enums map
+ * 2. Deletes enum values that are no longer valid according to the current schema
  *
  * @param currentInputs - The input object to update
  * @param renamedEnumsByType - Map of x-dmn-type to their enum value renames
@@ -310,10 +311,6 @@ export function copyRenamedEnumValues(
   renamedEnumsByType: Map<string, Map<string, string>>,
   jsonSchema?: JSONSchema4
 ): void {
-  if (renamedEnumsByType.size === 0) {
-    return;
-  }
-
   const inputSetProperties = jsonSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
   if (!inputSetProperties) {
     return;
@@ -330,18 +327,30 @@ export function copyRenamedEnumValues(
       }
 
       const xDmnType = schemaProp["x-dmn-type"];
+      let currentValue = inputObj[key];
 
       // Check if this property's type has renamed enums
       if (xDmnType && renamedEnumsByType.has(xDmnType)) {
         const enumRenames = renamedEnumsByType.get(xDmnType)!;
-        const currentValue = inputObj[key];
 
         // Update the value if it matches an old enum value
         enumRenames.forEach((newEnumValue, oldEnumValue) => {
           if (currentValue === oldEnumValue) {
             inputObj[key] = newEnumValue;
+            currentValue = newEnumValue;
           }
         });
+      }
+
+      // Check if the current value is still valid according to the schema's enum
+      if (schemaProp?.enum && Array.isArray(schemaProp.enum)) {
+        const validEnumValues = schemaProp.enum;
+
+        // If the current value is not in the valid enum list, delete it
+        if (currentValue !== undefined && !validEnumValues.includes(currentValue)) {
+          delete inputObj[key];
+          return; // Skip further processing for this property
+        }
       }
 
       // Recursively process nested objects
