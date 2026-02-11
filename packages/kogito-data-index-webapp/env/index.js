@@ -42,7 +42,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Kogito Data Index Version",
     },
     KOGITO_DATA_INDEX_WEBAPP_graphqlUiHref: {
-      default: "/q/graphql-ui",
+      default: "/q/graphql-ui/",
       description: "GraphQL UI link URL",
     },
     KOGITO_DATA_INDEX_WEBAPP_graphqlUiText: {
