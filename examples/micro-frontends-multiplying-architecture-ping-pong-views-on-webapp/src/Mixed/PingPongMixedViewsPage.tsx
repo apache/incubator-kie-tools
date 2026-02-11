@@ -54,7 +54,7 @@ export function PingPongMixedViewsPage() {
 
   return (
     <PageSection isFilled={true}>
-      <Grid hasGutter={true}>
+      <Grid hasGutter={true} style={{ height: "100%" }}>
         <GridItem span={2}>
           <StatsSidebar
             lastPing={lastPing}

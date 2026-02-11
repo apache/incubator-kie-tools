@@ -132,7 +132,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
     const cloneLinks: any[] = json.links.clone;
     const cloneUrl = cloneLinks.filter((e) => {
-      return (e.name = "https" && e.href.startsWith("https"));
+      return e.href.startsWith("https");
     })[0].href;
 
     return { cloneUrl, htmlUrl: json.links.html.href };

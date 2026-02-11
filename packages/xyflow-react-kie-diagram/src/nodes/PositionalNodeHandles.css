@@ -1,0 +1,76 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/*  To make sure connection lines are steadly glued to the 
+handles, we make their indicators be ::before elements. The handle 
+itself is a 0px by 0px div, as connection lines can move freely when
+the cursor is inside it. By making it adimensional, that never happens.  */
+.xyflow-react-kie-diagram--node-handle.connecting::before {
+  content: "";
+  position: absolute;
+  background: #0388ce;
+  border-radius: 100%;
+  border: 1px solid black;
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+  top: -10px;
+  left: -10px;
+}
+.xyflow-react-kie-diagram--node-handle:not(.connecting)::before {
+  content: "";
+  position: absolute;
+  background: #0388ce;
+  border-radius: 100%;
+  border: 1px solid black;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  top: -7px;
+  left: -7px;
+}
+.xyflow-react-kie-diagram--node-handle {
+  /* These 0px are is by design. See explanation above. */
+  width: 0px;
+  min-width: 0px;
+  height: 0px;
+  min-height: 0px;
+  border: 0;
+  z-index: 20;
+}
+.xyflow-react-kie-diagram--node-handle.top {
+  top: 0;
+  left: 50%;
+}
+.xyflow-react-kie-diagram--node-handle.right {
+  top: 50%;
+  right: 0;
+}
+.xyflow-react-kie-diagram--node-handle.bottom {
+  bottom: 0;
+  left: 50%;
+}
+.xyflow-react-kie-diagram--node-handle.left {
+  top: 50%;
+  left: 0;
+}
+.xyflow-react-kie-diagram--node-handle.center {
+  top: 50%;
+  left: 50%;
+}

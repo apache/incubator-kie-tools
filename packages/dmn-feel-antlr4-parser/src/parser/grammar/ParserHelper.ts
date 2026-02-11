@@ -247,6 +247,14 @@ export class ParserHelper {
               variableName
             )
           );
+        } else if (qn.length > 1) {
+          // This is a special case, when we have something.ReservedWord.
+          // For example, a.time, being 'time' a reserved word for the function 'time()'.
+          // So, if it is a part of a qualified name, it must be a FeelSyntacticSymbolNature.Unknown.
+          // If it is not, then we just ignore because it must be a function call (time()).
+          this.variables.push(
+            new FeelIdentifiedSymbol(start, length, startLine, endLine, FeelSyntacticSymbolNature.Unknown, variableName)
+          );
         }
       } else {
         if (!ReservedWords.FeelFunctions.has(variableName) && !ReservedWords.FeelKeywords.has(variableName)) {

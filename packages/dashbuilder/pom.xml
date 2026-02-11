@@ -97,6 +97,7 @@
     <version.org.wildfly>23.0.2.Final</version.org.wildfly>
     <version.org.jboss.errai.wildfly>${version.org.wildfly}</version.org.jboss.errai.wildfly>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
+    <version.org.mozilla.rhino>1.7.15.1</version.org.mozilla.rhino>
 
     <!-- Plugins -->
     <version.jar.plugin>3.1.2</version.jar.plugin>
@@ -119,6 +120,12 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.mozilla</groupId>
+        <artifactId>rhino</artifactId>
+        <version>${version.org.mozilla.rhino}</version>
+        <scope>provided</scope>
+      </dependency>
       <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>

@@ -29,7 +29,7 @@ import {
   MONACO_FEEL_THEME,
 } from "./FeelConfigs";
 
-import { FeelSyntacticSymbolNature, FeelIdentifiers, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
+import { FeelIdentifiers, FeelSyntacticSymbolNature, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 import { SemanticTokensProvider } from "./semanticTokensProvider";
 
 export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
@@ -209,41 +209,42 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
               }
             } else {
               const currentSymbol = getSymbolAtPosition(currentParsedExpression, pos);
-              for (const scopeSymbol of currentParsedExpression.availableSymbols) {
-                // Consider this scenario:
-                // 1. User typed: Tax In
-                // 2. Available symbols: [Tax Incoming, Tax Input, Tax InSomethingElse, Tax Out, Tax Output]
-                // 3. "Tax In" is an invalid symbol (unrecognized symbol)
-                // In this case, we want to show all symbols that starts with "Tax In"
-                if (currentSymbol && scopeSymbol.name.startsWith(currentSymbol.text)) {
-                  variablesSuggestions.push({
-                    kind: Monaco.languages.CompletionItemKind.Variable,
-                    label: scopeSymbol.name,
-                    insertText: scopeSymbol.name,
-                    detail: scopeSymbol.type,
-                    sortText: "1", // We want the variables to be at top of autocomplete
-                    // We want to replace the current symbol with the available scopeSymbol (Tax Incoming, for example)
-                    // Note: Monaco is NOT zero-indexed. It starts with 1 but FEEL parser is zero indexed,
-                    // that's why were incrementing 1 at each position.
-                    range: {
-                      startLineNumber: currentSymbol.startLine + 1,
-                      endLineNumber: currentSymbol.endLine + 1,
-                      startColumn: currentSymbol.startIndex + 1,
-                      endColumn: currentSymbol.startIndex + 1 + scopeSymbol.name.length,
-                    },
-                  } as Monaco.languages.CompletionItem);
-                } else {
-                  variablesSuggestions.push({
-                    kind: Monaco.languages.CompletionItemKind.Variable,
-                    label: scopeSymbol.name,
-                    insertText: scopeSymbol.name,
-                    detail: scopeSymbol.type,
-                    sortText: "2", // The others variables at second level
-                  } as Monaco.languages.CompletionItem);
+              if (!currentSymbol || currentSymbol?.feelSymbolNature === FeelSyntacticSymbolNature.Unknown) {
+                for (const scopeSymbol of currentParsedExpression.availableSymbols) {
+                  // Consider this scenario:
+                  // 1. User typed: Tax In
+                  // 2. Available symbols: [Tax Incoming, Tax Input, Tax InSomethingElse, Tax Out, Tax Output]
+                  // 3. "Tax In" is an invalid symbol (unrecognized symbol)
+                  // In this case, we want to show all symbols that starts with "Tax In"
+                  if (currentSymbol && scopeSymbol.name.startsWith(currentSymbol.text)) {
+                    variablesSuggestions.push({
+                      kind: Monaco.languages.CompletionItemKind.Variable,
+                      label: scopeSymbol.name,
+                      insertText: scopeSymbol.name,
+                      detail: scopeSymbol.type,
+                      sortText: "1", // We want the variables to be at top of autocomplete
+                      // We want to replace the current symbol with the available scopeSymbol (Tax Incoming, for example)
+                      // Note: Monaco is NOT zero-indexed. It starts with 1 but FEEL parser is zero indexed,
+                      // that's why were incrementing 1 at each position.
+                      range: {
+                        startLineNumber: currentSymbol.startLine + 1,
+                        endLineNumber: currentSymbol.endLine + 1,
+                        startColumn: currentSymbol.startIndex + 1,
+                        endColumn: currentSymbol.startIndex + 1 + scopeSymbol.name.length,
+                      },
+                    } as Monaco.languages.CompletionItem);
+                  } else {
+                    variablesSuggestions.push({
+                      kind: Monaco.languages.CompletionItemKind.Variable,
+                      label: scopeSymbol.name,
+                      insertText: scopeSymbol.name,
+                      detail: scopeSymbol.type,
+                      sortText: "2", // The others variables at second level
+                    } as Monaco.languages.CompletionItem);
+                  }
                 }
+                variablesSuggestions.push(...completionItems);
               }
-
-              variablesSuggestions.push(...completionItems);
             }
             return {
               suggestions: variablesSuggestions,

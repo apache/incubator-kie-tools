@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FormDmn, FormDmnOutputs } from "@kie-tools/form-dmn";
+import { FormDmn, FormDmnOutputs } from "@kie-tools/dmn-uniforms-patternfly-form-wrapper";
 import { DecisionResult } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import {
