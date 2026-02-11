@@ -30,10 +30,10 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/vsce": "^3.2.1",
+    "@vscode/vsce": "^3.7.1",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3",
-    "webpack": "^5.94.0",
+    "typescript": "^5.9.3",
+    "webpack": "^5.104.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.2",
     "webpack-merge": "^5.9.0"

@@ -76,7 +76,7 @@ const FileChooser = (props: UploadProps) => {
       const file: File = files[0];
 
       reader.onload = async (e2: ProgressEvent<FileReader>) => {
-        const text: string | ArrayBuffer | null | undefined = e2.target?.result;
+        const text: string | ArrayBufferLike | null | undefined = e2.target?.result;
         if (text) {
           props.setContent(file.name, text?.toString() as string);
         }
