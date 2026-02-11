@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools/form-dmn",
+  "name": "@kie-tools/dmn-uniforms-patternfly-form-wrapper",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -29,9 +29,9 @@
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools/dmn-runner": "workspace:*",
     "@kie-tools/extended-services-api": "workspace:*",
-    "@kie-tools/form": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/uniforms-patternfly": "workspace:*",
+    "@kie-tools/uniforms-patternfly-form-wrapper": "workspace:*",
     "@patternfly/react-core": "^5.4.1",
     "@patternfly/react-icons": "^5.4.1",
     "deep-object-diff": "^1.1.9",
