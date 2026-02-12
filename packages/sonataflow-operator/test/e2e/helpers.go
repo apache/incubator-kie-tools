@@ -25,10 +25,11 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"sigs.k8s.io/yaml"
 	"strconv"
 	"strings"
 	"time"
+
+	"sigs.k8s.io/yaml"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test/utils"
