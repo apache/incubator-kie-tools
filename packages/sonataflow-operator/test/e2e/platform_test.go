@@ -468,4 +468,77 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 		Entry("and with broker and platform in the same namespace", test.GetPathFromE2EDirectory("platform", "services", "gitops", "knative", "platform-level-broker"), false),
 		Entry("and with broker and platform in a separate namespace", test.GetPathFromE2EDirectory("platform", "services", "gitops", "knative", "platform-level-broker"), true),
 	)
+
+	DescribeTable("when deploying a SonataFlowPlatform combined with HPA for the Data Index", func(testcaseDir string, dataIndexHPAPath string, createHPABeforePlatform bool) {
+		if createHPABeforePlatform {
+			By("Create the data index HPA before the platform")
+			EventuallyWithOffset(1, func() error {
+				return kubectlApplyFileOnCluster(dataIndexHPAPath, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+		}
+
+		By("Deploy the platform and database CRs")
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyKustomizeOnCluster(testcaseDir, targetNamespace)
+		}, 2*time.Minute, time.Second).Should(Succeed())
+
+		By("Wait for SonataFlowPlatform CR to complete deployments")
+		EventuallyWithOffset(1, func() error {
+			return verifyDataIndexAndJobsServiceAreReady(targetNamespace, "5s")
+		}, 10*time.Minute, 5).Should(Succeed())
+
+		By("Evaluate status of all service's health endpoint")
+		verifyDataIndexAndJobsServiceAreHealthy(targetNamespace)
+
+		if createHPABeforePlatform {
+			By("Check that the Data Index deployment has 3 replicas since the HPA was already created")
+			EventuallyWithOffset(3, func() bool {
+				return verifyDeploymentReplicas("sonataflow-platform-data-index-service", targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+		} else {
+			By("Check that the Data Index deployment has 1 replica before creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyDeploymentReplicas("sonataflow-platform-data-index-service", targetNamespace, int32(1))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("Create the data index HPA after the platform")
+			EventuallyWithOffset(1, func() error {
+				return kubectlApplyFileOnCluster(dataIndexHPAPath, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			By("Check that the data index has 3 replicas after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyDeploymentReplicas("sonataflow-platform-data-index-service", targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+		}
+
+		By("Delete the data index HPA")
+		EventuallyWithOffset(1, func() error {
+			return kubectlDeleteFileOnCluster(dataIndexHPAPath, targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(Succeed())
+
+		By("Check that the data index has 1 replica after deleting the HPA")
+		EventuallyWithOffset(1, func() bool {
+			return verifyDeploymentReplicas("sonataflow-platform-data-index-service", targetNamespace, int32(3))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+	},
+
+		Entry("and the HPA is created after the platform", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr"), test.GetPathFromE2EDirectory("platform", "hpa", "generic-data-index-service-hpa.yaml"), false),
+		Entry("and the HPA is created before the platform", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr"), test.GetPathFromE2EDirectory("platform", "hpa", "generic-data-index-service-hpa.yaml"), true),
+	)
 })
+
+func verifyDataIndexAndJobsServiceAreReady(namespace string, timeout string) error {
+	cmd := exec.Command("kubectl", "wait", "pod", "-n", namespace, "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "--for", "condition=Ready", fmt.Sprintf("--timeout=%s", timeout))
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func verifyDataIndexAndJobsServiceAreHealthy(namespace string) {
+	cmd := exec.Command("kubectl", "get", "pod", "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "-n", namespace, "-ojsonpath={.items[*].metadata.name}")
+	output, err := utils.Run(cmd)
+	Expect(err).NotTo(HaveOccurred())
+	for _, pn := range strings.Split(string(output), " ") {
+		verifyHealthStatusInPod(pn, namespace)
+	}
+}

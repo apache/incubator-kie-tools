@@ -18,6 +18,7 @@
 package e2e
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -71,6 +72,20 @@ var (
 func kubectlApplyFileOnCluster(file, namespace string) error {
 	cmd := exec.Command("kubectl", "apply", "-f", file, "-n", namespace)
 	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlApplyKustomizeOnCluster(dir, namespace string) error {
+	var manifests []byte
+	var err error
+	cmd := exec.Command("kubectl", "kustomize", dir)
+	manifests, err = utils.Run(cmd)
+	if err != nil {
+		return err
+	}
+	cmd = exec.Command("kubectl", "apply", "-n", namespace, "-f", "-")
+	cmd.Stdin = bytes.NewBuffer(manifests)
+	_, err = utils.Run(cmd)
 	return err
 }
 
