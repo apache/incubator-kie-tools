@@ -17,6 +17,10 @@
  * under the License. 
  */
 
+.unitables-container {
+  display: flex;
+}
+
 .standalone-bee-table .pf-v5-c-select .pf-v5-c-select__toggle::before {
   border-style: hidden;
 }

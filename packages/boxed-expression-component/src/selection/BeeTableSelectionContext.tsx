@@ -1105,7 +1105,22 @@ export function useBeeTableSelectableCell(
 
   useLayoutEffect(() => {
     if (isActive && !isEditing) {
-      cellRef.current?.focus();
+      const cellElement = cellRef.current;
+      if (!cellElement) {
+        return;
+      }
+
+      // Find the boxed-expression-provider container (top-level container for this component)
+      const activeElement = document.activeElement;
+      const boxedExpressionProvider = cellElement.closest(".boxed-expression-provider");
+
+      // Don't steal focus if the active element is outside this boxed-expression-provider.
+      // This prevents stealing focus from input fields in other tables/components when the table re-renders.
+      if (activeElement && boxedExpressionProvider && !boxedExpressionProvider.contains(activeElement)) {
+        return;
+      }
+
+      cellElement.focus();
     }
   }, [columnIndex, isActive, isEditing, rowIndex, cellRef]);
 

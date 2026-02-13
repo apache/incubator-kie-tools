@@ -174,7 +174,22 @@ export function BeeTableEditableCellContent({
   const editableCellRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (isActive && !isEditing) {
-      editableCellRef.current?.focus();
+      const cellElement = editableCellRef.current;
+      if (!cellElement) {
+        return;
+      }
+
+      // Find the boxed-expression-provider container (top-level container for this component)
+      const activeElement = document.activeElement;
+      const boxedExpressionProvider = cellElement.closest(".boxed-expression-provider");
+
+      // Don't steal focus if the active element is outside this boxed-expression-provider.
+      // This prevents stealing focus from input fields in other tables/components when the table re-renders.
+      if (activeElement && boxedExpressionProvider && !boxedExpressionProvider.contains(activeElement)) {
+        return;
+      }
+
+      cellElement.focus();
     }
   }, [isActive, isEditing]);
 
