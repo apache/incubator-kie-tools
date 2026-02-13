@@ -28,8 +28,8 @@
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "apollo-client": "2.6.10",
-    "axios": "^1.12.2",
-    "lodash": "^4.17.21"
+    "axios": "^1.13.5",
+    "lodash": "^4.17.23"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -42,7 +42,7 @@
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.6",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": ">=17.0.2 <19.0.0"

@@ -23,7 +23,7 @@ Foundational files for Maven-based packages.
 - `settings.xml`: Moslty repositories configuration.
 - `index.js`: Essential scripts for configuring properties such as `-Drevision` and `-Dmaven.repo.local.tail`.
 
-For more information, refer to the [KIE Tools :: Manual](../../repo/docs/MANUAL.md#specifics--maven)
+For more information, refer to the [KIE Tools :: Manual](../../repo/MANUAL.md#specifics--maven)
 
 ---
 

@@ -19,18 +19,25 @@
 
 const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditorStandalone: {
-        dev: {
-          port: "9006",
+module.exports = composeEnv(
+  [
+    require("@kie-tools/root-env/env"),
+    require("@kie-tools-core/webpack-base/env"),
+    require("@kie-tools/playwright-base/env"),
+  ],
+  {
+    vars: varsWithName({}),
+    get env() {
+      return {
+        dmnEditorStandalone: {
+          dev: {
+            port: "9006",
+          },
+          storybook: {
+            port: "9903",
+          },
         },
-        storybook: {
-          port: "9903",
-        },
-      },
-    };
-  },
-});
+      };
+    },
+  }
+);

@@ -5,7 +5,7 @@ digraph G {
   "kie-tools-root" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/bootstrap" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/check-junit-report-results" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools-scripts/run-script-if" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-scripts/run-script-if" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/sparse-checkout" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/update-kogito-version" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/update-stream-name" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -58,7 +58,12 @@ digraph G {
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/playwright-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/storybook-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/bpmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/xyflow-react-kie-diagram" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/bpmn-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/bpmn-editor-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/xml-parser-ts-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "bpmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-code-generator-vscode-command" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -100,7 +105,7 @@ digraph G {
   "@kie-tools/dev-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-upload-service" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dmn-uniforms-patternfly-form-wrapper" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-quarkus-blank-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -108,7 +113,6 @@ digraph G {
   "@kie-tools/maven-m2-repo-via-http-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-feel-antlr4-parser" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -118,6 +122,7 @@ digraph G {
   "@kie-tools-core/drools-and-kogito" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-runner" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/uniforms-patternfly-form-wrapper" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -128,7 +133,6 @@ digraph G {
   "@kie-tools/extended-services-java" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "extended-services-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/form" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-code-generator" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-code-generator-bootstrap4-theme" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-code-generator-patternfly-theme" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -281,6 +285,14 @@ digraph G {
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/playwright-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/storybook-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/bpmn-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor" -> "@kie-tools/xyflow-react-kie-diagram" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor-envelope" -> "@kie-tools/bpmn-editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-editor-standalone" -> "@kie-tools/bpmn-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/bpmn-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools/form-code-generator-vscode-command" [ style = "solid", color = "blue" ];
@@ -362,7 +374,7 @@ digraph G {
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/dev-deployment-upload-service" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
-  "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/dmn-uniforms-patternfly-form-wrapper" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
@@ -390,6 +402,7 @@ digraph G {
   "@kie-tools/dmn-runner" -> "@kie-tools/extended-services-api" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-testing-models" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
+  "@kie-tools/dmn-uniforms-patternfly-form-wrapper" -> "@kie-tools/uniforms-patternfly-form-wrapper" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
@@ -417,9 +430,6 @@ digraph G {
   "@kie-tools/feel-input-component" -> "@kie-tools/dmn-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/form" -> "@kie-tools/dmn-runner" [ style = "solid", color = "blue" ];
-  "@kie-tools/form" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
-  "@kie-tools/form" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
@@ -429,7 +439,6 @@ digraph G {
   "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator-vscode-command" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/form-code-generator-vscode-command" -> "@kie-tools/jbpm-form-code-generator-themes" [ style = "solid", color = "blue" ];
-  "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools-core/i18n" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
@@ -448,6 +457,7 @@ digraph G {
   "@kie-tools/jest-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/cors-proxy-api" [ style = "dashed", color = "purple" ];
+  "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools/dmn-language-service" [ style = "solid", color = "blue" ];
@@ -508,7 +518,7 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "black" ];
-  "@kie-tools/online-editor" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/dmn-uniforms-patternfly-form-wrapper" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
@@ -521,6 +531,7 @@ digraph G {
   "@kie-tools-core/operating-system" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/patternfly-base" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
+  "@kie-tools/playwright-base" -> "@kie-tools-scripts/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/playwright-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/pmml-editor" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
@@ -683,6 +694,9 @@ digraph G {
   "@kie-tools/uniforms-patternfly" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/uniforms-patternfly-form-wrapper" -> "@kie-tools/dmn-runner" [ style = "solid", color = "blue" ];
+  "@kie-tools/uniforms-patternfly-form-wrapper" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/uniforms-patternfly-form-wrapper" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/dmn-runner" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables-dmn" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];
@@ -714,6 +728,10 @@ digraph G {
   "@kie-tools/xml-parser-ts" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/xml-parser-ts" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/xml-parser-ts-codegen" -> "@kie-tools/xml-parser-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools-core/switch-expression-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools/i18n-common-dictionary" [ style = "dashed", color = "blue" ];
+  "@kie-tools/xyflow-react-kie-diagram" -> "@kie-tools/xml-parser-ts" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
@@ -732,5 +750,5 @@ digraph G {
   "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools-scripts/bootstrap" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools-scripts/build-env" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
-  "@kie-tools-scripts/run-script-if" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
+  "@kie-tools-scripts/run-script-if" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
 }

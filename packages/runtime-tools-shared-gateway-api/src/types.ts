@@ -45,6 +45,16 @@ export interface TriggerableNode {
   type: string;
 }
 
+export interface NodeDefinition extends TriggerableNode {
+  uniqueId: string;
+  metadata?: {
+    UniqueId: string;
+    state: string | null;
+    branch: string | null;
+    action: string | null;
+  };
+}
+
 export interface Milestone {
   __typename?: "Milestone";
   id: string;

@@ -36,14 +36,14 @@
     "@patternfly/react-table": "^5.4.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "copyfiles": "^2.4.1",
     "keycloak-js": "^23.0.5",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "monaco-editor": "^0.39.0",
     "react-datetime-picker": "^3.5.0",
     "react-moment": "0.9.7",
-    "react-router-dom": "^6.29.0",
+    "react-router-dom": "^6.30.2",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2",
     "uuid": "^8.3.2"
@@ -58,7 +58,7 @@
     "@types/react-dom": "^17.0.5",
     "@types/uuid": "^8.3.0",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": ">=17.0.2 <19.0.0",

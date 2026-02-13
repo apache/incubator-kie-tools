@@ -1,0 +1,87 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.xyflow-react-kie-diagram--editable-node-name-input {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.xyflow-react-kie-diagram--editable-node-name-input.top-center {
+  align-items: start;
+  text-align: center;
+  justify-content: center;
+}
+.xyflow-react-kie-diagram--editable-node-name-input.top-left {
+  align-items: start;
+  text-align: left;
+  padding: 8px;
+}
+.xyflow-react-kie-diagram--editable-node-name-input.center-bottom {
+  text-align: center;
+  justify-content: center;
+}
+.xyflow-react-kie-diagram--editable-node-name-input.center-center {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+.xyflow-react-kie-diagram--editable-node-name-input.center-left {
+  align-items: center;
+  text-align: left;
+}
+.xyflow-react-kie-diagram--editable-node-name-input.center-left-vertical {
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.xyflow-react-kie-diagram--editable-node-name-input.center-left-vertical span {
+  width: fit-content;
+}
+.xyflow-react-kie-diagram--editable-node-name-input.top-center input,
+.xyflow-react-kie-diagram--editable-node-name-input.center-bottom input,
+.xyflow-react-kie-diagram--editable-node-name-input.center-center input {
+  text-align: center;
+}
+
+.xyflow-react-kie-diagram--editable-node-name-input input {
+  border: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  pointer-events: all !important;
+}
+
+.xyflow-react-kie-diagram--editable-node-name-input.center-left-vertical input {
+  justify-content: center;
+  text-align: center;
+  width: fit-content;
+}
+
+.xyflow-react-kie-diagram--editable-node-name-input input:focus {
+  outline: 0;
+}
+
+.xyflow-react-kie-diagram--editable-node-name-input.grow,
+.xyflow-react-kie-diagram--editable-node-name-input.grow input,
+.xyflow-react-kie-diagram--editable-node-name-input.grow span {
+  width: 100%;
+  flex-grow: 1;
+}

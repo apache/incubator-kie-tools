@@ -26,16 +26,16 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools/dmn-runner": "workspace:*",
+    "@kie-tools/dmn-uniforms-patternfly-form-wrapper": "workspace:*",
     "@kie-tools/extended-services-api": "workspace:*",
-    "@kie-tools/form-dmn": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@openapi-contrib/openapi-schema-to-json-schema": "^5.1.0",
     "@patternfly/react-core": "^5.4.1",
     "@patternfly/react-icons": "^5.4.1",
     "@readme/openapi-parser": "^2.5.0",
     "json-refs": "^3.0.15",
-    "lodash": "^4.17.21",
-    "react-router-dom": "^6.29.0"
+    "lodash": "^4.17.23",
+    "react-router-dom": "^6.30.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -67,10 +67,10 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3",
-    "webpack": "^5.94.0",
+    "typescript": "^5.9.3",
+    "webpack": "^5.104.1",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.1",
+    "webpack-dev-server": "^4.15.2",
     "webpack-merge": "^5.9.0"
   },
   "peerDependencies": {

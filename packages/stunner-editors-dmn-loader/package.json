@@ -17,7 +17,7 @@
     "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/import-java-classes-component": "workspace:*",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "monaco-editor": "^0.39.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -35,10 +35,10 @@
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.3",
-    "webpack": "^5.94.0",
+    "typescript": "^5.9.3",
+    "webpack": "^5.104.1",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.1",
+    "webpack-dev-server": "^4.15.2",
     "webpack-merge": "^5.9.0"
   }
 }

@@ -105,9 +105,14 @@
       { "id": "@kie-tools/storybook-base" },
       { "id": "@kie-tools-core/monaco-editor" },
       { "id": "@kie-tools/i18n-common-dictionary" },
+      { "id": "@kie-tools/bpmn-editor" },
       { "id": "@kie-tools/bpmn-marshaller" },
+      { "id": "@kie-tools/xyflow-react-kie-diagram" },
       { "id": "@kie-tools/xml-parser-ts-codegen" },
+      { "id": "@kie-tools-core/switch-expression-ts" },
       { "id": "@kie-tools/xml-parser-ts" },
+      { "id": "@kie-tools/bpmn-editor-envelope" },
+      { "id": "@kie-tools/bpmn-editor-standalone" },
       { "id": "bpmn-vscode-extension" },
       { "id": "@kie-tools/form-code-generator-vscode-command" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
@@ -149,8 +154,8 @@
       { "id": "@kie-tools/dev-deployment-base-image" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp" },
-      { "id": "@kie-tools/form-dmn" },
-      { "id": "@kie-tools/form" },
+      { "id": "@kie-tools/dmn-uniforms-patternfly-form-wrapper" },
+      { "id": "@kie-tools/uniforms-patternfly-form-wrapper" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp-image" },
       { "id": "@kie-tools/dev-deployment-quarkus-blank-app" },
       { "id": "@kie-tools/dev-deployment-quarkus-blank-app-image" },
@@ -160,7 +165,6 @@
       { "id": "@kie-tools/dmn-marshaller" },
       { "id": "@kie-tools/dmn-marshaller-backend-compatibility-tester" },
       { "id": "@kie-tools/dmn-testing-models" },
-      { "id": "@kie-tools-core/switch-expression-ts" },
       { "id": "@kie-tools/dmn-runner" },
       { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
@@ -949,6 +953,11 @@
       },
       {
         "source": "@kie-tools/playwright-base",
+        "target": "@kie-tools-scripts/run-script-if",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/playwright-base",
         "target": "@kie-tools/root-env",
         "weight": 1
       },
@@ -988,13 +997,73 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/bpmn-editor",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/bpmn-editor",
+        "target": "@kie-tools/boxed-expression-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/bpmn-editor",
+        "target": "@kie-tools/bpmn-marshaller",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/bpmn-editor",
+        "target": "@kie-tools/pmml-editor-marshaller",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/bpmn-editor",
+        "target": "@kie-tools/xyflow-react-kie-diagram",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/bpmn-marshaller",
         "target": "@kie-tools/xml-parser-ts-codegen",
         "weight": 1
       },
       {
+        "source": "@kie-tools/xyflow-react-kie-diagram",
+        "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/xyflow-react-kie-diagram",
+        "target": "@kie-tools-core/switch-expression-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/xyflow-react-kie-diagram",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/xyflow-react-kie-diagram",
+        "target": "@kie-tools/xml-parser-ts",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/xml-parser-ts-codegen",
         "target": "@kie-tools/xml-parser-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/switch-expression-ts",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/switch-expression-ts",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/switch-expression-ts",
+        "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
@@ -1010,6 +1079,21 @@
       {
         "source": "@kie-tools/xml-parser-ts",
         "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/bpmn-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/bpmn-editor-envelope",
+        "target": "@kie-tools/bpmn-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/bpmn-editor-standalone",
+        "target": "@kie-tools/bpmn-editor-envelope",
         "weight": 1
       },
       {
@@ -1539,7 +1623,7 @@
       },
       {
         "source": "@kie-tools/dev-deployment-dmn-form-webapp",
-        "target": "@kie-tools/form-dmn",
+        "target": "@kie-tools/dmn-uniforms-patternfly-form-wrapper",
         "weight": 1
       },
       {
@@ -1548,22 +1632,22 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/form-dmn",
-        "target": "@kie-tools/form",
+        "source": "@kie-tools/dmn-uniforms-patternfly-form-wrapper",
+        "target": "@kie-tools/uniforms-patternfly-form-wrapper",
         "weight": 1
       },
       {
-        "source": "@kie-tools/form",
+        "source": "@kie-tools/uniforms-patternfly-form-wrapper",
         "target": "@kie-tools/dmn-runner",
         "weight": 1
       },
       {
-        "source": "@kie-tools/form",
+        "source": "@kie-tools/uniforms-patternfly-form-wrapper",
         "target": "@kie-tools/i18n-common-dictionary",
         "weight": 1
       },
       {
-        "source": "@kie-tools/form",
+        "source": "@kie-tools/uniforms-patternfly-form-wrapper",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -1665,21 +1749,6 @@
       {
         "source": "@kie-tools/dmn-testing-models",
         "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/switch-expression-ts",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/switch-expression-ts",
-        "target": "@kie-tools/jest-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/switch-expression-ts",
-        "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
@@ -1833,6 +1902,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
         "source": "kie-editors-dev-vscode-extension",
         "target": "@kie-tools-core/vscode-extension",
         "weight": 1
@@ -1969,7 +2043,7 @@
       },
       {
         "source": "@kie-tools/online-editor",
-        "target": "@kie-tools/form-dmn",
+        "target": "@kie-tools/dmn-uniforms-patternfly-form-wrapper",
         "weight": 1
       },
       {
@@ -2871,6 +2945,9 @@
     ["@kie-tools-examples/sonataflow-greeting", "examples/sonataflow-greeting"],
     ["@kie-tools-examples/uniforms-patternfly", "examples/uniforms-patternfly"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
+    ["@kie-tools/bpmn-editor", "packages/bpmn-editor"],
+    ["@kie-tools/bpmn-editor-envelope", "packages/bpmn-editor-envelope"],
+    ["@kie-tools/bpmn-editor-standalone", "packages/bpmn-editor-standalone"],
     ["@kie-tools/bpmn-marshaller", "packages/bpmn-marshaller"],
     ["bpmn-vscode-extension", "packages/bpmn-vscode-extension"],
     ["@kie-tools-core/chrome-extension", "packages/chrome-extension"],
@@ -2915,6 +2992,7 @@
     ["@kie-tools/dmn-marshaller-backend-compatibility-tester", "packages/dmn-marshaller-backend-compatibility-tester"],
     ["@kie-tools/dmn-runner", "packages/dmn-runner"],
     ["@kie-tools/dmn-testing-models", "packages/dmn-testing-models"],
+    ["@kie-tools/dmn-uniforms-patternfly-form-wrapper", "packages/dmn-uniforms-patternfly-form-wrapper"],
     ["dmn-vscode-extension", "packages/dmn-vscode-extension"],
     ["@kie-tools-core/drools-and-kogito", "packages/drools-and-kogito"],
     ["@kie-tools-core/editor", "packages/editor"],
@@ -2926,12 +3004,10 @@
     ["@kie-tools/extended-services-java", "packages/extended-services-java"],
     ["extended-services-vscode-extension", "packages/extended-services-vscode-extension"],
     ["@kie-tools/feel-input-component", "packages/feel-input-component"],
-    ["@kie-tools/form", "packages/form"],
     ["@kie-tools/form-code-generator", "packages/form-code-generator"],
     ["@kie-tools/form-code-generator-bootstrap4-theme", "packages/form-code-generator-bootstrap4-theme"],
     ["@kie-tools/form-code-generator-patternfly-theme", "packages/form-code-generator-patternfly-theme"],
     ["@kie-tools/form-code-generator-vscode-command", "packages/form-code-generator-vscode-command"],
-    ["@kie-tools/form-dmn", "packages/form-dmn"],
     ["@kie-tools-core/i18n", "packages/i18n"],
     ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],
     ["@kie-tools/image-builder", "packages/image-builder"],
@@ -3060,6 +3136,7 @@
     ["@kie-tools/text-editor", "packages/text-editor"],
     ["@kie-tools/tsconfig", "packages/tsconfig"],
     ["@kie-tools/uniforms-patternfly", "packages/uniforms-patternfly"],
+    ["@kie-tools/uniforms-patternfly-form-wrapper", "packages/uniforms-patternfly-form-wrapper"],
     ["@kie-tools/unitables", "packages/unitables"],
     ["@kie-tools/unitables-dmn", "packages/unitables-dmn"],
     ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],
@@ -3077,6 +3154,7 @@
     ["@kie-tools-core/workspaces-git-fs", "packages/workspaces-git-fs"],
     ["@kie-tools/xml-parser-ts", "packages/xml-parser-ts"],
     ["@kie-tools/xml-parser-ts-codegen", "packages/xml-parser-ts-codegen"],
+    ["@kie-tools/xyflow-react-kie-diagram", "packages/xyflow-react-kie-diagram"],
     ["@kie-tools/yaml-language-server", "packages/yaml-language-server"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
     ["@kie-tools/yard-language-service", "packages/yard-language-service"],

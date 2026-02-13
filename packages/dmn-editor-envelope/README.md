@@ -17,7 +17,23 @@
 
 ## DMN Editor Envelope
 
-Package responsible for creating the necessary pumbling for `dmn-editor` to be used inside an Envelope.
+Package responsible for creating the necessary pumbling for [@kie-tools/dmn-editor](../dmn-editor/README.md) to be used inside an Envelope.
+
+---
+
+### Usage
+
+---
+
+### Examples
+
+---
+
+## For development information see:
+
+- 👉 [DEV.md](./docs/DEV.md)
+- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---
 

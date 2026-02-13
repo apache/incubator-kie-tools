@@ -285,7 +285,7 @@ quarkus.log.category."org.kie.kogito".level=DEBUG
 
 - Java 17 installed
 - Environment variable `JAVA_HOME` set accordingly
-- Maven 3.9.6 installed
+- Maven 3.9.11 installed
 - Docker and Docker Compose to run the required example infrastructure.
 
 ### Infrastructure Services

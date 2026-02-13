@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_BE9F0285-6DE2-40FC-9767-B1B11CF21C00"
+  id="_2D2A21FC-99F0-4D4D-A403-B8E4A3C2C439"
+  name="a_decision"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+>
+  <inputData name="An input" id="_C3F34AFB-D6EE-414B-A295-34E9B7731A99">
+    <variable name="An input" id="_04BF7F11-7EFE-4A48-8339-5B2C348462CA" typeRef="string" />
+  </inputData>
+  <decision name="A decision" id="_94332863-7C3E-40FC-ACCA-E988A960FE67">
+    <variable id="_3B09EF0F-932A-4695-B703-069DEEACEB83" typeRef="string" name="A decision" />
+    <informationRequirement id="_95F2E4B5-EFB3-450F-8071-E1D3A7E007FE">
+      <requiredInput href="#_C3F34AFB-D6EE-414B-A295-34E9B7731A99" />
+    </informationRequirement>
+    <literalExpression id="_28E78CE1-C799-47C2-B952-314E2FB60C5C" typeRef="string" label="A decision">
+      <text>An input</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram
+      id="_0A35A760-4095-41C8-9E69-5B775B01DBEB"
+      name="Default DRD"
+      useAlternativeInputDataShape="false"
+    >
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_28E78CE1-C799-47C2-B952-314E2FB60C5C">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape
+        id="_2469A9E2-5337-421C-B63F-EC683C102E1C"
+        dmnElementRef="_C3F34AFB-D6EE-414B-A295-34E9B7731A99"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="300" y="360" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_D55FFE82-6DB3-47D9-B120-F08DF9D406EE"
+        dmnElementRef="_94332863-7C3E-40FC-ACCA-E988A960FE67"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="300" y="220" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_DDEBD6ED-CE1D-4A18-A43A-35F74BBCA249-AUTO-TARGET"
+        dmnElementRef="_95F2E4B5-EFB3-450F-8071-E1D3A7E007FE"
+        sourceElement="_2469A9E2-5337-421C-B63F-EC683C102E1C"
+        targetElement="_D55FFE82-6DB3-47D9-B120-F08DF9D406EE"
+      >
+        <di:waypoint x="380" y="400" />
+        <di:waypoint x="380" y="260" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

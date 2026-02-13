@@ -18,7 +18,7 @@
  */
 
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
-import { InputRow } from "@kie-tools/form-dmn";
+import { InputRow } from "@kie-tools/dmn-uniforms-patternfly-form-wrapper";
 import { UnitablesInputsConfigs } from "@kie-tools/unitables";
 
 export enum DmnRunnerMode {

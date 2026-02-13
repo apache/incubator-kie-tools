@@ -186,7 +186,7 @@
     <version.zanata.plugin>2.3.0</version.zanata.plugin>
 
     <!-- Third party Libraries -->
-    <version.ch.qos.logback>1.5.20</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
     <version.com.google.elemental2>1.2.3</version.com.google.elemental2>
     <version.jsinterop.annotations>2.0.0</version.jsinterop.annotations>
     <version.org.gwtproject>2.10.0</version.org.gwtproject>
@@ -220,7 +220,7 @@
     <!-- Test Libraries -->
     <version.io.github.bonigarcia>6.1.0</version.io.github.bonigarcia>
     <version.junit>4.13.2</version.junit>
-    <version.org.assertj>3.22.0</version.org.assertj>
+    <version.org.assertj>3.27.7</version.org.assertj>
     <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
     <version.org.mockito>3.12.4</version.org.mockito>
     <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>

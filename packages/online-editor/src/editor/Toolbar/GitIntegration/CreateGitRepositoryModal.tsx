@@ -111,7 +111,7 @@ export function CreateGitRepositoryModal(props: {
 
     const cloneLinks: any[] = repo.links.clone;
     const cloneUrl = cloneLinks.filter((e) => {
-      return (e.name = "https" && e.href.startsWith("https"));
+      return e.href.startsWith("https");
     })[0].href;
     return { cloneUrl, htmlUrl: repo.links.html.href };
   }, [bitbucketClient, isPrivate, name, selectedOrganization]);
