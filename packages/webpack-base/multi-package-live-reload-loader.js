@@ -32,7 +32,7 @@ module.exports = function webpackLoader(content, map, meta) {
     { from: /@kie-tools-examples\/([\w\d-]*)/g, to: `@kie-tools-examples/$1/src` },
   ];
 
-  const excludes = ["@kie-tools-core/monaco-editor", "@kie-tools/kie-editors-standalone"];
+  const excludes = ["@kie-tools-core/monaco-editor"];
   const includes = ["@kie-tools-core", "@kie-tools"];
 
   const ast = parser.parse(content, { sourceType: "module", plugins: ["typescript", "jsx", "classProperties"] });
