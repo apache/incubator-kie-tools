@@ -28,7 +28,7 @@ test.describe("DMN Editor - Standalone - API", () => {
       test.slow();
     });
 
-    test.skip("should get DMN contents of input DMN file", async ({ editor, files }) => {
+    test("should get DMN contents of input DMN file", async ({ editor, files }) => {
       await editor.setContent("loanPreQualification.dmn", await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN));
       await expect(editor.get().getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
       expect(await editor.getFormattedContent()).toEqual(

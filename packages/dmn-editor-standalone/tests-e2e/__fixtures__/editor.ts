@@ -19,7 +19,7 @@
 
 import { Page, expect } from "@playwright/test";
 import type { open, DmnEditorStandaloneApi } from "@kie-tools/dmn-editor-standalone/dist";
-import * as prettier from "prettier";
+import { prettierFormat } from "./prettier";
 
 export enum DefaultNodeName {
   INPUT_DATA = "New Input Data",
@@ -92,10 +92,7 @@ export class Editor {
   }
 
   public async getFormattedContent() {
-    return prettier.format(await this.getContent(), {
-      ...(await prettier.resolveConfig(".")),
-      parser: "xml",
-    });
+    return prettierFormat(await this.getContent());
   }
 
   public async getContentStats() {
