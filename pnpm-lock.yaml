@@ -1141,14 +1141,14 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
+        specifier: ^8.18.0
+        version: 8.18.0
       ajv-draft-04:
         specifier: ^1.0.0
-        version: 1.0.0(ajv@8.17.1)
+        version: 1.0.0(ajv@8.18.0)
       ajv-formats:
         specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
+        version: 3.0.1(ajv@8.18.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3170,14 +3170,14 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
+        specifier: ^8.18.0
+        version: 8.18.0
       ajv-draft-04:
         specifier: ^1.0.0
-        version: 1.0.0(ajv@8.17.1)
+        version: 1.0.0(ajv@8.18.0)
       ajv-formats:
         specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
+        version: 3.0.1(ajv@8.18.0)
       lodash:
         specifier: ^4.17.23
         version: 4.17.23
@@ -4774,14 +4774,14 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
+        specifier: ^8.18.0
+        version: 8.18.0
       ajv-draft-04:
         specifier: ^1.0.0
-        version: 1.0.0(ajv@8.17.1)
+        version: 1.0.0(ajv@8.18.0)
       ajv-formats:
         specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
+        version: 3.0.1(ajv@8.18.0)
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
@@ -5450,17 +5450,17 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
+        specifier: ^8.18.0
+        version: 8.18.0
       ajv-draft-04:
         specifier: ^1.0.0
-        version: 1.0.0(ajv@8.17.1)
+        version: 1.0.0(ajv@8.18.0)
       ajv-errors:
         specifier: ^1.0.1
-        version: 1.0.1(ajv@8.17.1)
+        version: 1.0.1(ajv@8.18.0)
       ajv-formats:
         specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
+        version: 3.0.1(ajv@8.18.0)
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
@@ -8583,11 +8583,11 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
+        specifier: ^8.18.0
+        version: 8.18.0
       ajv-formats:
         specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
+        version: 3.0.1(ajv@8.18.0)
       axios:
         specifier: ^1.12.2
         version: 1.12.2
@@ -13378,17 +13378,17 @@ importers:
         specifier: ^7.0.25
         version: 7.7.7
       ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
+        specifier: ^8.18.0
+        version: 8.18.0
       ajv-draft-04:
         specifier: ^1.0.0
-        version: 1.0.0(ajv@8.17.1)
+        version: 1.0.0(ajv@8.18.0)
       ajv-errors:
         specifier: ^1.0.1
-        version: 1.0.1(ajv@8.17.1)
+        version: 1.0.1(ajv@8.18.0)
       ajv-formats:
         specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
+        version: 3.0.1(ajv@8.18.0)
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
@@ -14828,7 +14828,7 @@ importers:
         version: 7.16.11(@babel/core@7.16.12)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.18.8)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8))
+        version: 29.7.0(@types/node@24.9.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@24.9.2))
       jest-junit:
         specifier: ^16.0.0
         version: 16.0.0
@@ -22124,6 +22124,9 @@ packages:
 
   ajv@8.17.1:
     resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
+
+  ajv@8.18.0:
+    resolution: {integrity: sha512-PlXPeEWMXMZ7sPYOHqmDyCJzcfNrUr3fGNKtezX14ykXOEIvyK81d+qydx89KY5O71FKMPaQ2vBfBFI5NHR63A==}
 
   ansi-align@2.0.0:
     resolution: {integrity: sha512-TdlOggdA/zURfMYa7ABC66j+oqfMew58KpJMbUlH3bcZP1b+cBHIHDDn5uH9INsxrHBPjsqM0tDB4jPTF/vgJA==}
@@ -32770,8 +32773,8 @@ snapshots:
       '@apidevtools/openapi-schemas': 2.1.0
       '@apidevtools/swagger-methods': 3.0.2
       '@jsdevtools/ono': 7.1.3
-      ajv: 8.17.1
-      ajv-draft-04: 1.0.0(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-draft-04: 1.0.0(ajv@8.18.0)
       call-me-maybe: 1.0.2
       openapi-types: 7.2.3
 
@@ -40605,43 +40608,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  '@jest/core@29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8))':
-    dependencies:
-      '@jest/console': 29.7.0
-      '@jest/reporters': 29.7.0(node-notifier@8.0.2)
-      '@jest/test-result': 29.7.0
-      '@jest/transform': 29.7.0
-      '@jest/types': 29.6.3
-      '@types/node': 22.18.8
-      ansi-escapes: 4.3.2
-      chalk: 4.1.2
-      ci-info: 3.3.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@22.18.8)(ts-node@10.9.2(@types/node@22.18.8))
-      jest-haste-map: 29.7.0
-      jest-message-util: 29.7.0
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-resolve-dependencies: 29.7.0
-      jest-runner: 29.7.0
-      jest-runtime: 29.7.0
-      jest-snapshot: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      jest-watcher: 29.7.0
-      micromatch: 4.0.5
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-ansi: 6.0.1
-    optionalDependencies:
-      node-notifier: 8.0.2
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   '@jest/core@29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@24.9.2)(typescript@5.5.3))':
     dependencies:
       '@jest/console': 29.7.0
@@ -41030,8 +40996,8 @@ snapshots:
 
   '@kubernetes-models/validate@3.0.0':
     dependencies:
-      ajv: 8.17.1
-      ajv-formats: 2.1.1(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 2.1.1(ajv@8.18.0)
       tslib: 2.8.1
 
   '@leichtgewicht/ip-codec@2.0.4': {}
@@ -42718,12 +42684,12 @@ snapshots:
       - '@types/react'
       - immer
 
-  '@readme/better-ajv-errors@1.6.0(ajv@8.17.1)':
+  '@readme/better-ajv-errors@1.6.0(ajv@8.18.0)':
     dependencies:
       '@babel/code-frame': 7.28.6
       '@babel/runtime': 7.28.4
       '@humanwhocodes/momoa': 2.0.4
-      ajv: 8.17.1
+      ajv: 8.18.0
       chalk: 4.1.2
       json-to-ast: 2.1.0
       jsonpointer: 5.0.1
@@ -42741,10 +42707,10 @@ snapshots:
       '@apidevtools/openapi-schemas': 2.1.0
       '@apidevtools/swagger-methods': 3.0.2
       '@jsdevtools/ono': 7.1.3
-      '@readme/better-ajv-errors': 1.6.0(ajv@8.17.1)
+      '@readme/better-ajv-errors': 1.6.0(ajv@8.18.0)
       '@readme/json-schema-ref-parser': 1.2.0
-      ajv: 8.17.1
-      ajv-draft-04: 1.0.0(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-draft-04: 1.0.0(ajv@8.18.0)
       call-me-maybe: 1.0.2
       openapi-types: 7.2.3
 
@@ -42833,13 +42799,13 @@ snapshots:
 
   '@serverlessworkflow/sdk-typescript@0.8.4':
     dependencies:
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 3.0.1(ajv@8.18.0)
       js-yaml: 4.1.0
 
   '@severlessworkflow/sdk-typescript@3.0.3':
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
       js-yaml: 4.1.1
 
   '@sideway/address@4.1.4':
@@ -46623,17 +46589,17 @@ snapshots:
       clean-stack: 4.2.0
       indent-string: 5.0.0
 
-  ajv-draft-04@1.0.0(ajv@8.17.1):
+  ajv-draft-04@1.0.0(ajv@8.18.0):
     optionalDependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
 
-  ajv-errors@1.0.1(ajv@8.17.1):
+  ajv-errors@1.0.1(ajv@8.18.0):
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
 
-  ajv-formats@2.1.1(ajv@8.17.1):
+  ajv-formats@2.1.1(ajv@8.18.0):
     optionalDependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
 
   ajv-formats@3.0.1(ajv@8.16.0):
     optionalDependencies:
@@ -46643,13 +46609,17 @@ snapshots:
     optionalDependencies:
       ajv: 8.17.1
 
+  ajv-formats@3.0.1(ajv@8.18.0):
+    optionalDependencies:
+      ajv: 8.18.0
+
   ajv-keywords@3.5.2(ajv@6.12.6):
     dependencies:
       ajv: 6.12.6
 
-  ajv-keywords@5.1.0(ajv@8.17.1):
+  ajv-keywords@5.1.0(ajv@8.18.0):
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
       fast-deep-equal: 3.1.3
 
   ajv@6.12.6:
@@ -46667,6 +46637,13 @@ snapshots:
       uri-js: 4.4.1
 
   ajv@8.17.1:
+    dependencies:
+      fast-deep-equal: 3.1.3
+      fast-uri: 3.0.1
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
+
+  ajv@8.18.0:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-uri: 3.0.1
@@ -49098,21 +49075,6 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-config: 29.7.0(@types/node@22.18.8)(ts-node@10.9.2(@types/node@22.18.8)(typescript@5.5.3))
-      jest-util: 29.7.0
-      prompts: 2.4.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  create-jest@29.7.0(@types/node@22.18.8)(ts-node@10.9.2(@types/node@22.18.8)):
-    dependencies:
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@22.18.8)(ts-node@10.9.2(@types/node@22.18.8))
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -53077,27 +53039,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-cli@29.7.0(@types/node@22.18.8)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8)):
-    dependencies:
-      '@jest/core': 29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8))
-      '@jest/test-result': 29.7.0
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@22.18.8)(ts-node@10.9.2(@types/node@22.18.8))
-      exit: 0.1.2
-      import-local: 3.0.2
-      jest-config: 29.7.0(@types/node@22.18.8)(ts-node@10.9.2(@types/node@22.18.8))
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      yargs: 17.7.2
-    optionalDependencies:
-      node-notifier: 8.0.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   jest-cli@29.7.0(@types/node@24.9.2):
     dependencies:
       '@jest/core': 29.7.0
@@ -53301,37 +53242,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.18.8
       ts-node: 10.9.2(@types/node@22.18.8)(typescript@5.5.3)
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-
-  jest-config@29.7.0(@types/node@22.18.8)(ts-node@10.9.2(@types/node@22.18.8)):
-    dependencies:
-      '@babel/core': 7.26.10
-      '@jest/test-sequencer': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.26.10)
-      chalk: 4.1.2
-      ci-info: 3.3.2
-      deepmerge: 4.2.2
-      glob: 7.2.3
-      graceful-fs: 4.2.11
-      jest-circus: 29.7.0
-      jest-environment-node: 29.7.0
-      jest-get-type: 29.6.3
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-runner: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      micromatch: 4.0.5
-      parse-json: 5.2.0
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 22.18.8
-      ts-node: 10.9.2(@types/node@22.18.8)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -53854,20 +53764,6 @@ snapshots:
       '@jest/types': 29.6.3
       import-local: 3.0.2
       jest-cli: 29.7.0(@types/node@22.18.8)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8)(typescript@5.5.3))
-    optionalDependencies:
-      node-notifier: 8.0.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  jest@29.7.0(@types/node@22.18.8)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8)):
-    dependencies:
-      '@jest/core': 29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8))
-      '@jest/types': 29.6.3
-      import-local: 3.0.2
-      jest-cli: 29.7.0(@types/node@22.18.8)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.18.8))
     optionalDependencies:
       node-notifier: 8.0.2
     transitivePeerDependencies:
@@ -57897,16 +57793,16 @@ snapshots:
   schema-utils@4.0.0:
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 8.17.1
-      ajv-formats: 2.1.1(ajv@8.17.1)
-      ajv-keywords: 5.1.0(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 2.1.1(ajv@8.18.0)
+      ajv-keywords: 5.1.0(ajv@8.18.0)
 
   schema-utils@4.2.0:
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 8.17.1
-      ajv-formats: 2.1.1(ajv@8.17.1)
-      ajv-keywords: 5.1.0(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 2.1.1(ajv@8.18.0)
+      ajv-keywords: 5.1.0(ajv@8.18.0)
 
   scuid@1.1.0: {}
 
@@ -59616,24 +59512,6 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.3.92
 
-  ts-node@10.9.2(@types/node@22.18.8):
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
-      '@types/node': 22.18.8
-      acorn: 8.12.1
-      acorn-walk: 8.2.0
-      arg: 4.1.0
-      create-require: 1.1.1
-      diff: 4.0.1
-      make-error: 1.3.6
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    optional: true
-
   ts-node@10.9.2(@types/node@22.18.8)(typescript@5.5.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
@@ -61341,7 +61219,7 @@ snapshots:
 
   yaml-language-server@1.10.0:
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
       request-light: 0.5.8
       vscode-json-languageservice: 4.1.8
       vscode-languageserver: 7.0.0
