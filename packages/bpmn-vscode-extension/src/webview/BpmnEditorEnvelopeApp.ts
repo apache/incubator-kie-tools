@@ -17,13 +17,16 @@
  * under the License.
  */
 
-import { VsCodeBpmnEditorFactory } from "@kie-tools/kie-bc-editors/dist/bpmn/envelope/vscode";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { BpmnMultiplyingArchitectureEditor } from "@kie-tools/bpmn-editor-envelope/dist/BpmnMultiplyingArchitectureEditorFactory";
+import { BpmnEditorChannelApi } from "@kie-tools/bpmn-editor-envelope/dist/BpmnEditorChannelApi";
+import { BpmnEditorEnvelopeApi } from "@kie-tools/bpmn-editor-envelope/dist/BpmnEditorEnvelopeApi";
+import { BpmnEditorEnvelopeApiImpl } from "@kie-tools/bpmn-editor-envelope/dist/BpmnEditorEnvelopeApiImpl";
 
 declare const acquireVsCodeApi: any;
 
-EditorEnvelope.init({
+EditorEnvelope.initCustom<BpmnMultiplyingArchitectureEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new VsCodeBpmnEditorFactory({ shouldLoadResourcesDynamically: true }),
+  apiImplFactory: { create: (args) => new BpmnEditorEnvelopeApiImpl(args) },
 });

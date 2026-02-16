@@ -19,7 +19,6 @@
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
-const stunnerEditors = require("@kie-tools/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
@@ -66,8 +65,6 @@ module.exports = async (webpackEnv) => [
   merge(commonConfig(webpackEnv), {
     target: "web",
     entry: {
-      "webview/DmnEditorEnvelopeApp": "./src/webview/DmnEditorEnvelopeApp.ts",
-      "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts",
       "webview/NewDmnEditorEnvelopeApp": "./src/webview/NewDmnEditorEnvelopeApp.ts",
       "webview/NewTestScenarioEditorEnvelopeApp": "./src/webview/NewTestScenarioEditorEnvelopeApp.ts",
     },
@@ -77,21 +74,6 @@ module.exports = async (webpackEnv) => [
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
-          {
-            from: stunnerEditors.dmnEditorPath(),
-            to: "webview/editors/dmn",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
-          {
-            from: stunnerEditors.scesimEditorPath(),
-            to: "webview/editors/scesim",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
-          {
-            from: stunnerEditors.dmnEditorPath(),
-            to: "target/dmn",
-            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-          },
           {
             from: vscodeJavaCodeCompletionExtensionPlugin.path(),
             to: "server/",

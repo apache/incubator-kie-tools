@@ -42,7 +42,6 @@ function getDevDeploymentImageUrl(imageEnvVars: any) {
 export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_VERSION: buildEnv.root.version,
   KIE_SANDBOX_CORS_PROXY_URL: buildEnv.onlineEditor.corsProxyUrl,
-  KIE_SANDBOX_FEEDBACK_URL: buildEnv.onlineEditor.feedbackUrl,
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
   KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD: buildEnv.onlineEditor.disableExtendedServicesWizard,
   KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDevDeploymentImageUrl(buildEnv.devDeployments.baseImage),
@@ -123,8 +122,8 @@ export const defaultEnvJson: EnvJson = {
       extension: FileTypes.BPMN,
       filePathGlob: GLOB_PATTERN.bpmn,
       editor: {
-        resourcesPathPrefix: "gwt-editors/bpmn",
-        path: "bpmn-envelope.html",
+        resourcesPathPrefix: "",
+        path: "bpmn-editor-envelope.html",
       },
       card: {
         title: "Workflow",

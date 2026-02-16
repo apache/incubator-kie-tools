@@ -1,0 +1,72 @@
+{
+  "name": "@kie-tools/dmn-uniforms-patternfly-form-wrapper",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.json && pnpm test",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest  --verbose --passWithNoTests\""
+  },
+  "dependencies": {
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools/dmn-runner": "workspace:*",
+    "@kie-tools/extended-services-api": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/uniforms-patternfly": "workspace:*",
+    "@kie-tools/uniforms-patternfly-form-wrapper": "workspace:*",
+    "@patternfly/react-core": "^5.4.1",
+    "@patternfly/react-icons": "^5.4.1",
+    "deep-object-diff": "^1.1.9",
+    "lodash": "^4.17.23",
+    "uniforms": "^3.10.2",
+    "uniforms-bridge-json-schema": "^3.10.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^12.1.5",
+    "@types/jest": "^29.5.12",
+    "@types/jest-when": "^3.5.5",
+    "@types/json-schema": "^7.0.11",
+    "@types/lodash": "^4.14.168",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "copyfiles": "^2.4.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "jest-when": "^3.6.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.1.5",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
+  }
+}

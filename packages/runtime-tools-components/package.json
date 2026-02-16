@@ -36,7 +36,7 @@
     "@patternfly/react-table": "^5.4.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "copyfiles": "^2.4.1",
     "keycloak-js": "^23.0.5",
     "lodash": "^4.17.23",

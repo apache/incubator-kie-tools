@@ -510,9 +510,9 @@ SelectField.test.tsx.snap
 TextField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/UnsupportedField.test.tsx.snap
 UnsupportedField.test.tsx.snap
-# packages/form-dmn/tests/__snapshots__/FormDmn.test.tsx.snap
+# packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmn.test.tsx.snap
 FormDmn.test.tsx.snap
-# packages/form-dmn/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
+# packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
 FormDmnOutputs.test.tsx.snap
 # packages/image-builder/README.md
 README.md
@@ -558,14 +558,6 @@ default-global.wid
 Log.wid
 # packages/kie-editors-dev-vscode-extension/e2e-tests/resources/src/main/java/org/kie/businessapp/Email.wid
 Email.wid
-# packages/kie-editors-standalone/e2e-tests/cypress/fixtures/default.wid
-default.wid
-# packages/kie-editors-standalone/e2e-tests/src/resources/widDefinitions.wid
-widDefinitions.wid
-# packages/kie-editors-standalone/resources/bpmn/bpmnEnvelopeIndex.template
-bpmnEnvelopeIndex.template
-# packages/kie-editors-standalone/resources/dmn/dmnEnvelopeIndex.template
-dmnEnvelopeIndex.template
 # packages/kie-sandbox-distribution/.env
 .env
 # packages/kie-sandbox-fs/src/DefaultBackend.js

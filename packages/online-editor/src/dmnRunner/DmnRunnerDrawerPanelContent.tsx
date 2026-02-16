@@ -26,7 +26,7 @@ import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
-import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/form-dmn";
+import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/dmn-uniforms-patternfly-form-wrapper";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -40,7 +40,6 @@ import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextPr
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
-import { useSettings } from "../settings/SettingsContext";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 enum ButtonPosition {
@@ -75,9 +74,6 @@ export function DmnRunnerDrawerPanelContent() {
   const { envelopeServer, notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
-
-  const { settings } = useSettings();
-  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -336,15 +332,11 @@ export function DmnRunnerDrawerPanelContent() {
                       locale={locale}
                       notificationsPanel={true}
                       openEvaluationTab={openEvaluationTab}
-                      openBoxedExpressionEditor={
-                        !isLegacyDmnEditor
-                          ? (nodeId: string) => {
-                              const newDmnEditorEnvelopeApi =
-                                envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
-                              newDmnEditorEnvelopeApi.notifications.newDmnEditor_openBoxedExpressionEditor.send(nodeId);
-                            }
-                          : undefined
-                      }
+                      openBoxedExpressionEditor={(nodeId: string) => {
+                        const newDmnEditorEnvelopeApi =
+                          envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                        newDmnEditorEnvelopeApi.notifications.newDmnEditor_openBoxedExpressionEditor.send(nodeId);
+                      }}
                       openedBoxedExpressionEditorNodeId={openedBoxedExpressionNodeId}
                     />
                   </PageSection>
