@@ -42,6 +42,7 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
       { token: Element[Element.UnknownVariable], foreground: "#ff0000", fontStyle: "underline bold" },
       { token: Element[Element.FunctionParameterVariable], foreground: "#036e9b", fontStyle: "italic" },
       { token: Element[Element.DynamicVariable], foreground: "#8b97a2", fontStyle: "underline" },
+      { token: Element[Element.NonColorizedElement], fontStyle: "italic" },
     ],
     colors: {
       "editorLineNumber.foreground": "#000000",
