@@ -34,6 +34,7 @@ import { useCustomTasks } from "../../../customTasks/BpmnEditorCustomTasksContex
 import { CustomTask } from "../../../BpmnEditor";
 import { WritableDraft } from "immer";
 import { State } from "../../../store/Store";
+import { deleteInterfaceAndOperation } from "../../../mutations/deleteInterfaceAndOperation";
 
 export function useTaskNodeMorphingActions(task: Task) {
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
@@ -110,9 +111,15 @@ export function useTaskNodeMorphingActions(task: Task) {
       // 6 - Call activity
       bpmnEditorStoreApi.setState((s) => {
         _morphTo(s, newTaskElement, [], []);
+        if (task.__$$element === "serviceTask" && newTaskElement !== "serviceTask") {
+          deleteInterfaceAndOperation({
+            definitions: s.bpmn.model.definitions,
+            serviceTaskId: task["@_id"],
+          });
+        }
       });
     },
-    [bpmnEditorStoreApi, _morphTo]
+    [bpmnEditorStoreApi, _morphTo, task]
   );
 
   const morphToCustom = useCallback(

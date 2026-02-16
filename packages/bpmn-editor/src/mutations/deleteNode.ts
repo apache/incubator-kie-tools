@@ -29,6 +29,7 @@ import { deleteEdge } from "./deleteEdge";
 import { FoundElement, visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { ElementExclusion } from "@kie-tools/xml-parser-ts/dist/elementFilter";
+import { deleteInterfaceAndOperation } from "./deleteInterfaceAndOperation";
 
 export function deleteNode({
   definitions,
@@ -82,6 +83,14 @@ export function deleteNode({
   // if flowElement or artifact
   if (foundElement) {
     deletedBpmnElement = foundElement.array.splice(foundElement.index, 1)?.[0] as BpmnNodeElement | undefined;
+  }
+
+  // if Service Task
+  if (deletedBpmnElement?.__$$element === "serviceTask") {
+    deleteInterfaceAndOperation({
+      definitions,
+      serviceTaskId: deletedBpmnElement["@_id"],
+    });
   }
 
   // if lane
