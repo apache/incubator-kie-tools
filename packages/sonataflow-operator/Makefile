@@ -219,7 +219,7 @@ docker-buildx: generate ## Build and push docker image for the manager for cross
 
 .PHONY: container-build
 container-build: ## Build the container image
-	cekit -v --descriptor images/manager.yaml build ${build_options} $(BUILDER) --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
+	cekit -v --descriptor images/manager.yaml build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
 ifneq ($(ignore_tag),true)
 	$(BUILDER) tag sonataflow-operator:latest ${IMG}
 endif
