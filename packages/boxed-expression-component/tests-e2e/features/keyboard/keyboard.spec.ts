@@ -51,7 +51,7 @@ test.describe("Keyboard", () => {
       await expect(decisionTable.cellAt({ row: 2, column: 1 }).content).toHaveClass(ACTIVE_CLASS_REGEXP);
 
       await page.keyboard.press("Escape");
-      await expect(decisionTable.cellAt({ row: 1, column: 1 }).content).not.toContainText(`"test2"`);
+      await expect(decisionTable.cellAt({ row: 2, column: 1 }).content).not.toContainText(`"test2"`);
       await expect(decisionTable.cellAt({ row: 2, column: 1 }).content).toHaveClass(ACTIVE_CLASS_REGEXP);
 
       await page.keyboard.press("Tab");
@@ -103,7 +103,7 @@ test.describe("Keyboard", () => {
       await expect(resultDecisionTable.cellAt({ row: 2, column: 1 }).content).toHaveClass(ACTIVE_CLASS_REGEXP);
 
       await page.keyboard.press("Escape");
-      await expect(resultDecisionTable.cellAt({ row: 1, column: 1 }).content).not.toContainText(`"test2"`);
+      await expect(resultDecisionTable.cellAt({ row: 2, column: 1 }).content).not.toContainText(`"test2"`);
       await expect(resultDecisionTable.cellAt({ row: 2, column: 1 }).content).toHaveClass(ACTIVE_CLASS_REGEXP);
 
       await page.keyboard.press("Tab");
