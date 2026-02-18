@@ -20,15 +20,19 @@
 import * as path from "path";
 import { startGitHttpServer } from "./server";
 
+const logPrefix = process.argv[4] || "git-repo-http-dev-server";
+
 function printUsage(): void {
-  console.error(`[git-repo-http-dev-server] Usage: node cli.js [port] [content-root-path]`);
+  console.error(
+    `[${logPrefix}] Usage: kie-tools--accelerator-git-http-server [port] [content-root-path] [accelerator-name?]`
+  );
 }
 
 // Validate args
 const portArg = process.argv[2];
 const port = Number.parseInt(portArg);
 if (isNaN(port)) {
-  console.error(`[git-repo-http-dev-server] Invalid port number '${portArg}'.`);
+  console.error(`[${logPrefix}] Invalid port number '${portArg}'.`);
   printUsage();
   process.exit(1);
 }
@@ -40,9 +44,10 @@ try {
   startGitHttpServer({
     port,
     contentRoot,
+    logPrefix,
   });
 } catch (error) {
-  console.error(`[git-repo-http-dev-server] Error: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(`[${logPrefix}] Error: ${error instanceof Error ? error.message : String(error)}`);
   printUsage();
   process.exit(1);
 }
