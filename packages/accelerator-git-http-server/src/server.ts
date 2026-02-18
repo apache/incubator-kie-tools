@@ -117,7 +117,12 @@ function getEnvForGitHttpBackend(req: http.IncomingMessage, contentRoot: string)
   for (const header in req.headers) {
     const name = header.toUpperCase().replace(/-/g, "_");
     if (gitHttpBackendVariableNames.includes(name)) {
-      envVars[name] = req.headers[header] as string;
+      const headerValue = req.headers[header];
+      if (typeof headerValue === "string") {
+        envVars[name] = headerValue;
+      } else if (Array.isArray(headerValue) && headerValue.length > 0) {
+        envVars[name] = headerValue[0];
+      }
     }
   }
 
@@ -146,9 +151,15 @@ function writeData(chunk: Buffer, buffers: BufferState, res: http.ServerResponse
 function writeHeader(header: Buffer[], res: http.ServerResponse): void {
   const headerLines = Buffer.concat(header).toString().split("\r\n");
   for (const headerLine of headerLines) {
+    if (!headerLine) {
+      continue;
+    }
     const headerSplit = headerLine.split(":");
-    const headerKey = headerSplit[0];
-    const headerVal = headerSplit[1];
+    if (headerSplit.length < 2) {
+      continue;
+    }
+    const headerKey = headerSplit[0].trim();
+    const headerVal = headerSplit.slice(1).join(":").trim();
     if (headerKey && headerVal) {
       res.setHeader(headerKey, headerVal);
     }
@@ -162,7 +173,7 @@ function writeBody(body: Buffer[], res: http.ServerResponse): void {
 function readMaybeHeaderBuffer(nextBuffer: Buffer, buffers: BufferState): boolean {
   const length = Buffer.from("\r\n\r\n", "utf-8").length;
   const offset = nextBuffer.indexOf("\r\n\r\n", 0, "utf-8");
-  if (offset <= 0) {
+  if (offset < 0) {
     return false;
   }
 

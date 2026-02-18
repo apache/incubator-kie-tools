@@ -52,7 +52,7 @@ kie-tools--accelerator-git-http-server 8080 ./dist-dev kie-sandbox-accelerator-q
 
 ## Configuration Options
 
-### `StartServerOptions`
+### `GitHttpServerConfig`
 
 | Option        | Type     | Required | Description                                                   |
 | ------------- | -------- | -------- | ------------------------------------------------------------- |
@@ -80,7 +80,7 @@ dist-dev/
 
 ## How It Works
 
-1. **Git Repositories**: When a request is made to a path ending with `.git`, the server uses Git's `http-backend` to handle the request, enabling full Git operations over HTTP.
+1. **Git Repositories**: When a request is made where the second path segment (typically the repository name, e.g. `/my-repo.git/...`) ends with `.git`, the server uses Git's `http-backend` to handle the request, enabling full Git operations over HTTP.
 2. **Static Content**: All other requests are served as static files using the `serve-static` middleware.
 
 ---
