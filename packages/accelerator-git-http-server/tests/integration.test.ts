@@ -22,56 +22,20 @@ import * as fs from "fs";
 import * as path from "path";
 import { startGitHttpServer } from "../src/server";
 
-// Helper types
-interface ServerConfig {
+async function startServerAndWait(config: {
   port: number;
   contentRoot: string;
   logPrefix?: string;
-}
-
-interface TestFile {
-  path: string;
-  content: string;
-}
-
-// Test helper functions
-async function startServerAndWait(config: ServerConfig): Promise<http.Server> {
+}): Promise<http.Server> {
   const server = startGitHttpServer(config);
   return new Promise((resolve) => {
     server.on("listening", () => resolve(server));
   });
 }
 
-function httpGetPromise(url: string): Promise<http.IncomingMessage> {
-  return new Promise((resolve, reject) => {
-    http.get(url, resolve).on("error", reject);
-  });
-}
-
-async function readResponseBody(res: http.IncomingMessage): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    res.on("data", (chunk) => {
-      data += chunk;
-    });
-    res.on("end", () => resolve(data));
-  });
-}
-
-function createTestFiles(baseDir: string, files: TestFile[]): void {
-  files.forEach(({ path: filePath, content }) => {
-    const fullPath = path.join(baseDir, filePath);
-    const dir = path.dirname(fullPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(fullPath, content);
-  });
-}
-
 describe("Integration Tests", () => {
   let server: http.Server;
-  const testPort = 9881;
+  let testPort = 9881;
   const testContentRoot = path.join(__dirname, "../dist-tests/test-integration-content");
 
   beforeEach(() => {
@@ -82,18 +46,26 @@ describe("Integration Tests", () => {
 
   afterEach(async () => {
     if (server) {
-      await new Promise<void>((resolve) => server.close(() => resolve()));
+      await new Promise<void>((resolve, reject) => {
+        server.close((err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+      server = null as any;
     }
 
     if (fs.existsSync(testContentRoot)) {
       fs.rmSync(testContentRoot, { recursive: true, force: true });
     }
+
+    testPort++;
   });
 
   describe("Mixed content serving", () => {
     it("should serve both Git repos and static content simultaneously", async () => {
       // Setup
-      createTestFiles(testContentRoot, [{ path: "index.html", content: "<html><body>Test</body></html>" }]);
+      fs.writeFileSync(path.join(testContentRoot, "index.html"), "<html><body>Test</body></html>");
       fs.mkdirSync(path.join(testContentRoot, "test.git"), { recursive: true });
 
       server = await startServerAndWait({
@@ -103,85 +75,86 @@ describe("Integration Tests", () => {
 
       // Test static content and Git repo endpoint concurrently
       const [staticRes, gitRes] = await Promise.all([
-        httpGetPromise(`http://localhost:${testPort}/index.html`),
-        httpGetPromise(`http://localhost:${testPort}/test.git/info/refs`),
+        fetch(`http://localhost:${testPort}/index.html`),
+        fetch(`http://localhost:${testPort}/test.git/info/refs`),
       ]);
 
-      expect(staticRes.statusCode).toBe(200);
-      expect(gitRes.statusCode).toBeDefined();
+      expect(staticRes.status).toBe(200);
+      expect(gitRes.status).toBeDefined();
     });
 
     it("should handle multiple concurrent requests", async () => {
       const files = ["file1.txt", "file2.txt", "file3.txt", "file4.txt"];
-      createTestFiles(
-        testContentRoot,
-        files.map((file) => ({ path: file, content: `Content of ${file}` }))
-      );
+      files.forEach((file) => {
+        fs.writeFileSync(path.join(testContentRoot, file), `Content of ${file}`);
+      });
 
       server = await startServerAndWait({
         port: testPort,
         contentRoot: testContentRoot,
       });
 
-      const responses = await Promise.all(files.map((file) => httpGetPromise(`http://localhost:${testPort}/${file}`)));
+      const responses = await Promise.all(files.map((file) => fetch(`http://localhost:${testPort}/${file}`)));
 
       responses.forEach((res) => {
-        expect(res.statusCode).toBe(200);
+        expect(res.status).toBe(200);
       });
     });
   });
 
   describe("Content type handling", () => {
     it("should serve HTML files with correct content type", async () => {
-      createTestFiles(testContentRoot, [{ path: "test.html", content: "<html></html>" }]);
+      fs.writeFileSync(path.join(testContentRoot, "test.html"), "<html></html>");
 
       server = await startServerAndWait({
         port: testPort,
         contentRoot: testContentRoot,
       });
 
-      const res = await httpGetPromise(`http://localhost:${testPort}/test.html`);
-      expect(res.headers["content-type"]).toContain("text/html");
+      const res = await fetch(`http://localhost:${testPort}/test.html`);
+      expect(res.headers.get("content-type")).toContain("text/html");
     });
 
     it("should serve JSON files with correct content type", async () => {
-      createTestFiles(testContentRoot, [{ path: "data.json", content: '{"key": "value"}' }]);
+      fs.writeFileSync(path.join(testContentRoot, "data.json"), '{"key": "value"}');
 
       server = await startServerAndWait({
         port: testPort,
         contentRoot: testContentRoot,
       });
 
-      const res = await httpGetPromise(`http://localhost:${testPort}/data.json`);
-      expect(res.headers["content-type"]).toContain("application/json");
+      const res = await fetch(`http://localhost:${testPort}/data.json`);
+      expect(res.headers.get("content-type")).toContain("application/json");
     });
 
     it("should serve CSS files with correct content type", async () => {
-      createTestFiles(testContentRoot, [{ path: "styles.css", content: "body { margin: 0; }" }]);
+      fs.writeFileSync(path.join(testContentRoot, "styles.css"), "body { margin: 0; }");
 
       server = await startServerAndWait({
         port: testPort,
         contentRoot: testContentRoot,
       });
 
-      const res = await httpGetPromise(`http://localhost:${testPort}/styles.css`);
-      expect(res.headers["content-type"]).toContain("text/css");
+      const res = await fetch(`http://localhost:${testPort}/styles.css`);
+      expect(res.headers.get("content-type")).toContain("text/css");
     });
   });
 
   describe("Directory structure", () => {
     it("should handle nested directory structures", async () => {
-      createTestFiles(testContentRoot, [{ path: "level1/level2/level3/deep.txt", content: "Deep content" }]);
+      const nestedPath = path.join(testContentRoot, "level1", "level2", "level3");
+      fs.mkdirSync(nestedPath, { recursive: true });
+      fs.writeFileSync(path.join(nestedPath, "deep.txt"), "Deep content");
 
       server = await startServerAndWait({
         port: testPort,
         contentRoot: testContentRoot,
       });
 
-      const res = await httpGetPromise(`http://localhost:${testPort}/level1/level2/level3/deep.txt`);
-      const data = await readResponseBody(res);
+      const res = await fetch(`http://localhost:${testPort}/level1/level2/level3/deep.txt`);
+      const data = await res.text();
 
-      expect(res.statusCode).toBe(200);
+      expect(res.status).toBe(200);
       expect(data).toBe("Deep content");
     });
 
