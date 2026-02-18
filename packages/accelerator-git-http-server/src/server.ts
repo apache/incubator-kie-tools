@@ -35,7 +35,6 @@ const gitHttpBackendVariableNames = [
   "REMOTE_USER",
   "CONTENT_LENGTH",
   "HTTP_CONTENT_ENCODING",
-  "REMOTE_USER",
   "REMOTE_ADDR",
   "GIT_COMMITTER_NAME",
   "GIT_COMMITTER_EMAIL",
