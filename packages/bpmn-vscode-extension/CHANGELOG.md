@@ -15,9 +15,9 @@
    under the License.
 -->
 
-# 10.1.0
+# 10.2.0
 
-- Removed the classic BPMN Editor.
+- BPMN Editor (classic) removed.
 
 # 10.1.0
 

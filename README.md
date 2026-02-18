@@ -257,32 +257,3 @@ This repository contains several applications. To develop each one of them indiv
 #### Knative Workflow plugin
 
 [Read the documentation](./packages/kn-plugin-workflow/README.md)
-
-## Libraries
-
-#### Stunner Editors
-
-The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of this repository.
-After cloning the repo, start with a fresh build.
-
-- `pnpm bootstrap -F @kie-tools/stunner-editors...`
-
-- `pnpm -F @kie-tools/stunner-editors... build:dev`
-
-After that, you're ready to start developing the Editors individually.
-
-- BPMN
-
-  - Located at `packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime`.
-  - Run `mvn clean gwt:run` to start. To enable live-reloading capability, run `mvn clean gwt:run -Phot-reload`
-
-- DMN
-
-  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime`.
-  - Run `mvn clean gwt:run` to start. To enable live-reloading capability, run `mvn clean gwt:run -Phot-reload`
-  - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
-
-- Test Scenario (SceSim)
-
-  - Located at `packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-testing`.
-  - Run `mvn clean gwt:run` to start.

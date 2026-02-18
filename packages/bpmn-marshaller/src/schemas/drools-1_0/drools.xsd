@@ -116,7 +116,7 @@
     </xsd:complexType>
   </xsd:element>
 
-  <!-- Manually written to reflect what's actually happening on BPMN Editor (classic) -->
+  <!-- Manually written to reflect what used to happen in BPMN Editor (classic) -->
   <xsd:element name="metaData">
     <xsd:complexType>
       <xsd:sequence>
@@ -126,7 +126,7 @@
     </xsd:complexType>
   </xsd:element>
 
-  <!-- Manually edited to reflect what's actually happening on BPMN Editor (classic) -->
+  <!-- Manually edited to reflect what used to happen in on BPMN Editor (classic) -->
   <!--
   <xsd:element name="metadata">
     <xsd:complexType>
