@@ -1,7 +1,7 @@
 {
-  "name": "@kie-tools/xml-parser-ts-codegen",
+  "name": "@kie-tools/accelerator-git-http-server",
   "version": "0.0.0",
-  "description": "",
+  "description": "Reusable Git HTTP server for accelerator packages",
   "license": "Apache-2.0",
   "keywords": [],
   "homepage": "https://github.com/apache/incubator-kie-tools",
@@ -13,28 +13,31 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "bin": {
-    "xml-parser-ts-codegen": "bin.js"
+    "kie-tools--accelerator-git-http-server": "bin.js"
   },
+  "types": "dist/server.d.ts",
+  "main": "dist/server.js",
   "files": [
+    "bin.js",
     "dist",
     "src"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json",
+    "build:dev": "rimraf dist && tsc",
+    "build:prod": "pnpm lint && rimraf dist && tsc",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
-    "@kie-tools/xml-parser-ts": "workspace:*",
-    "lodash": "^4.17.23"
+    "finalhandler": "^1.3.1",
+    "serve-static": "^1.16.2"
   },
   "devDependencies": {
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/lodash": "^4.14.168",
+    "@types/finalhandler": "^1.2.3",
     "@types/node": "^24.10.11",
-    "glob": "^10.2.7",
+    "@types/serve-static": "^1.15.7",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "typescript": "^5.9.3"

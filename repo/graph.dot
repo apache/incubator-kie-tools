@@ -51,6 +51,9 @@ digraph G {
   "@kie-tools-examples/uniforms-patternfly" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/uniforms-patternfly" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/accelerator-git-http-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/eslint" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/tsconfig" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -70,11 +73,9 @@ digraph G {
   "@kie-tools/chrome-extension-test-helper" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "chrome-extension-serverless-workflow-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-combined-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/tsconfig" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/cors-proxy" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/jest-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/eslint" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-builder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -274,6 +275,9 @@ digraph G {
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
+  "@kie-tools/accelerator-git-http-server" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/accelerator-git-http-server" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/accelerator-git-http-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/playwright-base" [ style = "dashed", color = "blue" ];
@@ -464,6 +468,7 @@ digraph G {
   "kie-editors-dev-vscode-extension" -> "@kie-tools/scesim-editor-envelope" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "black" ];
+  "@kie-tools/kie-sandbox-accelerator-quarkus" -> "@kie-tools/accelerator-git-http-server" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-accelerator-quarkus" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-distribution" -> "@kie-tools/cors-proxy-image" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-distribution" -> "@kie-tools/kie-sandbox-extended-services-image" [ style = "solid", color = "black" ];
