@@ -41,13 +41,13 @@ const server = startGitHttpServer({
 ### As a CLI Tool
 
 ```bash
-kie-tools--accelerator-git-http-server [port] [content-root-path]
+kie-tools--accelerator-git-http-server [port] [content-root-path] [accelerator-name?]
 ```
 
 Example:
 
 ```bash
-kie-tools--accelerator-git-http-server 8080 ./dist-dev
+kie-tools--accelerator-git-http-server 8080 ./dist-dev kie-sandbox-accelerator-quarkus-git-http-server
 ```
 
 ## Configuration Options
