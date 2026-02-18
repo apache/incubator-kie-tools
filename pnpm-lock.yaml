@@ -1145,6 +1145,9 @@ importers:
       '@kie-tools/eslint':
         specifier: workspace:*
         version: link:../eslint
+      '@kie-tools/jest-base':
+        specifier: workspace:*
+        version: link:../jest-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -1154,18 +1157,36 @@ importers:
       '@types/finalhandler':
         specifier: ^1.2.3
         version: 1.2.4
+      '@types/jest':
+        specifier: ^29.5.12
+        version: 29.5.12
+      '@types/jest-when':
+        specifier: ^3.5.5
+        version: 3.5.5
       '@types/node':
         specifier: ^24.10.11
         version: 24.10.11
       '@types/serve-static':
         specifier: ^1.15.7
         version: 1.15.10
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3))
+      jest-junit:
+        specifier: ^16.0.0
+        version: 16.0.0
+      jest-when:
+        specifier: ^3.6.0
+        version: 3.6.0(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+      ts-jest:
+        specifier: ^29.1.5
+        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1286,7 +1307,7 @@ importers:
         version: 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: ^7.3.2
-        version: 7.6.13(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(webpack-dev-server@4.15.2)(webpack-hot-middleware@2.25.4)
+        version: 7.6.13(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(webpack-dev-server@4.15.2)(webpack-hot-middleware@2.25.4)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -1343,13 +1364,13 @@ importers:
         version: 7.6.13(encoding@0.1.13)
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(esbuild@0.18.20)(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       webpack:
         specifier: ^5.104.1
-        version: 5.104.1(@swc/core@1.3.92)(webpack-cli@4.10.0)
+        version: 5.104.1(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.2)(webpack@5.104.1)
@@ -1509,7 +1530,7 @@ importers:
         version: 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: ^7.3.2
-        version: 7.6.13(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(webpack-dev-server@4.15.2)(webpack-hot-middleware@2.25.4)
+        version: 7.6.13(@babel/core@7.28.3)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(webpack-dev-server@4.15.2)(webpack-hot-middleware@2.25.4)
       '@types/d3-drag':
         specifier: ^3.0.3
         version: 3.0.7
@@ -1569,7 +1590,7 @@ importers:
         version: 5.9.3
       webpack:
         specifier: ^5.104.1
-        version: 5.104.1(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
+        version: 5.104.1(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.2)(webpack@5.104.1)
@@ -39787,7 +39808,7 @@ snapshots:
       '@babel/core': 7.28.3
       find-cache-dir: 4.0.0
       schema-utils: 4.3.3
-      webpack: 5.104.1(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
+      webpack: 5.104.1(webpack-cli@4.10.0)
 
   babel-plugin-add-react-displayname@0.0.5: {}
 
@@ -50023,6 +50044,25 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.28.3)
       esbuild: 0.15.13
+
+  ts-jest@29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(esbuild@0.18.20)(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))(typescript@5.9.3):
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3))
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.4
+      typescript: 5.9.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.28.3
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.28.3)
+      esbuild: 0.18.20
 
   ts-jest@29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.10.11)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.10.11)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:

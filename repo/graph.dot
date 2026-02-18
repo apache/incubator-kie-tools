@@ -53,6 +53,7 @@ digraph G {
   "@kie-tools/uniforms-patternfly" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/accelerator-git-http-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/eslint" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/jest-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/tsconfig" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -75,7 +76,6 @@ digraph G {
   "@kie-tools/serverless-workflow-combined-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/jest-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-builder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -276,7 +276,7 @@ digraph G {
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools/accelerator-git-http-server" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
-  "@kie-tools/accelerator-git-http-server" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/accelerator-git-http-server" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/accelerator-git-http-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];

@@ -842,7 +842,7 @@
       },
       {
         "source": "@kie-tools/accelerator-git-http-server",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
