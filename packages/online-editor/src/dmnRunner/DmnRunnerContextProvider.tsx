@@ -83,6 +83,12 @@ import {
   dereferenceAndCheckForRecursion,
   removeChangedPropertiesAndAdditionalProperties,
   getDefaultValues,
+  detectRenamedProperties,
+  detectRenamedEnumValues,
+  copyRenamedEnumValues,
+  copyRenamedInputValue,
+  detectNestedPropertyRenames,
+  copyNestedPropertyRenames,
 } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
@@ -832,27 +838,45 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                       }
 
                       const validateInputs = dmnRunnerAjv.compile(modifiedSchema);
+                      const schemaDiff = diff(previousJsonSchema, modifiedSchema);
+                      const renamedProperties = detectRenamedProperties(schemaDiff);
 
-                      // Add default values and delete changed data types;
                       setDmnRunnerPersistenceJson({
                         newConfigInputs: (previousConfigInputs) => {
+                          // Config inputs store UI configuration (e.g., column widths)
+                          // Only preserve renamed properties and remove invalid ones
                           const newConfigInputs = cloneDeep(previousConfigInputs);
+                          copyRenamedInputValue(newConfigInputs, renamedProperties);
                           removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
                           return newConfigInputs;
                         },
                         newInputsRow: (previousInputs) => {
                           return cloneDeep(previousInputs).map((input) => {
                             const id = input.id;
-                            removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
-                            input.id = id;
-                            return { ...getDefaultValues(modifiedSchema), ...input };
+
+                            // Start with defaults, then apply existing values
+                            const mergedInput = { ...getDefaultValues(modifiedSchema), ...input };
+                            // Copy renamed properties (e.g., "InputA" -> "InputC")
+                            copyRenamedInputValue(mergedInput, renamedProperties);
+                            // Copy renamed nested properties (e.g., "myInput3.nested" -> "myInput3.nested-test")
+                            copyNestedPropertyRenames(mergedInput, detectNestedPropertyRenames(schemaDiff));
+                            // Copy renamed enum values (e.g., "S" -> "Single")
+                            copyRenamedEnumValues(
+                              mergedInput,
+                              detectRenamedEnumValues(previousJsonSchema, modifiedSchema)
+                            );
+                            // Remove invalid properties and properties with changed types
+                            removeChangedPropertiesAndAdditionalProperties(validateInputs, mergedInput);
+
+                            mergedInput.id = id;
+                            return mergedInput;
                           });
                         },
                         cancellationToken: canceled,
                       });
 
                       // This should be done to remove any previous errors or to add new errors
-                      if (Object.keys(diff(previousJsonSchema, modifiedSchema)).length > 0) {
+                      if (Object.keys(schemaDiff).length > 0) {
                         forceDmnRunnerReRender();
                       }
                       return modifiedSchema;
@@ -878,11 +902,11 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
-        props.workspaceFile.extension,
-        setDmnRunnerPersistenceJson,
         props.dmnLanguageService,
+        props.workspaceFile.extension,
         props.workspaceFile.relativePath,
         props.workspaceFile.workspaceId,
+        setDmnRunnerPersistenceJson,
         workspaces,
       ]
     )

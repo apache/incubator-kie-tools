@@ -4362,6 +4362,9 @@ importers:
       '@playwright/test':
         specifier: ^1.45.2
         version: 1.45.2
+      '@prettier/plugin-xml':
+        specifier: ^3.4.1
+        version: 3.4.1(prettier@3.3.2)
       '@storybook/addon-links':
         specifier: ^7.3.2
         version: 7.6.13(react@17.0.2)

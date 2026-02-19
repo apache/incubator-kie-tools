@@ -55,6 +55,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@patternfly/react-core": "^5.4.1",
     "@playwright/test": "^1.45.2",
+    "@prettier/plugin-xml": "^3.4.1",
     "@storybook/addon-links": "^7.3.2",
     "@storybook/addon-webpack5-compiler-babel": "^3.0.5",
     "@storybook/blocks": "^7.3.2",

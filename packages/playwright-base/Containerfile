@@ -55,7 +55,7 @@ RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula sele
     fc-cache -fv
 
 # Set Node.js version
-ENV NODE_VERSION=22.13.0
+ENV NODE_VERSION=24.13.1
 
 # Download and install Node.js
 RUN curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" -o /tmp/node.tar.gz && \
