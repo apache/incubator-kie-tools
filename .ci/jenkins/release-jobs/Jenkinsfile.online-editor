@@ -189,10 +189,7 @@ pipeline {
                         ln -s ${params.RELEASE_VERSION} ./editors/latest
 
                         echo "Copy Online Editor resources"
-                        rm -rf ./gwt-editors
                         cp -r ${WORKSPACE}/kie-tools/packages/online-editor/dist/* .
-                        rm -rf ./gwt-editors
-                        ln -s ${EDITORS_DIR} gwt-editors
 
                         echo "Commit changes and push"
                         git add .
