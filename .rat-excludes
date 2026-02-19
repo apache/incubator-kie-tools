@@ -1008,6 +1008,8 @@ emptyfile_autocompletion.sw.yaml.result
 emptyworkflow_autocompletion.sw.json.result
 # packages/serverless-workflow-vscode-extension/e2e-tests/resources/basic-operations/greet.sw.yaml
 greet.sw.yaml
+# packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml
+kogito-db-migrator-tool.iml
 # packages/serverless-workflow-vscode-extension/e2e-tests/resources/basic-operations/hello-world.sw.yaml
 hello-world.sw.yaml
 # packages/serverless-workflow-vscode-extension/e2e-tests/resources/diagram-navigation/applicant-request-decision.sw.yaml
