@@ -34,12 +34,7 @@ const buildEnv: any = env; // build-env is not typed
 
 export default async (webpackEnv: any, webpackArgv: any) => {
   const buildInfo = getBuildInfo();
-  const [
-    extendedServices_linuxDownloadUrl,
-    extendedServices_macOsDownloadUrl,
-    extendedServices_windowsDownloadUrl,
-    extendedServices_compatibleVersion,
-  ] = getExtendedServicesArgs();
+  const [extendedServices_compatibleVersion] = getExtendedServicesArgs();
 
   let lastCommitHash = "";
   try {
@@ -87,9 +82,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
           new EnvironmentPlugin({
             WEBPACK_REPLACE__commitHash: lastCommitHash,
             WEBPACK_REPLACE__buildInfo: buildInfo,
-            WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl: extendedServices_linuxDownloadUrl,
-            WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
-            WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.versions.quarkus,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.versions.kogito,
@@ -165,15 +157,7 @@ function getBuildInfo() {
 }
 
 function getExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.windows;
   const compatibleVersion = buildEnv.onlineEditor.extendedServices.compatibleVersion;
-
-  console.info("Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("Extended Services :: Windows download URL: " + windowsDownloadUrl);
   console.info("Extended Services :: Compatible version: " + compatibleVersion);
-
-  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+  return [compatibleVersion];
 }

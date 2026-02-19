@@ -92,7 +92,6 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/cors-proxy": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
-    "@kie-tools/extended-services": "workspace:*",
     "@kie-tools/extended-services-java": "workspace:*",
     "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/kie-sandbox-accelerator-quarkus": "workspace:*",

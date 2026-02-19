@@ -468,14 +468,14 @@ export const en: OnlineI18n = {
       },
       wizard: {
         title: `${en_common.names.extendedServices} ${en_common.terms.setup}`,
-        description: `Choose your ${en_common.terms.os.full} and follow the instructions to install and start the ${en_common.names.extendedServices}.`,
+        description: `Follow the instructions to install and start ${en_common.names.extendedServices}.`,
         outdatedAlert: {
           title: `${en_common.names.extendedServices} is outdated!`,
-          message: `It looks like you're using an incompatible version of the ${en_common.names.extendedServices}. Follow the instructions below to update.`,
+          message: `It looks like you're using an incompatible version of ${en_common.names.extendedServices}. Follow the instructions below to update.`,
         },
         stoppedAlert: {
           title: `${en_common.names.extendedServices} has stopped!`,
-          message: `It looks like the ${en_common.names.extendedServices} has suddenly stopped, please follow these instructions to start it again.`,
+          message: `It looks like ${en_common.names.extendedServices} has suddenly stopped, please follow these instructions to start it again.`,
         },
         disabled: {
           title: `${en_common.names.extendedServices}`,
@@ -483,78 +483,10 @@ export const en: OnlineI18n = {
           message: `Note that some features, such as the ${en_common.names.dmnRunner}, are unavailable without ${en_common.names.extendedServices}.`,
           helper: `Ensure ${en_common.names.extendedServices} is running, then review the host and port settings.`,
         },
-        macos: {
-          install: {
-            download: ` ${en_common.names.extendedServices}.`,
-            openFile: `Open the ${"{file}"} file.`,
-            dragFileToApplicationsFolder: `Drag ${"{file}"} to the ${"{folder}"} folder.`,
-          },
-          start: {
-            stopped: {
-              startInstruction: `If you see the ${en_common.names.extendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchExtendedServices: `If not, start the ${en_common.names.extendedServices} app by launching ${"{file}"}.`,
-            },
-            firstTime: {
-              title: `If you just installed ${en_common.names.extendedServices}:`,
-              openApplicationsFolder: `Open the ${"{folder}"} folder.`,
-              again: "again",
-              openAndCancel: `Right-click on ${"{file}"} select "${en_common.terms.open}" and then "${en_common.terms.cancel}".`,
-              openInstruction: `Right-click on ${"{file}"} ${"{again}"} and then select "${en_common.terms.open}".`,
-            },
-            alreadyRanBefore: `If you already installed and ran the ${en_common.names.extendedServices} before:`,
-            launchExtendedServices: `Launch the ${"{file}"}`,
-            advanced: {
-              title: "Advanced Settings",
-              runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.extendedServices} on a different port:`,
-            },
-          },
-        },
-        windows: {
-          install: {
-            keepDownload: ` ${en_common.names.extendedServices}. Note that you'll probably have to right-click the download and choose "Keep"`,
-            moveTheFile: `Move the ${"{file}"} file to your preferred folder.`,
-          },
-          start: {
-            stopped: {
-              startInstruction: `If you see the ${en_common.names.extendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchExtendedServices: `If not, start the ${en_common.names.extendedServices} by opening the ${"{file}"} file.`,
-            },
-            firstTime: {
-              title: `If you just installed ${en_common.names.extendedServices}:`,
-              openFolder: `Open folder where you placed the ${"{file}"} file.`,
-              runAnyway: `Double-click it and select "More info" then click on the "Run anyway" button.`,
-            },
-            alreadyRanBefore: `If you already installed and ran the ${en_common.names.extendedServices} before:`,
-            launchExtendedServices: `Open the ${"{file}"} file.`,
-            advanced: {
-              title: "Advanced Settings",
-              runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.extendedServices} on a different port:`,
-            },
-          },
-        },
-        linux: {
-          install: {
-            download: ` ${en_common.names.extendedServices}.`,
-            installAppIndicator: "Install the AppIndicator lib for your system:",
-            ubuntuDependency: `${en_common.names.ubuntu}: ${"{package}"}`,
-            fedoraDependency: `${en_common.names.fedora}: ${"{package}"}`,
-            extractContent: `Extract the contents of ${"{file}"} to your location of choice.`,
-            binaryExplanation: `The ${en_common.names.extendedServices} binary ${"{file}"} is a single binary file, which means you can add it to your PATH or even configure it to execute when your computer starts.`,
-          },
-          start: {
-            openTerminal: "Open a Terminal window.",
-            goToFolder: `Go to the folder where you placed the ${"{file}"} binary.`,
-            runCommand: "Run ",
-            advanced: {
-              title: "Advanced Settings",
-              runFollowingCommand: `Open a Terminal window and run the following command on the directory where you placed the ${"{file}"} binary:`,
-            },
-          },
-        },
         footerWaitingToConnect: `Waiting to connect to ${en_common.names.extendedServices}`,
         advancedSettings: {
-          title: `The default ${en_common.names.extendedServices} port is ${"{port}"}. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.extendedServices}.`,
-          label: "Port",
+          title: `The default ${en_common.names.extendedServices} port is ${"{port}"}. If you're already using this port for another application, you can change the port used to connect with ${en_common.names.extendedServices}.`,
+          label: "Advanced",
           helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
         },
       },
@@ -584,11 +516,6 @@ export const en: OnlineI18n = {
         install: `Setup ${en_common.names.extendedServices} to use this feature. Click to install.`,
         outdated: `${en_common.names.extendedServices} is outdated. Click to update.`,
         disconnected: `${en_common.names.extendedServices} is disconnected.`,
-      },
-    },
-    modal: {
-      initial: {
-        subHeader: `Augment the ${en_common.names.dmn} editor`,
       },
     },
   },

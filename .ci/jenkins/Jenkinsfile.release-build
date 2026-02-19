@@ -387,17 +387,6 @@ pipeline {
                             }
                         }
 
-                        stage('Extendend Services') {
-                            when {
-                                expression { env.EXTENDED_SERVICES == 'true' }
-                            }
-                            steps {
-                                script {
-                                    extendedServicesBuildJob()
-                                }
-                            }
-                        }
-
                         stage('Online Editor') {
                             when {
                                 expression { env.ONLINE_EDITOR == 'true' && (env.EXTENDED_SERVICES_JOB_RESULT == 'SUCCESS' || env.EXTENDED_SERVICES_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SKIPPED') }
@@ -960,20 +949,6 @@ def devDeploymentDmnFormWebappImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
-            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
-        ]
-    ).result
-}
-
-def extendedServicesBuildJob() {
-    env.EXTENDED_SERVICES_JOB_RESULT = build(
-        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/extended-services",
-        parameters: [
-            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
             string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
             string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]

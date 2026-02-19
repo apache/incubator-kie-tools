@@ -297,7 +297,7 @@ By default all three standard editors will be enabled (BPMN, DMN, PMML). To disa
 
 - **extension**: The extension of the file that you want to edit.
 - **filePathGlob**: The glob pattern of the file you want to edit.
-- **editor.resourcesPathPrefix**: The path to the gwt-editor.
+- **editor.resourcesPathPrefix**: The path to the editor.
 - **editor.path**: The path of the editor envelope.html.
 - **card.title**: The title of the editor that will be displayed on the home page.
 - **card.description**: Displays a short description of the editor under the title on the home page.
@@ -309,7 +309,7 @@ Here's an example of what it should look like:
       extension: "bpmn",
       filePathGlob: "**/*.bpmn?(2)",
       editor: {
-        resourcesPathPrefix: "gwt-editors/bpmn",
+        resourcesPathPrefix: "editors/bpmn",
         path: "bpmn-envelope.html",
       },
       card: {
@@ -321,7 +321,7 @@ Here's an example of what it should look like:
       extension: "dmn",
       filePathGlob: "**/*.dmn",
       editor: {
-        resourcesPathPrefix: "gwt-editors/dmn",
+        resourcesPathPrefix: "editors/dmn",
         path: "dmn-envelope.html",
       },
       card: {

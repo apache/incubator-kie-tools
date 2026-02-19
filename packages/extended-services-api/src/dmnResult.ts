@@ -51,7 +51,7 @@ export interface DecisionResult {
   evaluationHitIds: Object;
 }
 
-// Result returned from extended-services /jitdmn/dmnresult;
+// Result returned from /jitdmn/dmnresult;
 export interface ExtendedServicesDmnResult {
   decisionResults?: DecisionResult[];
   dmnContext?: Record<string, any>;
