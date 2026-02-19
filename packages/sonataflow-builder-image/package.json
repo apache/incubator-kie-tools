@@ -25,7 +25,7 @@
     "copy-test-assets:linux:darwin": "cp -R test-resources/* build",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
-    "image:build:darwin:linux": "pnpm setup:env make -C ./build build",
+    "image:build:darwin:linux": "BUILD_ENGINE_OPTIONS='--no-squash' pnpm setup:env make -C ./build build",
     "image:build:win32": "echo \"Build skipped on Windows\"",
     "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p build/target/test/results\" \"run-script-os\" --finally \"cp -R build/target/test/results dist-tests-e2e/\"",
     "image:test:linux:darwin": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
