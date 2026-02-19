@@ -97,6 +97,13 @@ export function useTaskNodeMorphingActions(task: Task) {
           return false; // Will stop visiting.
         }
       });
+
+      if (task.__$$element === "serviceTask" && newTaskElement !== "serviceTask") {
+        deleteInterfaceAndOperation({
+          definitions: s.bpmn.model.definitions,
+          serviceTaskId: task["@_id"],
+        });
+      }
     },
     [task]
   );
@@ -111,15 +118,9 @@ export function useTaskNodeMorphingActions(task: Task) {
       // 6 - Call activity
       bpmnEditorStoreApi.setState((s) => {
         _morphTo(s, newTaskElement, [], []);
-        if (task.__$$element === "serviceTask" && newTaskElement !== "serviceTask") {
-          deleteInterfaceAndOperation({
-            definitions: s.bpmn.model.definitions,
-            serviceTaskId: task["@_id"],
-          });
-        }
       });
     },
-    [bpmnEditorStoreApi, _morphTo, task]
+    [bpmnEditorStoreApi, _morphTo]
   );
 
   const morphToCustom = useCallback(
