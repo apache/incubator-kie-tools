@@ -159,7 +159,7 @@ async function main() {
         path.relative(path.resolve("."), v.dir).split(path.sep).join(path.posix.sep),
       ]),
     }),
-    { ...(await prettier.resolveConfig(".")), parser: "json" }
+    { ...(await prettier.resolveConfig(path.resolve(__dirname, "../../prettier.config.mjs"))), parser: "json" }
   );
   fs.writeFileSync(datavisGraphFilePath, formattedGraph);
 

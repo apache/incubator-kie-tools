@@ -116,6 +116,10 @@ export class ExpressionCell {
     await this.content.click({ position: { x: 1, y: 1 } });
   }
 
+  // public async isSelected() {
+  //   return this.content.locator(("data-cell.active")).isVisible()
+  // }
+
   public get content() {
     return this.locator.nth(0);
   }
