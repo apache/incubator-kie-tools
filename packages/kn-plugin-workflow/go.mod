@@ -11,7 +11,7 @@ require (
 	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0
 	github.com/beevik/etree v1.5.0
 	github.com/distribution/reference v0.6.0
-	github.com/docker/docker v28.0.1+incompatible
+	github.com/docker/docker v28.5.2+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/getkin/kin-openapi v0.131.0
 	github.com/jstemmer/go-junit-report/v2 v2.1.0
@@ -32,6 +32,8 @@ require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/containerd/errdefs v1.0.0 // indirect
+	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
