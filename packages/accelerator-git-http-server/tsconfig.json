@@ -1,0 +1,6 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
+}
