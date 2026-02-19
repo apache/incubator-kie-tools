@@ -85,7 +85,7 @@
     "openapi-types": "^7.0.1",
     "raw-loader": "^4.0.2",
     "rimraf": "^3.0.2",
-    "sass-loader": "^12.3.0",
+    "sass-loader": "^13.3.0",
     "stream-http": "^3.2.0",
     "style-loader": "^2.0.0",
     "svg-url-loader": "^8.0.0",

@@ -67,6 +67,7 @@
       { "id": "@kie-tools-examples/uniforms-patternfly" },
       { "id": "@kie-tools/uniforms-patternfly" },
       { "id": "@kie-tools/jest-base" },
+      { "id": "@kie-tools/accelerator-git-http-server" },
       { "id": "@kie-tools/boxed-expression-component" },
       { "id": "@kie-tools-core/operating-system" },
       { "id": "@kie-tools/feel-input-component" },
@@ -550,6 +551,9 @@
       { "source": "@kie-tools/uniforms-patternfly", "target": "@kie-tools/jest-base", "weight": 1 },
       { "source": "@kie-tools/uniforms-patternfly", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/jest-base", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/accelerator-git-http-server", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/accelerator-git-http-server", "target": "@kie-tools/jest-base", "weight": 1 },
+      { "source": "@kie-tools/accelerator-git-http-server", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/boxed-expression-component", "target": "@kie-tools-core/operating-system", "weight": 1 },
       { "source": "@kie-tools/boxed-expression-component", "target": "@kie-tools/feel-input-component", "weight": 1 },
       { "source": "@kie-tools/boxed-expression-component", "target": "@kie-tools/playwright-base", "weight": 1 },
@@ -1087,6 +1091,11 @@
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/vscode-extension-common-test-helpers", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools/kie-sandbox-accelerator-quarkus",
+        "target": "@kie-tools/accelerator-git-http-server",
+        "weight": 1
+      },
       {
         "source": "@kie-tools/kie-sandbox-accelerator-quarkus",
         "target": "@kie-tools/jbpm-quarkus-devui",
@@ -1664,6 +1673,7 @@
     ],
     ["@kie-tools-examples/sonataflow-greeting", "examples/sonataflow-greeting"],
     ["@kie-tools-examples/uniforms-patternfly", "examples/uniforms-patternfly"],
+    ["@kie-tools/accelerator-git-http-server", "packages/accelerator-git-http-server"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
     ["@kie-tools/bpmn-editor", "packages/bpmn-editor"],
     ["@kie-tools/bpmn-editor-envelope", "packages/bpmn-editor-envelope"],
