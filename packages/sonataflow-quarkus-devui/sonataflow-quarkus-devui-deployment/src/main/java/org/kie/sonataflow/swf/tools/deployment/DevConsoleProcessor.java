@@ -162,7 +162,7 @@ public class DevConsoleProcessor {
         if (propertyConfig == null) {
             propertyConfig = configurationBuildItem
                     .getReadResult()
-                    .getRunTimeDefaultValues()
+                    .getRunTimeValues()
                     .get(propertyKey);
         }
 

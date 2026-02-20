@@ -162,7 +162,7 @@ jobs:
           MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
           MAVEN_OPTS: "-Xmx2g"
         run: |
-          eval "pnpm ${{ steps.setup_build_mode.outputs.upstreamPnpmFilterString }} build:dev"
+          eval "pnpm ${{ steps.setup_build_mode.outputs.upstreamPnpmFilterString }} --if-present build:dev"
 
       - name: "PARTIAL → Build changed and downstream"
         shell: bash
@@ -187,7 +187,7 @@ jobs:
           MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
           MAVEN_OPTS: "-Xmx2g"
         run: |
-          eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --workspace-concurrency=1 build:prod"
+          eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --if-present --workspace-concurrency=1 build:prod"
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
