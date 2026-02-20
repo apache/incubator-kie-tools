@@ -42,6 +42,8 @@ import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProce
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useBpmnEditorI18n } from "../../i18n";
+import { addOrGetInterfaces } from "../../mutations/addOrGetInterfaces";
+import { addOrGetOperations } from "../../mutations/addOrGetOperations";
 
 export function ServiceTaskProperties({
   serviceTask,
@@ -128,6 +130,11 @@ export function ServiceTaskProperties({
                 });
                 visitFlowElementsAndArtifacts(process, ({ element: e }) => {
                   if (e["@_id"] === serviceTask["@_id"] && e.__$$element === serviceTask.__$$element) {
+                    addOrGetInterfaces({
+                      definitions: s.bpmn.model.definitions,
+                      interfaceName: newInterface,
+                      id: e["@_id"],
+                    });
                     e["@_drools:serviceinterface"] = newInterface;
                   }
                 });
@@ -150,6 +157,12 @@ export function ServiceTaskProperties({
                 });
                 visitFlowElementsAndArtifacts(process, ({ element: e }) => {
                   if (e["@_id"] === serviceTask["@_id"] && e.__$$element === serviceTask.__$$element) {
+                    addOrGetOperations({
+                      definitions: s.bpmn.model.definitions,
+                      interfaceName: e["@_drools:serviceinterface"] || "",
+                      operationName: newOperation,
+                      id: e["@_id"],
+                    });
                     e["@_drools:serviceoperation"] = newOperation;
                   }
                 });

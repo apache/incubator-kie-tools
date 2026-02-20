@@ -34,6 +34,7 @@ import { useCustomTasks } from "../../../customTasks/BpmnEditorCustomTasksContex
 import { CustomTask } from "../../../BpmnEditor";
 import { WritableDraft } from "immer";
 import { State } from "../../../store/Store";
+import { deleteInterfaceAndOperation } from "../../../mutations/deleteInterfaceAndOperation";
 
 export function useTaskNodeMorphingActions(task: Task) {
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
@@ -96,6 +97,13 @@ export function useTaskNodeMorphingActions(task: Task) {
           return false; // Will stop visiting.
         }
       });
+
+      if (task.__$$element === "serviceTask" && newTaskElement !== "serviceTask") {
+        deleteInterfaceAndOperation({
+          definitions: s.bpmn.model.definitions,
+          serviceTaskId: task["@_id"],
+        });
+      }
     },
     [task]
   );
