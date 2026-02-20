@@ -144,8 +144,6 @@
     <version.tomcat.embed.core>10.1.50</version.tomcat.embed.core>
     <version.apache.commons.lang3>3.18.0</version.apache.commons.lang3>
     <version.angus.mail>2.0.5</version.angus.mail>
-    <version.nimbus.jose.jwt>10.4.2</version.nimbus.jose.jwt>
-    <version.io.vertx>4.5.23</version.io.vertx>
     <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
     <!-- End of various transitive overrides. -->
   </properties>
@@ -158,16 +156,6 @@
         <groupId>org.eclipse.angus</groupId>
         <artifactId>angus-mail</artifactId>
         <version>${version.angus.mail}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.nimbusds</groupId>
-        <artifactId>nimbus-jose-jwt</artifactId>
-        <version>${version.nimbus.jose.jwt}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-web</artifactId>
-        <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
         <groupId>at.yawk.lz4</groupId>
