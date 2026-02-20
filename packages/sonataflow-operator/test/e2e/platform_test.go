@@ -469,7 +469,7 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 		Entry("and with broker and platform in a separate namespace", test.GetPathFromE2EDirectory("platform", "services", "gitops", "knative", "platform-level-broker"), true),
 	)
 
-	DescribeTable("when deploying a SonataFlowPlatform combined with HPA for the Data Index", func(testcaseDir string, dataIndexHPAPath string, createHPABeforePlatform bool) {
+	DescribeTable("when deploying a SonataFlowPlatform combined with HPA for the Data Index", Label("data-index-hpa"), func(testcaseDir string, dataIndexHPAPath string, createHPABeforePlatform bool) {
 		if createHPABeforePlatform {
 			By("Create the data index HPA before the platform")
 			EventuallyWithOffset(1, func() error {
@@ -519,7 +519,7 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 
 		By("Check that the data index has 1 replica after deleting the HPA")
 		EventuallyWithOffset(1, func() bool {
-			return verifyDeploymentReplicas("sonataflow-platform-data-index-service", targetNamespace, int32(3))
+			return verifyDeploymentReplicas("sonataflow-platform-data-index-service", targetNamespace, int32(1))
 		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
 	},
 

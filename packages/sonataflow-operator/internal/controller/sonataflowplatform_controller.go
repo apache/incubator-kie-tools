@@ -370,8 +370,8 @@ func contains(slice []operatorapi.WorkFlowCapability, s operatorapi.WorkFlowCapa
 }
 
 // mapHPAToPlatformRequests determines if the referred HorizontalPodAutoscaler targets a DI service in given namespace,
-// if any. Analyses if that namespace has an SPF that manges the DI service. If that is the case, enqueues a Request to
-// the SPF to give the chance to take an action if needed. We normally want to do that in situations where the
+// if any. Analyses if that namespace has an SFP that manges the DI service. If that is the case, enqueues a Request to
+// the SFP to give the chance to take an action if needed. We normally want to do that in situations where the
 // HorizontalPodAutoscaler was removed (DeleteEvent) to let the SFP restore back the DI replicas. In other situations
 // the given HorizontalPodAutoscaler will take the needed actions if needed.
 func (r *SonataFlowPlatformReconciler) mapHPAToPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
@@ -386,7 +386,7 @@ func (r *SonataFlowPlatformReconciler) mapHPAToPlatformRequests(ctx context.Cont
 		if sfp != nil {
 			diHandler := services.NewDataIndexHandler(sfp)
 			klog.V(log.D).Infof("Active platform %s/%s was found in namespace: %s, is DI enabled: %t.", sfp.Namespace, sfp.Name, hpa.Namespace, diHandler.IsServiceEnabled())
-			if diHandler.IsServiceEnabled() && hpa.Spec.ScaleTargetRef.Name == diHandler.GetServiceName() {
+			if diHandler.IsServiceSetInSpec() && hpa.Spec.ScaleTargetRef.Name == diHandler.GetServiceName() {
 				klog.V(log.D).Infof("HorizontalPodAutoscaler %s/%s targets DI: %s, enqueueing request to platform.", hpa.Namespace, hpa.Name, diHandler.GetServiceName())
 				return []reconcile.Request{
 					{
