@@ -9,7 +9,6 @@
         <option value="$PROJECT_DIR$/../packages/maven-base/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/yard-model/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/yard-validator-worker/pom.xml" />
-        <option value="$PROJECT_DIR$/../packages/stunner-editors/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/sonataflow-quarkus-devui/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/serverless-workflow-diagram-editor/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/extended-services-java/pom.xml" />

@@ -15,9 +15,9 @@
    under the License.
 -->
 
-# 10.1.0
+# 10.2.0
 
-- Classic DMN And Test Scenario Editor removed.
+- DMN Editor (classic), and Test Scenario Editor (classic) removed.
 
 # 10.1.0
 

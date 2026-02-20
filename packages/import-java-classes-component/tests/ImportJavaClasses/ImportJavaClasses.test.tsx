@@ -19,16 +19,13 @@
 
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../../src/components";
+import { ImportJavaClasses, JavaCodeCompletionService } from "../../src/components";
 import { JavaCodeCompletionClass } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 describe("ImportJavaClasses component tests", () => {
   test("should render ImportJavaClasses Button component", async () => {
     const { baseElement } = render(
-      <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
-      />
+      <ImportJavaClasses javaCodeCompletionService={getJavaCodeCompletionServiceMock([])} />
     );
 
     await testImportJavaClassesButtonEnabled(baseElement);
@@ -38,10 +35,7 @@ describe("ImportJavaClasses component tests", () => {
 
   test("Should show Modal after clicking on the button", async () => {
     const { baseElement, getByText } = render(
-      <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
-      />
+      <ImportJavaClasses javaCodeCompletionService={getJavaCodeCompletionServiceMock([])} />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
@@ -52,10 +46,7 @@ describe("ImportJavaClasses component tests", () => {
 
   test("Should search box works", async () => {
     const { baseElement, getByText } = render(
-      <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
-      />
+      <ImportJavaClasses javaCodeCompletionService={getJavaCodeCompletionServiceMock([])} />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
@@ -68,7 +59,6 @@ describe("ImportJavaClasses component tests", () => {
   test("Should search box with results works", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock([{ fqcn: "com.Book" }, { fqcn: "com.Author" }])}
       />
     );
@@ -85,10 +75,7 @@ describe("ImportJavaClasses component tests", () => {
 
   test("Should close Modal after opening it and clicking on the Cancel button", async () => {
     const { baseElement, getByText } = render(
-      <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
-      />
+      <ImportJavaClasses javaCodeCompletionService={getJavaCodeCompletionServiceMock([])} />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
@@ -102,7 +89,6 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to second step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock([
           { fqcn: "com.Book" },
           { fqcn: "com.Author" },
@@ -121,7 +107,6 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to second step and fetch a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock([
           { fqcn: "com.Book" },
           { fqcn: "com.Author" },
@@ -147,7 +132,6 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to second step and fetch, remove a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock([
           { fqcn: "com.Book" },
           { fqcn: "com.Author" },
@@ -179,7 +163,6 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to third step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock([
           { fqcn: "com.Book" },
           { fqcn: "com.Author" },
@@ -275,12 +258,6 @@ describe("ImportJavaClasses component tests", () => {
       expect(baseElement.querySelector('[aria-disabled="false"][type="button"]')).toBeInTheDocument();
     });
   }
-
-  const gwtLayerServiceMock: GWTLayerService = {
-    importJavaClassesInDataTypeEditor: jest.fn((javaClasses) => {
-      /* Do Nothing */
-    }),
-  };
 
   function getJavaCodeCompletionServiceMock(classMocks: JavaCodeCompletionClass[]) {
     const javaCodeCompletionServiceMock: JavaCodeCompletionService = {

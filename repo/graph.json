@@ -149,7 +149,6 @@
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
-      { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/kie-bc-editors-common" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
@@ -217,8 +216,6 @@
       { "id": "@kie-tools/sonataflow-management-console-image" },
       { "id": "@kie-tools/sonataflow-management-console-image-env" },
       { "id": "@kie-tools/sonataflow-management-console-webapp" },
-      { "id": "@kie-tools/stunner-editors" },
-      { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -1057,9 +1054,6 @@
         "weight": 1
       },
       { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/jest-base", "weight": 1 },
-      { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/dmn-language-service", "weight": 1 },
-      { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/kie-bc-editors-common", "weight": 1 },
-      { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors-common", "target": "@kie-tools-core/editor", "weight": 1 },
       {
         "source": "@kie-tools/kie-bc-editors-common",
@@ -1572,17 +1566,6 @@
         "target": "@kie-tools/sonataflow-dev-app",
         "weight": 1
       },
-      { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
-      {
-        "source": "@kie-tools/stunner-editors-dmn-loader",
-        "target": "@kie-tools/boxed-expression-component",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/stunner-editors-dmn-loader",
-        "target": "@kie-tools/import-java-classes-component",
-        "weight": 1
-      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
@@ -1749,7 +1732,6 @@
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
-    ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
     ["@kie-tools/kie-bc-editors-common", "packages/kie-bc-editors-common"],
     ["kie-editors-dev-vscode-extension", "packages/kie-editors-dev-vscode-extension"],
     ["@kie-tools/kie-sandbox-accelerator-quarkus", "packages/kie-sandbox-accelerator-quarkus"],
@@ -1859,8 +1841,6 @@
     ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
     ["@kie-tools/sonataflow-uniforms", "packages/sonataflow-uniforms"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
-    ["@kie-tools/stunner-editors", "packages/stunner-editors"],
-    ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
     ["@kie-tools-core/switch-expression-ts", "packages/switch-expression-ts"],
     ["@kie-tools/text-editor", "packages/text-editor"],
     ["@kie-tools/tsconfig", "packages/tsconfig"],
