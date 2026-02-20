@@ -21,7 +21,6 @@ package org.jbpm.quarkus.devui.runtime.config;
 import java.util.List;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.smallrye.config.WithName;
 
 @ConfigGroup

@@ -27542,6 +27542,17 @@ spec:
                   description: keeps track of how many failure recovers a given workflow
                     had so far
                   type: integer
+                replicas:
+                  description: |-
+                    Replicas is the actual number of observed queryable pods.
+                    This is required by the HPA via the scale subresource.
+                  format: int32
+                  type: integer
+                selector:
+                  description: |-
+                    Selector is the queryable label selector for pods, in string format.
+                    HPA uses this to find the pods and collect metrics (CPU/Memory).
+                  type: string
                 services:
                   description: Services displays which platform services are being used
                     by this workflow
@@ -27585,6 +27596,10 @@ spec:
       served: true
       storage: true
       subresources:
+        scale:
+          labelSelectorPath: .status.selector
+          specReplicasPath: .spec.podTemplate.replicas
+          statusReplicasPath: .status.replicas
         status: {}
 ---
 apiVersion: v1
@@ -27788,6 +27803,14 @@ metadata:
   name: sonataflow-operator-manager-role
 rules:
   - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
       - batch
     resources:
       - jobs
@@ -27848,6 +27871,7 @@ rules:
       - sonataflowbuilds/status
       - sonataflowclusterplatforms/status
       - sonataflowplatforms/status
+      - sonataflows/scale
       - sonataflows/status
     verbs:
       - get

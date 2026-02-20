@@ -21,8 +21,10 @@ package workflowdef
 
 import (
 	"github.com/serverlessworkflow/sdk-go/v2/model"
+	"k8s.io/apimachinery/pkg/labels"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
 
 // HasTimeouts returns true if current workflow has configured any of the SonataFlow supported timeouts, false
@@ -111,4 +113,17 @@ func hasActionsWithSleep(actions *[]model.Action) bool {
 
 func hasAnySleep(action *model.Action) bool {
 	return action.Sleep != nil && (len(action.Sleep.Before) > 0 || len(action.Sleep.After) > 0)
+}
+
+func HasReplicas(workflow *operatorapi.SonataFlow) bool {
+	return workflow.Spec.PodTemplate.Replicas != nil
+}
+
+func HasScaleSelector(workflow *operatorapi.SonataFlow) bool {
+	return len(workflow.Status.Selector) > 0
+}
+
+func GenerateScaleSelector(workflow *operatorapi.SonataFlow) string {
+	labelSet := labels.Set(workflowproj.GetSelectorLabels(workflow))
+	return labelSet.AsSelector().String()
 }
