@@ -635,12 +635,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${version.org.mockito}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
         <version>${version.powermock.api.mockito2}</version>
