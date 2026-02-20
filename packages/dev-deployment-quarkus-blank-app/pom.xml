@@ -60,13 +60,13 @@
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.commons-io>2.16.1</version.commons-io>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
-    <version.io.netty>4.1.129.Final</version.io.netty>
+    <version.io.netty>4.1.130.Final</version.io.netty>
 
     <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
     <version.angus.mail>2.0.5</version.angus.mail>
-    <version.nimbus.jose.jwt>9.37.4</version.nimbus.jose.jwt>
-    <version.io.vertx>4.5.22</version.io.vertx>
+    <version.nimbus.jose.jwt>10.4.2</version.nimbus.jose.jwt>
+    <version.io.vertx>4.5.23</version.io.vertx>
     <!-- End of various transitive overrides. -->
   </properties>
 

@@ -122,31 +122,31 @@
     <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20260206-local</version.org.kie.kogito>
+    <version.org.kie.kogito>999-20260220-local</version.org.kie.kogito>
 
     <!-- Quarkus -->
-    <version.quarkus>3.20.3</version.quarkus>
+    <version.quarkus>3.27.2</version.quarkus>
 
     <!-- 3rd party dependencies -->
     <version.junit>4.13.2</version.junit>
     <version.org.apache.commons.commons-compress>1.27.1</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
-    <version.org.apache.mime4j>0.8.11</version.org.apache.mime4j>
+    <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
     <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.junit.jupiter>5.12.2</version.org.junit.jupiter>
     <version.org.mockito>4.11.0</version.org.mockito>
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
-    <version.io.netty>4.1.129.Final</version.io.netty>
+    <version.io.netty>4.1.130.Final</version.io.netty>
 
     <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
-    <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
+    <version.tomcat.embed.core>10.1.50</version.tomcat.embed.core>
     <version.apache.commons.lang3>3.18.0</version.apache.commons.lang3>
     <version.angus.mail>2.0.5</version.angus.mail>
-    <version.nimbus.jose.jwt>9.37.4</version.nimbus.jose.jwt>
-    <version.io.vertx>4.5.22</version.io.vertx>
-    <version.org.lz4.java>1.8.1</version.org.lz4.java>
+    <version.nimbus.jose.jwt>10.4.2</version.nimbus.jose.jwt>
+    <version.io.vertx>4.5.23</version.io.vertx>
+    <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
     <!-- End of various transitive overrides. -->
   </properties>
 
@@ -170,9 +170,9 @@
         <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-        <groupId>org.lz4</groupId>
+        <groupId>at.yawk.lz4</groupId>
         <artifactId>lz4-java</artifactId>
-        <version>${version.org.lz4.java}</version>
+        <version>${version.at.yawk.lz4.java}</version>
       </dependency>
       <!-- End of various transitive overrides. -->
 
