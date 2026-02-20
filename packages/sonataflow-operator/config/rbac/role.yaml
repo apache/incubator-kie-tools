@@ -22,6 +22,14 @@ metadata:
   name: manager-role
 rules:
   - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
       - batch
     resources:
       - jobs
@@ -82,6 +90,7 @@ rules:
       - sonataflowbuilds/status
       - sonataflowclusterplatforms/status
       - sonataflowplatforms/status
+      - sonataflows/scale
       - sonataflows/status
     verbs:
       - get
