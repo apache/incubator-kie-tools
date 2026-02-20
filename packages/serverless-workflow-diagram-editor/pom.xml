@@ -454,7 +454,7 @@
 
       <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-inline</artifactId>
+        <artifactId>mockito-core</artifactId>
         <version>${version.org.mockito}</version>
       </dependency>
 
