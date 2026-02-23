@@ -20,7 +20,6 @@
 import * as React from "react";
 import { GwtEditor } from "./consumedInteropApi/GwtAppFormerConsumedInteropApi";
 import { Editor, EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { editors } from "./GwtEditorMapping";
 import { TextFormatter } from "./TextFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
@@ -63,11 +62,7 @@ export class GwtEditorWrapper implements Editor {
 
   public af_onOpen() {
     this.removeBusinessCentralHeaderPanel();
-    if (this.editorId === editors.bpmn.id) {
-      this.removeHeaderIfOnlyOneItemOnTable();
-    } else {
-      this.injectStyleToFixResponsivenessIssue_DROOLS_3995();
-    }
+    this.injectStyleToFixResponsivenessIssue_DROOLS_3995();
   }
 
   public af_componentRoot() {

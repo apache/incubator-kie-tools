@@ -26,7 +26,7 @@ import {
   useImportJavaClassesWizardI18n,
 } from "../../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
-import { GWTLayerService, JavaCodeCompletionService } from "./services";
+import { JavaCodeCompletionService } from "./services";
 import { JavaClass } from "./model";
 
 import {
@@ -36,8 +36,6 @@ import {
 } from "./ImportJavaClassesWizard";
 
 interface ImportJavaClassesProps {
-  /** Service class which contains all API method to dialog with GWT layer (can be removed when Stunner editor support is discontinued ) */
-  gwtLayerService?: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;
   /** Callback function used to load Java classes into the data type editor.*/
@@ -59,25 +57,14 @@ const ImportJavaClassesI18nDictionariesProvider = (
   />
 );
 
-const ImportJavaClasses = ({
-  javaCodeCompletionService,
-  gwtLayerService,
-  loadJavaClassesInDataTypeEditor,
-}: ImportJavaClassesProps) => {
+const ImportJavaClasses = ({ javaCodeCompletionService, loadJavaClassesInDataTypeEditor }: ImportJavaClassesProps) => {
   const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
   const handleButtonClick = useCallback(() => setOpenImportJavaClassesWizard((prevState) => !prevState), []);
   const handleWizardSave = useCallback(
     (javaClasses) => {
-      /* If the GWT layer service is available, it uses the `importJavaClassesInDataTypeEditor` method.
-       * Otherwise, it calls the `loadJavaClassesInDataTypeEditor` callback with the provided Java classes.
-       */
-      if (gwtLayerService) {
-        gwtLayerService?.importJavaClassesInDataTypeEditor?.(javaClasses);
-      } else {
-        loadJavaClassesInDataTypeEditor?.(javaClasses);
-      }
+      loadJavaClassesInDataTypeEditor?.(javaClasses);
     },
-    [gwtLayerService, loadJavaClassesInDataTypeEditor]
+    [loadJavaClassesInDataTypeEditor]
   );
   return (
     <ImportJavaClassesI18nDictionariesProvider>

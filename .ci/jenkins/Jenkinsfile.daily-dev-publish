@@ -606,12 +606,6 @@ pipeline {
                         git config user.name asf-ci-kie
                         git checkout gh-pages
                         rm -rf dev && mkdir -p dev/editors
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/dmn dev/editors/
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/bpmn dev/editors/
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/scesim dev/editors/
-                        cp -r ${WORKSPACE}/kie-tools/packages/online-editor/dist/* dev/
-                        rm -rf dev/gwt-editors
-                        ln -s editors dev/gwt-editors
                         git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
 

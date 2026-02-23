@@ -185,17 +185,11 @@ pipeline {
                         echo "Copy Editor resources"
                         rm -rf ${EDITORS_DIR}
                         mkdir -p ${EDITORS_DIR}
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/dmn ${EDITORS_DIR}
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/bpmn ${EDITORS_DIR}
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/scesim ${EDITORS_DIR}
                         rm -rf ./editors/latest
                         ln -s ${params.RELEASE_VERSION} ./editors/latest
 
                         echo "Copy Online Editor resources"
-                        rm -rf ./gwt-editors
                         cp -r ${WORKSPACE}/kie-tools/packages/online-editor/dist/* .
-                        rm -rf ./gwt-editors
-                        ln -s ${EDITORS_DIR} gwt-editors
 
                         echo "Commit changes and push"
                         git add .
@@ -215,11 +209,9 @@ pipeline {
             steps {
                 script {
                     env.ONLINE_EDITOR_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-webapp.zip"
-                    env.STUNNER_EDITORS_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-stunner-editors.zip"
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
                     cd "${WORKSPACE}/kie-tools/packages/online-editor/dist" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.ONLINE_EDITOR_RELEASE_ZIP_FILE}" .
-                    cd "${WORKSPACE}/kie-tools/packages/stunner-editors/dist" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.STUNNER_EDITORS_RELEASE_ZIP_FILE}" .
                     """.trim()
                 }
             }
@@ -234,7 +226,6 @@ pipeline {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
                         releaseUtils.signArtifact("${env.ONLINE_EDITOR_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.STUNNER_EDITORS_RELEASE_ZIP_FILE}")
                     }
                 }
             }
