@@ -119,6 +119,8 @@ jobs:
           mkdir ./packages/maven-base/.mvn
           echo "-Dversion.org.kie.kogito=999-SNAPSHOT" > "./packages/maven-base/.mvn/maven.config"
           echo "--no-snapshot-updates" >> "./packages/maven-base/.mvn/maven.config"
+        env:
+          KOGITO_RUNTIME_version: "999-SNAPSHOT"
 
       - name: "Install parent POMs"
         shell: bash
