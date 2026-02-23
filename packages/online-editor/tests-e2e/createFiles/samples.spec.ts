@@ -34,7 +34,7 @@ test.describe("Sample", () => {
       await expect(page.getByRole("button", { name: "Workflow Sample" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Workflow Sample" })).toContainText("Sample");
       await kieSandbox.isEditorLoaded();
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "Start Events" })).toBeAttached();
+      await expect(kieSandbox.getEditor().getByTitle("Start Events")).toBeAttached();
       await expect(page).toHaveScreenshot("sample-bpmn.png");
     });
 

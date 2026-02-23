@@ -17,12 +17,14 @@
  * under the License.
  */
 
-import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/bpmn/api";
-import { BpmnEditor, BpmnEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/bpmn/envelope";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { BpmnMultiplyingArchitectureEditor } from "@kie-tools/bpmn-editor-envelope/dist/BpmnMultiplyingArchitectureEditorFactory";
+import { BpmnEditorChannelApi } from "@kie-tools/bpmn-editor-envelope/dist/BpmnEditorChannelApi";
+import { BpmnEditorEnvelopeApi } from "@kie-tools/bpmn-editor-envelope/dist/BpmnEditorEnvelopeApi";
+import { BpmnEditorEnvelopeApiImpl } from "@kie-tools/bpmn-editor-envelope/dist/BpmnEditorEnvelopeApiImpl";
 
-EditorEnvelope.initCustom<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>({
+EditorEnvelope.initCustom<BpmnMultiplyingArchitectureEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  apiImplFactory: { create: (args) => new BpmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
+  apiImplFactory: { create: (args) => new BpmnEditorEnvelopeApiImpl(args) },
 });

@@ -96,7 +96,7 @@
     "monaco-editor-webpack-plugin": "^7.0.1",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "rimraf": "^3.0.2",
-    "sass-loader": "^12.3.0",
+    "sass-loader": "^13.3.0",
     "start-server-and-test": "^2.0.3",
     "stream-http": "^3.2.0",
     "style-loader": "^2.0.0",

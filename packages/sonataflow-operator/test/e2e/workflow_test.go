@@ -364,3 +364,143 @@ var _ = Describe("Workflow Monitoring Use Cases :: ", Label("flows-monitoring"),
 		})
 	})
 })
+
+var _ = Describe("Workflow HorizontalPodAutoscaling Use Cases :: ", Label("flows-hpa"), Ordered, func() {
+	var targetNamespace string
+	BeforeEach(func() {
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
+		err := kubectlCreateNamespace(targetNamespace)
+		Expect(err).NotTo(HaveOccurred())
+	})
+	AfterEach(func() {
+		// Remove resources in test namespace
+		if !CurrentSpecReport().Failed() && len(targetNamespace) > 0 {
+			cmd := exec.Command("kubectl", "delete", "sonataflow", "--all", "-n", targetNamespace, "--wait")
+			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			err = kubectlDeleteNamespace(targetNamespace)
+			Expect(err).NotTo(HaveOccurred())
+		}
+	})
+
+	Describe("Ensure HPA works by workflow profile", func() {
+
+		It("HPA should work for the greetings workflow in GitOps profile.", func() {
+
+			By("deploy the workflow with gitops profile")
+			sonataFlowCrFileTemplate := test.GetPathFromE2EDirectory("workflows", prebuiltWorkflows.Greetings.Name, "01-sonataflow.org_v1alpha08_sonataflow.yaml")
+			sonataFlowCrFile := createTmpCopy(sonataFlowCrFileTemplate)
+			GinkgoWriter.Println(fmt.Sprintf("configuring image and replicas in sonataflowCrFile: %s", sonataFlowCrFile))
+			setImageAndReplicasOrFail(sonataFlowCrFile, prebuiltWorkflows.Greetings.Tag, int32(1))
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlApplyFileOnCluster(sonataFlowCrFile, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			By("check the workflow is in running state")
+
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState(prebuiltWorkflows.Greetings.Name, targetNamespace) }, 15*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that the workflow has 1 replica")
+
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(1))
+			}, 2*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("create the HPA to manage the workflow replicas")
+			sonataFlowCrFileHPA := test.GetPathFromE2EDirectory("workflows", prebuiltWorkflows.Greetings.Name, "01-sonataflow.org_v1alpha08_sonataflow_hpa.yaml")
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlApplyFileOnCluster(sonataFlowCrFileHPA, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			By("check that the workflow has 3 replicas after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that the workflow scale subresource .spec.replicas is 3 after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowScaleSubresourceReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that the workflow scale subresource .status.replicas is 3 after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowScaleSubresourceStatusReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that the workflow associated deployment has 3 replicas after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyDeploymentReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlDeleteFileOnCluster(sonataFlowCrFile, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlDeleteFileOnCluster(sonataFlowCrFileHPA, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+		})
+
+		It("HPA should work for the greetings workflow in Preview profile.", func() {
+
+			By("deploy the workflow with preview profile")
+			sonataFlowCrFileTemplate := test.GetPathFromE2EDirectory("workflows", prebuiltWorkflows.Greetings.Name, "01-sonataflow.org_v1alpha08_sonataflow.yaml")
+			sonataFlowCrFile := createTmpCopy(sonataFlowCrFileTemplate)
+			GinkgoWriter.Println(fmt.Sprintf("configuring image and replicas in sonataflowCrFile: %s", sonataFlowCrFile))
+			setImageAndReplicasOrFail(sonataFlowCrFile, "", int32(1))
+			setProfileOrFail(sonataFlowCrFile, "preview")
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlApplyFileOnCluster(sonataFlowCrFile, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			By("check the workflow is in running state")
+
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState(prebuiltWorkflows.Greetings.Name, targetNamespace) }, 15*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that workflow has 1 replica")
+
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(1))
+			}, 2*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("create the HPA to manage the workflow replicas")
+			sonataFlowCrFileHPA := test.GetPathFromE2EDirectory("workflows", prebuiltWorkflows.Greetings.Name, "01-sonataflow.org_v1alpha08_sonataflow_hpa.yaml")
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlApplyFileOnCluster(sonataFlowCrFileHPA, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			By("check that the workflow has 3 replicas after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that the workflow scale subresource .spec.replicas is 3 after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowScaleSubresourceReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that the workflow scale subresource .status.replicas is 3 after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyWorkflowScaleSubresourceStatusReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("check that the workflow associated deployment has 3 replicas after creating the HPA")
+			EventuallyWithOffset(1, func() bool {
+				return verifyDeploymentReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlDeleteFileOnCluster(sonataFlowCrFile, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			EventuallyWithOffset(1, func() error {
+				return kubectlDeleteFileOnCluster(sonataFlowCrFileHPA, targetNamespace)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+		})
+	})
+})

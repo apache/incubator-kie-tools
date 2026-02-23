@@ -692,6 +692,16 @@ function UnitablesBeeTableCell({
       return;
     }
 
+    // Check if focus is outside the unitables container to prevent stealing focus from external inputs
+    const activeElement = document.activeElement;
+    const cellElement = cellRef.current;
+    if (cellElement) {
+      const unitablesContainer = cellElement.closest(".unitables-container");
+      if (activeElement && unitablesContainer && !unitablesContainer.contains(activeElement)) {
+        return;
+      }
+    }
+
     if (fieldCharacteristics?.isList) {
       if (isSelectFieldOpen) {
         setTimeout(() => {

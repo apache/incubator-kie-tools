@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	v2 "k8s.io/api/autoscaling/v2"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
 	"k8s.io/klog/v2"
@@ -161,20 +163,23 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 	// immutable
 	serviceContainer.Name = psh.GetContainerName()
 
-	replicas := psh.GetReplicaCount()
+	var hpa *v2.HorizontalPodAutoscaler = nil
+	if psh.AcceptsHPA() {
+		hpa, err = findHPAForDeployment(ctx, utils.GetClient(), platform.Namespace, psh.GetServiceName())
+		if err != nil {
+			return fmt.Errorf("failed to find a potential HorizontalPodAutoscaler for deployment %s/%s: %v", platform.Namespace, psh.GetServiceName(), err)
+		}
+		klog.V(log.D).Infof("HorizontalPodAutoscaler exists for deployment %s/%s: %t.", platform.Namespace, psh.GetServiceName(), hpa != nil)
+	}
 	kSinkInjected, err := psh.CheckKSinkInjected()
 	if err != nil {
 		return nil
-	}
-	if !kSinkInjected {
-		replicas = 0 // Wait for K_SINK injection
 	}
 	lbl, selectorLbl := getLabels(platform, psh)
 	serviceDeploymentSpec := appsv1.DeploymentSpec{
 		Selector: &metav1.LabelSelector{
 			MatchLabels: selectorLbl,
 		},
-		Replicas: &replicas,
 		Strategy: psh.GetDeploymentStrategy(),
 		Template: corev1.PodTemplateSpec{
 			ObjectMeta: metav1.ObjectMeta{
@@ -219,7 +224,17 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 		err := mergo.Merge(&(serviceDeployment.Spec), serviceDeploymentSpec, mergo.WithOverride)
 		// mergo.Merge algorithm is not setting the serviceDeployment.Spec.Replicas when the
 		// *serviceDeploymentSpec.Replicas is 0. Making impossible to scale to zero. Ensure the value.
-		serviceDeployment.Spec.Replicas = serviceDeploymentSpec.Replicas
+		if hpa == nil || !hpaIsWorking(hpa) || psh.GetReplicaCount() == 0 {
+			// Only when no HorizontalPodAutoscaler was created for current deployment, we should manage the replicas.
+			// Or, when the existing one did not wake up from a previous inactive period due to a replicas set to 0.
+			// In this last case, we should still let the controller the chance to set the replicas to wake up the HorizontalPodAutoscaler.
+			// Or, when the user voluntary wants to set the replicas to 0.
+			replicas := psh.GetReplicaCount()
+			if !kSinkInjected {
+				replicas = 0 // Wait for K_SINK injection
+			}
+			serviceDeployment.Spec.Replicas = &replicas
+		}
 		if err != nil {
 			return err
 		}

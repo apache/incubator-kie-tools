@@ -3,7 +3,7 @@ module github.com/apache/incubator-kie-tools/packages/sonataflow-operator/contai
 go 1.24.0
 
 require (
-	github.com/docker/docker v25.0.6+incompatible
+	github.com/docker/docker v28.5.2+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/google/uuid v1.6.0
 	github.com/jpillora/backoff v1.0.0

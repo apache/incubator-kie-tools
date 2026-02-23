@@ -219,7 +219,7 @@ docker-buildx: generate ## Build and push docker image for the manager for cross
 
 .PHONY: container-build
 container-build: ## Build the container image
-	cekit -v --descriptor images/manager.yaml build ${build_options} $(BUILDER) --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
+	cekit -v --descriptor images/manager.yaml build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
 ifneq ($(ignore_tag),true)
 	$(BUILDER) tag sonataflow-operator:latest ${IMG}
 endif
@@ -423,7 +423,7 @@ generate-all: generate generate-deploy bundle
 	@$(MAKE) fmt
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up and running to run this target, and run container-builder before the test
-label = "flows-ephemeral" # possible values are flows-ephemeral, flows-persistence, flows-monitoring, platform, cluster
+label = "flows-ephemeral" # possible values are flows-ephemeral, flows-persistence, flows-monitoring, flows-hpa, platform, cluster
 test-e2e:
 ifeq ($(label), cluster)
 	@echo "🌐 Running e2e tests for cluster..."
@@ -450,8 +450,13 @@ else ifeq ($(label), flows-monitoring)
 	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/workflow_test.go \
 	-v -ginkgo.v -ginkgo.no-color -ginkgo.github-output -ginkgo.label-filter=$(label) \
 	-ginkgo.junit-report=./e2e-test-report-workflow_test.xml -timeout 60m KUSTOMIZE=$(KUSTOMIZE);
+else ifeq ($(label), flows-hpa)
+	@echo "🔁 Running e2e tests for flows-hpa..."
+	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/workflow_test.go \
+	-v -ginkgo.v -ginkgo.no-color -ginkgo.github-output -ginkgo.label-filter=$(label) \
+	-ginkgo.junit-report=./e2e-test-report-workflow_test.xml -timeout 60m KUSTOMIZE=$(KUSTOMIZE);
 else
-	@echo "❌  Invalid label. Please use one of: cluster, platform, flows-ephemeral, flows-persistence, flows-monitoring"
+	@echo "❌  Invalid label. Please use one of: cluster, platform, flows-ephemeral, flows-persistence, flows-monitoring, flows-hpa"
 endif
 
 .PHONY: full-test-e2e

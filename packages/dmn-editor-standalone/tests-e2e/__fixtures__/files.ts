@@ -20,7 +20,7 @@
 import path from "path";
 import { readFile } from "fs/promises";
 import { Page } from "@playwright/test";
-import prettier from "prettier";
+import { prettierFormat } from "./prettier";
 
 export enum ExternalFile {
   EMPTY_DRD = "files/empty-drd.dmn",
@@ -40,9 +40,6 @@ export class Files {
   }
 
   public async getFormattedFile(filename: ExternalFile) {
-    return prettier.format(await this.getFile(filename), {
-      ...(await prettier.resolveConfig(".")),
-      parser: "xml",
-    });
+    return prettierFormat(await this.getFile(filename));
   }
 }

@@ -210,6 +210,14 @@ type SonataFlowStatus struct {
 	LastTimeFinalizerAttempt *metav1.Time `json:"lastTimeFinalizerAttempt,omitempty"`
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="lastTimeStatusNotified"
 	LastTimeStatusNotified *metav1.Time `json:"lastTimeStatusNotified,omitempty"`
+	// Replicas is the actual number of observed queryable pods.
+	// This is required by the HPA via the scale subresource.
+	// +optional
+	Replicas int32 `json:"replicas,omitempty"`
+	// Selector is the queryable label selector for pods, in string format.
+	// HPA uses this to find the pods and collect metrics (CPU/Memory).
+	// +optional
+	Selector string `json:"selector,omitempty"`
 }
 
 // SonataFlowTriggerRef defines a trigger created for the SonataFlow.
@@ -276,10 +284,21 @@ func (s *SonataFlowStatus) IsBuildFailed() bool {
 	return cond.IsFalse() && cond.Reason == api.BuildFailedReason
 }
 
+// SetReplicas sets the number of ready replicas for the /scale subresource contract.
+func (s *SonataFlowStatus) SetReplicas(replicas int32) {
+	s.Replicas = replicas
+}
+
+// SetSelector sets the target pods selector for the /scale subresource contract.
+func (s *SonataFlowStatus) SetSelector(selector string) {
+	s.Selector = selector
+}
+
 // SonataFlow is the descriptor representation for a workflow application based on the CNCF Serverless Workflow specification.
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
 // +kubebuilder:subresource:status
+// +kubebuilder:subresource:scale:specpath=.spec.podTemplate.replicas,statuspath=.status.replicas,selectorpath=.status.selector
 // +kubebuilder:resource:shortName={"sf", "workflow", "workflows"}
 // +k8s:openapi-gen=true
 // +kubebuilder:printcolumn:name="Profile",type=string,JSONPath=`.metadata.annotations.sonataflow\.org\/profile`

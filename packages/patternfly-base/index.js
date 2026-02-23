@@ -26,7 +26,19 @@ function posixPath(pathStr) {
 
 const scssRule = {
   test: /\.s[ac]ss$/i,
-  use: [require.resolve("style-loader"), require.resolve("css-loader"), require.resolve("sass-loader")],
+  use: [
+    require.resolve("style-loader"),
+    require.resolve("css-loader"),
+    {
+      loader: require.resolve("sass-loader"),
+      options: {
+        api: "modern",
+        sassOptions: {
+          silenceDeprecations: ["mixed-decls"],
+        },
+      },
+    },
+  ],
 };
 
 const cssRule = {

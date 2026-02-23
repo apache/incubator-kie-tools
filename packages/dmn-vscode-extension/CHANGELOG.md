@@ -17,6 +17,10 @@
 
 # 10.1.0
 
+- Classic DMN And Test Scenario Editor removed.
+
+# 10.1.0
+
 - Changed default SVG generation settings to improve consistency with the sister mechanism for BPMN files of placing SVGs inside the `src/main/resources/META-INF/processSVG` directory. When there's no customized configuration for SVG generation, SVG files are now placed in the same directory as the open file if not inside a `src/main/resources` structure, or on `src/main/resources/META-INF/decisionSVG/**/` if it is. The directory structure after `src/main/resources` is kept inside the `decisionSVG` dir.
 - New Test Scenario Editor compatible with DMN 1.5. It's a complete rewrite of the Test Scenario Editor (classic) and is the future of unit testing for DMN-based business Decisions.
 

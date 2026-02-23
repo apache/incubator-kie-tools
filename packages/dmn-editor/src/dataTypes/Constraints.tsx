@@ -620,6 +620,16 @@ export function ConstraintsFromTypeConstraintAttribute({
           itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
           itemDefinition.typeConstraint["@_kie:constraintType"] = enumToKieConstraintType(selectedConstraint);
         }
+
+        // Keep allowedValues and typeConstraint in sync to maintain backward compatibility
+        if (itemDefinition.allowedValues) {
+          if (value === "" || value === undefined) {
+            itemDefinition.allowedValues = undefined;
+          } else {
+            itemDefinition.allowedValues.text.__$$text = value;
+            itemDefinition.allowedValues["@_kie:constraintType"] = enumToKieConstraintType(selectedConstraint);
+          }
+        }
       });
     },
     [editItemDefinition, enumToKieConstraintType, itemDefinitionId]

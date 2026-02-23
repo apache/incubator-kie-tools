@@ -41,9 +41,6 @@ export type SettingsContextType = {
       host: string;
       port: string;
     };
-    editors: {
-      useLegacyDmnEditor: boolean;
-    };
   };
   isModalOpen: boolean;
   tab: SettingsTabs;
@@ -81,11 +78,7 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
 
   const [settings, setSettings] = useState<SettingsContextType["settings"]>();
 
-  const defaultSettingsTab = useMemo(() => {
-    return editorEnvelopeLocator.hasMappingFor("*.dmn")
-      ? SettingsTabs.EDITORS
-      : SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES;
-  }, [editorEnvelopeLocator]);
+  const defaultSettingsTab = SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES;
 
   const refresh = useCallback(async (args?: { canceled: Holder<boolean> }) => {
     const fs = fsCache.getOrCreateFs(SETTINGS_FS_NAME);
@@ -153,9 +146,6 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
               extendedServices: {
                 host: envExtendedServicesHost,
                 port: envExtendedServicesPort,
-              },
-              editors: {
-                useLegacyDmnEditor: false,
               },
             });
           } else {

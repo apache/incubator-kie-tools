@@ -172,7 +172,7 @@ export function WorkflowFormPage() {
 
   if (
     openApi.openApiPromise.status === PromiseStateStatus.RESOLVED &&
-    !openApi.openApiData?.tags?.find((t) => t.name === workflowDefinition.workflowName)
+    !openApi.openApiData?.paths[`/${workflowDefinition.workflowName}/schema`]
   ) {
     return (
       <ErrorPage

@@ -18,14 +18,19 @@
 package e2e
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"sigs.k8s.io/yaml"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test/utils"
@@ -67,6 +72,20 @@ var (
 func kubectlApplyFileOnCluster(file, namespace string) error {
 	cmd := exec.Command("kubectl", "apply", "-f", file, "-n", namespace)
 	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlApplyKustomizeOnCluster(dir, namespace string) error {
+	var manifests []byte
+	var err error
+	cmd := exec.Command("kubectl", "kustomize", dir)
+	manifests, err = utils.Run(cmd)
+	if err != nil {
+		return err
+	}
+	cmd = exec.Command("kubectl", "apply", "-n", namespace, "-f", "-")
+	cmd.Stdin = bytes.NewBuffer(manifests)
+	_, err = utils.Run(cmd)
 	return err
 }
 
@@ -198,6 +217,126 @@ func verifyWorkflowIsInRunningState(workflowName string, ns string) bool {
 		return false
 	}
 	return status
+}
+
+func verifyWorkflowReplicas(workflowName string, ns string, expectedReplicas int32) bool {
+	return verifyObjectReplicasFromPath(workflowName, ns, "workflow", "", "jsonpath='{.spec.podTemplate.replicas}'", expectedReplicas)
+}
+
+func verifyWorkflowScaleSubresourceReplicas(workflowName string, ns string, expectedReplicas int32) bool {
+	return verifyObjectReplicasFromPath(workflowName, ns, "workflow", "--subresource=scale", "jsonpath='{.spec.replicas}'", expectedReplicas)
+}
+
+func verifyWorkflowScaleSubresourceStatusReplicas(workflowName string, ns string, expectedReplicas int32) bool {
+	return verifyObjectReplicasFromPath(workflowName, ns, "workflow", "--subresource=scale", "jsonpath='{.status.replicas}'", expectedReplicas)
+}
+
+func verifyDeploymentReplicas(name string, ns string, expectedReplicas int32) bool {
+	return verifyObjectReplicasFromPath(name, ns, "deployment", "", "jsonpath='{.spec.replicas}'", expectedReplicas)
+}
+
+func verifyObjectReplicasFromPath(name string, ns string, objetType string, subResource string, replicasPath string, expectedReplicas int32) bool {
+	var cmd *exec.Cmd
+	if len(subResource) > 0 {
+		cmd = exec.Command("kubectl", "get", objetType, name, "-n", ns, subResource, "-o", replicasPath)
+	} else {
+		cmd = exec.Command("kubectl", "get", objetType, name, "-n", ns, "-o", replicasPath)
+	}
+
+	fmt.Printf("verifyObjectReplicasFromPath for object: %s -> %s/%s, subResource: %s, and replicasPath: %s\n", objetType, ns, name, subResource, replicasPath)
+	response, err := utils.Run(cmd)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to get replicas for object: %s -> %s/%s, subResource: %s, and replicasPath: %s, command failed: %v", objetType, ns, name, subResource, replicasPath, err))
+		return false
+	}
+	GinkgoWriter.Println(fmt.Sprintf("Got response %s", response))
+	replicas, err := extractReplicasFromResponse(response)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to get scale replicas from response for object: %s -> %s/%s, subResource: %s, and replicasPath: %s, %v", objetType, ns, name, subResource, replicasPath, err))
+		return false
+	}
+	return replicas == expectedReplicas
+}
+
+func extractReplicasFromResponse(response []byte) (int32, error) {
+	strResponse := strings.ToLower(string(response))
+	if strings.Contains(strResponse, "error") || strings.Contains(strResponse, "not found") {
+		return -1, fmt.Errorf("%s", response)
+	}
+	strResponse = strings.TrimSpace(strings.ReplaceAll(strResponse, "'", ""))
+	if len(strResponse) == 0 {
+		return -1, fmt.Errorf("%s", response)
+	}
+	replicas, err := strconv.ParseInt(strResponse, 10, 32)
+	if err != nil {
+		return -1, err
+	}
+	return int32(replicas), nil
+}
+
+func createTmpCopy(srcPath string) string {
+	tmpDir := GinkgoT().TempDir()
+	fileName := filepath.Base(srcPath)
+	dstPath := filepath.Join(tmpDir, fileName)
+	// read source
+	data, err := os.ReadFile(srcPath)
+	if err != nil {
+		GinkgoT().Fatal(err)
+	}
+	// write copied file
+	if err := os.WriteFile(dstPath, data, 0644); err != nil {
+		GinkgoT().Fatal(err)
+	}
+	return dstPath
+}
+
+func setImageAndReplicasOrFail(workflowFile, newImage string, replicas int32) {
+	if err := setImageAndReplicas(workflowFile, newImage, replicas); err != nil {
+		GinkgoT().Fatal(err)
+	}
+}
+
+func setImageAndReplicas(workflowFile, newImage string, replicas int32) error {
+	return applyWorkflowTransform(workflowFile, func(workflow *operatorapi.SonataFlow) {
+		workflow.Spec.PodTemplate.Container.Image = newImage
+		workflow.Spec.PodTemplate.Replicas = &replicas
+	})
+}
+
+func setProfileOrFail(workflowFile, profile string) {
+	if err := setProfile(workflowFile, profile); err != nil {
+		GinkgoT().Fatal(err)
+	}
+}
+
+func setProfile(workflowFile, profile string) error {
+	return applyWorkflowTransform(workflowFile, func(workflow *operatorapi.SonataFlow) {
+		workflow.Annotations["sonataflow.org/profile"] = profile
+	})
+}
+
+func applyWorkflowTransform(workflowFile string, transform func(flow *operatorapi.SonataFlow)) error {
+	data, err := os.ReadFile(workflowFile)
+	if err != nil {
+		return err
+	}
+
+	var workflow operatorapi.SonataFlow
+	if err := yaml.Unmarshal(data, &workflow); err != nil {
+		return err
+	}
+
+	transform(&workflow)
+
+	output, err := yaml.Marshal(workflow)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(workflowFile, output, 0644); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func verifyWorkflowIsAddressable(workflowName string, targetNamespace string) bool {

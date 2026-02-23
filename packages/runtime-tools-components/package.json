@@ -34,7 +34,7 @@
     "@patternfly/react-icons": "^5.4.1",
     "@patternfly/react-styles": "^5.4.0",
     "@patternfly/react-table": "^5.4.1",
-    "ajv": "^8.17.1",
+    "ajv": "^8.18.0",
     "ajv-formats": "^3.0.1",
     "axios": "^1.13.5",
     "copyfiles": "^2.4.1",

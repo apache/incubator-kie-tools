@@ -56,17 +56,15 @@
 
     <!-- 3rd party -->
     <version.junit>4.13.2</version.junit>
-    <version.org.apache.commons.commons-compress>1.27.1</version.org.apache.commons.commons-compress>
+    <version.org.apache.commons.commons-compress>1.28.0</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
-    <version.commons-io>2.16.1</version.commons-io>
+    <version.commons-io>2.20.0</version.commons-io>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
-    <version.io.netty>4.1.129.Final</version.io.netty>
+    <version.io.netty>4.1.131.Final</version.io.netty>
 
     <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
     <version.angus.mail>2.0.5</version.angus.mail>
-    <version.nimbus.jose.jwt>9.37.4</version.nimbus.jose.jwt>
-    <version.io.vertx>4.5.22</version.io.vertx>
     <!-- End of various transitive overrides. -->
   </properties>
 
@@ -78,16 +76,6 @@
         <groupId>org.eclipse.angus</groupId>
         <artifactId>angus-mail</artifactId>
         <version>${version.angus.mail}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.nimbusds</groupId>
-        <artifactId>nimbus-jose-jwt</artifactId>
-        <version>${version.nimbus.jose.jwt}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-web</artifactId>
-        <version>${version.io.vertx}</version>
       </dependency>
       <!-- End of various transitive overrides. -->
 

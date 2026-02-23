@@ -29,6 +29,7 @@ import { IdentifierContext } from "./IdentifierContext";
 import { ParsedExpression } from "./ParsedExpression";
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { Expression } from "./Expression";
+import { FeelVisitorImpl } from "./grammar/visitor/FeelVisitorImpl";
 
 export class FeelIdentifiersParser {
   private repository: IdentifiersRepository;
@@ -38,7 +39,6 @@ export class FeelIdentifiersParser {
   }
 
   public parse(variableContextUuid: string, expression: string): ParsedExpression {
-    const variables = new Array<FeelIdentifiedSymbol>();
     const chars = new CharStream(expression);
     const lexer = new FEEL_1_1Lexer(chars);
     const feelTokens = new CommonTokenStream(lexer);
@@ -52,13 +52,72 @@ export class FeelIdentifiersParser {
     // We're ignoring the errors for now
     parser.removeErrorListeners();
 
-    parser.expression();
+    // 1. Lexical analyzer = evaluates the tokens of a given string
+    // 2. Parser = Perform the Syntax Analysis, building a tree.
+    // 3. Semantic Analysis = the logical meaning and consistency in code. In this stage we know that date() returns
+    // a object of type Date, and then we can not, for example, perform an add operation with a boolean.
+    // At this stage we will get the type and return it.
+    // For future releases, we can also paint the expression if it has some errors.
 
-    variables.push(...parser.helper.variables);
+    // After the parser, we navigate through the tree identifying the return types of expressions.
+
+    parser.buildParseTrees = true;
+    const expressionContext = parser.compilation_unit();
+    const visitor = new FeelVisitorImpl();
+    visitor.visit(expressionContext);
+    const symbolsFromVisitor: FeelIdentifiedSymbol[] = [];
+    for (const visitedNodeResult of visitor.semanticTokens.filter(
+      (v) => v.symbolNature !== FeelSyntacticSymbolNature.TerminalNode
+    )) {
+      const scopeSymbols = [];
+      for (const [key, value] of visitedNodeResult.dataTypeReturn.properties) {
+        scopeSymbols.push({
+          name: key,
+          type: value.typeRef ?? value.name,
+        });
+      }
+
+      const symbol = new FeelIdentifiedSymbol(
+        visitedNodeResult.startIndex + 1,
+        visitedNodeResult.endIndex - visitedNodeResult.startIndex,
+        visitedNodeResult.startLine - 1,
+        visitedNodeResult.endLine - 1,
+        visitedNodeResult.symbolNature,
+        visitedNodeResult.text,
+        scopeSymbols
+      );
+
+      symbolsFromVisitor.push(symbol);
+    }
+
+    const identifiedSymbols = [
+      ...parser.helper.variables.filter(
+        (fromParser) =>
+          !symbolsFromVisitor.find(
+            (s) =>
+              (s.startIndex === fromParser.startIndex &&
+                s.startLine === fromParser.startLine &&
+                s.length === fromParser.length &&
+                s.endLine == fromParser.endLine) ||
+              (fromParser.startLine === s.startLine &&
+                fromParser.endLine === s.endLine &&
+                fromParser.startIndex <= s.startIndex &&
+                fromParser.startIndex + fromParser.length >= s.startIndex + s.length)
+          )
+      ),
+      ...symbolsFromVisitor,
+    ];
 
     return {
       availableSymbols: parser.helper.availableSymbols,
-      feelIdentifiedSymbols: variables,
+      feelIdentifiedSymbols: identifiedSymbols.sort((a, b) => {
+        const lineComp = a.startLine - b.startLine;
+        if (lineComp !== 0) {
+          return lineComp;
+        } else {
+          return a.startIndex - b.startIndex;
+        }
+      }),
     };
   }
 

@@ -122,10 +122,17 @@ type PlatformServiceHandler interface {
 
 	// Returns whether job based, service based or no DB migration is needed
 	GetDBMigrationStrategy() operatorapi.DBMigrationStrategyType
+
+	// AcceptsHPA returns true if the service accepts an external HPA configuration.
+	AcceptsHPA() bool
 }
 
 type DataIndexHandler struct {
 	platform *operatorapi.SonataFlowPlatform
+}
+
+func (d *DataIndexHandler) AcceptsHPA() bool {
+	return true
 }
 
 // GetDBMigrationStrategy returns DB migration approach
@@ -341,6 +348,10 @@ func (d *DataIndexHandler) CheckKSinkInjected() (bool, error) {
 
 type JobServiceHandler struct {
 	platform *operatorapi.SonataFlowPlatform
+}
+
+func (d *JobServiceHandler) AcceptsHPA() bool {
+	return false
 }
 
 // GetDBMigrationStrategy returns db migration approach otherwise

@@ -34,7 +34,6 @@ import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
-import { useSettings } from "../settings/SettingsContext";
 import { useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
@@ -117,9 +116,6 @@ export function DmnRunnerTable({
     setDmnRunnerTableError(false);
   }, [jsonSchema]);
 
-  const { settings } = useSettings();
-  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
-
   const { envelopeServer } = useEditorDockContext();
 
   const [openedBoxedExpressionNodeId, _] = useSharedValue(
@@ -155,18 +151,12 @@ export function DmnRunnerTable({
                           i18n={i18n.dmnRunner.table}
                           jsonSchemaBridge={jsonSchemaBridge}
                           results={results}
-                          openBoxedExpressionEditor={
-                            !isLegacyDmnEditor
-                              ? (nodeId: string) => {
-                                  const newDmnEditorEnvelopeApi =
-                                    envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                          openBoxedExpressionEditor={(nodeId: string) => {
+                            const newDmnEditorEnvelopeApi =
+                              envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
-                                  newDmnEditorEnvelopeApi.notifications.newDmnEditor_openBoxedExpressionEditor.send(
-                                    nodeId
-                                  );
-                                }
-                              : undefined
-                          }
+                            newDmnEditorEnvelopeApi.notifications.newDmnEditor_openBoxedExpressionEditor.send(nodeId);
+                          }}
                           openedBoxedExpressionEditorNodeId={openedBoxedExpressionNodeId}
                         />
                       </div>

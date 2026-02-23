@@ -19,7 +19,7 @@
     "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/dist build && cp -R resources/* build",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
-    "image:build:darwin:linux": "pnpm setup:env make -C ./build build",
+    "image:build:darwin:linux": "BUILD_ENGINE_OPTIONS='--no-squash' pnpm setup:env make -C ./build build",
     "image:build:win32": "echo \"Build skipped on Windows\"",
     "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p build/target/test/results\" \"run-script-os\" --finally \"mkdir -p build/target/test/results\" \"cp -R build/target/test/results dist-tests-e2e/\"",
     "image:test:darwin:linux": "pnpm setup:env make -C ./build test-image",

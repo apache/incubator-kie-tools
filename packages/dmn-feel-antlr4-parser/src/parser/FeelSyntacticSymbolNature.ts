@@ -53,4 +53,14 @@ export enum FeelSyntacticSymbolNature {
    * and are not available to the user.
    */
   InvisibleVariables,
+
+  /**
+   * Call to FEEL functions. For example, date("2010-12-14").
+   */
+  FunctionCall,
+
+  /**
+   *
+   */
+  TerminalNode,
 }
