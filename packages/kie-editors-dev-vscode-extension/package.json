@@ -44,7 +44,7 @@
     "@kie-tools/pmml-editor": "workspace:*",
     "@kie-tools/scesim-editor-envelope": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
-    "minimatch": "^3.0.5",
+    "minimatch": "^3.1.3",
     "monaco-editor": "^0.39.0"
   },
   "devDependencies": {
