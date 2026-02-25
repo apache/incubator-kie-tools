@@ -603,6 +603,9 @@ packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/XSD.
 packages/xml-parser-ts-codegen/src/schemas/xsd/HFP.xsd
 packages/xml-parser-ts-codegen/src/schemas/xsd/XSD.xsd
 packages/xml-parser-ts-codegen/src/schemas/xsd/xml.xsd
+packages/xml-parser-ts/tests/schemas/my-schema-1.0/MySchema10.xsd
+packages/xml-parser-ts/tests/schemas/my-schema-1.0/ts-gen/meta.ts
+packages/xml-parser-ts/tests/schemas/my-schema-1.0/ts-gen/types.ts
 packages/yaml-language-server/tests/__snapshots__/YamlLanguageService.test.ts.snap
 packages/yard-model/yard-model.iml
 packages/yard-validator-worker/yard-validator-worker.iml
