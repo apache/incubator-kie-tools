@@ -17,33 +17,27 @@
  * under the License.
  */
 
-import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import * as React from "react";
+import { I18nHtml, I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { SelectDirection } from "@patternfly/react-core/deprecated";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Wizard, WizardContext, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/deprecated";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEnv } from "../env/hooks/EnvContext";
 import { useOnlineI18n } from "../i18n";
-import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
-import { SelectOs } from "../os/SelectOs";
-import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
-import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
-import { useEnv } from "../env/hooks/EnvContext";
-import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
-import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
+import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
+import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 
 enum ModalPage {
   INITIAL,
@@ -236,7 +230,7 @@ export function ExtendedServicesModal() {
             <ListItem>Run the Extended Services container locally.</ListItem>
             <ListItem>
               <ClipboardCopy isReadOnly hoverTip="Copy" clickTip="Copied">
-                {`docker run --rm -p ${extendedServices.config.port}:${extendedServices.config.port} docker.io/apache/incubator-kie-sandbox-extended-services:${extendedServices.version}`}
+                {`docker run --rm -p ${extendedServices.config.port}:${extendedServices.defaultContainerPort} ${extendedServices.imageUrl}`}
               </ClipboardCopy>
             </ListItem>
           </List>

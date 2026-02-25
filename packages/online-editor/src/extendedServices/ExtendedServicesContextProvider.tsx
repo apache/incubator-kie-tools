@@ -54,7 +54,26 @@ export function ExtendedServicesContextProvider(props: Props) {
   }, [settings.extendedServices.port, settings.extendedServices.host]);
 
   const bridge = useMemo(() => new ExtendedServicesBridge(config.url.ping), [config]);
+
   const version = useMemo(() => process.env.WEBPACK_REPLACE__extendedServicesCompatibleVersion ?? "0.0.0", []);
+
+  const defaultContainerPort = useMemo(() => {
+    const port = process.env.WEBPACK_REPLACE__extendedServicesDefaultContainerPort;
+    if (!port) {
+      throw new Error("Extended Services default container port is not configured.");
+    } else {
+      return port;
+    }
+  }, []);
+
+  const imageUrl = useMemo(() => {
+    const url = process.env.WEBPACK_REPLACE__extendedServicesImageUrl;
+    if (!url) {
+      throw new Error("Extended Services image URL is not configured.");
+    } else {
+      return url;
+    }
+  }, []);
 
   useEffect(() => {
     // Pooling to detect either if ExtendedServices is running or has stopped
@@ -99,6 +118,8 @@ export function ExtendedServicesContextProvider(props: Props) {
       config,
       client,
       version,
+      defaultContainerPort,
+      imageUrl,
       outdated,
       isModalOpen,
       installTriggeredBy,
@@ -106,7 +127,7 @@ export function ExtendedServicesContextProvider(props: Props) {
       setModalOpen,
       setInstallTriggeredBy,
     }),
-    [client, config, installTriggeredBy, isModalOpen, outdated, status, version]
+    [client, config, installTriggeredBy, isModalOpen, outdated, status, version, defaultContainerPort, imageUrl]
   );
 
   return (

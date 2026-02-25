@@ -6739,6 +6739,28 @@ importers:
       '@kie-tools/extended-services-java':
         specifier: workspace:*
         version: link:../extended-services-java
+      '@kie-tools/kie-sandbox-extended-services-image-env':
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image-env
+    devDependencies:
+      '@kie-tools/image-builder':
+        specifier: workspace:*
+        version: link:../image-builder
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+
+  packages/kie-sandbox-extended-services-image-env:
+    dependencies:
+      '@kie-tools/extended-services-java':
+        specifier: workspace:*
+        version: link:../extended-services-java
     devDependencies:
       '@kie-tools/image-builder':
         specifier: workspace:*
@@ -7493,6 +7515,9 @@ importers:
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      '@kie-tools/kie-sandbox-extended-services-image-env':
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image-env
       '@kie-tools/pmml-editor':
         specifier: workspace:*
         version: link:../pmml-editor

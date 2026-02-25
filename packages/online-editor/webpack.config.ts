@@ -34,7 +34,8 @@ const buildEnv: any = env; // build-env is not typed
 
 export default async (webpackEnv: any, webpackArgv: any) => {
   const buildInfo = getBuildInfo();
-  const [extendedServices_compatibleVersion] = getExtendedServicesArgs();
+  const [extendedServices_compatibleVersion, extendedServices_defaultContainerPort, extendedServices_imageUrl] =
+    getExtendedServicesArgs();
 
   let lastCommitHash = "";
   try {
@@ -83,6 +84,8 @@ export default async (webpackEnv: any, webpackArgv: any) => {
             WEBPACK_REPLACE__commitHash: lastCommitHash,
             WEBPACK_REPLACE__buildInfo: buildInfo,
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
+            WEBPACK_REPLACE__extendedServicesDefaultContainerPort: extendedServices_defaultContainerPort,
+            WEBPACK_REPLACE__extendedServicesImageUrl: extendedServices_imageUrl,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.versions.quarkus,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.versions.kogito,
           }),
@@ -158,6 +161,10 @@ function getBuildInfo() {
 
 function getExtendedServicesArgs() {
   const compatibleVersion = buildEnv.onlineEditor.extendedServices.compatibleVersion;
+  const defaultContainerPort = buildEnv.extendedServicesImageEnv.port;
+  const imageUrl = buildEnv.onlineEditor.extendedServices.imageUrl;
   console.info("Extended Services :: Compatible version: " + compatibleVersion);
-  return [compatibleVersion];
+  console.info("Extended Services :: Default container port: " + defaultContainerPort);
+  console.info("Extended Services :: Image URL: " + imageUrl);
+  return [compatibleVersion, defaultContainerPort, imageUrl];
 }

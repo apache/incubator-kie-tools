@@ -58,6 +58,7 @@
     "@kie-tools/emscripten-fs": "^0.0.2",
     "@kie-tools/extended-services-api": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/kie-sandbox-extended-services-image-env": "workspace:*",
     "@kie-tools/pmml-editor": "workspace:*",
     "@kie-tools/uniforms-patternfly-form-wrapper": "workspace:*",
     "@kie-tools/unitables": "workspace:*",

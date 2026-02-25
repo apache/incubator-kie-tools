@@ -34,6 +34,8 @@ export interface ExtendedServicesContextType {
   config: ExtendedServicesConfig;
   client: ExtendedServicesClient;
   version: string;
+  defaultContainerPort: string;
+  imageUrl: string;
   outdated: boolean;
   isModalOpen: boolean;
   setModalOpen: React.Dispatch<boolean>;

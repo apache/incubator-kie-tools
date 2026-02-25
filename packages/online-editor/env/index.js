@@ -21,12 +21,20 @@ const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools
 
 const rootEnv = require("@kie-tools/root-env/env");
 const extendedServicesJavaEnv = require("@kie-tools/extended-services-java/env");
+const extendedServicesImageEnv = require("@kie-tools/kie-sandbox-extended-services-image-env/env");
 const corsProxyEnv = require("@kie-tools/cors-proxy/env");
 const kieSandboxAcceleratorQuarkusEnv = require("@kie-tools/kie-sandbox-accelerator-quarkus/env");
 const playwrightBaseEnv = require("@kie-tools/playwright-base/env");
 
 module.exports = composeEnv(
-  [rootEnv, extendedServicesJavaEnv, corsProxyEnv, kieSandboxAcceleratorQuarkusEnv, playwrightBaseEnv],
+  [
+    rootEnv,
+    extendedServicesJavaEnv,
+    extendedServicesImageEnv,
+    corsProxyEnv,
+    kieSandboxAcceleratorQuarkusEnv,
+    playwrightBaseEnv,
+  ],
   {
     vars: varsWithName({
       ONLINE_EDITOR__buildInfo: {
@@ -45,6 +53,10 @@ module.exports = composeEnv(
       ONLINE_EDITOR__extendedServicesUrl: {
         default: `http://${extendedServicesJavaEnv.env.extendedServicesJava.host}:${extendedServicesJavaEnv.env.extendedServicesJava.port}`,
         description: "Extended Services URL.",
+      },
+      ONLINE_EDITOR__extendedServicesImageUrl: {
+        default: `${extendedServicesImageEnv.env.extendedServicesImageEnv.registry}/${extendedServicesImageEnv.env.extendedServicesImageEnv.account}/${extendedServicesImageEnv.env.extendedServicesImageEnv.name}:${extendedServicesImageEnv.env.extendedServicesImageEnv.buildTag}`,
+        description: "Extended Services Image URL.",
       },
       ONLINE_EDITOR__disableExtendedServicesWizard: {
         default: `${false}`,
@@ -141,6 +153,7 @@ module.exports = composeEnv(
           buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),
           extendedServices: {
             compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesCompatibleVersion),
+            imageUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesImageUrl),
           },
           accelerators: {
             quarkus: {
