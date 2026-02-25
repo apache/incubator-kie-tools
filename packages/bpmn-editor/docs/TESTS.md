@@ -15,4 +15,6 @@
    under the License.
 -->
 
+# @kie-tools/bpmn-editor :: TESTS
+
 // TODO

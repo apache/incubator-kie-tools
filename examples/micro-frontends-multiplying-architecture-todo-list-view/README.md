@@ -15,7 +15,7 @@
    under the License.
 -->
 
-# Example :: Micro-frontends Multiplying Architecture :: 'To do' List View
+# Example :: Micro-frontends [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) :: 'To do' List View
 
 This package exposes the necessary files for you to create a 'To do' List Envelope.
 

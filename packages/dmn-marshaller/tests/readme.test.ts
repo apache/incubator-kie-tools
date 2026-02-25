@@ -19,34 +19,32 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { getMarshaller } from "@kie-tools/bpmn-marshaller";
-import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+import { DMN_LATEST__tDefinitions, getMarshaller } from "@kie-tools/dmn-marshaller";
 
 describe("readme", () => {
   test("usage", () => {
     const originalXml = `<?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="_bpmn_1" targetNamespace="http://kie.apache.org/bpmn/_bpmn_1">
-  <itemDefinition id="_foo_item_definition" structureRef="org.acme.Foo" />
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" id="_dmn_1" targetNamespace="http://kie.apache.org/dmn/_dmn_1">
+  <itemDefinition id="_foo_item_definition" name="Foo" />
 </definitions>
 `;
 
-    const marshaller = getMarshaller(originalXml);
+    const marshaller = getMarshaller(originalXml, { upgradeTo: "latest" });
     const json = marshaller.parser.parse();
-    const bpmn: BPMN20__tDefinitions = json.definitions;
+    const dmn: DMN_LATEST__tDefinitions = json.definitions;
 
-    bpmn.rootElement ??= [];
-    bpmn.rootElement.push({
-      __$$element: "itemDefinition",
+    dmn.itemDefinition ??= [];
+    dmn.itemDefinition.push({
       "@_id": "_bar_item_definition",
-      "@_structureRef": "org.acme.Bar",
+      "@_name": "Bar",
     });
 
     const xml = marshaller.builder.build(json);
 
     expect(xml).toStrictEqual(`<?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="_bpmn_1" targetNamespace="http://kie.apache.org/bpmn/_bpmn_1" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI">
-  <itemDefinition id="_foo_item_definition" structureRef="org.acme.Foo" />
-  <itemDefinition id="_bar_item_definition" structureRef="org.acme.Bar" />
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" id="_dmn_1" targetNamespace="http://kie.apache.org/dmn/_dmn_1" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <itemDefinition id="_foo_item_definition" name="Foo" />
+  <itemDefinition id="_bar_item_definition" name="Bar" />
 </definitions>
 `);
   });

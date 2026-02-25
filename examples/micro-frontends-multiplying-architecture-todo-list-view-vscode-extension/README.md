@@ -15,7 +15,7 @@
    under the License.
 -->
 
-# Example :: Micro-frontends Multiplying Architecture :: 'To do' List View VS Code Extension
+# Example :: Micro-frontends [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) :: 'To do' List View VS Code Extension
 
 This package provides a VS Code Extension containing a 'To do' List View, which can and the following commands:
 

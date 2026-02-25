@@ -15,7 +15,7 @@
    under the License.
 -->
 
-# @kie-tools/bpmn-editor-envelope :: ARCHITECTURE
+# @kie-tools-core/envelope-bus :: TESTS
 
-- This package implements the `Editor` interface from `@kie-tools-core/editor` for a BPMN Editor, making it compatible with editor definitions in `@kie-tools/vscode-extensions` and `@kie-tools/online-editor`.
-- As the BPMN Editor API evolves to be more than just the `Editor` interface, it features its own types specific for the BPMN Editor—`BpmnEditorChannelApi` and `BpmnEditorEnvelopeApi`.
+- Unit tests are inside the `tests` folder
+- Run them with `pnpm jest`

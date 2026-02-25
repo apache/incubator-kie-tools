@@ -15,9 +15,9 @@
    under the License.
 -->
 
-# Example :: Micro-frontends Multiplying Architecture :: 'To do' List View on webapp
+# Example :: Micro-frontends [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) :: 'To do' List View on webapp
 
-This package contains a web application that features a 'To do' List View, a simple component wrapped inside an Envelope with a simple API for manging 'To do' items. It also features a very simple demo of Multiplying Architecture's Shared value.
+This package contains a web application that features a 'To do' List View, a simple component wrapped inside an Envelope with a simple API for manging 'To do' items. It also features a very simple demo of [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md)'s Shared value.
 
 ### Building the dependencies
 

@@ -17,7 +17,7 @@
 
 # Example :: DMN Editor on webapp
 
-This package contains a web application that features the DMN Editor wrapped inside a Micro-frontend Multiplying Architecture Envelope.
+This package contains a web application that features the DMN Editor wrapped inside a Micro-frontend [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) Envelope.
 
 ### Building the dependencies
 

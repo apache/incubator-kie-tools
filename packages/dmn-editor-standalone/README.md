@@ -80,7 +80,7 @@ The returned object will contain the methods needed to manipulate the Editor:
 ## For development information see:
 
 - 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [TESTS.md](./docs/TESTS.md)
 - 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---
