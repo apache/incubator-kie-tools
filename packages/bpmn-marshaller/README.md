@@ -23,7 +23,7 @@ Features include:
 
 - Full compatibility with the BPMN 2.0.2 specification through the specification's BPMN20 XSD files.
 - Out-of-the-box Drools extensions compatible with the jBPM Workflow Engine.
-- Auto-genreated TypeScript type definitions for a JSON-friendly representation of BPMN workflows (using [`@kie-tools/xml-parser-ts-codegen`](../xml-parser-ts-codegen/)).
+- Auto-generated TypeScript type definitions for a JSON-friendly representation of BPMN workflows (using [`@kie-tools/xml-parser-ts-codegen`](../xml-parser-ts-codegen/)).
 
 ---
 
