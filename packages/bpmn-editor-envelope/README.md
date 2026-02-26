@@ -17,7 +17,7 @@
 
 ## @kie-tools/bpmn-editor-envelope
 
-Package responsible for creating the necessary pumbling for [@kie-tools/bpmn-editor](../bpmn-editor/README.md) to be used inside an **`Envelope`** in [Multiplying Architecture](../envelope-bus/docs/ARCHITECTURE.md).
+Package responsible for creating the necessary plumbing for [@kie-tools/bpmn-editor](../bpmn-editor/README.md) to be used inside an **`Envelope`** in [Multiplying Architecture](../envelope-bus/docs/ARCHITECTURE.md).
 
 ### Features
 
