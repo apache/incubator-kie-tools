@@ -17,5 +17,6 @@
 
 # @kie-tools-core/envelope-bus :: DEV
 
-- Write a test first, then make it pass.
+- Use Test-Driven Development (TDD).
+- When adding new features, always write a failing test first, then implement the code to make it pass.
 - There are no development webapps for this package.
