@@ -33,7 +33,7 @@ Communication between **`Channels`** and **`Envelopes`** is bi-directional, and 
 1. \***\*Requests\*\***
    - Like an async function call. Can send arguments and receive responses.
 1. \***\*Shared Values\*\***
-   - Values that exist in Chanels and Enveloeps at the smae time. Kept in sync via a publish/subcribe mechanism.
+   - Values that exist in Channels and Envelopes at the same time. Kept in sync via a publish/subscribe mechanism.
 
 One **`Channel`** can instantiate and communicate with multiple **`Envelopes`**, but one **`Envelope`** can only communicate with the **`Channel`** which instantiated it. (**`Channel`** --1..n--> **`Envelope`**)
 
