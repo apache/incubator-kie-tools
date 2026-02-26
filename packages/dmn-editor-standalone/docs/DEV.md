@@ -22,4 +22,4 @@
   ```shell
   pnpm start
   ```
-- An HTTP Server is run on http://localhost:9006 to serve the minified JS file containing the BPMN Editor.
+- An HTTP Server is run on http://localhost:9006 to serve the minified JS file containing the DMN Editor.
