@@ -17,7 +17,7 @@
 
 ## @kie-tools/dmn-marshaller
 
-A type-safe marshaller for XML <--> JSON conversation for DMN decisions.
+A type-safe marshaller for XML <--> JSON conversions for DMN decisions.
 
 Features include:
 
