@@ -10374,15 +10374,27 @@ importers:
 
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+      '@kie-tools/maven-m2-repo-via-http-image':
+        specifier: workspace:*
+        version: link:../maven-m2-repo-via-http-image
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
       '@kie-tools/serverless-logic-web-tools-swf-builder-image-env':
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
+      '@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app':
+        specifier: workspace:*
+        version: link:../serverless-logic-web-tools-swf-deployment-quarkus-app
       '@kie-tools/sonataflow-builder-image':
         specifier: workspace:*
         version: link:../sonataflow-builder-image
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2

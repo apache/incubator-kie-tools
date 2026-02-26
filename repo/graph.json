@@ -202,8 +202,8 @@
       { "id": "@kie-tools/yard-validator" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
-      { "id": "sonataflow-deployment-webapp" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" },
+      { "id": "sonataflow-deployment-webapp" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
@@ -1428,12 +1428,22 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
         "target": "@kie-tools/sonataflow-builder-image",
         "weight": 1
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
         "target": "sonataflow-deployment-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
+        "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
       { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/react-hooks", "weight": 1 },
@@ -1448,11 +1458,6 @@
         "weight": 1
       },
       { "source": "sonataflow-deployment-webapp", "target": "@kie-tools/sonataflow-dev-app", "weight": 1 },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
-        "target": "@kie-tools/sonataflow-quarkus-devui",
-        "weight": 1
-      },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
         "target": "@kie-tools/maven-m2-repo-via-http-image",

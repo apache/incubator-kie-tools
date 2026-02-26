@@ -23,6 +23,10 @@ const rootEnv = require("@kie-tools/root-env/env");
 const serverlessLogicWebToolsSwfBuilderImageEnv = require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env");
 const sonataflowBuilderImageEnv = require("@kie-tools/sonataflow-builder-image/env");
 
+const {
+  env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
+} = require("@kie-tools/maven-m2-repo-via-http-image/env");
+
 module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv, sonataflowBuilderImageEnv], {
   vars: varsWithName({
     SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl: {
@@ -34,6 +38,9 @@ module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv,
     return {
       slwtBuilderImage: {
         baseImageUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl),
+        dev: {
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
+        },
       },
     };
   },
