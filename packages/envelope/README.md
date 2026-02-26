@@ -19,7 +19,7 @@
 
 Thin wrapper around [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) **`Envelopes`** adding a "view" component for **`Envelopes`** rendering visual elements.
 
-This package also allows **`Envelopes`** to be phisically inside `div` or `iframe` elements, for supporting Module Federation.
+This package also allows **`Envelopes`** to be physically inside `div` or `iframe` elements, for supporting Module Federation.
 
 ---
 
