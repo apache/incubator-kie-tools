@@ -140,7 +140,7 @@ envelopeClient.channelApi.shared.foo.set("foo");
 envelopeClient.stopListening();
 ```
 
-> See [readme.test.ts](./tests/readme/readme.test.ts) for more details on subscribing and unsucribing to Notifications and Shared Value updates.
+> See [readme.test.ts](./tests/readme/readme.test.ts) for more details on subscribing and unsubscribing to Notifications and Shared Value updates.
 
 ---
 
