@@ -39,7 +39,7 @@ This package was created to provide a way to marshall/unmarshall BPMN, DMN, Test
 ### Conventions:
 
 1. Element attributes become `@_attrName` fields.
-1. Substitution groups use the `__$$element` property as discriminator.
+1. Substitution groups use the `__$$element` property as a discriminator.
 1. Elements that accept text nodes will use the `__$$text` property to hold its textual content.
 
 ### Usage:
