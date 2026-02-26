@@ -17,7 +17,7 @@
 
 # @kie-tools/dmn-editor-standalone :: DEV
 
-- The development envirionemnt for the `DmnEditor` global object is based on Storybook, acting as a playground and a publishable self-documentation.
+- The development environment for the `DmnEditor` global object is based on Storybook, acting as a playground and a publishable self-documentation.
 - Simply run the following command and navigate to http://localhost:9903
   ```shell
   pnpm start
