@@ -17,7 +17,7 @@
 
 # @kie-tools-core/envelope-bus
 
-Enables components in differnt contexts to communicate between themselves using a low-level `postMessage` method, inspired by [Window.postMessage()](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) in a type-safe way.
+Enables components in different contexts to communicate between themselves using a low-level `postMessage` method, inspired by [Window.postMessage()](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) in a type-safe way.
 
 Works with `iframe`s, Shared Workers, Electron apps, VS Code extensions, and browser extensions.
 
