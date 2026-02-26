@@ -104,7 +104,7 @@ envelopeServer.envelopeApi.requests.requestBar("1").then(console.log);
 envelopeServer.envelopeApi.shared.bar.set("bar");
 ```
 
-> See [readme.test.ts](./tests/readme/readme.test.ts) for more details on subscribing and unsucribing to Notifications and Shared Value updates.
+> See [readme.test.ts](./tests/readme/readme.test.ts) for more details on subscribing and unsubscribing to Notifications and Shared Value updates.
 
 #### @ Envelope (E.g., inside an iframe)
 
