@@ -30,6 +30,8 @@ import (
 	"strings"
 	"time"
 
+	"k8s.io/apimachinery/pkg/util/intstr"
+
 	"sigs.k8s.io/yaml"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
@@ -250,7 +252,7 @@ func verifyObjectReplicasFromPath(name string, ns string, objetType string, subR
 		return false
 	}
 	GinkgoWriter.Println(fmt.Sprintf("Got response %s", response))
-	replicas, err := extractReplicasFromResponse(response)
+	replicas, err := extractInt32FromResponse(response)
 	if err != nil {
 		GinkgoWriter.Println(fmt.Errorf("failed to get scale replicas from response for object: %s -> %s/%s, subResource: %s, and replicasPath: %s, %v", objetType, ns, name, subResource, replicasPath, err))
 		return false
@@ -258,20 +260,62 @@ func verifyObjectReplicasFromPath(name string, ns string, objetType string, subR
 	return replicas == expectedReplicas
 }
 
-func extractReplicasFromResponse(response []byte) (int32, error) {
+func extractInt32FromResponse(response []byte) (int32, error) {
 	strResponse := strings.ToLower(string(response))
 	if strings.Contains(strResponse, "error") || strings.Contains(strResponse, "not found") {
 		return -1, fmt.Errorf("%s", response)
 	}
-	strResponse = strings.TrimSpace(strings.ReplaceAll(strResponse, "'", ""))
-	if len(strResponse) == 0 {
-		return -1, fmt.Errorf("%s", response)
-	}
+	strResponse = extractFromSingleQuotedResponse(strResponse)
 	replicas, err := strconv.ParseInt(strResponse, 10, 32)
 	if err != nil {
 		return -1, err
 	}
 	return int32(replicas), nil
+}
+
+func verifyResourceExists(name string, resourceType string, ns string) bool {
+	cmd := exec.Command("kubectl", "get", resourceType, name, "-n", ns, "-o", "jsonpath='{.metadata.name}'")
+	response, err := utils.Run(cmd)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to check if resource exists, name: %s, resourceType: %s, ns: %s, %v", name, resourceType, ns, err))
+		return false
+	}
+	strResponse := string(response)
+	if strings.Contains(strResponse, "NotFound") || strings.Contains(strResponse, "not found") {
+		return false
+	}
+	return name == extractFromSingleQuotedResponse(strResponse)
+}
+
+func verifyPodDisruptionBudgetConditionHasStatus(name string, ns string, condition string, status string) bool {
+	jsonPath := fmt.Sprintf("jsonpath='{.status.conditions[?(@.type==\"%s\")].status}'", condition)
+	cmd := exec.Command("kubectl", "get", "pdb", name, "-n", ns, "-o", jsonPath)
+	response, err := utils.Run(cmd)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to get status value for condition: %s from PodDisruptionBudget: %s/%s, %v", condition, ns, name, err))
+		return false
+	}
+	return status == extractFromSingleQuotedResponse(string(response))
+}
+
+func verifyPodDisruptionBudgetAllowsDisruptionNumber(name string, ns string, expectedAllowedDisruptions int32) bool {
+	cmd := exec.Command("kubectl", "get", "pdb", name, "-n", ns, "-o", "jsonpath='{.status.disruptionsAllowed}'")
+	response, err := utils.Run(cmd)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to get the number of disruptionsAllowed from PodDisruptionBudget: %s/%s, %v", ns, name, err))
+		return false
+	}
+	allowedDisruptions, err := extractInt32FromResponse(response)
+	if err != nil {
+		return false
+	}
+	return allowedDisruptions == expectedAllowedDisruptions
+}
+
+func extractFromSingleQuotedResponse(response string) string {
+	result := strings.TrimSpace(response)
+	result = strings.TrimPrefix(response, "'")
+	return strings.TrimSuffix(result, "'")
 }
 
 func createTmpCopy(srcPath string) string {
@@ -290,10 +334,38 @@ func createTmpCopy(srcPath string) string {
 	return dstPath
 }
 
+func setReplicasOrFail(workflowFile string, replicas int32) {
+	if err := setReplicas(workflowFile, replicas); err != nil {
+		GinkgoT().Fatal(err)
+	}
+}
+
 func setImageAndReplicasOrFail(workflowFile, newImage string, replicas int32) {
 	if err := setImageAndReplicas(workflowFile, newImage, replicas); err != nil {
 		GinkgoT().Fatal(err)
 	}
+}
+
+func setPodDisruptionBudgetOrFail(workflowFile string, minAvailable *intstr.IntOrString, maxUnavailable *intstr.IntOrString) {
+	err := applyWorkflowTransform(workflowFile, func(workflow *operatorapi.SonataFlow) {
+		if minAvailable == nil && maxUnavailable == nil {
+			workflow.Spec.PodTemplate.PodDisruptionBudget = nil
+		} else {
+			workflow.Spec.PodTemplate.PodDisruptionBudget = &operatorapi.PodDisruptionBudgetSpec{
+				MinAvailable:   minAvailable,
+				MaxUnavailable: maxUnavailable,
+			}
+		}
+	})
+	if err != nil {
+		GinkgoT().Fatal(err)
+	}
+}
+
+func setReplicas(workflowFile string, replicas int32) error {
+	return applyWorkflowTransform(workflowFile, func(workflow *operatorapi.SonataFlow) {
+		workflow.Spec.PodTemplate.Replicas = &replicas
+	})
 }
 
 func setImageAndReplicas(workflowFile, newImage string, replicas int32) error {
@@ -619,4 +691,44 @@ func getWorkflowDefinitionStatus(podName string, containerName string, namespace
 		return "", false, nil
 	}
 	return available.(string), true, nil
+}
+
+// patchSFPDataIndexReplicas executes a patch command for the dataIndex replicas in the given platform.
+func patchSFPDataIndexReplicas(sfpName string, ns string, replicas string) error {
+	return patchSFPServiceReplicas(sfpName, ns, "dataIndex", replicas)
+}
+
+// patchSFPDataIndexReplicas executes a patch command for the jobService replicas in the given platform.
+func patchSFPJobServiceReplicas(sfpName string, ns string, replicas string) error {
+	return patchSFPServiceReplicas(sfpName, ns, "jobService", replicas)
+}
+
+// patchSFPServiceReplicas use any of the patchSFPDataIndexReplicas or patchSFPJobServiceReplicas variants.
+func patchSFPServiceReplicas(sfpName string, ns string, serviceField string, replicas string) error {
+	patch := fmt.Sprintf(`{"spec":{"services":{"%s":{"podTemplate":{"replicas":%s}}}}}`, serviceField, replicas)
+	cmd := exec.Command("kubectl", "patch", "sonataflowplatform", sfpName, "-n", ns, "--type=merge", "-p", patch)
+	response, err := utils.Run(cmd)
+	if err != nil {
+		return fmt.Errorf("failed to patch the replicas the service: %s in SonataFlowPlatform %s/%s, %v", serviceField, ns, sfpName, err)
+	}
+	strResponse := extractFromSingleQuotedResponse(string(response))
+	if !strings.HasPrefix(strResponse, fmt.Sprintf("sonataflowplatform.sonataflow.org/%s patched", sfpName)) {
+		return fmt.Errorf("failed to patch the replicas for the service: %s in SonataFlowPlatform %s/%s, verify that the platform exists in the namespace: %s, %v", serviceField, ns, sfpName, ns, strResponse)
+	}
+	return nil
+}
+
+// patchHPAMinReplicas executes a patch command for the HorizontalPodAutoscaler minReplicas.
+func patchHPAMinReplicas(name string, ns string, replicas string) error {
+	patch := fmt.Sprintf(`{"spec":{"minReplicas":%s}}`, replicas)
+	cmd := exec.Command("kubectl", "patch", "horizontalpodautoscaler", name, "-n", ns, "--type=merge", "-p", patch)
+	response, err := utils.Run(cmd)
+	if err != nil {
+		return fmt.Errorf("failed to patch the minReplicas for the HPA: %s/%s, %v", ns, name, err)
+	}
+	strResponse := extractFromSingleQuotedResponse(string(response))
+	if !strings.HasPrefix(strResponse, fmt.Sprintf("horizontalpodautoscaler.autoscaling/%s patched", name)) {
+		return fmt.Errorf("failed to patch the minReplicas for the HPA %s/%s, verify that the HPA exists in the namespace: %s, %s", ns, name, ns, strResponse)
+	}
+	return nil
 }

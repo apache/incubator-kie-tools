@@ -22,6 +22,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	autoscalingv2 "k8s.io/api/autoscaling/v2"
@@ -59,6 +60,8 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
+
+	kubeutil "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 )
 
 // SonataFlowPlatformReconciler reconciles a SonataFlowPlatform object
@@ -78,6 +81,7 @@ type SonataFlowPlatformReconciler struct {
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms/finalizers,verbs=update
 //+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=autoscaling,resources=horizontalpodautoscalers,verbs=get;list;watch
+//+kubebuilder:rbac:groups=policy,resources=poddisruptionbudgets,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -277,21 +281,6 @@ func (r *SonataFlowPlatformReconciler) updateIfActiveClusterPlatformExists(ctx c
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) error {
-	pred := predicate.Funcs{
-		CreateFunc: func(e ctrlevent.CreateEvent) bool {
-			return false
-		},
-		UpdateFunc: func(e ctrlevent.UpdateEvent) bool {
-			return false
-		},
-		DeleteFunc: func(e ctrlevent.DeleteEvent) bool {
-			return true
-		},
-		GenericFunc: func(e ctrlevent.GenericEvent) bool {
-			return false
-		},
-	}
-
 	builder := ctrlrun.NewControllerManagedBy(mgr).
 		For(&operatorapi.SonataFlowPlatform{}).
 		Owns(&appsv1.Deployment{}).
@@ -299,7 +288,7 @@ func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) err
 		Owns(&corev1.ConfigMap{}).
 		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapPlatformToPlatformRequests)).
 		Watches(&operatorapi.SonataFlowClusterPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapClusterPlatformToPlatformRequests)).
-		Watches(&autoscalingv2.HorizontalPodAutoscaler{}, handler.EnqueueRequestsFromMapFunc(r.mapHPAToPlatformRequests), pkgbuilder.WithPredicates(pred))
+		Watches(&autoscalingv2.HorizontalPodAutoscaler{}, handler.EnqueueRequestsFromMapFunc(r.mapHPAToPlatformRequests), pkgbuilder.WithPredicates(hpaToSonataFlowPlatformServicePredicate()))
 
 	knativeAvail, err := knative.GetKnativeAvailability(mgr.GetConfig())
 	if err != nil {
@@ -369,15 +358,15 @@ func contains(slice []operatorapi.WorkFlowCapability, s operatorapi.WorkFlowCapa
 	return false
 }
 
-// mapHPAToPlatformRequests determines if the referred HorizontalPodAutoscaler targets a DI service in given namespace,
-// if any. Analyses if that namespace has an SFP that manges the DI service. If that is the case, enqueues a Request to
-// the SFP to give the chance to take an action if needed. We normally want to do that in situations where the
-// HorizontalPodAutoscaler was removed (DeleteEvent) to let the SFP restore back the DI replicas. In other situations
-// the given HorizontalPodAutoscaler will take the needed actions if needed.
+// mapHPAToPlatformRequests determines if the referred HorizontalPodAutoscaler targets a DI service in the given namespace,
+// if any. Analyses if that namespace has an SPF that manges the DI service. If that is the case, enqueues a Request to
+// the SPF to give the chance to take an action if needed. We normally want to do that in situations where the
+// HorizontalPodAutoscaler was removed or has changed to let the SFP controller restore back the DI replicas or manage
+// a potential PodDisruptionBudget configuration accordingly.
 func (r *SonataFlowPlatformReconciler) mapHPAToPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
-	hpa := object.(*autoscalingv2.HorizontalPodAutoscaler)
-	klog.V(log.D).Infof("HorizontalPodAutoscaler %s/%s with spec.ScaleTargetRef.Kind Kind: %s was deleted.", hpa.Namespace, hpa.Name, hpa.Spec.ScaleTargetRef.Kind)
-	if hpa.Spec.ScaleTargetRef.Kind == "Deployment" {
+	hpa, ok := kubeutil.IsHPAndTargetsADeployment(object)
+	klog.V(log.D).Infof("HorizontalPodAutoscaler %s/%s with spec.ScaleTargetRef.Kind Kind: %s requires SFP controller attention.", hpa.Namespace, hpa.Name, hpa.Spec.ScaleTargetRef.Kind)
+	if ok {
 		sfp, err := platform.GetActivePlatform(ctx, r.Client, hpa.Namespace, false)
 		if err != nil {
 			klog.V(log.D).Infof("failed to get active platform in namespace: %s, %v", hpa.Namespace, err)
@@ -400,4 +389,42 @@ func (r *SonataFlowPlatformReconciler) mapHPAToPlatformRequests(ctx context.Cont
 		}
 	}
 	return nil
+}
+
+// hpaToSonataFlowPlatformServicePredicate returns the predicate functions to filter HorizontalPodAutoscaler events
+// that might require attention from the SFP controller.
+func hpaToSonataFlowPlatformServicePredicate() predicate.Funcs {
+	return predicate.Funcs{
+		CreateFunc: func(e ctrlevent.CreateEvent) bool {
+			return isHPAndCandidateToTargetADataIndexDeploymentAsBool(e.Object)
+		},
+		UpdateFunc: func(e ctrlevent.UpdateEvent) bool {
+			oldHpa, oldHpaOk := isHPAndCandidateToTargetADataIndexDeployment(e.ObjectOld)
+			newHpa, newHpaOK := isHPAndCandidateToTargetADataIndexDeployment(e.ObjectNew)
+			if oldHpaOk || newHpaOK {
+				return !kubeutil.HPAEqualsBySpec(oldHpa, newHpa)
+			}
+			return false
+		},
+		DeleteFunc: func(e ctrlevent.DeleteEvent) bool {
+			return isHPAndCandidateToTargetADataIndexDeploymentAsBool(e.Object)
+		},
+		GenericFunc: func(e ctrlevent.GenericEvent) bool {
+			return isHPAndCandidateToTargetADataIndexDeploymentAsBool(e.Object)
+		},
+	}
+}
+
+func isHPAndCandidateToTargetADataIndexDeployment(obj client.Object) (*autoscalingv2.HorizontalPodAutoscaler, bool) {
+	if hpa, ok := kubeutil.IsHPAndTargetsADeployment(obj); ok {
+		if strings.HasSuffix(hpa.Spec.ScaleTargetRef.Name, constants.DataIndexServiceName) {
+			return hpa, true
+		}
+	}
+	return nil, false
+}
+
+func isHPAndCandidateToTargetADataIndexDeploymentAsBool(obj client.Object) bool {
+	_, ok := isHPAndCandidateToTargetADataIndexDeployment(obj)
+	return ok
 }
