@@ -78,6 +78,7 @@ func init() {
 }
 
 func main() {
+	fmt.Printf("Ignore this change")
 	var metricsAddr string
 	var enableLeaderElection bool
 	var leaseDuration *time.Duration
