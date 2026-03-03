@@ -52,10 +52,10 @@ runs:
       shell: bash
       run: |
         output_empty_zip () { echo UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA== | base64 -d; }
-        zip -r $RUNNER_TEMP/tests-reports.zip $TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/tests-reports.zip
-        zip -r $RUNNER_TEMP/end-to-end-tests-reports.zip $END_TO_END_TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/end-to-end-tests-reports.zip
-        zip -r $RUNNER_TEMP/end-to-end-tests-artifacts.zip $END_TO_END_TESTS_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/end-to-end-tests-artifacts.zip
-        zip -r $RUNNER_TEMP/build-artifacts.zip $BUILD_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/build-artifacts.zip
+        zip -rq $RUNNER_TEMP/tests-reports.zip $TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/tests-reports.zip
+        zip -rq $RUNNER_TEMP/end-to-end-tests-reports.zip $END_TO_END_TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/end-to-end-tests-reports.zip
+        zip -rq $RUNNER_TEMP/end-to-end-tests-artifacts.zip $END_TO_END_TESTS_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/end-to-end-tests-artifacts.zip
+        zip -rq $RUNNER_TEMP/build-artifacts.zip $BUILD_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/build-artifacts.zip
         ls -la $RUNNER_TEMP
 
     - name: "Upload tests reports"
