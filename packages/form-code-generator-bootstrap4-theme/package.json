@@ -25,7 +25,7 @@
     "@kie-tools/form-code-generator": "workspace:*",
     "lodash": "^4.17.23",
     "prettier": "^2.8.8",
-    "underscore": "^1.13.1",
+    "underscore": "^1.13.8",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2"
   },
