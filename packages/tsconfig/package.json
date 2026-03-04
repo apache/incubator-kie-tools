@@ -3,5 +3,9 @@
   "name": "@kie-tools/tsconfig",
   "version": "0.0.0",
   "keywords": [],
+  "scripts": {
+    "build:dev": "echo \"Nothing to build for this package. Skipping.\"",
+    "build:prod": "echo \"Nothing to build for this package. Skipping.\""
+  },
   "devDependencies": {}
 }

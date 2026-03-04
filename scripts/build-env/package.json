@@ -22,6 +22,8 @@
     "src"
   ],
   "scripts": {
+    "build:dev": "echo \"Nothing to build for this package. Skipping.\"",
+    "build:prod": "echo \"Nothing to build for this package. Skipping.\"",
     "install": "rimraf dist && tsc"
   },
   "devDependencies": {

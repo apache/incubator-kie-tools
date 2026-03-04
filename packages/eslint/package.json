@@ -6,6 +6,10 @@
   "bin": {
     "kie-tools--eslint": "eslint.js"
   },
+  "scripts": {
+    "build:dev": "echo \"Nothing to build for this package. Skipping.\"",
+    "build:prod": "echo \"Nothing to build for this package. Skipping.\""
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
