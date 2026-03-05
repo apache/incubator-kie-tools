@@ -58,7 +58,7 @@ import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConf
 
 public class DevConsoleProcessor {
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "dev-ui/org.jbpm.jbpm-quarkus-devui";
+    private static final String BASE_RELATIVE_URL = "dev-ui/jbpm-quarkus-devui";
     private static final String NON_APPLICATION_BASE_RELATIVE_URL = "/q/" + BASE_RELATIVE_URL;
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
     private static final GACT DEVCONSOLE_WEBJAR_ARTIFACT_KEY = new GACT("org.jbpm", "jbpm-quarkus-devui-deployment", null, "jar");
