@@ -74,6 +74,10 @@ function DateField({ onChange, ...props }: DateFieldProps) {
       return false;
     }
 
+    if (Number.isNaN(props.value?.getTime())) {
+      return true;
+    }
+
     if (props.min) {
       const minDate = new DateConstructor(props.min);
       if (minDate.toString() === "Invalid Date") {
@@ -109,7 +113,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
         onChange={(_event, value) => {
           props.disabled || dateParse(value, onChange);
         }}
-        value={dateFormat(props.value, props.type) ?? ""}
+        value={isInvalid ? "" : dateFormat(props.value, props.type) ?? ""}
       />
       {isInvalid && (
         <div
