@@ -78,7 +78,7 @@ func init() {
 }
 
 func main() {
-	fmt.Sprintf("Ignore this change")
+	fmt.Printf("Ignore this change\n")
 	var metricsAddr string
 	var enableLeaderElection bool
 	var leaseDuration *time.Duration
