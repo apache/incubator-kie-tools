@@ -23,17 +23,18 @@ import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetInterfaces } from "./addOrGetInterfaces";
 import { addOrGetMessages } from "./addOrGetMessages";
+import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 
 export function addOrGetOperations({
   definitions,
   interfaceName,
+  operationRef,
   operationName,
-  id,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
   interfaceName: string;
+  operationRef?: string;
   operationName: string;
-  id: string;
 }): {
   interface: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "interface">;
   operation: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "interface">["operation"][number];
@@ -41,33 +42,61 @@ export function addOrGetOperations({
   const { interface: serviceTaskInterface } = addOrGetInterfaces({
     definitions,
     interfaceName,
-    id: id,
   });
 
   serviceTaskInterface.operation ??= [];
 
-  const operationId = `${id}_ServiceOperation`;
-  let operation = serviceTaskInterface.operation.find((s) => s["@_id"] === operationId);
+  let operation:
+    | ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "interface">["operation"][number]
+    | undefined;
+
+  if (operationRef) {
+    const interfaces = definitions.rootElement?.filter((s) => s.__$$element === "interface") ?? [];
+
+    for (const iface of interfaces) {
+      if (iface.__$$element === "interface") {
+        iface.operation ??= [];
+        const operationIndex = iface.operation.findIndex((op) => op["@_id"] === operationRef);
+
+        if (operationIndex >= 0) {
+          operation = iface.operation[operationIndex];
+
+          if (iface["@_id"] !== serviceTaskInterface["@_id"]) {
+            iface.operation.splice(operationIndex, 1);
+            serviceTaskInterface.operation.push(operation);
+
+            if (iface.operation.length === 0) {
+              const interfaceIndex = definitions.rootElement?.findIndex(
+                (s) => s.__$$element === "interface" && s["@_id"] === iface["@_id"]
+              );
+              if (interfaceIndex !== undefined && interfaceIndex >= 0) {
+                definitions.rootElement?.splice(interfaceIndex, 1);
+              }
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
 
   if (!operation) {
-    const inMessageId = `${id}_InMessage`;
-    const outMessageId = `${id}_OutMessage`;
+    const { messageRef: inMessageId } = addOrGetMessages({
+      definitions,
+      messageName: "",
+    });
+    const { messageRef: outMessageId } = addOrGetMessages({
+      definitions,
+      messageName: "",
+    });
 
     operation = {
-      "@_id": operationId,
+      "@_id": generateUuid(),
       "@_name": operationName,
       inMessageRef: { __$$text: inMessageId },
       outMessageRef: { __$$text: outMessageId },
     };
     serviceTaskInterface.operation.push(operation);
-    addOrGetMessages({
-      definitions,
-      id: inMessageId,
-    });
-    addOrGetMessages({
-      definitions,
-      id: outMessageId,
-    });
   } else if (operation["@_name"] !== operationName) {
     operation["@_name"] = operationName;
   }

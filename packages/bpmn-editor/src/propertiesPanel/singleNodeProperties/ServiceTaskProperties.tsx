@@ -42,7 +42,6 @@ import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProce
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useBpmnEditorI18n } from "../../i18n";
-import { addOrGetInterfaces } from "../../mutations/addOrGetInterfaces";
 import { addOrGetOperations } from "../../mutations/addOrGetOperations";
 
 export function ServiceTaskProperties({
@@ -130,12 +129,14 @@ export function ServiceTaskProperties({
                 });
                 visitFlowElementsAndArtifacts(process, ({ element: e }) => {
                   if (e["@_id"] === serviceTask["@_id"] && e.__$$element === serviceTask.__$$element) {
-                    addOrGetInterfaces({
+                    const { operation } = addOrGetOperations({
                       definitions: s.bpmn.model.definitions,
                       interfaceName: newInterface,
-                      id: e["@_id"],
+                      operationRef: e["@_operationRef"],
+                      operationName: e["@_drools:serviceoperation"] || "",
                     });
                     e["@_drools:serviceinterface"] = newInterface;
+                    e["@_operationRef"] = operation["@_id"];
                   }
                 });
               })
@@ -157,14 +158,14 @@ export function ServiceTaskProperties({
                 });
                 visitFlowElementsAndArtifacts(process, ({ element: e }) => {
                   if (e["@_id"] === serviceTask["@_id"] && e.__$$element === serviceTask.__$$element) {
-                    addOrGetOperations({
+                    const { operation } = addOrGetOperations({
                       definitions: s.bpmn.model.definitions,
                       interfaceName: e["@_drools:serviceinterface"] || "",
+                      operationRef: e["@_operationRef"],
                       operationName: newOperation,
-                      id: e["@_id"],
                     });
                     e["@_drools:serviceoperation"] = newOperation;
-                    e["@_operationRef"] ??= `${e["@_id"]}_ServiceOperation`;
+                    e["@_operationRef"] = operation["@_id"];
                   }
                 });
               })

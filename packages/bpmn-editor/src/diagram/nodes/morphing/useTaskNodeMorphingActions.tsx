@@ -98,10 +98,10 @@ export function useTaskNodeMorphingActions(task: Task) {
         }
       });
 
-      if (task.__$$element === "serviceTask" && newTaskElement !== "serviceTask") {
+      if (task.__$$element === "serviceTask" && newTaskElement !== "serviceTask" && task["@_operationRef"]) {
         deleteInterfaceAndOperation({
           definitions: s.bpmn.model.definitions,
-          serviceTaskId: task["@_id"],
+          operationRef: task["@_operationRef"],
         });
       }
     },

@@ -62,6 +62,7 @@ import { renameEscalation } from "../../mutations/renameEscalation";
 import { deleteError } from "../../mutations/deleteError";
 import { renameError } from "../../mutations/renameError";
 import { useBpmnEditorI18n } from "../../i18n";
+import { getServiceTaskMessageIds } from "../../store/getServiceTaskMessageIds";
 
 export type WithVariables = Normalized<
   | ElementFilter<Unpacked<NonNullable<BPMN20__tDefinitions["rootElement"]>>, "process">
@@ -87,9 +88,12 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
   )?.filter(
     (s) => Object.values(DEFAULT_DATA_TYPES).findIndex((defaultDataType) => defaultDataType === s["@_structureRef"]) < 0
   );
-  const messages = useBpmnEditorStore((s) =>
-    s.bpmn.model.definitions.rootElement?.filter((s) => s.__$$element === "message")
-  );
+  const messages = useBpmnEditorStore((s) => {
+    const allMessages = s.bpmn.model.definitions.rootElement?.filter((s) => s.__$$element === "message") ?? [];
+    const serviceTaskMessageIds = getServiceTaskMessageIds(s.bpmn.model.definitions);
+
+    return allMessages.filter((msg) => !serviceTaskMessageIds.has(msg["@_id"]));
+  });
   const signals = useBpmnEditorStore((s) =>
     s.bpmn.model.definitions.rootElement?.filter((s) => s.__$$element === "signal")
   );

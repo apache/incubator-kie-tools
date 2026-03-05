@@ -19,49 +19,60 @@
 
 import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { Normalized } from "../normalization/normalize";
-import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
-import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 
 export function deleteInterfaceAndOperation({
   definitions,
-  serviceTaskId,
+  operationRef,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
-  serviceTaskId: string;
+  operationRef: string;
 }) {
-  const interfaceId = `${serviceTaskId}_ServiceInterface`;
-  const inMessageId = `${serviceTaskId}_InMessage`;
-  const outMessageId = `${serviceTaskId}_OutMessage`;
-
-  const existingInterfaceIndex = definitions.rootElement?.findIndex(
-    (s) => s.__$$element === "interface" && s["@_id"] === interfaceId
-  );
-  const existingInMessageIndex = definitions.rootElement?.findIndex(
-    (s) => s.__$$element === "message" && s["@_id"] === inMessageId
-  );
-  const existingOutMessageIndex = definitions.rootElement?.findIndex(
-    (s) => s.__$$element === "message" && s["@_id"] === outMessageId
-  );
-  if (existingInterfaceIndex === undefined || existingInterfaceIndex < 0) {
+  if (!definitions.rootElement) {
     return;
   }
 
-  const { process } = addOrGetProcessAndDiagramElements({ definitions });
-  let hasCorrespondingServiceTask = false;
+  const serviceTaskInterface = definitions.rootElement.find(
+    (s) => s.__$$element === "interface" && s.operation?.some((op) => op["@_id"] === operationRef)
+  );
 
-  visitFlowElementsAndArtifacts(process, ({ element }) => {
-    if (element["@_id"] === serviceTaskId && element.__$$element === "serviceTask") {
-      hasCorrespondingServiceTask = true;
-      return false; // Will stop visiting.
-    }
-  });
+  if (!serviceTaskInterface || serviceTaskInterface.__$$element !== "interface") {
+    return;
+  }
 
-  if (!hasCorrespondingServiceTask) {
-    const indicesToDelete = [existingInterfaceIndex, existingInMessageIndex, existingOutMessageIndex]
-      .filter((index): index is number => index !== undefined && index >= 0)
-      .sort((a, b) => b - a);
-    for (const index of indicesToDelete) {
+  serviceTaskInterface.operation ??= [];
+
+  const operationIndex = serviceTaskInterface.operation.findIndex((op) => op["@_id"] === operationRef);
+  if (operationIndex < 0) {
+    return;
+  }
+
+  const operation = serviceTaskInterface.operation[operationIndex];
+
+  const inMessageId = operation.inMessageRef.__$$text;
+  const outMessageId = operation.outMessageRef?.__$$text;
+
+  const existingInMessageIndex = definitions.rootElement.findIndex(
+    (s) => s.__$$element === "message" && s["@_id"] === inMessageId
+  );
+  const existingOutMessageIndex = outMessageId
+    ? definitions.rootElement.findIndex((s) => s.__$$element === "message" && s["@_id"] === outMessageId)
+    : -1;
+
+  [existingInMessageIndex, existingOutMessageIndex]
+    .filter((index): index is number => index >= 0)
+    .sort((a, b) => b - a)
+    .forEach((index) => {
       definitions.rootElement?.splice(index, 1);
+    });
+
+  serviceTaskInterface.operation.splice(operationIndex, 1);
+
+  if (serviceTaskInterface.operation.length === 0) {
+    const interfaceIndex = definitions.rootElement.findIndex(
+      (s) => s.__$$element === "interface" && s["@_id"] === serviceTaskInterface["@_id"]
+    );
+    if (interfaceIndex >= 0) {
+      definitions.rootElement.splice(interfaceIndex, 1);
     }
   }
 }

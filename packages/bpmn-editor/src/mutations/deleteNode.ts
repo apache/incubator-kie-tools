@@ -86,10 +86,10 @@ export function deleteNode({
   }
 
   // if Service Task
-  if (deletedBpmnElement?.__$$element === "serviceTask") {
+  if (deletedBpmnElement?.__$$element === "serviceTask" && deletedBpmnElement["@_operationRef"]) {
     deleteInterfaceAndOperation({
       definitions,
-      serviceTaskId: deletedBpmnElement["@_id"],
+      operationRef: deletedBpmnElement["@_operationRef"],
     });
   }
 

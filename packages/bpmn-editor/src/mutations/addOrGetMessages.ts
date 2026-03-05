@@ -26,11 +26,9 @@ import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid
 export function addOrGetMessages({
   definitions,
   messageName,
-  id,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
-  messageName?: string;
-  id?: string;
+  messageName: string;
 }): {
   messageRef: string;
 } {
@@ -44,8 +42,8 @@ export function addOrGetMessages({
 
   const newMessage: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "message"> = {
     __$$element: "message",
-    "@_id": id ?? generateUuid(),
-    "@_itemRef": `${messageName}Type`,
+    "@_id": generateUuid(),
+    "@_itemRef": `${messageName}Type`, // broken reference to a placeholder type that has no meaning to the jBPM Workflow Engine
     "@_name": messageName,
   };
 

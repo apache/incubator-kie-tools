@@ -21,33 +21,28 @@ import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bp
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 
 export function addOrGetInterfaces({
   definitions,
   interfaceName,
-  id,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
   interfaceName: string;
-  id: string;
 }): {
   interface: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "interface">;
 } {
   definitions.rootElement ??= [];
   const interfaces = definitions.rootElement.filter((s) => s.__$$element === "interface");
 
-  const interfaceId = `${id}_ServiceInterface`;
-  const existingInterface = interfaces.find((s) => s["@_id"] === interfaceId);
+  const existingInterface = interfaces.find((s) => s["@_name"] === interfaceName);
   if (existingInterface) {
-    if (existingInterface["@_name"] !== interfaceName) {
-      existingInterface["@_name"] = interfaceName;
-    }
     return { interface: existingInterface };
   }
 
   const newInterface: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "interface"> = {
     __$$element: "interface",
-    "@_id": interfaceId,
+    "@_id": generateUuid(),
     "@_name": interfaceName,
     operation: [],
   };
