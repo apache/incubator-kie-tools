@@ -473,13 +473,6 @@ export function NewModelCard(props: { title: string; extension: string; descript
       <CardBody>
         <TextContent>
           <Text component={TextVariants.p}>{props.description}</Text>
-          {props.extension === "dmn" && (
-            <Text component={TextVariants.small}>
-              <Label color="cyan" icon={<BellIcon />} variant={"outline"}>
-                {`New Editor available!`}
-              </Label>
-            </Text>
-          )}
         </TextContent>
       </CardBody>
       <CardFooter>

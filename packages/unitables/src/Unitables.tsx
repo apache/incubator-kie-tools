@@ -240,7 +240,7 @@ export const Unitables = ({
         ))}
       </div>
       {unitablesColumns.length > 0 && rows.length > 0 && formsDivRendered ? (
-        <div style={{ display: "flex" }} ref={containerRef}>
+        <div className="unitables-container" ref={containerRef}>
           <UnitablesBeeTable
             rowWrapper={rowWrapper}
             scrollableParentRef={scrollableParentRef}

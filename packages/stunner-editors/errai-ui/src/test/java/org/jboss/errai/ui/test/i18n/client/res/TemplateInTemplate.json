@@ -1,8 +1,0 @@
-{
-  "ComplexTemplatedChild.greeting": "hello",
-  "ComplexTemplatedChild.red": "red",
-  "ComplexTemplatedChild.language": "english",
-  "ComplexTemplatedChild.okay": "okay",
-  "BasicTemplate.child": "dummy value",
-  "BasicTemplate.greeting": "dummy value"
-}

@@ -20,7 +20,6 @@
 import * as path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 import { merge } from "webpack-merge";
-import * as stunnerEditors from "@kie-tools/stunner-editors";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { ProvidePlugin, EnvironmentPlugin } from "webpack";
 import { defaultEnvJson } from "./build/defaultEnvJson";
@@ -35,12 +34,8 @@ const buildEnv: any = env; // build-env is not typed
 
 export default async (webpackEnv: any, webpackArgv: any) => {
   const buildInfo = getBuildInfo();
-  const [
-    extendedServices_linuxDownloadUrl,
-    extendedServices_macOsDownloadUrl,
-    extendedServices_windowsDownloadUrl,
-    extendedServices_compatibleVersion,
-  ] = getExtendedServicesArgs();
+  const [extendedServices_compatibleVersion, extendedServices_defaultContainerPort, extendedServices_imageUrl] =
+    getExtendedServicesArgs();
 
   let lastCommitHash = "";
   try {
@@ -75,8 +70,7 @@ export default async (webpackEnv: any, webpackArgv: any) => {
       ...merge(common(webpackEnv), {
         entry: {
           index: "./src/index.tsx",
-          "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
-          "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+          "bpmn-editor-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
           "new-dmn-editor-envelope": "./src/envelope/NewDmnEditorEnvelopeApp.ts",
           "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
         },
@@ -89,10 +83,9 @@ export default async (webpackEnv: any, webpackArgv: any) => {
           new EnvironmentPlugin({
             WEBPACK_REPLACE__commitHash: lastCommitHash,
             WEBPACK_REPLACE__buildInfo: buildInfo,
-            WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl: extendedServices_linuxDownloadUrl,
-            WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
-            WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
+            WEBPACK_REPLACE__extendedServicesDefaultContainerPort: extendedServices_defaultContainerPort,
+            WEBPACK_REPLACE__extendedServicesImageUrl: extendedServices_imageUrl,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.versions.quarkus,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.versions.kogito,
           }),
@@ -108,20 +101,10 @@ export default async (webpackEnv: any, webpackArgv: any) => {
                 to: "./env.json",
                 transform: () => JSON.stringify(defaultEnvJson, null, 2),
               },
-              {
-                from: stunnerEditors.dmnEditorPath(),
-                to: "./gwt-editors/dmn",
-                globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-              },
-              {
-                from: stunnerEditors.bpmnEditorPath(),
-                to: "./gwt-editors/bpmn",
-                globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
-              },
               { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
-              { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
               { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
               { from: "./static/envelope/new-dmn-editor-envelope.html", to: "./new-dmn-editor-envelope.html" },
+              { from: "./static/envelope/bpmn-editor-envelope.html", to: "./bpmn-editor-envelope.html" },
               {
                 from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
                 to: "./images",
@@ -177,15 +160,11 @@ function getBuildInfo() {
 }
 
 function getExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.windows;
   const compatibleVersion = buildEnv.onlineEditor.extendedServices.compatibleVersion;
-
-  console.info("Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  const defaultContainerPort = buildEnv.extendedServicesImageEnv.port;
+  const imageUrl = buildEnv.onlineEditor.extendedServices.imageUrl;
   console.info("Extended Services :: Compatible version: " + compatibleVersion);
-
-  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+  console.info("Extended Services :: Default container port: " + defaultContainerPort);
+  console.info("Extended Services :: Image URL: " + imageUrl);
+  return [compatibleVersion, defaultContainerPort, imageUrl];
 }

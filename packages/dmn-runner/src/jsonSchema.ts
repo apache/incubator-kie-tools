@@ -54,11 +54,11 @@ function getFieldDefaultValue(dmnField: DmnInputFieldProperties): string | boole
  */
 export function getDefaultValues(jsonSchema: JSONSchema4) {
   return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {})?.reduce(
-    (acc, [key, field]: [string, Record<string, string>]) => {
-      acc[key] = getFieldDefaultValue(field);
+    (acc: Record<string, any>, [key, field]) => {
+      acc[key] = getFieldDefaultValue(field as any);
       return acc;
     },
-    {} as Record<string, any>
+    {}
   );
 }
 
@@ -153,4 +153,310 @@ export async function dereferenceAndCheckForRecursion(
     console.log(err);
     return;
   }
+}
+
+/**
+ * Detects if an Input Data Node was renamed by analyzing the schema diff.
+ * A rename is detected when exactly one property is removed and one is added.
+ *
+ * @param schemaDiff - The diff object between previous and current JSON schemas
+ * @returns Map of old property names to new property names
+ */
+export function detectRenamedProperties(schemaDiff: Record<string, any>): Map<string, string> {
+  const renamedProperties = new Map<string, string>();
+
+  const diffProperties = schemaDiff?.definitions?.InputSet?.properties;
+  if (!diffProperties || typeof diffProperties !== "object") {
+    return renamedProperties;
+  }
+
+  const removedProperties: string[] = [];
+  const addedProperties: string[] = [];
+
+  // Identify removed and added properties
+  Object.entries(diffProperties).forEach(([key, value]) => {
+    if (value === undefined) {
+      removedProperties.push(key);
+    } else if (value && typeof value === "object") {
+      addedProperties.push(key);
+    }
+  });
+
+  // If we have exactly one removed and one added property, it's likely a rename
+  if (removedProperties.length === 1 && addedProperties.length === 1) {
+    renamedProperties.set(removedProperties[0], addedProperties[0]);
+  }
+
+  return renamedProperties;
+}
+
+/**
+ * Detects nested property renames by recursively analyzing the schema diff.
+ * Returns a map of paths where renames occurred.
+ *
+ * @param schemaDiff - The diff object between previous and current JSON schemas
+ * @returns Map of path prefixes to Maps of old property names to new property names
+ */
+export function detectNestedPropertyRenames(schemaDiff: Record<string, any>): Map<string, Map<string, string>> {
+  const nestedRenames = new Map<string, Map<string, string>>();
+
+  /**
+   * Recursively check for property renames at any depth
+   */
+  function checkForRenames(obj: Record<string, any>, currentPath: string[]): void {
+    if (!obj || typeof obj !== "object") {
+      return;
+    }
+
+    // Check if this level has a "properties" object with changes
+    if (obj.properties && typeof obj.properties === "object") {
+      const removedProps: string[] = [];
+      const addedProps: string[] = [];
+
+      Object.entries(obj.properties).forEach(([key, value]) => {
+        if (value === undefined) {
+          removedProps.push(key);
+        } else if (value && typeof value === "object") {
+          addedProps.push(key);
+          // Recursively check nested properties
+          checkForRenames(value, [...currentPath, key]);
+        }
+      });
+
+      // If exactly one removed and one added, it's likely a rename
+      if (removedProps.length === 1 && addedProps.length === 1) {
+        const pathKey = currentPath.join(".");
+        const renameMap = new Map<string, string>();
+        renameMap.set(removedProps[0], addedProps[0]);
+        nestedRenames.set(pathKey, renameMap);
+      }
+    }
+
+    // Continue checking other nested objects
+    Object.entries(obj).forEach(([key, value]) => {
+      if (key !== "properties" && value && typeof value === "object") {
+        checkForRenames(value, [...currentPath, key]);
+      }
+    });
+  }
+
+  // Start from InputSet properties in the diff
+  const inputSetDiff = schemaDiff?.definitions?.InputSet?.properties;
+  if (inputSetDiff && typeof inputSetDiff === "object") {
+    Object.entries(inputSetDiff).forEach(([topLevelKey, topLevelValue]) => {
+      if (topLevelValue && typeof topLevelValue === "object") {
+        checkForRenames(topLevelValue, [topLevelKey]);
+      }
+    });
+  }
+
+  return nestedRenames;
+}
+
+/**
+ * Applies nested property renames to the input data.
+ * Recursively traverses the input and renames properties based on the detected renames.
+ *
+ * @param currentInputs - The input object to update
+ * @param nestedRenames - Map of path prefixes to Maps of old property names to new property names
+ */
+export function copyNestedPropertyRenames(
+  currentInputs: Record<string, any>,
+  nestedRenames: Map<string, Map<string, string>>
+): void {
+  if (nestedRenames.size === 0) {
+    return;
+  }
+
+  /**
+   * Recursively copy renames at the appropriate depth
+   */
+  function copyRenamesRecursively(obj: Record<string, any>, currentPath: string[]): void {
+    const pathKey = currentPath.join(".");
+
+    // Check if there are renames at this level
+    if (nestedRenames.has(pathKey)) {
+      const renameMap = nestedRenames.get(pathKey)!;
+
+      renameMap.forEach((newName, oldName) => {
+        if (oldName in obj) {
+          obj[newName] = obj[oldName];
+          delete obj[oldName];
+        }
+      });
+    }
+
+    // Recursively process nested objects
+    Object.entries(obj).forEach(([key, value]) => {
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        copyRenamesRecursively(value, [...currentPath, key]);
+      }
+    });
+  }
+
+  // Start from the root of the input
+  Object.entries(currentInputs).forEach(([topLevelKey, topLevelValue]) => {
+    if (topLevelValue && typeof topLevelValue === "object" && !Array.isArray(topLevelValue)) {
+      copyRenamesRecursively(topLevelValue, [topLevelKey]);
+    }
+  });
+}
+
+/**
+ * Detects renamed and deleted enum values by recursively comparing InputSet properties.
+ * Directly compares enum arrays at the same path in previous and current schemas.
+ * Returns a map of property paths to their enum changes (renames and valid values).
+ *
+ * @param previousSchema - The previous JSON schema
+ * @param currentSchema - The current JSON schema
+ * @returns Map of property paths to objects containing renames and valid enum values
+ */
+export function detectRenamedEnumValues(
+  previousSchema: JSONSchema4,
+  currentSchema: JSONSchema4
+): Map<string, { renames: Map<string, string>; validValues: string[] }> {
+  const enumChangesByPath = new Map<string, { renames: Map<string, string>; validValues: string[] }>();
+
+  const previousInputSet = previousSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
+  const currentInputSet = currentSchema?.definitions?.InputSet?.properties as Record<string, any> | undefined;
+
+  if (!previousInputSet || !currentInputSet) {
+    return enumChangesByPath;
+  }
+
+  /**
+   * Recursively check for enum changes at each property path
+   */
+  function checkPropertiesForEnumChanges(
+    previousProperties: Record<string, any>,
+    currentProperties: Record<string, any>,
+    currentPath: string[]
+  ): void {
+    Object.keys(currentProperties).forEach((propertyName) => {
+      const prevProperty = previousProperties[propertyName];
+      const currProperty = currentProperties[propertyName];
+
+      if (!prevProperty || !currProperty) {
+        return;
+      }
+
+      // Check if this property has enum arrays
+      if (
+        prevProperty?.enum &&
+        Array.isArray(prevProperty.enum) &&
+        currProperty?.enum &&
+        Array.isArray(currProperty.enum)
+      ) {
+        const previousEnums = prevProperty.enum as string[];
+        const currentEnums = currProperty.enum as string[];
+
+        // Find removed and added enum values
+        const removedEnums = previousEnums.filter((e) => !currentEnums.includes(e));
+        const addedEnums = currentEnums.filter((e) => !previousEnums.includes(e));
+
+        // Detect renames (exactly one removed and one added)
+        const renames = new Map<string, string>();
+        if (removedEnums.length === 1 && addedEnums.length === 1) {
+          renames.set(removedEnums[0], addedEnums[0]);
+        }
+
+        // Store both renames and the current valid values
+        const pathKey = [...currentPath, propertyName].join(".");
+        enumChangesByPath.set(pathKey, {
+          renames,
+          validValues: currentEnums,
+        });
+      }
+
+      // Recursively check nested properties for complex types
+      if (
+        prevProperty?.type === "object" &&
+        prevProperty?.properties &&
+        currProperty?.type === "object" &&
+        currProperty?.properties
+      ) {
+        checkPropertiesForEnumChanges(prevProperty.properties, currProperty.properties, [...currentPath, propertyName]);
+      }
+    });
+  }
+
+  // Start checking from InputSet properties
+  checkPropertiesForEnumChanges(previousInputSet, currentInputSet, []);
+
+  return enumChangesByPath;
+}
+
+/**
+ * Copies renamed property values to the input object.
+ * Copies values from old property names to new property names.
+ *
+ * @param currentInputs - The input object to update
+ * @param renamedPropertiesMap - Map of old property names to new property names
+ */
+export function copyRenamedInputValue(
+  currentInputs: Record<string, any>,
+  renamedPropertiesMap: Map<string, string>
+): void {
+  renamedPropertiesMap.forEach((newName, oldName) => {
+    if (oldName in currentInputs) {
+      currentInputs[newName] = currentInputs[oldName];
+    }
+  });
+}
+
+/**
+ * Copies renamed enum values to the input object and removes invalid enum values.
+ * Recursively searches through the input object and:
+ * 1. Updates enum values based on path-based renames
+ * 2. Deletes enum values that are no longer valid according to the current schema
+ *
+ * @param currentInputs - The input object to update
+ * @param enumChangesByPath - Map of property paths to their enum changes (renames and valid values)
+ * @param jsonSchema - The JSON schema (not used in simplified version, kept for compatibility)
+ */
+export function copyRenamedEnumValues(
+  currentInputs: Record<string, any>,
+  enumChangesByPath: Map<string, { renames: Map<string, string>; validValues: string[] }>
+): void {
+  if (enumChangesByPath.size === 0) {
+    return;
+  }
+
+  /**
+   * Recursively update enum values in the input based on property path
+   */
+  function updateEnumValuesRecursively(inputObj: Record<string, any>, currentPath: string[]): void {
+    Object.keys(inputObj).forEach((key) => {
+      const pathKey = [...currentPath, key].join(".");
+      let currentValue = inputObj[key];
+
+      // Check if this property path has enum changes
+      if (enumChangesByPath.has(pathKey)) {
+        const { renames, validValues } = enumChangesByPath.get(pathKey)!;
+
+        // Copy renames if the current value matches an old enum value
+        if (renames.size > 0) {
+          renames.forEach((newEnumValue, oldEnumValue) => {
+            if (currentValue === oldEnumValue) {
+              inputObj[key] = newEnumValue;
+              currentValue = newEnumValue;
+            }
+          });
+        }
+
+        // Validate the current value against valid enum values
+        if (currentValue !== undefined && !validValues.includes(currentValue)) {
+          delete inputObj[key];
+          return; // Skip further processing for this property
+        }
+      }
+
+      // Recursively process nested objects
+      if (inputObj[key] && typeof inputObj[key] === "object" && !Array.isArray(inputObj[key])) {
+        updateEnumValuesRecursively(inputObj[key], [...currentPath, key]);
+      }
+    });
+  }
+
+  updateEnumValuesRecursively(currentInputs, []);
 }

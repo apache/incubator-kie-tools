@@ -22,7 +22,7 @@
 
 Create and edit DMN and SceSim files.
 
-> NOTE: This extension provides two sets of DMN and Test Scenario Editors. The classic ones are currently the default choice, but you can switch to the new Editor based on your need. The classic editors will be removed in future versions. See the details of the new DMN Editor [here](https://github.com/apache/incubator-kie-issues/issues/439) and the new Test Scenario Editor [here](https://github.com/apache/incubator-kie-issues/issues/453).
+> NOTE: This extension provides the DMN and Test Scenario Editors. See the details of the DMN Editor [here](https://github.com/apache/incubator-kie-issues/issues/439) and the Test Scenario Editor [here](https://github.com/apache/incubator-kie-issues/issues/453).
 
 ## Features
 

@@ -6764,6 +6764,33 @@ spec:
                                 defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero.
                                 More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
                               type: object
+                            podDisruptionBudget:
+                              description: |-
+                                Defines the Kubernetes PodDisruptionBudgetSpec for this service. When configured, the SonataFlowPlatform controller
+                                will automatically create a PodDisruptionBudget based on this specification that targets the service Deployment.
+                                Currently only apply for the Data Index.
+                              properties:
+                                maxUnavailable:
+                                  anyOf:
+                                    - type: integer
+                                    - type: string
+                                  description: |-
+                                    An eviction is allowed if at most "maxUnavailable" pods selected by
+                                    "selector" are unavailable after the eviction, i.e. even in absence of
+                                    the evicted pod. For example, one can prevent all voluntary evictions
+                                    by specifying 0. This is a mutually exclusive setting with "minAvailable".
+                                  x-kubernetes-int-or-string: true
+                                minAvailable:
+                                  anyOf:
+                                    - type: integer
+                                    - type: string
+                                  description: |-
+                                    An eviction is allowed if at least "minAvailable" pods selected by
+                                    "selector" will still be available after the eviction, i.e. even in the
+                                    absence of the evicted pod.  So for example you can prevent all voluntary
+                                    evictions by specifying "100%". This is a mutually exclusive setting with "maxUnavailable".
+                                  x-kubernetes-int-or-string: true
+                              type: object
                             preemptionPolicy:
                               description: |-
                                 PreemptionPolicy is the Policy for preempting pods with lower priority.
@@ -14796,6 +14823,33 @@ spec:
                                 set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value
                                 defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero.
                                 More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
+                              type: object
+                            podDisruptionBudget:
+                              description: |-
+                                Defines the Kubernetes PodDisruptionBudgetSpec for this service. When configured, the SonataFlowPlatform controller
+                                will automatically create a PodDisruptionBudget based on this specification that targets the service Deployment.
+                                Currently only apply for the Data Index.
+                              properties:
+                                maxUnavailable:
+                                  anyOf:
+                                    - type: integer
+                                    - type: string
+                                  description: |-
+                                    An eviction is allowed if at most "maxUnavailable" pods selected by
+                                    "selector" are unavailable after the eviction, i.e. even in absence of
+                                    the evicted pod. For example, one can prevent all voluntary evictions
+                                    by specifying 0. This is a mutually exclusive setting with "minAvailable".
+                                  x-kubernetes-int-or-string: true
+                                minAvailable:
+                                  anyOf:
+                                    - type: integer
+                                    - type: string
+                                  description: |-
+                                    An eviction is allowed if at least "minAvailable" pods selected by
+                                    "selector" will still be available after the eviction, i.e. even in the
+                                    absence of the evicted pod.  So for example you can prevent all voluntary
+                                    evictions by specifying "100%". This is a mutually exclusive setting with "maxUnavailable".
+                                  x-kubernetes-int-or-string: true
                               type: object
                             preemptionPolicy:
                               description: |-
@@ -24894,6 +24948,33 @@ spec:
                         defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero.
                         More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
                       type: object
+                    podDisruptionBudget:
+                      description: |-
+                        Defines the Kubernetes PodDisruptionBudgetSpec for this workflow. When configured, the SonataFlow controller will
+                        automatically create a PodDisruptionBudget based on this specification that targets the workflow Deployment.
+                        Ignored in "knative" deployment model, and dev profile workflows.
+                      properties:
+                        maxUnavailable:
+                          anyOf:
+                            - type: integer
+                            - type: string
+                          description: |-
+                            An eviction is allowed if at most "maxUnavailable" pods selected by
+                            "selector" are unavailable after the eviction, i.e. even in absence of
+                            the evicted pod. For example, one can prevent all voluntary evictions
+                            by specifying 0. This is a mutually exclusive setting with "minAvailable".
+                          x-kubernetes-int-or-string: true
+                        minAvailable:
+                          anyOf:
+                            - type: integer
+                            - type: string
+                          description: |-
+                            An eviction is allowed if at least "minAvailable" pods selected by
+                            "selector" will still be available after the eviction, i.e. even in the
+                            absence of the evicted pod.  So for example you can prevent all voluntary
+                            evictions by specifying "100%". This is a mutually exclusive setting with "maxUnavailable".
+                          x-kubernetes-int-or-string: true
+                      type: object
                     preemptionPolicy:
                       description: |-
                         PreemptionPolicy is the Policy for preempting pods with lower priority.
@@ -27542,6 +27623,17 @@ spec:
                   description: keeps track of how many failure recovers a given workflow
                     had so far
                   type: integer
+                replicas:
+                  description: |-
+                    Replicas is the actual number of observed queryable pods.
+                    This is required by the HPA via the scale subresource.
+                  format: int32
+                  type: integer
+                selector:
+                  description: |-
+                    Selector is the queryable label selector for pods, in string format.
+                    HPA uses this to find the pods and collect metrics (CPU/Memory).
+                  type: string
                 services:
                   description: Services displays which platform services are being used
                     by this workflow
@@ -27585,6 +27677,10 @@ spec:
       served: true
       storage: true
       subresources:
+        scale:
+          labelSelectorPath: .status.selector
+          specReplicasPath: .spec.podTemplate.replicas
+          statusReplicasPath: .status.replicas
         status: {}
 ---
 apiVersion: v1
@@ -27788,6 +27884,14 @@ metadata:
   name: sonataflow-operator-manager-role
 rules:
   - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
       - batch
     resources:
       - jobs
@@ -27808,6 +27912,18 @@ rules:
       - delete
       - get
       - list
+      - update
+      - watch
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -27848,6 +27964,7 @@ rules:
       - sonataflowbuilds/status
       - sonataflowclusterplatforms/status
       - sonataflowplatforms/status
+      - sonataflows/scale
       - sonataflows/status
     verbs:
       - get

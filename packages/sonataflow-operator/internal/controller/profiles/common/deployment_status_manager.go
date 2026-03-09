@@ -100,12 +100,14 @@ func (d *deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *
 	if err != nil || deployment == nil {
 		// we should have the deployment by this time, so even if the error above is not found, we should halt.
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Couldn't find the workflow deployment")
+		workflow.Status.SetReplicas(0)
 		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, err
 	}
 
 	// Deployment is available, we can return after setting Running = TRUE
 	if kubeutil.IsDeploymentAvailable(deployment) {
 		workflow.Status.Manager().MarkTrue(api.RunningConditionType)
+		workflow.Status.SetReplicas(deployment.Status.ReadyReplicas)
 		klog.V(log.I).InfoS("Workflow is in Running Condition")
 		return ctrl.Result{RequeueAfter: constants.RequeueAfterIsRunning}, nil
 	}
@@ -115,6 +117,7 @@ func (d *deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *
 		failedReason := GetDeploymentUnavailabilityMessage(deployment)
 		workflow.Status.LastTimeRecoverAttempt = metav1.Now()
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, failedReason)
+		workflow.Status.SetReplicas(0)
 		klog.V(log.I).InfoS("Workflow deployment failed", "Reason Message", failedReason)
 		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil
 	}
@@ -122,6 +125,7 @@ func (d *deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *
 	// Deployment hasn't minimum replicas, let's find out why to give users a meaningful information
 	if kubeutil.IsDeploymentMinimumReplicasUnavailable(deployment) {
 		message, err := kubeutil.DeploymentTroubleshooter(d.c, deployment, operatorapi.DefaultContainerName).ReasonMessage()
+		workflow.Status.SetReplicas(deployment.Status.ReadyReplicas)
 		if err != nil {
 			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, err
 		}
@@ -133,6 +137,7 @@ func (d *deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *
 	}
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
+	workflow.Status.SetReplicas(deployment.Status.ReadyReplicas)
 	klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
 	return ctrl.Result{RequeueAfter: constants.RequeueAfterFollowDeployment, Requeue: true}, nil
 }

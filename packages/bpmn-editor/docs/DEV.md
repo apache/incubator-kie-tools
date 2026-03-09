@@ -15,4 +15,10 @@
    under the License.
 -->
 
-// TODO
+# @kie-tools/bpmn-editor :: DEV
+
+- The development environment for the `<BpmnEditor>` component is based on Storybook, acting as a playground and a publishable self-documentation.
+- Simply run the following command and navigate to http://localhost:9920
+  ```shell
+  pnpm start
+  ```

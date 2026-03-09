@@ -25,21 +25,7 @@ This package exposes React components and utility functions aimed at creating vi
 
 ### Usage
 
-// TODO
-
----
-
-### Examples
-
-// TODO
-
----
-
-## For development information see:
-
-- 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
-- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+Please see [`@kie-tools/bpmn-editor`](../bpmn-editor) as an example of usage.
 
 ---
 

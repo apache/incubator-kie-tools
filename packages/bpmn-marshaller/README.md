@@ -17,25 +17,43 @@
 
 ## @kie-tools/bpmn-marshaller
 
-A type-safe marshaller for XML <--> JSON conversation for BPMN models.
+A type-safe marshaller for XML <--> JSON conversation for BPMN workflows.
 
 Features include:
+
+- Full compatibility with the BPMN 2.0.2 specification through the specification's BPMN20 XSD files.
+- Out-of-the-box Drools extensions compatible with the jBPM Workflow Engine.
+- Auto-generated TypeScript type definitions for a JSON-friendly representation of BPMN workflows (using [`@kie-tools/xml-parser-ts-codegen`](../xml-parser-ts-codegen/)).
 
 ---
 
 ### Usage
 
----
+```ts
+import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+import { getMarshaller } from "@kie-tools/bpmn-marshaller";
 
-### Examples
+const marshaller = getMarshaller(`<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="_bpmn_1" targetNamespace="http://kie.apache.org/bpmn/_bpmn_1">
+  <itemDefinition id="_foo_item_definition" structureRef="org.acme.Foo" />
+</definitions>
+`);
 
----
+// Parse from XML to JSON
+const json = marshaller.parser.parse();
+const bpmn: BPMN20__tDefinitions = json.definitions;
 
-## For development information see:
+// Modify
+bpmn.rootElement ??= [];
+bpmn.rootElement.push({
+  __$$element: "itemDefinition",
+  "@_id": "_bar_item_definition",
+  "@_structureRef": "org.acme.Bar",
+});
 
-- 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
-- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+// Build from JSON to XML
+const xml = marshaller.builder.build(json);
+```
 
 ---
 

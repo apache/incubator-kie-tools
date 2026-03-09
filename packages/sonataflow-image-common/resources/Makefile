@@ -21,13 +21,13 @@
 CEKIT_BUILD_OPTIONS 		?=
 CEKIT_CMD 					:= cekit
 BUILD_ENGINE 				?= docker
-BUILD_ENGINE_OPTIONS 	 	?=
+BUILD_ENGINE_OPTIONS 	 	?= --no-squash
 
 # SWF Image creation envs
 KOGITO_IMAGE_NAME				?= # Image name
 KOGITO_IMAGE_REGISTRY 			?= 'docker.io'
 KOGITO_IMAGE_REGISTRY_ACCOUNT 	?= 'apache'
-KOGITO_IMAGE_TAG 				?= $(shell pnpm build-env root.streamName) # Setting a default value if KOGITO_IMAGE_TAG env is not present
+KOGITO_IMAGE_TAG 				?= $(shell pnpm exec build-env root.streamName) # Setting a default value if KOGITO_IMAGE_TAG env is not present
 KOGITO_FULL_IMAGE_NAME 			:= $(KOGITO_IMAGE_REGISTRY)/$(KOGITO_IMAGE_REGISTRY_ACCOUNT)/$(KOGITO_IMAGE_NAME)
 KOGITO_IMAGE_FILENAME			:= ${KOGITO_IMAGE_NAME}-image.yaml
 

@@ -17,32 +17,27 @@
  * under the License.
  */
 
-import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
+import * as React from "react";
+import { I18nHtml, I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { SelectDirection } from "@patternfly/react-core/deprecated";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Wizard, WizardContext, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/deprecated";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEnv } from "../env/hooks/EnvContext";
 import { useOnlineI18n } from "../i18n";
-import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
-import { SelectOs } from "../os/SelectOs";
-import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
-import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
-import { useEnv } from "../env/hooks/EnvContext";
-import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
+import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
+import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
+import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 
 enum ModalPage {
   INITIAL,
@@ -56,598 +51,9 @@ const FEDORA_APP_INDICATOR_LIB = "dnf install libayatana-appindicator3-1";
 export function ExtendedServicesModal() {
   const { i18n } = useOnlineI18n();
   const routes = useRoutes();
-  const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const extendedServices = useExtendedServices();
   const { env } = useEnv();
-
-  const KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG = useMemo(
-    () => `kie_sandbox_extended_services_macos_${extendedServices.version}.dmg`,
-    [extendedServices.version]
-  );
-  const KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP = useMemo(() => "Extended Services.app", []);
-  const KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE = useMemo(
-    () => `kie_sandbox_extended_services_windows_${extendedServices.version}.exe`,
-    [extendedServices.version]
-  );
-  const KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ = useMemo(
-    () => `kie_sandbox_extended_services_linux_${extendedServices.version}.tar.gz`,
-    [extendedServices.version]
-  );
-  const KIE_SANDBOX_EXTENDED_SERVICES_BINARIES = useMemo(() => "kie_sandbox_extended_services", []);
-
-  const downloadExtendedServicesUrl = useMemo(() => {
-    switch (operatingSystem) {
-      case OperatingSystem.MACOS:
-        return process.env.WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl;
-      case OperatingSystem.WINDOWS:
-        return process.env.WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl;
-      case OperatingSystem.LINUX:
-      default:
-        return process.env.WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl;
-    }
-  }, [operatingSystem]);
-
-  const macOsWizardSteps = useMemo(
-    () => [
-      {
-        name: i18n.terms.install,
-        component: (
-          <>
-            {extendedServices.outdated && (
-              <>
-                <Alert
-                  variant={AlertVariant.warning}
-                  isInline={true}
-                  title={i18n.dmnRunner.modal.wizard.outdatedAlert.title}
-                >
-                  {i18n.dmnRunner.modal.wizard.outdatedAlert.message}
-                </Alert>
-                <br />
-              </>
-            )}
-            <List>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <Text
-                      id="extended-services-modal-download-macos"
-                      component={TextVariants.a}
-                      href={downloadExtendedServicesUrl}
-                    >
-                      {i18n.terms.download}
-                    </Text>
-                    {i18n.dmnRunner.modal.wizard.macos.install.download}
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <I18nWrappedTemplate
-                      text={i18n.dmnRunner.modal.wizard.macos.install.openFile}
-                      interpolationMap={{
-                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG}</Label>,
-                      }}
-                    />
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <ListItem>
-                <TextContent>
-                  <Text>
-                    <I18nWrappedTemplate
-                      text={i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
-                      interpolationMap={{
-                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
-                        folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
-                      }}
-                    />
-                  </Text>
-                </TextContent>
-              </ListItem>
-            </List>
-          </>
-        ),
-      },
-      {
-        name: i18n.terms.start,
-        component: (
-          <>
-            {extendedServices.status === ExtendedServicesStatus.STOPPED ? (
-              <>
-                <Alert
-                  variant={AlertVariant.warning}
-                  isInline={true}
-                  title={i18n.dmnRunner.modal.wizard.stoppedAlert.title}
-                >
-                  {i18n.dmnRunner.modal.wizard.stoppedAlert.message}
-                </Alert>
-                <br />
-                <List>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        {i18n.dmnRunner.modal.wizard.macos.start.stopped.startInstruction}
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.macos.start.stopped.launchExtendedServices}
-                          interpolationMap={{
-                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                </List>
-              </>
-            ) : (
-              <>
-                <TextContent>
-                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.macos.start.firstTime.title}</Text>
-                </TextContent>
-                <br />
-                <List>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
-                          interpolationMap={{
-                            folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
-                          interpolationMap={{
-                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openInstruction}
-                          interpolationMap={{
-                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
-                            again: <b>{i18n.dmnRunner.modal.wizard.macos.start.firstTime.again}</b>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                </List>
-
-                <br />
-
-                <TextContent>
-                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.macos.start.alreadyRanBefore}</Text>
-                </TextContent>
-                <br />
-                <List>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.macos.start.launchExtendedServices}
-                          interpolationMap={{
-                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                </List>
-                <br />
-                <br />
-                <hr />
-                <br />
-                <ExpandableSection
-                  toggleTextExpanded={i18n.dmnRunner.modal.wizard.macos.start.advanced.title}
-                  toggleTextCollapsed={i18n.dmnRunner.modal.wizard.macos.start.advanced.title}
-                >
-                  <ExtendedServicesPortForm />
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p}>
-                      {i18n.dmnRunner.modal.wizard.macos.start.advanced.runFollowingCommand}
-                    </Text>
-                  </TextContent>
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p} className={"kogito--code"}>
-                      /Applications/KIE\ Tooling\ Extended\ Services.app/Contents/MacOs/kogito -p{" "}
-                      {extendedServices.config.port}
-                    </Text>
-                  </TextContent>
-                  <br />
-                </ExpandableSection>
-              </>
-            )}
-          </>
-        ),
-      },
-    ],
-    [
-      i18n,
-      extendedServices.outdated,
-      extendedServices.status,
-      extendedServices.config.port,
-      downloadExtendedServicesUrl,
-      KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG,
-      KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP,
-    ]
-  );
-
-  const windowsWizardSteps = useMemo(
-    () => [
-      {
-        name: i18n.terms.install,
-        component: (
-          <>
-            {extendedServices.outdated && (
-              <>
-                <Alert
-                  variant={AlertVariant.warning}
-                  isInline={true}
-                  title={i18n.dmnRunner.modal.wizard.outdatedAlert.title}
-                >
-                  {i18n.dmnRunner.modal.wizard.outdatedAlert.message}
-                </Alert>
-                <br />
-              </>
-            )}
-            <List>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <Text
-                      id="extended-services-modal-download-windows"
-                      component={TextVariants.a}
-                      href={downloadExtendedServicesUrl}
-                    >
-                      {i18n.terms.download}
-                    </Text>
-                    {i18n.dmnRunner.modal.wizard.windows.install.keepDownload}
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <ListItem>
-                <TextContent>
-                  <I18nWrappedTemplate
-                    text={i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
-                    interpolationMap={{
-                      file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
-                    }}
-                  />
-                </TextContent>
-              </ListItem>
-            </List>
-          </>
-        ),
-      },
-      {
-        name: i18n.terms.start,
-        component: (
-          <>
-            {extendedServices.status === ExtendedServicesStatus.STOPPED ? (
-              <>
-                <Alert
-                  variant={AlertVariant.warning}
-                  isInline={true}
-                  title={i18n.dmnRunner.modal.wizard.stoppedAlert.title}
-                >
-                  {i18n.dmnRunner.modal.wizard.stoppedAlert.message}
-                </Alert>
-                <br />
-                <List>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        {i18n.dmnRunner.modal.wizard.windows.start.stopped.startInstruction}
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.windows.start.stopped.launchExtendedServices}
-                          interpolationMap={{
-                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                </List>
-              </>
-            ) : (
-              <>
-                <TextContent>
-                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.windows.start.firstTime.title}</Text>
-                </TextContent>
-                <br />
-                <List>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
-                          interpolationMap={{
-                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        {i18n.dmnRunner.modal.wizard.windows.start.firstTime.runAnyway}
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                </List>
-
-                <br />
-
-                <TextContent>
-                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.windows.start.alreadyRanBefore}</Text>
-                </TextContent>
-                <br />
-                <List>
-                  <ListItem>
-                    <TextContent>
-                      <Text component={TextVariants.p}>
-                        <I18nWrappedTemplate
-                          text={i18n.dmnRunner.modal.wizard.windows.start.launchExtendedServices}
-                          interpolationMap={{
-                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
-                          }}
-                        />
-                      </Text>
-                    </TextContent>
-                  </ListItem>
-                </List>
-                <br />
-                <br />
-                <hr />
-                <br />
-                <ExpandableSection
-                  toggleTextExpanded={i18n.dmnRunner.modal.wizard.windows.start.advanced.title}
-                  toggleTextCollapsed={i18n.dmnRunner.modal.wizard.windows.start.advanced.title}
-                >
-                  <ExtendedServicesPortForm />
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p}>
-                      {i18n.dmnRunner.modal.wizard.windows.start.advanced.runFollowingCommand}
-                    </Text>
-                  </TextContent>
-                  <br />
-                  <TextContent>
-                    <Text component={TextVariants.p} className={"kogito--code"}>
-                      &quot;kie-sandbox-extended-services_windows_{extendedServices.version}.exe&quot; -p{" "}
-                      {extendedServices.config.port}
-                    </Text>
-                  </TextContent>
-                  <br />
-                </ExpandableSection>
-              </>
-            )}
-          </>
-        ),
-      },
-    ],
-    [
-      i18n,
-      extendedServices.outdated,
-      extendedServices.status,
-      extendedServices.version,
-      extendedServices.config.port,
-      downloadExtendedServicesUrl,
-      KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE,
-    ]
-  );
-
-  const linuxWizardSteps = useMemo(
-    () => [
-      {
-        name: i18n.terms.install,
-        component: (
-          <>
-            {extendedServices.outdated && (
-              <>
-                <Alert
-                  variant={AlertVariant.warning}
-                  isInline={true}
-                  title={i18n.dmnRunner.modal.wizard.outdatedAlert.title}
-                >
-                  {i18n.dmnRunner.modal.wizard.outdatedAlert.message}
-                </Alert>
-                <br />
-              </>
-            )}
-            <List>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <Text
-                      id="extended-services-modal-download-linux"
-                      component={TextVariants.a}
-                      href={downloadExtendedServicesUrl}
-                    >
-                      {i18n.terms.download}
-                    </Text>{" "}
-                    {i18n.dmnRunner.modal.wizard.linux.install.download}
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    {i18n.dmnRunner.modal.wizard.linux.install.installAppIndicator}
-                  </Text>
-                  <List>
-                    <ListItem>
-                      <I18nWrappedTemplate
-                        text={i18n.dmnRunner.modal.wizard.linux.install.ubuntuDependency}
-                        interpolationMap={{
-                          package: <Label>{UBUNTU_APP_INDICATOR_LIB}</Label>,
-                        }}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <I18nWrappedTemplate
-                        text={i18n.dmnRunner.modal.wizard.linux.install.fedoraDependency}
-                        interpolationMap={{
-                          package: <Label>{FEDORA_APP_INDICATOR_LIB}</Label>,
-                        }}
-                      />
-                    </ListItem>
-                  </List>
-                </TextContent>
-              </ListItem>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <I18nWrappedTemplate
-                      text={i18n.dmnRunner.modal.wizard.linux.install.extractContent}
-                      interpolationMap={{
-                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ}</Label>,
-                      }}
-                    />
-                  </Text>
-                </TextContent>
-              </ListItem>
-            </List>
-            <br />
-            <TextContent>
-              <Text component={TextVariants.p}>
-                <I18nWrappedTemplate
-                  text={i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
-                  interpolationMap={{
-                    file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
-                  }}
-                />
-              </Text>
-            </TextContent>
-          </>
-        ),
-      },
-      {
-        name: i18n.terms.start,
-        component: (
-          <>
-            {extendedServices.status === ExtendedServicesStatus.STOPPED && (
-              <div>
-                <Alert
-                  variant={AlertVariant.warning}
-                  isInline={true}
-                  title={i18n.dmnRunner.modal.wizard.stoppedAlert.title}
-                >
-                  {i18n.dmnRunner.modal.wizard.stoppedAlert.message}
-                </Alert>
-                <br />
-              </div>
-            )}
-            <List>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>{i18n.dmnRunner.modal.wizard.linux.start.openTerminal}</Text>
-                </TextContent>
-              </ListItem>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <I18nWrappedTemplate
-                      text={i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
-                      interpolationMap={{
-                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
-                      }}
-                    />
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <ListItem>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    {i18n.dmnRunner.modal.wizard.linux.start.runCommand}
-                    <Text component={TextVariants.p} className={"kogito--code"}>
-                      ./kie_sandbox_extended_services
-                    </Text>
-                  </Text>
-                </TextContent>
-              </ListItem>
-              <br />
-              <hr />
-              <br />
-              <ExpandableSection
-                toggleTextExpanded={i18n.dmnRunner.modal.wizard.linux.start.advanced.title}
-                toggleTextCollapsed={i18n.dmnRunner.modal.wizard.linux.start.advanced.title}
-              >
-                <ExtendedServicesPortForm />
-                <br />
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <I18nWrappedTemplate
-                      text={i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
-                      interpolationMap={{
-                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
-                      }}
-                    />
-                  </Text>
-                </TextContent>
-                <br />
-                <TextContent>
-                  <Text component={TextVariants.p} className={"kogito--code"}>
-                    ./kie-sandbox-extended-services -p {extendedServices.config.port}
-                  </Text>
-                </TextContent>
-                <br />
-              </ExpandableSection>
-            </List>
-          </>
-        ),
-      },
-    ],
-    [
-      i18n,
-      extendedServices.outdated,
-      extendedServices.status,
-      extendedServices.config.port,
-      downloadExtendedServicesUrl,
-      KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ,
-      KIE_SANDBOX_EXTENDED_SERVICES_BINARIES,
-    ]
-  );
-
-  const wizardSteps = useMemo(() => {
-    switch (operatingSystem) {
-      case OperatingSystem.MACOS:
-        return macOsWizardSteps;
-      case OperatingSystem.WINDOWS:
-        return windowsWizardSteps;
-      case OperatingSystem.LINUX:
-      default:
-        return linuxWizardSteps;
-    }
-  }, [operatingSystem, macOsWizardSteps, windowsWizardSteps, linuxWizardSteps]);
 
   useEffect(() => {
     if (extendedServices.status === ExtendedServicesStatus.NOT_RUNNING) {
@@ -752,11 +158,6 @@ export function ExtendedServicesModal() {
               </Text>
             </TextContent>
           </div>
-          <div>
-            <TextContent className="pf-v5-u-mt-sm pf-v5-u-mb-md">
-              <Text component={TextVariants.p}>{i18n.extendedServices.modal.initial.subHeader}</Text>
-            </TextContent>
-          </div>
           <br />
           {extendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER && (
             <div className="pf-v5-u-display-flex pf-v5-u-flex-direction-row">
@@ -819,17 +220,25 @@ export function ExtendedServicesModal() {
       )}
       {modalPage === ModalPage.WIZARD && (
         <div>
-          <Form isHorizontal={true}>
-            <FormGroup fieldId={"select-os"} label={i18n.terms.os.full}>
-              <SelectOs selected={operatingSystem} onSelect={setOperatingSystem} direction={SelectDirection.down} />
-            </FormGroup>
-          </Form>
           <br />
-          <Wizard
-            steps={wizardSteps}
-            height={400}
-            footer={<ExtendedServicesWizardFooter onClose={onClose} steps={wizardSteps} setModalPage={setModalPage} />}
-          />
+
+          <List>
+            <ListItem>
+              Install <a href="https://podman-desktop.io/">Podman Desktop</a> or any other local Container management
+              platform.
+            </ListItem>
+            <ListItem>Run the Extended Services container locally.</ListItem>
+            <ListItem>
+              <ClipboardCopy isReadOnly hoverTip="Copy" clickTip="Copied">
+                {`docker run --rm -p ${extendedServices.config.port}:${extendedServices.defaultContainerPort} ${extendedServices.imageUrl}`}
+              </ClipboardCopy>
+            </ListItem>
+          </List>
+
+          <br />
+          <ExpandableSection toggleText={i18n.dmnRunner.modal.wizard.advancedSettings.label}>
+            <ExtendedServicesPortForm />
+          </ExpandableSection>
         </div>
       )}
       {modalPage === ModalPage.DISABLED && (
@@ -847,50 +256,6 @@ export function ExtendedServicesModal() {
         </div>
       )}
     </Modal>
-  );
-}
-
-interface WizardImperativeControlProps {
-  onClose: () => void;
-  steps: Array<{ component: JSX.Element; name: string }>;
-  setModalPage: React.Dispatch<ModalPage>;
-}
-
-function ExtendedServicesWizardFooter(props: WizardImperativeControlProps) {
-  const wizardContext = useContext(WizardContext);
-  const { status } = useExtendedServices();
-  const { i18n } = useOnlineI18n();
-
-  useEffect(() => {
-    if (status === ExtendedServicesStatus.STOPPED && wizardContext.activeStep.name !== props.steps[1].name) {
-      wizardContext.goToStepByName(props.steps[1].name);
-    }
-  }, [status, props.steps, wizardContext]);
-
-  return (
-    <WizardFooter>
-      <WizardContextConsumer>
-        {({ activeStep, goToStepByName, goToStepById, onNext, onBack }) => {
-          if (activeStep.name !== i18n.terms.start) {
-            return (
-              <>
-                <Button variant="primary" type="submit" onClick={onNext}>
-                  {i18n.terms.next}
-                </Button>
-              </>
-            );
-          } else {
-            return (
-              <>
-                <Button variant="primary" type="submit" onClick={onBack}>
-                  {i18n.terms.back}
-                </Button>
-              </>
-            );
-          }
-        }}
-      </WizardContextConsumer>
-    </WizardFooter>
   );
 }
 

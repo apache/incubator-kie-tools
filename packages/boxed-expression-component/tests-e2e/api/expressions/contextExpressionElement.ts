@@ -40,6 +40,10 @@ export class ContextExpressionElement {
     return new ChildExpression(this.locator.getByTestId(`kie-tools--bee--additional-row`).nth(0), this.monaco);
   }
 
+  get resultExpressionContainer() {
+    return this.result.elementCell.locator("..");
+  }
+
   public async entriesCount() {
     return (await this.locator.getByRole("row").count()) - 2;
   }
@@ -96,6 +100,10 @@ export class ContextExpressionEntry {
 
   get expression() {
     return this.childExpression.expression;
+  }
+
+  get contextExpressionContainer() {
+    return this.childExpression.elementCell.locator("..").locator("..");
   }
 
   get selectExpressionMenu() {

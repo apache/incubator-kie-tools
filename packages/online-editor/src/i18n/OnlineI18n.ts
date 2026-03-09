@@ -406,74 +406,6 @@ interface OnlineDictionary
             message: string;
             helper: string;
           };
-          macos: {
-            install: {
-              download: string;
-              openFile: string;
-              dragFileToApplicationsFolder: string;
-            };
-            start: {
-              stopped: {
-                startInstruction: string;
-                launchExtendedServices: string;
-              };
-              firstTime: {
-                title: string;
-                openApplicationsFolder: string;
-                openAndCancel: string;
-                again: string;
-                openInstruction: string;
-              };
-              alreadyRanBefore: string;
-              launchExtendedServices: string;
-              advanced: {
-                title: string;
-                runFollowingCommand: string;
-              };
-            };
-          };
-          windows: {
-            install: {
-              keepDownload: string;
-              moveTheFile: string;
-            };
-            start: {
-              stopped: {
-                startInstruction: string;
-                launchExtendedServices: string;
-              };
-              firstTime: {
-                title: string;
-                openFolder: string;
-                runAnyway: string;
-              };
-              alreadyRanBefore: string;
-              launchExtendedServices: string;
-              advanced: {
-                title: string;
-                runFollowingCommand: string;
-              };
-            };
-          };
-          linux: {
-            install: {
-              download: string;
-              installAppIndicator: string;
-              ubuntuDependency: string;
-              fedoraDependency: string;
-              extractContent: string;
-              binaryExplanation: string;
-            };
-            start: {
-              openTerminal: string;
-              goToFolder: string;
-              runCommand: string;
-              advanced: {
-                title: string;
-                runFollowingCommand: string;
-              };
-            };
-          };
           footerWaitingToConnect: string;
           advancedSettings: {
             title: string;
@@ -507,11 +439,6 @@ interface OnlineDictionary
           install: string;
           outdated: string;
           disconnected: string;
-        };
-      };
-      modal: {
-        initial: {
-          subHeader: string;
         };
       };
     };

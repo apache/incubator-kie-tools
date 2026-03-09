@@ -89,41 +89,32 @@ const kogitoAppsRepoDir = path.join("dist-tmp", "kogito-apps");
 
 console.log(`[drools-and-kogito] Cloning Drools...`);
 
-execSync(
-  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.drools.url} "${droolsRepoDir}"`,
-  execOpts
-);
-execSync(`git checkout ${buildEnv.droolsAndKogito.repos.drools.gitRef}`, {
+execSync(`git clone --depth 1 ${buildEnv.droolsAndKogito.repos.drools.url} "${droolsRepoDir}"`, execOpts);
+execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.drools.gitRef} && git checkout FETCH_HEAD`, {
   ...execOpts,
   cwd: droolsRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning OptaPlanner...`);
-execSync(
-  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.optaplanner.url} "${optaplannerRepoDir}"`,
-  execOpts
-);
-execSync(`git checkout ${buildEnv.droolsAndKogito.repos.optaplanner.gitRef}`, {
+execSync(`git clone --depth 1 ${buildEnv.droolsAndKogito.repos.optaplanner.url} "${optaplannerRepoDir}"`, execOpts);
+execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.optaplanner.gitRef} && git checkout FETCH_HEAD`, {
   ...execOpts,
   cwd: optaplannerRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning Kogito Runtimes...`);
 execSync(
-  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.url} "${kogitoRuntimesRepoDir}"`,
+  `git clone --depth 1 ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.url} "${kogitoRuntimesRepoDir}"`,
   execOpts
 );
-execSync(`git checkout ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.gitRef}`, {
+execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.gitRef} && git checkout FETCH_HEAD`, {
   ...execOpts,
   cwd: kogitoRuntimesRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning Kogito Apps...`);
-execSync(
-  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.kogitoApps.url} "${kogitoAppsRepoDir}"`,
-  execOpts
-);
-execSync(`git checkout ${buildEnv.droolsAndKogito.repos.kogitoApps.gitRef}`, {
+execSync(`git clone --depth 1 ${buildEnv.droolsAndKogito.repos.kogitoApps.url} "${kogitoAppsRepoDir}"`, execOpts);
+execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.kogitoApps.gitRef} && git checkout FETCH_HEAD`, {
   ...execOpts,
   cwd: kogitoAppsRepoDir,
 });

@@ -19,7 +19,7 @@
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { Element } from "./themes/Element";
-import { FeelSyntacticSymbolNature, FeelIdentifiers, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
+import { FeelIdentifiers, FeelSyntacticSymbolNature, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export class SemanticTokensProvider implements Monaco.languages.DocumentSemanticTokensProvider {
   constructor(
@@ -91,16 +91,20 @@ export class SemanticTokensProvider implements Monaco.languages.DocumentSemantic
 
       // It is a variable that it is NOT split in multiple-lines
       if (feelIdentifiedSymbol.startLine === feelIdentifiedSymbol.endLine) {
-        tokenTypes.push(
-          feelIdentifiedSymbol.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
-          feelIdentifiedSymbol.startIndex - startOfPreviousVariable, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
-          feelIdentifiedSymbol.length,
-          this.getTokenTypeIndex(feelIdentifiedSymbol.feelSymbolNature),
-          0 // token modifier = not used so we keep it 0
-        );
+        const tokenType = this.getTokenTypeIndex(feelIdentifiedSymbol.feelSymbolNature);
 
-        previousLine = feelIdentifiedSymbol.startLine;
-        startOfPreviousVariable = feelIdentifiedSymbol.startIndex;
+        // Non-colorized elements can not be in multiple lines, that's why we only handle it here.
+        if (tokenType !== Element.NonColorizedElement) {
+          tokenTypes.push(
+            feelIdentifiedSymbol.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
+            feelIdentifiedSymbol.startIndex - startOfPreviousVariable, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
+            feelIdentifiedSymbol.length,
+            tokenType,
+            0 // token modifier = not used so we keep it 0
+          );
+          previousLine = feelIdentifiedSymbol.startLine;
+          startOfPreviousVariable = feelIdentifiedSymbol.startIndex;
+        }
       } else {
         // It is a MULTILINE variable.
         // We colorize the first line of the variable and then other lines.
@@ -168,6 +172,8 @@ export class SemanticTokensProvider implements Monaco.languages.DocumentSemantic
         return Element.FunctionCall;
       case FeelSyntacticSymbolNature.Parameter:
         return Element.FunctionParameterVariable;
+      case FeelSyntacticSymbolNature.FunctionCall:
+        return Element.NonColorizedElement;
     }
   }
 }

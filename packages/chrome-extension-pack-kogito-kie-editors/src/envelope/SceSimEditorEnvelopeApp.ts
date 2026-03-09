@@ -18,11 +18,14 @@
  */
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { SceSimEditorChannelApi, SceSimEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/scesim/api";
-import { SceSimEditor, SceSimEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/scesim/envelope";
+import { TestScenarioEditorInterface } from "@kie-tools/scesim-editor-envelope/dist/TestScenarioEditorFactory";
+import { TestScenarioEditorEnvelopeApiImpl } from "@kie-tools/scesim-editor-envelope/dist/TestScenarioEditorEnvelopeApiFactory";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
-EditorEnvelope.initCustom<SceSimEditor, SceSimEditorEnvelopeApi, SceSimEditorChannelApi>({
+EditorEnvelope.initCustom<TestScenarioEditorInterface, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  apiImplFactory: { create: (args) => new SceSimEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
+  apiImplFactory: {
+    create: (args) => new TestScenarioEditorEnvelopeApiImpl(args),
+  },
 });

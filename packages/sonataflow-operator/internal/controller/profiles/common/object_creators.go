@@ -24,6 +24,8 @@ import (
 	"fmt"
 	"strings"
 
+	policyv1 "k8s.io/api/policy/v1"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
@@ -105,7 +107,7 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.Sonata
 			Labels:    lbl,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: getReplicasOrDefault(workflow),
+			Replicas: GetReplicasOrDefault(workflow),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: workflowproj.GetSelectorLabels(workflow),
 			},
@@ -165,7 +167,7 @@ func KServiceCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFl
 	return ksvc, nil
 }
 
-func getReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
+func GetReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
 	var dReplicas int32 = 1
 	if workflow.Spec.PodTemplate.Replicas == nil {
 		return &dReplicas
@@ -464,4 +466,23 @@ func ServiceMonitorCreator(workflow *operatorapi.SonataFlow) (client.Object, err
 		Spec: *spec,
 	}
 	return serviceMonitor, nil
+}
+
+// PodDisruptionBudgetCreator creates a PodDisruptionBudget for workflow.
+func PodDisruptionBudgetCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
+	lbl := workflowproj.GetMergedLabels(workflow)
+	podDisruptionBudget := &policyv1.PodDisruptionBudget{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      workflow.Name,
+			Namespace: workflow.Namespace,
+			Labels:    lbl,
+		},
+		Spec: policyv1.PodDisruptionBudgetSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: workflowproj.GetSelectorLabels(workflow),
+			},
+		},
+	}
+	kubeutil.ApplyPodDisruptionBudgetSpec(podDisruptionBudget, workflow.Spec.PodTemplate.PodDisruptionBudget)
+	return podDisruptionBudget, nil
 }

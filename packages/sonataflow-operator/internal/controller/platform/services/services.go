@@ -122,10 +122,31 @@ type PlatformServiceHandler interface {
 
 	// Returns whether job based, service based or no DB migration is needed
 	GetDBMigrationStrategy() operatorapi.DBMigrationStrategyType
+
+	// AcceptsHPA returns true if the service accepts an external HPA configuration.
+	AcceptsHPA() bool
+
+	// AcceptsPDB returns true if the service accepts the operator managed PDB generation.
+	AcceptsPDB() bool
+
+	// GetPDBSpec returns the configured PodDisruptionBudgetSpec for the given service.
+	GetPDBSpec() *operatorapi.PodDisruptionBudgetSpec
 }
 
 type DataIndexHandler struct {
 	platform *operatorapi.SonataFlowPlatform
+}
+
+func (d *DataIndexHandler) AcceptsHPA() bool {
+	return true
+}
+
+func (d *DataIndexHandler) AcceptsPDB() bool {
+	return true
+}
+
+func (d *DataIndexHandler) GetPDBSpec() *operatorapi.PodDisruptionBudgetSpec {
+	return d.platform.Spec.Services.DataIndex.ServiceSpec.PodTemplate.PodDisruptionBudget
 }
 
 // GetDBMigrationStrategy returns DB migration approach
@@ -341,6 +362,18 @@ func (d *DataIndexHandler) CheckKSinkInjected() (bool, error) {
 
 type JobServiceHandler struct {
 	platform *operatorapi.SonataFlowPlatform
+}
+
+func (d *JobServiceHandler) AcceptsHPA() bool {
+	return false
+}
+
+func (d *JobServiceHandler) AcceptsPDB() bool {
+	return false
+}
+
+func (d *JobServiceHandler) GetPDBSpec() *operatorapi.PodDisruptionBudgetSpec {
+	return nil
 }
 
 // GetDBMigrationStrategy returns db migration approach otherwise

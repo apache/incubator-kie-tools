@@ -15,9 +15,9 @@
    under the License.
 -->
 
-# Example :: Micro-frontends Multiplying Architecture :: Ping-Pong Views on webapp
+# Example :: Micro-frontends [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) :: Ping-Pong Views on webapp
 
-This package contains a web application that features multiple ways of using Ping-Pong Views wrapped inside Micro-frontends Multiplying Architecture Envelopes, showcasing both Promises and Notifications features of Multiplying Architecture Channel and Envelope APIs.
+This package contains a web application that features multiple ways of using Ping-Pong Views wrapped inside Micro-frontends [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) Envelopes, showcasing both Promises and Notifications features of [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) Channel and Envelope APIs.
 
 ### Building the dependencies
 

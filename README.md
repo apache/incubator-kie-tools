@@ -242,41 +242,18 @@ This repository contains several applications. To develop each one of them indiv
 4. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
 5. (Optional) To try the "Runtime Tools" functionalities, run the SonataFlow Dev App by running `pnpm start` at `packages/sonataflow-dev-app`, then open `https://localhost:9020/#/settings/runtime-tools` and set `http://localhost:4000/graphql` in the "Data Index URL" field
 
-#### Standalone Editors (DMN and BPMN)
+#### Standalone Editors (DMN)
 
-1. After you've successfully built the project following the instructions above, go to `packages/kie-editors-standalone`.
+1. After you've successfully built the project following the instructions above, go to `packages/dmn-editor-standalone`.
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Standalone Editors test page.
-3. From now on you can use the development version of the Standalone DMN Editor by accessing `https://localhost:9001/resources/dmn` and the Standalone BPMN Editor by accessing `https://localhost:9001/resources/bpmn`.
+3. From now on you can use the Standalone DMN Editor by accessing `http://localhost:9903`.
+
+#### Standalone Editors (BPMN)
+
+1. After you've successfully built the project following the instructions above, go to `packages/bpmn-editor-standalone`.
+2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Standalone Editors test page.
+3. From now on you can use the Standalone BPMN Editor by accessing `http://localhost:9904`.
 
 #### Knative Workflow plugin
 
 [Read the documentation](./packages/kn-plugin-workflow/README.md)
-
-## Libraries
-
-#### Stunner Editors
-
-The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of this repository.
-After cloning the repo, start with a fresh build.
-
-- `pnpm bootstrap -F @kie-tools/stunner-editors...`
-
-- `pnpm -F @kie-tools/stunner-editors... build:dev`
-
-After that, you're ready to start developing the Editors individually.
-
-- BPMN
-
-  - Located at `packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime`.
-  - Run `mvn clean gwt:run` to start. To enable live-reloading capability, run `mvn clean gwt:run -Phot-reload`
-
-- DMN
-
-  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime`.
-  - Run `mvn clean gwt:run` to start. To enable live-reloading capability, run `mvn clean gwt:run -Phot-reload`
-  - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
-
-- Test Scenario (SceSim)
-
-  - Located at `packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-testing`.
-  - Run `mvn clean gwt:run` to start.

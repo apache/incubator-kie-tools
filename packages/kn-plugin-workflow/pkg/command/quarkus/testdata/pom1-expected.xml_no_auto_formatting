@@ -110,6 +110,11 @@
             <artifactId>sonataflow-quarkus-devui</artifactId>
             <version>${kie.tooling.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.21.4</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

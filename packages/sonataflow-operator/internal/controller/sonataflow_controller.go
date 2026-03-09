@@ -22,9 +22,17 @@ package controller
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
+
+	autoscalingv2 "k8s.io/api/autoscaling/v2"
+	pkgbuilder "sigs.k8s.io/controller-runtime/pkg/builder"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
+
+	v1 "k8s.io/api/policy/v1"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
-
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/eventing"
@@ -36,8 +44,6 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/properties"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
 
-	"sigs.k8s.io/controller-runtime/pkg/predicate"
-
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
@@ -47,6 +53,7 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/monitoring"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	profilescommon "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	profilesfactory "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/factory"
 
@@ -73,6 +80,8 @@ import (
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform"
+
+	ctrlevent "sigs.k8s.io/controller-runtime/pkg/event"
 )
 
 // SonataFlowReconciler reconciles a SonataFlow object
@@ -85,9 +94,11 @@ type SonataFlowReconciler struct {
 
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflows,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflows/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflows/scale,verbs=get;update;patch
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflows/finalizers,verbs=update
 //+kubebuilder:rbac:groups="monitoring.coreos.com",resources=servicemonitors,verbs=get;list;watch;create;update;delete
 //+kubebuilder:rbac:groups="serving.knative.dev",resources=revisions,verbs=list;watch;delete
+//+kubebuilder:rbac:groups=policy,resources=poddisruptionbudgets,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -124,13 +135,35 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return r.applyFinalizers(ctx, workflow)
 	}
 
-	// If first recon cycle, add the WorkflowFinalizer
+	// Initial recon cycles initializes the WorkflowFinalizer, the replicas, and early populate the scale selector.
 	if !profiles.IsDevProfile(workflow) {
-		if controllerutil.AddFinalizer(workflow, constants.WorkflowFinalizer) {
+		update := false
+		if !controllerutil.ContainsFinalizer(workflow, constants.WorkflowFinalizer) {
+			klog.V(log.D).Infof("Adding finalizer to workflow %s/%s for generation: %d, resourceVersion: %s.", workflow.Name, workflow.Namespace, workflow.Generation, workflow.ResourceVersion)
+			controllerutil.AddFinalizer(workflow, constants.WorkflowFinalizer)
+			update = true
+		}
+		if !workflowdef.HasReplicas(workflow) {
+			klog.V(log.D).Infof("Adding replicas to workflow %s/%s for generation: %d, resourceVersion: %s.", workflow.Name, workflow.Namespace, workflow.Generation, workflow.ResourceVersion)
+			workflow.Spec.PodTemplate.Replicas = profilescommon.GetReplicasOrDefault(workflow)
+			update = true
+		}
+		if update {
 			if err := r.Client.Update(ctx, workflow); err != nil {
-				klog.V(log.E).ErrorS(err, "Failed to add workflow finalizer.", "workflow", "namespace", "finalizer", workflow.Name, workflow.Namespace, constants.WorkflowFinalizer)
+				klog.V(log.E).ErrorS(err, "Failed to update workflow.", "workflow", "namespace", workflow.Name, workflow.Namespace)
 				return ctrl.Result{}, err
 			}
+			return reconcile.Result{}, nil
+		}
+
+		if !workflowdef.HasScaleSelector(workflow) {
+			klog.V(log.D).Infof("Adding scale selector to workflow %s/%s for generation: %d, resourceVersion: %s.", workflow.Name, workflow.Namespace, workflow.Generation, workflow.ResourceVersion)
+			workflow.Status.SetSelector(workflowdef.GenerateScaleSelector(workflow))
+			if err := r.Client.Status().Update(ctx, workflow); err != nil {
+				klog.V(log.E).ErrorS(err, "Failed to update workflow status when adding the scale selector.", "workflow", "namespace", workflow.Name, workflow.Namespace)
+				return ctrl.Result{}, err
+			}
+			return reconcile.Result{}, nil
 		}
 	}
 
@@ -166,6 +199,11 @@ func (r *SonataFlowReconciler) applyFinalizers(ctx context.Context, workflow *op
 		var err error
 		if !workflow.Status.FinalizerSucceed && workflow.Status.FinalizerAttempts < constants.MaxWorkflowFinalizerAttempts {
 			now := metav1.Now()
+			if isTooFastToReprogramFinalizerAttempt(workflow.Status.LastTimeFinalizerAttempt, now) {
+				// at this point the Recon cycle might derive from the latest status update, or other source, give some more time before scheduling a new deletion notification.
+				klog.V(log.D).Infof("Too fast to to schedule a new workflow deletion notification for workflow %s/%s generation: %d, resourceVersion: %s, programming a new Request.", workflow.Namespace, workflow.Name, workflow.Generation, workflow.ResourceVersion)
+				return ctrl.Result{RequeueAfter: 2 * time.Second}, nil
+			}
 			workflow.Status.FinalizerAttempts = workflow.Status.FinalizerAttempts + 1
 			workflow.Status.LastTimeFinalizerAttempt = &now
 			if err = r.Client.Status().Update(ctx, workflow); err != nil {
@@ -191,6 +229,14 @@ func (r *SonataFlowReconciler) applyFinalizers(ctx context.Context, workflow *op
 		}
 	}
 	return ctrl.Result{}, nil
+}
+
+func isTooFastToReprogramFinalizerAttempt(lastTimeFinalizerAttempt *metav1.Time, now metav1.Time) bool {
+	if lastTimeFinalizerAttempt != nil {
+		delta := now.Sub(lastTimeFinalizerAttempt.Time)
+		return delta < constants.WorkflowFinalizerRetryInterval-1*time.Second
+	}
+	return false
 }
 
 func scheduleWorkflowDeletionNotification(cli client.Client, workflow *operatorapi.SonataFlow) (bool, error) {
@@ -224,14 +270,22 @@ func notifyWorkflowDeletion(cli client.Client, workflow *operatorapi.SonataFlow,
 
 		wfName := workflow.Name
 		wfNamespace := workflow.Namespace
-		workflow = &operatorapi.SonataFlow{}
-		if err = cli.Get(context.Background(), types.NamespacedName{Name: wfName, Namespace: wfNamespace}, workflow); err != nil {
+		refreshedWorkflow := &operatorapi.SonataFlow{}
+		if err = cli.Get(context.Background(), types.NamespacedName{Name: wfName, Namespace: wfNamespace}, refreshedWorkflow); err != nil {
+			if errors.IsNotFound(err) {
+				// workflow could have been removed after a previous notification or recon cycle.
+				klog.V(log.D).Infof("Workflow %s/%s was already removed, no need to retry and mark the the Status.FinalizerSucceed field.", wfName, wfNamespace)
+				return nil
+			}
 			return err
 		}
-
-		workflow = workflow.DeepCopy()
-		workflow.Status.FinalizerSucceed = true
-		if err = cli.Status().Update(context.Background(), workflow); err != nil {
+		refreshedWorkflow.Status.FinalizerSucceed = true
+		if err = cli.Status().Update(context.Background(), refreshedWorkflow); err != nil {
+			if errors.IsNotFound(err) {
+				// workflow could have been removed after a previous notification or recon cycle.
+				klog.V(log.D).Infof("Workflow %s/%s was already removed, no need to retry to save the Status field.", wfName, wfNamespace)
+				return nil
+			}
 			return err
 		}
 		return nil
@@ -330,16 +384,8 @@ func buildEnqueueRequestsFromMapFunc(c client.Client, b *operatorapi.SonataFlowB
 func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	builder := ctrl.NewControllerManagedBy(mgr).
 		For(&operatorapi.SonataFlow{}).
-		WithEventFilter(predicate.Funcs{
-			UpdateFunc: func(e event.UpdateEvent) bool {
-				oldGeneration := e.ObjectOld.GetGeneration()
-				newGeneration := e.ObjectNew.GetGeneration()
-				// Generation is only updated on spec changes (also on deletion), not upon metadata or status changes.
-				// Filter out events where the generation hasn't changed to avoid being triggered by status updates.
-				return oldGeneration != newGeneration
-			},
-		}).
 		Owns(&appsv1.Deployment{}).
+		Owns(&v1.PodDisruptionBudget{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
 		Owns(&operatorapi.SonataFlowBuild{}).
@@ -358,7 +404,8 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				return []reconcile.Request{}
 			}
 			return buildEnqueueRequestsFromMapFunc(mgr.GetClient(), build)
-		}))
+		})).
+		Watches(&autoscalingv2.HorizontalPodAutoscaler{}, handler.EnqueueRequestsFromMapFunc(r.mapHPAToSonataFlowRequests), pkgbuilder.WithPredicates(hpaToSonataFlowPredicate()))
 
 	knativeAvail, err := knative.GetKnativeAvailability(mgr.GetConfig())
 	if err != nil {
@@ -381,4 +428,44 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return builder.Complete(r)
+}
+
+// hpaToSonataFlowPredicate filters the HorizontalPodAutoscaler events that might require attention by the SonataFlow
+// controller, i.e., those HorizontalPodAutoscalers that points to a SonataFlow and has relevant changes rather than
+// status updates. Note that changes in such HorizontalPodAutoscaler might for example have impact on the potentially
+// generated PodDisruptionBudget.
+func hpaToSonataFlowPredicate() predicate.Funcs {
+	return predicate.Funcs{
+		CreateFunc: func(e ctrlevent.CreateEvent) bool {
+			return kubernetes.IsHPAndTargetsASonataFlowAsBool(e.Object)
+		},
+		UpdateFunc: func(e ctrlevent.UpdateEvent) bool {
+			oldHpa, oldHpaOk := kubernetes.IsHPAndTargetsASonataFlow(e.ObjectOld)
+			newHpa, newHpaOK := kubernetes.IsHPAndTargetsASonataFlow(e.ObjectNew)
+			if oldHpaOk || newHpaOK {
+				return !kubernetes.HPAEqualsBySpec(oldHpa, newHpa)
+			}
+			return false
+		},
+		DeleteFunc: func(e ctrlevent.DeleteEvent) bool {
+			return kubernetes.IsHPAndTargetsASonataFlowAsBool(e.Object)
+		},
+		GenericFunc: func(e ctrlevent.GenericEvent) bool {
+			return kubernetes.IsHPAndTargetsASonataFlowAsBool(e.Object)
+		},
+	}
+}
+
+// mapHPAToSonataFlowRequests given a HorizontalPodAutoscaler that targets a SonataFlow, returns the recon request to
+// that workflow.
+func (r *SonataFlowReconciler) mapHPAToSonataFlowRequests(ctx context.Context, object client.Object) []reconcile.Request {
+	hpa := object.(*autoscalingv2.HorizontalPodAutoscaler)
+	return []reconcile.Request{
+		{
+			NamespacedName: types.NamespacedName{
+				Namespace: hpa.Namespace,
+				Name:      hpa.Spec.ScaleTargetRef.Name,
+			},
+		},
+	}
 }

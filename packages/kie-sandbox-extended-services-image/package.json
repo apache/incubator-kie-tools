@@ -20,10 +20,11 @@
     "copy:extended-services-java": "run-script-os",
     "copy:extended-services-java:linux:darwin": "cp -R ./node_modules/@kie-tools/extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services",
     "copy:extended-services-java:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services\"",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesImage.port)\""
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImageEnv.registry)\" -a \"$(build-env extendedServicesImageEnv.account)\" -n \"$(build-env extendedServicesImageEnv.name)\" -t \"$(build-env extendedServicesImageEnv.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesImageEnv.port)\""
   },
   "dependencies": {
-    "@kie-tools/extended-services-java": "workspace:*"
+    "@kie-tools/extended-services-java": "workspace:*",
+    "@kie-tools/kie-sandbox-extended-services-image-env": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",

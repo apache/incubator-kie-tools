@@ -20,7 +20,6 @@ package org.jbpm.quarkus.devui.runtime.config;
 
 import java.util.Map;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
 import io.smallrye.config.ConfigMapping;

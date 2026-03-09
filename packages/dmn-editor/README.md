@@ -17,22 +17,50 @@
 
 ## @kie-tools/dmn-editor
 
-TODO: Description
+The Apache KIE DMN Editor.
+
+This package exposes the `<DmnEditor>` React component. Features include:
+
+- Support for the DMN 1.6 specification (minimum version is DMN 1.2)
+  - Files will automatically be converted to DMN 1.6 after a first modification happens.
+- Best-effort backwards compatibility with the [Apache KIE DMN Editor (classic)](https://www.npmjs.com/package/@kie-tools/kie-editors-standalone) — no longer available (last available in Apache KIE 10.1).
+- Extension points compatible with the Drools DMN Engine and Kogito.
+  - Attachments
+  - Persistent widths on Boxed Expressions
+  - Constraint types (`range`, `expression`, `enumerated`)
+- Dedicated Data Types editor
+- Exporting the DMN diagram to SVG
+- Built in the "[Controlled component](https://legacy.reactjs.org/docs/forms.html#controlled-components)" pattern
+- Type-safe model representation (incl. extension points) powered by [@kie-tools/dmn-marshaller](../dmn-marshaller/README.md)
+- Autolayout
+
+The Apache KIE DMN Editor is built with [Reactflow](https://reactflow.dev/) and shares a lot of good qualities from the Apache KIE DMN Editor, like:
+
+- Grid snapping
+- Commands-based programmatic API (E.g., Binding to keyboard shortcuts)
+- Infinite canvas
+- Multi-node and edge selection
 
 ---
 
 ### Usage
 
+- Add the `<DmnEditor>` component to your React application; _or_
+- Use the Apache KIE DMN Editor as a standalone JavaScript/TypeScript library. See [@kie-tools/dmn-editor-standalone](../dmn-editor-standalone/README.md).
+
 ---
 
-### Examples
+### Screenshots
+
+> ![A screenshot of a Loan Pre-qualification decision modeled with Apache KIE DMN Editor](docs/images/readme/loan-pre-qualification.dmn.png)
+> A screenshot of a Loan Pre-qualification decision created with Apache KIE DMN Editor
 
 ---
 
 ## For development information see:
 
 - 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [TESTS.md](./docs/TESTS.md)
 - 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---

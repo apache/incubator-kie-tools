@@ -227,6 +227,7 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipeli
                   env: [
                     { name: DeployConstants.KOGITO_DATA_INDEX_URL_KEY, value: routeUrl },
                     { name: DeployConstants.KOGITO_DEV_UI_URL_KEY, value: routeUrl },
+                    { name: DeployConstants.QUARKUS_DEV_UI_HOSTS_KEY, value: route.spec.host },
                   ],
                 },
               ],

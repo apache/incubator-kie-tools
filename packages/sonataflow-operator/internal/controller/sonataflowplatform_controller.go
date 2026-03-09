@@ -22,7 +22,13 @@ package controller
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
+
+	autoscalingv2 "k8s.io/api/autoscaling/v2"
+	pkgbuilder "sigs.k8s.io/controller-runtime/pkg/builder"
+	ctrlevent "sigs.k8s.io/controller-runtime/pkg/event"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 
@@ -54,6 +60,8 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
+
+	kubeutil "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 )
 
 // SonataFlowPlatformReconciler reconciles a SonataFlowPlatform object
@@ -72,6 +80,8 @@ type SonataFlowPlatformReconciler struct {
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms/finalizers,verbs=update
 //+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=autoscaling,resources=horizontalpodautoscalers,verbs=get;list;watch
+//+kubebuilder:rbac:groups=policy,resources=poddisruptionbudgets,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -277,7 +287,8 @@ func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) err
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
 		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapPlatformToPlatformRequests)).
-		Watches(&operatorapi.SonataFlowClusterPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapClusterPlatformToPlatformRequests))
+		Watches(&operatorapi.SonataFlowClusterPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapClusterPlatformToPlatformRequests)).
+		Watches(&autoscalingv2.HorizontalPodAutoscaler{}, handler.EnqueueRequestsFromMapFunc(r.mapHPAToPlatformRequests), pkgbuilder.WithPredicates(hpaToSonataFlowPlatformServicePredicate()))
 
 	knativeAvail, err := knative.GetKnativeAvailability(mgr.GetConfig())
 	if err != nil {
@@ -302,7 +313,7 @@ func (r *SonataFlowPlatformReconciler) mapClusterPlatformToPlatformRequests(ctx 
 
 // if actively referenced sonataflowplatform is changed, reconcile other SonataFlowPlatforms in the cluster.
 func (r *SonataFlowPlatformReconciler) mapPlatformToPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
-	platform := object.(*operatorapi.SonataFlowPlatform)
+	sfp := object.(*operatorapi.SonataFlowPlatform)
 	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx)
 	if err != nil && !errors.IsNotFound(err) {
 		klog.V(log.E).ErrorS(err, "Failed to get active SonataFlowClusterPlatform")
@@ -311,7 +322,7 @@ func (r *SonataFlowPlatformReconciler) mapPlatformToPlatformRequests(ctx context
 
 	if sfcPlatform != nil {
 		sfpcRefNsName := types.NamespacedName{Namespace: sfcPlatform.Spec.PlatformRef.Namespace, Name: sfcPlatform.Spec.PlatformRef.Name}
-		if client.ObjectKeyFromObject(platform) == sfpcRefNsName {
+		if client.ObjectKeyFromObject(sfp) == sfpcRefNsName {
 			return r.platformRequests(ctx, sfcPlatform, false)
 		}
 	}
@@ -328,8 +339,8 @@ func (r *SonataFlowPlatformReconciler) platformRequests(ctx context.Context, sfc
 
 	sfpcRefNsName := types.NamespacedName{Namespace: sfcPlatform.Spec.PlatformRef.Namespace, Name: sfcPlatform.Spec.PlatformRef.Name}
 	var requests []reconcile.Request
-	for _, platform := range plList.Items {
-		sfpNsName := client.ObjectKeyFromObject(&platform)
+	for _, sfp := range plList.Items {
+		sfpNsName := client.ObjectKeyFromObject(&sfp)
 		// this check is required so that the cluster-referenced platform object doesn't infinitely reconcile
 		if sfpNsName != sfpcRefNsName || allPlatforms {
 			requests = append(requests, reconcile.Request{NamespacedName: sfpNsName})
@@ -345,4 +356,75 @@ func contains(slice []operatorapi.WorkFlowCapability, s operatorapi.WorkFlowCapa
 		}
 	}
 	return false
+}
+
+// mapHPAToPlatformRequests determines if the referred HorizontalPodAutoscaler targets a DI service in the given namespace,
+// if any. Analyses if that namespace has an SPF that manges the DI service. If that is the case, enqueues a Request to
+// the SPF to give the chance to take an action if needed. We normally want to do that in situations where the
+// HorizontalPodAutoscaler was removed or has changed to let the SFP controller restore back the DI replicas or manage
+// a potential PodDisruptionBudget configuration accordingly.
+func (r *SonataFlowPlatformReconciler) mapHPAToPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
+	hpa, ok := kubeutil.IsHPAndTargetsADeployment(object)
+	klog.V(log.D).Infof("HorizontalPodAutoscaler %s/%s with spec.ScaleTargetRef.Kind Kind: %s requires SFP controller attention.", hpa.Namespace, hpa.Name, hpa.Spec.ScaleTargetRef.Kind)
+	if ok {
+		sfp, err := platform.GetActivePlatform(ctx, r.Client, hpa.Namespace, false)
+		if err != nil {
+			klog.V(log.D).Infof("failed to get active platform in namespace: %s, %v", hpa.Namespace, err)
+			return nil
+		}
+		if sfp != nil {
+			diHandler := services.NewDataIndexHandler(sfp)
+			klog.V(log.D).Infof("Active platform %s/%s was found in namespace: %s, is DI enabled: %t.", sfp.Namespace, sfp.Name, hpa.Namespace, diHandler.IsServiceEnabled())
+			if diHandler.IsServiceSetInSpec() && hpa.Spec.ScaleTargetRef.Name == diHandler.GetServiceName() {
+				klog.V(log.D).Infof("HorizontalPodAutoscaler %s/%s targets DI: %s, enqueueing request to platform.", hpa.Namespace, hpa.Name, diHandler.GetServiceName())
+				return []reconcile.Request{
+					{
+						NamespacedName: types.NamespacedName{
+							Namespace: hpa.Namespace,
+							Name:      sfp.Name,
+						},
+					},
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// hpaToSonataFlowPlatformServicePredicate returns the predicate functions to filter HorizontalPodAutoscaler events
+// that might require attention from the SFP controller.
+func hpaToSonataFlowPlatformServicePredicate() predicate.Funcs {
+	return predicate.Funcs{
+		CreateFunc: func(e ctrlevent.CreateEvent) bool {
+			return isHPAndCandidateToTargetADataIndexDeploymentAsBool(e.Object)
+		},
+		UpdateFunc: func(e ctrlevent.UpdateEvent) bool {
+			oldHpa, oldHpaOk := isHPAndCandidateToTargetADataIndexDeployment(e.ObjectOld)
+			newHpa, newHpaOK := isHPAndCandidateToTargetADataIndexDeployment(e.ObjectNew)
+			if oldHpaOk || newHpaOK {
+				return !kubeutil.HPAEqualsBySpec(oldHpa, newHpa)
+			}
+			return false
+		},
+		DeleteFunc: func(e ctrlevent.DeleteEvent) bool {
+			return isHPAndCandidateToTargetADataIndexDeploymentAsBool(e.Object)
+		},
+		GenericFunc: func(e ctrlevent.GenericEvent) bool {
+			return isHPAndCandidateToTargetADataIndexDeploymentAsBool(e.Object)
+		},
+	}
+}
+
+func isHPAndCandidateToTargetADataIndexDeployment(obj client.Object) (*autoscalingv2.HorizontalPodAutoscaler, bool) {
+	if hpa, ok := kubeutil.IsHPAndTargetsADeployment(obj); ok {
+		if strings.HasSuffix(hpa.Spec.ScaleTargetRef.Name, constants.DataIndexServiceName) {
+			return hpa, true
+		}
+	}
+	return nil, false
+}
+
+func isHPAndCandidateToTargetADataIndexDeploymentAsBool(obj client.Object) bool {
+	_, ok := isHPAndCandidateToTargetADataIndexDeployment(obj)
+	return ok
 }

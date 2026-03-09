@@ -21,14 +21,12 @@ import * as React from "react";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { ExtendedServicesSettingsTab } from "./ExtendedServicesSettingsTab";
-import { EditorsSettingsTab } from "./EditorsSettingsTab";
 import { CorsProxySettingsTab } from "./CorsProxySettingsTab";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export enum SettingsTabs {
   KIE_SANDBOX_EXTENDED_SERVICES = "extendedServices",
   CORS_PROXY = "corsProxy",
-  EDITORS = "editors",
 }
 
 export function SettingsModalBody() {
@@ -57,15 +55,6 @@ export function SettingsModalBody() {
       >
         <CorsProxySettingsTab />
       </Tab>
-      {editorEnvelopeLocator.hasMappingFor("*.dmn") && (
-        <Tab
-          className="kie-tools--settings-tab"
-          eventKey={SettingsTabs.EDITORS}
-          title={<TabTitleText>Editors</TabTitleText>}
-        >
-          <EditorsSettingsTab />
-        </Tab>
-      )}
     </Tabs>
   );
 }

@@ -100,14 +100,7 @@ module.exports = (webpackEnv) => {
       chunkFilename: "[name].bundle.js",
     },
     stats: {
-      excludeAssets: [
-        (name) => !name.endsWith(".js"),
-        /.*DMNKogitoRuntimeWebapp.*/,
-        /.*KogitoBPMNEditor.*/,
-        /.*DroolsWorkbenchScenarioSimulationKogitoRuntime.*/,
-        /gwt-editors\/.*/,
-        /editors\/.*/,
-      ],
+      excludeAssets: [(name) => !name.endsWith(".js"), /editors\/.*/],
       excludeModules: true,
     },
     performance: {

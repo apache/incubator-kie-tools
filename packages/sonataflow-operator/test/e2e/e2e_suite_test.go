@@ -86,7 +86,7 @@ var _ = BeforeSuite(func() {
 	namespaceExists, err := kubectlNamespaceExists(resourcesNamespace)
 	Expect(err).NotTo(HaveOccurred())
 
-	workflows := make(map[string]*DeployedWorkflow, 2)
+	workflows := make(map[string]*DeployedWorkflow, 3)
 	workflows[flowCallbackName] = &DeployedWorkflow{YAMLFile: test.GetPathFromE2EDirectory("before-suite", "sonataflow.org_v1alpha08_sonataflow-callbackstatetimeouts.yaml")}
 	workflows[flowCallbackPersistenceName] = &DeployedWorkflow{YAMLFile: test.GetPathFromE2EDirectory("before-suite", "sonataflow.org_v1alpha08_sonataflow-callbackstatetimeouts-persistence.yaml")}
 	workflows[flowGreetingsName] = &DeployedWorkflow{YAMLFile: test.GetPathFromE2EDirectory("before-suite", "sonataflow.org_v1alpha08_sonataflow-greetings.yaml")}
@@ -139,18 +139,18 @@ func fetchImageTagsBuiltWorkflows(workflows map[string]*DeployedWorkflow) error 
 
 	statusChan := make(chan error, len(workflows))
 	for name, workflow := range workflows {
-		go func(w *DeployedWorkflow) {
+		go func(wfName string, wf *DeployedWorkflow) {
 			ticker := time.NewTicker(10 * time.Second)
 			defer ticker.Stop()
 
 			for {
 				select {
 				case <-ctx.Done():
-					statusChan <- fmt.Errorf("timeout reached: workflow %s in namespace %s did not reach running state", name, resourcesNamespace)
+					statusChan <- fmt.Errorf("timeout reached: workflow %s in namespace %s did not reach running state", wfName, resourcesNamespace)
 					return
 				case <-ticker.C:
-					if len(workflow.ImageTag) == 0 {
-						cmd := exec.Command("kubectl", "get", "sonataflowbuild", name, "-n", resourcesNamespace, "-o", "jsonpath={.status.imageTag}")
+					if len(wf.ImageTag) == 0 {
+						cmd := exec.Command("kubectl", "get", "sonataflowbuild", wfName, "-n", resourcesNamespace, "-o", "jsonpath={.status.imageTag}")
 						response, err := utils.Run(cmd)
 						if err != nil {
 							GinkgoWriter.Println(fmt.Errorf("failed to check the workflow image tag: %v", err))
@@ -158,13 +158,13 @@ func fetchImageTagsBuiltWorkflows(workflows map[string]*DeployedWorkflow) error 
 						}
 						if len(response) > 0 {
 							GinkgoWriter.Printf("Got response: %s \n", response)
-							workflow.ImageTag = string(response)
+							wf.ImageTag = string(response)
 							statusChan <- nil
 						}
 					}
 				}
 			}
-		}(workflow)
+		}(name, workflow)
 	}
 
 	// Wait for all workflows to be in a running state or for errors to occur

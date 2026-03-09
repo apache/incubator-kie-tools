@@ -17,8 +17,7 @@
 
 ## Extended Services
 
-This is a shallow copy of the Extended-Services Go application,
-but it uses Java instead.
+This is an application wrapping the JIT Executor modules, providing static validation and dynamic DMN execution.
 
 ## Running
 

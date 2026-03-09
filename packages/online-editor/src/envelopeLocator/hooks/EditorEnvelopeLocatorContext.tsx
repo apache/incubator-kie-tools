@@ -28,19 +28,6 @@ import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/Exte
 // FIXME: Chaging `any` to `EditorEnvelopeLocator` breaks --env live. Please adress this as part of https://github.com/apache/incubator-kie-issues/issues/109
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
-export const LEGACY_DMN_EDITOR_EDITOR_CONFIG: EditorConfig = {
-  extension: FileTypes.DMN,
-  filePathGlob: GLOB_PATTERN.dmn,
-  editor: {
-    resourcesPathPrefix: "gwt-editors/dmn",
-    path: "dmn-envelope.html",
-  },
-  card: {
-    title: "Decision",
-    description: "DMN files are used to generate decision models",
-  },
-};
-
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
   const editorsConfig = useEditorsConfig();
   const value = useMemo(

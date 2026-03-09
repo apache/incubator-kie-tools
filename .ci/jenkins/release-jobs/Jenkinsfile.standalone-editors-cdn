@@ -42,7 +42,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kie-editors-standalone... -F @kie-tools/serverless-workflow-standalone-editor...'
+        PNPM_FILTER_STRING = '-F @kie-tools/serverless-workflow-standalone-editor...'
 
         MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
@@ -162,15 +162,9 @@ pipeline {
 
                         echo "Copy standalone resources"
                         rm -rf ${STANDALONE_EDITORS_DIR}
-                        mkdir -p ${STANDALONE_EDITORS_DIR}/bpmn ${STANDALONE_EDITORS_DIR}/dmn ${STANDALONE_EDITORS_DIR}/swf
-                        cp ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js ${STANDALONE_EDITORS_DIR}/bpmn/
-                        cp ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js ${STANDALONE_EDITORS_DIR}/dmn/
+                        mkdir -p ${STANDALONE_EDITORS_DIR}/swf
                         cp ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist/swf/index.js ${STANDALONE_EDITORS_DIR}/swf/
-                        rm -f ./standalone/bpmn/index.js
-                        rm -f ./standalone/dmn/index.js
                         rm -f ./standalone/swf/index.js
-                        ln -s ../${params.RELEASE_VERSION}/bpmn/index.js ./standalone/bpmn/index.js
-                        ln -s ../${params.RELEASE_VERSION}/dmn/index.js ./standalone/dmn/index.js
                         ln -s ../${params.RELEASE_VERSION}/swf/index.js ./standalone/swf/index.js
 
                         echo "Commit changes and push"
@@ -190,12 +184,10 @@ pipeline {
             }
             steps {
                 script {
-                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-standalone-editors.zip"
                     env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-standalone-editors.zip"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cd ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}" .
                     cd ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}" .
                     """.trim()
                 }
@@ -210,7 +202,6 @@ pipeline {
                 dir("${env.RELEASE_ARTIFACTS_DIR}") {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}")
                         releaseUtils.signArtifact("${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}")
                     }
                 }

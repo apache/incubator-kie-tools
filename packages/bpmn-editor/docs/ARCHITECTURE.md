@@ -15,4 +15,10 @@
    under the License.
 -->
 
-// TODO
+# @kie-tools/bpmn-editor :: ARCHITECTURE
+
+- `<BpmnEditor>` is a regular Controlled Component, mainly controlled by the `model` property.
+- The auto-generated `BPMN20__tDefinitions` type is used as the only representation of the BPMN workflow.
+- Zustand and Immer are used to manage state, wrapped inside the `useBpmnEditorStoreApi()` hook. Calling `bpmnEditorStoreApi.setState(...)` will let you update any state, including the BPMN workflow.
+- Complicated operations done to the BPMN workflow are managed by mutations inside the `mutations` directory.
+- The BPMN diagram is rendered by `@kie-tools/xyflow-react-kie-diagram`, which uses ReactFlow.

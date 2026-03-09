@@ -17,23 +17,9 @@
 
 ## Envelope
 
-TODO: Description
+Thin wrapper around [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) **`Envelopes`** adding a "view" component for **`Envelopes`** rendering visual elements.
 
----
-
-### Usage
-
----
-
-### Examples
-
----
-
-## For development information see:
-
-- 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
-- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+This package also allows **`Envelopes`** to be physically inside `div` or `iframe` elements, for supporting Module Federation.
 
 ---
 

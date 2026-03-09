@@ -27,7 +27,9 @@
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*"
+    "@kie-tools/bpmn-editor-envelope": "workspace:*",
+    "@kie-tools/dmn-editor-envelope": "workspace:*",
+    "@kie-tools/scesim-editor-envelope": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -38,7 +40,6 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/chai": "^4.3.6",
     "@types/chrome": "^0.0.193",

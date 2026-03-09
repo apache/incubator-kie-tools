@@ -15,6 +15,10 @@
    under the License.
 -->
 
+# 10.2.0
+
+- DMN Editor (classic), and Test Scenario Editor (classic) removed.
+
 # 10.1.0
 
 - Changed default SVG generation settings to improve consistency with the sister mechanism for BPMN files of placing SVGs inside the `src/main/resources/META-INF/processSVG` directory. When there's no customized configuration for SVG generation, SVG files are now placed in the same directory as the open file if not inside a `src/main/resources` structure, or on `src/main/resources/META-INF/decisionSVG/**/` if it is. The directory structure after `src/main/resources` is kept inside the `decisionSVG` dir.

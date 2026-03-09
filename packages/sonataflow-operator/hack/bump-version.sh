@@ -20,10 +20,10 @@
 
 set -e
 
-imageName=$(pnpm build-env sonataFlowOperator.registry)/$(pnpm build-env sonataFlowOperator.account)/$(pnpm build-env sonataFlowOperator.name)
-imageTag=$(pnpm build-env sonataFlowOperator.buildTag)
-platformTag=$(pnpm build-env sonataFlowOperator.platformTag)
-version=$(pnpm build-env sonataFlowOperator.version)
+imageName=$(pnpm exec build-env sonataFlowOperator.registry)/$(pnpm exec build-env sonataFlowOperator.account)/$(pnpm exec build-env sonataFlowOperator.name)
+imageTag=$(pnpm exec build-env sonataFlowOperator.buildTag)
+platformTag=$(pnpm exec build-env sonataFlowOperator.platformTag)
+version=$(pnpm exec build-env sonataFlowOperator.version)
 
 if [ -z "${version}" ]; then
   echo "Please inform the new version"

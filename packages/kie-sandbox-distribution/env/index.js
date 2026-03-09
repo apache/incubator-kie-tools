@@ -51,19 +51,19 @@ module.exports = composeEnv([rootEnv, extendedServicesImageEnv, corsProxyImageEn
       description: "Exposed port of the KIE Sandbox webapp container.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageRegistry: {
-      default: extendedServicesImageEnv.env.extendedServicesImage.registry,
+      default: extendedServicesImageEnv.env.extendedServicesImageEnv.registry,
       description: "For the Extended Services image. E.g., `docker.io` or `quay.io`.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageAccount: {
-      default: extendedServicesImageEnv.env.extendedServicesImage.account,
+      default: extendedServicesImageEnv.env.extendedServicesImageEnv.account,
       description: "For the Extended Services image. E.g,. `apache` or `kie-tools-bot`",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName: {
-      default: extendedServicesImageEnv.env.extendedServicesImage.name,
+      default: extendedServicesImageEnv.env.extendedServicesImageEnv.name,
       description: "Name of the of the Extended Services image.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag: {
-      default: extendedServicesImageEnv.env.extendedServicesImage.buildTag,
+      default: extendedServicesImageEnv.env.extendedServicesImageEnv.buildTag,
       description: "Tag version of the Extended Services image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesContainerPort: {
@@ -71,7 +71,7 @@ module.exports = composeEnv([rootEnv, extendedServicesImageEnv, corsProxyImageEn
       description: "Internal HTTP port in the Extended Services container.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesExposedPort: {
-      default: "21345",
+      default: extendedServicesImageEnv.env.extendedServicesImageEnv.port,
       description: "Exposed HTTP port of the Extended Services container.",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry: {
