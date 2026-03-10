@@ -74,7 +74,9 @@ function DateField({ onChange, ...props }: DateFieldProps) {
       return false;
     }
 
-    if (Number.isNaN(props.value?.getTime())) {
+    // It can happen props being deserialized from JSON and the value not be a Date.
+    // In that case, we consider it as an invalid Date
+    if (!((props.value as any) instanceof Date) || Number.isNaN(props.value?.getTime())) {
       return true;
     }
 
