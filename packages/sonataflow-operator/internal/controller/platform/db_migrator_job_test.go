@@ -38,7 +38,8 @@ const (
 	DBSecretKeyRef           = "dbSecretName"
 	UserNameKey              = "postgresUserKey"
 	PasswordKey              = "postgresPasswordKey"
-	DbMigrationJobName       = "sonataflow-db-migrator-job"
+	MainHash                 = "-ea90e208"
+	DbMigrationJobName       = "sonataflow-db-migrator-job-sonataflow-db-migrator-job" + MainHash
 	DbMigrationContainerName = "db-migration-container"
 )
 
@@ -68,7 +69,7 @@ func TestDbMigratorJob(t *testing.T) {
 	})
 
 	t.Run("verify new new db migration job config", func(t *testing.T) {
-		dbMigrationJobCfg := newDBMigrationJobCfg()
+		dbMigrationJobCfg := newDBMigrationJobCfg(DbMigrationJobName)
 		assert.Equal(t, dbMigrationJobCfg.JobName, DbMigrationJobName)
 		assert.Equal(t, dbMigrationJobCfg.ContainerName, DbMigrationContainerName)
 	})

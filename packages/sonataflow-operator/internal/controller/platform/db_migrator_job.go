@@ -23,9 +23,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hash/fnv"
 	"strconv"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -52,6 +54,11 @@ type QuarkusDataSource struct {
 }
 
 type DBMigratorJob struct {
+	Name string
+	Data DBMigratorJobData
+}
+
+type DBMigratorJobData struct {
 	MigrateDBDataIndex    bool
 	DataIndexDataSource   *QuarkusDataSource
 	MigrateDBJobsService  bool
@@ -99,6 +106,15 @@ func getJdbcUrl(env []corev1.EnvVar) string {
 		}
 	}
 	return ""
+}
+
+func getDbMigratorJobName(version string) (string, error) {
+	h := fnv.New32a()
+	_, err := h.Write([]byte(version))
+	if err != nil {
+		return "", fmt.Errorf("failed to calculate sonataflow-db-migrator job name for version: %s, %v", version, err)
+	}
+	return fmt.Sprintf("%s-%x", dbMigrationJobName, h.Sum32()), nil
 }
 
 // getQuarkusDSFromServicePersistence Returns QuarkusDataSource from service level persistence config
@@ -153,7 +169,7 @@ func getQuarkusDataSourceFromPersistence(platform *operatorapi.SonataFlowPlatfor
 	return nil
 }
 
-func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, pshDI services.PlatformServiceHandler, pshJS services.PlatformServiceHandler) *DBMigratorJob {
+func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, pshDI services.PlatformServiceHandler, pshJS services.PlatformServiceHandler) *DBMigratorJobData {
 
 	diJobsBasedDBMigration := false
 	jsJobsBasedDBMigration := false
@@ -177,7 +193,7 @@ func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *o
 			quarkusDataSourceJobService = getQuarkusDataSourceFromPersistence(platform, platform.Spec.Services.JobService.Persistence, pshJS.GetServiceName())
 		}
 
-		return &DBMigratorJob{
+		return &DBMigratorJobData{
 			MigrateDBDataIndex:    diJobsBasedDBMigration,
 			DataIndexDataSource:   quarkusDataSourceDataIndex,
 			MigrateDBJobsService:  jsJobsBasedDBMigration,
@@ -203,10 +219,34 @@ func IsJobsBasedDBMigration(platform *operatorapi.SonataFlowPlatform, pshDI serv
 }
 
 func createOrUpdateDBMigrationJob(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, pshDI services.PlatformServiceHandler, pshJS services.PlatformServiceHandler) (*DBMigratorJob, error) {
-	dbMigratorJob := NewDBMigratorJobData(ctx, client, platform, pshDI, pshJS)
+	dbMigratorJobData := NewDBMigratorJobData(ctx, client, platform, pshDI, pshJS)
+	var dbMigratorJob *DBMigratorJob
 
 	// Invoke DB Migration only if both or either DI/JS services are requested, in addition to DBMigrationStrategyJob
-	if dbMigratorJob != nil {
+	if dbMigratorJobData != nil {
+		jobName, err := getDbMigratorJobName(version.GetImageTagVersion())
+		if err != nil {
+			return nil, err
+		}
+		dbMigratorJob = &DBMigratorJob{
+			Name: jobName,
+			Data: *dbMigratorJobData,
+		}
+		currentJob, err := kubernetes.FindJob(ctx, client, platform.Namespace, jobName)
+		if err != nil {
+			return nil, fmt.Errorf("failed to detect if the job %s/%s already exists, %v", platform.Namespace, jobName, err)
+		}
+		if currentJob == nil {
+			// The job about to be created do not exist, we might be in the middle of a version N to version N+1 upgrade, or the regular creation.
+			// Delete DI and JS deployments if present for safety, we must avoid serving requests during the DB schema migration. (Unexpected results, data, etc., might happen)
+			// Both will be recreated in upcoming recon cycle after the job finishes. (we can keep the respective Services if already created to keep better response time)
+			if err = kubernetes.SafeDeleteDeployment(ctx, client, platform.Namespace, pshDI.GetServiceName()); err != nil {
+				return nil, fmt.Errorf("failed to delete DI deployment: %s/%s, %v", platform.Namespace, pshDI.GetServiceName(), err)
+			}
+			if err = kubernetes.SafeDeleteDeployment(ctx, client, platform.Namespace, pshJS.GetServiceName()); err != nil {
+				return nil, fmt.Errorf("failed to delete JS deployment: %s/%s, %v", platform.Namespace, pshJS.GetServiceName(), err)
+			}
+		}
 		job := createJobDBMigration(platform, dbMigratorJob)
 		klog.V(log.I).InfoS("Starting DB Migration Job: ", "namespace", platform.Namespace, "job", job.Name)
 		if err := controllerutil.SetControllerReference(platform, job, client.Scheme()); err != nil {
@@ -266,20 +306,20 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 	diQuarkusDataSource := newQuarkusDataSource(nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue)
 	jsQuarkusDataSource := newQuarkusDataSource(nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue)
 
-	if dbmj.MigrateDBDataIndex && dbmj.DataIndexDataSource != nil {
-		diQuarkusDataSource.JdbcUrl = dbmj.DataIndexDataSource.JdbcUrl
-		diQuarkusDataSource.SecretRefName = dbmj.DataIndexDataSource.SecretRefName
-		diQuarkusDataSource.SecretUserKey = dbmj.DataIndexDataSource.SecretUserKey
-		diQuarkusDataSource.SecretPasswordKey = dbmj.DataIndexDataSource.SecretPasswordKey
-		diQuarkusDataSource.Schema = dbmj.DataIndexDataSource.Schema
+	if dbmj.Data.MigrateDBDataIndex && dbmj.Data.DataIndexDataSource != nil {
+		diQuarkusDataSource.JdbcUrl = dbmj.Data.DataIndexDataSource.JdbcUrl
+		diQuarkusDataSource.SecretRefName = dbmj.Data.DataIndexDataSource.SecretRefName
+		diQuarkusDataSource.SecretUserKey = dbmj.Data.DataIndexDataSource.SecretUserKey
+		diQuarkusDataSource.SecretPasswordKey = dbmj.Data.DataIndexDataSource.SecretPasswordKey
+		diQuarkusDataSource.Schema = dbmj.Data.DataIndexDataSource.Schema
 	}
 
-	if dbmj.MigrateDBJobsService && dbmj.JobsServiceDataSource != nil {
-		jsQuarkusDataSource.JdbcUrl = dbmj.JobsServiceDataSource.JdbcUrl
-		jsQuarkusDataSource.SecretRefName = dbmj.JobsServiceDataSource.SecretRefName
-		jsQuarkusDataSource.SecretUserKey = dbmj.JobsServiceDataSource.SecretUserKey
-		jsQuarkusDataSource.SecretPasswordKey = dbmj.JobsServiceDataSource.SecretPasswordKey
-		jsQuarkusDataSource.Schema = dbmj.JobsServiceDataSource.Schema
+	if dbmj.Data.MigrateDBJobsService && dbmj.Data.JobsServiceDataSource != nil {
+		jsQuarkusDataSource.JdbcUrl = dbmj.Data.JobsServiceDataSource.JdbcUrl
+		jsQuarkusDataSource.SecretRefName = dbmj.Data.JobsServiceDataSource.SecretRefName
+		jsQuarkusDataSource.SecretUserKey = dbmj.Data.JobsServiceDataSource.SecretUserKey
+		jsQuarkusDataSource.SecretPasswordKey = dbmj.Data.JobsServiceDataSource.SecretPasswordKey
+		jsQuarkusDataSource.Schema = dbmj.Data.JobsServiceDataSource.Schema
 	}
 
 	diDBSecretRef := corev1.LocalObjectReference{
@@ -290,16 +330,16 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 		Name: jsQuarkusDataSource.SecretRefName,
 	}
 
-	dbMigrationJobCfg := newDBMigrationJobCfg()
+	dbMigrationJobCfg := newDBMigrationJobCfg(dbmj.Name)
 
 	lbl, _ := getServicesLabelsMap(platform.Name, platform.Namespace, fmt.Sprintf("%s-%s", "sonataflow-db-job", dbMigrationJobCfg.JobName), dbMigrationJobCfg.JobName, fmt.Sprintf("%s-%s", platform.Name, dbMigrationJobCfg.JobName), platform.Name, "sonataflow-operator")
 
 	envVars := make([]corev1.EnvVar, 0)
 	envVars = append(envVars, corev1.EnvVar{
 		Name:  migrateDBDataIndex,
-		Value: strconv.FormatBool(dbmj.MigrateDBDataIndex),
+		Value: strconv.FormatBool(dbmj.Data.MigrateDBDataIndex),
 	})
-	if dbmj.MigrateDBDataIndex {
+	if dbmj.Data.MigrateDBDataIndex {
 		envVars = append(envVars,
 			corev1.EnvVar{
 				Name:  quarkusDataSourceDataIndexJdbcURL,
@@ -331,9 +371,9 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 
 	envVars = append(envVars, corev1.EnvVar{
 		Name:  migrateDBJobsService,
-		Value: strconv.FormatBool(dbmj.MigrateDBJobsService),
+		Value: strconv.FormatBool(dbmj.Data.MigrateDBJobsService),
 	})
-	if dbmj.MigrateDBJobsService {
+	if dbmj.Data.MigrateDBJobsService {
 		envVars = append(envVars,
 			corev1.EnvVar{
 				Name:  quarkusDataSourceJobsServiceJdbcURL,
@@ -390,7 +430,7 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 
 // GetDBMigrationJobStatus Returns db migration job status
 func (dbmj DBMigratorJob) GetDBMigrationJobStatus(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform) (*DBMigratorJobStatus, error) {
-	job, err := client.BatchV1().Jobs(platform.Namespace).Get(ctx, dbMigrationJobName, metav1.GetOptions{})
+	job, err := client.BatchV1().Jobs(platform.Namespace).Get(ctx, dbmj.Name, metav1.GetOptions{})
 	if err != nil {
 		klog.V(log.E).InfoS("Error getting DB migrator job while monitoring completion: ", "error", err, "namespace", platform.Namespace, "job", job.Name)
 		return nil, err
@@ -429,9 +469,9 @@ func getKogitoDBMigratorToolImageName() string {
 	return imgTag
 }
 
-func newDBMigrationJobCfg() *DBMigrationJobCfg {
+func newDBMigrationJobCfg(name string) *DBMigrationJobCfg {
 	return &DBMigrationJobCfg{
-		JobName:       dbMigrationJobName,
+		JobName:       name,
 		ContainerName: dbMigrationContainerName,
 		ToolImageName: getKogitoDBMigratorToolImageName(),
 	}
