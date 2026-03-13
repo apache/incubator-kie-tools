@@ -15,7 +15,7 @@
    under the License.
 -->
 
-# Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor on webapp
+# Example :: Micro-frontends [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) :: Base64 PNG Editor on webapp
 
 ### Building the dependencies
 

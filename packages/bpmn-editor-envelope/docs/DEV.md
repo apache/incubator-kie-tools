@@ -15,4 +15,6 @@
    under the License.
 -->
 
-// TODO
+# @kie-tools/bpmn-editor-envelope :: DEV
+
+- Launch KIE Sandbox with the `--env live` flag for live-reloading to kick in when you make changes to this package.

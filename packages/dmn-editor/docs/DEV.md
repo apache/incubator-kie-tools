@@ -15,4 +15,10 @@
    under the License.
 -->
 
-// TODO
+# @kie-tools/dmn-editor :: DEV
+
+- The development envirionemnt for the `<DmnEditor>` component is based on Storybook, acting as a playground and a publishable self-documentation.
+- Simply run the following command and navigate to http://localhost:9901
+  ```shell
+  pnpm start
+  ```

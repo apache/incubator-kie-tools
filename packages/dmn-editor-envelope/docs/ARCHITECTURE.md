@@ -15,4 +15,7 @@
    under the License.
 -->
 
-// TODO
+# @kie-tools/dmn-editor-envelope :: ARCHITECTURE
+
+- This package implements the `Editor` interface from `@kie-tools-core/editor` for a BPMN Editor, making it compatible with editor definitions in `@kie-tools/vscode-extensions` and `@kie-tools/online-editor`.
+- The DMN Editor API evolved to be more than just the `Editor` interface, featuring its own types specific for the DMN Editor—`NewDmnEditorChannelApi` and `NewDmnEditorEnvelopeApi`.

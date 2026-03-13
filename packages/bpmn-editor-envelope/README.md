@@ -17,14 +17,22 @@
 
 ## @kie-tools/bpmn-editor-envelope
 
-Package responsible for creating the necessary pumbling for [@kie-tools/bpmn-editor](../bpmn-editor/README.md) to be used inside an Envelope in Multiplying Architecture.
+Package responsible for creating the necessary plumbing for [@kie-tools/bpmn-editor](../bpmn-editor/README.md) to be used inside an **`Envelope`** in [Multiplying Architecture](../envelope-bus/docs/ARCHITECTURE.md).
+
+### Features
+
+- Integration with external files for auto-filling DMN information in Business Rule Tasks.
+- Support for Work Item Definition (`.wid`) files for registering Custom Tasks.
+- Keyboard Shortcuts for commands exposed by `<BpmnEditor>`'s imperative handle.
+- Locale parameterization for internationalized labels.
+- State management for undo/redo stacks.
 
 ---
 
 ## For development information see:
 
 - 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [TESTS.md](./docs/TESTS.md)
 - 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---

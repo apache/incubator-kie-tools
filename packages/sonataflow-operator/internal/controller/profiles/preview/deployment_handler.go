@@ -149,6 +149,15 @@ func (d *DeploymentReconciler) ensureObjects(ctx context.Context, workflow *oper
 	}
 
 	objs := []client.Object{deployment, managedPropsCM, service}
+
+	podDisruptionBudget, err := NewPodDisruptionBudgetHandler(d.StateSupport).Ensure(ctx, workflow)
+	if err != nil {
+		return reconcile.Result{}, nil, err
+	}
+	if podDisruptionBudget != nil {
+		objs = append(objs, podDisruptionBudget)
+	}
+
 	eventingObjs, err := common.NewKnativeEventingHandler(d.StateSupport, pl).Ensure(ctx, workflow)
 	if err != nil {
 		return reconcile.Result{}, nil, err

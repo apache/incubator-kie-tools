@@ -43,7 +43,7 @@ export function addOrGetMessages({
   const newMessage: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "message"> = {
     __$$element: "message",
     "@_id": generateUuid(),
-    "@_itemRef": `${messageName}Type`,
+    "@_itemRef": `${messageName}Type`, // broken reference to a placeholder type that has no meaning to the jBPM Workflow Engine
     "@_name": messageName,
   };
 

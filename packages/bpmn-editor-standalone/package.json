@@ -13,8 +13,8 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "nodemon -e ts --watch src --exec 'pnpm build:dev && pnpm storybook-start'",
     "storybook-start": "run-script-os",
-    "storybook-start:linux:darwin": "cross-env STORYBOOK_PORT=$(build-env bpmnEditorStandalone.storybook.port) pnpm kie-tools--storybook --storybookArgs=\"dev --no-open\"",
-    "storybook-start:win32": "pnpm powershell \"cross-env STORYBOOK_PORT=$(build-env bpmnEditorStandalone.storybook.port) pnpm kie-tools--storybook --storybookArgs='dev --no-open'"
+    "storybook-start:linux:darwin": "cross-env STORYBOOK_PORT=$(build-env bpmnEditorStandalone.storybook.port) pnpm exec kie-tools--storybook --storybookArgs=\"dev --no-open\"",
+    "storybook-start:win32": "pnpm powershell \"cross-env STORYBOOK_PORT=$(build-env bpmnEditorStandalone.storybook.port) pnpm exec kie-tools--storybook --storybookArgs='dev --no-open'"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

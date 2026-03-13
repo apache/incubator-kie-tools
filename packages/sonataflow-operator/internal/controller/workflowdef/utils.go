@@ -127,3 +127,15 @@ func GenerateScaleSelector(workflow *operatorapi.SonataFlow) string {
 	labelSet := labels.Set(workflowproj.GetSelectorLabels(workflow))
 	return labelSet.AsSelector().String()
 }
+
+// IsScaledToZero returns true if the workflow has been explicitly scaled to zero, i.e., by setting
+// the spec.podTemplate.replicas == 0. False in any other case, including when spec.podTemplate.replicas  == nil.
+func IsScaledToZero(workflow *operatorapi.SonataFlow) bool {
+	return workflow.Spec.PodTemplate.Replicas != nil && *workflow.Spec.PodTemplate.Replicas == int32(0)
+}
+
+// ReplicasIsGreaterThan returns true if the workflow configured Spec.PodTemplate.Replicas is != nil, and greater
+// than the given value. False in any other case.
+func ReplicasIsGreaterThan(workflow *operatorapi.SonataFlow, value int32) bool {
+	return workflow.Spec.PodTemplate.Replicas != nil && *workflow.Spec.PodTemplate.Replicas > value
+}

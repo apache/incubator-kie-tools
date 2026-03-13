@@ -15,4 +15,11 @@
    under the License.
 -->
 
-// TODO
+# @kie-tools/bpmn-editor-standalone :: DEV
+
+- The development environment for the `BpmnEditor` global object is based on Storybook, acting as a playground and a publishable self-documentation.
+- Simply run the following command and navigate to http://localhost:9904
+  ```shell
+  pnpm start
+  ```
+- An HTTP Server is run on http://localhost:9007 to serve the minified JS file containing the BPMN Editor.

@@ -20,8 +20,8 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= $(shell pnpm build-env sonataFlowOperator.version)
-IMAGE_TAG ?= $(shell pnpm build-env sonataFlowOperator.buildTag)
+VERSION ?= $(shell pnpm exec build-env sonataFlowOperator.version)
+IMAGE_TAG ?= $(shell pnpm exec build-env sonataFlowOperator.buildTag)
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "candidate,fast,stable")
@@ -47,7 +47,7 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
 # apache/sonataflow-operator-bundle:$VERSION and apache/sonataflow-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= $(shell pnpm build-env sonataFlowOperator.registry)/$(shell pnpm build-env sonataFlowOperator.account)/$(shell pnpm build-env sonataFlowOperator.name)
+IMAGE_TAG_BASE ?= $(shell pnpm exec build-env sonataFlowOperator.registry)/$(shell pnpm exec build-env sonataFlowOperator.account)/$(shell pnpm exec build-env sonataFlowOperator.name)
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -423,7 +423,7 @@ generate-all: generate generate-deploy bundle
 	@$(MAKE) fmt
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up and running to run this target, and run container-builder before the test
-label = "flows-ephemeral" # possible values are flows-ephemeral, flows-persistence, flows-monitoring, flows-hpa, platform, cluster
+label = "flows-ephemeral" # possible values are flows-ephemeral, flows-persistence, flows-monitoring, flows-hpa, flows-pdb-with-hpa, flows-pdb, platform, cluster
 test-e2e:
 ifeq ($(label), cluster)
 	@echo "🌐 Running e2e tests for cluster..."
@@ -455,8 +455,18 @@ else ifeq ($(label), flows-hpa)
 	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/workflow_test.go \
 	-v -ginkgo.v -ginkgo.no-color -ginkgo.github-output -ginkgo.label-filter=$(label) \
 	-ginkgo.junit-report=./e2e-test-report-workflow_test.xml -timeout 60m KUSTOMIZE=$(KUSTOMIZE);
+else ifeq ($(label), flows-pdb)
+	@echo "🔁 Running e2e tests for flows-pdb..."
+	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/workflow_test.go \
+	-v -ginkgo.v -ginkgo.no-color -ginkgo.github-output -ginkgo.label-filter=$(label) \
+	-ginkgo.junit-report=./e2e-test-report-workflow_test.xml -timeout 60m KUSTOMIZE=$(KUSTOMIZE);
+else ifeq ($(label), flows-pdb-with-hpa)
+	@echo "🔁 Running e2e tests for flows-pdb-with-hpa..."
+	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/workflow_test.go \
+	-v -ginkgo.v -ginkgo.no-color -ginkgo.github-output -ginkgo.label-filter=$(label) \
+	-ginkgo.junit-report=./e2e-test-report-workflow_test.xml -timeout 60m KUSTOMIZE=$(KUSTOMIZE);
 else
-	@echo "❌  Invalid label. Please use one of: cluster, platform, flows-ephemeral, flows-persistence, flows-monitoring, flows-hpa"
+	@echo "❌  Invalid label. Please use one of: cluster, platform, flows-ephemeral, flows-persistence, flows-monitoring, flows-hpa, flows-pdb, flows-pdb-with-hpa"
 endif
 
 .PHONY: full-test-e2e
@@ -476,8 +486,8 @@ before-pr: generate-all test ## Run generate-all before executing tests.
 .PHONY: load-docker-image
 load-docker-image: install-kind
 	kind load docker-image $(IMG)
-	kind load docker-image $(shell pnpm build-env sonataFlowOperator.sonataflowBuilderImage)
-	kind load docker-image $(shell pnpm build-env sonataFlowOperator.sonataflowDevModeImage)
+	kind load docker-image $(shell pnpm exec build-env sonataFlowOperator.sonataflowBuilderImage)
+	kind load docker-image $(shell pnpm exec build-env sonataFlowOperator.sonataflowDevModeImage)
 
 .PHONY: install-kind
 install-kind:

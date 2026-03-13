@@ -17,23 +17,7 @@
 
 ## @kie-tools-core/editor
 
-Interfaces to define Editors.
-
----
-
-### Usage
-
----
-
-### Examples
-
----
-
-## For development information see:
-
-- 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
-- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+Interfaces to define Editors as [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) **`Envelopes`**.
 
 ---
 

@@ -56,6 +56,11 @@ type FlowPodTemplateSpec struct {
 	// Defines the kind of deployment model for this pod spec. In dev profile, only "kubernetes" is valid.
 	// +optional
 	DeploymentModel DeploymentModel `json:"deploymentModel,omitempty"`
+	// Defines the Kubernetes PodDisruptionBudgetSpec for this workflow. When configured, the SonataFlow controller will
+	// automatically create a PodDisruptionBudget based on this specification that targets the workflow Deployment.
+	// Ignored in "knative" deployment model, and dev profile workflows.
+	// +optional
+	PodDisruptionBudget *PodDisruptionBudgetSpec `json:"podDisruptionBudget,omitempty"`
 }
 
 // Flow describes the contents of the Workflow definition following the CNCF Serverless Workflow Specification.

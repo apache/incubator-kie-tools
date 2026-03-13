@@ -17,23 +17,44 @@
 
 ## @kie-tools/dmn-marshaller
 
-TODO: Description
+A type-safe marshaller for XML <--> JSON conversions for DMN decisions.
+
+Features include:
+
+- Full compatibility with the DMN 1.6 specification through the specification's DMN16 XSD files.
+- Out-of-the-box KIE extensions compatible with the Drools DMN Engine.
+- Auto-genreated TypeScript type definitions for a JSON-friendly representation of DMN decisions (using [`@kie-tools/xml-parser-ts-codegen`](../xml-parser-ts-codegen/)).
 
 ---
 
 ### Usage
 
----
+```ts
+import { DMN_LATEST__tDefinitions, getMarshaller } from "@kie-tools/dmn-marshaller";
 
-### Examples
+const marshaller = getMarshaller(
+  `<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" id="_dmn_1" targetNamespace="http://kie.apache.org/dmn/_dmn_1">
+  <itemDefinition id="_foo_item_definition" name="Foo" />
+</definitions>
+`,
+  { upgradeTo: "latest" }
+);
 
----
+// Parse from XML to JSON
+const json = marshaller.parser.parse();
+const dmn: DMN_LATEST__tDefinitions = json.definitions;
 
-## For development information see:
+// Modify
+dmn.itemDefinition ??= [];
+dmn.itemDefinition.push({
+  "@_id": "_bar_item_definition",
+  "@_name": "Bar",
+});
 
-- 👉 [DEV.md](./docs/DEV.md)
-- 👉 [TEST.md](./docs/TEST.md)
-- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+// Build from JSON to XML
+const xml = marshaller.builder.build(json);
+```
 
 ---
 

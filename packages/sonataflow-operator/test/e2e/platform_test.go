@@ -24,6 +24,7 @@ import (
 	"math/rand"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -525,6 +526,146 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 
 		Entry("and the HPA is created after the platform", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr"), test.GetPathFromE2EDirectory("platform", "hpa", "generic-data-index-service-hpa.yaml"), false),
 		Entry("and the HPA is created before the platform", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr"), test.GetPathFromE2EDirectory("platform", "hpa", "generic-data-index-service-hpa.yaml"), true),
+	)
+
+	DescribeTable("when deploying a SonataFlowPlatform with PDB configured for the Data Index", Label("data-index-pdb"), func(testcaseDir string, dataIndexPatchReplicas string, shouldHavePDBAfterPatch bool, shouldHaveDisruptionsAllowedAfterPatch string, shouldHaveDisruptionsAllowedNumberAfterPatch int32) {
+		sfpName := "sonataflow-platform"
+		dataIndexServiceName := "sonataflow-platform-data-index-service"
+		expectedPDB := dataIndexServiceName
+
+		By("Deploy the platform and database CRs")
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyKustomizeOnCluster(testcaseDir, targetNamespace)
+		}, 2*time.Minute, time.Second).Should(Succeed())
+
+		By("Wait for SonataFlowPlatform CR to complete the deployments")
+		EventuallyWithOffset(1, func() error {
+			return verifyDataIndexAndJobsServiceAreReady(targetNamespace, "5s")
+		}, 10*time.Minute, 5).Should(Succeed())
+
+		By("Evaluate status of all service's health endpoint")
+		verifyDataIndexAndJobsServiceAreHealthy(targetNamespace)
+
+		By("Check that the Data Index deployment has 3 replicas as expected")
+		EventuallyWithOffset(1, func() bool {
+			return verifyDeploymentReplicas(dataIndexServiceName, targetNamespace, int32(3))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget for the Data Index was created")
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(dataIndexServiceName, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget's DisruptionAllowed condition is True")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetConditionHasStatus(expectedPDB, targetNamespace, "DisruptionAllowed", "True")
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget is allowing 2 disruptions")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetAllowsDisruptionNumber(expectedPDB, targetNamespace, int32(2))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By(fmt.Sprintf("scale the Data Index service to Replicas = %s", dataIndexPatchReplicas))
+		EventuallyWithOffset(1, func() error {
+			return patchSFPDataIndexReplicas(sfpName, targetNamespace, dataIndexPatchReplicas)
+		}, 3*time.Minute, 30*time.Second).Should(Succeed())
+
+		if shouldHavePDBAfterPatch {
+			By("check that the PodDisruptionBudget for the Data Index still exists")
+		} else {
+			By("check that the PodDisruptionBudget for the Data Index was removed")
+		}
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(dataIndexServiceName, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(Equal(shouldHavePDBAfterPatch))
+
+		if shouldHavePDBAfterPatch {
+			By(fmt.Sprintf("check that the PodDisruptionBudget's DisruptionAllowed condition in the expected status = %s", shouldHaveDisruptionsAllowedAfterPatch))
+			EventuallyWithOffset(1, func() bool {
+				return verifyPodDisruptionBudgetConditionHasStatus(expectedPDB, targetNamespace, "DisruptionAllowed", shouldHaveDisruptionsAllowedAfterPatch)
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By(fmt.Sprintf("check that the PodDisruptionBudget is allowing the disruptions number = %s", strconv.Itoa(int(shouldHaveDisruptionsAllowedNumberAfterPatch))))
+			EventuallyWithOffset(1, func() bool {
+				return verifyPodDisruptionBudgetAllowsDisruptionNumber(expectedPDB, targetNamespace, shouldHaveDisruptionsAllowedNumberAfterPatch)
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+		}
+	},
+
+		Entry("and the Data Index is rescaled to 4 replicas", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr_with_pdb"), "4", true, "True", int32(3)),
+		Entry("and the Data Index is rescaled to 2 replicas", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr_with_pdb"), "2", true, "True", int32(1)),
+		Entry("and the Data Index is rescaled to 1 replicas", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr_with_pdb"), "1", false, "UnUsed", int32(-1)),
+	)
+
+	DescribeTable("when deploying a SonataFlowPlatform with PDB configured for the Data Index combined with HPA", Label("data-index-pdb-with-hpa"), func(testcaseDir string, hpaPatchReplicas string, shouldHavePDBAfterPatch bool, shouldHaveDisruptionsAllowedAfterPatch string, shouldHaveDisruptionsAllowedNumberAfterPatch int32) {
+		dataIndexServiceName := "sonataflow-platform-data-index-service"
+		expectedPDB := dataIndexServiceName
+
+		By("Deploy the platform and database CRs")
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyKustomizeOnCluster(testcaseDir, targetNamespace)
+		}, 2*time.Minute, time.Second).Should(Succeed())
+
+		By("Wait for SonataFlowPlatform CR to complete the deployments")
+		EventuallyWithOffset(1, func() error {
+			return verifyDataIndexAndJobsServiceAreReady(targetNamespace, "5s")
+		}, 10*time.Minute, 5).Should(Succeed())
+
+		By("Evaluate status of all service's health endpoint")
+		verifyDataIndexAndJobsServiceAreHealthy(targetNamespace)
+
+		By("Check that the Data Index deployment has 2 replicas as expected from the initial HPA configuration")
+		EventuallyWithOffset(1, func() bool {
+			return verifyDeploymentReplicas(dataIndexServiceName, targetNamespace, int32(2))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget for the Data Index was created")
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(dataIndexServiceName, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget's DisruptionAllowed condition is True")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetConditionHasStatus(expectedPDB, targetNamespace, "DisruptionAllowed", "True")
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget is allowing 1 disruption")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetAllowsDisruptionNumber(expectedPDB, targetNamespace, int32(1))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By(fmt.Sprintf("patch the HPA minReplicas to: %s", hpaPatchReplicas))
+		EventuallyWithOffset(1, func() error {
+			return patchHPAMinReplicas("sonataflow-platform-data-index-service-hpa", targetNamespace, hpaPatchReplicas)
+		}, 3*time.Minute, 30*time.Second).Should(Succeed())
+
+		if shouldHavePDBAfterPatch {
+			By("check that the PodDisruptionBudget for the Data Index still exists after patching the HPA")
+		} else {
+			By("check that the PodDisruptionBudget for the Data Index was removed after patching the HPA")
+		}
+
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(dataIndexServiceName, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(Equal(shouldHavePDBAfterPatch))
+
+		if shouldHavePDBAfterPatch {
+			By(fmt.Sprintf("check that the PodDisruptionBudget's DisruptionAllowed condition in the expected status = %s", shouldHaveDisruptionsAllowedAfterPatch))
+			EventuallyWithOffset(1, func() bool {
+				return verifyPodDisruptionBudgetConditionHasStatus(expectedPDB, targetNamespace, "DisruptionAllowed", shouldHaveDisruptionsAllowedAfterPatch)
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By(fmt.Sprintf("check that the PodDisruptionBudget is allowing the disruptions number = %s", strconv.Itoa(int(shouldHaveDisruptionsAllowedNumberAfterPatch))))
+			EventuallyWithOffset(1, func() bool {
+				return verifyPodDisruptionBudgetAllowsDisruptionNumber(expectedPDB, targetNamespace, shouldHaveDisruptionsAllowedNumberAfterPatch)
+			}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+		}
+	},
+
+		Entry("and the HPA minReplicas is configured with 4", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr_with_pdb_and_hpa"), "4", true, "True", int32(3)),
+		Entry("and the HPA minReplicas is configured with 3", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr_with_pdb_and_hpa"), "3", true, "True", int32(2)),
+		Entry("and the HPA minReplicas is configured with 1", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr_with_pdb_and_hpa"), "1", false, "UnUsed", int32(-1)),
 	)
 })
 

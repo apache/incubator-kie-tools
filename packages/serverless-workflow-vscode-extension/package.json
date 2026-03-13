@@ -21,7 +21,7 @@
     "compile": "webpack --env dev",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/serverless_workflow_vscode_extension_$npm_package_version.vsix",
-    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
+    "run:webmode": "pnpm exec vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
     "test-e2e": "echo 'Tests are skipped for this package as they were flaky. See https://github.com/apache/incubator-kie-tools/pull/3170#issuecomment-2963826517'",
     "test-e2e:clean": "rimraf ./dist-tests-e2e && rimraf ./test-resources && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
     "test-e2e:clean:offline": "rimraf ./dist-tests-e2e && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",

@@ -15,7 +15,7 @@
    under the License.
 -->
 
-# Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor Chrome Extension
+# Example :: Micro-frontends [**_Multiplying Architecture_**](../../repo/MULTIPLYING_ARCHITECTURE.md) :: Base64 PNG Editor Chrome Extension
 
 Allows seeing `.base64png` files directly in GitHub's website.
 

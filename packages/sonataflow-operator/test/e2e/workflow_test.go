@@ -27,6 +27,8 @@ import (
 	"strings"
 	"time"
 
+	"k8s.io/apimachinery/pkg/util/intstr"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test/utils"
 
@@ -503,4 +505,216 @@ var _ = Describe("Workflow HorizontalPodAutoscaling Use Cases :: ", Label("flows
 
 		})
 	})
+})
+
+var _ = Describe("Workflow PodDisruptionBudget Use Cases :: ", Label("flows-pdb"), Ordered, func() {
+	var targetNamespace string
+	BeforeEach(func() {
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
+		err := kubectlCreateNamespace(targetNamespace)
+		Expect(err).NotTo(HaveOccurred())
+	})
+	AfterEach(func() {
+		// Remove resources in test namespace
+		if !CurrentSpecReport().Failed() && len(targetNamespace) > 0 {
+			cmd := exec.Command("kubectl", "delete", "sonataflow", "--all", "-n", targetNamespace, "--wait")
+			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			err = kubectlDeleteNamespace(targetNamespace)
+			Expect(err).NotTo(HaveOccurred())
+		}
+	})
+
+	DescribeTable("Ensure PDB works by workflow profile", func(profile string, usePercent bool) {
+
+		By("create the template file")
+		sonataFlowCrFileTemplate := test.GetPathFromE2EDirectory("workflows", prebuiltWorkflows.Greetings.Name, "01-sonataflow.org_v1alpha08_sonataflow.yaml")
+		sonataFlowCrFile := createTmpCopy(sonataFlowCrFileTemplate)
+
+		if profile == "gitops" {
+			By("setup the workflow file for the gitops profile")
+			setImageAndReplicasOrFail(sonataFlowCrFile, prebuiltWorkflows.Greetings.Tag, int32(4))
+			setProfileOrFail(sonataFlowCrFile, "gitops")
+		} else {
+			By("setup the workflow file for the preview profile")
+			setImageAndReplicasOrFail(sonataFlowCrFile, "", int32(4))
+			setProfileOrFail(sonataFlowCrFile, "preview")
+		}
+
+		var minReplicas intstr.IntOrString
+		if usePercent {
+			By("setup the workflow podDisruptionBudget using 50% minReplicas")
+			minReplicas = intstr.FromString("50%")
+		} else {
+			By("setup the workflow podDisruptionBudget using 2 minReplicas")
+			minReplicas = intstr.FromInt32(int32(2))
+		}
+		setPodDisruptionBudgetOrFail(sonataFlowCrFile, &minReplicas, nil)
+
+		By("deploy the workflow")
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyFileOnCluster(sonataFlowCrFile, targetNamespace)
+		}, 3*time.Minute, time.Second).Should(Succeed())
+
+		By("check the workflow is in running state")
+		EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState(prebuiltWorkflows.Greetings.Name, targetNamespace) }, 15*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the workflow has 4 replica")
+		EventuallyWithOffset(1, func() bool {
+			return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(4))
+		}, 2*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget was created")
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(prebuiltWorkflows.Greetings.Name, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget's DisruptionAllowed condition is True")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetConditionHasStatus(prebuiltWorkflows.Greetings.Name, targetNamespace, "DisruptionAllowed", "True")
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget is allowing 2 disruptions")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetAllowsDisruptionNumber(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(2))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("scale the workflow to 1")
+		setReplicasOrFail(sonataFlowCrFile, int32(1))
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyFileOnCluster(sonataFlowCrFile, targetNamespace)
+		}, 3*time.Minute, time.Second).Should(Succeed())
+
+		By("check that the workflow has 1 replica")
+		EventuallyWithOffset(1, func() bool {
+			return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(1))
+		}, 2*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget is removed after scaling the workflow to 1")
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(prebuiltWorkflows.Greetings.Name, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(BeFalse())
+	},
+		Entry("Workflow with gitops profile and disruption budget with minReplicas: 50%", "gitops", true),
+		Entry("Workflow with gitops profile and disruption budget with minReplicas: 2", "gitops", false),
+		Entry("Workflow with preview profile and disruption budget with minReplicas: 50%", "preview", true),
+		Entry("Workflow with preview profile and disruption budget with minReplicas: 2", "preview", false),
+	)
+})
+
+var _ = Describe("Workflow PodDisruptionBudget + HorizontalPodAutoscaler Use Cases :: ", Label("flows-pdb-with-hpa"), Ordered, func() {
+	var targetNamespace string
+	BeforeEach(func() {
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
+		err := kubectlCreateNamespace(targetNamespace)
+		Expect(err).NotTo(HaveOccurred())
+	})
+	AfterEach(func() {
+		// Remove resources in test namespace
+		if !CurrentSpecReport().Failed() && len(targetNamespace) > 0 {
+			cmd := exec.Command("kubectl", "delete", "sonataflow", "--all", "-n", targetNamespace, "--wait")
+			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			err = kubectlDeleteNamespace(targetNamespace)
+			Expect(err).NotTo(HaveOccurred())
+		}
+	})
+
+	DescribeTable("Ensure PDB works by workflow profile when using a HPA", func(profile string, usePercent bool) {
+
+		By("create the template file")
+		sonataFlowCrFileTemplate := test.GetPathFromE2EDirectory("workflows", prebuiltWorkflows.Greetings.Name, "01-sonataflow.org_v1alpha08_sonataflow.yaml")
+		sonataFlowCrFile := createTmpCopy(sonataFlowCrFileTemplate)
+
+		if profile == "gitops" {
+			By("setup the workflow file for the gitops profile and 1 replica")
+			setImageAndReplicasOrFail(sonataFlowCrFile, prebuiltWorkflows.Greetings.Tag, int32(1))
+			setProfileOrFail(sonataFlowCrFile, "gitops")
+		} else {
+			By("setup the workflow file for the preview profile and 1 replica")
+			setImageAndReplicasOrFail(sonataFlowCrFile, "", int32(1))
+			setProfileOrFail(sonataFlowCrFile, "preview")
+		}
+
+		var minReplicas intstr.IntOrString
+		if usePercent {
+			By("setup the workflow podDisruptionBudget using 30% minReplicas")
+			minReplicas = intstr.FromString("30%")
+		} else {
+			By("setup the workflow podDisruptionBudget using 1 minReplicas")
+			minReplicas = intstr.FromInt32(int32(1))
+		}
+		setPodDisruptionBudgetOrFail(sonataFlowCrFile, &minReplicas, nil)
+
+		By("deploy the workflow")
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyFileOnCluster(sonataFlowCrFile, targetNamespace)
+		}, 3*time.Minute, time.Second).Should(Succeed())
+
+		By("check the workflow is in running state")
+		EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState(prebuiltWorkflows.Greetings.Name, targetNamespace) }, 15*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the workflow has 1 replica")
+		EventuallyWithOffset(1, func() bool {
+			return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(1))
+		}, 2*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that no PodDisruptionBudget was created since the workflow has 1 replica")
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(prebuiltWorkflows.Greetings.Name, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(BeFalse())
+
+		By("create the HPA to manage the workflow replicas and configured to ensure 3 min replicas")
+		sonataFlowCrFileHPA := test.GetPathFromE2EDirectory("workflows", prebuiltWorkflows.Greetings.Name, "01-sonataflow.org_v1alpha08_sonataflow_hpa.yaml")
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyFileOnCluster(sonataFlowCrFileHPA, targetNamespace)
+		}, 3*time.Minute, time.Second).Should(Succeed())
+
+		By("check that the workflow has 3 replicas after creating the HPA")
+		EventuallyWithOffset(1, func() bool {
+			return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(3))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget was created after creating the HPA")
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(prebuiltWorkflows.Greetings.Name, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget's DisruptionAllowed condition is True")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetConditionHasStatus(prebuiltWorkflows.Greetings.Name, targetNamespace, "DisruptionAllowed", "True")
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget is allowing 2 disruptions")
+		EventuallyWithOffset(1, func() bool {
+			return verifyPodDisruptionBudgetAllowsDisruptionNumber(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(2))
+		}, 3*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("delete the HPA")
+		EventuallyWithOffset(1, func() error {
+			return kubectlDeleteFileOnCluster(sonataFlowCrFileHPA, targetNamespace)
+		}, 3*time.Minute, time.Second).Should(Succeed())
+
+		By("scale the workflow to 1")
+		setReplicasOrFail(sonataFlowCrFile, int32(1))
+		EventuallyWithOffset(1, func() error {
+			return kubectlApplyFileOnCluster(sonataFlowCrFile, targetNamespace)
+		}, 3*time.Minute, time.Second).Should(Succeed())
+
+		By("check that the workflow has 1 replica")
+		EventuallyWithOffset(1, func() bool {
+			return verifyWorkflowReplicas(prebuiltWorkflows.Greetings.Name, targetNamespace, int32(1))
+		}, 2*time.Minute, 30*time.Second).Should(BeTrue())
+
+		By("check that the PodDisruptionBudget is removed after scaling the workflow to 1")
+		EventuallyWithOffset(1, func() bool {
+			return verifyResourceExists(prebuiltWorkflows.Greetings.Name, "pdb", targetNamespace)
+		}, 3*time.Minute, 30*time.Second).Should(BeFalse())
+
+	},
+		Entry("Workflow with gitops profile and disruption budget with minReplicas: 30%", "gitops", true),
+		Entry("Workflow with gitops profile and disruption budget with minReplicas: 1", "gitops", false),
+		Entry("Workflow with preview profile and disruption budget with minReplicas: 30%", "preview", true),
+		Entry("Workflow with preview profile and disruption budget with minReplicas: 1", "preview", false),
+	)
 })

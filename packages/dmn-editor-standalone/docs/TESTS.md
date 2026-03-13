@@ -15,4 +15,6 @@
    under the License.
 -->
 
+# @kie-tools/dmn-editor-standalone :: TESTS
+
 // TODO

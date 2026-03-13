@@ -15,4 +15,8 @@
    under the License.
 -->
 
-// TODO
+# @kie-tools/dmn-editor-standalone :: ARCHITECTURE
+
+- Webpack is used to bundle minified code which includes all CSS and assets necessary for the DMN Editor to render.
+- To avoid global object pollution and conflicts with the application's CSS, the DMN Editor will be loaded inside an `iframe`.
+- [**_Multiplying Architecture_** ](../../../repo/MULTIPLYING_ARCHITECTURE.md) is used to wrap the DMN Editor inside an **`Envelope`** and handle communication with the `iframe`.
