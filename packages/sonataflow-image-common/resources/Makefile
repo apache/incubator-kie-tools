@@ -27,7 +27,7 @@ BUILD_ENGINE_OPTIONS 	 	?= --no-squash
 KOGITO_IMAGE_NAME				?= # Image name
 KOGITO_IMAGE_REGISTRY 			?= 'docker.io'
 KOGITO_IMAGE_REGISTRY_ACCOUNT 	?= 'apache'
-KOGITO_IMAGE_TAG 				?= $(shell pnpm build-env root.streamName) # Setting a default value if KOGITO_IMAGE_TAG env is not present
+KOGITO_IMAGE_TAG 				?= $(shell pnpm exec build-env root.streamName) # Setting a default value if KOGITO_IMAGE_TAG env is not present
 KOGITO_FULL_IMAGE_NAME 			:= $(KOGITO_IMAGE_REGISTRY)/$(KOGITO_IMAGE_REGISTRY_ACCOUNT)/$(KOGITO_IMAGE_NAME)
 KOGITO_IMAGE_FILENAME			:= ${KOGITO_IMAGE_NAME}-image.yaml
 

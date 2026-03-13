@@ -23,30 +23,30 @@ import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 
-export function addOrGetMessages({
+export function addOrGetInterfaces({
   definitions,
-  messageName,
+  interfaceName,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
-  messageName: string;
+  interfaceName: string;
 }): {
-  messageRef: string;
+  interface: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "interface">;
 } {
   definitions.rootElement ??= [];
-  const messages = definitions.rootElement.filter((s) => s.__$$element === "message");
-  const existingMessage = messages.find((s) => s["@_id"] === messageName);
+  const interfaces = definitions.rootElement.filter((s) => s.__$$element === "interface");
 
-  if (existingMessage) {
-    return { messageRef: existingMessage["@_id"] };
+  const existingInterface = interfaces.find((s) => s["@_name"] === interfaceName);
+  if (existingInterface) {
+    return { interface: existingInterface };
   }
 
-  const newMessage: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "message"> = {
-    __$$element: "message",
+  const newInterface: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "interface"> = {
+    __$$element: "interface",
     "@_id": generateUuid(),
-    "@_itemRef": `${messageName}Type`, // broken reference to a placeholder type that has no meaning to the jBPM Workflow Engine
-    "@_name": messageName,
+    "@_name": interfaceName,
+    operation: [],
   };
 
-  definitions.rootElement.push(newMessage);
-  return { messageRef: newMessage["@_id"] };
+  definitions.rootElement.push(newInterface);
+  return { interface: newInterface };
 }

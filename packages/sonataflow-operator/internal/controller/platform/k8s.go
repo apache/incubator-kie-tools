@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	v2 "k8s.io/api/autoscaling/v2"
+	policyv1 "k8s.io/api/policy/v1"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
@@ -103,19 +104,25 @@ func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.S
 }
 
 func createOrUpdateServiceComponents(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) (*corev1.Event, error) {
-	if err := createOrUpdateConfigMap(ctx, client, platform, psh); err != nil {
+	var deployment *appsv1.Deployment
+	var hpa *v2.HorizontalPodAutoscaler
+	var err error
+	if err = createOrUpdateConfigMap(ctx, client, platform, psh); err != nil {
 		return nil, err
 	}
-	if err := createOrUpdateDeployment(ctx, client, platform, psh); err != nil {
+	if deployment, hpa, err = createOrUpdateDeployment(ctx, client, platform, psh); err != nil {
 		return nil, err
 	}
-	if err := createOrUpdateService(ctx, client, platform, psh); err != nil {
+	if err = createOrUpdatePDB(ctx, client, platform, psh, deployment, hpa); err != nil {
+		return nil, err
+	}
+	if err = createOrUpdateService(ctx, client, platform, psh); err != nil {
 		return nil, err
 	}
 	return createOrUpdateKnativeResources(ctx, client, platform, psh)
 }
 
-func createOrUpdateDeployment(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+func createOrUpdateDeployment(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) (*appsv1.Deployment, *v2.HorizontalPodAutoscaler, error) {
 	readyProbe := &corev1.Probe{
 		ProbeHandler: corev1.ProbeHandler{
 			HTTPGet: &corev1.HTTPGetAction{
@@ -157,7 +164,7 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 	serviceContainer = psh.ConfigurePersistence(serviceContainer)
 	serviceContainer, err := psh.MergeContainerSpec(serviceContainer)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	// immutable
@@ -165,15 +172,15 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 
 	var hpa *v2.HorizontalPodAutoscaler = nil
 	if psh.AcceptsHPA() {
-		hpa, err = findHPAForDeployment(ctx, utils.GetClient(), platform.Namespace, psh.GetServiceName())
+		hpa, err = kubeutil.FindHPAForDeployment(ctx, utils.GetClient(), platform.Namespace, psh.GetServiceName())
 		if err != nil {
-			return fmt.Errorf("failed to find a potential HorizontalPodAutoscaler for deployment %s/%s: %v", platform.Namespace, psh.GetServiceName(), err)
+			return nil, nil, fmt.Errorf("failed to find a potential HorizontalPodAutoscaler for deployment %s/%s: %v", platform.Namespace, psh.GetServiceName(), err)
 		}
 		klog.V(log.D).Infof("HorizontalPodAutoscaler exists for deployment %s/%s: %t.", platform.Namespace, psh.GetServiceName(), hpa != nil)
 	}
 	kSinkInjected, err := psh.CheckKSinkInjected()
 	if err != nil {
-		return nil
+		return nil, nil, err
 	}
 	lbl, selectorLbl := getLabels(platform, psh)
 	serviceDeploymentSpec := appsv1.DeploymentSpec{
@@ -204,7 +211,7 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 
 	serviceDeploymentSpec.Template.Spec, err = psh.MergePodSpec(serviceDeploymentSpec.Template.Spec)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 	kubeutil.AddOrReplaceContainer(serviceContainer.Name, *serviceContainer, &serviceDeploymentSpec.Template.Spec)
 
@@ -215,7 +222,7 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 			Labels:    lbl,
 		}}
 	if err := controllerutil.SetControllerReference(platform, serviceDeployment, client.Scheme()); err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	// Create or Update the deployment
@@ -224,7 +231,7 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 		err := mergo.Merge(&(serviceDeployment.Spec), serviceDeploymentSpec, mergo.WithOverride)
 		// mergo.Merge algorithm is not setting the serviceDeployment.Spec.Replicas when the
 		// *serviceDeploymentSpec.Replicas is 0. Making impossible to scale to zero. Ensure the value.
-		if hpa == nil || !hpaIsWorking(hpa) || psh.GetReplicaCount() == 0 {
+		if hpa == nil || !kubeutil.HPAIsWorking(hpa) || psh.GetReplicaCount() == 0 {
 			// Only when no HorizontalPodAutoscaler was created for current deployment, we should manage the replicas.
 			// Or, when the existing one did not wake up from a previous inactive period due to a replicas set to 0.
 			// In this last case, we should still let the controller the chance to set the replicas to wake up the HorizontalPodAutoscaler.
@@ -240,9 +247,58 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 		}
 		return nil
 	}); err != nil {
-		return err
+		return nil, nil, err
 	} else {
 		klog.V(log.I).InfoS("Deployment successfully reconciled", "operation", op)
+	}
+	return serviceDeployment, hpa, nil
+}
+
+func createOrUpdatePDB(ctx context.Context, c client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler, deployment *appsv1.Deployment, hpa *v2.HorizontalPodAutoscaler) error {
+	if psh.AcceptsPDB() {
+		createOrUpdate := false
+		pdbSpec := psh.GetPDBSpec()
+		if !kubeutil.IsEmptyPodDisruptionBudgetSpec(pdbSpec) {
+			if hpa != nil {
+				// The HPA determines the replicas. Be sure that the service can't be later downscaled to a number of replicas that blocks a drain.
+				// And also, that the user didn't voluntary scaled the service to 0.
+				createOrUpdate = kubeutil.HPAMinReplicasIsGreaterThan(hpa, int32(1)) && !kubeutil.DeploymentIsScaledToZero(deployment)
+			} else {
+				// The just reconciled deployment replicas were already configured properly, we can rely on this number.
+				// Be sure that the number of replicas don't block a drain.
+				createOrUpdate = kubeutil.DeploymentReplicasIsGreaterThan(deployment, int32(1))
+			}
+		}
+
+		if createOrUpdate {
+			lbl, selectorLbl := getLabels(platform, psh)
+			podDisruptionBudget := &policyv1.PodDisruptionBudget{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      psh.GetServiceName(),
+					Namespace: platform.Namespace,
+					Labels:    lbl,
+				},
+			}
+			if err := controllerutil.SetControllerReference(platform, podDisruptionBudget, c.Scheme()); err != nil {
+				return err
+			}
+			if op, err := controllerutil.CreateOrUpdate(ctx, c, podDisruptionBudget, func() error {
+				kubeutil.ApplyPodDisruptionBudgetSpec(podDisruptionBudget, pdbSpec)
+				podDisruptionBudget.Spec.Selector = &metav1.LabelSelector{
+					MatchLabels: selectorLbl,
+				}
+				return nil
+			}); err != nil {
+				return err
+			} else {
+				klog.V(log.I).Infof("PodDisruptionBudget %s/%s successfully reconciled, op: %s.", podDisruptionBudget.Namespace, podDisruptionBudget.Name, op)
+			}
+		} else {
+			// Delete a potentially existing PDB.
+			if err := kubeutil.SafeDeletePodDisruptionBudget(ctx, c, platform.Namespace, psh.GetServiceName()); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

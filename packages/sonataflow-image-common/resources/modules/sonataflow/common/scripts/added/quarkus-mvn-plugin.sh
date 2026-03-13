@@ -27,6 +27,11 @@ set -e
 quarkus_version="${QUARKUS_PLATFORM_VERSION}"
 kogito_version="${KOGITO_VERSION}"
 
+# Consider a potential override
+if [[ -n "${QUARKUS_VERSION}" && "${QUARKUS_VERSION}" != \#\#\#* ]]; then
+  quarkus_version="${QUARKUS_VERSION}"
+fi
+
 # shellcheck source=/dev/null
 source "${KOGITO_HOME}"/launch/logging.sh
 

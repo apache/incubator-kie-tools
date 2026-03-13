@@ -204,3 +204,15 @@ func AddOrReplaceContainer(containerName string, container v1.Container, podSpec
 		podSpec.Containers[idx] = container
 	}
 }
+
+// DeploymentReplicasIsGreaterThan returns true if the Deployment configured replicas is != nil, and greater than
+// the given value. False in any other case.
+func DeploymentReplicasIsGreaterThan(deployment *appsv1.Deployment, value int32) bool {
+	return deployment.Spec.Replicas != nil && *deployment.Spec.Replicas > value
+}
+
+// DeploymentIsScaledToZero returns true if the Deployment has been explicitly scaled to zero, i.e., by setting
+// the replicas == 0. False in any other case, including when replicas == nil.
+func DeploymentIsScaledToZero(deployment *appsv1.Deployment) bool {
+	return deployment.Spec.Replicas != nil && *deployment.Spec.Replicas == int32(0)
+}
