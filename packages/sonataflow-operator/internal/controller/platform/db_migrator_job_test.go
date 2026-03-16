@@ -20,7 +20,11 @@
 package platform
 
 import (
+	"fmt"
+	"hash/fnv"
 	"testing"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
 	"github.com/stretchr/testify/assert"
 
@@ -38,8 +42,6 @@ const (
 	DBSecretKeyRef           = "dbSecretName"
 	UserNameKey              = "postgresUserKey"
 	PasswordKey              = "postgresPasswordKey"
-	MainHash                 = "-ea90e208"
-	DbMigrationJobName       = "sonataflow-db-migrator-job-sonataflow-db-migrator-job" + MainHash
 	DbMigrationContainerName = "db-migration-container"
 )
 
@@ -69,8 +71,14 @@ func TestDbMigratorJob(t *testing.T) {
 	})
 
 	t.Run("verify new new db migration job config", func(t *testing.T) {
-		dbMigrationJobCfg := newDBMigrationJobCfg(DbMigrationJobName)
-		assert.Equal(t, dbMigrationJobCfg.JobName, DbMigrationJobName)
+		jobName, err := getDbMigratorJobName(version.GetImageTagVersion())
+		assert.NoError(t, err)
+		versionHash := fnv.New32a()
+		_, err = versionHash.Write([]byte(version.GetImageTagVersion()))
+		assert.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("sonataflow-db-migrator-job-%x", versionHash.Sum32()), jobName)
+		dbMigrationJobCfg := newDBMigrationJobCfg(jobName)
+		assert.Equal(t, dbMigrationJobCfg.JobName, jobName)
 		assert.Equal(t, dbMigrationJobCfg.ContainerName, DbMigrationContainerName)
 	})
 }
