@@ -42,6 +42,7 @@ import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProce
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useBpmnEditorI18n } from "../../i18n";
+import { addOrGetOperations } from "../../mutations/addOrGetOperations";
 
 export function ServiceTaskProperties({
   serviceTask,
@@ -128,7 +129,14 @@ export function ServiceTaskProperties({
                 });
                 visitFlowElementsAndArtifacts(process, ({ element: e }) => {
                   if (e["@_id"] === serviceTask["@_id"] && e.__$$element === serviceTask.__$$element) {
+                    const { operation } = addOrGetOperations({
+                      definitions: s.bpmn.model.definitions,
+                      interfaceName: newInterface,
+                      operationRef: e["@_operationRef"],
+                      operationName: e["@_drools:serviceoperation"] || "",
+                    });
                     e["@_drools:serviceinterface"] = newInterface;
+                    e["@_operationRef"] = operation["@_id"];
                   }
                 });
               })
@@ -150,7 +158,14 @@ export function ServiceTaskProperties({
                 });
                 visitFlowElementsAndArtifacts(process, ({ element: e }) => {
                   if (e["@_id"] === serviceTask["@_id"] && e.__$$element === serviceTask.__$$element) {
+                    const { operation } = addOrGetOperations({
+                      definitions: s.bpmn.model.definitions,
+                      interfaceName: e["@_drools:serviceinterface"] || "",
+                      operationRef: e["@_operationRef"],
+                      operationName: newOperation,
+                    });
                     e["@_drools:serviceoperation"] = newOperation;
+                    e["@_operationRef"] = operation["@_id"];
                   }
                 });
               })

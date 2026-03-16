@@ -2,6 +2,8 @@
   "eslint.options": {
     "overrideConfigFile": "packages/eslint/.eslintrc.js"
   },
+  "eslint.nodePath": "packages/eslint/node_modules",
+  "eslint.workingDirectories": [{ "directory": "packages/eslint", "changeProcessCWD": true }],
   "files.associations": {
     "*.yaml.helm": "helm"
   },

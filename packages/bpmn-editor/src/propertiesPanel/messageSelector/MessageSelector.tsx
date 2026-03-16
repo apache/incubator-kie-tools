@@ -31,6 +31,7 @@ import { useCallback, useMemo } from "react";
 import { addOrGetMessages } from "../../mutations/addOrGetMessages";
 import "./MessageSelector.css";
 import { useBpmnEditorI18n } from "../../i18n";
+import { getServiceTaskMessageIds } from "../../store/getServiceTaskMessageIds";
 
 export type EventWithMessage =
   | undefined
@@ -57,14 +58,14 @@ export function MessageSelector({
 
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
 
-  const messagesById = useBpmnEditorStore(
-    (s) =>
-      new Map(
-        s.bpmn.model.definitions.rootElement
-          ?.filter((e) => e.__$$element === "message")
-          .map((m) => [m["@_id"], m] as [string, BPMN20__tMessage])
-      )
-  );
+  const messagesById = useBpmnEditorStore((s) => {
+    const allMessages = s.bpmn.model.definitions.rootElement?.filter((e) => e.__$$element === "message") ?? [];
+    const serviceTaskMessageIds = getServiceTaskMessageIds(s.bpmn.model.definitions);
+
+    const filteredMessages = allMessages.filter((msg) => !serviceTaskMessageIds.has(msg["@_id"]));
+
+    return new Map(filteredMessages.map((m) => [m["@_id"], m] as [string, BPMN20__tMessage]));
+  });
 
   const disableIdsSet = useMemo(() => new Set<string | undefined>(disableValues), [disableValues]);
 
