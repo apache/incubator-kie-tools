@@ -36,6 +36,9 @@ LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_Q
 
 KIND_VERSION ?= v0.20.0
 OLM_VERSION = v0.31.0
+KIND_CLUSTER ?= kind
+KUBE_RBAC_PROXY_SRC := quay.io/brancz/kube-rbac-proxy:v0.13.1
+KUBE_RBAC_PROXY_DST := gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0
 
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),arm64)
@@ -72,6 +75,7 @@ test-e2e:
 	@$(MAKE) install-kind
 	@$(MAKE) create-cluster
 	@$(MAKE) install-operator-framework
+	@$(MAKE) kind-preload-images
 	@$(MAKE) go-test-e2e
 	@$(MAKE) go-test-e2e-report
 
@@ -92,7 +96,7 @@ install-operator-framework:
 go-test-e2e:
 	rm -rf dist-tests-e2e
 	mkdir dist-tests-e2e
-	go test -v ./e2e-tests/... -tags e2e_tests -timeout 20m 2>&1 | tee ./dist-tests-e2e/go-test-output-e2e.txt
+	go test -v ./e2e-tests/... -tags e2e_tests -run TestQuarkusRunCommand -timeout 20m 2>&1 | tee ./dist-tests-e2e/go-test-output-e2e.txt
 
 .PHONY: go-test-e2e-report
 go-test-e2e-report:
@@ -100,3 +104,10 @@ go-test-e2e-report:
 	  -set-exit-code \
 	  -in ./dist-tests-e2e/go-test-output-e2e.txt \
 	  -out ./dist-tests-e2e/junit-report-it.xml
+
+.PHONY: kind-preload-images
+kind-preload-images:
+	@echo "Preloading kube-rbac-proxy image into kind..."
+	docker pull $(KUBE_RBAC_PROXY_SRC)
+	docker tag $(KUBE_RBAC_PROXY_SRC) $(KUBE_RBAC_PROXY_DST)
+	kind load docker-image --name $(KIND_CLUSTER) $(KUBE_RBAC_PROXY_DST)

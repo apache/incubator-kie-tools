@@ -28495,8 +28495,8 @@ spec:
             - --v=0
           env:
             - name: RELATED_IMAGE_KUBE_RBAC_PROXY
-              value: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
-          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
+              value: quay.io/brancz/kube-rbac-proxy:v0.13.1
+          image: quay.io/brancz/kube-rbac-proxy:v0.13.1
           name: kube-rbac-proxy
           ports:
             - containerPort: 8443

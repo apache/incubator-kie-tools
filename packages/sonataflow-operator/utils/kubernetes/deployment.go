@@ -20,15 +20,21 @@
 package kubernetes
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"time"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/klog/v2"
+
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
@@ -215,4 +221,23 @@ func DeploymentReplicasIsGreaterThan(deployment *appsv1.Deployment, value int32)
 // the replicas == 0. False in any other case, including when replicas == nil.
 func DeploymentIsScaledToZero(deployment *appsv1.Deployment) bool {
 	return deployment.Spec.Replicas != nil && *deployment.Spec.Replicas == int32(0)
+}
+
+// SafeDeleteDeployment deletes a potentially existing Deployment, ignoring the not existing error.
+func SafeDeleteDeployment(ctx context.Context, c client.Client, namespace, name string) error {
+	err := c.Delete(ctx, &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      name,
+		},
+	})
+	if err != nil {
+		if k8serrors.IsNotFound(err) {
+			klog.V(log.D).Infof("Deployment %s/%s was already deleted or never existed.", namespace, name)
+			return nil
+		} else {
+			return err
+		}
+	}
+	return nil
 }
