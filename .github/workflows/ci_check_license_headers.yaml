@@ -26,22 +26,72 @@ on:
     branches: ["**"]
     types: [opened, reopened, ready_for_review, synchronize]
 
+env:
+  APACHE_RAT_VERSION: 0.17
+
 jobs:
   check:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
+
+      - name: "Setup JDK 17"
+        uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: "temurin"
+
+      - name: Cache Apache RAT
+        uses: actions/cache@v5
+        id: cache-rat
+        with:
+          path: ${{ runner.temp }}/apache-rat-${{ env.APACHE_RAT_VERSION }}.jar
+          key: apache-rat-${{ env.APACHE_RAT_VERSION }}
 
       - name: Download Apache RAT
+        if: steps.cache-rat.outputs.cache-hit != 'true'
         run: |
-          curl -LO https://repo1.maven.org/maven2/org/apache/rat/apache-rat/0.17/apache-rat-0.17.jar
+          set -e
+          BASE_URL="https://repo1.maven.org/maven2/org/apache/rat/apache-rat/${APACHE_RAT_VERSION}"
+          APACHE_RAT_JAR="apache-rat-${APACHE_RAT_VERSION}.jar"
+          APACHE_RAT_SHA="apache-rat-${APACHE_RAT_VERSION}.jar.sha1"
+          APACHE_RAT_DIR="${RUNNER_TEMP:-/tmp}"
+
+          mkdir -p "${APACHE_RAT_DIR}"
+          cd "${APACHE_RAT_DIR}"
+
+          # Download JAR and corresponding SHA-1 checksum
+          curl -LO "${BASE_URL}/${APACHE_RAT_JAR}"
+          curl -LO "${BASE_URL}/${APACHE_RAT_SHA}"
+
+          # Verify the downloaded JAR against the published checksum
+          EXPECTED_SHA1="$(awk '{print $1}' "${APACHE_RAT_SHA}")"
+          ACTUAL_SHA1="$(sha1sum "${APACHE_RAT_JAR}" | awk '{print $1}')"
+          if [ "${EXPECTED_SHA1}" != "${ACTUAL_SHA1}" ]; then
+            echo "Checksum verification FAILED for ${APACHE_RAT_JAR}" >&2
+            exit 1
+          fi
+          rm "${APACHE_RAT_SHA}"
 
       - name: Run Apache RAT
         run: |
+          APACHE_RAT_JAR="${RUNNER_TEMP:-/tmp}/apache-rat-${APACHE_RAT_VERSION}.jar"
+
+          rm -f .rat-reports
+
           # Redirect output to .rat-reports file, continue even if RAT returns non-zero exit code because we want to print Unapproved documents
-          java -jar apache-rat-0.17.jar --input-exclude-file .rat-excludes -- . > .rat-reports 2>&1 || true
+          java -jar "$APACHE_RAT_JAR" --input-exclude-file .rat-excludes -- . > .rat-reports 2>&1 || true
+
+          # Verify that RAT ran successfully by checking for its summary output
+          if ! grep -q "Summary" .rat-reports; then
+            echo "❌ Apache RAT check FAILED - RAT did not complete successfully" >&2
+            cat .rat-reports
+            exit 1
+          fi
+
+          # Check for unapproved licenses
           if grep -q "^! Unapproved:" .rat-reports; then
             echo "❌ Apache RAT check FAILED - Files with unapproved licenses found:"
             echo ""
