@@ -30,16 +30,16 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: RELATED_IMAGE_JOBS_SERVICE_POSTGRESQL
-              value: docker.io/apache/incubator-kie-kogito-jobs-service-postgresql:main
+              value: docker.io/apache/incubator-kie-kogito-jobs-service-postgresql:10.2.0
             - name: RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL
-              value: docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:main
+              value: docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:10.2.0
             - name: RELATED_IMAGE_DATA_INDEX_POSTGRESQL
-              value: docker.io/apache/incubator-kie-kogito-data-index-postgresql:main
+              value: docker.io/apache/incubator-kie-kogito-data-index-postgresql:10.2.0
             - name: RELATED_IMAGE_DATA_INDEX_EPHEMERAL
-              value: docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main
+              value: docker.io/apache/incubator-kie-kogito-data-index-ephemeral:10.2.0
             - name: RELATED_IMAGE_DB_MIGRATOR_TOOL
-              value: docker.io/apache/kie-kogito-db-migrator-tool:main
+              value: docker.io/apache/kie-kogito-db-migrator-tool:10.2.0
             - name: RELATED_IMAGE_BASE_BUILDER
-              value: docker.io/apache/incubator-kie-sonataflow-builder:main
+              value: docker.io/apache/incubator-kie-sonataflow-builder:10.2.0
             - name: RELATED_IMAGE_DEVMODE
-              value: docker.io/apache/incubator-kie-sonataflow-devmode:main
+              value: docker.io/apache/incubator-kie-sonataflow-devmode:10.2.0

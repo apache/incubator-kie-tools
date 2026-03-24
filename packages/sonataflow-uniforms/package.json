@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/sonataflow-uniforms",
-  "version": "10.2.999",
+  "version": "10.2.0",
   "description": "Patternfly forms for SonataFlow",
   "license": "Apache-2.0",
   "keywords": [],
