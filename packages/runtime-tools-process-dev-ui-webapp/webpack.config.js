@@ -106,6 +106,9 @@ module.exports = async (webpackEnv) => {
           replacement: () => env.runtimeToolsProcessDevUIWebapp.port ?? "",
         },
       ]),
+      new webpack.ProvidePlugin({
+        Buffer: ["buffer", "Buffer"],
+      }),
     ],
     module: {
       rules: [
@@ -158,7 +161,16 @@ module.exports = async (webpackEnv) => {
         },
         {
           test: /\.(css|sass|scss)$/,
-          use: [require.resolve("style-loader"), require.resolve("css-loader"), require.resolve("sass-loader")],
+          use: [
+            require.resolve("style-loader"),
+            require.resolve("css-loader"),
+            {
+              loader: require.resolve("sass-loader"),
+              options: {
+                api: "modern",
+              },
+            },
+          ],
         },
         {
           test: /\.css$/,

@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import React, { useImperativeHandle, useState } from "react";
+import React, { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { AutoFields, AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 import { FormAction, lookupValidator, ModelConversionTool } from "../../utils";
 import { FormFooter } from "../FormFooter";
@@ -51,21 +51,24 @@ export const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAPr
       };
     }, [formApiRef]);
 
-    const bridge = new JSONSchemaBridge(formSchema, (formModel) => {
-      // Converting back all the JS Dates into String before validating the model
-      const newModel = ModelConversionTool.convertDateToString(formModel, formSchema);
-      return validator.validate(newModel);
-    });
-
-    // Converting Dates that are in string format into JS Dates so they can be correctly bound to the uniforms DateField
-    const formData = ModelConversionTool.applySchemaDefaults(
-      ModelConversionTool.convertStringToDate(model, formSchema),
-      formSchema
+    const bridge = useMemo(
+      () =>
+        new JSONSchemaBridge(formSchema, (formModel) => {
+          // Converting back al the JS Dates into String before validating the model
+          const newModel = ModelConversionTool.convertDateToString(formModel, formSchema);
+          return validator.validate(newModel);
+        }),
+      [formSchema, validator]
     );
 
-    const submitFormData = (): void => {
-      formApiRef!.submit();
-    };
+    // Converting Dates that are in string format into JS Dates so they can be correctly bound to the uniforms DateField
+    const formData = useMemo(() => ModelConversionTool.convertStringToDate(model, formSchema), [formSchema, model]);
+
+    const submitFormData = useCallback((): void => {
+      if (formApiRef) {
+        formApiRef.submit();
+      }
+    }, [formApiRef]);
 
     return (
       <React.Fragment>
@@ -80,7 +83,7 @@ export const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAPr
           {...componentOuiaProps(ouiaId, "form-renderer", ouiaSafe)}
         >
           <ErrorsField />
-          {children}
+          <AutoFields />
         </AutoForm>
         <FormFooter actions={formActions} enabled={!readOnly} onSubmitForm={submitFormData} />
       </React.Fragment>

@@ -25,6 +25,7 @@ import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
+import { getDefaultValues } from "@kie-tools/runtime-tools-components/dist/components/FormRenderer/utils";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -56,6 +57,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
   const formRendererApi = React.useRef<FormRendererApi>(null);
   const [processFormSchema, setProcessFormSchema] = useState<any>({});
   const [processCustomForm, setProcessCustomForm] = useState<Form>();
+  const [processFormModel, setProcessFormModel] = useState<any>({});
   const [svg, setSvg] = useState<JSX.Element>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>();
@@ -64,32 +66,32 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
     if (!isEnvelopeConnectedToChannel) {
       return;
     }
-    const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
-      if (!shouldLoadCustomForms) {
-        resolve();
-        return;
-      }
-      channelApi.requests
-        .processForm__getCustomForm(processDefinition)
-        .then((customForm) => {
-          setProcessCustomForm(customForm);
-          resolve();
-        })
-        .catch((error) => resolve());
-    });
+    const customFormPromise = !shouldLoadCustomForms
+      ? Promise.resolve()
+      : channelApi.requests
+          .processForm__getCustomForm(processDefinition)
+          .then((customForm) => {
+            setProcessCustomForm(customForm);
+            return;
+          })
+          .catch((error) => {
+            // no-op
+            return;
+          });
 
-    const schemaPromise: Promise<void> = new Promise<void>((resolve, reject) => {
-      channelApi.requests
-        .processForm__getProcessFormSchema(processDefinition)
-        .then((schema) => {
-          setProcessFormSchema(schema);
-          resolve();
-        })
-        .catch((error) => {
-          setError(error);
-          reject(error);
-        });
-    });
+    const schemaPromise: Promise<void> = channelApi.requests
+      .processForm__getProcessFormSchema(processDefinition)
+      .then((schema) => {
+        setProcessFormSchema(schema);
+        return getDefaultValues(schema, shouldLoadCustomForms ? true : false);
+      })
+      .then((defaultValues) => {
+        setProcessFormModel(defaultValues);
+      })
+      .catch((error) => {
+        setError(error);
+        throw error;
+      });
 
     Promise.all([customFormPromise, schemaPromise]).finally(() => {
       setIsLoading(false);
@@ -163,7 +165,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
             <CardBody>
               <FormRenderer
                 formSchema={processFormSchema}
-                model={{}}
+                model={processFormModel}
                 readOnly={false}
                 onSubmit={onSubmit}
                 formActions={formAction}

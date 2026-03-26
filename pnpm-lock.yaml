@@ -8192,6 +8192,9 @@ importers:
 
   packages/runtime-tools-components:
     dependencies:
+      '@apidevtools/json-schema-ref-parser':
+        specifier: ^13.0.5
+        version: 13.0.5
       '@kie-tools-core/editor':
         specifier: workspace:*
         version: link:../editor
@@ -8277,6 +8280,9 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/json-schema':
+        specifier: ^7.0.11
+        version: 7.0.15
       '@types/lodash':
         specifier: ^4.14.168
         version: 4.14.202
@@ -14776,6 +14782,10 @@ packages:
     peerDependenciesMeta:
       '@angular/animations':
         optional: true
+
+  '@apidevtools/json-schema-ref-parser@13.0.5':
+    resolution: {integrity: sha512-xfh4xVJD62gG6spIc7lwxoWT+l16nZu1ELyU8FkjaP/oD2yP09EvLAU6KhtudN9aML2Khhs9pY6Slr7KGTES3w==}
+    engines: {node: '>= 16'}
 
   '@apidevtools/json-schema-ref-parser@9.0.6':
     resolution: {integrity: sha512-M3YgsLjI0lZxvrpeGVk9Ap032W6TPQkH6pRAZz81Ac3WUNF79VQooAFnp8umjvVzUmD93NkogxEwbSce7qMsUg==}
@@ -30675,6 +30685,11 @@ snapshots:
       '@angular/common': 20.3.16(@angular/core@20.3.16(@angular/compiler@20.3.16)(rxjs@7.8.2)(zone.js@0.14.8))(rxjs@7.8.2)
       '@angular/core': 20.3.16(@angular/compiler@20.3.16)(rxjs@7.8.2)(zone.js@0.14.8)
       tslib: 2.8.1
+
+  '@apidevtools/json-schema-ref-parser@13.0.5':
+    dependencies:
+      '@types/json-schema': 7.0.15
+      js-yaml: 3.14.2
 
   '@apidevtools/json-schema-ref-parser@9.0.6':
     dependencies:
