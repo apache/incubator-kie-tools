@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/accelerator-git-http-server",
-  "version": "10.2.999",
+  "version": "10.2.0",
   "description": "Reusable Git HTTP server for accelerator packages",
   "license": "Apache-2.0",
   "keywords": [],

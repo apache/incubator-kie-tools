@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.sonataflow.common.quarkus.registry
-version: "10.2.x"
+version: "10.2.0"
 description: "SonataFlow Images Quarkus Registry Module"
 
 envs:
