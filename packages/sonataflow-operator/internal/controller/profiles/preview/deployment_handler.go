@@ -136,14 +136,14 @@ func (d *DeploymentReconciler) ensureObjects(ctx context.Context, workflow *oper
 		d.ensurers.DeploymentByDeploymentModel(workflow).Ensure(ctx, workflow, pl,
 			d.deploymentModelMutateVisitors(workflow, pl, image, userPropsCM.(*v1.ConfigMap), managedPropsCM.(*v1.ConfigMap))...)
 	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to perform the deploy due to ", err)
+		workflow.Status.Manager().MarkFalsef(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to perform the deploy due to: %v ", err)
 		_, _ = d.PerformStatusUpdate(ctx, workflow)
 		return reconcile.Result{}, nil, err
 	}
 
 	service, _, err := d.ensurers.ServiceByDeploymentModel(workflow).Ensure(ctx, workflow, common.ServiceMutateVisitor(workflow))
 	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to make the service available due to ", err)
+		workflow.Status.Manager().MarkFalsef(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to make the service available due to: %v ", err)
 		_, _ = d.PerformStatusUpdate(ctx, workflow)
 		return reconcile.Result{}, nil, err
 	}
