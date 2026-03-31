@@ -53,6 +53,10 @@
       "nice-napi",
       "puppeteer"
     ],
+    "overrides": {
+      "axios@0.30.4": "0.30.3",
+      "axios@>=1.14.1": "1.14.0"
+    },
     "packageExtensions": {
       "monaco-editor-webpack-plugin": {
         "peerDependencies": {
