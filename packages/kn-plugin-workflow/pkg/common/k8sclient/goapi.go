@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package k8sclient
 
 import (
@@ -310,7 +309,7 @@ func (m GoAPI) GetDeploymentStatus(namespace, deploymentName string) (v1.Deploym
 	return deployments.Items[0].Status, nil
 }
 
-func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string, onReady func()) error  {
+func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string, onReady func()) error {
 	if namespace == "" {
 		currentNamespace, err := m.GetCurrentNamespace()
 		if err != nil {
@@ -366,7 +365,7 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string, onRe
 
 	ports := []string{fmt.Sprintf("%s:%s", portFrom, portTo)}
 	go func() {
-		forwardPorts, err := portforward.New(dialer, ports, stopCh, readyCh, io.Discard, os.Stderr);
+		forwardPorts, err := portforward.New(dialer, ports, stopCh, readyCh, io.Discard, os.Stderr)
 		if err != nil {
 			errCh <- err
 		}
@@ -474,7 +473,13 @@ var GetCurrentNamespace = func() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("❌ ERROR: Failed to get current k8s namespace: %w", err)
 	}
-	namespace := config.Contexts[config.CurrentContext].Namespace
+	ctx := config.Contexts[config.CurrentContext]
+
+	if ctx == nil {
+		return "", fmt.Errorf("❌ ERROR: No current k8s context found")
+	}
+
+	namespace := ctx.Namespace
 
 	if len(namespace) == 0 {
 		namespace = "default"
