@@ -53,6 +53,9 @@
       "nice-napi",
       "puppeteer"
     ],
+    "overrides": {
+      "brace-expansion": "2.0.3"
+    },
     "packageExtensions": {
       "monaco-editor-webpack-plugin": {
         "peerDependencies": {
