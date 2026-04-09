@@ -52,7 +52,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Git repository URL for Kogito Apps",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: {
-      default: "8b4c14712f21fee4ef15b53ca4ad3fee93349a19",
+      default: "956aeb19cfdc798b7e66e7154548f295f8992e96",
       description: "Git ref for the Kogito Apps repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
