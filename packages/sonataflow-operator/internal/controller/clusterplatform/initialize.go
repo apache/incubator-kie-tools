@@ -86,15 +86,15 @@ func (action *initializeAction) Handle(ctx context.Context, cPlatform *operatora
 		condition := platform.Status.GetTopLevelCondition()
 		if condition.IsTrue() {
 			klog.V(log.D).InfoS("Referenced SonataFlowPlatform '%s/%s' is ready", platformRef.Namespace, platformRef.Name)
-			cPlatform.Status.Manager().MarkTrueWithReason(api.SucceedConditionType, "",
+			cPlatform.Status.Manager().MarkTrueWithReasonf(api.SucceedConditionType, "",
 				"Referenced SonataFlowPlatform '%s/%s' is ready", platformRef.Namespace, platformRef.Name)
 		} else if condition.IsFalse() {
 			klog.V(log.D).InfoS("Referenced SonataFlowPlatform '%s/%s' not ready", platformRef.Namespace, platformRef.Name)
-			cPlatform.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformFailureReason,
+			cPlatform.Status.Manager().MarkFalsef(api.SucceedConditionType, operatorapi.PlatformFailureReason,
 				"Referenced SonataFlowPlatform '%s/%s' not ready", platformRef.Namespace, platformRef.Name)
 		} else {
 			klog.V(log.D).InfoS("Waiting for referenced SonataFlowPlatform '%s/%s' to be ready", platformRef.Namespace, platformRef.Name)
-			cPlatform.Status.Manager().MarkUnknown(api.SucceedConditionType, operatorapi.PlatformWarmingReason,
+			cPlatform.Status.Manager().MarkUnknownf(api.SucceedConditionType, operatorapi.PlatformWarmingReason,
 				"Waiting for referenced SonataFlowPlatform '%s/%s' to be ready", platformRef.Namespace, platformRef.Name)
 		}
 	}

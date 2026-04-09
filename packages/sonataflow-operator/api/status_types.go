@@ -91,9 +91,12 @@ type ConditionsAccessor interface {
 type ConditionsManager interface {
 	ClearCondition(t ConditionType) error
 	MarkTrue(t ConditionType)
-	MarkTrueWithReason(t ConditionType, reason, messageFormat string, messageA ...interface{})
-	MarkUnknown(t ConditionType, reason, messageFormat string, messageA ...interface{})
-	MarkFalse(t ConditionType, reason, messageFormat string, messageA ...interface{})
+	MarkTrueWithReason(t ConditionType, reason, message string)
+	MarkTrueWithReasonf(t ConditionType, reason, messageFormat string, messageA ...interface{})
+	MarkUnknown(t ConditionType, reason, message string)
+	MarkUnknownf(t ConditionType, reason, messageFormat string, messageA ...interface{})
+	MarkFalse(t ConditionType, reason, message string)
+	MarkFalsef(t ConditionType, reason, messageFormat string, messageA ...interface{})
 	InitializeConditions()
 }
 
@@ -187,7 +190,12 @@ func (s *conditionManager) MarkTrue(t ConditionType) {
 }
 
 // MarkTrueWithReason sets the status of t to true with the reason
-func (s *conditionManager) MarkTrueWithReason(t ConditionType, reason, messageFormat string, messageA ...interface{}) {
+func (s *conditionManager) MarkTrueWithReason(t ConditionType, reason, message string) {
+	s.MarkTrueWithReasonf(t, reason, "%s", message)
+}
+
+// MarkTrueWithReasonf sets the status of t to true with the reason
+func (s *conditionManager) MarkTrueWithReasonf(t ConditionType, reason, messageFormat string, messageA ...interface{}) {
 	// set the specified condition
 	s.setCondition(Condition{
 		Type:    t,
@@ -243,7 +251,13 @@ func (s *conditionManager) findUnreadyDependent() *Condition {
 
 // MarkUnknown sets the status of t to Unknown and also sets the ready condition
 // to Unknown if no other dependent condition is in an error state.
-func (s *conditionManager) MarkUnknown(t ConditionType, reason, messageFormat string, messageA ...interface{}) {
+func (s *conditionManager) MarkUnknown(t ConditionType, reason, message string) {
+	s.MarkUnknownf(t, reason, "%s", message)
+}
+
+// MarkUnknownf sets the status of t to Unknown and also sets the ready condition
+// to Unknown if no other dependent condition is in an error state.
+func (s *conditionManager) MarkUnknownf(t ConditionType, reason, messageFormat string, messageA ...interface{}) {
 	// set the specified condition
 	s.setCondition(Condition{
 		Type:    t,
@@ -261,7 +275,7 @@ func (s *conditionManager) MarkUnknown(t ConditionType, reason, messageFormat st
 			// Double check that the ready condition is also false.
 			ready := s.reader.GetCondition(s.ready)
 			if !ready.IsFalse() {
-				s.MarkFalse(s.ready, reason, messageFormat, messageA...)
+				s.MarkFalsef(s.ready, reason, messageFormat, messageA...)
 			}
 			return
 		}
@@ -282,7 +296,12 @@ func (s *conditionManager) MarkUnknown(t ConditionType, reason, messageFormat st
 }
 
 // MarkFalse sets the status of t and the ready condition to False.
-func (s *conditionManager) MarkFalse(t ConditionType, reason, messageFormat string, messageA ...interface{}) {
+func (s *conditionManager) MarkFalse(t ConditionType, reason, message string) {
+	s.MarkFalsef(t, reason, "%s", message)
+}
+
+// MarkFalsef sets the status of t and the ready condition to False.
+func (s *conditionManager) MarkFalsef(t ConditionType, reason, messageFormat string, messageA ...interface{}) {
 	s.setCondition(Condition{
 		Type:    t,
 		Status:  corev1.ConditionFalse,

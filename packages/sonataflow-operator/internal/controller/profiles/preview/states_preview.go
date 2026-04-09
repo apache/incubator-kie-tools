@@ -56,7 +56,7 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 	pl, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace, true)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.WaitingForPlatformReason,
+			workflow.Status.Manager().MarkFalsef(api.BuiltConditionType, api.WaitingForPlatformReason,
 				"No active Platform for namespace %s so the workflow cannot be built.", workflow.Namespace)
 			_, err = h.PerformStatusUpdate(ctx, workflow)
 			return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
@@ -93,8 +93,8 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 	if err != nil {
 		//If we are not able to retrieve or create a Build CR for this Workflow we will mark
 		klog.V(log.E).ErrorS(err, "Failed to retrieve or create a Build CR")
-		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason,
-			"Failed to retrieve or create a Build CR", workflow.Namespace)
+		workflow.Status.Manager().MarkFalsef(api.BuiltConditionType, api.BuildFailedReason,
+			"Failed to retrieve or create a Build CR in namespace: %s", workflow.Namespace)
 		_, err = h.PerformStatusUpdate(ctx, workflow)
 		return ctrl.Result{}, nil, err
 	}
@@ -151,7 +151,7 @@ func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.S
 		_, err = h.PerformStatusUpdate(ctx, workflow)
 		h.Recorder.Eventf(workflow, corev1.EventTypeNormal, api.BuildSuccessfulReason, "Workflow %s build has been finished successfully.", workflow.Name)
 	} else if build.Status.BuildPhase == operatorapi.BuildPhaseFailed || build.Status.BuildPhase == operatorapi.BuildPhaseError {
-		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason,
+		workflow.Status.Manager().MarkFalsef(api.BuiltConditionType, api.BuildFailedReason,
 			"Workflow %s build failed. Error: %s", workflow.Name, build.Status.Error)
 		_, err = h.PerformStatusUpdate(ctx, workflow)
 		h.Recorder.Eventf(workflow, corev1.EventTypeWarning, api.BuildFailedReason, "Workflow %s build has failed. Error: %s", workflow.Name, build.Status.Error)
@@ -190,7 +190,7 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 	// have something like sonataerr.IsPlatformNotFound(err) instead.
 	_, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace, true)
 	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForPlatformReason,
+		workflow.Status.Manager().MarkFalsef(api.RunningConditionType, api.WaitingForPlatformReason,
 			"No active Platform for namespace %s so the resWorkflowDef cannot be deployed. Waiting for an active platform", workflow.Namespace)
 		return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 	}
