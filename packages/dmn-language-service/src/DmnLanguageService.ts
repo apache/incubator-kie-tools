@@ -314,7 +314,7 @@ Error details: ${error}`);
     namespaceToDrgElementsMap.set(model.definitions?.["@_namespace"] ?? "", idToDrgElementsMap);
   }
 
-  //To filter only included inputs for decisions / decisionService
+  // To filter only included inputs for decisions / decisionService
   public filterRequiredDecisionInputDataNodes = (
     namespace: string | undefined,
     namespaceToElementsMap: Map<string, Map<string, DrgElement>>,
@@ -328,16 +328,16 @@ Error details: ${error}`);
       if (drgElement.__$$element === "decision") {
         drgElement.informationRequirement?.forEach((decision) => {
           if (decision.requiredDecision) {
-            const decisionHref = decision.requiredDecision["@_href"];
-            if (decisionIdToInputIdsMap.has(decisionHref)) {
-              requiredDecisionsHref.add(decisionHref);
+            const requiredDecisionHref = decision.requiredDecision["@_href"];
+            if (decisionIdToInputIdsMap.has(requiredDecisionHref)) {
+              requiredDecisionsHref.add(requiredDecisionHref);
             }
 
-            if (decisionHref.includes("#")) {
-              const [namespace] = decisionHref.split("#");
-              if (namespace) {
+            if (requiredDecisionHref.includes("#")) {
+              const [requiredDecisionHrefNamespace] = requiredDecisionHref.split("#");
+              if (requiredDecisionHrefNamespace && requiredDecisionHrefNamespace !== namespace) {
                 this.filterRequiredDecisionInputDataNodes(
-                  namespace,
+                  requiredDecisionHrefNamespace,
                   namespaceToElementsMap,
                   decisionIdToInputIdsMap,
                   requiredDecisionsHref
@@ -350,16 +350,16 @@ Error details: ${error}`);
 
       if (drgElement.__$$element === "decisionService" && drgElement.outputDecision) {
         drgElement.outputDecision.forEach((outputDecision) => {
-          const decisionHref = outputDecision["@_href"];
-          if (decisionIdToInputIdsMap.has(decisionHref)) {
-            requiredDecisionsHref.add(decisionHref);
+          const outputDecisionHref = outputDecision["@_href"];
+          if (decisionIdToInputIdsMap.has(outputDecisionHref)) {
+            requiredDecisionsHref.add(outputDecisionHref);
           }
 
-          if (decisionHref.includes("#")) {
-            const [namespace] = decisionHref.split("#");
-            if (namespace)
+          if (outputDecisionHref.includes("#")) {
+            const [outputDecisionHrefNamespace] = outputDecisionHref.split("#");
+            if (outputDecisionHrefNamespace && outputDecisionHrefNamespace !== namespace)
               this.filterRequiredDecisionInputDataNodes(
-                namespace,
+                outputDecisionHrefNamespace,
                 namespaceToElementsMap,
                 decisionIdToInputIdsMap,
                 requiredDecisionsHref

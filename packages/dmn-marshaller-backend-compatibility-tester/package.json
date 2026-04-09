@@ -22,12 +22,13 @@
   "scripts": {
     "build:dev": "rimraf dist dist-m2 && tsc -p tsconfig.json && pnpm prefetch",
     "build:prod": "pnpm build:dev",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "prefetch": "run-script-os",
     "prefetch:darwin:linux": "cross-env JBANG_REPO=$(node -p \"require('path').resolve('dist-m2')\") node dist/dependenciesFetch.js",
     "prefetch:win32": "pnpm powershell \"cross-env JBANG_REPO=$(Resolve-Path . | Write-Host)\\dist-m2 node dist/dependenciesFetch.js\""
   },
   "dependencies": {
-    "@jbangdev/jbang": "0.2.3"
+    "@jbangdev/jbang": "0.7.1"
   },
   "devDependencies": {
     "@kie-tools-core/drools-and-kogito": "workspace:*",

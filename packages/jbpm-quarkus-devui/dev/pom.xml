@@ -79,10 +79,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
@@ -92,31 +88,22 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-multipart</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-openapi</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-ruleunits</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
-    <!-- Addons -->
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-process-management</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-quarkus-process-svg</artifactId>
@@ -125,29 +112,45 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-quarkus-source-files</artifactId>
     </dependency>
+
+    <!-- Persistence -->
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-addons-quarkus-process-management</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-agroal</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-jobs-management</artifactId>
+      <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
     </dependency>
 
-    <!-- Data-Index -->
+    <!-- Data-Index Addon -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-postgresql</artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-jpa</artifactId>
     </dependency>
 
     <!-- Jobs Service -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-jobs</artifactId>
+      <artifactId>kogito-addons-quarkus-embedded-jobs</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-service-postgresql-common</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-embedded-jobs-jpa</artifactId>
+    </dependency>
+
+    <!-- Data Audit -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-data-audit-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-data-audit</artifactId>
     </dependency>
 
     <!-- DevUI -->
@@ -155,11 +158,6 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-quarkus-devui</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.quarkiverse.embedded.postgresql</groupId>
-      <artifactId>quarkus-embedded-postgresql</artifactId>
     </dependency>
 
     <dependency>

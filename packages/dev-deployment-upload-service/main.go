@@ -84,16 +84,23 @@ func main() {
 		os.Exit(1)
 	}
 
-	unzipAtPath := unzipAtArgString
+	// Validate and sanitize --unzip-at to prevent path traversal (CWE-22)
+	// Convert to absolute path and clean it
+	unzipAtPath, err := filepath.Abs(filepath.Clean(unzipAtArgString))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Invalid path '%s': %+v\n", unzipAtArgString, err)
+		os.Exit(1)
+	}
+
 	// Validate --unzip-at
-	if _, err := os.Stat(unzipAtArgString); err == nil {
-		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Found directory '%s'.\n", unzipAtArgString)
-	} else if err := os.MkdirAll(filepath.Clean(unzipAtArgString), os.ModePerm); err != nil { // os.ModePerm == chmod 777
-		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating directory '%s' failed:\n", unzipAtArgString)
+	if _, err := os.Stat(unzipAtPath); err == nil {
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Found directory '%s'.\n", unzipAtPath)
+	} else if err := os.MkdirAll(unzipAtPath, os.ModePerm); err != nil { // os.ModePerm == chmod 777
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating directory '%s' failed:\n", unzipAtPath)
 		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 		os.Exit(1)
 	} else {
-		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Created directory '%s'.\n", unzipAtArgString)
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Created directory '%s'.\n", unzipAtPath)
 	}
 
 	// All validations passed. Start the program.
@@ -201,25 +208,33 @@ func main() {
 		}
 
 		for _, zipFile := range zipReader.File {
+
+			// [CWE-22: Path/Directory Traversal] Refuse symlinks before doing anything else with the entry
+			if zipFile.FileInfo().Mode()&os.ModeSymlink != 0 {
+				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Refusing to extract symlink entry '%s'.\n", zipFile.Name)
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("400: Zip contains symlink entries, which are not permitted."))
+				shutdownWithErrorOnFileUpload(zipFile.Name)
+				return
+			}
+
+			// [CWE-22: Path/Directory Traversal] Zip slip check
+			extractedZippedFilePath := filepath.Join(unzipAtPath, zipFile.Name)
+			if !strings.HasPrefix(extractedZippedFilePath, filepath.Clean(unzipAtPath)+string(os.PathSeparator)) {
+				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Illegal zipped file path '%s'.\n", zipFile.Name)
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("400: Illegal zipped file path. " + html.EscapeString(zipFile.Name)))
+				shutdownWithErrorOnFileUpload(zipFile.Name)
+				return
+			}
+
 			unzippedFileBytes, err := readZipFile(zipFile)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Reading zipped file '%s' failed:\n", zipFile.Name)
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte("500: Reading zipped file. " + html.EscapeString(zipFile.Name)))
-
-				shutdownWithErrorOnFileUpload(handler.Filename)
-				return
-			}
-
-			// Check for Zip Slip (directory traversal)
-			extractedZippedFilePath := filepath.Join(unzipAtPath, zipFile.Name)
-			if !strings.HasPrefix(extractedZippedFilePath, filepath.Clean(unzipAtPath)+string(os.PathSeparator)) {
-				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Illegal zipped file path '%s'.\n", zipFile.Name)
-				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("500: Illegal zipped file path. " + html.EscapeString(extractedZippedFilePath)))
-
-				shutdownWithErrorOnFileUpload(handler.Filename)
+				shutdownWithErrorOnFileUpload(zipFile.Name)
 				return
 			}
 
@@ -229,8 +244,7 @@ func main() {
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte("500: Creating directory failed. " + html.EscapeString(filepath.Dir(extractedZippedFilePath))))
-
-				shutdownWithErrorOnFileUpload(handler.Filename)
+				shutdownWithErrorOnFileUpload(zipFile.Name)
 				return
 			}
 
@@ -242,8 +256,7 @@ func main() {
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 					w.WriteHeader(http.StatusInternalServerError)
 					w.Write([]byte("500: Creating file failed. " + html.EscapeString(extractedZippedFilePath)))
-
-					shutdownWithErrorOnFileUpload(handler.Filename)
+					shutdownWithErrorOnFileUpload(zipFile.Name)
 					return
 				}
 				if _, err := f.Write(unzippedFileBytes); err != nil {
@@ -251,8 +264,7 @@ func main() {
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 					w.WriteHeader(http.StatusInternalServerError)
 					w.Write([]byte("500: Writing file failed. " + html.EscapeString(extractedZippedFilePath)))
-
-					shutdownWithErrorOnFileUpload(handler.Filename)
+					shutdownWithErrorOnFileUpload(zipFile.Name)
 					return
 				}
 

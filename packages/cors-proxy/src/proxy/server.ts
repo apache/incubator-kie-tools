@@ -61,11 +61,18 @@ export const startServer = (args: ServerArgs): void => {
 
   // Just to avoid proxying the favicon if requested from browser
   app.use("/favicon.ico", (_req: express.Request, res: express.Response) => {
+    res.setHeader("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'; form-action 'self';");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("X-Content-Type-Options", "nosniff");
     res.status(200).send();
   });
 
   // Ping handler
   app.use("/ping", (_req: express.Request, res: express.Response) => {
+    res.setHeader("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'; form-action 'self';");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Content-Type", "text/plain");
     res.status(200).send("pong");
   });
 
@@ -77,6 +84,9 @@ export const startServer = (args: ServerArgs): void => {
   // Fallback that will be executed it the Proxy cannot handle the request!
   app.use("/", (_req: express.Request, res: express.Response) => {
     res.setHeader("content-type", "text/html");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'; form-action 'self';");
+    res.setHeader("X-Frame-Options", "DENY");
     res.status(403).send(`<!DOCTYPE html>
     <html>
       <title>@kie-tools/cors-proxy</title>

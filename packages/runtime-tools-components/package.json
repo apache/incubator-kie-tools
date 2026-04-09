@@ -24,6 +24,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^13.0.5",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
@@ -52,6 +53,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@types/json-schema": "^7.0.11",
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.6",
     "@types/react-datetime-picker": "^3.4.1",

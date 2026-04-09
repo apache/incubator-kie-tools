@@ -215,3 +215,13 @@ test("<DateField> - test min property - invalid", () => {
 
   expect(screen.getByText(`Should be after 1999-01-01T00:00:00.000Z`)).toBeInTheDocument();
 });
+
+test("<DateField> - should render even if Date is invalid", () => {
+  render(
+    usingUniformsContext(<DateField name="x" value={new Date("not a valid date")} />, {
+      x: { type: Date },
+    })
+  );
+
+  expect(screen.getByTestId("date-field")).toBeInTheDocument();
+});

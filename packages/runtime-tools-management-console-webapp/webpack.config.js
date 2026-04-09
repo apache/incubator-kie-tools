@@ -19,7 +19,7 @@
 
 const path = require("path");
 const { merge } = require("webpack-merge");
-const { EnvironmentPlugin } = require("webpack");
+const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
@@ -69,12 +69,24 @@ module.exports = async (webpackEnv) => {
           },
         ],
       }),
+      new ProvidePlugin({
+        Buffer: ["buffer", "Buffer"],
+      }),
     ],
     module: {
       rules: [
         {
           test: /\.(css|sass|scss)$/,
-          use: [require.resolve("style-loader"), require.resolve("css-loader"), require.resolve("sass-loader")],
+          use: [
+            require.resolve("style-loader"),
+            require.resolve("css-loader"),
+            {
+              loader: require.resolve("sass-loader"),
+              options: {
+                api: "modern",
+              },
+            },
+          ],
         },
         {
           test: /\.(svg|ttf|eot|woff|woff2)$/,

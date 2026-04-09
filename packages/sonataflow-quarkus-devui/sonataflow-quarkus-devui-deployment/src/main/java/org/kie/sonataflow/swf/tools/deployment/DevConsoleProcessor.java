@@ -53,7 +53,7 @@ import static org.kie.sonataflow.swf.tools.runtime.rpc.SonataFlowQuarkusExtensio
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui";
+    private static final String BASE_RELATIVE_URL = "/q/dev-ui/sonataflow-quarkus-devui";
     private static final GACT DEVCONSOLE_WEBJAR_ARTIFACT_KEY = new GACT("org.apache.kie.sonataflow", "sonataflow-quarkus-devui-deployment", null,
     "jar");
 

@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "@angular/common": "^20.3.16",
-    "@angular/compiler": "^20.3.16",
-    "@angular/core": "^20.3.16",
+    "@angular/compiler": "^20.3.18",
+    "@angular/core": "^20.3.18",
     "@angular/elements": "^20.3.16",
     "@angular/platform-browser": "^20.3.16",
     "@angular/platform-browser-dynamic": "^20.3.16",
