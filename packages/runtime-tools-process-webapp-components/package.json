@@ -29,7 +29,7 @@
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "apollo-client": "2.6.10",
     "axios": "^1.13.5",
-    "lodash": "^4.17.23"
+    "lodash": "^4.18.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
