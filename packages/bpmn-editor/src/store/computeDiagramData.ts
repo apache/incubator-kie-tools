@@ -28,6 +28,7 @@ import {
   BpmnEdgeElement,
   BpmnNodeElement,
   BpmnNodeType,
+  EDGE_TYPES,
   elementToEdgeType,
   elementToNodeType,
   NODE_TYPES,
@@ -37,6 +38,43 @@ import { BpmnXyFlowDiagramState, State } from "./Store";
 import { NODE_LAYERS } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/Hooks";
 import { ContainmentMode } from "@kie-tools/xyflow-react-kie-diagram/dist/graph/graphStructure";
 import { BPMN20__tLane } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+
+function getLiveValidationErrors(params: {
+  nodeType: BpmnNodeType;
+  incomingSequenceFlows: number;
+  outgoingSequenceFlows: number;
+}): string[] {
+  const { nodeType, incomingSequenceFlows, outgoingSequenceFlows } = params;
+
+  if (nodeType === NODE_TYPES.startEvent) {
+    return [
+      ...(incomingSequenceFlows > 0 ? ["Start events cannot have incoming sequence flows."] : []),
+      ...(outgoingSequenceFlows === 0 ? ["Start events must have at least one outgoing sequence flow."] : []),
+    ];
+  }
+
+  if (nodeType === NODE_TYPES.endEvent) {
+    return [
+      ...(incomingSequenceFlows === 0 ? ["End events must have at least one incoming sequence flow."] : []),
+      ...(outgoingSequenceFlows > 0 ? ["End events cannot have outgoing sequence flows."] : []),
+    ];
+  }
+
+  if (
+    nodeType === NODE_TYPES.task ||
+    nodeType === NODE_TYPES.subProcess ||
+    nodeType === NODE_TYPES.gateway ||
+    nodeType === NODE_TYPES.intermediateCatchEvent ||
+    nodeType === NODE_TYPES.intermediateThrowEvent
+  ) {
+    return [
+      ...(incomingSequenceFlows === 0 ? ["This node must have at least one incoming sequence flow."] : []),
+      ...(outgoingSequenceFlows === 0 ? ["This node must have at least one outgoing sequence flow."] : []),
+    ];
+  }
+
+  return [];
+}
 
 export function computeDiagramData(
   definitions: State["bpmn"]["model"]["definitions"],
@@ -207,6 +245,7 @@ export function computeDiagramData(
           shape: bpmnShape,
           shapeIndex: i,
           parentXyFlowNode: undefined,
+          validationErrors: undefined,
         },
         className:
           BPMN_CONTAINMENT_MAP.get(nodeType)?.has(ContainmentMode.INSIDE) || nodeType === NODE_TYPES.group
@@ -325,6 +364,36 @@ export function computeDiagramData(
   }, new Map<string, { dependencies: Set<string> }>());
 
   const edgesById = edges.reduce((acc, e) => acc.set(e.id, e), new Map<string, RF.Edge<BpmnDiagramEdgeData>>());
+
+  const sequenceFlowCountsByNodeId = edges.reduce((acc, e) => {
+    if (e.type !== EDGE_TYPES.sequenceFlow) {
+      return acc;
+    }
+
+    const source = acc.get(e.source) ?? { incoming: 0, outgoing: 0 };
+    source.outgoing += 1;
+    acc.set(e.source, source);
+
+    const target = acc.get(e.target) ?? { incoming: 0, outgoing: 0 };
+    target.incoming += 1;
+    acc.set(e.target, target);
+
+    return acc;
+  }, new Map<string, { incoming: number; outgoing: number }>());
+
+  for (const node of nodes) {
+    const edgeCounts = sequenceFlowCountsByNodeId.get(node.id) ?? { incoming: 0, outgoing: 0 };
+    const validationErrors = getLiveValidationErrors({
+      nodeType: node.type,
+      incomingSequenceFlows: edgeCounts.incoming,
+      outgoingSequenceFlows: edgeCounts.outgoing,
+    });
+
+    node.data.validationErrors = validationErrors.length > 0 ? validationErrors : undefined;
+    if (validationErrors.length > 0) {
+      node.className = `${node.className ?? ""} kie-bpmn-editor--node-invalid`.trim();
+    }
+  }
 
   const selectedEdgesById = xyFlowReactKieDiagram._selectedEdges.reduce(
     (acc, s) => acc.set(s, edgesById.get(s)!),

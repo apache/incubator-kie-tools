@@ -73,6 +73,21 @@ import { useBpmnEditorI18n } from "../i18n";
 
 export const MIME_TYPE_FOR_BPMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-bpmn-editor--new-node-from-palette";
 
+let transparentDragImage: HTMLDivElement | undefined;
+
+function getTransparentDragImage() {
+  if (!transparentDragImage) {
+    transparentDragImage = document.createElement("div");
+    transparentDragImage.style.width = "1px";
+    transparentDragImage.style.height = "1px";
+    transparentDragImage.style.opacity = "0";
+    transparentDragImage.style.pointerEvents = "none";
+    document.body.appendChild(transparentDragImage);
+  }
+
+  return transparentDragImage;
+}
+
 export function BpmnPalette({ pulse }: { pulse: boolean }) {
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
 
@@ -89,16 +104,8 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
       );
       event.dataTransfer.effectAllowed = "move";
 
-      // Remove default effect of dragging elements.
-      const transparentDiv = document.createElement("div");
-      transparentDiv.style.width = "1px";
-      transparentDiv.style.height = "1px";
-      transparentDiv.style.opacity = "0";
-      document.body.appendChild(transparentDiv);
-      event.dataTransfer.setDragImage(transparentDiv, 0, 0);
-      setTimeout(() => {
-        document.body.removeChild(transparentDiv);
-      }, 0);
+      // Keep drag visuals lightweight and stable by reusing one transparent drag image.
+      event.dataTransfer.setDragImage(getTransparentDragImage(), 0, 0);
 
       bpmnEditorStoreApi.setState((s) => {
         const snapGrid = s.xyFlowReactKieDiagram.snapGrid;

@@ -30,3 +30,13 @@
   width: calc(100% + 20px);
   margin-left: -10px;
 }
+
+.react-flow__node.kie-bpmn-editor--node-invalid .xyflow-react-kie-diagram--node-shape,
+.kie-bpmn-editor--node-invalid.xyflow-react-kie-diagram--node-shape {
+  filter: drop-shadow(0 0 4px rgba(198, 56, 32, 0.45));
+}
+
+.react-flow__node.kie-bpmn-editor--node-invalid .xyflow-react-kie-diagram--node-shape > * {
+  stroke: #c63820 !important;
+  stroke-width: 2px;
+}

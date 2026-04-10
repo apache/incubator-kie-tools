@@ -352,6 +352,7 @@ export interface BpmnDiagramNodeData<T extends BpmnNodeElement = BpmnNodeElement
   bpmnElement: T;
   shape: Normalized<BPMNDI__BPMNShape>;
   shapeIndex: number;
+  validationErrors?: string[];
 }
 
 export interface BpmnDiagramEdgeData extends XyFlowReactKieDiagramEdgeData {

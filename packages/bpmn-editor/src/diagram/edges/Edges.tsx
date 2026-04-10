@@ -26,7 +26,7 @@ import { DEFAULT_INTRACTION_WIDTH } from "@kie-tools/xyflow-react-kie-diagram/di
 import { propsHaveSameValuesDeep } from "@kie-tools/xyflow-react-kie-diagram/dist/memoization/memoization";
 import { useIsHovered } from "@kie-tools/xyflow-react-kie-diagram/dist/reactExt/useIsHovered";
 import * as React from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
 import { AssociationPath, SequenceFlowPath } from "./EdgeSvgs";
 import { BpmnDiagramEdgeData, MIN_NODE_SIZES } from "../BpmnDiagramDomain";
@@ -50,8 +50,6 @@ const interactionStrokeProps: Partial<React.SVGAttributes<SVGPathElement>> = {
 
 export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeData>) => {
   const { i18n } = useBpmnEditorI18n();
-  const renderCount = useRef<number>(0);
-  renderCount.current++;
 
   const { path, points: waypoints } = usePathForEdgeWithWaypoints(
     props.data?.bpmnEdge,
@@ -170,9 +168,6 @@ export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeD
 }, propsHaveSameValuesDeep);
 
 export const AssociationEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeData>) => {
-  const renderCount = useRef<number>(0);
-  renderCount.current++;
-
   const { path, points: waypoints } = usePathForEdgeWithWaypoints(
     props.data?.bpmnEdge,
     props.data?.bpmnShapeSource,

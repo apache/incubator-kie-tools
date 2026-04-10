@@ -100,6 +100,23 @@ import { getShouldDisplayIsInterruptingFlag } from "../../propertiesPanel/single
 import "./Nodes.css";
 import { useCustomTasks } from "../../customTasks/BpmnEditorCustomTasksContextProvider";
 
+function useNodeValidationDecoration(nodeId: string, baseClassName: string) {
+  const validationErrors = useBpmnEditorStore((s) => s.computed(s).getDiagramData().nodesById.get(nodeId)?.data.validationErrors);
+  const hasValidationErrors = !!validationErrors && validationErrors.length > 0;
+
+  const nodeClassName = useMemo(
+    () => `${baseClassName} ${hasValidationErrors ? "kie-bpmn-editor--node-invalid" : ""}`.trim(),
+    [baseClassName, hasValidationErrors]
+  );
+
+  const nodeValidationTitle = useMemo(
+    () => (hasValidationErrors ? validationErrors!.join("\n") : undefined),
+    [hasValidationErrors, validationErrors]
+  );
+
+  return { nodeClassName, nodeValidationTitle };
+}
+
 export const StartEventNode = React.memo(
   ({
     data: { bpmnElement: startEvent, shape, shapeIndex, parentXyFlowNode },
@@ -109,9 +126,7 @@ export const StartEventNode = React.memo(
     type,
     id,
   }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tStartEvent> & { __$$element: "startEvent" }>>) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -127,6 +142,7 @@ export const StartEventNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -162,7 +178,7 @@ export const StartEventNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <StartEventNodeSvg
             {...nodeDimensions}
             x={0}
@@ -180,14 +196,13 @@ export const StartEventNode = React.memo(
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--task-node ${className} kie-bpmn-editor--selected-task-node`}
+          className={`kie-bpmn-editor--task-node ${nodeClassName} kie-bpmn-editor--selected-task-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={startEvent["@_name"]}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isMorphingPanelExpanded && !isTargeted && shouldActLikeHovered}
@@ -258,9 +273,7 @@ export const IntermediateCatchEventNode = React.memo(
       | (Normalized<BPMN20__tBoundaryEvent> & { __$$element: "boundaryEvent" })
     >
   >) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -276,6 +289,7 @@ export const IntermediateCatchEventNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -307,7 +321,7 @@ export const IntermediateCatchEventNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <IntermediateCatchEventNodeSvg
             {...nodeDimensions}
             x={0}
@@ -324,14 +338,13 @@ export const IntermediateCatchEventNode = React.memo(
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--intermediate-catch-event-node ${className} kie-bpmn-editor--selected-intermediate-catch-event-node`}
+          className={`kie-bpmn-editor--intermediate-catch-event-node ${nodeClassName} kie-bpmn-editor--selected-intermediate-catch-event-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={id}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isMorphingPanelExpanded && !isTargeted && shouldActLikeHovered}
@@ -399,9 +412,7 @@ export const IntermediateThrowEventNode = React.memo(
   }: RF.NodeProps<
     BpmnDiagramNodeData<Normalized<BPMN20__tIntermediateThrowEvent> & { __$$element: "intermediateThrowEvent" }>
   >) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -417,6 +428,7 @@ export const IntermediateThrowEventNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -450,7 +462,7 @@ export const IntermediateThrowEventNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <IntermediateThrowEventNodeSvg
             {...nodeDimensions}
             x={0}
@@ -462,14 +474,13 @@ export const IntermediateThrowEventNode = React.memo(
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--intermediate-throw-event-node ${className} kie-bpmn-editor--selected-intermediate-throw-event-node`}
+          className={`kie-bpmn-editor--intermediate-throw-event-node ${nodeClassName} kie-bpmn-editor--selected-intermediate-throw-event-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={id}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isMorphingPanelExpanded && !isTargeted && shouldActLikeHovered}
@@ -535,9 +546,7 @@ export const EndEventNode = React.memo(
     type,
     id,
   }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tEndEvent> & { __$$element: "endEvent" }>>) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -553,6 +562,7 @@ export const EndEventNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -579,7 +589,7 @@ export const EndEventNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <EndEventNodeSvg
             {...nodeDimensions}
             x={0}
@@ -592,14 +602,13 @@ export const EndEventNode = React.memo(
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--end-event-node ${className} kie-bpmn-editor--selected-end-event-node`}
+          className={`kie-bpmn-editor--end-event-node ${nodeClassName} kie-bpmn-editor--selected-end-event-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={id}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isMorphingPanelExpanded && !isTargeted && shouldActLikeHovered}
@@ -674,9 +683,7 @@ export const TaskNode = React.memo(
       >
     >
   >) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const enableCustomNodeStyles = useBpmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
@@ -693,6 +700,7 @@ export const TaskNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -746,7 +754,7 @@ export const TaskNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <TaskNodeSvg
             {...nodeDimensions}
             x={0}
@@ -761,14 +769,13 @@ export const TaskNode = React.memo(
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--task-node ${className} kie-bpmn-editor--selected-task-node`}
+          className={`kie-bpmn-editor--task-node ${nodeClassName} kie-bpmn-editor--selected-task-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={task["@_name"]}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isMorphingPanelExpanded && !isTargeted && shouldActLikeHovered}
@@ -840,9 +847,7 @@ export const SubProcessNode = React.memo(
   }: RF.NodeProps<
     BpmnDiagramNodeData<Normalized<BPMN20__tSubProcess> & { __$$element: "adHocSubProcess" | "subProcess" }>
   >) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
     const interactionRectRef = useRef<SVGRectElement>(null);
 
@@ -863,6 +868,7 @@ export const SubProcessNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -909,7 +915,7 @@ export const SubProcessNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <SubProcessNodeSvg
             {...nodeDimensions}
             ref={interactionRectRef}
@@ -929,14 +935,13 @@ export const SubProcessNode = React.memo(
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--sub-process-node ${className} kie-bpmn-editor--selected-sub-process-node`}
+          className={`kie-bpmn-editor--sub-process-node ${nodeClassName} kie-bpmn-editor--selected-sub-process-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={subProcess["@_name"]}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isMorphingPanelExpanded && !isTargeted && isOnlySelectedNode && !dragging}
@@ -1021,9 +1026,7 @@ export const GatewayNode = React.memo(
       >
     >
   >) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -1039,6 +1042,7 @@ export const GatewayNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -1062,21 +1066,20 @@ export const GatewayNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <GatewayNodeSvg {...nodeDimensions} x={0} y={0} variant={gateway.__$$element} />
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--gateway-node ${className} kie-bpmn-editor--selected-gateway-node`}
+          className={`kie-bpmn-editor--gateway-node ${nodeClassName} kie-bpmn-editor--selected-gateway-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={gateway["@_name"]}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isMorphingPanelExpanded && !isTargeted && shouldActLikeHovered}
@@ -1142,9 +1145,7 @@ export const DataObjectNode = React.memo(
     type,
     id,
   }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tDataObject> & { __$$element: "dataObject" }>>) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -1160,6 +1161,7 @@ export const DataObjectNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -1190,7 +1192,7 @@ export const DataObjectNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <DataObjectNodeSvg {...nodeDimensions} x={0} y={0} showArrow={false} showFoldedPage={true} />
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -1198,14 +1200,13 @@ export const DataObjectNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           style={style}
-          className={`kie-bpmn-editor--data-object-node-content ${className} ${selected ? "selected" : ""}`}
+          className={`kie-bpmn-editor--data-object-node-content ${nodeClassName} ${selected ? "selected" : ""}`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={dataObject["@_name"]}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isTargeted && shouldActLikeHovered}
@@ -1270,9 +1271,7 @@ export const GroupNode = React.memo(
     type,
     id,
   }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tGroup> & { __$$element: "group" }>>) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<SVGRectElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -1285,6 +1284,7 @@ export const GroupNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES, true);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     // Select nodes that are visually entirely inside the group.
@@ -1315,18 +1315,17 @@ export const GroupNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName}`}>
           <GroupNodeSvg ref={ref} {...nodeDimensions} x={0} y={0} strokeWidth={3} />
         </svg>
 
         <div
-          className={`xyflow-react-kie-diagram--node kie-bpmn-editor--group-node ${className}`}
+          className={`xyflow-react-kie-diagram--node kie-bpmn-editor--group-node ${nodeClassName}`}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={id}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
 
           {selected && !dragging && (
             <NodeResizerHandle
@@ -1361,9 +1360,7 @@ export const LaneNode = React.memo(
     type,
     id,
   }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tLane> & { __$$element: "lane" }>>) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<SVGRectElement>(null);
 
     const isOnlySelectedNode = useBpmnEditorStore(
@@ -1382,6 +1379,7 @@ export const LaneNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
@@ -1395,20 +1393,19 @@ export const LaneNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className} ${selected ? "selected" : ""}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName} ${selected ? "selected" : ""}`}>
           <LaneNodeSvg {...nodeDimensions} x={0} y={0} ref={ref} />
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          className={`kie-bpmn-editor--lane-node ${className} kie-bpmn-editor--selected-lane-node`}
+          className={`kie-bpmn-editor--lane-node ${nodeClassName} kie-bpmn-editor--selected-lane-node`}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={lane["@_name"]}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <div className={"xyflow-react-kie-diagram--node"}>
             <InfoNodePanel
               isVisible={!isTargeted && isOnlySelectedNode && !dragging}
@@ -1467,9 +1464,7 @@ export const TextAnnotationNode = React.memo(
     type,
     id,
   }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tTextAnnotation> & { __$$element: "textAnnotation" }>>) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const enableCustomNodeStyles = useBpmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
@@ -1486,6 +1481,7 @@ export const TextAnnotationNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({
       nodeType: type as typeof NODE_TYPES.textAnnotation,
       shape,
@@ -1514,7 +1510,7 @@ export const TextAnnotationNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName}`}>
           <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
@@ -1522,15 +1518,14 @@ export const TextAnnotationNode = React.memo(
 
         <div
           ref={ref}
-          className={`xyflow-react-kie-diagram--node kie-bpmn-editor--text-annotation-node ${className}`}
+          className={`xyflow-react-kie-diagram--node kie-bpmn-editor--text-annotation-node ${nodeClassName}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           data-nodehref={id}
+          title={nodeValidationTitle}
           data-nodelabel={String(textAnnotation.text)}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <InfoNodePanel
             isVisible={!isTargeted && shouldActLikeHovered}
             onClick={useCallback(() => {
@@ -1580,9 +1575,7 @@ export const TextAnnotationNode = React.memo(
 
 export const UnknownNode = React.memo(
   ({ data: { shape, shapeIndex }, selected, dragging, zIndex, type, id }: RF.NodeProps<BpmnDiagramNodeData<any>>) => {
-    const renderCount = useRef<number>(0);
-    renderCount.current++;
-
+    
     const ref = useRef<HTMLDivElement>(null);
 
     const isHovered = useIsHovered(ref);
@@ -1595,6 +1588,7 @@ export const UnknownNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
+    const { nodeClassName, nodeValidationTitle } = useNodeValidationDecoration(id, className);
     const nodeDimensions = useNodeDimensions({
       nodeType: type as typeof NODE_TYPES.unknown,
       shape,
@@ -1603,7 +1597,7 @@ export const UnknownNode = React.memo(
 
     return (
       <>
-        <svg className={`xyflow-react-kie-diagram--node-shape ${className}`}>
+        <svg className={`xyflow-react-kie-diagram--node-shape ${nodeClassName}`}>
           <UnknownNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
@@ -1611,12 +1605,11 @@ export const UnknownNode = React.memo(
 
         <div
           ref={ref}
-          className={`xyflow-react-kie-diagram--node kie-bpmn-editor--unknown-node ${className}`}
+          className={`xyflow-react-kie-diagram--node kie-bpmn-editor--unknown-node ${nodeClassName}`}
           tabIndex={-1}
           data-nodehref={id}
+          title={nodeValidationTitle}
         >
-          {/* {`render count: ${renderCount.current}`}
-          <br /> */}
           <InfoNodePanel
             isVisible={!isTargeted && shouldActLikeHovered}
             onClick={useCallback(() => {

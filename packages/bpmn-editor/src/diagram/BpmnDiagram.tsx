@@ -41,6 +41,7 @@ import { EdgeMarkers } from "@kie-tools/xyflow-react-kie-diagram/dist/edges/Edge
 import { ContainmentMode } from "@kie-tools/xyflow-react-kie-diagram/dist/graph/graphStructure";
 import { getHandlePosition } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/DcMaths";
 import { PositionalNodeHandleId } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/PositionalNodeHandles";
+import { snapPoint } from "@kie-tools/xyflow-react-kie-diagram/dist/snapgrid/SnapGrid";
 import { Draft } from "immer";
 import * as React from "react";
 import { useCallback, useState } from "react";
@@ -135,7 +136,7 @@ export function BpmnDiagram({
 
   const onNodeAdded = useCallback<OnNodeAdded<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>>(
     ({ state, type, element, dropPoint, data }) => {
-      console.log("BPMN EDITOR DIAGRAM: onNodeAdded");
+      const snappedDropPoint = snapPoint(state.xyFlowReactKieDiagram.snapGrid, dropPoint);
 
       if (data.bpmnElement.__$$element === "task") {
         for (const ct of customTasks ?? []) {
@@ -151,8 +152,8 @@ export function BpmnDiagram({
         __readonly_newNode: {
           type,
           bounds: {
-            "@_x": dropPoint.x,
-            "@_y": dropPoint.y,
+            "@_x": snappedDropPoint.x,
+            "@_y": snappedDropPoint.y,
             "@_width": DEFAULT_NODE_SIZES[type]({ snapGrid: state.xyFlowReactKieDiagram.snapGrid })["@_width"],
             "@_height": DEFAULT_NODE_SIZES[type]({ snapGrid: state.xyFlowReactKieDiagram.snapGrid })["@_height"],
           },
@@ -168,7 +169,7 @@ export function BpmnDiagram({
   const onConnectedNodeAdded = useCallback<
     OnConnectedNodeAdded<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
   >(({ state, sourceNode, newNodeType, edgeType, dropPoint }) => {
-    console.log("BPMN EDITOR DIAGRAM: onConnectedNodeAdded");
+    const snappedDropPoint = snapPoint(state.xyFlowReactKieDiagram.snapGrid, dropPoint);
     const { id } = addConnectedNode({
       definitions: state.bpmn.model.definitions,
       __readonly_sourceNode: {
@@ -180,8 +181,8 @@ export function BpmnDiagram({
       __readonly_newNode: {
         type: newNodeType,
         bounds: {
-          "@_x": dropPoint.x,
-          "@_y": dropPoint.y,
+          "@_x": snappedDropPoint.x,
+          "@_y": snappedDropPoint.y,
           "@_width": DEFAULT_NODE_SIZES[newNodeType]({ snapGrid: state.xyFlowReactKieDiagram.snapGrid })["@_width"],
           "@_height": DEFAULT_NODE_SIZES[newNodeType]({ snapGrid: state.xyFlowReactKieDiagram.snapGrid })["@_height"],
         },
@@ -193,34 +194,25 @@ export function BpmnDiagram({
   const onNodeRepositioned = useCallback<
     OnNodeRepositioned<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
   >(({ state, node, controlWaypointsByEdge, newPosition, childNodeIds }) => {
-    console.log("BPMN EDITOR DIAGRAM: onNodeRepositioned");
+    const diagramData = state.computed(state).getDiagramData();
     const { delta } = repositionNode({
       definitions: state.bpmn.model.definitions,
       controlWaypointsByEdge,
       __readonly_change: {
         type: "absolute",
         nodeType: node.type as BpmnNodeType,
-        selectedEdges: [...state.computed(state).getDiagramData().selectedEdgesById.keys()],
+        selectedEdges: [...diagramData.selectedEdgesById.keys()],
         shapeIndex: node.data.shapeIndex,
-        sourceEdgeIndexes: state
-          .computed(state)
-          .getDiagramData()
-          .edges.flatMap((e) => (e.source === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
-        targetEdgeIndexes: state
-          .computed(state)
-          .getDiagramData()
-          .edges.flatMap((e) => (e.target === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+        sourceEdgeIndexes: diagramData.edges.flatMap((e) => (e.source === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+        targetEdgeIndexes: diagramData.edges.flatMap((e) => (e.target === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
         position: newPosition,
       },
     });
 
-    const allEdgeIds = state
-      .computed(state)
-      .getDiagramData()
-      .edges.map((e) => e.id); // Simulate all edges being selected
+    const allEdgeIds = diagramData.edges.map((e) => e.id); // Simulate all edges being selected
 
     for (const nestedId of childNodeIds) {
-      const nestedNode = state.computed(state).getDiagramData().nodesById.get(nestedId);
+      const nestedNode = diagramData.nodesById.get(nestedId);
       if (!nestedNode) {
         throw new Error("Can't reposition nested node with id " + nestedId);
       }
@@ -233,14 +225,8 @@ export function BpmnDiagram({
           nodeType: nestedNode.type as BpmnNodeType,
           selectedEdges: allEdgeIds, // Makes sure all internal waypoints move too.
           shapeIndex: nestedNode.data.shapeIndex,
-          sourceEdgeIndexes: state
-            .computed(state)
-            .getDiagramData()
-            .edges.flatMap((e) => (e.source === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
-          targetEdgeIndexes: state
-            .computed(state)
-            .getDiagramData()
-            .edges.flatMap((e) => (e.target === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+          sourceEdgeIndexes: diagramData.edges.flatMap((e) => (e.source === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+          targetEdgeIndexes: diagramData.edges.flatMap((e) => (e.target === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
           offset: {
             deltaX: delta.x,
             deltaY: delta.y,
@@ -252,7 +238,6 @@ export function BpmnDiagram({
 
   const onNodeDeleted = useCallback<OnNodeDeleted<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>>(
     ({ state, node }) => {
-      console.log("BPMN EDITOR DIAGRAM: onNodeDeleted");
       deleteNode({
         definitions: state.bpmn.model.definitions,
         __readonly_bpmnElementId: node.data.bpmnElement?.["@_id"],
@@ -267,7 +252,6 @@ export function BpmnDiagram({
 
   const onNodeUnparented = useCallback<OnNodeUnparented<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>>(
     ({ state, activeNode, exParentNode, selectedNodes }) => {
-      console.log("BPMN EDITOR DIAGRAM: onNodeUnparented");
       if (exParentNode.type === NODE_TYPES.subProcess) {
         // ContainmentMode was INSIDE
         moveNodesOutOfSubProcess({
@@ -307,7 +291,6 @@ export function BpmnDiagram({
 
   const onNodeParented = useCallback<OnNodeParented<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>>(
     ({ state, containmentMode, activeNode, parentNode, selectedNodes }) => {
-      console.log(`BPMN EDITOR DIAGRAM: onNodeParented (${containmentMode})`);
       if (containmentMode === ContainmentMode.INSIDE && parentNode.type === NODE_TYPES.subProcess) {
         moveNodesInsideSubProcess({
           definitions: state.bpmn.model.definitions,
@@ -336,7 +319,7 @@ export function BpmnDiagram({
 
   const onNodeResized = useCallback<OnNodeResized<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>>(
     ({ state, node, newDimensions }) => {
-      console.log("BPMN EDITOR DIAGRAM: onNodeResized");
+      const diagramData = state.computed(state).getDiagramData();
       resizeNode({
         definitions: state.bpmn.model.definitions,
         __readonly_snapGrid: state.xyFlowReactKieDiagram.snapGrid,
@@ -344,14 +327,8 @@ export function BpmnDiagram({
           bpmnElement: node.data.bpmnElement,
           nodeType: node.type!,
           shapeIndex: node.data.shapeIndex,
-          sourceEdgeIndexes: state
-            .computed(state)
-            .getDiagramData()
-            .edges.flatMap((e) => (e.source === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
-          targetEdgeIndexes: state
-            .computed(state)
-            .getDiagramData()
-            .edges.flatMap((e) => (e.target === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+          sourceEdgeIndexes: diagramData.edges.flatMap((e) => (e.source === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+          targetEdgeIndexes: diagramData.edges.flatMap((e) => (e.target === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
           dimension: {
             "@_width": newDimensions.width,
             "@_height": newDimensions.height,
@@ -367,7 +344,6 @@ export function BpmnDiagram({
   const onEdgeAdded = useCallback<
     OnEdgeAdded<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
   >(({ state, edgeType, sourceNode, targetNode, targetHandle }) => {
-    console.log("BPMN EDITOR DIAGRAM: onEdgeAdded");
     addEdge({
       definitions: state.bpmn.model.definitions,
       __readonly_edge: {
@@ -397,7 +373,6 @@ export function BpmnDiagram({
   const onEdgeUpdated = useCallback<
     OnEdgeUpdated<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
   >(({ state, edge, targetNode, sourceNode, targetHandle, sourceHandle, firstWaypoint, lastWaypoint }) => {
-    console.log("BPMN EDITOR DIAGRAM: onEdgeUpdated");
     const { newBpmnEdge } = addEdge({
       definitions: state.bpmn.model.definitions,
       __readonly_edge: {
@@ -454,7 +429,6 @@ export function BpmnDiagram({
   const onEdgeDeleted = useCallback<
     OnEdgeDeleted<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
   >(({ state, edge }) => {
-    console.log("BPMN EDITOR DIAGRAM: onEdgeDeleted");
     deleteEdge({ definitions: state.bpmn.model.definitions, __readonly_edgeId: edge.id });
   }, []);
 
@@ -462,7 +436,6 @@ export function BpmnDiagram({
 
   const onWaypointAdded = useCallback<OnWaypointAdded>(
     ({ beforeIndex, edgeIndex, waypoint }) => {
-      console.log("BPMN EDITOR DIAGRAM: onWaypointAdded");
       bpmnEditorStoreApi.setState((s) => {
         addEdgeWaypoint({
           definitions: s.bpmn.model.definitions,
@@ -477,7 +450,6 @@ export function BpmnDiagram({
 
   const onWaypointRepositioned = useCallback<OnWaypointRepositioned>(
     ({ waypointIndex, edgeIndex, waypoint }) => {
-      console.log("BPMN EDITOR DIAGRAM: onWaypointRepositioned");
       bpmnEditorStoreApi.setState((s) => {
         repositionEdgeWaypoint({
           definitions: s.bpmn.model.definitions,
@@ -492,7 +464,6 @@ export function BpmnDiagram({
 
   const onWaypointDeleted = useCallback<OnWaypointDeleted>(
     ({ waypointIndex, edgeIndex }) => {
-      console.log("BPMN EDITOR DIAGRAM: onWaypointDeleted");
       bpmnEditorStoreApi.setState((s) => {
         deleteEdgeWaypoint({
           definitions: s.bpmn.model.definitions,
