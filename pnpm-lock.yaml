@@ -868,9 +868,9 @@ importers:
 
   examples/process-accelerator:
     dependencies:
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../../packages/maven-base
+        version: link:../../packages/maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -6187,9 +6187,9 @@ importers:
 
   packages/jbpm-quarkus-devui:
     dependencies:
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -7064,9 +7064,9 @@ importers:
 
   packages/kogito-db-migrator-tool:
     dependencies:
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -7129,9 +7129,9 @@ importers:
 
   packages/kogito-jit-runner-image:
     dependencies:
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
@@ -7160,9 +7160,9 @@ importers:
 
   packages/kogito-jobs-service-ephemeral-image:
     dependencies:
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
@@ -7191,9 +7191,9 @@ importers:
 
   packages/kogito-jobs-service-postgresql-image:
     dependencies:
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
@@ -8468,9 +8468,9 @@ importers:
       '@kie-tools/jbpm-quarkus-devui':
         specifier: workspace:*
         version: link:../jbpm-quarkus-devui
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../maven-quarkus-bom
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -12487,9 +12487,9 @@ importers:
 
   packages/sonataflow-quarkus-devui:
     dependencies:
-      '@kie-tools/maven-base':
+      '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*

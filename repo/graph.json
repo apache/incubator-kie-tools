@@ -45,8 +45,8 @@
       { "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" },
       { "id": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" },
       { "id": "@kie-tools-examples/process-accelerator" },
+      { "id": "@kie-tools/maven-quarkus-bom" },
       { "id": "@kie-tools/maven-base" },
-      { "id": "@kie-tools-core/drools-and-kogito" },
       { "id": "@kie-tools-examples/process-business-calendar" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
@@ -99,6 +99,7 @@
       { "id": "@kie-tools/cors-proxy-image" },
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
+      { "id": "@kie-tools-core/drools-and-kogito" },
       { "id": "@kie-tools/dashbuilder-component-echarts" },
       { "id": "@kie-tools/dashbuilder-component-map" },
       { "id": "@kie-tools/dashbuilder-component-svg-heatmap" },
@@ -141,7 +142,6 @@
       { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
       { "id": "@kie-tools/extended-services-java" },
-      { "id": "@kie-tools/maven-quarkus-bom" },
       { "id": "extended-services-vscode-extension" },
       { "id": "@kie-tools/form-code-generator" },
       { "id": "@kie-tools/form-code-generator-bootstrap4-theme" },
@@ -422,16 +422,15 @@
         "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
         "weight": 1
       },
-      { "source": "@kie-tools-examples/process-accelerator", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools-examples/process-accelerator", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
+      { "source": "@kie-tools/maven-quarkus-bom", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/maven-base", "target": "@kie-tools-core/drools-and-kogito", "weight": 1 },
-      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools-scripts/build-env", "weight": 1 },
-      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools-examples/process-business-calendar",
         "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
-      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
       {
         "source": "@kie-tools/jbpm-quarkus-devui",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
@@ -512,6 +511,7 @@
         "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
+      { "source": "@kie-tools/sonataflow-quarkus-devui", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
       {
         "source": "@kie-tools/sonataflow-quarkus-devui",
         "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
@@ -732,6 +732,8 @@
         "target": "@kie-tools/dashbuilder-component-victory-charts",
         "weight": 1
       },
+      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools-scripts/build-env", "weight": 1 },
+      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-echarts",
         "target": "@kie-tools/dashbuilder-component-echarts-base",
@@ -1012,7 +1014,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
-      { "source": "@kie-tools/maven-quarkus-bom", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "extended-services-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "extended-services-vscode-extension", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "extended-services-vscode-extension", "target": "@kie-tools/extended-services-java", "weight": 1 },
@@ -1193,11 +1194,13 @@
         "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
+      { "source": "@kie/kogito-jobs-service-ephemeral-image", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
       {
         "source": "@kie/kogito-jobs-service-ephemeral-image",
         "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
+      { "source": "@kie/kogito-jobs-service-postgresql-image", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
       {
         "source": "@kie/kogito-jobs-service-postgresql-image",
         "target": "@kie/kogito-images-install-helper",
@@ -1214,8 +1217,9 @@
       },
       { "source": "@kie-tools/sonataflow-image-common", "target": "@kie-tools/python-venv", "weight": 1 },
       { "source": "@kie-tools/kogito-data-index-webapp", "target": "@kie-tools-core/webpack-base", "weight": 1 },
-      { "source": "@kie-tools/kogito-db-migrator-tool", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools/kogito-db-migrator-tool", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
       { "source": "@kie-tools/kogito-jobs-service-webapp", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie/kogito-jit-runner-image", "target": "@kie-tools/maven-quarkus-bom", "weight": 1 },
       { "source": "@kie/kogito-jit-runner-image", "target": "@kie/kogito-images-install-helper", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },

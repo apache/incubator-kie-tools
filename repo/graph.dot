@@ -36,7 +36,7 @@ digraph G {
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/process-accelerator" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
-  "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/maven-quarkus-bom" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/process-business-calendar" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/process-compact-architecture" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -79,6 +79,7 @@ digraph G {
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-builder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-client" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -128,7 +129,6 @@ digraph G {
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services-java" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/maven-quarkus-bom" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "extended-services-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/form-code-generator" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -261,7 +261,7 @@ digraph G {
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "dashed", color = "orange" ];
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/process-accelerator" -> "@kie-tools/maven-base" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/process-accelerator" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-business-calendar" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-event-driven" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
@@ -444,7 +444,7 @@ digraph G {
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/jbpm-form-code-generator-themes" -> "@kie-tools/form-code-generator-bootstrap4-theme" [ style = "solid", color = "blue" ];
   "@kie-tools/jbpm-form-code-generator-themes" -> "@kie-tools/form-code-generator-patternfly-theme" [ style = "solid", color = "blue" ];
-  "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
+  "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/runtime-tools-process-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/jest-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
@@ -482,13 +482,16 @@ digraph G {
   "@kie/kogito-data-index-ephemeral-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
   "@kie/kogito-data-index-postgresql-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-data-index-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/kogito-db-migrator-tool" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
+  "@kie-tools/kogito-db-migrator-tool" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie-tools/kogito-db-migrator-tool-image" -> "@kie-tools/kogito-db-migrator-tool" [ style = "solid", color = "black" ];
   "@kie-tools/kogito-db-migrator-tool-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
   "@kie/kogito-images-install-helper" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie/kogito-images-install-helper" -> "@kie-tools/sonataflow-image-common" [ style = "solid", color = "black" ];
+  "@kie/kogito-jit-runner-image" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie/kogito-jit-runner-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
+  "@kie/kogito-jobs-service-ephemeral-image" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie/kogito-jobs-service-ephemeral-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
+  "@kie/kogito-jobs-service-postgresql-image" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie/kogito-jobs-service-postgresql-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-jobs-service-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
@@ -667,6 +670,7 @@ digraph G {
   "@kie-tools/sonataflow-operator" -> "@kie/kogito-data-index-postgresql-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie/kogito-jobs-service-ephemeral-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie/kogito-jobs-service-postgresql-image" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-uniforms" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/storybook-base" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];

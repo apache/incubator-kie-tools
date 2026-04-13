@@ -175,16 +175,6 @@
         <scope>import</scope>
       </dependency>
 
-      <!-- TODO This should be imported by still-not-existing kie-tools-spring-boot-bom and removed from here -->
-      <!--
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-apps-springboot-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency> -->
-
       <dependency>
         <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
         <artifactId>common</artifactId>
