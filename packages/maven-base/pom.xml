@@ -173,43 +173,31 @@
       <!-- Apache KIE -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-apps-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <!-- TODO This should be imported by still-not-existing kie-tools-quarkus-bom and removed from here -->
       <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-apps-quarkus-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <!-- TODO This should be imported by still-not-existing kie-tools-spring-boot-bom and removed from here -->
+      <!--
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-test-utils</artifactId>
+        <artifactId>kogito-apps-springboot-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-test-resources</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <classifier>tests</classifier>
-      </dependency>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency> -->
+
       <dependency>
         <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
         <artifactId>common</artifactId>
