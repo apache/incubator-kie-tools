@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@kie-tools/form-code-generator": "workspace:*",
-    "lodash": "^4.17.23",
+    "lodash": "^4.18.1",
     "prettier": "^2.8.8",
     "underscore": "^1.13.8",
     "uniforms": "^3.10.2",

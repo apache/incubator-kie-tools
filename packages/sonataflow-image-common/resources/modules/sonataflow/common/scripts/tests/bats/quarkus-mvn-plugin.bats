@@ -22,6 +22,7 @@ set -e
 # Set up some environment variables for testing
 setup() {
     export QUARKUS_PLATFORM_VERSION="2.0.0"
+    export QUARKUS_VERSION="2.0.0"
     export KOGITO_VERSION="1.5.0"
     export KOGITO_HOME=$BATS_TMPDIR/maven
     mkdir -p ${KOGITO_HOME}/"launch"
