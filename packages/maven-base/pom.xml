@@ -128,17 +128,13 @@
     <version.quarkus>3.27.2</version.quarkus>
 
     <!-- 3rd party dependencies -->
-    <version.org.apache.commons.commons-compress>1.28.0</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
-    <version.org.freemarker>2.3.34</version.org.freemarker>
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
-    <version.io.netty>4.1.131.Final</version.io.netty>
 
     <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
     <version.tomcat.embed.core>10.1.52</version.tomcat.embed.core>
-    <version.apache.commons.lang3>3.18.0</version.apache.commons.lang3>
     <version.angus.mail>2.0.5</version.angus.mail>
     <!-- End of various transitive overrides. -->
   </properties>
@@ -159,11 +155,6 @@
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
         <version>${version.tomcat.embed.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${version.apache.commons.lang3}</version>
       </dependency>
 
       <!-- Apache KIE -->
@@ -208,133 +199,6 @@
 
       <!-- 3rd party -->
 
-      <!-- Forced version of the majority of general netty dependencies. This is to enforce an aligned netty libraries version in transitive dependencies, due to possible CVEs. -->
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-buffer</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-dns</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-haproxy</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-http</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-memcache</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-mqtt</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-redis</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-smtp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-socks</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-stomp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-xml</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-dev-tools</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler-proxy</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler-ssl-ocsp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-resolver</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-resolver-dns</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-rxtx</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-sctp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-udt</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-all</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>${version.org.apache.commons.commons-compress}</version>
-      </dependency>
       <dependency>
         <groupId>org.iq80.snappy</groupId>
         <artifactId>snappy</artifactId>
@@ -349,11 +213,6 @@
         <groupId>org.apache.james</groupId>
         <artifactId>apache-mime4j-core</artifactId>
         <version>${version.org.apache.mime4j}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.freemarker</groupId>
-        <artifactId>freemarker</artifactId>
-        <version>${version.org.freemarker}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

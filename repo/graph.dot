@@ -128,6 +128,7 @@ digraph G {
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services-java" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/maven-quarkus-bom" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "extended-services-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/form-code-generator" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -412,7 +413,7 @@ digraph G {
   "@kie-tools-core/envelope-bus" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/envelope-bus" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools/extended-services-api" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
-  "@kie-tools/extended-services-java" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
+  "@kie-tools/extended-services-java" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "extended-services-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "extended-services-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "extended-services-vscode-extension" -> "@kie-tools/extended-services-java" [ style = "dashed", color = "blue" ];
@@ -497,6 +498,7 @@ digraph G {
   "@kie-tools/maven-base" -> "@kie-tools-core/drools-and-kogito" [ style = "solid", color = "black" ];
   "@kie-tools/maven-m2-repo-via-http-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/maven-m2-repo-via-http-image" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/maven-quarkus-bom" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
