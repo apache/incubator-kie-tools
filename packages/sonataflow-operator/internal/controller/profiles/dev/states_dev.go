@@ -97,7 +97,7 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 
 	externalCM, err := workflowdef.FetchExternalResourcesConfigMapsRef(e.C, workflow)
 	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "External Resources ConfigMap not found: %s", err.Error())
+		workflow.Status.Manager().MarkFalsef(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "External Resources ConfigMap not found: %s", err.Error())
 		if _, err = e.PerformStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
 		}
@@ -240,7 +240,7 @@ func (r *recoverFromFailureState) Do(ctx context.Context, workflow *operatorapi.
 	}
 
 	if workflow.Status.RecoverFailureAttempts >= constants.RecoverDeploymentErrorRetries {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.RedeploymentExhaustedReason,
+		workflow.Status.Manager().MarkFalsef(api.RunningConditionType, api.RedeploymentExhaustedReason,
 			"Can't recover workflow from failure after maximum attempts: %d", workflow.Status.RecoverFailureAttempts)
 		if _, updateErr := r.PerformStatusUpdate(ctx, workflow); updateErr != nil {
 			return ctrl.Result{}, nil, updateErr
