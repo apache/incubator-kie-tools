@@ -128,24 +128,10 @@
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
-
-    <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
-           They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
-    <version.angus.mail>2.0.5</version.angus.mail>
-    <!-- End of various transitive overrides. -->
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
-           They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
-      <dependency>
-        <groupId>org.eclipse.angus</groupId>
-        <artifactId>angus-mail</artifactId>
-        <version>${version.angus.mail}</version>
-      </dependency>
-      <!-- End of various transitive overrides. -->
-
       <!-- Apache KIE -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
