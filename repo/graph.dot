@@ -370,7 +370,7 @@ digraph G {
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/dmn-uniforms-patternfly-form-wrapper" [ style = "solid", color = "black" ];
-  "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
+  "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/maven-quarkus-bom" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
@@ -479,7 +479,9 @@ digraph G {
   "@kie-tools/kie-sandbox-webapp-image" -> "@kie-tools/online-editor" [ style = "solid", color = "black" ];
   "@kie-tools/kn-plugin-workflow" -> "@kie-tools/sonataflow-operator" [ style = "dashed", color = "black" ];
   "@kie/kogito-base-builder-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
+  "@kie/kogito-data-index-ephemeral-image" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie/kogito-data-index-ephemeral-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
+  "@kie/kogito-data-index-postgresql-image" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];
   "@kie/kogito-data-index-postgresql-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-data-index-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/kogito-db-migrator-tool" -> "@kie-tools/maven-quarkus-bom" [ style = "solid", color = "black" ];

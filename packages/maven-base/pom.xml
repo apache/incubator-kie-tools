@@ -124,9 +124,6 @@
     <!-- Apache KIE -->
     <version.org.kie.kogito>999-20260414-local</version.org.kie.kogito>
 
-    <!-- Quarkus -->
-    <version.quarkus>3.27.2</version.quarkus>
-
     <!-- 3rd party dependencies -->
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
@@ -134,7 +131,6 @@
 
     <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
-    <version.tomcat.embed.core>10.1.54</version.tomcat.embed.core>
     <version.angus.mail>2.0.5</version.angus.mail>
     <!-- End of various transitive overrides. -->
   </properties>
@@ -150,26 +146,10 @@
       </dependency>
       <!-- End of various transitive overrides. -->
 
-      <!-- Not directly used, but used to override transitive versions from other dependencies to fix vulnerabilities -->
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>${version.tomcat.embed.core}</version>
-      </dependency>
-
       <!-- Apache KIE -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-apps-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- TODO This should be imported by still-not-existing kie-tools-quarkus-bom and removed from here -->
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-apps-quarkus-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -283,13 +263,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>flatten-maven-plugin</artifactId>
           <version>${version.codehaus.flatten.plugin}</version>
-        </plugin>
-
-        <!-- Quarkus -->
-        <plugin>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-maven-plugin</artifactId>
-          <version>${version.quarkus}</version>
         </plugin>
 
         <!-- 3rd party -->

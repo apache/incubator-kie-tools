@@ -33,7 +33,7 @@
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoDataIndexEphemeralImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoDataIndexEphemeralImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoDataIndexEphemeralImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoDataIndexEphemeralImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
   },
   "dependencies": {
-    "@kie-tools/maven-base": "workspace:*"
+    "@kie-tools/maven-quarkus-bom": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/python-venv": "workspace:*",

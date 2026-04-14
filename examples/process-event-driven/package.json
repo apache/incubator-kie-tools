@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@kie-tools/jbpm-quarkus-devui": "workspace:*",
-    "@kie-tools/maven-base": "workspace:*"
+    "@kie-tools/maven-quarkus-bom": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

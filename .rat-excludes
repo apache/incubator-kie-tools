@@ -401,6 +401,8 @@ packages/kogito-db-migrator-tool/.gitignore
 packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml
 packages/maven-base/kie-tools-maven-base.iml
 packages/maven-base/settings.xml
+packages/maven-quarkus-bom/kie-tools-maven-quarkus-bom.iml
+packages/maven-spring-boot-bom/kie-tools-maven-spring-boot-bom.iml
 packages/maven-m2-repo-via-http-image/settings.xml.envsubst
 packages/online-editor/Caddyfile
 packages/online-editor/src/accelerators/test.dmn
