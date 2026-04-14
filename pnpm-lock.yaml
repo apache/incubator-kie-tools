@@ -5332,6 +5332,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -6192,6 +6195,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -6971,6 +6977,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7002,6 +7011,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7069,6 +7081,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -7134,6 +7149,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7165,6 +7183,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7196,6 +7217,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -8482,6 +8506,9 @@ importers:
       '@kie-tools/jbpm-quarkus-devui':
         specifier: workspace:*
         version: link:../jbpm-quarkus-devui
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/maven-quarkus-bom':
         specifier: workspace:*
         version: link:../maven-quarkus-bom
@@ -12505,6 +12532,9 @@ importers:
         specifier: workspace:*
         version: link:../maven-quarkus-bom
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
