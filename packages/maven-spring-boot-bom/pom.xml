@@ -41,7 +41,7 @@
     <dependencies>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-apps-spring-boot-bom</artifactId>
+        <artifactId>kogito-apps-springboot-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
