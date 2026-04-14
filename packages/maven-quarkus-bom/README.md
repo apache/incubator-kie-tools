@@ -19,7 +19,7 @@
 
 Quarkus BOM Extenstion files for Maven-based packages.
 
-- `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based pacakges.
+- `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based Quarkus pacakges.
 
 For more information, refer to the [KIE Tools :: Manual](../../repo/MANUAL.md#specifics--maven)
 
