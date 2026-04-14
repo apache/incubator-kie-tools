@@ -231,7 +231,7 @@ In case of Maven-based modules based on Quarkus, the following parent should be 
 ```xml
 <parent>
   <groupId>org.kie</groupId>
-  <artifactId>kie-tools-maven-quarkus-bom</artifactId>
+  <artifactId>kie-tools-quarkus-bom</artifactId>
   <version>${revision}</version>
   <relativePath>./node_modules/@kie-tools/maven-quarkus-bom/pom.xml</relativePath>
 </parent>
@@ -242,7 +242,7 @@ In case of Maven-based modules based on Spring Boot, the following parent should
 ```xml
 <parent>
   <groupId>org.kie</groupId>
-  <artifactId>kie-tools-maven-spring-boot-bom</artifactId>
+  <artifactId>kie-tools-spring-boot-bom</artifactId>
   <version>${revision}</version>
   <relativePath>./node_modules/@kie-tools/maven-spring-boot-bom/pom.xml</relativePath>
 </parent>
