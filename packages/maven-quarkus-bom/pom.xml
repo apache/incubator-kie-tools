@@ -68,4 +68,107 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <!--  -->
+      <!-- This profile configures Maven to skip installing  -->
+      <!-- artifacts to the default maven.repo.local directory -->
+      <!-- And instead copies them to `dist/1st-party-m2/repository. -->
+      <!--  -->
+      <!-- This allows for Maven-based packages not to pollute the -->
+      <!-- "shared" local Maven repository and risk being available -->
+      <!-- for packages that do not declare its dependencies correctly. -->
+      <!--  -->
+      <id>use-maven-repo-local-tail</id>
+      <!--      TEMPORARILY DISABLING MAVEN REPO LOCAL TAIL -->
+      <!--      <activation>-->
+      <!--        <property>-->
+      <!--          &lt;!&ndash; This makes this profile included even if other profiles are explicitly declared. &ndash;&gt;-->
+      <!--          &lt;!&ndash; To disable this profile, please use `-P-use-maven-repo-local-tail` or `-P!use-maven-repo-local-tail` &ndash;&gt;-->
+      <!--          <name>kieTools.do-not-use-this-property.ignoreMavenRepoLocalTail</name>-->
+      <!--          <value>!true</value>-->
+      <!--        </property>-->
+      <!--      </activation>-->
+      <build>
+        <pluginManagement>
+          <plugins>
+            <!--  -->
+            <!-- Skipping the "install:install" execution, we prevent accessing -->
+            <!-- previously-built packages without declaring them as dependencies. -->
+            <!--  -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-install-plugin</artifactId>
+              <version>${version.maven.install.plugin}</version>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <!--  -->
+          <!-- Removes the local Maven repository from the `dist` folder. -->
+          <!--  -->
+          <plugin>
+            <artifactId>maven-clean-plugin</artifactId>
+            <configuration>
+              <filesets>
+                <fileset>
+                  <directory>${basedir}/dist/1st-party-m2</directory>
+                  <includes>
+                    <include>**/*</include>
+                  </includes>
+                  <followSymlinks>false</followSymlinks>
+                </fileset>
+              </filesets>
+            </configuration>
+          </plugin>
+          <!-- -->
+          <!-- Removes this module's artifacts from the local maven repository, -->
+          <!-- to make sure `dist/1st-party-m2` is the only place it's available. -->
+          <!-- -->
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>clean-local-repo</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>purge-local-repository</goal>
+                </goals>
+                <configuration>
+                  <excludes>**/*</excludes>
+                  <actTransitively>false</actTransitively>
+                  <manualInclude>${project.groupId}:${project.artifactId}:${project.version}</manualInclude>
+                  <verbose>true</verbose>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!--  -->
+          <!-- This execution makes modules installed in the `dist` directory of packages. -->
+          <!--  -->
+          <plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-to-local-dist-1st-party-m2</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+                <configuration>
+                  <skip>false</skip>
+                  <altDeploymentRepository
+                  >kie-tools--local-dist-1st-party-m2::file://${maven.multiModuleProjectDirectory}/dist/1st-party-m2/repository</altDeploymentRepository>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
