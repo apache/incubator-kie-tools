@@ -30,10 +30,10 @@
     "start:win32": "pnpm build:dev && mvn -f ./dev/pom.xml clean quarkus:dev -Dquarkus.http.host=127.0.0.1  -Dkogito.service.url=http://127.0.0.1:8080/kie -Dkogito.jobs-service.url=http://127.0.0.1:8080/kie -Dkogito.data-index.urll=http://127.0.0.1:8080/kie"
   },
   "dependencies": {
+    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/maven-quarkus-bom": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/runtime-tools-process-dev-ui-webapp": "workspace:*",
     "run-script-os": "^1.1.6"
