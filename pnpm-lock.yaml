@@ -6942,6 +6942,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../maven-quarkus-bom
       '@kie-tools/sonataflow-quarkus-devui':
         specifier: workspace:*
         version: link:../sonataflow-quarkus-devui
