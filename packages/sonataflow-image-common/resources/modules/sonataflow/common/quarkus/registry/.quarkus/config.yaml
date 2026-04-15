@@ -1,3 +1,0 @@
-registries:
-  - registry.quarkus.io:
-      update-policy: never

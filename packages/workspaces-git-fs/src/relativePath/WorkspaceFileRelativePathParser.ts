@@ -50,9 +50,6 @@ export function extractExtension(relativePath: string) {
     if (isOfKind("supportedSingleExtensions", fileName)) {
       //technically not needed as the else statement does the same thing. Only here for clarity
       return ultimateExtension.replace(".", "");
-    }
-    if (isOfKind("supportedDoubleExtensions", fileName)) {
-      return penultimateExtension.replace(".", "") + ultimateExtension;
     } else {
       return ultimateExtension.replace(".", "");
     }

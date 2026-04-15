@@ -31,10 +31,6 @@ const argsByCommand = new Map([
   ["go", ["version"]],
   ["make", ["-v"]],
   ["helm", ["version"]],
-  ["python3", ["--version"]],
-  ["pip3", ["--version"]],
-  ["s2i", ["version"]],
-  ["xmllint", ["-version"]],
 ]);
 
 async function main() {

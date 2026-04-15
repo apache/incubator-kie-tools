@@ -50,10 +50,8 @@ To build and test all packages on this repository, you're going to need:
 - Maven `3.9.11`
 - Java `17`
 - Go `1.26.1` _(To install, follow these instructions: https://go.dev/doc/install)_
-- Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 - Make
-- xmllint _(To install, follow these instructions: https://www.baeldung.com/linux/xmllint)_
 - bash `5.x` _(On Linux or Nix you should be fine. On macOS, follow these instructions to use zsh: https://support.apple.com/102360)_
 
 > **ℹ️ NOTE**
@@ -203,12 +201,6 @@ This repository contains several applications. To develop each one of them indiv
 3. **NOTE:** To run the VS Code extension in development mode, you need `webpack` and `webpack-cli` to be globally installed on NPM. Normally you can do that with `npm install -g webpack@^5.94.0 webpack-cli@^4.10.0`, but `sudo` may be required depending on your installation.
 4. **Remember!** If you make changes to any package other than `packages/kie-editors-dev-vscode-extension`, you have to manually rebuild them before relaunching the extension on VS Code.
 
-#### VS Code Extension (Serverless Workflow Editor)
-
-1. After you've successfully built the project following the instructions above, open the `packages/serverless-workflow-vscode-extension` folder on VS Code. Use a new VS Code window so that the `packages/serverless-workflow-vscode-extension` folder shows up as root in the VS Code explorer.
-1. From there, you can Run the extension or the end-to-end tests by using the `Debug` menu/section. You can also use the respective shortcuts (F5 to start debugging, for instance).
-1. **Remember!** If you make changes to any package other than `packages/serverless-workflow-vscode-extension`, you have to manually rebuild them before relaunching the extension on VS Code.
-
 #### Chrome Extension (DMN, BPMN, and SceSim Editors)
 
 1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-pack-kogito-kie-editors` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
@@ -218,29 +210,12 @@ This repository contains several applications. To develop each one of them indiv
 5. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-pack-kogito-kie-editors/dist` folder.
 6. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
 
-#### Chrome Extension (Serverless Workflow Editor)
-
-1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-serverless-workflow-editor` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
-1. Run `pnpm build:dev` on `packages/chrome-extension-serverless-workflow-editor`. This will create a version of the Chrome Extension that fetches the envelope locally.
-1. Open a terminal and run `pnpm start` on `packages/chrome-extension-serverless-workflow-editor`. This will start a `webpack serve` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
-1. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#temporary-unexpire-flags-m118` in your Chrome browser, enable this flag and restart browser. Then go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable also this flag. Alternativelly, you can go to `https://localhost:9000` and add an exception.
-1. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-serverless-workflow-editor/dist` folder.
-1. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
-
 #### KIE Sandbox
 
 1. After you've successfully built the project following the instructions above, go to `packages/online-editor`.
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Online Editor resources.
 3. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
 4. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
-
-#### Serverless Logic Web Tools
-
-1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-web-tools`.
-2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
-3. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
-4. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
-5. (Optional) To try the "Runtime Tools" functionalities, run the SonataFlow Dev App by running `pnpm start` at `packages/sonataflow-dev-app`, then open `https://localhost:9020/#/settings/runtime-tools` and set `http://localhost:4000/graphql` in the "Data Index URL" field
 
 #### Standalone Editors (DMN)
 
@@ -253,7 +228,3 @@ This repository contains several applications. To develop each one of them indiv
 1. After you've successfully built the project following the instructions above, go to `packages/bpmn-editor-standalone`.
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Standalone Editors test page.
 3. From now on you can use the Standalone BPMN Editor by accessing `http://localhost:9904`.
-
-#### Knative Workflow plugin
-
-[Read the documentation](./packages/kn-plugin-workflow/README.md)

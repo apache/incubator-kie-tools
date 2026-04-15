@@ -48,7 +48,7 @@ import {
   inputBox,
   explorerFolder,
 } from "./CommonLocators";
-import { isKieEditorWithDualView, isKieEditorWithSingleView, isDashbuilderEditor } from "./KieFileExtensions";
+import { isKieEditorWithSingleView } from "./KieFileExtensions";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -137,10 +137,9 @@ export class VSCodeTestHelper {
     if (isKieEditorWithSingleView(fileName)) {
       const webView = await this.openEditorWithOneWebView(fileName, fileParentPath);
       return [webView];
-    } else if (isKieEditorWithDualView(fileName)) {
-      return await this.openEditorWithTwoWebViews(fileName, fileParentPath);
+    } else {
+      return await this.openNonKieEditorFile(fileName, fileParentPath);
     }
-    return await this.openNonKieEditorFile(fileName, fileParentPath);
   };
 
   private openEditorWithOneWebView = async (fileName: string, fileParentPath?: string): Promise<WebView> => {
@@ -159,10 +158,6 @@ export class VSCodeTestHelper {
     assert.equal(editorGroups.length, 2);
 
     const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
-
-    if (isDashbuilderEditor(fileName)) {
-      this.forceOpeningDashbuilderEditor(webviewLeft);
-    }
 
     const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
     await this.waitUntilKogitoEditorIsLoaded(webviewRight);
@@ -203,12 +198,6 @@ export class VSCodeTestHelper {
     return await this.workbench.getEditorView().getEditorGroups();
   };
 
-  private async forceOpeningDashbuilderEditor(textEditorWebView: WebView): Promise<void> {
-    const webDriver = textEditorWebView.getDriver();
-    const consoleHelper = await webDriver.findElement(webViewReady());
-    await consoleHelper.sendKeys(Key.ENTER);
-  }
-
   /**
    * Waits until folder structure in explorer is loaded and expanded.
    *
@@ -233,7 +222,7 @@ export class VSCodeTestHelper {
    * Expects SideBarView is defined and open.
    * To define SideBarView a folder needs to be opened using openFolder function.
    *
-   * You can specify the relative path to root directory in fileName. For example: "/a/b/filename.sw.json".
+   * You can specify the relative path to root directory in fileName. For example: "/a/b/filename.bpmn".
    * You can also specify the relative path in newFileName. The path of the new file will be relative to directory where the original file resides.
    *
    * Always use "/" separator in paths.

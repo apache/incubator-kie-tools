@@ -19,6 +19,4 @@ Please refer to:
 
 - https://marketplace.visualstudio.com/items/kie-group.bpmn-vscode-extension/changelog
 - https://marketplace.visualstudio.com/items/kie-group.dmn-vscode-extension/changelog
-- https://marketplace.visualstudio.com/items/kie-group.swf-vscode-extension/changelog
 - https://marketplace.visualstudio.com/items/kie-group.extended-services-vscode-extension/changelog
-- https://marketplace.visualstudio.com/items/redhat.vscode-extension-dashbuilder-editor/changelog

@@ -20,7 +20,6 @@
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import { editor, KeyCode, KeyMod } from "monaco-editor";
-import { FileLanguage } from "@kie-tools/json-yaml-language-service/dist/api";
 
 export interface RequestDataEditorApi {
   editor: editor.IStandaloneCodeEditor | undefined;
@@ -54,7 +53,7 @@ export class RequestDataEditorController implements RequestDataEditorApi {
     private readonly onContentChange: (args: { content: string; operation: RequestDataEditorOperation }) => void,
     private readonly isReadOnly: boolean
   ) {
-    this.model = editor.createModel(content, FileLanguage.JSON);
+    this.model = editor.createModel(content, "json");
     this.model.onDidChangeContent((event) => {
       if (!event.isUndoing && !event.isRedoing) {
         this.editor?.pushUndoStop();
@@ -88,7 +87,7 @@ export class RequestDataEditorController implements RequestDataEditorApi {
 
     this.editor = editor.create(container, {
       model: this.model,
-      language: FileLanguage.JSON,
+      language: "json",
       scrollBeyondLastLine: false,
       automaticLayout: true,
       fontSize: 14,

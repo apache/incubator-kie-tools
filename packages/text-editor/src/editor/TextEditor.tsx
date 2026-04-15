@@ -48,7 +48,7 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
   forwardedRef
 ) => {
   const [initialContent, setInitialContent] = useState<TextEditorContent | undefined>(undefined);
-  const swfTextEditorRef = useRef<MonacoEditorApi>(null);
+  const textEditorRef = useRef<MonacoEditorApi>(null);
 
   useImperativeHandle(forwardedRef, () => {
     return {
@@ -65,22 +65,22 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
         }
       },
       getContent: (): Promise<string> => {
-        return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
+        return Promise.resolve(textEditorRef.current?.getContent() || "");
       },
       getPreview: (): Promise<string> => {
         return Promise.resolve("");
       },
       undo: (): Promise<void> => {
-        return swfTextEditorRef.current?.undo() || Promise.resolve();
+        return textEditorRef.current?.undo() || Promise.resolve();
       },
       redo: (): Promise<void> => {
-        return swfTextEditorRef.current?.redo() || Promise.resolve();
+        return textEditorRef.current?.redo() || Promise.resolve();
       },
       validate: (): Notification[] => {
         return [];
       },
       setTheme: (theme: EditorTheme): Promise<void> => {
-        return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
+        return textEditorRef.current?.setTheme(theme) || Promise.resolve();
       },
     };
   }, []);
@@ -117,13 +117,13 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
           break;
         case MonacoEditorOperation.UNDO:
           if (!isVscode()) {
-            swfTextEditorRef.current?.undo();
+            textEditorRef.current?.undo();
           }
           props.onStateControlCommandUpdate(StateControlCommand.UNDO);
           break;
         case MonacoEditorOperation.REDO:
           if (!isVscode()) {
-            swfTextEditorRef.current?.redo();
+            textEditorRef.current?.redo();
           }
           props.onStateControlCommandUpdate(StateControlCommand.REDO);
           break;
@@ -142,7 +142,7 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
             fileName={initialContent.normalizedPosixPathRelativeToTheWorkspaceRoot}
             onContentChange={onContentChanged}
             setValidationErrors={setValidationErrors}
-            ref={swfTextEditorRef}
+            ref={textEditorRef}
             isReadOnly={props.isReadOnly}
           />
         ))}

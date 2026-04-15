@@ -1,9 +1,0 @@
-{
-  "id": "workflow identifier",
-  "version": "0.1",
-  "name": "Workflow name",
-  "invalid": "Workflow description",
-  "functions": [],
-  "events": [],
-  "states": []
-}

@@ -30,14 +30,9 @@ describe("WorkspaceFileRelativePathParser :: extractExtension", () => {
     ["foo.json", "json"],
     [".gitignore", "gitignore"],
     ["noExtension", ""],
-    ["bar.sw.yml", "sw.yml"],
-    ["bar.yard.json", "yard.json"],
-    ["bar.yard.yaml.yard.yaml", "yard.yaml"],
-    ["bar.dash.yaml", "dash.yaml"],
     ["a/b/c/foo.json", "json"],
     ["a/b/c/.gitignore", "gitignore"],
     ["a/b/c/noExtension", ""],
-    ["a/b/c/bar.sw.json", "sw.json"],
     ["asd.dmn.dmn", "dmn"],
     ["a/b/c'asd.DMn", "DMn"],
     ["foo.bpmN2", "bpmN2"],
@@ -111,46 +106,6 @@ describe("WorkspaceFileRelativePathParser :: parseWorkspaceFileRelativePath", ()
       },
     ],
     [
-      "bar.sw.yml",
-      {
-        relativePathWithoutExtension: "bar",
-        relativeDirPath: "",
-        extension: "sw.yml",
-        nameWithoutExtension: "bar",
-        name: "bar.sw.yml",
-      },
-    ],
-    [
-      "bar.yard.yml",
-      {
-        relativePathWithoutExtension: "bar",
-        relativeDirPath: "",
-        extension: "yard.yml",
-        nameWithoutExtension: "bar",
-        name: "bar.yard.yml",
-      },
-    ],
-    [
-      "bar.yard.yaml.yard.yaml",
-      {
-        relativePathWithoutExtension: "bar.yard.yaml",
-        relativeDirPath: "",
-        extension: "yard.yaml",
-        nameWithoutExtension: "bar.yard.yaml",
-        name: "bar.yard.yaml.yard.yaml",
-      },
-    ],
-    [
-      "bar.dash.yml",
-      {
-        relativePathWithoutExtension: "bar",
-        relativeDirPath: "",
-        extension: "dash.yml",
-        nameWithoutExtension: "bar",
-        name: "bar.dash.yml",
-      },
-    ],
-    [
       "a/b/c/foo.json",
       {
         relativePathWithoutExtension: "a/b/c/foo",
@@ -188,16 +143,6 @@ describe("WorkspaceFileRelativePathParser :: parseWorkspaceFileRelativePath", ()
         extension: "",
         nameWithoutExtension: "noExtension",
         name: "noExtension",
-      },
-    ],
-    [
-      "a/b/c/bar.sw.json",
-      {
-        relativePathWithoutExtension: "a/b/c/bar",
-        relativeDirPath: "a/b/c",
-        extension: "sw.json",
-        nameWithoutExtension: "bar",
-        name: "bar.sw.json",
       },
     ],
     [
