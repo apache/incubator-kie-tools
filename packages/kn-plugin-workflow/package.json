@@ -52,7 +52,6 @@
   "dependencies": {
     "@kie-tools-core/drools-and-kogito": "workspace:*",
     "@kie-tools/maven-base": "workspace:*",
-    "@kie-tools/maven-quarkus-bom": "workspace:*",
     "@kie-tools/sonataflow-quarkus-devui": "workspace:*"
   },
   "devDependencies": {
