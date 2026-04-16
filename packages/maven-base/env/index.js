@@ -25,6 +25,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "true",
       description: "Determines if a Maven build skips a deploy. Can be `true` or `false`.",
     },
+    KIE_TOOLS_BUILD__kogitoVersionSetPropertySkip: {
+      default: "false",
+      description:
+        "Determines if the `version.org.kie.kogito` property in the pom.xml should NOT be updated during install.",
+    },
+    KIE_TOOLS_BUILD__quarkusVersionSetPropertySkip: {
+      default: "false",
+      description: "Determines if the `version.quarkus` property in the pom.xml should NOT be updated during install.",
+    },
   }),
   get env() {
     return {
@@ -37,6 +46,14 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       maven: {
         deploy: {
           skip: getOrDefault(this.vars.KIE_TOOLS_BUILD__mavenDeploySkip),
+        },
+      },
+      properties: {
+        setKogitoVersion: {
+          skip: getOrDefault(this.vars.KIE_TOOLS_BUILD__kogitoVersionSetPropertySkip),
+        },
+        setQuarkusVersion: {
+          skip: getOrDefault(this.vars.KIE_TOOLS_BUILD__quarkusVersionSetPropertySkip),
         },
       },
     };

@@ -30,8 +30,12 @@ const MVN_CONFIG_FILE_PATH = path.join(".mvn", "maven.config");
 const EMPTY_POM_XML_PATH = path.join(__dirname, "empty-pom.xml");
 const SETTINGS_XML_PATH = path.join(__dirname, "settings.xml");
 
+// The `version.org.kie.kogito` and `version.quarkus` properties are set with
+// the respective env var values here to allow for local and/or downstream overrides.
 const DEFAULT_MAVEN_CONFIG = `
 -Dstyle.color=always
+-Dversion.org.kie.kogito=${env.versions.kogito}
+-Dversion.quarkus=${env.versions.quarkus}
 --batch-mode
 --settings=${SETTINGS_XML_PATH}
 `.trim();

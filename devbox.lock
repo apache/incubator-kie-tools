@@ -1,6 +1,10 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-04-09T19:38:50Z",
+      "resolved": "github:NixOS/nixpkgs/b0188973b4b2a5b6bdba8b65381d6cd09a533da0?lastModified=1775763530&narHash=sha256-BuTK9z1QEwWPOIakQ1gCN4pa4VwVJpfptYCviy2uOGc%3D"
+    },
     "glibcLocales@2.40-66": {
       "last_modified": "2025-05-16T20:19:48Z",
       "resolved": "github:NixOS/nixpkgs/12a55407652e04dcf2309436eb06fef0d3713ef3#glibcLocales",
