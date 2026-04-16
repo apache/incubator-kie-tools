@@ -97,6 +97,7 @@ go-test-e2e:
 	rm -rf dist-tests-e2e
 	mkdir dist-tests-e2e
 	@echo "⚠️  E2E tests are currently disabled"
+	@echo "E2E tests disabled" > ./dist-tests-e2e/go-test-output-e2e.txt
 	# go test -v ./e2e-tests/... -tags e2e_tests -run TestQuarkusRunCommand -timeout 20m 2>&1 | tee ./dist-tests-e2e/go-test-output-e2e.txt
 
 .PHONY: go-test-e2e-report
