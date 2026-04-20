@@ -31,6 +31,8 @@ test.describe("New file", () => {
 
     test("should create a new BPMN file", async ({ page, kieSandbox }) => {
       await page.getByRole("button", { name: "New Workflow" }).click();
+      await page.getByPlaceholder("e.g., hiring").fill("a");
+      await page.getByRole("button", { name: "Start Modeling" }).click();
       await expect(page.getByRole("button", { name: "Workflow Untitled" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Workflow Untitled" })).toContainText("Untitled");
       await kieSandbox.isEditorLoaded();
