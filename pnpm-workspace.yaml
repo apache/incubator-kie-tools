@@ -13,6 +13,7 @@ overrides:
   "minimatch@^3>brace-expansion": "1.1.13"
   "minimatch@^5>brace-expansion": "^2.0.2"
   "openapi-types": "7.2.3"
+  "path-to-regexp@^0": "0.1.13"
   "react-dropzone": "^11.4.2"
   "superagent": "10.2.2"
   "xmlbuilder2>js-yaml": "^3.14.2"
