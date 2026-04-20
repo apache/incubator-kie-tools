@@ -73,6 +73,7 @@ export type OnNodeUnparented<
   exParentNode: RF.Node<NData, N>;
   activeNode: RF.Node<NData, N>;
   selectedNodes: RF.Node<NData, N>[];
+  dropTarget: undefined | { node: RF.Node<NData, N>; containmentMode: ContainmentMode };
 }) => void;
 
 export type OnNodeParented<
@@ -449,20 +450,20 @@ export function XyFlowReactKieDiagram<
       return (
         // Reflexive edges are not allowed
         edgeOrConnection.source !== edgeOrConnection.target &&
-          // Matches graph structure.
-          checkIsValidConnection(
-            graphStructure,
-            state.computed(state).getDiagramData().nodesById,
-            edgeOrConnection,
-            edgeType
-          ) &&
-          // Does not form cycles.
-          allowCycles
+        // Matches graph structure.
+        checkIsValidConnection(
+          graphStructure,
+          state.computed(state).getDiagramData().nodesById,
+          edgeOrConnection,
+          edgeType
+        ) &&
+        // Does not form cycles.
+        (allowCycles
           ? true
           : !!edgeOrConnection.target &&
-              !ongoingConnectionHierarchy.dependencies.has(edgeOrConnection.target) &&
-              !!edgeOrConnection.source &&
-              !ongoingConnectionHierarchy.dependents.has(edgeOrConnection.source)
+            !ongoingConnectionHierarchy.dependencies.has(edgeOrConnection.target) &&
+            !!edgeOrConnection.source &&
+            !ongoingConnectionHierarchy.dependents.has(edgeOrConnection.source))
       );
     },
     [xyFlowReactKieDiagramStoreApi, reactFlowInstance, graphStructure, allowCycles]
@@ -746,11 +747,18 @@ export function XyFlowReactKieDiagram<
           }
 
           console.log("XYFLOW KIE DIAGRAM: Node parented");
+
           // Un-parent
           if (nodeBeingDragged.data.parentXyFlowNode) {
             const p = state.computed(state).getDiagramData().nodesById.get(nodeBeingDragged.data.parentXyFlowNode.id);
             if (p?.type && containmentMap.get(p.type)) {
-              onNodeUnparented({ state, exParentNode: p, activeNode: nodeBeingDragged, selectedNodes });
+              onNodeUnparented({
+                state,
+                exParentNode: p,
+                activeNode: nodeBeingDragged,
+                selectedNodes,
+                dropTarget: dropTarget as undefined | { node: RF.Node<NData, N>; containmentMode: ContainmentMode },
+              });
             } else {
               console.debug(
                 `XYFLOW KIE DIAGRAM: Ignoring '${nodeBeingDragged.type}' with parent '${dropTarget?.node.type}' dropping somewhere..`
@@ -1098,6 +1106,7 @@ export function XyFlowReactKieDiagram<
 export function SetConnectionToReactFlowStore(props: {}) {
   const ongoingConnection = useXyFlowReactKieDiagramStore((s) => s.xyFlowReactKieDiagram.ongoingConnection);
   const xyFlowStoreApi = RF.useStoreApi();
+
   useEffect(() => {
     xyFlowStoreApi.setState({
       connectionHandleId: ongoingConnection?.handleId,
