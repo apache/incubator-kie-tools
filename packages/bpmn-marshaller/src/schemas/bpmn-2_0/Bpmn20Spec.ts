@@ -18,6 +18,7 @@
  */
 
 import { ns as bpmn20ns } from "../bpmn-2_0/ts-gen/meta";
+import { BPMN20__tAssociationDirection } from "./ts-gen/types";
 
 export type UniqueNameIndex = Map<string, string>;
 
@@ -32,4 +33,5 @@ export const allBpmnImportNamespaces = new Set([bpmn20ns.get("")!]);
 export const KIE_BPMN_UNKNOWN_NAMESPACE = "https://kie.apache.org/bpmn/unknown";
 
 export const BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE = true;
+export const ASSOCIATION_DIRECTION_DEFAULT_VALUE: BPMN20__tAssociationDirection = "None";
 export const START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE = true;
