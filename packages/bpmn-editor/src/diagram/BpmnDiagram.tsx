@@ -38,12 +38,15 @@ import {
 } from "@kie-tools/xyflow-react-kie-diagram/dist/diagram/XyFlowReactKieDiagram";
 import { ConnectionLine as ReactFlowDiagramConnectionLine } from "@kie-tools/xyflow-react-kie-diagram/dist/edges/ConnectionLine";
 import { EdgeMarkers } from "@kie-tools/xyflow-react-kie-diagram/dist/edges/EdgeMarkers";
-import { ContainmentMode } from "@kie-tools/xyflow-react-kie-diagram/dist/graph/graphStructure";
+import {
+  ContainmentMode,
+  getDefaultEdgeTypeBetween,
+} from "@kie-tools/xyflow-react-kie-diagram/dist/graph/graphStructure";
 import { getHandlePosition } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/DcMaths";
 import { PositionalNodeHandleId } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/PositionalNodeHandles";
 import { Draft } from "immer";
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import * as RF from "reactflow";
 import { useBpmnEditor } from "../BpmnEditorContext";
 import { addConnectedNode } from "../mutations/addConnectedNode";
@@ -76,6 +79,7 @@ import {
   CONNECTION_LINE_EDGE_COMPONENTS_MAPPING,
   CONNECTION_LINE_NODE_COMPONENT_MAPPING,
   DEFAULT_NODE_SIZES,
+  EDGE_TYPES,
   elementToNodeType,
   MIN_NODE_SIZES,
   NODE_TYPES,
@@ -108,6 +112,7 @@ export function BpmnDiagram({
 
   const { bpmnModelBeforeEditingRef } = useBpmnEditor();
   const { customTasks } = useCustomTasks();
+  const hasEverHadValidProcessId = useBpmnEditorStore((s) => s.diagram.hasEverHadValidProcessId);
 
   const onResetToBeforeEditingBegan: OnResetToBeforeEditingBegan<
     State,
@@ -172,6 +177,7 @@ export function BpmnDiagram({
     const { id } = addConnectedNode({
       definitions: state.bpmn.model.definitions,
       __readonly_sourceNode: {
+        bpmnElement: sourceNode.data.bpmnElement,
         bounds: sourceNode.data.shape["dc:Bounds"],
         id: sourceNode.id,
         shapeId: sourceNode.data.shape["@_id"],
@@ -266,7 +272,7 @@ export function BpmnDiagram({
   );
 
   const onNodeUnparented = useCallback<OnNodeUnparented<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>>(
-    ({ state, activeNode, exParentNode, selectedNodes }) => {
+    ({ state, activeNode, exParentNode, selectedNodes, dropTarget }) => {
       console.log("BPMN EDITOR DIAGRAM: onNodeUnparented");
       if (exParentNode.type === NODE_TYPES.subProcess) {
         // ContainmentMode was INSIDE
@@ -299,6 +305,18 @@ export function BpmnDiagram({
         detachBoundaryEvent({
           definitions: state.bpmn.model.definitions,
           __readonly_eventId: activeNode.data.bpmnElement?.["@_id"],
+          __readonly_shouldRemoveCompensationAssociation:
+            // Only when the drop target of the Compensation Event is not the border of an Activity
+            dropTarget?.containmentMode !== ContainmentMode.BORDER ||
+            (dropTarget?.node?.data?.bpmnElement.__$$element !== "subProcess" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "adHocSubProcess" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "transaction" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "callActivity" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "task" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "userTask" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "businessRuleTask" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "scriptTask" &&
+              dropTarget?.node?.data?.bpmnElement.__$$element !== "serviceTask"),
         });
       }
     },
@@ -563,7 +581,7 @@ export function BpmnDiagram({
             onWaypointRepositioned={onWaypointRepositioned}
             onWaypointDeleted={onWaypointDeleted}
           >
-            <BpmnPalette pulse={isEmptyStateShowing} />
+            {!isEmptyStateShowing || hasEverHadValidProcessId ? <BpmnPalette pulse={isEmptyStateShowing} /> : <></>}
             <TopRightCornerPanels availableHeight={container.current?.offsetHeight} />
             <BpmnDiagramCommands />
           </XyFlowReactKieDiagram>
@@ -574,12 +592,27 @@ export function BpmnDiagram({
 }
 
 export function ConnectionLine<N extends string, E extends string>(props: RF.ConnectionLineComponentProps) {
+  const edgeType = useMemo(() => {
+    const nodeData = props.fromNode?.data as BpmnDiagramNodeData;
+
+    const sourceNodeType = props.fromNode?.type; // Please see ReactFlowDiagramConnectionLine for why this works.
+    const targetNodeType = props.fromHandle?.id; // Please see ReactFlowDiagramConnectionLine for why this works.
+
+    // Special case for Compensation Associations.
+    return nodeData.bpmnElement?.__$$element === "boundaryEvent" &&
+      nodeData.bpmnElement?.eventDefinition?.[0].__$$element === "compensateEventDefinition" &&
+      targetNodeType !== NODE_TYPES.textAnnotation
+      ? EDGE_TYPES.compensationAssociation
+      : // Default case
+        getDefaultEdgeTypeBetween(BPMN_GRAPH_STRUCTURE, sourceNodeType, targetNodeType);
+  }, [props]);
+
   return (
     <ReactFlowDiagramConnectionLine
       {...props}
       defaultNodeSizes={DEFAULT_NODE_SIZES}
       minNodeSizes={MIN_NODE_SIZES}
-      graphStructure={BPMN_GRAPH_STRUCTURE}
+      edgeType={edgeType}
       nodeComponentsMapping={CONNECTION_LINE_NODE_COMPONENT_MAPPING}
       edgeComponentsMapping={CONNECTION_LINE_EDGE_COMPONENTS_MAPPING}
     />

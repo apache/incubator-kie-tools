@@ -117,7 +117,6 @@ export function GroupProperties({ group }: { group: Normalized<BPMN20__tGroup> &
               hoverTip={i18n.propertiesPanel.copy}
               clickTip={i18n.propertiesPanel.copied}
             >
-              {" "}
               {group["@_id"]}
             </ClipboardCopy>
           </FormGroup>

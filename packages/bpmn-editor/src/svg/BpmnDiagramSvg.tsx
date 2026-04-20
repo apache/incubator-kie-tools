@@ -70,7 +70,7 @@ import {
   BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE,
   START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE,
 } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/Bpmn20Spec";
-import { useActivityIcons } from "../diagram/nodes/Nodes";
+import { useActivityMarkers } from "../diagram/nodes/Nodes";
 import { useCustomTasks } from "../customTasks/BpmnEditorCustomTasksContextProvider";
 import { CustomTask } from "../BpmnEditor";
 
@@ -98,7 +98,7 @@ type NodeElementMap = {
 
 type TaskNodeSvgWithoutMarkersProps = Omit<React.ComponentProps<typeof TaskNodeSvg>, "markers">;
 type SubProcessNodeSvgWithoutIconsProps = Omit<React.ComponentProps<typeof SubProcessNodeSvg>, "icons">;
-type BpmnElementActivitytIcons = Parameters<typeof useActivityIcons>[0];
+type BpmnElementActivitytIcons = Parameters<typeof useActivityMarkers>[0];
 
 type TaskOrSubProcessNodeSvgWithIconsProps = {
   nodeType: typeof NODE_TYPES.task | typeof NODE_TYPES.subProcess;
@@ -161,8 +161,8 @@ export function BpmnDiagramSvg({
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.task>(NODE_TYPES.task, node?.data?.bpmnElement)}
               strokeWidth={node?.data?.bpmnElement?.__$$element === "callActivity" ? 5 : undefined}
-              customTasks={customTasks}
               exportedSvgId={node.id}
+              customTasks={customTasks}
               {...style}
             />
           )}
@@ -357,7 +357,8 @@ export function BpmnDiagramSvg({
           // bpmn2nodeid is necessary for the Kogito SVG Add-on
           <g key={e.id} id={e.id} {...({ bpmn2nodeid: e.id } as any)}>
             {e.type === EDGE_TYPES.sequenceFlow && <SequenceFlowPath d={path} />}
-            {e.type === EDGE_TYPES.association && <AssociationPath d={path} />}
+            {e.type === EDGE_TYPES.association && <AssociationPath d={path} direction={"None"} />}
+            {e.type === EDGE_TYPES.compensationAssociation && <AssociationPath d={path} direction={"One"} />}
           </g>
         );
       })}
@@ -466,7 +467,7 @@ export function TaskOrSubProcessNodeSvgWithIcons({
   customTasks,
   ...props
 }: TaskOrSubProcessNodeSvgWithIconsProps) {
-  const icons = useActivityIcons(bpmnElement);
+  const icons = useActivityMarkers(bpmnElement);
 
   const icon = useMemo(() => {
     if (bpmnElement.__$$element === "task") {

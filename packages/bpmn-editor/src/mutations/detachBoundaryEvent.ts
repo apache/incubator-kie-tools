@@ -24,13 +24,16 @@ import { Normalized } from "../normalization/normalize";
 import { State } from "../store/Store";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
 import { FoundElement, visitFlowElementsAndArtifacts } from "./_elementVisitor";
+import { deleteEdge } from "./deleteEdge";
 
 export function detachBoundaryEvent({
   definitions,
   __readonly_eventId,
+  __readonly_shouldRemoveCompensationAssociation,
 }: {
   definitions: State["bpmn"]["model"]["definitions"];
   __readonly_eventId: string | undefined;
+  __readonly_shouldRemoveCompensationAssociation: boolean;
 }) {
   const { process } = addOrGetProcessAndDiagramElements({ definitions });
 
@@ -61,6 +64,8 @@ export function detachBoundaryEvent({
         >
       >;
 
+  const foundCompensationAssociationIds: string[] = [];
+
   visitFlowElementsAndArtifacts(process, ({ element, ...args }) => {
     if (element["@_id"] === __readonly_eventId) {
       if (element.__$$element === "boundaryEvent") {
@@ -90,10 +95,13 @@ export function detachBoundaryEvent({
         element.__$$element === "transaction"
       ) {
         foundActivity = { element, ...args };
-        return false; // Will stop visiting.
       } else {
         throw new Error("'attachedToRef' is not associated with an Activity.");
       }
+    }
+
+    if (element.__$$element === "association" && element["@_associationDirection"] === "One") {
+      foundCompensationAssociationIds.push(element["@_id"]);
     }
   });
 
@@ -108,4 +116,11 @@ export function detachBoundaryEvent({
     __$$element: "intermediateCatchEvent",
     eventDefinition: foundBoundaryEvent.element.eventDefinition,
   });
+
+  if (__readonly_shouldRemoveCompensationAssociation) {
+    for (let i = 0; i < foundCompensationAssociationIds.length; i++) {
+      const edgeId = foundCompensationAssociationIds[i];
+      deleteEdge({ definitions, __readonly_edgeId: edgeId });
+    }
+  }
 }

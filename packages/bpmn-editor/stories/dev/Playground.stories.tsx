@@ -23,6 +23,13 @@ import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerPanelContent,
+} from "@patternfly/react-core/dist/js/components/Drawer";
+import { CodeBlock, CodeBlockCode } from "@patternfly/react-core/dist/js/components/CodeBlock";
 import { BpmnLatestModel, getMarshaller, BpmnMarshaller } from "@kie-tools/bpmn-marshaller";
 import * as DmnMarshaller from "@kie-tools/dmn-marshaller";
 import { Normalized, normalize } from "@kie-tools/bpmn-editor/dist/normalization/normalize";
@@ -66,6 +73,7 @@ function DevPlayground(args: BpmnEditorProps) {
 
   const [showXml, setShowXml] = useState(false);
   const [xmlContent, setXmlContent] = useState("");
+  const [drawerPosition, setDrawerPosition] = useState<"right" | "bottom">("right");
 
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("BPMN Editor :: Playground :: File(s) dropped! Opening it.");
@@ -186,8 +194,12 @@ function DevPlayground(args: BpmnEditorProps) {
     [externalModelsByNamespace]
   );
 
-  const isUndoEnabled = state.pointer > 0;
-  const isRedoEnabled = state.pointer !== state.stack.length - 1;
+  const isUndoEnabled = useMemo(() => state.pointer > 0, [state.pointer]);
+  const isRedoEnabled = useMemo(() => state.pointer !== state.stack.length - 1, [state.stack, state.pointer]);
+
+  const toggleDrawerPosition = useCallback(() => {
+    setDrawerPosition((prev) => (prev === "right" ? "bottom" : "right"));
+  }, []);
 
   return (
     <>
@@ -213,7 +225,17 @@ function DevPlayground(args: BpmnEditorProps) {
                   &nbsp; &nbsp;
                   <button onClick={copyAsXml}>Copy XML</button>
                   &nbsp; &nbsp;
-                  <button onClick={() => setShowXml((currentValue) => !currentValue)}>Show XML</button>
+                  <button onClick={() => setShowXml((currentValue) => !currentValue)}>
+                    {showXml ? "Hide XML" : "Show XML"}
+                  </button>
+                  {showXml && (
+                    <>
+                      &nbsp; &nbsp;
+                      <button onClick={toggleDrawerPosition}>
+                        {drawerPosition === "right" ? "Move preview to bottom" : "Move preview to side"}
+                      </button>
+                    </>
+                  )}
                   &nbsp; &nbsp;
                   <button onClick={downloadAsXml}>Download as .bpmn</button>
                 </FlexItem>
@@ -224,30 +246,40 @@ function DevPlayground(args: BpmnEditorProps) {
             <PageSection
               variant={"light"}
               isFilled={true}
-              hasOverflowScroll={true}
+              hasOverflowScroll={false}
               aria-label={"editor"}
               padding={{ default: "noPadding" }}
+              style={{ height: "calc(100vh - 120px)" }}
             >
-              {BpmnEditorWrapper({
-                model: currentModel,
-                originalVersion: args.originalVersion,
-                onModelChange,
-                externalContextName: args.externalContextName,
-                externalContextDescription: args.externalContextDescription,
-                issueTrackerHref: args.issueTrackerHref,
-                onRequestToJumpToPath,
-                onRequestExternalModelsAvailableToInclude,
-                onRequestExternalModelByPath,
-                externalModelsByNamespace,
-              })}
+              <Drawer key={`drawer-${drawerPosition}`} isExpanded={showXml} isInline position={drawerPosition}>
+                <DrawerContent
+                  panelContent={
+                    <DrawerPanelContent isResizable defaultSize="50%" minSize="200px">
+                      <DrawerContentBody style={{ padding: 0, height: "100%" }}>
+                        <CodeBlock style={{ minHeight: "100%" }}>
+                          <CodeBlockCode>{xmlContent}</CodeBlockCode>
+                        </CodeBlock>
+                      </DrawerContentBody>
+                    </DrawerPanelContent>
+                  }
+                >
+                  <DrawerContentBody style={{ height: "100%" }}>
+                    {BpmnEditorWrapper({
+                      model: currentModel,
+                      originalVersion: args.originalVersion,
+                      onModelChange,
+                      externalContextName: args.externalContextName,
+                      externalContextDescription: args.externalContextDescription,
+                      issueTrackerHref: args.issueTrackerHref,
+                      onRequestToJumpToPath,
+                      onRequestExternalModelsAvailableToInclude,
+                      onRequestExternalModelByPath,
+                      externalModelsByNamespace,
+                    })}
+                  </DrawerContentBody>
+                </DrawerContent>
+              </Drawer>
             </PageSection>
-            {showXml && (
-              <PageSection>
-                <div>
-                  <pre>{xmlContent}</pre>
-                </div>
-              </PageSection>
-            )}
           </Page>
         </div>
       )}

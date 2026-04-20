@@ -101,6 +101,7 @@ export const NODE_TYPES = {
 export const EDGE_TYPES = {
   sequenceFlow: "edge_sequenceFlow" as const,
   association: "edge_association" as const,
+  compensationAssociation: "edge_compensationAssociation" as const,
 };
 
 export type Values<T> = T[keyof T];
@@ -180,6 +181,10 @@ export const BPMN_GRAPH_STRUCTURE: GraphStructure<BpmnNodeType, BpmnEdgeType> = 
           NODE_TYPES.intermediateThrowEvent,
           NODE_TYPES.endEvent,
         ]),
+      ],
+      [
+        EDGE_TYPES.compensationAssociation,
+        new Set([NODE_TYPES.task, NODE_TYPES.subProcess, NODE_TYPES.textAnnotation]),
       ],
       [EDGE_TYPES.association, new Set([NODE_TYPES.textAnnotation])],
     ]),
@@ -302,7 +307,8 @@ export const BPMN_CONTAINMENT_MAP: ContainmentMap<BpmnNodeType> = new Map<
 
 export const CONNECTION_LINE_EDGE_COMPONENTS_MAPPING: ConnectionLineEdgeMapping<BpmnEdgeType> = {
   [EDGE_TYPES.sequenceFlow]: SequenceFlowPath,
-  [EDGE_TYPES.association]: AssociationPath,
+  [EDGE_TYPES.association]: ({ d }) => <AssociationPath d={d} direction={"None"} />,
+  [EDGE_TYPES.compensationAssociation]: ({ d }) => <AssociationPath d={d} direction={"One"} />,
 };
 
 export const CONNECTION_LINE_NODE_COMPONENT_MAPPING: ConnectionLineNodeMapping<BpmnNodeType> = {
@@ -345,6 +351,7 @@ export const XY_FLOW_NODE_TYPES: Record<BpmnNodeType, React.ComponentType<any>> 
 export const XY_FLOW_EDGE_TYPES: Record<BpmnEdgeType, React.ComponentType<any>> = {
   [EDGE_TYPES.sequenceFlow]: SequenceFlowEdge,
   [EDGE_TYPES.association]: AssociationEdge,
+  [EDGE_TYPES.compensationAssociation]: AssociationEdge,
 };
 
 export interface BpmnDiagramNodeData<T extends BpmnNodeElement = BpmnNodeElement>
@@ -375,6 +382,7 @@ export const BPMN_OUTGOING_STRUCTURE = {
     ],
     edges: [EDGE_TYPES.sequenceFlow, EDGE_TYPES.association],
   },
+  // NOTE: Boundary events have special rules. Check <IntermediateCatchEventNode>.
   [NODE_TYPES.intermediateCatchEvent]: {
     nodes: [
       NODE_TYPES.task,
@@ -459,7 +467,15 @@ export const bpmnEdgesOutgoingStuffNodePanelMapping: OutgoingStuffNodePanelEdgeM
   },
   [EDGE_TYPES.association]: {
     actionTitle: "Add Association",
-    icon: ({ viewboxSize }) => <AssociationPath d={`M2,${viewboxSize - 2} L${viewboxSize},0`} strokeWidth={2} />,
+    icon: ({ viewboxSize }) => (
+      <AssociationPath d={`M2,${viewboxSize - 2} L${viewboxSize},0`} strokeWidth={2} direction={"None"} />
+    ),
+  },
+  [EDGE_TYPES.compensationAssociation]: {
+    actionTitle: "Add Compensation Association",
+    icon: ({ viewboxSize }) => (
+      <AssociationPath d={`M2,${viewboxSize - 2} L${viewboxSize},0`} strokeWidth={2} direction={"One"} />
+    ),
   },
 };
 
@@ -821,8 +837,3 @@ export const elementToNodeType: Record<NonNullable<BpmnNodeElement>["__$$element
   // dataObjectReference: NODE_TYPES.unknown,
   // dataStoreReference: NODE_TYPES.unknown,
 } as const;
-
-export const elementToEdgeType: Record<NonNullable<BpmnEdgeElement>["__$$element"], BpmnEdgeType> = {
-  association: EDGE_TYPES.association,
-  sequenceFlow: EDGE_TYPES.sequenceFlow,
-};

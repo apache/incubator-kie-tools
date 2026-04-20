@@ -68,7 +68,11 @@ export function renameEscalation({
       array[index].__$$element === "intermediateCatchEvent"
     ) {
       for (const eventDefinition of array[index]?.eventDefinition ?? []) {
-        if (eventDefinition && eventDefinition.__$$element === "escalationEventDefinition") {
+        if (
+          eventDefinition &&
+          eventDefinition.__$$element === "escalationEventDefinition" &&
+          eventDefinition["@_escalationRef"] === id
+        ) {
           eventDefinition["@_drools:esccode"] = newEscalationName;
         }
       }

@@ -24,6 +24,7 @@ import { Normalized } from "../normalization/normalize";
 import { State } from "../store/Store";
 import { FoundElement, visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { deleteEdge } from "./deleteEdge";
 
 export function makeBoundaryEvent({
   definitions,
@@ -65,11 +66,13 @@ export function makeBoundaryEvent({
         >
       >;
 
+  const foundProblematicEdgeIdsForCompensationEvents = new Set<string>();
+  const foundProblematicEdgeIdsForAnyEvent = new Set<string>();
+
   visitFlowElementsAndArtifacts(process, ({ element, ...args }) => {
     if (element["@_id"] === __readonly_eventId) {
       if (element.__$$element === "intermediateCatchEvent") {
         foundIntermediateCatchEvent = { element, ...args };
-        return !foundTargetActivity; // Will stop visiting.
       } else {
         throw new Error("Provided id is not associated with an Intermediate Catch Event");
       }
@@ -88,9 +91,27 @@ export function makeBoundaryEvent({
         element.__$$element === "transaction"
       ) {
         foundTargetActivity = { element, ...args };
-        return !foundIntermediateCatchEvent; // Will stop visiting.
       } else {
         throw new Error("Provided id is not associated with an Activity.");
+      }
+    }
+
+    if (element.__$$element === "sequenceFlow") {
+      if (element["@_sourceRef"] === __readonly_eventId || element["@_targetRef"] === __readonly_eventId) {
+        foundProblematicEdgeIdsForCompensationEvents.add(element["@_id"]);
+      } else {
+        // sequenceFlow is not related to the intermediateCatchEvent being transformed into a boundaryEvent.
+      }
+    }
+
+    if (element.__$$element === "sequenceFlow" || element.__$$element === "association") {
+      if (
+        (element["@_sourceRef"] === __readonly_eventId && element["@_targetRef"] === __readonly_targetActivityId) ||
+        (element["@_sourceRef"] === __readonly_targetActivityId && element["@_targetRef"] === __readonly_eventId)
+      ) {
+        foundProblematicEdgeIdsForAnyEvent.add(element["@_id"]);
+      } else {
+        // sequenceFlow is not related to the intermediateCatchEvent or activity being affected.
       }
     }
   });
@@ -111,4 +132,21 @@ export function makeBoundaryEvent({
     "@_attachedToRef": foundTargetActivity.element["@_id"],
     eventDefinition: foundIntermediateCatchEvent.element.eventDefinition,
   });
+
+  // Delete any problematic sequenceFlows for events becoming boundaryEvents.
+  for (const edgeId of foundProblematicEdgeIdsForAnyEvent) {
+    deleteEdge({ definitions, __readonly_edgeId: edgeId });
+  }
+
+  // Delete any sequenceFlows that previously existed on compensation events.
+  if (foundIntermediateCatchEvent.element?.eventDefinition?.[0]?.__$$element === "compensateEventDefinition") {
+    for (const edgeId of foundProblematicEdgeIdsForCompensationEvents) {
+      // Prevent trying to delete twice
+      if (!foundProblematicEdgeIdsForAnyEvent.has(edgeId)) {
+        deleteEdge({ definitions, __readonly_edgeId: edgeId });
+      } else {
+        // Ignore. Was already deleted above.
+      }
+    }
+  }
 }

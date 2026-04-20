@@ -52,7 +52,11 @@ export function deleteError({ definitions, error }: { definitions: Normalized<BP
       array[index].__$$element === "intermediateCatchEvent"
     ) {
       for (const eventDefinition of array[index]?.eventDefinition ?? []) {
-        if (eventDefinition && eventDefinition.__$$element === "errorEventDefinition") {
+        if (
+          eventDefinition &&
+          eventDefinition.__$$element === "errorEventDefinition" &&
+          eventDefinition["@_errorRef"] === errorId
+        ) {
           delete eventDefinition["@_drools:erefname"];
           delete eventDefinition["@_errorRef"];
         }

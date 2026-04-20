@@ -68,7 +68,11 @@ export function renameMessage({
       array[index].__$$element === "intermediateCatchEvent"
     ) {
       for (const eventDefinition of array[index]?.eventDefinition ?? []) {
-        if (eventDefinition && eventDefinition.__$$element === "messageEventDefinition") {
+        if (
+          eventDefinition &&
+          eventDefinition.__$$element === "messageEventDefinition" &&
+          eventDefinition["@_messageRef"] === id
+        ) {
           eventDefinition["@_drools:msgref"] = newMessageName;
         }
       }

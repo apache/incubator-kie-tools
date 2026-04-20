@@ -32,10 +32,7 @@ import { AsyncCheckbox } from "../asyncCheckbox/AsyncCheckbox";
 import { MultiInstanceProperties } from "../multiInstance/MultiInstanceProperties";
 import { MultiInstanceCheckbox } from "../multiInstanceCheckbox/MultiInstanceCheckbox";
 import { SlaDueDateInput } from "../slaDueDate/SlaDueDateInput";
-import {
-  BUSINESS_RULE_TASK_IMPLEMENTATIONS,
-  SERVICE_TASK_IMPLEMENTATIONS,
-} from "@kie-tools/bpmn-marshaller/dist/drools-extension";
+import { SERVICE_TASK_IMPLEMENTATIONS } from "@kie-tools/bpmn-marshaller/dist/drools-extension";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { visitFlowElementsAndArtifacts } from "../../mutations/_elementVisitor";
 import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProcessAndDiagramElements";

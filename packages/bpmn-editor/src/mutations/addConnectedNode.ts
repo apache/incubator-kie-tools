@@ -23,7 +23,7 @@ import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bp
 import { AutoPositionedEdgeMarker } from "@kie-tools/xyflow-react-kie-diagram/dist/edges/AutoPositionedEdgeMarker";
 import { getDiBoundsCenterPoint } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/DcMaths";
 import { DC__Bounds } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/model";
-import { BpmnNodeType, EDGE_TYPES, NODE_TYPES } from "../diagram/BpmnDiagramDomain";
+import { BpmnNodeElement, BpmnNodeType, EDGE_TYPES, NODE_TYPES } from "../diagram/BpmnDiagramDomain";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
 import { NodeNature, nodeNatures } from "./_NodeNature";
@@ -36,7 +36,13 @@ export function addConnectedNode({
   __readonly_newNode,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
-  __readonly_sourceNode: { type: BpmnNodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
+  __readonly_sourceNode: {
+    bpmnElement: BpmnNodeElement;
+    type: BpmnNodeType;
+    id: string;
+    bounds: DC__Bounds;
+    shapeId: string | undefined;
+  };
   __readonly_newNode: { type: BpmnNodeType; bounds: DC__Bounds };
 }) {
   const newBpmnElementId = generateUuid();
@@ -45,7 +51,7 @@ export function addConnectedNode({
 
   const { process, diagramElements } = addOrGetProcessAndDiagramElements({ definitions });
 
-  if (newNodeNature === NodeNature.PROCESS_FLOW_ELEMENT) {
+  if (newNodeNature === NodeNature.PROCESS_FLOW_ELEMENT || newNodeNature === NodeNature.CONTAINER) {
     process.flowElement ??= [];
 
     process.flowElement?.push(
@@ -158,7 +164,13 @@ export function addConnectedNode({
       autoPositionedEdgeMarker: AutoPositionedEdgeMarker.BOTH,
       sourceHandle: PositionalNodeHandleId.Center,
       targetHandle: PositionalNodeHandleId.Center,
-      type: newNodeNature === NodeNature.ARTIFACT ? EDGE_TYPES.association : EDGE_TYPES.sequenceFlow,
+      type:
+        newNodeNature === NodeNature.ARTIFACT
+          ? EDGE_TYPES.association
+          : __readonly_sourceNode.bpmnElement.__$$element === "boundaryEvent" &&
+              __readonly_sourceNode.bpmnElement.eventDefinition?.[0].__$$element === "compensateEventDefinition"
+            ? EDGE_TYPES.compensationAssociation
+            : EDGE_TYPES.sequenceFlow,
       name: undefined,
       documentation: undefined,
     },

@@ -49,6 +49,7 @@ export function ActivitySelector({ element }: { element: WithActivity }) {
       (e) =>
         e.__$$element === "adHocSubProcess" ||
         e.__$$element === "subProcess" ||
+        e.__$$element === "transaction" ||
         e.__$$element === "callActivity" ||
         e.__$$element === "task" ||
         e.__$$element === "userTask" ||

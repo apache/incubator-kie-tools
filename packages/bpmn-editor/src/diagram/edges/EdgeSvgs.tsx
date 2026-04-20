@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { ASSOCIATION_DIRECTION_DEFAULT_VALUE } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/Bpmn20Spec";
+import { BPMN20__tAssociationDirection } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import * as React from "react";
 
 export const SequenceFlowPath = React.memo(
@@ -31,9 +33,17 @@ export const SequenceFlowPath = React.memo(
 );
 
 export const AssociationPath = React.memo(
-  (__props: React.SVGProps<SVGPathElement> & { svgRef?: React.RefObject<SVGPathElement> }) => {
+  (
+    __props: React.SVGProps<SVGPathElement> & {
+      svgRef?: React.RefObject<SVGPathElement>;
+      direction: BPMN20__tAssociationDirection | undefined;
+    }
+  ) => {
     const strokeWidth = __props.strokeWidth ?? 1.5;
-    const { svgRef, ...props } = __props;
+    const { svgRef, direction: _direction, ...props } = __props;
+
+    const direction = _direction ?? ASSOCIATION_DIRECTION_DEFAULT_VALUE;
+
     return (
       <>
         <path
@@ -41,6 +51,8 @@ export const AssociationPath = React.memo(
           strokeWidth={strokeWidth}
           strokeLinecap="butt"
           strokeLinejoin="round"
+          markerStart={direction === "Both" ? "url(#closed-arrow)" : undefined}
+          markerEnd={direction !== "None" ? "url(#closed-arrow)" : undefined}
           style={{ stroke: "black", strokeDasharray: `${strokeWidth},10` }}
           {...props}
         />

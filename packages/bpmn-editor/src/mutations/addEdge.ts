@@ -86,13 +86,13 @@ export function addEdge({
 
   let existingEdgeId: string | undefined = undefined;
 
-  // Associations
-  if (__readonly_edge.type === EDGE_TYPES.association) {
+  // Associations (incl. Compensation Associations)
+  if (__readonly_edge.type === EDGE_TYPES.association || __readonly_edge.type === EDGE_TYPES.compensationAssociation) {
     process.artifact ??= [];
 
     const newAssociation: Normalized<BPMN20__tAssociation> = {
       "@_id": newEdgeId,
-      "@_associationDirection": "Both",
+      "@_associationDirection": __readonly_edge.type === EDGE_TYPES.association ? undefined : "One",
       "@_sourceRef": __readonly_sourceNode.href,
       "@_targetRef": __readonly_targetNode.href,
     };
@@ -137,22 +137,24 @@ export function addEdge({
       ...newSequenceFlow,
       "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
     });
+  }
 
-    // <incoming> and <outgoing> elements of Flow Elements
-    visitFlowElementsAndArtifacts(process, ({ element }) => {
-      if (
-        element.__$$element !== "association" &&
-        element.__$$element !== "group" &&
-        element.__$$element !== "textAnnotation" &&
-        element.__$$element !== "sequenceFlow" &&
-        element.__$$element !== "dataStoreReference" &&
-        element.__$$element !== "dataObject" &&
-        element.__$$element !== "dataObjectReference"
-      ) {
+  // <incoming> and <outgoing> elements of Flow Elements
+  visitFlowElementsAndArtifacts(process, ({ element }) => {
+    if (
+      element.__$$element !== "association" &&
+      element.__$$element !== "group" &&
+      element.__$$element !== "textAnnotation" &&
+      element.__$$element !== "sequenceFlow" &&
+      element.__$$element !== "dataStoreReference" &&
+      element.__$$element !== "dataObject" &&
+      element.__$$element !== "dataObjectReference"
+    ) {
+      if (__readonly_edge.type === EDGE_TYPES.sequenceFlow) {
         // outgoing
-        if (element["@_id"] === newSequenceFlow["@_sourceRef"]) {
+        if (element["@_id"] === __readonly_sourceNode.href) {
           element.outgoing ??= [];
-          element.outgoing.push({ __$$text: newSequenceFlow["@_id"] });
+          element.outgoing.push({ __$$text: newEdgeId });
 
           if (
             element.__$$element === "complexGateway" ||
@@ -166,9 +168,9 @@ export function addEdge({
         }
 
         // incoming
-        else if (element["@_id"] === newSequenceFlow["@_targetRef"]) {
+        else if (element["@_id"] === __readonly_targetNode.href) {
           element.incoming ??= [];
-          element.incoming.push({ __$$text: newSequenceFlow["@_id"] });
+          element.incoming.push({ __$$text: newEdgeId });
           if (
             element.__$$element === "complexGateway" ||
             element.__$$element === "parallelGateway" ||
@@ -179,14 +181,33 @@ export function addEdge({
             updateGatewayDirection(element);
           }
         }
+      }
 
-        // ignore
-        else {
-          // empty on purpose
+      if (
+        element.__$$element === "adHocSubProcess" ||
+        element.__$$element === "subProcess" ||
+        element.__$$element === "transaction" ||
+        element.__$$element === "callActivity" ||
+        element.__$$element === "task" ||
+        element.__$$element === "userTask" ||
+        element.__$$element === "scriptTask" ||
+        element.__$$element === "serviceTask" ||
+        element.__$$element === "businessRuleTask"
+      ) {
+        if (
+          element["@_id"] === __readonly_targetNode.href &&
+          __readonly_edge.type === EDGE_TYPES.compensationAssociation
+        ) {
+          element["@_isForCompensation"] = true;
         }
       }
-    });
-  }
+
+      // ignore
+      else {
+        // empty on purpose
+      }
+    }
+  });
 
   // Remove existing
   const removedBpmnEdge = removeFirstMatchIfPresent(

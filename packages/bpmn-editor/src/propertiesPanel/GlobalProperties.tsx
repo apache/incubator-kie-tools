@@ -28,11 +28,14 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { Form, FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
+import { Form, FormGroup, FormSection, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
+import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
 import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
@@ -42,7 +45,9 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useState } from "react";
 import { addOrGetProcessAndDiagramElements } from "../mutations/addOrGetProcessAndDiagramElements";
+import { regenerateTargetNamespace, setTargetNamespace } from "../mutations/setTargetNamespace";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../store/StoreContext";
+import { isProcessIdValid, getProcessIdErrorMessage } from "../validation/processIdValidation";
 import { Imports } from "./imports/Imports";
 import { Metadata } from "./metadata/Metadata";
 import { SlaDueDateInput } from "./slaDueDate/SlaDueDateInput";
@@ -234,17 +239,6 @@ export function GlobalProperties() {
               toogleSectionExpanded={() => setIdNamespaceSectionExpanded((prev) => !prev)}
               icon={<TagIcon width={16} height={36} style={{ marginLeft: "12px" }} />}
               title={i18n.propertiesPanel.idNamespace}
-              action={
-                <Button
-                  title={i18n.propertiesPanel.regenerateIdNamespace}
-                  variant={ButtonVariant.plain}
-                  isDisabled={settings.isReadOnly}
-                  onClick={() => setShowRegenerateIdConfirmationModal(true)}
-                  style={{ paddingBottom: 0, paddingTop: 0 }}
-                >
-                  <SyncAltIcon />
-                </Button>
-              }
               locale={locale}
             />
           }
@@ -253,38 +247,68 @@ export function GlobalProperties() {
             <>
               <FormSection style={{ paddingLeft: "20px", marginTop: "20px" }}>
                 <FormGroup label={i18n.propertiesPanel.id}>
-                  <ClipboardCopy
+                  <TextInput
+                    aria-label={i18n.propertiesPanel.id}
+                    type={"text"}
+                    isDisabled={settings.isReadOnly}
                     placeholder={i18n.propertiesPanel.idPlaceholder}
-                    isReadOnly={settings.isReadOnly}
-                    hoverTip={i18n.propertiesPanel.copy}
-                    clickTip={i18n.propertiesPanel.copied}
+                    value={process?.["@_id"] ?? ""}
+                    validated={!isProcessIdValid(process?.["@_id"]) ? "error" : "default"}
                     onChange={(e, newId) => {
                       bpmnEditorStoreApi.setState((state) => {
                         const { process } = addOrGetProcessAndDiagramElements({
                           definitions: state.bpmn.model.definitions,
                         });
-                        process["@_id"] = `${newId}`;
+                        process["@_id"] = newId;
                       });
                     }}
-                  >
-                    {process?.["@_id"]}
-                  </ClipboardCopy>
+                    aria-describedby="process-id-helper"
+                  />
+                  {!isProcessIdValid(process?.["@_id"]) && (
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="error" icon={<InfoCircleIcon />} id="process-id-helper">
+                          {getProcessIdErrorMessage(process?.["@_id"], i18n)}
+                        </HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
+                  )}
                 </FormGroup>
 
                 <FormGroup label={i18n.propertiesPanel.namespace}>
-                  <ClipboardCopy
-                    placeholder={i18n.propertiesPanel.namespacePlaceholder}
-                    isReadOnly={settings.isReadOnly}
-                    hoverTip={i18n.propertiesPanel.copy}
-                    clickTip={i18n.propertiesPanel.copied}
-                    onChange={(e, newNamespace) => {
-                      bpmnEditorStoreApi.setState((state) => {
-                        state.bpmn.model.definitions["@_targetNamespace"] = `${newNamespace}`;
-                      });
-                    }}
-                  >
-                    {thisBpmn.model.definitions["@_targetNamespace"]}
-                  </ClipboardCopy>
+                  <InputGroup style={{ gap: "8px" }}>
+                    <InputGroupItem isFill>
+                      <ClipboardCopy
+                        placeholder={i18n.propertiesPanel.namespacePlaceholder}
+                        isReadOnly={settings.isReadOnly}
+                        hoverTip={i18n.propertiesPanel.copy}
+                        clickTip={i18n.propertiesPanel.copied}
+                        onChange={(e, newNamespace) => {
+                          if (newNamespace !== undefined) {
+                            bpmnEditorStoreApi.setState((state) => {
+                              setTargetNamespace({
+                                definitions: state.bpmn.model.definitions,
+                                namespace: newNamespace,
+                              });
+                            });
+                          }
+                        }}
+                        style={{ width: "100%" }}
+                      >
+                        {thisBpmn.model.definitions["@_targetNamespace"]}
+                      </ClipboardCopy>
+                    </InputGroupItem>
+                    <InputGroupItem>
+                      <Button
+                        title={i18n.propertiesPanel.regenerateNamespace}
+                        variant={ButtonVariant.control}
+                        isDisabled={settings.isReadOnly}
+                        onClick={() => setShowRegenerateIdConfirmationModal(true)}
+                      >
+                        <SyncAltIcon />
+                      </Button>
+                    </InputGroupItem>
+                  </InputGroup>
                 </FormGroup>
               </FormSection>
             </>
@@ -474,7 +498,7 @@ export function GlobalProperties() {
         <br />
 
         <Modal
-          aria-labelledby={"Regenerate ID & Namespace"}
+          aria-labelledby={"Regenerate Namespace"}
           variant={ModalVariant.small}
           isOpen={showRegenerateIdConfirmationModal}
           onClose={() => setShowRegenerateIdConfirmationModal(false)}
@@ -486,20 +510,18 @@ export function GlobalProperties() {
               onClick={() => {
                 setShowRegenerateIdConfirmationModal(false);
                 bpmnEditorStoreApi.setState((state) => {
-                  const { process } = addOrGetProcessAndDiagramElements({ definitions: state.bpmn.model.definitions });
-                  process["@_id"] = generateUuid();
-                  state.bpmn.model.definitions["@_targetNamespace"] = `https://kie.apache.org/bpmn/${generateUuid()}`;
+                  regenerateTargetNamespace({ definitions: state.bpmn.model.definitions });
                 });
               }}
             >
-              {i18n.propertiesPanel.regenerateId}
+              {i18n.propertiesPanel.regenerateNamespace}
             </Button>,
             <Button key="cancel" variant="link" onClick={() => setShowRegenerateIdConfirmationModal(false)}>
               {i18n.propertiesPanel.cancel}
             </Button>,
           ]}
         >
-          {i18n.propertiesPanel.regenerateMessage}
+          {i18n.propertiesPanel.regenerateNamespaceMessage}
           <br />
           <br />
           {i18n.propertiesPanel.continueMessage}

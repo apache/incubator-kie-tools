@@ -82,6 +82,7 @@ export function SingleEdgeProperties() {
               <AssociationPath
                 d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize},0`}
                 {...nodeSvgProps}
+                direction={bpmnElement!["@_associationDirection"]}
                 strokeWidth={2}
               />
             </svg>

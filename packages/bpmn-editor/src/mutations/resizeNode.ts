@@ -27,7 +27,6 @@ import { DC__Edge } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/model";
 import { BpmnNodeElement, BpmnNodeType, NODE_TYPES } from "../diagram/BpmnDiagramDomain";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
-import { nodeNatures } from "./_NodeNature";
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { repositionNode } from "./repositionNode";
 

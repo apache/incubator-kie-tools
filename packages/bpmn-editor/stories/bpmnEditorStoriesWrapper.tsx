@@ -73,7 +73,7 @@ export function BpmnEditorWrapper(props?: Partial<StorybookBpmnEditorProps>) {
           {JSON.stringify(model)}
         </div>
       )}
-      <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
+      <div style={{ width: "100%", height: "100%" }}>
         <BpmnEditor
           ref={ref}
           model={model}
