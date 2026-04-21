@@ -36,6 +36,7 @@ class KieSandbox {
   public getEditor() {
     return this.page.frameLocator("#kogito-iframe");
   }
+}
 
 export const test = base.extend<BaseFixtures>({
   kieSandbox: async ({ page, baseURL }, use) => {
