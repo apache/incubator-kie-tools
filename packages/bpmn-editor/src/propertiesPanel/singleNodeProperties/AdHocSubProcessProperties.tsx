@@ -122,7 +122,7 @@ export function AdHocSubProcessProperties({
         />
 
         <CodeInput
-          label={i18n.singleNodeProperties.adhocCompletionCondiion}
+          label={i18n.singleNodeProperties.adhocCompletionCondition}
           languages={["MVEL", "Drools"]}
           value={adHocSubProcess.completionCondition?.__$$text ?? ""}
           onChange={(e, newCompletionConnditionValue) => {
