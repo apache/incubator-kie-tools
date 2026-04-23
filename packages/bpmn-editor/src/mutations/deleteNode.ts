@@ -20,6 +20,7 @@
 import {
   BPMN20__tDefinitions,
   BPMN20__tProcess,
+  BPMNDI__BPMNPlane,
   BPMNDI__BPMNShape,
 } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { BpmnDiagramEdgeData, BpmnNodeElement } from "../diagram/BpmnDiagramDomain";
@@ -83,14 +84,29 @@ export function deleteNode({
   // if flowElement or artifact
   if (foundElement) {
     deletedBpmnElement = foundElement.array.splice(foundElement.index, 1)?.[0] as BpmnNodeElement | undefined;
-  }
 
-  // if Service Task
-  if (deletedBpmnElement?.__$$element === "serviceTask" && deletedBpmnElement["@_operationRef"]) {
-    deleteInterfaceAndOperation({
-      definitions,
-      operationRef: deletedBpmnElement["@_operationRef"],
-    });
+    // if Service Task
+    if (deletedBpmnElement?.__$$element === "serviceTask" && deletedBpmnElement["@_operationRef"]) {
+      deleteInterfaceAndOperation({
+        definitions,
+        operationRef: deletedBpmnElement["@_operationRef"],
+      });
+    }
+
+    // if subProcess
+    if (
+      deletedBpmnElement?.__$$element === "subProcess" ||
+      deletedBpmnElement?.__$$element === "adHocSubProcess" ||
+      deletedBpmnElement?.__$$element === "transaction"
+    ) {
+      // Manually delete the BPMNShape for flowElements and artifacts contained in the subProcess/adHocSubProcess/transaction.
+      for (const containedArtifact of deletedBpmnElement.artifact ?? []) {
+        deleteBpmnShape(diagramElements, containedArtifact["@_id"]);
+      }
+      for (const containedFlowElement of deletedBpmnElement.flowElement ?? []) {
+        deleteBpmnShape(diagramElements, containedFlowElement["@_id"]);
+      }
+    }
   }
 
   // if lane
@@ -103,24 +119,30 @@ export function deleteNode({
 
   // or warn
   else {
+    // This may be the case when a subProcess element is deleted and its child elements were removed with it
+    // Intentionally not throwing because we want to delete the shapes for missing BPMNElements (and because `deleteBpmnShape` is safe)
     console.warn(`BPMN MUTATION: Cannot find any BPMN Element with ID '${__readonly_bpmnElementId}'.`);
-    return {
-      deletedBpmnElement: undefined,
-      deletedBpmnShape: undefined,
-    };
   }
 
   // Delete the BPMNShape
-
-  let deletedBpmnShape: Normalized<BPMNDI__BPMNShape> | undefined;
-  const bpmnShapeIndex = (diagramElements ?? []).findIndex((d) => d["@_bpmnElement"] === __readonly_bpmnElementId);
-  if (bpmnShapeIndex >= 0) {
-    deletedBpmnShape = diagramElements[bpmnShapeIndex] as typeof deletedBpmnShape;
-    diagramElements.splice(bpmnShapeIndex, 1);
-  }
+  const deletedBpmnShape = deleteBpmnShape(diagramElements, __readonly_bpmnElementId);
 
   return {
     deletedBpmnElement,
     deletedBpmnShape,
   };
+}
+
+function deleteBpmnShape(
+  diagramElements: NonNullable<Normalized<BPMNDI__BPMNPlane["di:DiagramElement"]>>,
+  bpmnElementId: string | undefined
+) {
+  let deletedBpmnShape: Normalized<BPMNDI__BPMNShape> | undefined;
+  const bpmnShapeIndex = (diagramElements ?? []).findIndex((d) => d["@_bpmnElement"] === bpmnElementId);
+  if (bpmnShapeIndex >= 0) {
+    deletedBpmnShape = diagramElements[bpmnShapeIndex] as typeof deletedBpmnShape;
+    diagramElements.splice(bpmnShapeIndex, 1);
+  }
+
+  return deletedBpmnShape;
 }

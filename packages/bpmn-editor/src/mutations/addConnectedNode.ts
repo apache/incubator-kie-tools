@@ -145,19 +145,7 @@ export function addConnectedNode({
     "dc:Bounds": __readonly_newNode.bounds,
   });
 
-  // Add the new edge shape
-  diagramElements?.push({
-    __$$element: "bpmndi:BPMNEdge",
-    "@_id": generateUuid() + AutoPositionedEdgeMarker.TARGET,
-    "@_bpmnElement": newEdgeId,
-    "@_sourceElement": __readonly_sourceNode.shapeId,
-    "@_targetElement": newShapeId,
-    "di:waypoint": [
-      getDiBoundsCenterPoint(__readonly_sourceNode.bounds),
-      getDiBoundsCenterPoint(__readonly_newNode.bounds),
-    ],
-  });
-
+  // Add the new edge and edge shape
   addEdge({
     definitions,
     __readonly_edge: {
