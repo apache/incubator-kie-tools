@@ -873,6 +873,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../../packages/maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -889,6 +892,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../../packages/maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -905,6 +911,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../../packages/maven-quarkus-bom
     devDependencies:
       '@kie-tools/kogito-management-console':
         specifier: workspace:*
@@ -924,6 +933,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../../packages/maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -940,6 +952,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../../packages/maven-quarkus-bom
     devDependencies:
       '@kie-tools/kogito-management-console':
         specifier: workspace:*
@@ -962,6 +977,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../../packages/maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -2327,6 +2345,12 @@ importers:
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../maven-quarkus-bom
       '@openapi-contrib/openapi-schema-to-json-schema':
         specifier: ^5.1.0
         version: 5.1.0
@@ -2373,9 +2397,6 @@ importers:
       '@kie-tools/jest-base':
         specifier: workspace:*
         version: link:../jest-base
-      '@kie-tools/maven-base':
-        specifier: workspace:*
-        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -3860,6 +3881,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -4720,6 +4744,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../maven-quarkus-bom
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -5351,6 +5378,32 @@ importers:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+
+  packages/maven-quarkus-bom:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+
+  packages/maven-spring-boot-bom:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+    devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -6459,6 +6512,9 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+      '@kie-tools/maven-quarkus-bom':
+        specifier: workspace:*
+        version: link:../maven-quarkus-bom
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
