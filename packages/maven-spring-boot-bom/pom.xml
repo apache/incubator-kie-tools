@@ -37,7 +37,7 @@
   <description>Bill of Materials for KIE Tools Spring Boot-based projects</description>
 
   <properties>
-    <version.org.springframework.boot>3.5.10</version.org.springframework.boot>
+    <version.org.springframework.boot>3.5.12</version.org.springframework.boot>
   </properties>
 
   <dependencyManagement>
