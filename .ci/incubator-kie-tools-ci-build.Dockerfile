@@ -122,13 +122,6 @@ RUN wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/opensh
 RUN wget https://get.helm.sh/helm-v3.15.2-linux-amd64.tar.gz -P /tmp && \
     sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.15.2-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.15.2-linux-amd64.tar.gz
 
-# Python setup
-RUN sudo update-alternatives --install /usr/local/bin/python python $(which python3) 1 && \
-    sudo update-alternatives --install /usr/local/bin/pip pip $(which pip3) 1
-
-# s2i (source-to-image) setup
-RUN go install github.com/openshift/source-to-image/cmd/s2i@v1.3.9
-
 # Env vars
 ENV HOME="/home/nonrootuser"
 ENV JAVA_HOME="${HOME}/.sdkman/candidates/java/current/"

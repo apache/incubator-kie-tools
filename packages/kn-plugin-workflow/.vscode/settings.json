@@ -1,4 +1,0 @@
-{
-  "go.testTimeout": "20m",
-  "go.buildTags": "e2e_tests"
-}

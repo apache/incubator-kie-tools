@@ -87,10 +87,6 @@ runs:
       with:
         maven-version: 3.9.11
 
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
-
     # TODO: Fix Colima/QEMU installation to build container images again
     #
     # - name: Setup docker (macOS only)
@@ -155,20 +151,6 @@ runs:
         cd ${{ inputs.working_dir }}
         pnpm config set network-timeout 1000000
 
-    - name: "Install s2i pre-reqs (Ubuntu only)"
-      shell: bash
-      run: |
-        echo "STEP: Install libbtrfs-dev (Ubuntu only)"
-        cd ${{ inputs.working_dir }}
-        if [ "${{ runner.os }}" == "Linux" ]; then
-          sudo apt-get -y install libbtrfs-dev libgpgme-dev libdevmapper-dev > /dev/null 2>&1
-        fi
-
-    - name: "Setup s2i (source-to-image)"
-      shell: bash
-      run: |
-        go install github.com/openshift/source-to-image/cmd/s2i@v1.3.9
-
     - name: "Install Fluxbox (Ubuntu only)"
       shell: bash
       run: |
@@ -217,16 +199,6 @@ runs:
           libgtk-3-dev \
           libayatana-appindicator3-dev \
           gir1.2-appindicator3-0.1
-        fi
-
-    - name: "Setup xmllint (Ubuntu Only)"
-      shell: bash
-      run: |
-        echo "STEP: Setup xmllint library (Ubuntu Only)"
-        cd ${{ inputs.working_dir }}
-        if [ "${{ runner.os }}" == "Linux" ]; then
-          sudo apt-get install -y \
-          libxml2-utils > /dev/null 2>&1
         fi
 
     - name: "Allow unprivileged user namespace (Ubuntu Only)"

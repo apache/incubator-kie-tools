@@ -17,18 +17,10 @@
  * under the License.
  */
 
-const JSON_EXTENSIONS = ".json";
-const YAML_EXTENSIONS = ".ya?ml";
-
 const BPMN_EXTENSIONS = ".bpmn";
 const DMN_EXTENSIONS = ".dmn";
 const SCESIM_EXTENSIONS = ".scesim";
 const PMML_EXTENSIONS = ".pmml";
-
-const SERVERLESS_WORKFLOW_JSON_EXTENSION = `.sw(${JSON_EXTENSIONS})`;
-const SERVERLESS_WORKFLOW_EXTENSIONS = `.sw(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
-const DASHBUILDER_EXTENSIONS = `.dash(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
-const YARD_EXTENSIONS = `.yard(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
 
 /**
  * Gets supported kie editors file extensions that opens in single view mode.
@@ -40,24 +32,6 @@ export function getSingleViewExtensionsRegExp(): RegExp {
 }
 
 /**
- * Gets supported kie editors file extensions that opens in dual view mode.
- *
- * @returns regular expression with supported extensions.
- */
-export function getDualViewExtensionsRegExp(): RegExp {
-  return new RegExp(`${SERVERLESS_WORKFLOW_EXTENSIONS}|${DASHBUILDER_EXTENSIONS}|${YARD_EXTENSIONS}$`);
-}
-
-/**
- * Gets dashbuilder file extensions.
- *
- * @returns regular expression for dashbuilder extensions.
- */
-export function getDashbuilderExtensionsRegExp(): RegExp {
-  return new RegExp(`${DASHBUILDER_EXTENSIONS}$`);
-}
-
-/**
  * Checks if the file is kie editor with single view.
  *
  * @param fileName a name of the file to be checked.
@@ -65,34 +39,4 @@ export function getDashbuilderExtensionsRegExp(): RegExp {
  */
 export function isKieEditorWithSingleView(fileName: string): boolean {
   return getSingleViewExtensionsRegExp().test(fileName);
-}
-
-/**
- * Checks if the file is kie editor with dual view.
- *
- * @param fileName a name of the file to be checked.
- * @returns true or false.
- */
-export function isKieEditorWithDualView(fileName: string): boolean {
-  return getDualViewExtensionsRegExp().test(fileName);
-}
-
-/**
- * Checks if the file is dashbuilder editor.
- *
- * @param fileName a name of the file to be checked.
- * @returns true or false.
- */
-export function isDashbuilderEditor(fileName: string): boolean {
-  return getDashbuilderExtensionsRegExp().test(fileName);
-}
-
-/**
- * Checks if the file is serverless workflow JSON file.
- *
- * @param fileName a name of the file to be checked.
- * @returns true or false.
- */
-export function isWorkflowJSONFile(fileName: string): boolean {
-  return new RegExp(`${SERVERLESS_WORKFLOW_JSON_EXTENSION}$`).test(fileName);
 }

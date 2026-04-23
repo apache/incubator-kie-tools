@@ -106,7 +106,6 @@
 
     <!-- Plugins version -->
     <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
-    <version.j2cl.maven.plugin>0.23.0</version.j2cl.maven.plugin>
     <version.jacoco.maven.plugin>0.8.13</version.jacoco.maven.plugin>
     <version.maven.artifact.plugin>3.5.3</version.maven.artifact.plugin>
     <version.maven.clean.plugin>3.4.0</version.maven.clean.plugin>
@@ -127,7 +126,6 @@
     <!-- 3rd party dependencies -->
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
-    <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
   </properties>
 
   <dependencyManagement>
@@ -139,18 +137,6 @@
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
-        <artifactId>common</artifactId>
-        <version>${version.org.kie.j2cl.tools.yaml.mapper}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
-        <artifactId>processor</artifactId>
-        <version>${version.org.kie.j2cl.tools.yaml.mapper}</version>
-        <scope>provided</scope>
       </dependency>
 
       <!-- 3rd party -->
@@ -256,11 +242,6 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${version.jacoco.maven.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.kie.j2cl.tools</groupId>
-          <artifactId>j2cl-maven-plugin</artifactId>
-          <version>${version.j2cl.maven.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>

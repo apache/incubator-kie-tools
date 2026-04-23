@@ -17,7 +17,7 @@
 
 # cors-proxy
 
-This package contains a `cors-proxy`, which is a simple Node.js application intended to be used to solve CORS issues while connecting our front end tools (online-editor, serverless-logic-web-tools) with external services (GitHub, Bitbucket, OpenShift, Kubernetes...)
+This package contains a `cors-proxy`, which is a simple Node.js application intended to be used to solve CORS issues while connecting our front end tools (online-editor) with external services (GitHub, Bitbucket, OpenShift, Kubernetes...)
 
 # Configuration
 
