@@ -362,6 +362,8 @@ There are, however, some things we can do to prevent ourselves from being in a d
 - Licenses
   - See https://www.apache.org/licenses/
 
+> More information can be found in the [Dependency Management Guide](./DEPENDENCY_MANAGEMENT.md).
+
 ---
 
 Feel free to proposed changes to this manual by sending a PR directly to this file.
