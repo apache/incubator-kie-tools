@@ -37,12 +37,12 @@ export function repositionEdgeWaypoint({
 
   const diagramElement = diagramElements[__readonly_edgeIndex];
   if (diagramElement.__$$element !== "bpmndi:BPMNEdge") {
-    throw new Error("BPMN MUTATION: Can't remove a waypoint from an element that is not a DMNEdge.");
+    throw new Error("BPMN MUTATION: Can't remove a waypoint from an element that is not a BPMNEdge.");
   }
 
   if (__readonly_waypointIndex > (diagramElement["di:waypoint"]?.length ?? 0) - 1) {
     throw new Error(
-      `BPMN MUTATION: Can't reposition waypoint with index '${__readonly_waypointIndex}' from DMNEdge '${diagramElement["@_id"]}' because it doesn't exist.`
+      `BPMN MUTATION: Can't reposition waypoint with index '${__readonly_waypointIndex}' from BPMNEdge '${diagramElement["@_id"]}' because it doesn't exist.`
     );
   }
 
