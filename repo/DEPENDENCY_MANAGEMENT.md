@@ -132,7 +132,7 @@ When a security vulnerability (CVE) is found in a transitive dependency (a depen
 
    ```yaml
    overrides:
-     # CVE-2024-XXXXX: Fix security vulnerability in vulnerable-package
+     # CVE-2024-XXXXX: Fix security vulnerability in <vulnerable-package>
      # Waiting for <first-level-dependency> to release patched version
      "vulnerable-package": "^<fixed.version>"
    ```
