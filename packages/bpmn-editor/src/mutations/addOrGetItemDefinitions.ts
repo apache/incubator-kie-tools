@@ -22,6 +22,7 @@ import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
+import { RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "./addOrGetMessages";
 
 export const DEFAULT_DATA_TYPES = {
   STRING: "String",
@@ -34,16 +35,20 @@ export const DEFAULT_DATA_TYPES = {
 export function addOrGetItemDefinitions({
   definitions,
   dataType,
+  id,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
   dataType: string;
+  id?: string;
 }): {
   itemDefinition: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "itemDefinition">;
 } {
   definitions.rootElement ??= [];
   const itemDefinitions = definitions.rootElement.filter((s) => s.__$$element === "itemDefinition");
 
-  const existingItemDefinition = itemDefinitions.find((s) => s["@_structureRef"] === dataType);
+  const existingItemDefinition = itemDefinitions.find(
+    (s) => s["@_structureRef"] === dataType && s["@_id"] !== RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+  );
   if (existingItemDefinition) {
     return { itemDefinition: existingItemDefinition };
   }
@@ -53,7 +58,7 @@ export function addOrGetItemDefinitions({
     "itemDefinition"
   > = {
     __$$element: "itemDefinition",
-    "@_id": generateUuid(),
+    "@_id": id ?? generateUuid(),
     "@_structureRef": dataType,
   };
 

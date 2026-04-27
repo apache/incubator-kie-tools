@@ -22,6 +22,10 @@ import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
+import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "./addOrGetItemDefinitions";
+
+// Reserved ID for the shared ItemDefinition used by all messages and linked by the message @_itemRef.
+export const RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES = "__messageItemDefinition";
 
 export function addOrGetMessages({
   definitions,
@@ -34,16 +38,27 @@ export function addOrGetMessages({
 } {
   definitions.rootElement ??= [];
   const messages = definitions.rootElement.filter((s) => s.__$$element === "message");
-  const existingMessage = messages.find((s) => s["@_id"] === messageName);
+  const existingMessage = messages.find((s) => s["@_name"] === messageName);
 
   if (existingMessage) {
     return { messageRef: existingMessage["@_id"] };
   }
 
+  const itemDefinitions = definitions.rootElement.filter((s) => s.__$$element === "itemDefinition");
+  const itemDefinitionForMessages = itemDefinitions.find((s) => s["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES);
+
+  if (!itemDefinitionForMessages) {
+    addOrGetItemDefinitions({
+      definitions: definitions,
+      dataType: DEFAULT_DATA_TYPES.OBJECT,
+      id: RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
+    });
+  }
+
   const newMessage: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "message"> = {
     __$$element: "message",
     "@_id": generateUuid(),
-    "@_itemRef": `${messageName}Type`, // broken reference to a placeholder type that has no meaning to the jBPM Workflow Engine
+    "@_itemRef": RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
     "@_name": messageName,
   };
 

@@ -49,7 +49,7 @@ import {
 import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "../../mutations/addOrGetItemDefinitions";
 import { deleteItemDefinition } from "../../mutations/deleteItemDefinition";
 import { renameItemDefinition } from "../../mutations/renameItemDefinition";
-import { addOrGetMessages } from "../../mutations/addOrGetMessages";
+import { addOrGetMessages, RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "../../mutations/addOrGetMessages";
 import { renameMessage } from "../../mutations/renameMessage";
 import { deleteMessage } from "../../mutations/deleteMessage";
 import { addOrGetSignals } from "../../mutations/addOrGetSignals";
@@ -86,7 +86,9 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
   const itemDefinitions = useBpmnEditorStore((s) =>
     s.bpmn.model.definitions.rootElement?.filter((s) => s.__$$element === "itemDefinition")
   )?.filter(
-    (s) => Object.values(DEFAULT_DATA_TYPES).findIndex((defaultDataType) => defaultDataType === s["@_structureRef"]) < 0
+    (s) =>
+      Object.values(DEFAULT_DATA_TYPES).findIndex((defaultDataType) => defaultDataType === s["@_structureRef"]) < 0 &&
+      s["@_id"] !== RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
   );
   const messages = useBpmnEditorStore((s) => {
     const allMessages = s.bpmn.model.definitions.rootElement?.filter((s) => s.__$$element === "message") ?? [];

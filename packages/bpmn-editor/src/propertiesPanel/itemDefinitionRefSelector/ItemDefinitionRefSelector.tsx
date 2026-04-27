@@ -25,6 +25,7 @@ import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreCont
 import { TypeaheadSelect } from "../../typeaheadSelect/TypeaheadSelect";
 import "./ItemDefinitionRefSelector.css";
 import { useBpmnEditorI18n } from "../../i18n";
+import { RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "../../mutations/addOrGetMessages";
 
 const DEFAULT_OPTIONS = [
   { itemDefinitionRef: "String", dataType: DEFAULT_DATA_TYPES.STRING },
@@ -53,6 +54,7 @@ export function ItemDefinitionRefSelector({
     (s) =>
       s.bpmn.model.definitions.rootElement
         ?.filter((s) => s.__$$element === "itemDefinition")
+        .filter((s) => s["@_id"] !== RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES)
         .map((s) => ({ itemDefinitionRef: s["@_id"], dataType: s["@_structureRef"] })) ?? []
   );
 
