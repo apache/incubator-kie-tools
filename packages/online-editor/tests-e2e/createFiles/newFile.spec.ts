@@ -31,9 +31,11 @@ test.describe("New file", () => {
 
     test("should create a new BPMN file", async ({ page, kieSandbox }) => {
       await page.getByRole("button", { name: "New Workflow" }).click();
+      const frame = page.frameLocator('[data-testid="kogito-iframe"]');
+      await frame.getByPlaceholder("e.g., hiring").fill("a");
+      await frame.getByRole("button", { name: "Start Modeling" }).click();
       await expect(page.getByRole("button", { name: "Workflow Untitled" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Workflow Untitled" })).toContainText("Untitled");
-      await kieSandbox.isEditorLoaded();
       await expect(kieSandbox.getEditor().getByTitle("Start Events")).toBeAttached();
       await expect(page).toHaveScreenshot("new-file-bpmn.png");
     });

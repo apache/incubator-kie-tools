@@ -29,6 +29,7 @@ import { EndEventIcon, EventDefinitionIcon, IntermediateThrowEventIcon, StartEve
 import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { NODE_COLORS } from "../NodeSvgs";
+import { deleteEdge } from "../../../mutations/deleteEdge";
 
 export type Event = Normalized<
   ElementFilter<
@@ -61,11 +62,22 @@ export function useEventNodeMorphingActions(event: Event) {
         const { process } = addOrGetProcessAndDiagramElements({
           definitions: s.bpmn.model.definitions,
         });
+
+        let edgeToDelete: string | undefined;
         visitFlowElementsAndArtifacts(process, ({ array, index, owner, element }) => {
+          if (
+            event.__$$element === "boundaryEvent" &&
+            element.__$$element === "sequenceFlow" &&
+            (element["@_sourceRef"] === event["@_id"] || element["@_targetRef"] === event["@_id"]) &&
+            eventDefinitionElement === "compensateEventDefinition"
+          ) {
+            edgeToDelete = element["@_id"];
+          }
+
           if (element["@_id"] === event["@_id"] && element.__$$element === event.__$$element) {
             if (eventDefinitionElement === undefined) {
               element.eventDefinition = undefined;
-              return false;
+              return true; // Will continue visiting.
             }
 
             element.eventDefinition ??= [];
@@ -133,9 +145,13 @@ export function useEventNodeMorphingActions(event: Event) {
               "@_id": generateUuid(),
               __$$element: eventDefinitionElement as any,
             };
-            return false; // Will stop visiting.
+            return true; // Will continue visiting.
           }
         });
+
+        if (edgeToDelete) {
+          deleteEdge({ definitions: s.bpmn.model.definitions, __readonly_edgeId: edgeToDelete });
+        }
       });
     },
     [bpmnEditorStoreApi, event]

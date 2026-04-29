@@ -31,7 +31,6 @@ import {
   TextAnnotationNodeSvg,
   SubProcessNodeSvg,
   EventVariantSymbolSvg,
-  NODE_COLORS,
 } from "./NodeSvgs";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { BpmnNodeType, EventVariant, GatewayVariant, SubProcessVariant, TaskVariant } from "../BpmnDiagramDomain";
@@ -168,6 +167,7 @@ export function SubProcessIcon({ variant }: { variant?: SubProcessVariant }) {
     <RoundSvg>
       <SubProcessNodeSvg
         {...nodeSvgProps}
+        strokeDasharray={variant === "event" ? "42,20" : undefined}
         strokeWidth={20}
         rimWidth={20}
         borderRadius={20}

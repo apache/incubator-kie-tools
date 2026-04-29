@@ -66,7 +66,6 @@ export function MessageSelector({
 
     return new Map(filteredMessages.map((m) => [m["@_id"], m] as [string, BPMN20__tMessage]));
   });
-
   const disableIdsSet = useMemo(() => new Set<string | undefined>(disableValues), [disableValues]);
 
   const options = useMemo(

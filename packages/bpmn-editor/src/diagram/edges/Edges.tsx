@@ -196,6 +196,8 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeDa
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
 
+  const association = props.data?.bpmnElement?.__$$element === "association" ? props.data?.bpmnElement : undefined;
+
   return (
     <>
       <AssociationPath
@@ -207,8 +209,13 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeDa
         onMouseMove={onMouseMoveOnEdge}
         onDoubleClick={onDoubleClickEdge}
         data-edgetype={"association"}
+        direction={association?.["@_associationDirection"]}
       />
-      <AssociationPath d={path} className={`kie-bpmn-editor--edge ${className}`} />
+      <AssociationPath
+        d={path}
+        className={`kie-bpmn-editor--edge ${className}`}
+        direction={association?.["@_associationDirection"]}
+      />
 
       {props.selected && !isConnecting && props.data?.bpmnEdge && (
         <Waypoints

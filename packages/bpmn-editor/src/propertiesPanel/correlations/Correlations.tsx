@@ -222,6 +222,7 @@ export function Correlations() {
         .find((p) => p["@_id"] === selectedPropertyId);
 
       if (property) {
+        property.correlationPropertyRetrievalExpression ??= [];
         property.correlationPropertyRetrievalExpression.push({
           "@_id": generateUuid(),
           "@_messageRef": undefined as any, // SPEC DISCREPANCY!,
@@ -243,6 +244,7 @@ export function Correlations() {
           .find((p) => p["@_id"] === selectedPropertyId);
 
         if (property) {
+          property.correlationPropertyRetrievalExpression ??= [];
           property.correlationPropertyRetrievalExpression[i].messagePath.__$$text = newExpression;
         }
       });
@@ -258,6 +260,7 @@ export function Correlations() {
           .find((p) => p["@_id"] === selectedPropertyId);
 
         if (property) {
+          property.correlationPropertyRetrievalExpression ??= [];
           property.correlationPropertyRetrievalExpression[i]["@_messageRef"] = newMessaage;
         }
       });
@@ -273,6 +276,7 @@ export function Correlations() {
           .find((p) => p["@_id"] === selectedPropertyId);
 
         if (property) {
+          property.correlationPropertyRetrievalExpression ??= [];
           property.correlationPropertyRetrievalExpression.splice(i, 1);
         }
       });
@@ -420,7 +424,7 @@ export function Correlations() {
   );
 
   const hasAtLeastOnePropertyWithMessageBinding = useMemo(() => {
-    return properties.some((p) => p.correlationPropertyRetrievalExpression.length > 0);
+    return properties.some((p) => (p.correlationPropertyRetrievalExpression ?? []).length > 0);
   }, [properties]);
 
   const hasAtLeastOneKeyWithSubscriptions = useBpmnEditorStore(
@@ -520,7 +524,7 @@ export function Correlations() {
                           className={"kie-bpmn-editor--correlations--properties--bindings"}
                         >
                           <Stack hasGutter={true} style={{ gap: "36px" }}>
-                            {selectedProperty.correlationPropertyRetrievalExpression.map((cpre, i) => (
+                            {(selectedProperty.correlationPropertyRetrievalExpression ?? []).map((cpre, i) => (
                               <Card
                                 key={cpre["@_id"]}
                                 isCompact={true}
@@ -531,7 +535,7 @@ export function Correlations() {
                                     <MessageSelector
                                       value={cpre["@_messageRef"]}
                                       onChange={onChangeMessageBindingMessage(i)}
-                                      disableValues={selectedProperty?.correlationPropertyRetrievalExpression.flatMap(
+                                      disableValues={selectedProperty?.correlationPropertyRetrievalExpression?.flatMap(
                                         (c) => (c["@_messageRef"] === cpre["@_messageRef"] ? [] : c["@_messageRef"])
                                       )}
                                     />

@@ -40,7 +40,6 @@ export function addVariable({
     process.property?.push({
       "@_id": generateUuid(),
       "@_name": "",
-      "@_itemSubjectRef": "",
     });
   } else {
     visitFlowElementsAndArtifacts(process, ({ element }) => {
@@ -54,7 +53,6 @@ export function addVariable({
         element.property?.push({
           "@_id": generateUuid(),
           "@_name": "",
-          "@_itemSubjectRef": "",
         });
         return false; // Will stop visiting.
       }

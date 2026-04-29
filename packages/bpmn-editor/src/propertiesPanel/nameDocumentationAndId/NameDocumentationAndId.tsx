@@ -21,8 +21,12 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import * as React from "react";
 import { updateFlowElement, updateLane } from "../../mutations/renameNode";
+import { regenerateElementId } from "../../mutations/regenerateElementId";
 import { Normalized } from "../../normalization/normalize";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
 import {
@@ -41,6 +45,7 @@ import {
   setBpmn20Drools10MetaData,
 } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 import { useBpmnEditorI18n } from "../../i18n";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 
 export function NameDocumentationAndId({
   element,
@@ -137,6 +142,22 @@ export function NameDocumentationAndId({
     [bpmnEditorStoreApi, element]
   );
 
+  const onRegenerateId = useCallback(() => {
+    const oldId = element["@_id"];
+    bpmnEditorStoreApi.setState((s) => {
+      const newId = regenerateElementId({
+        definitions: s.bpmn.model.definitions,
+        currentId: oldId,
+      });
+
+      // Update the selection to use the new ID
+      const selectedNodeIndex = s.xyFlowReactKieDiagram._selectedNodes.indexOf(oldId);
+      if (selectedNodeIndex >= 0) {
+        s.xyFlowReactKieDiagram._selectedNodes[selectedNodeIndex] = newId;
+      }
+    });
+  }, [element, bpmnEditorStoreApi]);
+
   return (
     <FormSection>
       {element.__$$element !== "association" && element.__$$element !== "group" && (
@@ -167,13 +188,30 @@ export function NameDocumentationAndId({
       </FormGroup>
 
       <FormGroup label={i18n.propertiesPanel.id}>
-        <ClipboardCopy
-          isReadOnly={settings.isReadOnly}
-          hoverTip={i18n.propertiesPanel.copy}
-          clickTip={i18n.propertiesPanel.copied}
-        >
-          {element["@_id"]}
-        </ClipboardCopy>
+        <InputGroup style={{ gap: "8px" }}>
+          <InputGroupItem isFill>
+            <ClipboardCopy
+              isReadOnly={true}
+              hoverTip={i18n.propertiesPanel.copy}
+              clickTip={i18n.propertiesPanel.copied}
+              style={{ width: "100%" }}
+            >
+              {element["@_id"]}
+            </ClipboardCopy>
+          </InputGroupItem>
+          {!settings.isReadOnly && (
+            <InputGroupItem>
+              <Tooltip content={i18n.propertiesPanel.regenerateIdButton} position="top">
+                <Button
+                  variant="control"
+                  onClick={onRegenerateId}
+                  icon={<SyncIcon />}
+                  aria-label={i18n.propertiesPanel.regenerateIdButton}
+                />
+              </Tooltip>
+            </InputGroupItem>
+          )}
+        </InputGroup>
       </FormGroup>
     </FormSection>
   );

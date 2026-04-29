@@ -62,7 +62,11 @@ export function renameError({
 
     if (array[index].__$$element === "endEvent" || array[index].__$$element === "intermediateCatchEvent") {
       for (const eventDefinition of array[index]?.eventDefinition ?? []) {
-        if (eventDefinition && eventDefinition.__$$element === "errorEventDefinition") {
+        if (
+          eventDefinition &&
+          eventDefinition.__$$element === "errorEventDefinition" &&
+          eventDefinition["@_errorRef"] === id
+        ) {
           eventDefinition["@_drools:erefname"] = newErrorName;
         }
       }

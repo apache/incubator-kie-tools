@@ -36,6 +36,7 @@ import { BpmnNodeType } from "../diagram/BpmnDiagramDomain";
 import { BpmnDiagramNodeData } from "../diagram/BpmnDiagramDomain";
 import { Normalized, normalize } from "../normalization/normalize";
 import { computeDiagramData } from "./computeDiagramData";
+import { isProcessIdValid } from "../validation/processIdValidation";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -83,6 +84,7 @@ export interface State extends BpmnXyFlowDiagramState {
       enableCustomNodeStyles: boolean;
     };
     isEditingStyle: boolean;
+    hasEverHadValidProcessId: boolean;
   };
 }
 
@@ -105,6 +107,7 @@ export const getDefaultStaticState = (): Omit<State, "bpmn" | "computed" | "disp
       enableCustomNodeStyles: true,
     },
     isEditingStyle: false,
+    hasEverHadValidProcessId: false,
   },
   xyFlowReactKieDiagram: {
     snapGrid: { isEnabled: true, x: 20, y: 20 },
@@ -125,11 +128,16 @@ export function createBpmnEditorStore(
   computedCache: ComputedStateCache<ReturnType<State["computed"]>>
 ) {
   const { diagram, ...defaultStaticState } = getDefaultStaticState();
+  const normalizedModel = normalize(model);
+  const initialProcessId = normalizedModel.definitions.rootElement?.find((e) => e.__$$element === "process")?.["@_id"];
   return create(
     immer<State>(() => ({
       ...defaultStaticState,
-      bpmn: { model: normalize(model) },
-      diagram,
+      bpmn: { model: normalizedModel },
+      diagram: {
+        ...diagram,
+        hasEverHadValidProcessId: isProcessIdValid(initialProcessId),
+      },
       dispatch: (s) => ({
         reset: (model) => {
           s.bpmn.model = model;

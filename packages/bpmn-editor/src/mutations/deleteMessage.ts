@@ -58,7 +58,11 @@ export function deleteMessage({
       array[index].__$$element === "intermediateCatchEvent"
     ) {
       for (const eventDefinition of array[index]?.eventDefinition ?? []) {
-        if (eventDefinition && eventDefinition.__$$element === "messageEventDefinition") {
+        if (
+          eventDefinition &&
+          eventDefinition.__$$element === "messageEventDefinition" &&
+          eventDefinition["@_messageRef"] === messageId
+        ) {
           delete eventDefinition["@_drools:msgref"];
           delete eventDefinition["@_messageRef"];
         }

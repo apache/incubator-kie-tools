@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProcessAndDiagramElements";
@@ -28,7 +28,10 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Select, SelectOption } from "@patternfly/react-core/dist/js/components/Select";
 import { MenuToggle } from "@patternfly/react-core/dist/js/components/MenuToggle";
 import { Normalized } from "../../normalization/normalize";
-import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+import {
+  BPMN20__tFormalExpression,
+  BPMN20__tProcess,
+} from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
@@ -48,13 +51,11 @@ export function TimerOptions({ element }: { element: WithTimer }) {
   const { i18n } = useBpmnEditorI18n();
   const isReadOnly = useBpmnEditorStore((s) => s.settings.isReadOnly);
   const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
-  const [isoCronType, setIsoCronType] = useState<string | undefined>("ISO");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   // const [selectedDate, setSelectedDate] = useState<string>("");
 
   const handleOptionChange = (value: string) => {
     setSelectedOption(value);
-    setIsoCronType(undefined);
     bpmnEditorStoreApi.setState((s) => {
       const { process } = addOrGetProcessAndDiagramElements({
         definitions: s.bpmn.model.definitions,
@@ -86,6 +87,17 @@ export function TimerOptions({ element }: { element: WithTimer }) {
   //   setSelectedDate(value);
   // };
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
+
+  // "language" is not part of the BPMN spec, but supported/required by the Kogito engine.
+  const timerEventTimerType = useMemo(
+    () =>
+      (
+        element?.eventDefinition?.find((eventDef) => eventDef.__$$element === "timerEventDefinition")?.timeCycle as
+          | BPMN20__tFormalExpression
+          | undefined
+      )?.["@_language"] || "iso",
+    [element?.eventDefinition]
+  );
 
   return (
     <FormGroup label={i18n.propertiesPanel.timerOptions} fieldId="timer-options">
@@ -149,15 +161,15 @@ export function TimerOptions({ element }: { element: WithTimer }) {
           label={i18n.propertiesPanel.fireMultipleTimes}
           isChecked={
             selectedOption === "fire-multiple" ||
-            !!element?.eventDefinition?.find((eventDef) => eventDef.__$$element === "timerEventDefinition")?.timeCycle
-              ?.__$$text
+            element?.eventDefinition?.find((eventDef) => eventDef.__$$element === "timerEventDefinition")?.timeCycle !==
+              undefined
           }
           onChange={() => handleOptionChange("fire-multiple")}
           isDisabled={isReadOnly}
         />
         {(selectedOption === "fire-multiple" ||
-          !!element?.eventDefinition?.find((eventDef) => eventDef.__$$element === "timerEventDefinition")?.timeCycle
-            ?.__$$text) && (
+          element?.eventDefinition?.find((eventDef) => eventDef.__$$element === "timerEventDefinition")?.timeCycle !==
+            undefined) && (
           <div className="timer-options-multiple">
             <div className="dropdown-group">
               <Select
@@ -169,20 +181,40 @@ export function TimerOptions({ element }: { element: WithTimer }) {
                     isExpanded={isDropdownOpen}
                     isDisabled={isReadOnly}
                   >
-                    {isoCronType}
+                    {timerEventTimerType}
                   </MenuToggle>
                 )}
                 id="iso-cron-select"
                 isOpen={isDropdownOpen}
                 onSelect={(event, selection) => {
-                  setIsoCronType(selection as string);
+                  const lang = selection === "cron" ? selection : undefined;
+                  bpmnEditorStoreApi.setState((s) => {
+                    const { process } = addOrGetProcessAndDiagramElements({
+                      definitions: s.bpmn.model.definitions,
+                    });
+                    visitFlowElementsAndArtifacts(process, ({ element: e }) => {
+                      if (e["@_id"] === element?.["@_id"] && e.__$$element === element.__$$element) {
+                        const timerEventDefinition = e.eventDefinition?.find(
+                          (event) => event.__$$element === "timerEventDefinition"
+                        );
+                        if (timerEventDefinition) {
+                          timerEventDefinition.timeCycle ??= {
+                            "@_id": generateUuid(),
+                            __$$text: "",
+                          };
+                          // "language" is not part of the BPMN spec, but supported/required by the Kogito engine.
+                          (timerEventDefinition.timeCycle as BPMN20__tFormalExpression)["@_language"] = lang;
+                        }
+                      }
+                    });
+                  });
                   setIsDropdownOpen(false);
                 }}
-                selected={isoCronType}
+                selected={timerEventTimerType}
                 className="iso-cron-select"
               >
-                <SelectOption value="ISO">{i18n.propertiesPanel.iso}</SelectOption>
-                <SelectOption value="Cron">{i18n.propertiesPanel.cron}</SelectOption>
+                <SelectOption value="iso">{i18n.propertiesPanel.iso}</SelectOption>
+                <SelectOption value="cron">{i18n.propertiesPanel.cron}</SelectOption>
               </Select>
               <TextInput
                 id="fire-multiple-input"

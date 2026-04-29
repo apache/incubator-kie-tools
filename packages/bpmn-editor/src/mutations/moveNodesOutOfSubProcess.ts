@@ -34,14 +34,6 @@ export function moveNodesOutOfSubProcess({
   __readonly_nodeIds: string[];
 }) {
   const { process } = addOrGetProcessAndDiagramElements({ definitions });
-
-  const flowElementsToMove: Normalized<
-    ElementExclusion<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>, "sequenceFlow">
-  >[] = [];
-  const artifactsToMove: Normalized<
-    ElementExclusion<Unpacked<NonNullable<BPMN20__tProcess["artifact"]>>, "association">
-  >[] = [];
-
   const subProcess = process.flowElement?.find((s) => s["@_id"] === __readonly_subProcessId);
   if (
     !(
@@ -53,7 +45,21 @@ export function moveNodesOutOfSubProcess({
     throw new Error(`Can't find subProcess with ID ${__readonly_subProcessId}`);
   }
 
+  const flowElementsToMove: Normalized<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>>[] = [];
+  const artifactsToMove: Normalized<
+    ElementExclusion<Unpacked<NonNullable<BPMN20__tProcess["artifact"]>>, "association">
+  >[] = [];
+
   const nodeIdsToMoveOut = new Set(__readonly_nodeIds);
+  const subProcessNodes = new Set();
+  subProcess.flowElement?.forEach((flowElement) => {
+    if (flowElement.__$$element !== "sequenceFlow") {
+      subProcessNodes.add(flowElement["@_id"]);
+    }
+  });
+
+  // Check if we're moving out of an Event Sub-Process
+  const isEventSubProcess = subProcess.__$$element === "subProcess" && (subProcess["@_triggeredByEvent"] ?? false);
 
   for (let i = 0; i < (subProcess.flowElement ?? []).length; i++) {
     const flowElement = (subProcess.flowElement ?? [])[i];
@@ -63,6 +69,44 @@ export function moveNodesOutOfSubProcess({
     ) {
       flowElementsToMove.push(...((subProcess.flowElement?.splice(i, 1) ?? []) as typeof flowElementsToMove));
       i--; // repeat one index because we just altered the array we're iterating over.
+    } else if (
+      flowElement.__$$element === "sequenceFlow" &&
+      ((nodeIdsToMoveOut.has(flowElement["@_sourceRef"]) && nodeIdsToMoveOut.has(flowElement["@_targetRef"])) ||
+        (subProcessNodes.has(flowElement["@_sourceRef"]) && nodeIdsToMoveOut.has(flowElement["@_targetRef"])) ||
+        (nodeIdsToMoveOut.has(flowElement["@_sourceRef"]) && subProcessNodes.has(flowElement["@_targetRef"])))
+    ) {
+      // If the source and target are both outside of the sub-process
+      // or if the source and target is already in the sub process the sequenceFlow must be copied
+      flowElementsToMove.push(...((subProcess.flowElement?.splice(i, 1) ?? []) as typeof flowElementsToMove));
+      i--; // repeat one index because we just altered the array we're iterating over.
+    }
+  }
+
+  // BPMN 2.0 Spec: When moving Start Events from Event Sub-Process to top level,
+  // only convert event types that are NOT supported at top level
+  // Top-level allows: None, Message, Timer, Conditional, Signal
+  // Top-level does NOT allow: Error, Escalation, Compensation, Link, Terminate
+  if (isEventSubProcess) {
+    for (const flowElement of flowElementsToMove) {
+      if (
+        flowElement.__$$element === "startEvent" &&
+        flowElement.eventDefinition &&
+        flowElement.eventDefinition.length > 0
+      ) {
+        const eventDefType = flowElement.eventDefinition[0].__$$element;
+        const unsupportedAtTopLevel =
+          eventDefType === "errorEventDefinition" ||
+          eventDefType === "escalationEventDefinition" ||
+          eventDefType === "compensateEventDefinition" ||
+          eventDefType === "linkEventDefinition" ||
+          eventDefType === "terminateEventDefinition";
+
+        if (unsupportedAtTopLevel) {
+          // Convert to "None" Start Event because this event type is not allowed at top level
+          flowElement.eventDefinition = undefined;
+        }
+        // Otherwise keep the event definition (Message, Timer, Conditional, Signal are valid at top level)
+      }
     }
   }
 

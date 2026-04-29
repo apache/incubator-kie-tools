@@ -21,7 +21,7 @@ import * as React from "react";
 import * as RF from "reactflow";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import "./OutgoingStuffNodePanel.css";
-import { useState } from "react";
+import { useEffect } from "react";
 import { useXyFlowReactKieDiagramStore } from "../store/Store";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
@@ -55,6 +55,7 @@ export type OutgoingStuffNodePanelEdgeMapping<E extends string> = Record<
 >;
 
 export function OutgoingStuffNodePanel<N extends string, E extends string>(props: {
+  nodeId: string;
   isVisible: boolean;
   nodeTypes: N[];
   edgeTypes: E[];
@@ -69,6 +70,22 @@ export function OutgoingStuffNodePanel<N extends string, E extends string>(props
     }),
     [dragging, props.isVisible]
   );
+
+  // FIX FOR DYNAMIC OUTGOING STUFF PANELS (begin)
+  //
+  // ReactFlow saves "handles" for each node whenever RF.Handle components are rendered inside it.
+  //
+  // Since there might be situations where a node may have a different set of outgoing edges/nodes depending on its state,
+  // we need to forcibly update ReactFlow's internal node state to accomodate for these different edge/node types.
+  //
+  // EXAMPLE: Compensation Events in BPMN—which may only have "Association"  when in "Boundary" state,
+  // but may have "Sequence Flow" edges when in "Flow Element" state.
+  const updateNodeInternals = RF.useUpdateNodeInternals();
+  useEffect(() => {
+    updateNodeInternals(props.nodeId);
+  }, [props.nodeId, props.edgeTypes, props.nodeTypes]);
+  //
+  // FIX FOR DYNAMIC OUTGOING STUFF PANELS (end)
 
   return (
     <>

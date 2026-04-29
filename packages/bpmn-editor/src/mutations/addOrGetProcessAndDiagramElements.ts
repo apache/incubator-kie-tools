@@ -36,7 +36,7 @@ export function addOrGetProcessAndDiagramElements({ definitions }: { definitions
   if (!process) {
     process = {
       __$$element: "process",
-      "@_id": generateUuid(),
+      "@_id": "", // Empty ID - must be set by user through Empty State
     };
     definitions.rootElement?.push(process);
   }

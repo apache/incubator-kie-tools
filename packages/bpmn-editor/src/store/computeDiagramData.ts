@@ -28,7 +28,7 @@ import {
   BpmnEdgeElement,
   BpmnNodeElement,
   BpmnNodeType,
-  elementToEdgeType,
+  EDGE_TYPES,
   elementToNodeType,
   NODE_TYPES,
 } from "../diagram/BpmnDiagramDomain";
@@ -303,7 +303,12 @@ export function computeDiagramData(
           bpmnTargetType: nodesById.get(targetId)!.type!,
         },
         selected: selectedEdges.has(id),
-        type: elementToEdgeType[bpmnElement.__$$element],
+        type:
+          bpmnElement.__$$element === "sequenceFlow"
+            ? EDGE_TYPES.sequenceFlow
+            : bpmnElement.__$$element === "association" && bpmnElement["@_associationDirection"] === "One"
+              ? EDGE_TYPES.compensationAssociation
+              : EDGE_TYPES.association,
       };
       return e;
     });

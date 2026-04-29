@@ -21,6 +21,7 @@ import * as React from "react";
 import {
   parseBpmn20Drools10MetaData,
   setBpmn20Drools10MetaData,
+  deleteBpmn20Drools10MetaDataEntry,
 } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 import { visitFlowElementsAndArtifacts } from "../../mutations/_elementVisitor";
 import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProcessAndDiagramElements";
@@ -65,7 +66,11 @@ export function VariableTagSelector({ p, i }: { p: undefined | WithVariables; i:
               }
               process.property[i].extensionElements ??= {};
               process.property[i].extensionElements["drools:metaData"] ??= [];
-              setBpmn20Drools10MetaData(process.property[i], "customTags", prev.join(","));
+              if (prev.length === 0) {
+                deleteBpmn20Drools10MetaDataEntry(process.property[i], "customTags");
+              } else {
+                setBpmn20Drools10MetaData(process.property[i], "customTags", prev.join(","));
+              }
             }
           } else {
             visitFlowElementsAndArtifacts(process, ({ element }) => {
@@ -79,7 +84,11 @@ export function VariableTagSelector({ p, i }: { p: undefined | WithVariables; i:
                 if (element.property?.[i]) {
                   element.property[i].extensionElements ??= {};
                   element.property[i].extensionElements["drools:metaData"] ??= [];
-                  setBpmn20Drools10MetaData(element.property[i], "customTags", prev.join(","));
+                  if (prev.length === 0) {
+                    deleteBpmn20Drools10MetaDataEntry(element.property[i], "customTags");
+                  } else {
+                    setBpmn20Drools10MetaData(element.property[i], "customTags", prev.join(","));
+                  }
                 }
               }
             });

@@ -58,7 +58,11 @@ export function deleteSignal({
       array[index].__$$element === "intermediateCatchEvent"
     ) {
       for (const eventDefinition of array[index]?.eventDefinition ?? []) {
-        if (eventDefinition && eventDefinition.__$$element === "signalEventDefinition") {
+        if (
+          eventDefinition &&
+          eventDefinition.__$$element === "signalEventDefinition" &&
+          eventDefinition["@_signalRef"] === signalId
+        ) {
           delete eventDefinition["@_signalRef"];
         }
       }

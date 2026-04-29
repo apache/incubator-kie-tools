@@ -29,7 +29,7 @@ import { AsyncCheckbox } from "@kie-tools/bpmn-editor/dist/propertiesPanel/async
 import { AdhocAutostartCheckbox } from "@kie-tools/bpmn-editor/dist/propertiesPanel/adhocAutostartCheckbox/AdhocAutostartCheckbox";
 import { SlaDueDateInput } from "@kie-tools/bpmn-editor/dist/propertiesPanel/slaDueDate/SlaDueDateInput";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
-import { bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries } from "../i18n";
+import { BpmnEditorEnvelopeI18n, bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries } from "../i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 
 export const MILESTONE_TASK_ICON = (
@@ -77,20 +77,22 @@ export const MilestoneTaskProperties: CustomTask["propertiesPanelComponent"] = (
   );
 };
 
-export const MILESTONE_TASK: CustomTask = {
-  id: "milestone",
-  displayGroup: "Flexible processes",
-  displayName: "Milestone",
-  displayDescription: "",
-  iconSvgElement: MILESTONE_TASK_ICON,
-  propertiesPanelComponent: MilestoneTaskProperties,
-  matches: (task) => task["@_drools:taskName"] === "Milestone",
-  produce: () => ({
-    __$$element: "task",
-    "@_id": generateUuid(),
-    "@_drools:taskName": "Milestone",
-    "@_name": "Milestone",
-  }),
-  dataInputReservedNames: [],
-  dataOutputReservedNames: [],
-};
+export function getMilestoneTask(i18n: BpmnEditorEnvelopeI18n): CustomTask {
+  return {
+    id: "milestone",
+    displayGroup: i18n.flexibleProcesses,
+    displayName: i18n.milestone,
+    displayDescription: "",
+    iconSvgElement: MILESTONE_TASK_ICON,
+    propertiesPanelComponent: MilestoneTaskProperties,
+    matches: (task) => task["@_drools:taskName"] === "Milestone",
+    produce: () => ({
+      __$$element: "task",
+      "@_id": generateUuid(),
+      "@_drools:taskName": "Milestone",
+      "@_name": i18n.milestone,
+    }),
+    dataInputReservedNames: [],
+    dataOutputReservedNames: [],
+  };
+}

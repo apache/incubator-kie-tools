@@ -1173,6 +1173,7 @@ export const SubProcessNodeSvg = React.forwardRef<
     icons?: ActivityNodeMarker[];
     variant?: SubProcessVariant;
     exportedSvgId?: string;
+    strokeDasharray?: string;
   }
 >((__props, ref) => {
   const {
@@ -1181,6 +1182,7 @@ export const SubProcessNodeSvg = React.forwardRef<
     icons: _icons,
     variant: _variant,
     exportedSvgId: _exportedSvgId,
+    strokeDasharray,
     ..._props
   } = { ...__props };
 
@@ -1237,7 +1239,7 @@ export const SubProcessNodeSvg = React.forwardRef<
           strokeWidth={strokeWidth}
           fill={"transparent"}
           stroke={DEFAULT_NODE_STROKE_COLOR}
-          strokeDasharray={variant === "event" ? "10,5" : undefined}
+          strokeDasharray={variant === "event" ? strokeDasharray ?? "10,5" : undefined}
           strokeLinejoin={"round"}
           rx={borderRadius}
           ry={borderRadius}
@@ -2032,11 +2034,11 @@ export function ActivityNodeIcons({
             <LoopIconSvg stroke={stroke} size={iconSize} />
           </g>
         ) : icon === ActivityNodeMarker.AdHocSubProcess ? (
-          <g key={icon} transform={`translate(${iconX}, ${bottomY - iconSize + 5})`}>
+          <g key={icon} transform={`translate(${iconX + 4}, ${bottomY - iconSize + 5})`}>
             <AdHocSubProcessIconSvg stroke={stroke} size={iconSize} />
           </g>
         ) : icon === ActivityNodeMarker.Compensation ? (
-          <g key={icon} transform={`translate(${iconX - 13}, ${bottomY - iconSize - 7})`}>
+          <g key={icon} transform={`translate(${iconX - 8}, ${bottomY - iconSize - 7})`}>
             <CompensationIconSvg stroke={stroke} strokeWidth={strokeWidth} size={33} />
           </g>
         ) : null;

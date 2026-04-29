@@ -67,12 +67,26 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
                 targetObj: array[index],
               });
 
+              // Check if we're converting FROM an Event Sub-Process
+              const wasEventSubProcess =
+                element.__$$element === "subProcess" && (element["@_triggeredByEvent"] ?? false);
+
               array[index].__$$element = "subProcess";
               array[index]["@_triggeredByEvent"] = false;
               array[index].loopCharacteristics = {
                 "@_id": generateUuid(),
                 __$$element: "multiInstanceLoopCharacteristics",
               };
+
+              // BPMN 2.0 Spec: Multi-instance sub-processes can only have "None" Start Events
+              if (wasEventSubProcess) {
+                // Strip event definitions from all Start Events inside this sub-process
+                for (const flowElement of array[index].flowElement ?? []) {
+                  if (flowElement.__$$element === "startEvent" && flowElement.eventDefinition) {
+                    flowElement.eventDefinition = undefined;
+                  }
+                }
+              }
             } else {
               keepIntersection({
                 fromElement: element.__$$element,
@@ -80,9 +94,28 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
                 srcObj: element,
                 targetObj: array[index],
               });
+
+              // Check if we're converting FROM an Event Sub-Process
+              const wasEventSubProcess =
+                element.__$$element === "subProcess" && (element["@_triggeredByEvent"] ?? false);
+
               array[index].__$$element = subProcessElement;
               array[index]["@_triggeredByEvent"] = false;
               array[index].loopCharacteristics = undefined;
+
+              // BPMN 2.0 Spec: When converting from Event Sub-Process to regular Embedded Sub-Process,
+              // Start Events must be converted to "None" (strip event definitions)
+              const isNowEmbeddedSubProcess =
+                subProcessElement === "subProcess" || subProcessElement === "adHocSubProcess";
+
+              if (wasEventSubProcess && isNowEmbeddedSubProcess) {
+                // Strip event definitions from all Start Events inside this sub-process
+                for (const flowElement of array[index].flowElement ?? []) {
+                  if (flowElement.__$$element === "startEvent" && flowElement.eventDefinition) {
+                    flowElement.eventDefinition = undefined;
+                  }
+                }
+              }
             }
 
             return false; // Will stop visiting.

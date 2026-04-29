@@ -45,6 +45,50 @@ export function normalize(model: BpmnLatestModel): State["bpmn"]["model"] {
     })
     .randomize({ skipAlreadyAttributedIds: true });
 
+  // Normalize property elements: populate name attribute from id if missing for process variables
+  model.definitions.rootElement?.forEach((rootElement) => {
+    if (rootElement.__$$element === "process") {
+      rootElement.property?.forEach((property) => {
+        if (!property["@_name"] && property["@_id"]) {
+          property["@_name"] = property["@_id"];
+        }
+        if (property["@_itemSubjectRef"] === "") {
+          delete property["@_itemSubjectRef"];
+        }
+      });
+      // Normalize properties in subprocesses
+      rootElement.flowElement?.forEach((flowElement) => {
+        if (
+          flowElement.__$$element === "subProcess" ||
+          flowElement.__$$element === "adHocSubProcess" ||
+          flowElement.__$$element === "transaction"
+        ) {
+          flowElement.property?.forEach((property) => {
+            if (!property["@_name"] && property["@_id"]) {
+              property["@_name"] = property["@_id"];
+            }
+            if (property["@_itemSubjectRef"] === "") {
+              delete property["@_itemSubjectRef"];
+            }
+          });
+        }
+      });
+    }
+    // Normalize error elements: populate name attribute from errorCode if missing
+    if (rootElement.__$$element === "error") {
+      if (!rootElement["@_name"] && rootElement["@_errorCode"]) {
+        rootElement["@_name"] = rootElement["@_errorCode"];
+      }
+    }
+
+    // Normalize escalation elements: populate name attribute from escalationCode if missing
+    if (rootElement.__$$element === "escalation") {
+      if (!rootElement["@_name"] && rootElement["@_escalationCode"]) {
+        rootElement["@_name"] = rootElement["@_escalationCode"];
+      }
+    }
+  });
+
   const normalizedModel = model as Normalized<BpmnLatestModel>;
 
   return normalizedModel;

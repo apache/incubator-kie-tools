@@ -19,8 +19,6 @@
 
 import * as React from "react";
 import * as RF from "reactflow";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { getDefaultEdgeTypeBetween, GraphStructure } from "../graph/graphStructure";
 import { usePathForEdgeWithWaypoints } from "./usePathForEdgeWithWaypoints";
 import { PositionalNodeHandleId } from "../nodes/PositionalNodeHandles";
 import { getBoundsCenterPoint, getPositionalHandlePosition } from "../maths/Maths";
@@ -42,13 +40,13 @@ export function ConnectionLine<N extends string, E extends string>({
   fromHandle,
   defaultNodeSizes,
   minNodeSizes,
-  graphStructure,
+  edgeType,
   nodeComponentsMapping,
   edgeComponentsMapping,
 }: RF.ConnectionLineComponentProps & {
   defaultNodeSizes: NodeSizes<N>;
   minNodeSizes: NodeSizes<N>;
-  graphStructure: GraphStructure<N, E>;
+  edgeType: undefined | E;
   nodeComponentsMapping: ConnectionLineNodeMapping<N>;
   edgeComponentsMapping: ConnectionLineEdgeMapping<E>;
 }) {
@@ -119,9 +117,8 @@ export function ConnectionLine<N extends string, E extends string>({
       undefined
     );
 
-    const edgeType = getDefaultEdgeTypeBetween(graphStructure, fromNode?.type as N, handleId as N);
     if (!edgeType) {
-      throw new Error(`Invalid structure: ${fromNode?.type} --(any)--> ${handleId}`);
+      throw new Error(`No edge type provided for ${fromNode?.type} --(?)--> ${handleId}`);
     }
 
     const path = `M${fromXauto},${fromYauto} L${toXauto},${toYauto}`;

@@ -17,21 +17,22 @@
  * under the License.
  */
 
-import { ns as bpmn20ns } from "../bpmn-2_0/ts-gen/meta";
-import { BPMN20__tAssociationDirection } from "./ts-gen/types";
+import { BpmnEditorI18n } from "../i18n";
 
-export type UniqueNameIndex = Map<string, string>;
+export function isProcessIdValid(processId: string | undefined): boolean {
+  if (!processId) {
+    return false;
+  }
+  const trimmed = processId.trim();
+  return trimmed.length > 0 && trimmed.length === processId.length && !processId.includes(" ");
+}
 
-export const BPMN20_SPEC = {
-  isValidName: (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex): boolean => {
-    return true; // FIXME: Tiago: Implement (valid name)
-  },
-};
-
-export const allBpmnImportNamespaces = new Set([bpmn20ns.get("")!]);
-
-export const KIE_BPMN_UNKNOWN_NAMESPACE = "https://kie.apache.org/bpmn/unknown";
-
-export const BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE = true;
-export const ASSOCIATION_DIRECTION_DEFAULT_VALUE: BPMN20__tAssociationDirection = "None";
-export const START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE = true;
+export function getProcessIdErrorMessage(processId: string | undefined, i18n: BpmnEditorI18n): string {
+  if (!processId || processId.trim().length === 0) {
+    return i18n.bpmnDiagramEmptyState.processIdInvalidText;
+  }
+  if (processId.includes(" ")) {
+    return i18n.bpmnDiagramEmptyState.processIdSpacesNotAllowed;
+  }
+  return "";
+}

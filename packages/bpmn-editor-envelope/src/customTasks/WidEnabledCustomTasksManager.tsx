@@ -31,7 +31,7 @@ import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api"
 import { ResourceContent, SearchType } from "@kie-tools-core/workspace/dist/api";
 import { useEffect, useState } from "react";
 import { BpmnEditorRootProps, TARGET_DIRECTORY } from "../BpmnEditorRoot";
-import { MILESTONE_TASK } from "./MilestoneTask";
+import { getMilestoneTask } from "./MilestoneTask";
 import * as WidClientParser from "./WidClientParser";
 import "@kie-tools/bpmn-marshaller/dist/drools-extension";
 import { DataMapping, setInputAndOutputDataMapping } from "@kie-tools/bpmn-editor/dist/mutations/_dataMapping";
@@ -43,6 +43,8 @@ import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2
 import { Normalized } from "@kie-tools/bpmn-editor/dist/normalization/normalize";
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
+import * as path from "path";
+import { useBpmnEditorEnvelopeI18n } from "../i18n";
 
 export const WidEnabledCustomTasksManager: BpmnEditorRootProps["customTasksManager"] = ({
   thisBpmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
@@ -50,6 +52,7 @@ export const WidEnabledCustomTasksManager: BpmnEditorRootProps["customTasksManag
   doneBootstrapping,
 }) => {
   const envelopeContext = useKogitoEditorEnvelopeContext();
+  const { i18n } = useBpmnEditorEnvelopeI18n();
 
   // This is a hack. Every time a file is updates in KIE Sandbox, the Shared Worker emits an event to this BroadcastChannel.
   // By listening to it, we can reload the `externalModelsByNamespace` object. This makes the BPMN Editor react to external changes,
@@ -82,13 +85,31 @@ export const WidEnabledCustomTasksManager: BpmnEditorRootProps["customTasksManag
       return;
     }
 
+    const thisBpmnsNormalizedPosixDirRelativeToTheWorkspaceRoot = path.posix.dirname(
+      thisBpmnsNormalizedPosixPathRelativeToTheWorkspaceRoot
+    );
+
+    const sameDirPattern =
+      thisBpmnsNormalizedPosixDirRelativeToTheWorkspaceRoot === "."
+        ? "*.wid"
+        : `${thisBpmnsNormalizedPosixDirRelativeToTheWorkspaceRoot}/*.wid`;
+    const globalPattern = "global/*.wid";
+
+    console.log(
+      `[WidEnabledCustomTasksManager] Searching for WID files with patterns:`,
+      `\n  - Same directory pattern: "${sameDirPattern}"`,
+      `\n  - Global directory pattern: "${globalPattern}"`,
+      `\n  - BPMN file path: "${thisBpmnsNormalizedPosixPathRelativeToTheWorkspaceRoot}"`,
+      `\n  - BPMN directory: "${thisBpmnsNormalizedPosixDirRelativeToTheWorkspaceRoot}"`
+    );
+
     Promise.all([
       envelopeContext.channelApi.requests.kogitoWorkspace_resourceListRequest({
-        pattern: "*.wid",
+        pattern: sameDirPattern,
         opts: { type: SearchType.TRAVERSAL },
       }),
       envelopeContext.channelApi.requests.kogitoWorkspace_resourceListRequest({
-        pattern: "global/*.wid",
+        pattern: globalPattern,
         opts: { type: SearchType.TRAVERSAL },
       }),
     ])
@@ -169,7 +190,7 @@ export const WidEnabledCustomTasksManager: BpmnEditorRootProps["customTasksManag
       })
       .then((wids) => {
         if (!canceled) {
-          onChange([MILESTONE_TASK, ...wids.map((wid) => toCustomTask(wid))]);
+          onChange([getMilestoneTask(i18n), ...wids.map((wid) => toCustomTask(wid))]);
         }
         doneBootstrapping.resolve();
       });

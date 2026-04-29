@@ -17,21 +17,22 @@
  * under the License.
  */
 
-import { ns as bpmn20ns } from "../bpmn-2_0/ts-gen/meta";
-import { BPMN20__tAssociationDirection } from "./ts-gen/types";
+import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
+import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+import { Normalized } from "../normalization/normalize";
 
-export type UniqueNameIndex = Map<string, string>;
+export const DEFAULT_BPMN_NAMESPACE_PREFIX = "https://kie.apache.org/bpmn/";
 
-export const BPMN20_SPEC = {
-  isValidName: (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex): boolean => {
-    return true; // FIXME: Tiago: Implement (valid name)
-  },
-};
+export function setTargetNamespace({
+  definitions,
+  namespace,
+}: {
+  definitions: Normalized<BPMN20__tDefinitions>;
+  namespace: string;
+}): void {
+  definitions["@_targetNamespace"] = namespace;
+}
 
-export const allBpmnImportNamespaces = new Set([bpmn20ns.get("")!]);
-
-export const KIE_BPMN_UNKNOWN_NAMESPACE = "https://kie.apache.org/bpmn/unknown";
-
-export const BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE = true;
-export const ASSOCIATION_DIRECTION_DEFAULT_VALUE: BPMN20__tAssociationDirection = "None";
-export const START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE = true;
+export function regenerateTargetNamespace({ definitions }: { definitions: Normalized<BPMN20__tDefinitions> }): void {
+  setTargetNamespace({ definitions, namespace: `${DEFAULT_BPMN_NAMESPACE_PREFIX}/${generateUuid()}` });
+}

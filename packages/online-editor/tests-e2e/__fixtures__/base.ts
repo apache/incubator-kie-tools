@@ -36,11 +36,6 @@ class KieSandbox {
   public getEditor() {
     return this.page.frameLocator("#kogito-iframe");
   }
-
-  public async isEditorLoaded() {
-    await expect(this.getEditor().getByRole("heading", { name: "Loading..." })).toBeAttached();
-    await expect(this.getEditor().getByRole("heading", { name: "Loading..." })).not.toBeAttached();
-  }
 }
 
 export const test = base.extend<BaseFixtures>({

@@ -26,6 +26,8 @@ import {
   buildClipboardFromDiagram,
   getClipboard,
 } from "../clipboard/Clipboard";
+import { clearDataAssociationReferences } from "../clipboard/clearDataAssociationReferences";
+import { offsetPastedNodes } from "../clipboard/offsetPastedNodes";
 import { useCommands } from "../commands/CommandsContextProvider";
 import { useBpmnEditorStoreApi } from "../store/StoreContext";
 import { DEFAULT_VIEWPORT } from "@kie-tools/xyflow-react-kie-diagram/dist/diagram/XyFlowReactKieDiagram";
@@ -214,6 +216,9 @@ export function BpmnDiagramCommands(props: {}) {
           })
           .randomize({ skipAlreadyAttributedIds: false });
 
+        clearDataAssociationReferences(clipboard.processFlowElements);
+        offsetPastedNodes(clipboard.shapes, clipboard.edges);
+
         bpmnEditorStoreApi.setState((state) => {
           const { process, diagramElements } = addOrGetProcessAndDiagramElements({
             definitions: state.bpmn.model.definitions,
@@ -346,7 +351,9 @@ export function BpmnDiagramCommands(props: {}) {
       bpmnEditorStoreApi.setState((state) => {
         const { id: newNodeId } = addConnectedNode({
           definitions: state.bpmn.model.definitions,
+
           __readonly_sourceNode: {
+            bpmnElement: selectedNodes[0].data.bpmnElement,
             bounds: selectedNodes[0].data.shape["dc:Bounds"],
             id: selectedNodes[0].id,
             shapeId: selectedNodes[0].data.shape["@_id"],
@@ -404,6 +411,7 @@ export function BpmnDiagramCommands(props: {}) {
         const { id: newNodeId } = addConnectedNode({
           definitions: state.bpmn.model.definitions,
           __readonly_sourceNode: {
+            bpmnElement: selectedNodes[0].data.bpmnElement,
             bounds: selectedNodes[0].data.shape["dc:Bounds"],
             id: selectedNodes[0].id,
             shapeId: selectedNodes[0].data.shape["@_id"],
@@ -461,6 +469,7 @@ export function BpmnDiagramCommands(props: {}) {
         const { id: newNodeId } = addConnectedNode({
           definitions: state.bpmn.model.definitions,
           __readonly_sourceNode: {
+            bpmnElement: selectedNodes[0].data.bpmnElement,
             bounds: selectedNodes[0].data.shape["dc:Bounds"],
             id: selectedNodes[0].id,
             shapeId: selectedNodes[0].data.shape["@_id"],
@@ -518,6 +527,7 @@ export function BpmnDiagramCommands(props: {}) {
         const { id: newNodeId } = addConnectedNode({
           definitions: state.bpmn.model.definitions,
           __readonly_sourceNode: {
+            bpmnElement: selectedNodes[0].data.bpmnElement,
             bounds: selectedNodes[0].data.shape["dc:Bounds"],
             id: selectedNodes[0].id,
             shapeId: selectedNodes[0].data.shape["@_id"],
@@ -574,6 +584,7 @@ export function BpmnDiagramCommands(props: {}) {
         const { id: newNodeId } = addConnectedNode({
           definitions: state.bpmn.model.definitions,
           __readonly_sourceNode: {
+            bpmnElement: selectedNodes[0].data.bpmnElement,
             bounds: selectedNodes[0].data.shape["dc:Bounds"],
             id: selectedNodes[0].id,
             shapeId: selectedNodes[0].data.shape["@_id"],
@@ -635,6 +646,7 @@ export function BpmnDiagramCommands(props: {}) {
         const { id: newNodeId } = addConnectedNode({
           definitions: state.bpmn.model.definitions,
           __readonly_sourceNode: {
+            bpmnElement: selectedNodes[0].data.bpmnElement,
             bounds: selectedNodes[0].data.shape["dc:Bounds"],
             id: selectedNodes[0].id,
             shapeId: selectedNodes[0].data.shape["@_id"],

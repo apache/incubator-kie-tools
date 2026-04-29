@@ -84,31 +84,71 @@ export function deleteEdge({
       element.__$$element !== "dataObject" &&
       element.__$$element !== "dataObjectReference"
     ) {
-      // outgoing
-      if (element["@_id"] === foundBpmnElement?.element?.["@_sourceRef"]) {
-        element.outgoing = element.outgoing?.filter((s) => s.__$$text !== __readonly_edgeId);
-        if (
-          element.__$$element === "complexGateway" ||
-          element.__$$element === "parallelGateway" ||
-          element.__$$element === "exclusiveGateway" ||
-          element.__$$element === "inclusiveGateway" ||
-          element.__$$element === "eventBasedGateway"
-        ) {
-          updateGatewayDirection(element);
+      if (foundBpmnElement?.element.__$$element === "sequenceFlow") {
+        // outgoing
+        if (element["@_id"] === foundBpmnElement?.element?.["@_sourceRef"]) {
+          element.outgoing = element.outgoing?.filter((s) => s.__$$text !== __readonly_edgeId);
+          if (
+            element.__$$element === "complexGateway" ||
+            element.__$$element === "parallelGateway" ||
+            element.__$$element === "exclusiveGateway" ||
+            element.__$$element === "inclusiveGateway" ||
+            element.__$$element === "eventBasedGateway"
+          ) {
+            // Remove default property if it references the deleted edge
+            if (
+              (element.__$$element === "complexGateway" ||
+                element.__$$element === "exclusiveGateway" ||
+                element.__$$element === "inclusiveGateway") &&
+              element["@_default"] === __readonly_edgeId
+            ) {
+              delete element["@_default"];
+            }
+            updateGatewayDirection(element);
+          }
+        }
+
+        // incoming
+        else if (element["@_id"] === foundBpmnElement?.element?.["@_targetRef"]) {
+          element.incoming = element.incoming?.filter((s) => s.__$$text !== __readonly_edgeId);
+          if (
+            element.__$$element === "complexGateway" ||
+            element.__$$element === "parallelGateway" ||
+            element.__$$element === "exclusiveGateway" ||
+            element.__$$element === "inclusiveGateway" ||
+            element.__$$element === "eventBasedGateway"
+          ) {
+            // Remove default property if it references the deleted edge
+            if (
+              (element.__$$element === "complexGateway" ||
+                element.__$$element === "exclusiveGateway" ||
+                element.__$$element === "inclusiveGateway") &&
+              element["@_default"] === __readonly_edgeId
+            ) {
+              delete element["@_default"];
+            }
+            updateGatewayDirection(element);
+          }
         }
       }
 
-      // incoming
-      else if (element["@_id"] === foundBpmnElement?.element?.["@_targetRef"]) {
-        element.incoming = element.incoming?.filter((s) => s.__$$text !== __readonly_edgeId);
+      if (
+        element.__$$element === "adHocSubProcess" ||
+        element.__$$element === "subProcess" ||
+        element.__$$element === "transaction" ||
+        element.__$$element === "callActivity" ||
+        element.__$$element === "task" ||
+        element.__$$element === "userTask" ||
+        element.__$$element === "scriptTask" ||
+        element.__$$element === "serviceTask" ||
+        element.__$$element === "businessRuleTask"
+      ) {
         if (
-          element.__$$element === "complexGateway" ||
-          element.__$$element === "parallelGateway" ||
-          element.__$$element === "exclusiveGateway" ||
-          element.__$$element === "inclusiveGateway" ||
-          element.__$$element === "eventBasedGateway"
+          element["@_id"] === foundBpmnElement?.element["@_targetRef"] &&
+          foundBpmnElement?.element.__$$element === "association" &&
+          foundBpmnElement?.element["@_associationDirection"] === "One"
         ) {
-          updateGatewayDirection(element);
+          delete element["@_isForCompensation"];
         }
       }
 
@@ -116,9 +156,6 @@ export function deleteEdge({
       else {
         // empty on purpose
       }
-
-      element.outgoing = element.outgoing?.filter((s) => s.__$$text !== __readonly_edgeId) ?? [];
-      return false; // Will stop visiting.
     }
   });
 
