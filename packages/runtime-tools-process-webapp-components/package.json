@@ -40,7 +40,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/react": "^12.1.5",
     "@types/lodash": "^4.14.168",
-    "@types/react": "^17.0.6",
+    "@types/react": "^18.3.12",
     "rimraf": "^3.0.2",
     "typescript": "^5.9.3"
   },

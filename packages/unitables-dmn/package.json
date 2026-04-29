@@ -50,7 +50,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/json-schema": "^7.0.11",
-    "@types/react": "^17.0.6",
+    "@types/react": "^18.3.12",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",
     "typescript": "^5.9.3"
