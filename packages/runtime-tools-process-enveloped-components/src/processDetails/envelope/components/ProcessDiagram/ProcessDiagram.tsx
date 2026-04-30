@@ -29,7 +29,7 @@ interface SvgProp {
   props: SvgType;
 }
 interface IOwnProps {
-  svg: SvgProp;
+  svg: React.ReactElement<SvgType>;
   width?: number;
   height?: number;
 }

@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
+import { createPortal } from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
 import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAllChildren } from "../../utils";
@@ -44,7 +45,8 @@ export function renderPrEditorsApp(
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id);
 
-  ReactDOM.render(
+  const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
+  ReactDOM.createRoot(container).render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -56,14 +58,13 @@ export function renderPrEditorsApp(
       externalEditorManager={args.externalEditorManager}
     >
       <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} pageType={args.pageType} />
-      {ReactDOM.createPortal(
+      {createPortal(
         <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
         openRepoInExternalEditorContainer(args.id, args.container()!)
       )}
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+  setTimeout(() => args.logger.log("Mounted."), 0);
 }
 
 export function parsePrInfo(dependencies: Dependencies): PrInfo {

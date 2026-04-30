@@ -58,7 +58,7 @@ export function KogitoMenu() {
   }, [gitHubApi.token, updateToken]);
 
   const onPaste = useCallback(
-    (e) => {
+    (e: React.ClipboardEvent<HTMLInputElement>) => {
       const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
       setPotentialToken(token);
       setTimeout(async () => {

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { FormsListChannelApi, FormsListEnvelopeApi } from "../api";
 import { FormsListEnvelopeContext } from "./FormsListEnvelopeContext";
@@ -53,9 +53,8 @@ export function init(args: { config: EnvelopeDivConfig; container: HTMLDivElemen
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<FormsListEnvelopeViewApi>();
     return new Promise<() => FormsListEnvelopeViewApi>((res) => {
-      ReactDOM.render(<FormsListEnvelopeView ref={ref} channelApi={envelope.channelApi} />, args.container, () =>
-        res(() => ref.current!)
-      );
+      ReactDOM.createRoot(args.container).render(<FormsListEnvelopeView ref={ref} channelApi={envelope.channelApi} />);
+      setTimeout(() => res(() => ref.current!), 0);
     });
   };
 

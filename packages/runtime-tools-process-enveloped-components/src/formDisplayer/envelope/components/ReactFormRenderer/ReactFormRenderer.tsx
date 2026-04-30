@@ -83,7 +83,7 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
         ${trimmedSource}
         const target = document.getElementById("${containerId}");
         const element = window.React.createElement(${formName}, {});
-        window.ReactDOM.render(element, target);
+        window.ReactDOM.createRoot(target).render(element);
         `;
 
         const reactCode = transform(content.trim(), {

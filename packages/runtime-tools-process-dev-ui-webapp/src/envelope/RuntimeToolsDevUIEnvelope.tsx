@@ -24,7 +24,7 @@ import {
   RuntimeToolsDevUIEnvelopeContext,
   RuntimeToolsDevUIEnvelopeContextType,
 } from "./RuntimeToolsDevUIEnvelopeContext";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import React from "react";
 
 export class RuntimeToolsDevUIEnvelope {
@@ -63,9 +63,10 @@ export class RuntimeToolsDevUIEnvelope {
 
     return new Promise<() => RuntimeToolsDevUIEnvelopeViewApi>((res) => {
       setTimeout(() => {
-        ReactDOM.render(app(), container, () => {
+        ReactDOM.createRoot(container).render(app());
+        setTimeout(() => {
           res(() => runtimeToolsDevUIEnvelopeViewRef.current!);
-        });
+        }, 0);
       }, 0);
     });
   }

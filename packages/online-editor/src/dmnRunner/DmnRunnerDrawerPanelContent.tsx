@@ -128,7 +128,7 @@ export function DmnRunnerDrawerPanelContent() {
     [currentInputIndex, setDmnRunnerInputs]
   );
 
-  const onSelectRow = useCallback((event) => {
+  const onSelectRow = useCallback((event: React.SyntheticEvent<HTMLDivElement>) => {
     openRowSelection(false);
   }, []);
 

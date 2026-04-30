@@ -136,7 +136,7 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   const setUrl = useCallback(
-    (newUrl) => {
+    (newUrl: string | ((prev: string) => string)) => {
       if (!newUrl) {
         navigate(
           {
@@ -161,7 +161,7 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   const setGitRefName = useCallback(
-    (newGitRefName) => {
+    (newGitRefName: string | ((prev: string) => string)) => {
       if (!newGitRefName) {
         navigate(
           {
@@ -189,7 +189,7 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   const setInsecurelyDisableTlsCertificateValidation = useCallback(
-    (newInsecurelyDisableTlsCertificateValidation) => {
+    (newInsecurelyDisableTlsCertificateValidation: any) => {
       if (!newInsecurelyDisableTlsCertificateValidation) {
         navigate(
           {

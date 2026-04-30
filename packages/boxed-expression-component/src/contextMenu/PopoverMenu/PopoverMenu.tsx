@@ -102,12 +102,21 @@ export const PopoverMenu = React.forwardRef(
       onShown();
     }, [setCurrentlyOpenContextMenu, id, onShown]);
 
-    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((_event, showFunction) => {
-      showFunction?.();
-    }, []);
+    const shouldOpen: PopoverProps["shouldOpen"] = useCallback(
+      (
+        _event: MouseEvent | KeyboardEvent | React.KeyboardEvent<any> | React.MouseEvent<any>,
+        showFunction?: () => void
+      ) => {
+        showFunction?.();
+      },
+      []
+    );
 
     const shouldClose: PopoverProps["shouldClose"] = useCallback(
-      (event, hideFunction): void => {
+      (
+        event: MouseEvent | KeyboardEvent | React.KeyboardEvent<any> | React.MouseEvent<any>,
+        hideFunction?: () => void
+      ): void => {
         if (event instanceof KeyboardEvent && NavigationKeysUtils.isEsc(event.key)) {
           onCancel(event);
         } else {

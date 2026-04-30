@@ -96,7 +96,7 @@ export const WorkspaceCommitModal: PromiseModalChildren<string, WorkspaceCommitM
   );
 
   const onSubmit = useCallback(
-    async (e) => {
+    async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
       setLoading(true);
       e.preventDefault();
       e.stopPropagation();

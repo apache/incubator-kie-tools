@@ -95,7 +95,11 @@ export function VariableSelector({
   );
 
   const onChangeVariableRef = useCallback(
-    (newSelected: string | undefined, _: string, { triggeredByCreateNewOption }): void => {
+    (
+      newSelected: string | undefined,
+      _: string,
+      { triggeredByCreateNewOption }: { triggeredByCreateNewOption?: boolean }
+    ): void => {
       if (triggeredByCreateNewOption) {
         return;
       }
