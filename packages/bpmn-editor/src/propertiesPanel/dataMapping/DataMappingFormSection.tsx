@@ -774,10 +774,10 @@ export function useDataMapping(
   }, [element]);
 
   const handleSubmit = useCallback(
-    (event) => {
+    (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      if (!event.target.checkValidity()) {
-        event.target.reportValidity();
+      if (!event.currentTarget.checkValidity()) {
+        event.currentTarget.reportValidity();
         return;
       }
 

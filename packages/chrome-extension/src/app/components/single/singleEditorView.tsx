@@ -27,7 +27,8 @@ import {
   removeAllChildren,
   waitForElementToBeReady,
 } from "../../utils";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
+import { createPortal } from "react-dom";
 import { Globals, Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
 import * as React from "react";
@@ -73,7 +74,8 @@ export async function renderSingleEditorReadonlyApp(
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id, args.dependencies);
 
-  ReactDOM.render(
+  const container = createAndGetMainContainer(args.id, args.dependencies.all.body()!);
+  ReactDOM.createRoot(container).render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -84,15 +86,14 @@ export async function renderSingleEditorReadonlyApp(
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      {ReactDOM.createPortal(
+      {createPortal(
         <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
         openRepoInExternalEditorContainer(args.id, args.container())
       )}
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()!),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+  setTimeout(() => args.logger.log("Mounted."), 0);
 }
 
 function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: string }) {

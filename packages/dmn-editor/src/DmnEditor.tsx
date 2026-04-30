@@ -21,7 +21,8 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
+import { flushSync } from "react-dom";
 import * as RF from "reactflow";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -277,26 +278,25 @@ export const DmnEditorInternal = ({
           bounds.height + (state.computed(state).isAlternativeInputDataShape() ? SVG_PADDING * 5 : SVG_PADDING * 2) + ""
         );
 
-        // We're still on React 17.
-        // eslint-disable-next-line react/no-deprecated
-        ReactDOM.render(
-          // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
-          <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
-            <DmnDiagramSvg
-              nodes={nodes}
-              edges={edges}
-              snapGrid={state.diagram.snapGrid}
-              importsByNamespace={state.computed(state).importsByNamespace()}
-              thisDmn={state.dmn}
-              isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
-              allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
-              allTopLevelItemDefinitionUniqueNames={
-                state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
-              }
-            />
-          </g>,
-          svg
-        );
+        flushSync(() => {
+          ReactDOM.createRoot(svg).render(
+            // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
+            <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
+              <DmnDiagramSvg
+                nodes={nodes}
+                edges={edges}
+                snapGrid={state.diagram.snapGrid}
+                importsByNamespace={state.computed(state).importsByNamespace()}
+                thisDmn={state.dmn}
+                isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
+                allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
+                allTopLevelItemDefinitionUniqueNames={
+                  state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+                }
+              />
+            </g>
+          );
+        });
 
         return new XMLSerializer().serializeToString(svg);
       },
@@ -353,7 +353,7 @@ export const DmnEditorInternal = ({
   }, [isDiagramEditingInProgress, onModelChange, dmn.model]);
 
   const onTabChanged = useCallback(
-    (e, tab) => {
+    (_e: React.MouseEvent<HTMLElement>, tab: DmnEditorTab) => {
       dmnEditorStoreApi.setState((state) => {
         state.navigation.tab = tab;
         if (tab === DmnEditorTab.DATA_TYPES) {
@@ -481,12 +481,15 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   );
   const storeRef = React.useRef<StoreApiType>(store);
 
-  const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
-    storeRef.current?.setState((state) => {
-      state.diagram = defaultStaticState().diagram;
-      state.dmn.model = args[0];
-    });
-  }, []);
+  const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(
+    (details: Parameters<NonNullable<ErrorBoundaryPropsWithFallback["onReset"]>>[0]) => {
+      storeRef.current?.setState((state) => {
+        state.diagram = defaultStaticState().diagram;
+        state.dmn.model = details.reason === "imperative-api" ? details.args[0] : props.model;
+      });
+    },
+    [props.model]
+  );
 
   return (
     <I18nDictionariesProvider

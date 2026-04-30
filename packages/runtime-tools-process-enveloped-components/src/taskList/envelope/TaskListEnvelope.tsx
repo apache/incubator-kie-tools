@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { TaskListChannelApi, TaskListEnvelopeApi } from "../api";
 import { Envelope, EnvelopeDivConfig } from "@kie-tools-core/envelope";
@@ -52,9 +52,8 @@ export function init(args: { config: EnvelopeDivConfig; container: HTMLDivElemen
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TaskListEnvelopeViewApi>();
     return new Promise<() => TaskListEnvelopeViewApi>((res) => {
-      ReactDOM.render(<TaskListEnvelopeView ref={ref} channelApi={envelope.channelApi} />, args.container, () =>
-        res(() => ref.current!)
-      );
+      ReactDOM.createRoot(args.container).render(<TaskListEnvelopeView ref={ref} channelApi={envelope.channelApi} />);
+      setTimeout(() => res(() => ref.current!), 0);
     });
   };
 

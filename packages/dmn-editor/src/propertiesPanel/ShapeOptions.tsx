@@ -146,7 +146,7 @@ export function ShapeOptions({
   }, []);
 
   const onBlurWidth = useCallback(
-    (event) => {
+    (event: React.FocusEvent<HTMLInputElement>) => {
       setBounds((bounds, state) => {
         const node = nodesById.get(previousNodeId.current);
         const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
@@ -170,7 +170,7 @@ export function ShapeOptions({
   }, []);
 
   const onBlurHeight = useCallback(
-    (event) => {
+    (event: React.FocusEvent<HTMLInputElement>) => {
       setBounds((bounds, state) => {
         const node = nodesById.get(previousNodeId.current);
         const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { FormDetailsChannelApi, FormDetailsEnvelopeApi } from "../api";
 import { FormDetailsEnvelopeContext } from "./FormDetailsEnvelopeContext";
@@ -59,11 +59,10 @@ export function init(args: {
     const ref = React.createRef<FormDetailsEnvelopeViewApi>();
     return new Promise<() => FormDetailsEnvelopeViewApi>((res) => {
       args.container.className = "kogito-form-details-container";
-      ReactDOM.render(
-        <FormDetailsEnvelopeView ref={ref} channelApi={envelope.channelApi} targetOrigin={args.targetOrigin} />,
-        args.container,
-        () => res(() => ref.current!)
+      ReactDOM.createRoot(args.container).render(
+        <FormDetailsEnvelopeView ref={ref} channelApi={envelope.channelApi} targetOrigin={args.targetOrigin} />
       );
+      setTimeout(() => res(() => ref.current!), 0);
     });
   };
 

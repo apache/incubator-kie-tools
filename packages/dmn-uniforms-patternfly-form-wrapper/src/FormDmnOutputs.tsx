@@ -100,7 +100,7 @@ export function FormDmnOutputs({
     });
   }, [openedBoxedExpressionEditorNodeId, props.differences]);
 
-  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
+  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index: number) => {
     e.preventDefault();
     e.stopPropagation();
 

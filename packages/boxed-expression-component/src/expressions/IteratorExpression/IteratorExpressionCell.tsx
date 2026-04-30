@@ -20,6 +20,7 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { BoxedIterator, generateUuid, Normalized } from "../../api";
+import { OnSetExpression } from "../../BoxedExpressionEditorContext";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
@@ -42,35 +43,36 @@ export function IteratorExpressionCell({
 }: IteratorExpressionCellExpressionCellProps & { parentElementId: string }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression, expressionChangedArgs }) => {
       setExpression({
-        setExpressionAction: (prev: Normalized<BoxedIterator>) => {
+        setExpressionAction: (prev) => {
+          const iterator = prev as Normalized<BoxedIterator>;
           switch (rowIndex) {
             case 1:
               return {
-                ...prev,
+                ...iterator,
                 in: {
                   "@_id": generateUuid(),
-                  expression: getNewExpression(prev.in.expression),
+                  expression: getNewExpression(iterator.in.expression) ?? iterator.in.expression,
                 },
               };
             case 2:
             default:
-              if (prev.__$$element === "for") {
+              if (iterator.__$$element === "for") {
                 return {
-                  ...prev,
+                  ...iterator,
                   return: {
                     "@_id": generateUuid(),
-                    expression: getNewExpression(prev.return.expression),
+                    expression: getNewExpression(iterator.return.expression) ?? iterator.return.expression,
                   },
                 };
               } else {
                 return {
-                  ...prev,
+                  ...iterator,
                   satisfies: {
                     "@_id": generateUuid(),
-                    expression: getNewExpression(prev.satisfies.expression),
+                    expression: getNewExpression(iterator.satisfies.expression) ?? iterator.satisfies.expression,
                   },
                 };
               }

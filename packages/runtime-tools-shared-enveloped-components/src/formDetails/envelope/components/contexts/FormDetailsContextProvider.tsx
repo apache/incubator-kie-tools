@@ -20,10 +20,7 @@
 import React from "react";
 import RuntimeToolsFormDetailsContext, { FormDetailsContextImpl } from "./FormDetailsContext";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IOwnProps {}
-
-const FormDetailsContextProvider: React.FC<IOwnProps> = ({ children }) => {
+const FormDetailsContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
   return (
     <RuntimeToolsFormDetailsContext.Provider value={new FormDetailsContextImpl()}>
       {children}

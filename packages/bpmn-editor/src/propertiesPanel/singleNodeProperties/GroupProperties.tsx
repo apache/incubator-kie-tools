@@ -66,7 +66,7 @@ export function GroupProperties({ group }: { group: Normalized<BPMN20__tGroup> &
   );
 
   const onDocumentationChanged = useCallback(
-    (newDocumentation) =>
+    (_event: React.ChangeEvent<HTMLTextAreaElement>, newDocumentation: string) =>
       bpmnEditorStoreApi.setState((s) => {
         const { process } = addOrGetProcessAndDiagramElements({
           definitions: s.bpmn.model.definitions,

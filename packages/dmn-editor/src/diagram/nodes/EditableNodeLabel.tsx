@@ -213,7 +213,7 @@ export function EditableNodeLabel({
     ref,
     enableAutoFocusing ?? true ? id ?? namedElement?.["@_id"] : undefined,
     useCallback(
-      (cb) => {
+      (cb: () => void) => {
         setTimeout(() => {
           flushSync(() => {
             setEditing(true);

@@ -117,7 +117,7 @@ const CharacteristicAttributesList = (props: CharacteristicAttributesListProps) 
   const { validationRegistry } = useValidationRegistry();
 
   const validations = useCallback(
-    (attributeIndex) =>
+    (attributeIndex: number) =>
       validationRegistry.get(
         Builder()
           .forModel(modelIndex)

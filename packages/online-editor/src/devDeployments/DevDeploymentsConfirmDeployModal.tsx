@@ -155,7 +155,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
     setConfirmLoading(false);
   }, [devDeployments]);
 
-  const onSelectDeploymentOptions = useCallback((_, value: DeploymentOption) => {
+  const onSelectDeploymentOptions = useCallback((_: any, value: DeploymentOption) => {
     setDeploymentOption(value);
     setDeploymentOptionsDropdownOpen(false);
   }, []);

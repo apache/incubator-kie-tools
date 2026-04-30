@@ -19,14 +19,13 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { App } from "./App";
 import "../static/resources/style.css";
 
 async function main() {
   const appContainer = document.getElementById("app")!;
-  // eslint-disable-next-line react/no-deprecated
-  ReactDOM.render(<App />, appContainer);
+  ReactDOM.createRoot(appContainer).render(<App />);
 }
 
 main();

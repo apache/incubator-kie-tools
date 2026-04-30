@@ -125,7 +125,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const [isFontFamilySelectOpen, setFontFamilySelectOpen] = useState(false);
 
   const onSelectFont = useCallback(
-    (e, value, isPlaceholder) => {
+    (_e: React.MouseEvent<Element> | React.ChangeEvent<Element>, value: string | number, isPlaceholder?: boolean) => {
       if (isPlaceholder) {
         setShapeStyles((shapes) => {
           shapes.forEach((shape, i, shapes) => {
@@ -135,7 +135,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
       } else {
         setShapeStyles((shapes) => {
           shapes.forEach((shape, i, shapes) => {
-            shape["di:Style"]!["@_fontFamily"] = value;
+            shape["di:Style"]!["@_fontFamily"] = value.toString();
           });
         });
       }

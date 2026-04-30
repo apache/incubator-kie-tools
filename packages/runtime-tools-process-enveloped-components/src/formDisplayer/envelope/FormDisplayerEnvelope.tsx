@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { Envelope, EnvelopeIFrameConfig } from "@kie-tools-core/envelope";
 import { FormDisplayerChannelApi, FormDisplayerEnvelopeApi } from "../api";
@@ -37,9 +37,10 @@ export function init(args: { container: HTMLElement; bus: EnvelopeBus; config: E
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<FormDisplayerEnvelopeViewApi>();
     return new Promise<() => FormDisplayerEnvelopeViewApi>((res) => {
-      ReactDOM.render(<FormDisplayerEnvelopeView ref={ref} channelApi={envelope.channelApi} />, args.container, () =>
-        res(() => ref.current!)
+      ReactDOM.createRoot(args.container).render(
+        <FormDisplayerEnvelopeView ref={ref} channelApi={envelope.channelApi} />
       );
+      setTimeout(() => res(() => ref.current!), 0);
     });
   };
 

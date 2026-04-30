@@ -122,7 +122,7 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
   );
 
   const onSelectTimezone = useCallback(
-    (e, value) => {
+    (_e: React.MouseEvent<Element> | React.ChangeEvent<Element>, value: string | number) => {
       onInternalChange({ timezone: value.toString() });
     },
     [onInternalChange]

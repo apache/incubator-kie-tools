@@ -26,7 +26,8 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { original, WritableDraft } from "immer";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
+import { flushSync } from "react-dom";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import * as RF from "reactflow";
 import { BpmnEditorContextProvider, useBpmnEditor } from "./BpmnEditorContext";
@@ -295,20 +296,19 @@ export const BpmnEditorInternal = ({
           bounds.height + SVG_PADDING * 5 + ""
         );
 
-        // We're still on React 17.
-        // eslint-disable-next-line react/no-deprecated
-        ReactDOM.render(
-          // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
-          <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
-            <BpmnDiagramSvg
-              nodes={nodes}
-              edges={edges}
-              customTasks={customTasks}
-              snapGrid={state.xyFlowReactKieDiagram.snapGrid}
-            />
-          </g>,
-          svg
-        );
+        flushSync(() => {
+          ReactDOM.createRoot(svg).render(
+            // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
+            <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
+              <BpmnDiagramSvg
+                nodes={nodes}
+                edges={edges}
+                customTasks={customTasks}
+                snapGrid={state.xyFlowReactKieDiagram.snapGrid}
+              />
+            </g>
+          );
+        });
 
         return new XMLSerializer().serializeToString(svg);
       },
@@ -393,12 +393,15 @@ export const BpmnEditor = React.forwardRef((props: BpmnEditorProps, ref: React.R
   );
   const storeRef = React.useRef<StoreApiType>(store);
 
-  const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
-    storeRef.current?.setState((state) => {
-      state.diagram = getDefaultStaticState().diagram;
-      state.bpmn.model = args[0];
-    });
-  }, []);
+  const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(
+    (details: Parameters<NonNullable<ErrorBoundaryPropsWithFallback["onReset"]>>[0]) => {
+      storeRef.current?.setState((state) => {
+        state.diagram = getDefaultStaticState().diagram;
+        state.bpmn.model = details.reason === "imperative-api" ? details.args[0] : props.model;
+      });
+    },
+    [props.model]
+  );
 
   return (
     <I18nDictionariesProvider

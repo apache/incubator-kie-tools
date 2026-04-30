@@ -18,7 +18,8 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
+import { createPortal } from "react-dom";
 import { Globals, Main } from "../common/Main";
 import {
   createAndGetMainContainer,
@@ -37,7 +38,8 @@ export function renderOpenRepoInExternalEditorApp(
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id);
 
-  ReactDOM.render(
+  const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
+  ReactDOM.createRoot(container).render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -48,16 +50,15 @@ export function renderOpenRepoInExternalEditorApp(
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      {ReactDOM.createPortal(
+      {createPortal(
         <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
         GitHubPageType.REPO_HOME === args.pageType || GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL === args.pageType
           ? openRepoInExternalEditorContainerFromRepositoryHome(args.id, args.container())
           : openRepoInExternalEditorContainer(args.id, args.container())
       )}
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+  setTimeout(() => args.logger.log("Mounted."), 0);
 }
 
 function cleanup(id: string) {

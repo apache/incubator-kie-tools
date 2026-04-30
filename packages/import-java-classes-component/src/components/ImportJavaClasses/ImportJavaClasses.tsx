@@ -61,7 +61,7 @@ const ImportJavaClasses = ({ javaCodeCompletionService, loadJavaClassesInDataTyp
   const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
   const handleButtonClick = useCallback(() => setOpenImportJavaClassesWizard((prevState) => !prevState), []);
   const handleWizardSave = useCallback(
-    (javaClasses) => {
+    (javaClasses: JavaClass[]) => {
       loadJavaClassesInDataTypeEditor?.(javaClasses);
     },
     [loadJavaClassesInDataTypeEditor]

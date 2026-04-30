@@ -174,7 +174,7 @@ function OutputsBeeTable({
   /**
    * Wrapping 'getDefaultColumnWidth' to add additional space for the '<ArrowUp />' icon in the runner outputs columns.
    */
-  const getDefaultDmnRunnerOutputColumnWidth = useCallback((label, dataType) => {
+  const getDefaultDmnRunnerOutputColumnWidth = useCallback((label: string, dataType: string) => {
     const OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH = 50;
     const ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT = 2 * OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH;
     return getDefaultColumnWidth({ name: label, typeRef: dataType }) + ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT;
@@ -283,7 +283,7 @@ function OutputsBeeTable({
   );
 
   const openBoxedExpressionHeaderButton = useCallback(
-    ({ decisionId, decisionName }) => {
+    ({ decisionId, decisionName }: { decisionId: string; decisionName: string }) => {
       return (
         <Button
           variant={"plain"}

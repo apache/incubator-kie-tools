@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect } from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,
@@ -62,7 +62,8 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id, args.dependencies);
 
-  ReactDOM.render(
+  const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
+  ReactDOM.createRoot(container).render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}
@@ -76,10 +77,9 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
       stateControl={args.stateControl}
     >
       <SingleEditorEditApp openFileExtension={openFileExtension} fileInfo={args.fileInfo} />
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
-    () => args.logger.log("Mounted.")
+    </Main>
   );
+  setTimeout(() => args.logger.log("Mounted."), 0);
 }
 
 function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileInfo }) {

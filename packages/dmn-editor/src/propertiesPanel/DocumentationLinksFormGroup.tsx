@@ -316,10 +316,10 @@ function DocumentationLinksInput({
 
   const allUniqueNames = useMemo(() => new Map<string, string>(), []);
 
-  const validateTitle = useCallback((id, name, allUniqueNames) => true, []);
+  const validateTitle = useCallback((_id: string, _name: string, _allUniqueNames: Map<string, string>) => true, []);
 
   const validateUrl = useCallback(
-    (id: string, url: string | undefined, allUniqueNames) => {
+    (_id: string, url: string | undefined, _allUniqueNames: Map<string, string>) => {
       if (url !== undefined && url !== "") {
         return parseUrl(url) !== undefined;
       }

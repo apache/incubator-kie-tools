@@ -23,7 +23,7 @@ import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
 import DevUILayout from "../DevUILayout/DevUILayout";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
@@ -68,8 +68,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
 
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
-      // eslint-disable-next-line react/no-render-return-value
-      return ReactDOM.render(
+      return ReactDOM.createRoot(document.getElementById("envelope-app")!).render(
         <DevUILayout
           apolloClient={client}
           users={users}
@@ -85,8 +84,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           diagramPreviewSize={diagramPreviewSize}
         >
           <ServerUnavailablePage displayName={"Runtime Dev UI"} reload={() => window.location.reload()} />
-        </DevUILayout>,
-        document.getElementById("envelope-app")
+        </DevUILayout>
       );
     }
   });

@@ -27,7 +27,9 @@ import { WorkspaceCommitModal, WorkspaceCommitModalArgs } from "./WorkspaceCommi
 import { ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useOnlineI18n } from "../../i18n";
 
-export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionComponent = (props) => {
+export const WorkspacesContextProviderWithCustomCommitMessagesModal: FunctionComponent<{
+  children?: React.ReactNode;
+}> = (props) => {
   const { env } = useEnv();
   const { i18n } = useOnlineI18n();
   const [promiseModalController, promiseModalRef] = useController<PromiseModalRef<string, WorkspaceCommitModalArgs>>();

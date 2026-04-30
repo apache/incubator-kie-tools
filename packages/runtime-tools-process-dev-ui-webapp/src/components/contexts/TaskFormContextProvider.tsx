@@ -23,7 +23,7 @@ import {
   TaskFormChannelApiImpl,
 } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 
-export const TaskFormContextProvider: React.FC = ({ children }) => {
+export const TaskFormContextProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const appContext = useDevUIAppContext();
 
   return (

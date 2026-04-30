@@ -484,11 +484,14 @@ export const TestScenarioEditor = React.forwardRef(
     );
     const storeRef = React.useRef<StoreApiType>(store);
 
-    const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
-      storeRef.current?.setState((state) => {
-        state.scesim.model = args[0];
-      });
-    }, []);
+    const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(
+      (details: Parameters<NonNullable<ErrorBoundaryPropsWithFallback["onReset"]>>[0]) => {
+        storeRef.current?.setState((state) => {
+          state.scesim.model = details.reason === "imperative-api" ? details.args[0] : props.model;
+        });
+      },
+      [props.model]
+    );
 
     return (
       <I18nDictionariesProvider

@@ -56,7 +56,7 @@ export function ConstraintsExpression({
   }, []);
 
   const onFeelChange = useCallback(
-    (_, content, preview) => {
+    (_: any, content: string, preview: string) => {
       setPreview(preview);
       onSave?.(content.trim());
     },
@@ -70,7 +70,7 @@ export function ConstraintsExpression({
   }, [isEditing, value]);
 
   const onKeyDown = useCallback(
-    (e) => {
+    (e: React.KeyboardEvent) => {
       // When inside FEEL Input, all keyboard events should be kept inside it.
       // Exceptions to this strategy are handled on `onFeelKeyDown`.
       if (!isReadOnly && isEditing) {

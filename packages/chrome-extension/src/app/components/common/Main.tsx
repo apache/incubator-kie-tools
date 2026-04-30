@@ -74,7 +74,7 @@ function KogitoMenuPortal(props: { id: string }) {
   }
 }
 
-export const Main: React.FunctionComponent<Globals> = (props) => {
+export const Main: React.FunctionComponent<React.PropsWithChildren<Globals>> = (props) => {
   return (
     <I18nDictionariesProvider
       defaults={chromeExtensionI18nDefaults}

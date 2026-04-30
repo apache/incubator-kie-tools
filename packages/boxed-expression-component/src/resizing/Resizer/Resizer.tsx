@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Resizable } from "react-resizable";
+import { ResizeCallbackData, Resizable } from "react-resizable";
 import { ResizerStopBehavior, ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
@@ -58,8 +58,8 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const [resizingStop__data, setResizingStop__data] = useState({ width: 0 });
   const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
-  const onResizeStop = useCallback((e, data) => {
-    if (e.detail === 2) {
+  const onResizeStop = useCallback((e: React.SyntheticEvent, data: ResizeCallbackData) => {
+    if ((e.nativeEvent as MouseEvent).detail === 2) {
       console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
       return;
     }
@@ -114,14 +114,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   }, [minWidth]);
 
   const onResize = useCallback(
-    (_, data) => {
+    (_event: React.SyntheticEvent<Element>, data: ResizeCallbackData) => {
       setResizingWidth?.({ value: Math.floor(data.size.width), isPivoting: true });
     },
     [setResizingWidth]
   );
 
   const onResizeStart = useCallback(
-    (_, data) => {
+    (_event: React.SyntheticEvent<Element> | undefined, data: ResizeCallbackData) => {
       const startResizingWidth = Math.floor(data.size.width);
 
       console.debug(`Start resizing: ${startResizingWidth}`);
@@ -147,7 +147,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
 
       // This starts the resizing process again with the correct width.
-      onResizeStart(undefined, { size: { width: newWidth } });
+      onResizeStart(undefined, { size: { width: newWidth } } as ResizeCallbackData);
 
       // Wait for an event loop iteration, leaving time for the resizeStart to propagate.
       // Then, pretend that the startResizingWidth is different from the one we're going to stop with.

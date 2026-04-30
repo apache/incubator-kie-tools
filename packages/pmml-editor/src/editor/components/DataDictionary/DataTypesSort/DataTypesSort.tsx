@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import { SortableContainer, SortableElement, SortEndHandler } from "react-sortable-hoc";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -35,7 +35,7 @@ interface DataTypesSortProps {
 const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
   const [state, setState] = useState<DDDataField[]>(dataTypes);
 
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+  const onSortEnd: SortEndHandler = ({ oldIndex, newIndex }) => {
     // still updating the internal state before calling the callback to avoid flickering
     const newOrder = reorder(state, oldIndex, newIndex);
     setState(newOrder);
@@ -60,17 +60,17 @@ const DataTypesSort = ({ dataTypes, onReorder }: DataTypesSortProps) => {
 
 export default DataTypesSort;
 
-const SortableList = SortableContainer(({ items }: { items: DDDataField[] }) => {
+const SortableList = SortableContainer<{ items: DDDataField[] }>(({ items }: { items: DDDataField[] }) => {
   return (
     <ul className="data-types-sorting">
-      {items.map((item, index) => (
+      {items.map((item: DDDataField, index: number) => (
         <SortableItem key={`item-${item.name}`} index={index} item={item} />
       ))}
     </ul>
   );
 });
 
-const SortableItem = SortableElement(({ item }: { item: DDDataField }) => (
+const SortableItem = SortableElement<{ item: DDDataField }>(({ item }: { item: DDDataField }) => (
   <li className="editable-item data-type-item__sortable">
     <section className="editable-item__inner" data-ouia-component-id={item.name}>
       <Flex alignItems={{ default: "alignItemsCenter" }}>
