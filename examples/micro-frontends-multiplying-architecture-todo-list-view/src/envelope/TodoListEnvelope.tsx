@@ -19,12 +19,12 @@
 
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { TodoListEnvelopeContext } from "./TodoListEnvelopeContext";
 import { TodoListEnvelopeApiImpl } from "./TodoListEnvelopeApiImpl";
 import { TodoListChannelApi, TodoListEnvelopeApi } from "../api";
 import { TodoListEnvelopeView, TodoListEnvelopeViewApi } from "./TodoListEnvelopeView";
-import { Envelope } from "@kie-tools-core/envelope";
+import { Envelope, EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 
 /**
  * Function that starts an Envelope application.
@@ -53,17 +53,23 @@ export function init(args: { container: HTMLElement; bus: EnvelopeBus }) {
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TodoListEnvelopeViewApi>();
     return new Promise<() => TodoListEnvelopeViewApi>((res) => {
-      ReactDOM.render(
-        <TodoListEnvelopeView ref={ref} channelApi={envelope.channelApi} shared={envelope.shared} />,
-        args.container,
-        () => res(() => ref.current!)
+      ReactDOM.createRoot(args.container).render(
+        <TodoListEnvelopeView ref={ref} channelApi={envelope.channelApi} shared={envelope.shared} />
       );
+      res(() => ref.current!);
     });
   };
 
   // Starts the Envelope application with the provided TodoListEnvelopeApi implementation.
   const context: TodoListEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: (apiFactoryArgs) => new TodoListEnvelopeApiImpl(apiFactoryArgs),
+    create: (
+      apiFactoryArgs: EnvelopeApiFactoryArgs<
+        TodoListEnvelopeApi,
+        TodoListChannelApi,
+        TodoListEnvelopeViewApi,
+        TodoListEnvelopeContext
+      >
+    ) => new TodoListEnvelopeApiImpl(apiFactoryArgs),
   });
 }

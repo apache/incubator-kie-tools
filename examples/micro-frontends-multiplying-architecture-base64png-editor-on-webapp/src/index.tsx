@@ -19,7 +19,7 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { Base64PngEditorPage } from "./Base64PngEditorPage";
 
-ReactDOM.render(<Base64PngEditorPage />, document.getElementById("app"));
+ReactDOM.createRoot(document.getElementById("app")!).render(<Base64PngEditorPage />);
