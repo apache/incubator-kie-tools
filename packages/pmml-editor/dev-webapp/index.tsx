@@ -18,12 +18,11 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { App } from "./App";
 
-ReactDOM.render(
+ReactDOM.createRoot(document.getElementById("app")!).render(
   <div>
     <App />
-  </div>,
-  document.getElementById("app")!
+  </div>
 );
