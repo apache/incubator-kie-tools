@@ -28,6 +28,7 @@ import {
   removeAllChildren,
   runScriptOnPage,
   waitForElementToBeReady,
+  setReactRoot,
 } from "../../utils";
 import { SingleEditorApp } from "./SingleEditorApp";
 import { Globals, Main } from "../common/Main";
@@ -63,7 +64,9 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
   cleanup(args.id, args.dependencies);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
-  ReactDOM.createRoot(container).render(
+  const root = ReactDOM.createRoot(container);
+  setReactRoot(args.id, root);
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}

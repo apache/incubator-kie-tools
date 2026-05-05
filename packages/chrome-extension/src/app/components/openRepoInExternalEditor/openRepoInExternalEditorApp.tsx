@@ -26,6 +26,7 @@ import {
   openRepoInExternalEditorContainer,
   openRepoInExternalEditorContainerFromRepositoryHome,
   removeAllChildren,
+  setReactRoot,
 } from "../../utils";
 import { OpenInExternalEditorButton } from "./OpenInExternalEditorButton";
 import { GitHubPageType } from "../../github/GitHubPageType";
@@ -39,7 +40,9 @@ export function renderOpenRepoInExternalEditorApp(
   cleanup(args.id);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
-  ReactDOM.createRoot(container).render(
+  const root = ReactDOM.createRoot(container);
+  setReactRoot(args.id, root);
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}

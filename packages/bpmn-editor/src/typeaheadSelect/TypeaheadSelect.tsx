@@ -276,7 +276,7 @@ export function TypeaheadSelect({
     textInputRef?.current?.focus();
   };
 
-  const onBlur = (e: React.MouseEvent) => {
+  const onBlur = (e: React.MouseEvent<HTMLElement>) => {
     if ((e.relatedTarget as HTMLElement | undefined)?.id?.includes(CREATE_NEW)) {
       // If we're blurring the typeahead input because we're creating
       // a new element with a mouse click, then we don't need to do anything.
@@ -333,7 +333,7 @@ export function TypeaheadSelect({
       selected={selected}
       onSelect={onSelect}
       className={"kie-bpmn-editor--typeahead-selector"}
-      onOpenChange={(isOpen) => {
+      onOpenChange={(isOpen: boolean) => {
         !isOpen && closeMenu();
       }}
       popperProps={{

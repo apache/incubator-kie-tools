@@ -21,9 +21,8 @@ import { GitHubPageType } from "./app/github/GitHubPageType";
 import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
 import { FileInfo, iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
-import { mainContainer, runAfterUriChange } from "./app/utils";
+import { mainContainer, runAfterUriChange, getReactRoot, deleteReactRoot } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
-import * as ReactDOM from "react-dom";
 import { EditorEnvelopeLocator, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
@@ -181,9 +180,14 @@ function unmountPreviouslyRenderedFeatures(
   editorEnvelopeLocator: EditorEnvelopeLocator
 ) {
   try {
-    if (mainContainer(id, dependencies.all.body())) {
-      ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies.all.body())!);
-      logger.log("Unmounted previous features.");
+    const container = mainContainer(id, dependencies.all.body());
+    if (container) {
+      const root = getReactRoot(id);
+      if (root) {
+        root.unmount();
+        deleteReactRoot(id);
+        logger.log("Unmounted previous features.");
+      }
     }
     switchHiddenCss(id, dependencies, editorEnvelopeLocator);
   } catch (e) {

@@ -123,7 +123,7 @@ export function TimerOptions({ element }: { element: WithTimer }) {
               element?.eventDefinition?.find((eventDef) => eventDef.__$$element === "timerEventDefinition")
                 ?.timeDuration?.__$$text ?? ""
             }
-            onChange={(e, newTimeDuration) =>
+            onChange={(_e: React.FormEvent<HTMLInputElement>, newTimeDuration: string) =>
               bpmnEditorStoreApi.setState((s) => {
                 const { process } = addOrGetProcessAndDiagramElements({
                   definitions: s.bpmn.model.definitions,
@@ -173,7 +173,7 @@ export function TimerOptions({ element }: { element: WithTimer }) {
           <div className="timer-options-multiple">
             <div className="dropdown-group">
               <Select
-                toggle={(toggleRef) => (
+                toggle={(toggleRef: React.Ref<any>) => (
                   <MenuToggle
                     style={{ width: "30%" }}
                     ref={toggleRef}
@@ -186,7 +186,7 @@ export function TimerOptions({ element }: { element: WithTimer }) {
                 )}
                 id="iso-cron-select"
                 isOpen={isDropdownOpen}
-                onSelect={(event, selection) => {
+                onSelect={(_event: React.MouseEvent | undefined, selection: string | number | undefined) => {
                   const lang = selection === "cron" ? selection : undefined;
                   bpmnEditorStoreApi.setState((s) => {
                     const { process } = addOrGetProcessAndDiagramElements({

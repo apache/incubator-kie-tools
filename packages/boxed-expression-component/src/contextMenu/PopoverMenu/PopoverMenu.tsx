@@ -31,7 +31,7 @@ export interface PopoverMenuProps {
   /** A function which returns the HTMLElement where the popover's arrow should be placed */
   arrowPlacement?: () => HTMLElement;
   /** The content of the popover itself */
-  body: React.ReactNode;
+  body: React.ReactNode | ((hide: () => void) => React.ReactNode);
   /** The node where to append the popover content */
   appendTo?: HTMLElement | ((ref?: HTMLElement) => HTMLElement);
   /** Additional classname to be used for the popover */
@@ -112,6 +112,10 @@ export const PopoverMenu = React.forwardRef(
       []
     );
 
+    const hide = useCallback(() => {
+      setCurrentlyOpenContextMenu(undefined);
+    }, [setCurrentlyOpenContextMenu]);
+
     const shouldClose: PopoverProps["shouldClose"] = useCallback(
       (
         event: MouseEvent | KeyboardEvent | React.KeyboardEvent<any> | React.MouseEvent<any>,
@@ -135,6 +139,10 @@ export const PopoverMenu = React.forwardRef(
         setCurrentlyOpenContextMenu(undefined);
       }
     }, [currentlyOpenContextMenu, onHidden, setCurrentlyOpenContextMenu]);
+
+    const bodyContent = useMemo(() => {
+      return typeof body === "function" ? body(hide) : body;
+    }, [body, hide]);
 
     useImperativeHandle(
       ref,
@@ -178,7 +186,7 @@ export const PopoverMenu = React.forwardRef(
         appendTo={appendTo}
         // Need this 1px to render something and not break it.
         headerContent={<div style={{ height: "1px" }}></div>}
-        bodyContent={body}
+        bodyContent={bodyContent}
         isVisible={isPopoverVisible}
         onShown={onPopoverShown}
         onHidden={onHiddenCallback}

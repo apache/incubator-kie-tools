@@ -104,14 +104,15 @@ export function BeeTableHeader<R extends object>({
   setActiveCellEditing,
   isReadOnly,
 }: BeeTableHeaderProps<R>) {
-  const getColumnLabel: (groupType: string) => string | undefined = useCallback(
-    (groupType) => {
-      if (_.isObject(editColumnLabel) && _.has(editColumnLabel, groupType)) {
-        return editColumnLabel[groupType];
-      }
+  const getColumnLabel = useCallback(
+    (groupType: string): string | undefined => {
       if (typeof editColumnLabel === "string") {
         return editColumnLabel;
       }
+      if (editColumnLabel && _.isObject(editColumnLabel) && _.has(editColumnLabel, groupType)) {
+        return editColumnLabel[groupType];
+      }
+      return undefined;
     },
     [editColumnLabel]
   );
