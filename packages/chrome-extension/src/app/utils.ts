@@ -24,6 +24,18 @@ import {
   KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
 } from "./constants";
 import { Logger } from "../Logger";
+import * as ReactDOM from "react-dom/client";
+
+// Store React 18 root instances for proper cleanup
+const reactRoots = new Map<string, ReactDOM.Root>();
+
+export function setReactRoot(id: string, root: ReactDOM.Root): void {
+  reactRoots.set(id, root);
+}
+
+export function deleteReactRoot(id: string): void {
+  reactRoots.delete(id);
+}
 
 export function runScriptOnPage(script: string) {
   const scriptTag = document.createElement("script");

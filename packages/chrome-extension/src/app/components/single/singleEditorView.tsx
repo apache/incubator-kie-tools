@@ -26,6 +26,7 @@ import {
   openRepoInExternalEditorContainer,
   removeAllChildren,
   waitForElementToBeReady,
+  setReactRoot,
 } from "../../utils";
 import * as ReactDOM from "react-dom/client";
 import { createPortal } from "react-dom";
@@ -75,7 +76,9 @@ export async function renderSingleEditorReadonlyApp(
   cleanup(args.id, args.dependencies);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body()!);
-  ReactDOM.createRoot(container).render(
+  const root = ReactDOM.createRoot(container);
+  setReactRoot(args.id, root);
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}

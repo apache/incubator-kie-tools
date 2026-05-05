@@ -21,7 +21,12 @@ import * as ReactDOM from "react-dom/client";
 import { createPortal } from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
-import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAllChildren } from "../../utils";
+import {
+  createAndGetMainContainer,
+  openRepoInExternalEditorContainer,
+  removeAllChildren,
+  setReactRoot,
+} from "../../utils";
 import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
@@ -46,7 +51,9 @@ export function renderPrEditorsApp(
   cleanup(args.id);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
-  ReactDOM.createRoot(container).render(
+  const root = ReactDOM.createRoot(container);
+  setReactRoot(args.id, root);
+  root.render(
     <Main
       id={args.id}
       editorEnvelopeLocator={args.editorEnvelopeLocator}

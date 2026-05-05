@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import React, { useContext } from "react";
+import * as React from "react";
+import { useContext } from "react";
 import { DC__Point } from "../maths/model";
 
 export interface WaypointActionsContextType {
@@ -28,7 +29,7 @@ export interface WaypointActionsContextType {
 
 const WaypointActionsContext = React.createContext<WaypointActionsContextType>({} as any);
 
-export function useWaypointsActions() {
+export function useWaypointsActions(): WaypointActionsContextType {
   return useContext(WaypointActionsContext);
 }
 

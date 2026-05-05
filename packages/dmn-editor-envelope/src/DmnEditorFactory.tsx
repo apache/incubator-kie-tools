@@ -58,10 +58,9 @@ export class DmnEditorInterface implements Editor {
   public af_componentTitle: "DMN Editor";
 
   constructor(
-    protected readonly envelopeContext: KogitoEditorEnvelopeContextType<
-      KogitoEditorEnvelopeApi,
-      KogitoEditorChannelApi
-    >,
+    protected readonly envelopeContext:
+      | KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
+      | VsCodeNewDmnEditorEnvelopeContext,
     protected readonly initArgs: EditorInitArgs
   ) {}
 
@@ -132,7 +131,9 @@ export function DmnEditorRootWrapper({
   onOpenedBoxedExpressionEditorNodeChange,
   locale,
 }: {
-  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
+  envelopeContext?:
+    | KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
+    | VsCodeNewDmnEditorEnvelopeContext;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isEvaluationHighlightsSupported?: boolean;

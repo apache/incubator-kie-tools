@@ -131,7 +131,7 @@ export function DmnDiagramSvg({
                 x={node.positionAbsolute!.x}
                 y={node.positionAbsolute!.y}
                 {...style}
-                {...shapeStyle}
+                {...(shapeStyle as any)}
                 isIcon={false}
                 isCollection={isCollection}
               />
@@ -142,7 +142,7 @@ export function DmnDiagramSvg({
                 x={node.positionAbsolute!.x}
                 y={node.positionAbsolute!.y}
                 {...style}
-                {...shapeStyle}
+                {...(shapeStyle as any)}
                 isCollection={isCollection}
               />
             ))}
@@ -153,7 +153,7 @@ export function DmnDiagramSvg({
               x={node.positionAbsolute!.x}
               y={node.positionAbsolute!.y}
               {...style}
-              {...shapeStyle}
+              {...(shapeStyle as any)}
               isCollection={isCollection}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
@@ -165,7 +165,7 @@ export function DmnDiagramSvg({
               x={node.positionAbsolute!.x}
               y={node.positionAbsolute!.y}
               {...style}
-              {...shapeStyle}
+              {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
@@ -176,7 +176,7 @@ export function DmnDiagramSvg({
               x={node.positionAbsolute!.x}
               y={node.positionAbsolute!.y}
               {...style}
-              {...shapeStyle}
+              {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
@@ -189,7 +189,7 @@ export function DmnDiagramSvg({
               showSectionLabels={false}
               isReadOnly={true}
               {...style}
-              {...shapeStyle}
+              {...(shapeStyle as any)}
             />
           )}
           {node.type === NODE_TYPES.group && (
@@ -209,7 +209,7 @@ export function DmnDiagramSvg({
               x={node.positionAbsolute!.x}
               y={node.positionAbsolute!.y}
               {...style}
-              {...shapeStyle}
+              {...(shapeStyle as any)}
             />
           )}
           {node.type === NODE_TYPES.unknown && (

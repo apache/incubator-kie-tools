@@ -11,7 +11,8 @@
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
-    "outDir": "${configDir}/dist"
+    "outDir": "${configDir}/dist",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["${configDir}/src"]
 }

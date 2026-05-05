@@ -84,7 +84,7 @@ export function usePromiseState<T>(): [
 ] {
   const [state, setState] = useState<PromiseState<T>>({ status: PromiseStateStatus.PENDING });
 
-  const set = useCallback((newState) => {
+  const set = useCallback((newState: NewStateArgs<T> | ((prevState: T | undefined) => NewStateArgs<T>)) => {
     return setState((prev) => {
       const ns = typeof newState == "function" ? newState(prev.data) : newState;
 
