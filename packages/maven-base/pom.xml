@@ -121,7 +121,7 @@
     <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20260430-local</version.org.kie.kogito>
+    <version.org.kie.kogito>999-20260505-local</version.org.kie.kogito>
 
     <!-- 3rd party dependencies -->
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
