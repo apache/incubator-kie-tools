@@ -207,15 +207,15 @@ describe("ImportJavaClasses component tests", () => {
 
     const inputElement = baseElement.querySelector('[aria-label="Search input"]')! as HTMLInputElement;
     expect(inputElement).toHaveValue("");
-    expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).not.toBeInTheDocument();
+    expect(baseElement.querySelector('[aria-label="Reset"]')).not.toBeInTheDocument();
     fireEvent.change(inputElement, { target: { value: "test" } });
     expect(inputElement).toHaveValue("test");
-    expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).toBeInTheDocument();
+    expect(baseElement.querySelector('[aria-label="Reset"]')).toBeInTheDocument();
   }
 
   async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
+      expect(baseElement.querySelector('[aria-label="class-data-list"]')).toBeInTheDocument();
     });
     const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
@@ -256,7 +256,7 @@ describe("ImportJavaClasses component tests", () => {
     const nextButton = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextButton);
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="field-table"]')!).toBeInTheDocument();
+      expect(baseElement.querySelector('[aria-label="field-table"]')).toBeInTheDocument();
     });
     const expandToggle = baseElement.querySelector('[id="expand-toggle0"]')! as HTMLButtonElement;
     expect(expandToggle).toHaveAttribute("aria-expanded", "true");
