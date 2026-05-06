@@ -59,7 +59,6 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
         data-testid="dummy-editor"
       >
         Here's the dummy content: 
-        
       </div>
     </div>
   </div>
@@ -96,7 +95,6 @@ exports[`EditorEnvelopeView after set content 1`] = `
         data-testid="dummy-editor"
       >
         Here's the dummy content: 
-        
       </div>
     </div>
   </div>

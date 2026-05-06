@@ -101,7 +101,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@playwright/test": "^1.45.2",
     "@testing-library/jest-dom": "^6.4.6",
-    "@testing-library/react": "^12.1.5",
+    "@testing-library/react": "^13.1.0",
     "@types/jest": "^29.5.12",
     "@types/js-yaml": "^4.0.5",
     "@types/json-schema": "^7.0.11",
