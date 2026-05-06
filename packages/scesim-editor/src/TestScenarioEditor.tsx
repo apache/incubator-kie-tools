@@ -203,7 +203,7 @@ function TestScenarioMainPanel() {
   }, [externalModelsByNamespace, testScenarioDmnFilePath, testScenarioDmnNamespace, testScenarioType]);
 
   const onTabChanged = useCallback(
-    (_event, tab) => {
+    (_event: React.MouseEvent<HTMLElement, MouseEvent>, tab: TestScenarioEditorTab) => {
       testScenarioEditorStoreApi.setState((state) => {
         state.navigation.tab = tab;
       });
