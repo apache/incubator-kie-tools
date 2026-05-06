@@ -72,37 +72,35 @@ export class KogitoEditorEnvelope<
   }
 
   private renderView(container: HTMLElement) {
-    const editorEnvelopeViewRef = React.createRef<EditorEnvelopeViewApi<E>>();
-
-    const app = (
-      <KogitoEditorEnvelopeContext.Provider value={this.context}>
-        <I18nDictionariesProvider
-          defaults={editorEnvelopeI18nDefaults}
-          dictionaries={editorEnvelopeI18nDictionaries}
-          ctx={EditorEnvelopeI18nContext}
-          initialLocale={navigator.language}
-        >
-          <EditorEnvelopeI18nContext.Consumer>
-            {({ setLocale }) => (
-              <EditorEnvelopeView
-                ref={editorEnvelopeViewRef}
-                setLocale={setLocale}
-                showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
-              />
-            )}
-          </EditorEnvelopeI18nContext.Consumer>
-        </I18nDictionariesProvider>
-      </KogitoEditorEnvelopeContext.Provider>
-    );
-
     return new Promise<() => EditorEnvelopeViewApi<E>>((res) => {
-      setTimeout(() => {
-        ReactDOM.createRoot(container).render(app);
-        // Use setTimeout to ensure render is complete
-        setTimeout(() => {
-          res(() => editorEnvelopeViewRef.current!);
-        }, 0);
-      }, 0);
+      const editorEnvelopeViewRef = (ref: EditorEnvelopeViewApi<E> | null) => {
+        if (ref) {
+          res(() => ref);
+        }
+      };
+
+      const app = (
+        <KogitoEditorEnvelopeContext.Provider value={this.context}>
+          <I18nDictionariesProvider
+            defaults={editorEnvelopeI18nDefaults}
+            dictionaries={editorEnvelopeI18nDictionaries}
+            ctx={EditorEnvelopeI18nContext}
+            initialLocale={navigator.language}
+          >
+            <EditorEnvelopeI18nContext.Consumer>
+              {({ setLocale }) => (
+                <EditorEnvelopeView
+                  ref={editorEnvelopeViewRef}
+                  setLocale={setLocale}
+                  showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
+                />
+              )}
+            </EditorEnvelopeI18nContext.Consumer>
+          </I18nDictionariesProvider>
+        </KogitoEditorEnvelopeContext.Provider>
+      );
+
+      ReactDOM.createRoot(container).render(app);
     });
   }
 }

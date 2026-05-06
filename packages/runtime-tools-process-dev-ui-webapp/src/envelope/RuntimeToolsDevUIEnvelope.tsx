@@ -51,23 +51,22 @@ export class RuntimeToolsDevUIEnvelope {
   }
 
   private renderView(container: HTMLElement) {
-    const runtimeToolsDevUIEnvelopeViewRef = React.createRef<RuntimeToolsDevUIEnvelopeViewApi>();
-
-    const app = () => {
-      return (
-        <RuntimeToolsDevUIEnvelopeContext.Provider value={this.context}>
-          <RuntimeToolsDevUIEnvelopeView ref={runtimeToolsDevUIEnvelopeViewRef} />
-        </RuntimeToolsDevUIEnvelopeContext.Provider>
-      );
-    };
-
     return new Promise<() => RuntimeToolsDevUIEnvelopeViewApi>((res) => {
-      setTimeout(() => {
-        ReactDOM.createRoot(container).render(app());
-        setTimeout(() => {
-          res(() => runtimeToolsDevUIEnvelopeViewRef.current!);
-        }, 0);
-      }, 0);
+      const runtimeToolsDevUIEnvelopeViewRef = (ref: RuntimeToolsDevUIEnvelopeViewApi | null) => {
+        if (ref) {
+          res(() => ref);
+        }
+      };
+
+      const app = () => {
+        return (
+          <RuntimeToolsDevUIEnvelopeContext.Provider value={this.context}>
+            <RuntimeToolsDevUIEnvelopeView ref={runtimeToolsDevUIEnvelopeViewRef} />
+          </RuntimeToolsDevUIEnvelopeContext.Provider>
+        );
+      };
+
+      ReactDOM.createRoot(container).render(app());
     });
   }
 }
