@@ -22,7 +22,6 @@ import "reactflow/dist/style.css";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import { flushSync } from "react-dom";
 import * as RF from "reactflow";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -278,25 +277,23 @@ export const DmnEditorInternal = ({
           bounds.height + (state.computed(state).isAlternativeInputDataShape() ? SVG_PADDING * 5 : SVG_PADDING * 2) + ""
         );
 
-        flushSync(() => {
-          ReactDOM.createRoot(svg).render(
-            // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
-            <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
-              <DmnDiagramSvg
-                nodes={nodes}
-                edges={edges}
-                snapGrid={state.diagram.snapGrid}
-                importsByNamespace={state.computed(state).importsByNamespace()}
-                thisDmn={state.dmn}
-                isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
-                allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
-                allTopLevelItemDefinitionUniqueNames={
-                  state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
-                }
-              />
-            </g>
-          );
-        });
+        ReactDOM.createRoot(svg).render(
+          // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
+          <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
+            <DmnDiagramSvg
+              nodes={nodes}
+              edges={edges}
+              snapGrid={state.diagram.snapGrid}
+              importsByNamespace={state.computed(state).importsByNamespace()}
+              thisDmn={state.dmn}
+              isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
+              allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
+              allTopLevelItemDefinitionUniqueNames={
+                state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+              }
+            />
+          </g>
+        );
 
         return new XMLSerializer().serializeToString(svg);
       },

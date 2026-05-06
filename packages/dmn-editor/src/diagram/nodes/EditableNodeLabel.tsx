@@ -31,7 +31,6 @@ import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useFocusableElement } from "../../focus/useFocusableElement";
-import { flushSync } from "react-dom";
 import { NodeLabelPosition } from "./NodeSvgs";
 import { State } from "../../store/Store";
 import "./EditableNodeLabel.css";
@@ -215,9 +214,7 @@ export function EditableNodeLabel({
     useCallback(
       (cb: () => void) => {
         setTimeout(() => {
-          flushSync(() => {
-            setEditing(true);
-          });
+          setEditing(true);
           cb();
         }, 100);
       },

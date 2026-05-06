@@ -27,7 +27,6 @@ import { original, WritableDraft } from "immer";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 import * as ReactDOM from "react-dom/client";
-import { flushSync } from "react-dom";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import * as RF from "reactflow";
 import { BpmnEditorContextProvider, useBpmnEditor } from "./BpmnEditorContext";
@@ -296,19 +295,17 @@ export const BpmnEditorInternal = ({
           bounds.height + SVG_PADDING * 5 + ""
         );
 
-        flushSync(() => {
-          ReactDOM.createRoot(svg).render(
-            // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
-            <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
-              <BpmnDiagramSvg
-                nodes={nodes}
-                edges={edges}
-                customTasks={customTasks}
-                snapGrid={state.xyFlowReactKieDiagram.snapGrid}
-              />
-            </g>
-          );
-        });
+        ReactDOM.createRoot(svg).render(
+          // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
+          <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
+            <BpmnDiagramSvg
+              nodes={nodes}
+              edges={edges}
+              customTasks={customTasks}
+              snapGrid={state.xyFlowReactKieDiagram.snapGrid}
+            />
+          </g>
+        );
 
         return new XMLSerializer().serializeToString(svg);
       },
