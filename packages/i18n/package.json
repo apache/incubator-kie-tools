@@ -31,7 +31,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^6.4.6",
-    "@testing-library/react": "^12.1.5",
+    "@testing-library/react": "^13.1.0",
     "@types/jest": "^29.5.12",
     "@types/jest-when": "^3.5.5",
     "@types/react": "^18.3.12",

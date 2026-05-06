@@ -80,7 +80,6 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
               class="pf-v5-c-modal-box__title"
               id="pf-modal-part-1"
             >
-              
               <span
                 class="pf-v5-c-modal-box__title-text"
               >
