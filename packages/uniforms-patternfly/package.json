@@ -43,7 +43,7 @@
     "@patternfly/react-core": "^5.4.1",
     "@patternfly/react-icons": "^5.4.1",
     "@testing-library/jest-dom": "^6.4.6",
-    "@testing-library/react": "^13.1.0",
+    "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.14.168",
     "@types/react": "^18.3.12",

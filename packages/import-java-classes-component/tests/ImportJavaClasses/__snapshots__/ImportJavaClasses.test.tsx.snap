@@ -91,7 +91,6 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
               class="pf-v5-c-modal-box__title"
               id="pf-modal-part-5"
             >
-              
               <span
                 class="pf-v5-c-modal-box__title-text"
               >
@@ -621,7 +620,6 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
               class="pf-v5-c-modal-box__title"
               id="pf-modal-part-6"
             >
-              
               <span
                 class="pf-v5-c-modal-box__title-text"
               >
@@ -1172,7 +1170,6 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
               class="pf-v5-c-modal-box__title"
               id="pf-modal-part-8"
             >
-              
               <span
                 class="pf-v5-c-modal-box__title-text"
               >
@@ -1696,7 +1693,6 @@ exports[`ImportJavaClasses component tests Should search box with results works 
               class="pf-v5-c-modal-box__title"
               id="pf-modal-part-3"
             >
-              
               <span
                 class="pf-v5-c-modal-box__title-text"
               >
@@ -2082,7 +2078,6 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
               class="pf-v5-c-modal-box__title"
               id="pf-modal-part-1"
             >
-              
               <span
                 class="pf-v5-c-modal-box__title-text"
               >
@@ -2341,9 +2336,12 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
   <div
     aria-live="off"
     class="pf-v5-c-tooltip pf-m-top"
+    data-popper-escaped="true"
+    data-popper-placement="top"
+    data-popper-reference-hidden="true"
     id="pf-tooltip-4"
     role="tooltip"
-    style="position: absolute; left: 0px; top: 0px; z-index: 9999; opacity: 0; transition: opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11); min-width: revert;"
+    style="position: absolute; left: 0px; top: 0px; z-index: 9999; opacity: 0; transition: opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11); min-width: revert; bottom: 0px; transform: translate(0px, -15px);"
   >
     <div
       class="pf-v5-c-tooltip__arrow"

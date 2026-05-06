@@ -29,6 +29,10 @@ import * as ReactDOM from "react-dom/client";
 // Store React 18 root instances for proper cleanup
 const reactRoots = new Map<string, ReactDOM.Root>();
 
+export function getReactRoot(id: string): ReactDOM.Root | undefined {
+  return reactRoots.get(id);
+}
+
 export function setReactRoot(id: string, root: ReactDOM.Root): void {
   reactRoots.set(id, root);
 }
