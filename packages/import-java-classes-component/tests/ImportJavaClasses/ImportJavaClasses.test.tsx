@@ -163,17 +163,32 @@ describe("ImportJavaClasses component tests", () => {
 
     const backButton = getByText("Back") as HTMLButtonElement;
     fireEvent.click(backButton);
+
+    await waitFor(() => {
+      const checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
+      expect(checkThirdElement).toBeInTheDocument();
+      expect(checkThirdElement).toBeChecked();
+    });
+
     let checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
-    expect(checkThirdElement).toBeInTheDocument();
-    expect(checkThirdElement).toBeChecked();
     fireEvent.click(checkThirdElement);
-    checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
-    expect(checkThirdElement).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]') as HTMLInputElement;
+      expect(checkThirdElement).not.toBeInTheDocument();
+    });
 
     const nextButton = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextButton);
-    const fetchButton = getByText('Fetch "Test" class')! as HTMLButtonElement;
-    expect(fetchButton).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(baseElement.querySelector('[aria-label="field-table"]')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const fetchButton = getByText('Fetch "Test" class')! as HTMLButtonElement;
+      expect(fetchButton).toBeInTheDocument();
+    });
   });
 
   test("Should move to third step", async () => {
