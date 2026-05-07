@@ -25,3 +25,8 @@ overrides:
   # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203: Fix security vulnerability in undici
   # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version
   "undici": "^6.24.0"
+  # CVE-2026-33532: Fix security vulnerability in yaml
+  # Override cosmiconfig>yaml@1.10.2 with patched version 1.10.3
+  "cosmiconfig>yaml": "1.10.3"
+  # Override yaml@^2 (including yaml-language-server yaml@2.0.0-11) used by helm charts, monaco-yaml, vite, and langchain dependencies with patched version 2.8.3
+  "yaml@^2": "^2.8.3"
