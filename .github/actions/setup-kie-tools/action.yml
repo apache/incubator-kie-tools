@@ -93,6 +93,24 @@ runs:
         echo "::endgroup::"
       shell: bash
 
+    - name: Update version.org.kie.kogito in maven-base pom.xml (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        echo "::group::Update version.org.kie.kogito in maven-base pom.xml (Linux)"
+        cd ${{ inputs.WORKING_DIR }}
+        sed -i "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${{ inputs.KOGITO_VERSION }}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
+        echo "::endgroup::"
+
+    - name: Update version.org.kie.kogito in maven-base pom.xml (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        echo "::group::Update version.org.kie.kogito in maven-base pom.xml (macOS)"
+        cd ${{ inputs.WORKING_DIR }}
+        sed -i '' "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${{ inputs.KOGITO_VERSION }}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
+        echo "::endgroup::"
+
     - name: Prepare maven-base with .mvn/maven.config
       id: prepare_maven_base_config
       shell: bash
@@ -100,7 +118,6 @@ runs:
         echo "::group::Prepare maven-base with .mvn/maven.config"
         cd ${{ inputs.WORKING_DIR }}
         mkdir -p ./packages/maven-base/.mvn
-        echo "-Dversion.org.kie.kogito=${{ inputs.KOGITO_VERSION }}" > "./packages/maven-base/.mvn/maven.config"
         echo "--no-snapshot-updates" >> "./packages/maven-base/.mvn/maven.config"
         echo "::endgroup::"
 
