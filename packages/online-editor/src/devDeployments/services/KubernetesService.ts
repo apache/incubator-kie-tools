@@ -194,7 +194,12 @@ export class KubernetesService {
   }
 
   public static getBaseUrl(args: Omit<KubernetesServiceArgs, "k8sApiServerEndpointsByResourceKind">) {
-    return args.proxyUrl ? `${args.proxyUrl}/${new URL(args.connection.host).host}` : args.connection.host;
+    if (!args.proxyUrl) {
+      return args.connection.host;
+    }
+    const parsedHost = new URL(args.connection.host);
+    const pathname = parsedHost.pathname.replace(/\/$/, "");
+    return `${args.proxyUrl}/${parsedHost.host}${pathname}`;
   }
 
   public async kubernetesFetch(path: string, init?: RequestInit): Promise<Response> {

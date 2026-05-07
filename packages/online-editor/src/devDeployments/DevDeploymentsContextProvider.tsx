@@ -63,6 +63,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       } else if (authSession.type === "kubernetes") {
         return new KieSandboxKubernetesService({
           connection: authSession,
+          proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
           k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
         });
       }

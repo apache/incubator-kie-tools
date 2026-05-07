@@ -18,6 +18,7 @@
  */
 
 import { K8sResourceYaml, TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import {
   DeploymentResource,
@@ -79,7 +80,13 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
   abstract deploy(args: DeployArgs): Promise<void>;
 
   public async getHealthStatus(args: { endpoint: string; deploymentName: string }): Promise<HealthStatus> {
-    return await fetch(`${args.endpoint}/q/health`)
+    const targetUrl = `${args.endpoint}/q/health`;
+    const url = this.args.proxyUrl ?? targetUrl;
+    const headers: Record<string, string> = {};
+    if (this.args.proxyUrl) {
+      headers[CorsProxyHeaderKeys.TARGET_URL] = targetUrl;
+    }
+    return await fetch(url, { headers })
       .then((data) => data.json())
       .then((response) => {
         // If the app is up, no need for the upload status anymore.
@@ -164,14 +171,19 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
           deploymentState = this.kubernetesService.extractDeploymentState({ deployment });
         } else {
           try {
-            const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl });
+            const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl, proxyUrl: this.args.proxyUrl });
             if (uploadStatus === UploadStatus.NOT_READY) {
               return;
             }
             clearInterval(interval);
             if (uploadStatus === UploadStatus.READY) {
               deploymentUploadStatusMap.set(args.deployment.metadata.name, { status: UploadStatus.UPLOADING });
-              await postUpload({ baseUrl: args.baseUrl, workspaceZipBlob: args.workspaceZipBlob, apiKey: args.apiKey });
+              await postUpload({
+                baseUrl: args.baseUrl,
+                workspaceZipBlob: args.workspaceZipBlob,
+                apiKey: args.apiKey,
+                proxyUrl: this.args.proxyUrl,
+              });
               deploymentUploadStatusMap.set(args.deployment.metadata.name, {
                 status: UploadStatus.UPLOADED,
                 timestamp: Date.now(),
