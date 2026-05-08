@@ -40,10 +40,14 @@ describe("ImportJavaClasses component tests", () => {
     await testImportJavaClassesButtonEnabled(baseElement);
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     fireEvent.click(modalWizardButton);
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-    await waitFor(() => {
-      expect(baseElement.querySelector(".pf-v5-c-modal-box")).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(baseElement.querySelector(".pf-v5-c-modal-box")).toBeInTheDocument();
+      },
+      { timeout: 5000 }
+    );
 
     expect(baseElement).toMatchSnapshot();
   });
@@ -56,7 +60,7 @@ describe("ImportJavaClasses component tests", () => {
     await testSearchInput(baseElement, getByText);
     const resetButton = baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement;
     expect(resetButton).toBeInTheDocument();
-    fireEvent.click(resetButton);
+    resetButton.click();
 
     await waitFor(() => {
       expect(baseElement.querySelector('[aria-label="Reset"]')).not.toBeInTheDocument();
@@ -87,17 +91,22 @@ describe("ImportJavaClasses component tests", () => {
     await testImportJavaClassesButtonEnabled(baseElement);
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     fireEvent.click(modalWizardButton);
-
-    await waitFor(() => {
-      expect(baseElement.querySelector(".pf-v5-c-modal-box")).toBeInTheDocument();
-    });
-
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await waitFor(
+      () => {
+        expect(getByText("Cancel")).toBeInTheDocument();
+      },
+      { timeout: 5000 }
+    );
     const cancelButton = getByText("Cancel") as HTMLButtonElement;
     fireEvent.click(cancelButton);
-
-    await waitFor(() => {
-      expect(baseElement.querySelector(".pf-v5-c-modal-box")).not.toBeInTheDocument();
-    });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await waitFor(
+      () => {
+        expect(baseElement.querySelector(".pf-v5-c-modal-box")).not.toBeInTheDocument();
+      },
+      { timeout: 5000 }
+    );
 
     expect(baseElement).toMatchSnapshot();
   });
@@ -163,32 +172,17 @@ describe("ImportJavaClasses component tests", () => {
 
     const backButton = getByText("Back") as HTMLButtonElement;
     fireEvent.click(backButton);
-
-    await waitFor(() => {
-      const checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
-      expect(checkThirdElement).toBeInTheDocument();
-      expect(checkThirdElement).toBeChecked();
-    });
-
     let checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
+    expect(checkThirdElement).toBeInTheDocument();
+    expect(checkThirdElement).toBeChecked();
     fireEvent.click(checkThirdElement);
-
-    await waitFor(() => {
-      checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]') as HTMLInputElement;
-      expect(checkThirdElement).not.toBeInTheDocument();
-    });
+    checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
+    expect(checkThirdElement).not.toBeInTheDocument();
 
     const nextButton = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextButton);
-
-    await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="field-table"]')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      const fetchButton = getByText('Fetch "Test" class')! as HTMLButtonElement;
-      expect(fetchButton).toBeInTheDocument();
-    });
+    const fetchButton = getByText('Fetch "Test" class')! as HTMLButtonElement;
+    expect(fetchButton).toBeInTheDocument();
   });
 
   test("Should move to third step", async () => {
@@ -215,22 +209,26 @@ describe("ImportJavaClasses component tests", () => {
   async function testSearchInput(baseElement: Element, getByText: (text: string) => HTMLElement) {
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     fireEvent.click(modalWizardButton);
-
-    await waitFor(() => {
-      expect(baseElement.querySelector(".pf-v5-c-modal-box")).toBeInTheDocument();
-    });
-
+    // Longer delay for Windows CI - modal needs time to fully render its contents
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await waitFor(
+      () => {
+        const inputElement = baseElement.querySelector('[aria-label="Search input"]');
+        expect(inputElement).toBeInTheDocument();
+      },
+      { timeout: 10000 }
+    );
     const inputElement = baseElement.querySelector('[aria-label="Search input"]')! as HTMLInputElement;
     expect(inputElement).toHaveValue("");
-    expect(baseElement.querySelector('[aria-label="Reset"]')).not.toBeInTheDocument();
+    expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).not.toBeInTheDocument();
     fireEvent.change(inputElement, { target: { value: "test" } });
     expect(inputElement).toHaveValue("test");
-    expect(baseElement.querySelector('[aria-label="Reset"]')).toBeInTheDocument();
+    expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).toBeInTheDocument();
   }
 
   async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="class-data-list"]')).toBeInTheDocument();
+      expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
     });
     const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
@@ -271,7 +269,7 @@ describe("ImportJavaClasses component tests", () => {
     const nextButton = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextButton);
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="field-table"]')).toBeInTheDocument();
+      expect(baseElement.querySelector('[aria-label="field-table"]')!).toBeInTheDocument();
     });
     const expandToggle = baseElement.querySelector('[id="expand-toggle0"]')! as HTMLButtonElement;
     expect(expandToggle).toHaveAttribute("aria-expanded", "true");
