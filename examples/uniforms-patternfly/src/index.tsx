@@ -19,8 +19,8 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { App } from "./App";
 import "./index.css";
 
-ReactDOM.render(<App />, document.getElementById("app"));
+ReactDOM.createRoot(document.getElementById("app")!).render(<App />);
