@@ -6236,8 +6236,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.18.0)
       axios:
-        specifier: ^1.15.0
-        version: 1.15.0
+        specifier: ^1.16.0
+        version: 1.16.0
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -6388,8 +6388,8 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^1.15.0
-        version: 1.15.0
+        specifier: ^1.16.0
+        version: 1.16.0
       graphql:
         specifier: 14.3.1
         version: 14.3.1
@@ -6647,8 +6647,8 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^1.15.0
-        version: 1.15.0
+        specifier: ^1.16.0
+        version: 1.16.0
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -6985,8 +6985,8 @@ importers:
         specifier: 2.6.10
         version: 2.6.10(graphql@14.3.1)
       axios:
-        specifier: ^1.15.0
-        version: 1.15.0
+        specifier: ^1.16.0
+        version: 1.16.0
       gql-query-builder:
         specifier: 3.1.3
         version: 3.1.3
@@ -7091,8 +7091,8 @@ importers:
         specifier: 2.6.10
         version: 2.6.10(graphql@14.3.1)
       axios:
-        specifier: ^1.15.0
-        version: 1.15.0
+        specifier: ^1.16.0
+        version: 1.16.0
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -14934,6 +14934,9 @@ packages:
 
   axios@1.15.0:
     resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
+
+  axios@1.16.0:
+    resolution: {integrity: sha512-6hp5CwvTPlN2A31g5dxnwAX0orzM7pmCRDLnZSX772mv8WDqICwFjowHuPs04Mc8deIld1+ejhtaMn5vp6b+1w==}
 
   azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
@@ -32533,6 +32536,14 @@ snapshots:
   axios@1.15.0(debug@4.3.4):
     dependencies:
       follow-redirects: 1.16.0(debug@4.3.4)
+      form-data: 4.0.5
+      proxy-from-env: 2.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.16.0:
+    dependencies:
+      follow-redirects: 1.16.0
       form-data: 4.0.5
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
