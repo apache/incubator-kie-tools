@@ -209,14 +209,13 @@ describe("ImportJavaClasses component tests", () => {
   async function testSearchInput(baseElement: Element, getByText: (text: string) => HTMLElement) {
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     fireEvent.click(modalWizardButton);
-    // Longer delay for Windows CI - modal needs time to fully render its contents
     await new Promise((resolve) => setTimeout(resolve, 300));
     await waitFor(
       () => {
         const inputElement = baseElement.querySelector('[aria-label="Search input"]');
         expect(inputElement).toBeInTheDocument();
       },
-      { timeout: 10000 }
+      { timeout: 3000 }
     );
     const inputElement = baseElement.querySelector('[aria-label="Search input"]')! as HTMLInputElement;
     expect(inputElement).toHaveValue("");
@@ -227,10 +226,13 @@ describe("ImportJavaClasses component tests", () => {
   }
 
   async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
-    await waitFor(() => {
-      const dataList = baseElement.querySelector('[aria-label="class-data-list"]');
-      expect(dataList).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        const dataList = baseElement.querySelector('[aria-label="class-data-list"]');
+        expect(dataList).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
     const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
     const secondElement = baseElement.querySelector('[id="com.Author"]')! as HTMLSpanElement;
@@ -269,9 +271,12 @@ describe("ImportJavaClasses component tests", () => {
   async function testNextStepFieldsTable(baseElement: Element, getByText: (text: string) => HTMLElement) {
     const nextButton = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextButton);
-    await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="field-table"]')!).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(baseElement.querySelector('[aria-label="field-table"]')!).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
     const expandToggle = baseElement.querySelector('[id="expand-toggle0"]')! as HTMLButtonElement;
     expect(expandToggle).toHaveAttribute("aria-expanded", "true");
     fireEvent.click(expandToggle);
@@ -283,9 +288,12 @@ describe("ImportJavaClasses component tests", () => {
     const fetchButton = getByText('Fetch "Test" class')! as HTMLButtonElement;
     fetchButton.click();
 
-    await waitFor(() => {
-      expect(getByText("(Test)")!).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(getByText("(Test)")!).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   }
 
   async function testImportJavaClassesButtonEnabled(baseElement: Element) {
