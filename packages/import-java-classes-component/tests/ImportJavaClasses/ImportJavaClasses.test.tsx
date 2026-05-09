@@ -228,7 +228,8 @@ describe("ImportJavaClasses component tests", () => {
 
   async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
+      const dataList = baseElement.querySelector('[aria-label="class-data-list"]');
+      expect(dataList).toBeInTheDocument();
     });
     const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
