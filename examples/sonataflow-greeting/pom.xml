@@ -27,13 +27,13 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.kie.sonataflow.examples</groupId>
   <artifactId>sonataflow-greeting</artifactId>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
 
   <name>KIE Tools :: Example :: SonataFlow Greeting</name>
   <description>SonataFlow Greeting Example</description>

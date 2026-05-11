@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>uberfire-commons-editor</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-commons-editor-api</artifactId>

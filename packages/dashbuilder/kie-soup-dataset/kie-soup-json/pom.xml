@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie.soup</groupId>
     <artifactId>kie-soup-dataset</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-soup-json</artifactId>

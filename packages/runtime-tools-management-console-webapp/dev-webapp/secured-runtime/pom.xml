@@ -26,14 +26,14 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>../../node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <!-- This is a development app. It's better that we use an arbitrary string to not make this more complicated than it has to be. -->
   <artifactId>management-console-dev-webapp-runtime</artifactId>
   <name>KIE Tools :: Management Console Web App :: Secured Runtime</name>
-  <version>999-dev</version>
+  <version>111-SNAPSHOT</version>
 
   <dependencies>
     <dependency>

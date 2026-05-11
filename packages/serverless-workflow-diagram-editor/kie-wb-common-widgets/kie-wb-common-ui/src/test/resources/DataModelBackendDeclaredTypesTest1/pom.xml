@@ -27,5 +27,5 @@
 
   <groupId>org.kie.example</groupId>
   <artifactId>DataModelBackendDeclaredTypesTest1</artifactId>
-  <version>1.0</version>
+  <version>111-SNAPSHOT</version>
 </project>

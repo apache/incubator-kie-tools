@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>serverless-workflow-diagram-editor-parent</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

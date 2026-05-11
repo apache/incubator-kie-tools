@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie-tools.it-tests</groupId>
   <artifactId>greeting-flow</artifactId>
-  <version>1.0</version>
+  <version>111-SNAPSHOT</version>
   <properties>
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>

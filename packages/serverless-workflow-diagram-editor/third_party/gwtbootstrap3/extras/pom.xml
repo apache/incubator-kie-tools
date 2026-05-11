@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor.third_party.gwtbootstrap3</groupId>
     <artifactId>parent</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <artifactId>extras</artifactId>

@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm-quarkus-devui-parent</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <artifactId>jbpm-quarkus-devui</artifactId>

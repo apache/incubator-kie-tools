@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>process-event-driven</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
   <artifactId>process-event-driven-hotel</artifactId>
   <name>Kogito Example :: Process Event Driven :: Hotel</name>

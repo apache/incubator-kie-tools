@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>serverless-workflow-diagram-editor-parent</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -54,19 +54,6 @@
       <url>http://www.drools.org/community/team.html</url>
     </developer>
   </developers>
-
-  <distributionManagement>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-    </repository>
-    <snapshotRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshot Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <dependencies>
     <!-- Lienzo dependencies -->

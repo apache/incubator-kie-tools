@@ -26,12 +26,12 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>../../node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <artifactId>dmn-dev-deployment-quarkus-app</artifactId>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
 
   <name>KIE Tools :: DMN Dev Deployment :: App</name>
   <description>DMN Dev Deployment Quarkus App</description>

@@ -7,13 +7,13 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>30</version>
+    <version>33</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.kie.sonataflow</groupId>
   <artifactId>kie-tools</artifactId>
-  <version>999-SNAPSHOT</version>
+  <version>111-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>KIE Tools</name>
@@ -62,7 +62,8 @@
     <version.pnpm>10.28.2</version.pnpm>
 
     <version.quarkus>3.27.3</version.quarkus>
-    <version.org.kie.kogito>999-SNAPSHOT</version.org.kie.kogito>
+    <version.org.kie.kogito>${project.version}</version.org.kie.kogito>
+    <skip.maven.deploy.in.pnpm.wrapped.artifacts>true</skip.maven.deploy.in.pnpm.wrapped.artifacts>
   </properties>
 
   <dependencyManagement>
@@ -105,6 +106,7 @@
           <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+            <fail>false</fail>
           </configuration>
         </plugin>
         <plugin>
@@ -206,6 +208,8 @@
                 >${env.DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef}</DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef>
                 <DROOLS_AND_KOGITO__kogitoAppsRepoGitRef
                 >${env.DROOLS_AND_KOGITO__kogitoAppsRepoGitRef}</DROOLS_AND_KOGITO__kogitoAppsRepoGitRef>
+                <KIE_TOOLS_BUILD__mavenDeploySkip
+                >${skip.maven.deploy.in.pnpm.wrapped.artifacts}</KIE_TOOLS_BUILD__mavenDeploySkip>
               </environmentVariables>
               <skip>${skip.ui.deps}</skip>
               <arguments
@@ -217,64 +221,41 @@
     </plugins>
   </build>
 
-  <!-- distributionManagement section -->
   <distributionManagement>
     <repository>
-      <id>apache-release-staging-repository</id>
-      <name>Apache Release Staging Repository</name>
-      <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
     </repository>
     <snapshotRepository>
-      <id>apache-snapshots-repository</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
     </snapshotRepository>
   </distributionManagement>
 
   <repositories>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom
-      has not been build locally. -->
     <repository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
+      <id>central</id>
+      <name>Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>github</id>
+      <name>GitHub Repository</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
     </repository>
   </repositories>
-
   <pluginRepositories>
     <pluginRepository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is listed before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache Nexus repo only to download our SNAPSHOTs. -->
       <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
+      <name>Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
     </pluginRepository>
     <pluginRepository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <id>github</id>
+      <name>GitHub Repository</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
     </pluginRepository>
   </pluginRepositories>
 

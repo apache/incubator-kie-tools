@@ -33,7 +33,7 @@ concurrency:
 env:
   TMPDIR: "/tmp"
   BUILD_ENV__accessErrorsLogFileAbsolutePath: "/tmp/build-env-access-errors.log"
-  KOGITO_RUNTIME_version: "999-SNAPSHOT"
+  KOGITO_RUNTIME_version: "111-SNAPSHOT"
 
 jobs:
   run:
@@ -108,8 +108,19 @@ jobs:
         if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
 
-      - name: Setup local maven cache
-        id: setup_maven_cache
+      - name: Setup local maven cache for PR
+        id: setup_maven_cache_pr
+        if: "github.event_name == 'pull_request'"
+        uses: ./.github/actions/setup-maven-cache
+        with:
+          DEPS_BRANCHNAME: ${{ github.head_ref }}
+          DROOLS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/drools"
+          KOGITO_RUNTIMES_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-runtimes"
+          KOGITO_APPS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-apps"
+
+      - name: Setup local maven cache for non-pull request runs
+        id: setup_maven_cache_non_pr
+        if: "github.event_name != 'pull_request'"
         uses: ./.github/actions/setup-maven-cache
         with:
           DEPS_BRANCHNAME: main
@@ -153,7 +164,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode != 'none'
         env:
           DROOLS_AND_KOGITO__skip: true
-          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
+          MAVEN_ARGS: "-B"
           MAVEN_OPTS: "-Xmx3g"
         uses: ./.github/actions/bootstrap
         with:
@@ -196,7 +207,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=6144"
-          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
+          MAVEN_ARGS: "-B"
           MAVEN_OPTS: "-Xmx2g"
         run: >-
           eval "pnpm ${{ steps.setup_build_mode.outputs.fullBuildPnpmFilterString }} --workspace-concurrency=1 build:prod"
@@ -208,7 +219,7 @@ jobs:
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           NODE_OPTIONS: "--max_old_space_size=6144"
-          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
+          MAVEN_ARGS: "-B"
           MAVEN_OPTS: "-Xmx2g"
         run: |
           eval "pnpm ${{ steps.setup_build_mode.outputs.upstreamPnpmFilterString }} --if-present build:dev"
@@ -233,7 +244,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=6144"
-          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
+          MAVEN_ARGS: "-B"
           MAVEN_OPTS: "-Xmx2g"
         run: |
           eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --if-present --workspace-concurrency=1 build:prod"

@@ -26,13 +26,13 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <artifactId>process-event-driven</artifactId>
   <name>KIE Tools :: Example :: Process Event Driven</name>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>

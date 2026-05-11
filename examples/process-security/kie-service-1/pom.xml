@@ -25,13 +25,13 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>process-security-kie-service-1</artifactId>
   <groupId>org.kie.kogito</groupId>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
   <name>KIE Tools :: Example :: Process Security :: Service 1</name>
 
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>process-security</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <dependencies>

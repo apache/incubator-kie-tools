@@ -26,12 +26,12 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>../../node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <artifactId>kogito-jobs-service-postgresql-image-app</artifactId>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
 
   <name>KIE Tools :: Kogito Jobs Service Postgresql Image :: App</name>
   <description>Kogito Kogito Jobs Service Postgresql Image Quarkus App</description>

@@ -29,7 +29,7 @@ permissions:
   contents: read
 
 env:
-  KOGITO_RUNTIME_version: "999-SNAPSHOT"
+  KOGITO_RUNTIME_version: "111-SNAPSHOT"
 
 jobs:
   build:
@@ -41,8 +41,19 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
-      - name: Setup local maven cache
-        id: setup_maven_cache
+      - name: Setup local maven cache for PR
+        id: setup_maven_cache_pr
+        if: "github.event_name == 'pull_request'"
+        uses: ./.github/actions/setup-maven-cache
+        with:
+          DEPS_BRANCHNAME: ${{ github.head_ref }}
+          DROOLS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/drools"
+          KOGITO_RUNTIMES_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-runtimes"
+          KOGITO_APPS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-apps"
+
+      - name: Setup local maven cache for non-pull request runs
+        id: setup_maven_cache_non_pr
+        if: "github.event_name != 'pull_request'"
         uses: ./.github/actions/setup-maven-cache
         with:
           DEPS_BRANCHNAME: main
@@ -71,6 +82,7 @@ jobs:
       - name: Build KIE Tools
         env:
           DROOLS_AND_KOGITO__skip: true
+          KIE_TOOLS_BUILD__mavenDeploySkip: true
           DROOLS_AND_KOGITO__droolsRepoGitRef: "${{ steps.setup_maven_cache.outputs.droolsRepoGitRef }}"
           DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: "${{ steps.setup_maven_cache.outputs.kogitoRuntimesRepoGitRef }}"
           DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: "${{ steps.setup_maven_cache.outputs.kogitoAppsRepoGitRef }}"
@@ -82,6 +94,6 @@ jobs:
       #   with:
       #     name: kie-tools-artifacts
       #     path: |
-      #       packages/sonataflow-quarkus-devui/sonataflow-quarkus-devui/target/sonataflow-quarkus-devui-999-SNAPSHOT.jar
-      #       packages/sonataflow-quarkus-devui/sonataflow-quarkus-devui-deployment/target/sonataflow-quarkus-devui-deployment-999-SNAPSHOT.jar
-      #       packages/sonataflow-management-console-webapp/target/sonataflow-management-console-webapp-999-SNAPSHOT-image-build.zip
+      #       packages/sonataflow-quarkus-devui/sonataflow-quarkus-devui/target/sonataflow-quarkus-devui-111-SNAPSHOT.jar
+      #       packages/sonataflow-quarkus-devui/sonataflow-quarkus-devui-deployment/target/sonataflow-quarkus-devui-deployment-111-SNAPSHOT.jar
+      #       packages/sonataflow-management-console-webapp/target/sonataflow-management-console-webapp-111-SNAPSHOT-image-build.zip

@@ -15,8 +15,8 @@
   "scripts": {
     "build:dev": "pnpm pre-build && mvn clean install -DskipTests -Dversion.org.kie.kogito=$(build-env versions.kogito)",
     "build:prod": "pnpm pre-build && run-script-os",
-    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dversion.org.kie.kogito=$(build-env versions.kogito)",
-    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dversion.org.kie.kogito=$(build-env versions.kogito)\"",
+    "build:prod:darwin:linux": "mvn clean deploy -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dmaven.deploy.skip=$(build-env maven.deploy.skip) -Dversion.org.kie.kogito=$(build-env versions.kogito)",
+    "build:prod:win32": "pnpm powershell \"mvn clean deploy `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dmaven.deploy.skip=$(build-env maven.deploy.skip) `-Dversion.org.kie.kogito=$(build-env versions.kogito)\"",
     "install": "node install.js",
     "pre-build": "mvn dependency:unpack"
   },

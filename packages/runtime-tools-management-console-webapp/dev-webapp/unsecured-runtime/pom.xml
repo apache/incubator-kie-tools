@@ -26,21 +26,21 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>../../node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <!-- This is a development app. It's better that we use an arbitrary string to not make this more complicated than it has to be. -->
   <artifactId>management-console-dev-webapp-runtime</artifactId>
   <name>KIE Tools :: Management Console Web App :: Unsecured Runtime</name>
-  <version>999-dev</version>
+  <version>111-SNAPSHOT</version>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>jbpm-quarkus-devui-bom</artifactId>
-        <version>${revision}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

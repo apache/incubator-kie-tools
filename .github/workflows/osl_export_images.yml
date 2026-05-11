@@ -39,7 +39,7 @@ jobs:
       - name: "Setup kie-tools repository"
         uses: ./.github/actions/setup-kie-tools
         with:
-          KOGITO_VERSION: "999-SNAPSHOT"
+          KOGITO_VERSION: "111-SNAPSHOT"
           PNPM_FILTER: ${{ env.PNPM_FILTER }}
 
       - name: Build OSL Packages

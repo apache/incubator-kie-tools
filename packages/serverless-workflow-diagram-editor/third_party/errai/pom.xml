@@ -26,7 +26,7 @@
   <parent>
     <artifactId>third_party</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <artifactId>errai</artifactId>

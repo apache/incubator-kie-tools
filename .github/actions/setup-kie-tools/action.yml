@@ -28,7 +28,7 @@ inputs:
   KOGITO_VERSION:
     description: "The version for Kogito Runtime"
     required: false
-    default: "999-SNAPSHOT"
+    default: "111-SNAPSHOT"
   DEPS_BRANCHNAME:
     description: "The branch to pull for Drools, Runtimes and Apps repositories"
     required: false

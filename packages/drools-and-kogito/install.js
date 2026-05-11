@@ -122,8 +122,8 @@ execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.kogitoApps.gitRef} &
 // update versions
 const streamsMavenVersion =
   buildEnv.root.streamName === "main"
-    ? `999-SNAPSHOT` //
-    : buildEnv.root.streamName.replace(".x", ".999-SNAPSHOT"); // 10.1.x becomes 10.1.999-SNAPSHOT
+    ? `111-SNAPSHOT` //
+    : buildEnv.root.streamName.replace(".x", ".111-SNAPSHOT"); // 10.1.x becomes 10.1.111-SNAPSHOT
 
 console.log(`[drools-and-kogito] Updating versions to ${streamsMavenVersion}...`);
 execSync(`find . -name "pom.xml" -exec sed -i.bak "s/${streamsMavenVersion}/${buildEnv.versions.kogito}/g" {} ";"`, {

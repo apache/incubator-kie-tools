@@ -619,7 +619,7 @@ pipeline {
                         configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsNightlyConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                             sh """#!/bin/bash -el
                             export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                            export MAVEN_ARGS=\"${MAVEN_ARGS} --settings=${MAVEN_SETTINGS_FILE} -Drevision=999-SNAPSHOT\"
+                            export MAVEN_ARGS=\"${MAVEN_ARGS} --settings=${MAVEN_SETTINGS_FILE} -Drevision=111-SNAPSHOT\"
                             pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
                             """.trim()
                         }

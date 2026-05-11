@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
@@ -49,6 +49,22 @@
     <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>yard-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>yard-model</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
@@ -60,32 +76,17 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-  </dependencies>
 
-  <profiles>
-    <profile>
-      <id>include-1st-party-dependencies</id>
-      <activation>
-        <property>
-          <name>kieTools.do-not-use-this-property.ignore1stPartyDependencies</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>yard-model</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>yard-model</artifactId>
-          <version>${project.version}</version>
-          <classifier>sources</classifier>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>yard-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>yard-model</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+  </dependencies>
 
   <build>
     <resources>

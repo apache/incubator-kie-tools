@@ -14,7 +14,7 @@ on:
         description: "Specify the version for Kogito Runtime"
         type: string
         required: false
-        default: "999-SNAPSHOT"
+        default: "111-SNAPSHOT"
       IMAGE_TAG:
         description: "Specify the tag for the images"
         type: string

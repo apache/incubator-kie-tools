@@ -26,12 +26,12 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
     <relativePath>../../node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <artifactId>kogito-jobs-service-inmemory-image-app</artifactId>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
 
   <name>KIE Tools :: Kogito Jobs Service Inmemory Image :: App</name>
   <description>Kogito Jobs Service Inmemory Image Quarkus App</description>

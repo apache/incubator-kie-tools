@@ -25,7 +25,7 @@ on:
         type: string
         description: "Specify the version for Kogito Runtime"
         required: false
-        default: "999-SNAPSHOT"
+        default: "111-SNAPSHOT"
     secrets:
       KIE1_TOKEN:
         required: true

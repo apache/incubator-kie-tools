@@ -31,7 +31,7 @@
 
   <groupId>org.kie</groupId>
   <artifactId>kie-tools-maven-base</artifactId>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
 
   <modelVersion>4.0.0</modelVersion>
   <name>KIE Tools :: Maven Base</name>
@@ -52,49 +52,59 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:https://github.com/apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:https://github.com/apache/incubator-kie-tools.git</developerConnection>
-    <url>https://github.com/apache/incubator-kie-tools</url>
+    <connection>scm:git:https://github.com/kubesmarts/kie-tools.git</connection>
+    <developerConnection>scm:git:https://github.com/kubesmarts/kie-tools.git</developerConnection>
+    <url>https://github.com/kubesmarts/kie-tools</url>
     <tag>HEAD</tag>
   </scm>
 
-  <issueManagement>
-    <system>github-issues</system>
-    <url>https://github.com/apache/incubator-kie-issues/issues</url>
-  </issueManagement>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+    </repository>
+    <snapshotRepository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+    </snapshotRepository>
+  </distributionManagement>
 
-  <developers>
-    <developer>
-      <name>The Apache KIE Team</name>
-      <email>dev@kie.apache.org</email>
-      <url>https://kie.apache.org</url>
-      <organization>Apache Software Foundation</organization>
-      <organizationUrl>http://apache.org/</organizationUrl>
-    </developer>
-  </developers>
-  <mailingLists>
-    <mailingList>
-      <name>Development List</name>
-      <subscribe>dev-subscribe@kie.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
-      <post>dev@kie.apache.org</post>
-      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
-    </mailingList>
-    <mailingList>
-      <name>User List</name>
-      <subscribe>users-subscribe@kie.apache.org</subscribe>
-      <unsubscribe>users-unsubscribe@kie.apache.org</unsubscribe>
-      <post>users@kie.apache.org</post>
-      <archive>https://lists.apache.org/list.html?users@kie.apache.org</archive>
-    </mailingList>
-    <mailingList>
-      <name>Commits List</name>
-      <subscribe>commits-subscribe@kie.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@kie.apache.org</unsubscribe>
-      <post>commits@kie.apache.org</post>
-      <archive>https://lists.apache.org/list.html?commits@kie.apache.org</archive>
-    </mailingList>
-  </mailingLists>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>github</id>
+      <name>GitHub Repository</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+    </repository>
+    <repository>
+      <id>jboss</id>
+      <name>JBoss Public Repo</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>sonatype-public</id>
+      <name>Sonatype Public Snapshots Repo</name>
+      <url>https://oss.sonatype.org/content/repositories/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>github</id>
+      <name>GitHub Repository</name>
+      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
@@ -107,7 +117,7 @@
 
     <!-- Plugins version -->
     <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
-    <version.j2cl.maven.plugin>0.23.0</version.j2cl.maven.plugin>
+    <version.j2cl.maven.plugin>0.23.7</version.j2cl.maven.plugin>
     <version.jacoco.maven.plugin>0.8.13</version.jacoco.maven.plugin>
     <version.maven.artifact.plugin>3.5.3</version.maven.artifact.plugin>
     <version.maven.clean.plugin>3.4.0</version.maven.clean.plugin>
@@ -121,9 +131,10 @@
     <version.maven.remote.resources.plugin>3.2.0</version.maven.remote.resources.plugin>
     <version.maven.source.plugin>3.3.1</version.maven.source.plugin>
     <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
+    <version.build.helper.maven.plugin>3.6.1</version.build.helper.maven.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20260324-local</version.org.kie.kogito>
+    <version.org.kie.kogito>111-SNAPSHOT</version.org.kie.kogito>
 
     <!-- Quarkus -->
     <version.quarkus>3.27.3</version.quarkus>
@@ -418,6 +429,7 @@
           <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+            <fail>false</fail>
             <!--
               This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin`
               TODO: remove as a part of: https://github.com/apache/incubator-kie-issues/issues/1371
@@ -504,6 +516,11 @@
           <groupId>org.kie.j2cl.tools</groupId>
           <artifactId>j2cl-maven-plugin</artifactId>
           <version>${version.j2cl.maven.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${version.build.helper.maven.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>

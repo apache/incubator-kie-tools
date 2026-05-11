@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-layout-editor</artifactId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-layout-editor-client</artifactId>

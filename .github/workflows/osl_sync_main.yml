@@ -34,7 +34,7 @@ jobs:
 
       - name: "Bootstrap"
         env:
-          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
+          MAVEN_ARGS: "-B"
           MAVEN_OPTS: "-Xmx3g"
         uses: ./.github/actions/bootstrap
         with:

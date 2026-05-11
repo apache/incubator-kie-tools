@@ -34,7 +34,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>serverless-logic-web-tools-swf-deployment-quarkus-app</artifactId>
-  <version>${revision}</version>
+  <version>111-SNAPSHOT</version>
 
   <name>KIE Tools :: Serverless Logic Web Tools :: Deployment Quarkus app</name>
 

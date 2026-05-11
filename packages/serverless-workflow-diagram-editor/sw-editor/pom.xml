@@ -27,7 +27,7 @@
   <parent>
     <artifactId>serverless-workflow-diagram-editor-parent</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-    <version>${revision}</version>
+    <version>111-SNAPSHOT</version>
   </parent>
 
   <artifactId>sw-editor</artifactId>
