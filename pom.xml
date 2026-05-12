@@ -225,12 +225,12 @@
     <repository>
       <id>github</id>
       <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+      <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
     </repository>
     <snapshotRepository>
       <id>github</id>
       <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+      <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -243,7 +243,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Repository</name>
-      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+      <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -255,7 +255,7 @@
     <pluginRepository>
       <id>github</id>
       <name>GitHub Repository</name>
-      <url>https://maven.pkg.github.com/kubesmarts/sonataflow-maven-repository</url>
+      <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
     </pluginRepository>
   </pluginRepositories>
 
