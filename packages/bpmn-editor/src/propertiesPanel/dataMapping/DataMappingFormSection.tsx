@@ -125,7 +125,12 @@ function flaggedDataInputs<T extends { name?: string; "@_name"?: string }>(
         !!customTasks.find(
           (c) =>
             c.matches(element) && !!c.dataInputReservedNames.find((n) => n === (dataInput["@_name"] ?? dataInput.name))
-        )),
+        )) ||
+      // Hide HEADER_ and QUERY_ prefixed parameters for custom tasks
+      (element.__$$element === "task" &&
+        !!customTasks.find((c) => c.matches(element) && c.id === "rest-task") &&
+        (!!(dataInput["@_name"] ?? dataInput.name)?.startsWith("HEADER_") ||
+          !!(dataInput["@_name"] ?? dataInput.name)?.startsWith("QUERY_"))),
   }));
 }
 

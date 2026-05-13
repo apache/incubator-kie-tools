@@ -56,6 +56,49 @@ interface BpmnEditorEnvelopeDictionary
     flexibleProcesses: string;
     unableToOpenFile: string;
     errorMessage: string;
+    restService: {
+      name: string;
+      integration: string;
+      description: string;
+      url: string;
+      urlHelp: string;
+      urlPlaceholder: string;
+      method: string;
+      protocol: string;
+      protocolHelp: string;
+      protocolPlaceholder: string;
+      host: string;
+      hostHelp: string;
+      hostPlaceholder: string;
+      port: string;
+      portHelp: string;
+      portPlaceholder: string;
+      contentData: string;
+      contentDataPlaceholder: string;
+      requestTimeout: string;
+      headers: string;
+      addHeader: string;
+      queryParameters: string;
+      addQueryParameter: string;
+      authStrategy: string;
+      authPropagated: string;
+      authConfigured: string;
+      authNone: string;
+      accessTokenStrategy: string;
+      restServiceCallTaskId: string;
+      restServiceCallTaskIdPlaceholder: string;
+      testTokenHelper: string;
+      testToken: string;
+      testTokenPlaceholder: string;
+      useCorsProxy: string;
+      useCorsProxyAriaLabel: string;
+      useCorsProxyHelper: string;
+      testRequest: string;
+      testing: string;
+      testFailed: string;
+      testResult: string;
+      urlRequired: string;
+    };
   }> {}
 
 export interface BpmnEditorEnvelopeI18n extends BpmnEditorEnvelopeDictionary, CommonI18n {}
