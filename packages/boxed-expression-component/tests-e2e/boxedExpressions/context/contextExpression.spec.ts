@@ -45,14 +45,18 @@ test.describe("Create Boxed Context", () => {
     await contextExpression.result.selectExpressionMenu.selectLiteral();
     await contextExpression.result.expression.asLiteral().fill("test");
     await contextExpression.result.contextMenu.open();
-    await contextExpression.result.contextMenu.option("Reset").nth(0).click();
+    const resultResetOption = await contextExpression.result.contextMenu.option("Reset").nth(0);
+    await expect(resultResetOption).toBeVisible();
+    await resultResetOption.click();
     await contextExpression.result.selectExpressionMenu.selectLiteral();
     await contextExpression.result.expression.asLiteral().fill("test2");
 
     await contextExpression.entry(0).selectExpressionMenu.selectLiteral();
     await contextExpression.entry(0).expression.asLiteral().fill("test");
     await contextExpression.entry(0).variable.contextMenu.open();
-    await contextExpression.entry(0).variable.contextMenu.option("Reset").nth(0).click();
+    const entryResetOption = await contextExpression.entry(0).variable.contextMenu.option("Reset").nth(0);
+    await expect(entryResetOption).toBeVisible();
+    await entryResetOption.click();
     await contextExpression.entry(0).selectExpressionMenu.selectLiteral();
     await contextExpression.entry(0).expression.asLiteral().fill("test2");
 

@@ -36,9 +36,13 @@ test.describe("Create Boxed Every", () => {
     await everyExpression.in.expression.asLiteral().fill("test");
     await everyExpression.satisfies.expression.asLiteral().fill("test");
     await everyExpression.in.contextMenu.open();
-    await everyExpression.in.contextMenu.option("Reset").nth(0).click();
+    const inResetOption = await everyExpression.in.contextMenu.option("Reset").nth(0);
+    await expect(inResetOption).toBeVisible();
+    await inResetOption.click();
     await everyExpression.satisfies.contextMenu.open();
-    await everyExpression.satisfies.contextMenu.option("Reset").nth(0).click();
+    const satisfiesResetOption = await everyExpression.satisfies.contextMenu.option("Reset").nth(0);
+    await expect(satisfiesResetOption).toBeVisible();
+    await satisfiesResetOption.click();
 
     expect((await jsonModel.getEveryExpression()).in).not.toBeUndefined();
     expect((await jsonModel.getEveryExpression()).satisfies).not.toBeUndefined();
