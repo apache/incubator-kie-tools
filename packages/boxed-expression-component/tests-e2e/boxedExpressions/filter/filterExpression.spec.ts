@@ -101,9 +101,13 @@ test.describe("Create Boxed Filter", () => {
     await filterExpression.in.expression.asLiteral().fill("test");
     await filterExpression.match.expression.asLiteral().fill("test");
     await filterExpression.in.contextMenu.open();
-    await filterExpression.in.contextMenu.option("Reset").nth(0).click();
+    const inResetOption = await filterExpression.in.contextMenu.option("Reset").nth(0);
+    await expect(inResetOption).toBeVisible();
+    await inResetOption.click();
     await filterExpression.match.contextMenu.open();
-    await filterExpression.match.contextMenu.option("Reset").nth(0).click();
+    const matchResetOption = await filterExpression.match.contextMenu.option("Reset").nth(0);
+    await expect(matchResetOption).toBeVisible();
+    await matchResetOption.click();
 
     expect((await jsonModel.getFilterExpression()).in).not.toBeUndefined();
     expect((await jsonModel.getFilterExpression()).match).not.toBeUndefined();
