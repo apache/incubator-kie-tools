@@ -129,6 +129,8 @@ interface OnlineDictionary
         tokenInfo: string;
         insecurelyDisableTlsCertificateValidation: string;
         insecurelyDisableTlsCertificateValidationInfo: string;
+        useCorsProxy: string;
+        useCorsProxyInfo: string;
         validationError: string;
         connectionError: string;
         missingPermissions: string;
