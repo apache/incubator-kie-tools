@@ -17,7 +17,8 @@
  * under the License.
  */
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { ProcessListChannelApi, ProcessListEnvelopeApi } from "../api";
 import { Envelope, EnvelopeDivConfig } from "@kie-tools-core/envelope";
@@ -45,12 +46,11 @@ export function init(args: { config: EnvelopeDivConfig; container: HTMLDivElemen
   >(args.bus, args.config);
 
   const envelopeViewDelegate = async () => {
-    const ref = React.createRef<ProcessListEnvelopeViewApi>();
     return new Promise<() => ProcessListEnvelopeViewApi>((res) => {
-      ReactDOM.createRoot(args.container).render(
-        <ProcessListEnvelopeView ref={ref} channelApi={envelope.channelApi} />
-      );
-      setTimeout(() => res(() => ref.current!), 0);
+      const setRef = (ref: ProcessListEnvelopeViewApi | null) => {
+        if (ref) res(() => ref);
+      };
+      createRoot(args.container).render(<ProcessListEnvelopeView ref={setRef} channelApi={envelope.channelApi} />);
     });
   };
 

@@ -23,11 +23,12 @@ import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
 import DevUILayout from "../DevUILayout/DevUILayout";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
 import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
+import { createRoot } from "react-dom/client";
 
 interface IOwnProps {
   isProcessEnabled: boolean;
@@ -68,7 +69,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
 
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
-      return ReactDOM.createRoot(document.getElementById("envelope-app")!).render(
+      return createRoot(document.getElementById("envelope-app")!).render(
         <DevUILayout
           apolloClient={client}
           users={users}

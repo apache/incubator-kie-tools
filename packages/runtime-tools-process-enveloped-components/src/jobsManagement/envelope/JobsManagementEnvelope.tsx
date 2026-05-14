@@ -17,7 +17,8 @@
  * under the License.
  */
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { JobsManagementChannelApi, JobsManagementEnvelopeApi } from "../api";
 import { Envelope, EnvelopeDivConfig } from "@kie-tools-core/envelope";
@@ -44,12 +45,11 @@ export function init(args: { config: EnvelopeDivConfig; container: HTMLElement; 
   >(args.bus, args.config);
 
   const envelopeViewDelegate = async () => {
-    const ref = React.createRef<JobsManagementEnvelopeViewApi>();
     return new Promise<() => JobsManagementEnvelopeViewApi>((res) => {
-      ReactDOM.createRoot(args.container).render(
-        <JobsManagementEnvelopeView ref={ref} channelApi={envelope.channelApi} />
-      );
-      setTimeout(() => res(() => ref.current!), 0);
+      const setRef = (ref: JobsManagementEnvelopeViewApi | null) => {
+        if (ref) res(() => ref);
+      };
+      createRoot(args.container).render(<JobsManagementEnvelopeView ref={setRef} channelApi={envelope.channelApi} />);
     });
   };
 

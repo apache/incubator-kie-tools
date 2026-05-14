@@ -267,21 +267,8 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   }, [selection]);
 
   //
-  // paste batching strategy (begin)
-  //
-  // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setValue`.
-  // Every call to `setValue` mutates the expression, so batching is essential for performance reasons.
-  // This effect runs once when pasteData is truthy. Then, after running, it sets pasteData to a falsy value, which short-circuits it.
-  //
-  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers and hooks.
-  const [pasteData, setPasteData] = useState("");
-  useEffect(() => {
-    if (!pasteData) {
-      return;
-    }
-
-    const clipboardValue = pasteData;
-
+  // React 18 automatic batching handles multiple state updates efficiently.
+  const handlePaste = useCallback((clipboardValue: string) => {
     if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
       return;
     }
@@ -321,11 +308,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         isEditing: false,
       },
     });
-
-    setPasteData("");
-  }, [pasteData]);
-
-  // paste batching strategy (end)
+  }, []);
 
   const value = useMemo(() => {
     return {
@@ -654,7 +637,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
       },
       paste: () => {
         navigator.clipboard.readText().then((clipboardValue) => {
-          setPasteData(clipboardValue);
+          handlePaste(clipboardValue);
         });
       },
       erase: () => {

@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { createPortal } from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
@@ -51,7 +52,7 @@ export function renderPrEditorsApp(
   cleanup(args.id);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
-  const root = ReactDOM.createRoot(container);
+  const root = createRoot(container);
   setReactRoot(args.id, root);
   root.render(
     <Main
