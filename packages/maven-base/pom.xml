@@ -133,11 +133,9 @@
     <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
     <version.org.freemarker>2.3.34</version.org.freemarker>
     <version.org.assertj>3.27.7</version.org.assertj>
-    <!-- JUnit pins aligned with the rest of the KIE stack (drools build-parent, kogito-dependencies-bom).
-         Jupiter and platform must share the same version (junit-bom 6.0.3) — otherwise Quarkus brings
-         its own platform version and tests fail with NoSuchMethodError on junit-platform-commons. -->
-    <version.org.junit.jupiter>6.0.3</version.org.junit.jupiter>
-    <version.org.junit.platform>6.0.3</version.org.junit.platform>
+    <!-- JUnit 6: single pin for jupiter + platform + vintage via junit-bom. Aligned with drools
+         build-parent and kogito-dependencies-bom. See version.junit above for the legacy JUnit 4 API. -->
+    <version.org.junit>6.0.3</version.org.junit>
     <version.org.mockito>5.18.0</version.org.mockito>
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
     <version.io.netty>4.1.132.Final</version.io.netty>
@@ -384,32 +382,32 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>${version.org.junit.jupiter}</version>
+        <version>${version.org.junit}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>${version.org.junit.jupiter}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-commons</artifactId>
-        <version>${version.org.junit.platform}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-engine</artifactId>
-        <version>${version.org.junit.platform}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-launcher</artifactId>
-        <version>${version.org.junit.platform}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
