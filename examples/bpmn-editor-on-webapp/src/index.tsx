@@ -19,7 +19,8 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BpmnEditorPage } from "./BpmnEditorPage";
 
-ReactDOM.createRoot(document.getElementById("app")!).render(<BpmnEditorPage />);
+createRoot(document.getElementById("app")!).render(<BpmnEditorPage />);

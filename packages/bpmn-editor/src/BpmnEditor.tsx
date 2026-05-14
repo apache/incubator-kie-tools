@@ -26,7 +26,8 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { original, WritableDraft } from "immer";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import * as RF from "reactflow";
 import { BpmnEditorContextProvider, useBpmnEditor } from "./BpmnEditorContext";
@@ -295,7 +296,7 @@ export const BpmnEditorInternal = ({
           bounds.height + SVG_PADDING * 5 + ""
         );
 
-        ReactDOM.createRoot(svg).render(
+        createRoot(svg).render(
           // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
           <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
             <BpmnDiagramSvg

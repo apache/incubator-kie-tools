@@ -27,6 +27,7 @@ import * as PatternflyReactDeprecated from "@patternfly/react-core/dist/js/depre
 import { FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 import { sourceHandler } from "../../../utils";
 import ResourcesContainer from "../ResourcesContainer/ResourcesContainer";
+import { createRoot } from "react-dom/client";
 
 import "@patternfly/patternfly/patternfly.css";
 
@@ -93,7 +94,7 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
         ${trimmedSource}
         const target = document.getElementById("${containerId}");
         const element = window.React.createElement(${formName}, {});
-        window.ReactDOM.createRoot(target).render(element);
+        window.createRoot(target).render(element);
         `;
 
         const reactCode = transform(content.trim(), {

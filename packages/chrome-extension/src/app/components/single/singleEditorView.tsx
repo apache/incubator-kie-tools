@@ -28,7 +28,8 @@ import {
   waitForElementToBeReady,
   setReactRoot,
 } from "../../utils";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { createPortal } from "react-dom";
 import { Globals, Main } from "../common/Main";
 import { SingleEditorApp } from "./SingleEditorApp";
@@ -76,7 +77,7 @@ export async function renderSingleEditorReadonlyApp(
   cleanup(args.id, args.dependencies);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body()!);
-  const root = ReactDOM.createRoot(container);
+  const root = createRoot(container);
   setReactRoot(args.id, root);
   root.render(
     <Main

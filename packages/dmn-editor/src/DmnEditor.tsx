@@ -21,7 +21,8 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import * as RF from "reactflow";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -277,7 +278,7 @@ export const DmnEditorInternal = ({
           bounds.height + (state.computed(state).isAlternativeInputDataShape() ? SVG_PADDING * 5 : SVG_PADDING * 2) + ""
         );
 
-        ReactDOM.createRoot(svg).render(
+        createRoot(svg).render(
           // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
           <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
             <DmnDiagramSvg

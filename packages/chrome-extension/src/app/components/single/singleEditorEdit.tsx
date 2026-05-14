@@ -19,7 +19,8 @@
 
 import * as React from "react";
 import { useCallback, useEffect } from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,
@@ -64,7 +65,7 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
   cleanup(args.id, args.dependencies);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
-  const root = ReactDOM.createRoot(container);
+  const root = createRoot(container);
   setReactRoot(args.id, root);
   root.render(
     <Main

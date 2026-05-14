@@ -25,7 +25,8 @@ import {
   KogitoEditorEnvelopeContextType,
 } from "../api";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import * as React from "react";
 import { Envelope, EnvelopeApiFactory } from "@kie-tools-core/envelope";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
@@ -100,7 +101,7 @@ export class KogitoEditorEnvelope<
         </KogitoEditorEnvelopeContext.Provider>
       );
 
-      ReactDOM.createRoot(container).render(app);
+      createRoot(container).render(app);
     });
   }
 }

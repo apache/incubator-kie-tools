@@ -36,13 +36,9 @@ test.describe("Create Boxed Some", () => {
     await someExpression.in.expression.asLiteral().fill("test");
     await someExpression.satisfies.expression.asLiteral().fill("test");
     await someExpression.in.contextMenu.open();
-    const inResetOption = await someExpression.in.contextMenu.option("Reset").nth(0);
-    await expect(inResetOption).toBeVisible();
-    await inResetOption.click();
+    await someExpression.in.contextMenu.option("Reset").nth(0).click();
     await someExpression.satisfies.contextMenu.open();
-    const satisfiesResetOption = await someExpression.satisfies.contextMenu.option("Reset").nth(0);
-    await expect(satisfiesResetOption).toBeVisible();
-    await satisfiesResetOption.click();
+    await someExpression.satisfies.contextMenu.option("Reset").nth(0).click();
 
     expect((await jsonModel.getSomeExpression()).in).not.toBeUndefined();
     expect((await jsonModel.getSomeExpression()).satisfies).not.toBeUndefined();

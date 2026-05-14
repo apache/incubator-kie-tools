@@ -44,66 +44,44 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   getWidthToFitData,
 }) => {
   //
-  // onResizeStop batching strategy (begin)
-  //
-  // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setWidth`.
-  // Every call to `setWidth` mutates the expression, so batching is essential for performance reasons.
-  // This effect runs once when resizingStop__data is truthy. Then, after running, it sets resizingStop__data to a falsy value, which short-circuits it.
-  //
-  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers and hooks.
-  //
+  // React 18 automatic batching handles multiple state updates efficiently.
   // This whole thing is responsible for allowing any cell to shrink the entire table when resized.
 
   const { getResizerRefs, setResizing: _setResizing } = useResizingWidthsDispatch();
 
-  const [resizingStop__data, setResizingStop__data] = useState({ width: 0 });
   const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
-  const onResizeStop = useCallback((e: React.SyntheticEvent, data: ResizeCallbackData) => {
-    if ((e.nativeEvent as MouseEvent).detail === 2) {
-      console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
-      return;
-    }
+  const onResizeStop = useCallback(
+    (e: React.SyntheticEvent, data: ResizeCallbackData) => {
+      if ((e.nativeEvent as MouseEvent).detail === 2) {
+        console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
+        return;
+      }
 
-    setResizingStop__data({ width: data.size.width });
-  }, []);
+      const resizingStopWidth = Math.floor(data.size.width);
 
-  useEffect(() => {
-    const resizingStopWidth = Math.floor(resizingStop__data.width);
-    if (!resizingStopWidth) {
-      return;
-    }
+      if (resizingStopWidth === startResizingWidth.width) {
+        console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
+      } else {
+        console.debug(`Stop resizing (different): ${resizingStopWidth}`);
+        for (const resizerRef of getResizerRefs()) {
+          if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+            resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+          } else {
+            // Ignoring. Nothing to do.
+          }
+        }
 
-    if (resizingStopWidth === startResizingWidth.width) {
-      console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
-    } else {
-      console.debug(`Stop resizing (different): ${resizingStopWidth}`);
-      for (const resizerRef of getResizerRefs()) {
-        if (resizerRef.resizingWidth?.value !== resizerRef.width) {
-          resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
-        } else {
-          // Ignoring. Nothing to do.
+        if (resizingStopWidth !== width) {
+          setWidth?.(resizingStopWidth);
         }
       }
 
-      if (resizingStopWidth !== width) {
-        setWidth?.(resizingStopWidth);
-      }
-    }
-
-    setResizing?.(false);
-    _setResizing(false);
-    setResizingWidth?.({ value: resizingStopWidth, isPivoting: false });
-    setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
-  }, [
-    _setResizing,
-    getResizerRefs,
-    setResizing,
-    setResizingWidth,
-    setWidth,
-    resizingStop__data.width,
-    startResizingWidth.width,
-    width,
-  ]);
+      setResizing?.(false);
+      _setResizing(false);
+      setResizingWidth?.({ value: resizingStopWidth, isPivoting: false });
+    },
+    [_setResizing, getResizerRefs, setResizing, setResizingWidth, setWidth, startResizingWidth.width, width]
+  );
 
   //
   // onResizeStop batching strategy (end)
@@ -149,14 +127,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       // This starts the resizing process again with the correct width.
       onResizeStart(undefined, { size: { width: newWidth } } as ResizeCallbackData);
 
-      // Wait for an event loop iteration, leaving time for the resizeStart to propagate.
-      // Then, pretend that the startResizingWidth is different from the one we're going to stop with.
+      // React 18 automatic batching handles the state updates efficiently.
+      // Pretend that the startResizingWidth is different from the one we're going to stop with.
       setTimeout(() => {
         setStartResizingWidth({ width: 0 });
-        setResizingStop__data({ width: newWidth });
+        onResizeStop(e, { size: { width: newWidth } } as ResizeCallbackData);
       }, 0);
     },
-    [getWidthToFitData, minWidth, onResizeStart]
+    [getWidthToFitData, minWidth, onResizeStart, onResizeStop]
   );
 
   const style = useMemo(() => {

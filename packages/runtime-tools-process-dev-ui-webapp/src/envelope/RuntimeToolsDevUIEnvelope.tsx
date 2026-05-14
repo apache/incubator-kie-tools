@@ -24,8 +24,9 @@ import {
   RuntimeToolsDevUIEnvelopeContext,
   RuntimeToolsDevUIEnvelopeContextType,
 } from "./RuntimeToolsDevUIEnvelopeContext";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import React from "react";
+import { createRoot } from "react-dom/client";
 
 export class RuntimeToolsDevUIEnvelope {
   constructor(
@@ -66,7 +67,7 @@ export class RuntimeToolsDevUIEnvelope {
         );
       };
 
-      ReactDOM.createRoot(container).render(app());
+      createRoot(container).render(app());
     });
   }
 }

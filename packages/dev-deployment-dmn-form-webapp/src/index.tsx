@@ -19,12 +19,13 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { DmnFormApp } from "./DmnFormApp";
 import "../static/resources/style.css";
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
 
-ReactDOM.createRoot(document.getElementById("app")!).render(
+createRoot(document.getElementById("app")!).render(
   <EnvContextProvider>
     <DmnFormApp />
   </EnvContextProvider>

@@ -18,7 +18,8 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { createPortal } from "react-dom";
 import { Globals, Main } from "../common/Main";
 import {
@@ -40,7 +41,7 @@ export function renderOpenRepoInExternalEditorApp(
   cleanup(args.id);
 
   const container = createAndGetMainContainer(args.id, args.dependencies.all.body());
-  const root = ReactDOM.createRoot(container);
+  const root = createRoot(container);
   setReactRoot(args.id, root);
   root.render(
     <Main

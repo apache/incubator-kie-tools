@@ -19,7 +19,8 @@
 
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { TodoListEnvelopeContext } from "./TodoListEnvelopeContext";
 import { TodoListEnvelopeApiImpl } from "./TodoListEnvelopeApiImpl";
 import { TodoListChannelApi, TodoListEnvelopeApi } from "../api";
@@ -53,7 +54,7 @@ export function init(args: { container: HTMLElement; bus: EnvelopeBus }) {
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TodoListEnvelopeViewApi>();
     return new Promise<() => TodoListEnvelopeViewApi>((res) => {
-      ReactDOM.createRoot(args.container).render(
+      createRoot(args.container).render(
         <TodoListEnvelopeView ref={ref} channelApi={envelope.channelApi} shared={envelope.shared} />
       );
       res(() => ref.current!);

@@ -19,7 +19,8 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { FeelService } from "./FeelService";
 import "./index.css";
 import { FeelInput } from "../src";
@@ -114,4 +115,4 @@ declare global {
   }
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<FeelEditor />);
+createRoot(document.getElementById("root")!).render(<FeelEditor />);

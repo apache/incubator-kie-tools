@@ -18,14 +18,13 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { PingPongEnvelopeView } from "..";
 
 export const pingPongEnvelopViewRender = (container: HTMLElement) =>
   new Promise<void>((res) => {
-    ReactDOM.createRoot(container).render(
-      <PingPongEnvelopeView envelopeConfig={{ containerType: ContainerType.IFRAME }} />
-    );
+    createRoot(container).render(<PingPongEnvelopeView envelopeConfig={{ containerType: ContainerType.IFRAME }} />);
     setTimeout(() => res(), 0);
   });
