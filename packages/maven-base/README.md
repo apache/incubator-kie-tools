@@ -19,11 +19,26 @@
 
 Foundational files for Maven-based packages.
 
-- `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based pacakges.
-- `settings.xml`: Moslty repositories configuration.
+- `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based packages. Contains all required repository configurations.
 - `index.js`: Essential scripts for configuring properties such as `-Drevision` and `-Dmaven.repo.local.tail`.
 
 For more information, refer to the [KIE Tools :: Manual](../../repo/MANUAL.md#specifics--maven)
+
+## Maven Configuration
+
+This project uses standard Maven settings resolution. All required repositories are configured in the parent `pom.xml`.
+
+### Custom Settings (Optional)
+
+If you need custom Maven settings (e.g., for authentication to private repositories):
+
+1. **User settings:** Create/edit `~/.m2/settings.xml`
+2. **Command line:** Use `mvn -s /path/to/settings.xml`
+3. **Environment variable:** Set `MAVEN_ARGS="--settings=/path/to/settings.xml"`
+
+### Repository Configuration
+
+All repositories are defined in `packages/maven-base/pom.xml`:
 
 ---
 
