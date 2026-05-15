@@ -58,7 +58,7 @@
     "moment": "^2.29.4",
     "react-error-boundary": "^4.1.2",
     "reactflow": "^11.8.3",
-    "uuid": "^8.3.2",
+    "uuid": "^14.0.0",
     "zustand": "^4.4.2"
   },
   "devDependencies": {

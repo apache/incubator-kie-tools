@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

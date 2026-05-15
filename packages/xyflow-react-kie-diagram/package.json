@@ -22,7 +22,7 @@
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "immer": "^10.0.3",
-    "uuid": "^8.3.2",
+    "uuid": "^14.0.0",
     "zustand": "^4.4.2"
   },
   "devDependencies": {

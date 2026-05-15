@@ -50,7 +50,7 @@
     "react-moment": "0.9.7",
     "react-router-dom": "^6.30.2",
     "util": "^0.12.5",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
