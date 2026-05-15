@@ -24,11 +24,11 @@ const rootEnv = require("@kie-tools/root-env/env");
 module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DROOLS_AND_KOGITO__droolsRepoUrl: {
-      default: "https://github.com/apache/incubator-kie-drools",
+      default: "https://github.com/gitgabrio/drools",
       description: "Git repository URL for Drools",
     },
     DROOLS_AND_KOGITO__droolsRepoGitRef: {
-      default: "c325045d12ec2ce3be39499d43133d9131eb4c54",
+      default: "incubator-kie-issues#2029",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__optaplannerRepoUrl: {
@@ -40,19 +40,19 @@ module.exports = composeEnv([rootEnv], {
       description: "Git ref for the OptaPlanner repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoUrl: {
-      default: "https://github.com/apache/incubator-kie-kogito-runtimes",
+      default: "https://github.com/gitgabrio/kogito-runtimes",
       description: "Git repository URL for Kogito Runtimes",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: {
-      default: "a353bf29989e8d8126d069d271c523b0d719c285",
+      default: "incubator-kie-issues#2029",
       description: "Git ref for the Kogito Runtimes repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoUrl: {
-      default: "https://github.com/apache/incubator-kie-kogito-apps",
+      default: "https://github.com/gitgabrio/kogito-apps",
       description: "Git repository URL for Kogito Apps",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: {
-      default: "078ed90bb0d7359ec7637111aff2cf2f0a7fd8fe",
+      default: "incubator-kie-issues#2029",
       description: "Git ref for the Kogito Apps repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
@@ -61,7 +61,7 @@ module.exports = composeEnv([rootEnv], {
         "Whether or not to skip the entire package. No artifacts will be downloaded nor built when this flag is 'true'.",
     },
     DROOLS_AND_KOGITO__forceBuild: {
-      default: `${false}`,
+      default: `${true}`,
       description: "Will always build, even if there's a cached build available.",
     },
     DROOLS_AND_KOGITO__cacheDownloadCommand: {
