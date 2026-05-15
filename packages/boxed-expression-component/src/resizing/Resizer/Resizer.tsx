@@ -18,9 +18,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ResizeCallbackData, Resizable } from "react-resizable";
-import { ResizerStopBehavior, ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
 
@@ -52,7 +52,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
   const onResizeStop = useCallback(
     (e: React.SyntheticEvent, data: ResizeCallbackData) => {
-      if ((e.nativeEvent as MouseEvent).detail === 2) {
+      if (e.nativeEvent instanceof MouseEvent && e.nativeEvent.detail === 2) {
         console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
         return;
       }
