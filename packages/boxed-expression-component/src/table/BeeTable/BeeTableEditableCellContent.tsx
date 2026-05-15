@@ -140,6 +140,7 @@ export function BeeTableEditableCellContent({
 
           setEditing(false);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
+          e.preventDefault();
         }
       }
 
