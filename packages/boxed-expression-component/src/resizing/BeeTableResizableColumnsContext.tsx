@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { ResizerStopBehavior, ResizingWidth, useResizerRef, useResizingWidthsDispatch } from "./ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "./WidthConstants";
 
@@ -143,6 +143,7 @@ export function useBeeTableResizableCell(
   }, [initialResizingWidthValue]);
 
   const [resizingWidth, setResizingWidth] = useState<ResizingWidth | undefined>(initialResizingWidth);
+  const isInitializedRef = useRef(false);
 
   useResizerRef(
     useMemo(
@@ -172,7 +173,10 @@ export function useBeeTableResizableCell(
 
   // This needs to run AFTER the resizable cell is registered, otherwise its ref might not be there yet, thus missing the last row.
   useEffect(() => {
-    updateColumnResizingWidths(new Map([[columnIndex, initialResizingWidth]]));
+    if (!isInitializedRef.current) {
+      updateColumnResizingWidths(new Map([[columnIndex, initialResizingWidth]]));
+      isInitializedRef.current = true;
+    }
   }, [initialResizingWidth, columnIndex, initialResizingWidthValue, updateColumnResizingWidths]);
 
   return { resizingWidth, setResizingWidth: _updateResizingWidth };
