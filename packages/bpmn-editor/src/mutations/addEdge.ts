@@ -80,7 +80,7 @@ export function addEdge({
     );
   }
 
-  const newEdgeId = generateUuid();
+  let newEdgeId = generateUuid();
 
   const { process, diagramElements } = addOrGetProcessAndDiagramElements({ definitions });
 
@@ -130,12 +130,13 @@ export function addEdge({
       (a) => a.__$$element === "sequenceFlow" && areEdgesEquivalent(a, newSequenceFlow)
     );
     existingEdgeId = removed?.["@_id"];
+    newEdgeId = tryKeepingEdgeId(existingEdgeId, newEdgeId);
 
     // Replace with the new one.
     process.flowElement?.push({
       __$$element: "sequenceFlow",
       ...newSequenceFlow,
-      "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
+      "@_id": newEdgeId,
     });
   }
 
@@ -151,6 +152,15 @@ export function addEdge({
       element.__$$element !== "dataObjectReference"
     ) {
       if (__readonly_edge.type === EDGE_TYPES.sequenceFlow) {
+        // Clean up old edge references from all nodes when replacing an edge
+        if (existingEdgeId) {
+          if (element.outgoing) {
+            element.outgoing = element.outgoing.filter((o) => o.__$$text !== existingEdgeId);
+          }
+          if (element.incoming) {
+            element.incoming = element.incoming.filter((o) => o.__$$text !== existingEdgeId);
+          }
+        }
         // outgoing
         if (element["@_id"] === __readonly_sourceNode.href) {
           element.outgoing ??= [];

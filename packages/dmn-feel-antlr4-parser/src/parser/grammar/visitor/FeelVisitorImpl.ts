@@ -135,7 +135,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult | undefined> 
     const afterDot = this.resolveNames(ctx.qualifiedName());
 
     // Here, we care about the first result after dot
-    if (beforeDot && beforeDot.dataType.properties.has(afterDot[0].text)) {
+    if (afterDot?.length > 0 && beforeDot?.dataType.properties.has(afterDot[0].text)) {
       const startIndex = ctx.qualifiedName().start.start - 1;
       this._semanticTokens.push(
         new SemanticToken({
@@ -179,7 +179,10 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult | undefined> 
       }
     }
 
-    return new VisitorResult({ text: ctx.getText(), dataType: beforeDot?.dataType.properties.get(afterDot[0].text) });
+    return new VisitorResult({
+      text: ctx.getText(),
+      dataType: afterDot?.length > 0 ? beforeDot?.dataType.properties.get(afterDot[0].text) : undefined,
+    });
   };
 
   public override visitPrimaryParens = (ctx: PrimaryParensContext) => {
@@ -233,7 +236,7 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult | undefined> 
     const afterDot = this.resolveNames(ctx.qualifiedName());
 
     // Here, we care about the first result after dot
-    if (beforeDot?.dataType.properties.has(afterDot[0].text)) {
+    if (afterDot?.length > 0 && beforeDot?.dataType.properties.has(afterDot[0].text)) {
       const startIndex = ctx.qualifiedName().start.start - 1;
       this._semanticTokens.push(
         new SemanticToken({
@@ -248,7 +251,10 @@ export class FeelVisitorImpl extends FEEL_1_1Visitor<VisitorResult | undefined> 
       );
     }
 
-    return new VisitorResult({ text: ctx.getText(), dataType: beforeDot?.dataType.properties.get(afterDot[0].text) });
+    return new VisitorResult({
+      text: ctx.getText(),
+      dataType: afterDot?.length > 0 ? beforeDot?.dataType.properties.get(afterDot[0].text) : undefined,
+    });
   };
 
   public override visitFnInvocation = (ctx: FnInvocationContext) => {

@@ -42,6 +42,14 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description:
         "Comma-separated list of allowed host patterns. Supports wildcards (e.g., '*.target.example.com,*.github.com').",
     },
+    CORS_PROXY__tlsCertificate: {
+      default: "",
+      description: "Path to TLS certificate file for HTTPS. If empty, the proxy runs in HTTP mode.",
+    },
+    CORS_PROXY__tlsKey: {
+      default: "",
+      description: "Path to TLS private key file for HTTPS. If empty, the proxy runs in HTTP mode.",
+    },
   }),
   get env() {
     return {
@@ -52,6 +60,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
           useHttpForHosts: getOrDefault(this.vars.CORS_PROXY__useHttpForHosts),
           allowedHosts: getOrDefault(this.vars.CORS_PROXY__allowedHosts),
+          tlsCertificate: getOrDefault(this.vars.CORS_PROXY__tlsCertificate),
+          tlsKey: getOrDefault(this.vars.CORS_PROXY__tlsKey),
         },
       },
     };

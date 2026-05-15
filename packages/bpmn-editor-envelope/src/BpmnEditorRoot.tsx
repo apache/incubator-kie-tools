@@ -69,6 +69,7 @@ export type BpmnEditorRootProps = {
     onChange: React.Dispatch<React.SetStateAction<CustomTask[]>>;
     thisBpmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
     doneBootstrapping: PromiseImperativeHandle<void>;
+    locale: string;
   }>;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
@@ -569,6 +570,7 @@ export class BpmnEditorRoot extends React.Component<BpmnEditorRootProps, BpmnEdi
               }
               onChange={this.setCustomTasks}
               doneBootstrapping={this.customTasksManagerDoneBootstraping}
+              locale={this.props.locale}
             />
           </>
         )}
