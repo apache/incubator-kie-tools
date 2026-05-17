@@ -267,7 +267,12 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   }, [selection]);
 
   //
-  // React 18 automatic batching handles multiple state updates efficiently.
+  // paste batching strategy
+  //
+  // React 18's automatic batching handles multiple state updates efficiently, even in async operations.
+  // All state updates within the promise callback are automatically batched by React 18.
+  // Every call to `setValue` mutates the expression, so batching is essential for performance reasons.
+  //
   const handlePaste = useCallback((clipboardValue: string) => {
     if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
       return;
@@ -282,6 +287,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     const pasteEndRow = Math.max(endRow, startRow + clipboardMatrix.length - 1);
     const pasteEndColumn = Math.max(endColumn, startColumn + clipboardMatrix[0].length - 1);
 
+    // React 18 automatically batches all state updates, even in async callbacks
     for (let r = startRow; r <= pasteEndRow; r++) {
       for (let c = startColumn; c <= pasteEndColumn; c++) {
         refs.current
@@ -792,6 +798,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     depth,
     resetParentSelectionAt,
     setCurrentDepth,
+    handlePaste,
   ]);
 
   // If there's no selection on the table that is coming into focus, we focus at the top-left cell.
