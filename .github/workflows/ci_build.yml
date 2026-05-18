@@ -135,12 +135,6 @@ jobs:
         run: |
           sed -i '' "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${KOGITO_RUNTIME_version}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
 
-      - name: Prepare maven-base with .mvn/maven.config
-        id: prepare_maven_base_config
-        run: |
-          mkdir ./packages/maven-base/.mvn
-          echo "--no-snapshot-updates" >> "./packages/maven-base/.mvn/maven.config"
-
       - name: "Install parent POMs"
         shell: bash
         run: |

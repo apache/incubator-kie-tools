@@ -16,9 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
-
-setupMavenConfigFile(`
-  -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
-`);

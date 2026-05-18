@@ -16,17 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-const { env } = require("./env");
-const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
-
-setupMavenConfigFile(
-  `
-    --batch-mode
-    -Dstyle.color=always
-    -Drevision=${env.swfDeploymentQuarkusApp.version}
-    -Dversion.quarkus=${env.versions.quarkus}
-    -Dversion.org.kie.kogito=${env.versions.kogito}
-    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
-`
-);

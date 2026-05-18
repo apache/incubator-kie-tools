@@ -73,12 +73,6 @@ jobs:
         run: bash ./.github/supporting-files/ci/osl/export_vars.sh
         shell: bash
 
-      - name: Prepare maven-base with .mvn/maven.config
-        id: prepare_maven_base_config
-        run: |
-          mkdir ./packages/maven-base/.mvn
-          echo "--no-snapshot-updates" >> "./packages/maven-base/.mvn/maven.config"
-
       - name: Build KIE Tools
         env:
           DROOLS_AND_KOGITO__skip: true

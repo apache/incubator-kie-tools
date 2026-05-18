@@ -118,8 +118,6 @@ pipeline {
                         configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsNightlyConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                             timestampedSnapshotVersion = getTimestampedSnapshotVersion()
                             sh """#!/bin/bash -el
-                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Drevision=${timestampedSnapshotVersion} >> .mvn/maven.config'
                             pnpm ${env.PNPM_FILTER_STRING} build:prod
                             """.trim()
                         }

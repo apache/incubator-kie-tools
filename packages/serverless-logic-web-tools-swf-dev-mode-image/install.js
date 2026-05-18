@@ -16,10 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-const { env } = require("./env");
-const { setupMavenConfigFile } = require("@kie-tools/maven-base");
-
-setupMavenConfigFile(`
-    -Drevision=${env.slwtDevModeImage.version}
-`);

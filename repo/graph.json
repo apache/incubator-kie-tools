@@ -228,9 +228,6 @@
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
-      { "id": "@kie-tools/sonataflow-management-console-image" },
-      { "id": "@kie-tools/sonataflow-management-console-image-env" },
-      { "id": "@kie-tools/sonataflow-management-console-webapp" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -1232,6 +1229,113 @@
       { "source": "@kie/kogito-jit-runner-image", "target": "@kie/kogito-images-install-helper", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },
+      {
+        "source": "@osl/osl-data-index-ephemeral-image",
+        "target": "@kie/kogito-data-index-ephemeral-image",
+        "weight": 1
+      },
+      { "source": "@osl/osl-data-index-ephemeral-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-data-index-ephemeral-image", "target": "@osl/redhat-env", "weight": 1 },
+      { "source": "@osl/osl-images-modules", "target": "@kie-tools/sonataflow-image-common", "weight": 1 },
+      { "source": "@osl/osl-images-modules", "target": "@osl/redhat-python-venv", "weight": 1 },
+      { "source": "@osl/redhat-env", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@osl/redhat-python-venv", "target": "@kie-tools/python-venv", "weight": 1 },
+      {
+        "source": "@osl/osl-data-index-postgresql-image",
+        "target": "@kie/kogito-data-index-postgresql-image",
+        "weight": 1
+      },
+      { "source": "@osl/osl-data-index-postgresql-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-data-index-postgresql-image", "target": "@osl/redhat-env", "weight": 1 },
+      {
+        "source": "@osl/osl-db-migrator-tool-image",
+        "target": "@kie-tools/kogito-db-migrator-tool-image",
+        "weight": 1
+      },
+      { "source": "@osl/osl-db-migrator-tool-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-db-migrator-tool-image", "target": "@osl/redhat-env", "weight": 1 },
+      {
+        "source": "@osl/osl-jobs-service-ephemeral-image",
+        "target": "@kie/kogito-jobs-service-ephemeral-image",
+        "weight": 1
+      },
+      { "source": "@osl/osl-jobs-service-ephemeral-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-jobs-service-ephemeral-image", "target": "@osl/redhat-env", "weight": 1 },
+      {
+        "source": "@osl/osl-jobs-service-postgresql-image",
+        "target": "@kie/kogito-jobs-service-postgresql-image",
+        "weight": 1
+      },
+      { "source": "@osl/osl-jobs-service-postgresql-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-jobs-service-postgresql-image", "target": "@osl/redhat-env", "weight": 1 },
+      {
+        "source": "@osl/osl-management-console-image",
+        "target": "@kie-tools/sonataflow-management-console-image",
+        "weight": 1
+      },
+      { "source": "@osl/osl-management-console-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-management-console-image", "target": "@osl/redhat-env", "weight": 1 },
+      {
+        "source": "@kie-tools/sonataflow-management-console-image",
+        "target": "@kie-tools/image-env-to-json",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-image",
+        "target": "@kie-tools/sonataflow-management-console-image-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-image",
+        "target": "@kie-tools/sonataflow-management-console-webapp",
+        "weight": 1
+      },
+      { "source": "@kie-tools/sonataflow-management-console-image-env", "target": "@kie-tools/root-env", "weight": 1 },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-swf-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/sonataflow-dev-app",
+        "weight": 1
+      },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@kie-tools/sonataflow-operator", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-data-index-ephemeral-image", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-data-index-postgresql-image", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-db-migrator-tool-image", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-jobs-service-ephemeral-image", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-jobs-service-postgresql-image", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-management-console-image", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-swf-builder-image", "weight": 1 },
+      { "source": "@osl/osl-operator-bundle-image", "target": "@osl/osl-swf-devmode-image", "weight": 1 },
+      { "source": "@osl/osl-swf-builder-image", "target": "@kie-tools/sonataflow-builder-image", "weight": 1 },
+      { "source": "@osl/osl-swf-builder-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-swf-builder-image", "target": "@osl/redhat-env", "weight": 1 },
+      { "source": "@osl/osl-swf-devmode-image", "target": "@kie-tools/sonataflow-devmode-image", "weight": 1 },
+      { "source": "@osl/osl-swf-devmode-image", "target": "@osl/osl-images-modules", "weight": 1 },
+      { "source": "@osl/osl-swf-devmode-image", "target": "@osl/redhat-env", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/editor", "weight": 1 },
@@ -1550,52 +1654,6 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
-      {
-        "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/image-env-to-json",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/sonataflow-management-console-image-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/sonataflow-management-console-webapp",
-        "weight": 1
-      },
-      { "source": "@kie-tools/sonataflow-management-console-image-env", "target": "@kie-tools/root-env", "weight": 1 },
-      {
-        "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-swf-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools/sonataflow-dev-app",
-        "weight": 1
-      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",

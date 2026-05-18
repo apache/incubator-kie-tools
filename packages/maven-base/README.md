@@ -20,7 +20,7 @@
 Foundational files for Maven-based packages.
 
 - `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based packages. Contains all required repository configurations.
-- `index.js`: Essential scripts for configuring properties such as `-Drevision` and `-Dmaven.repo.local.tail`.
+- `index.js`: Essential scripts for configuring Maven properties.
 
 For more information, refer to the [KIE Tools :: Manual](../../repo/MANUAL.md#specifics--maven)
 

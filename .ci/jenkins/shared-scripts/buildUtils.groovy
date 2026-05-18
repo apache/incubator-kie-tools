@@ -54,7 +54,6 @@ def setupPnpm(String mavenSettingsFileId = '') {
     #!/bin/bash -el
     pnpm config set network-timeout 1000000
     pnpm -r exec 'bash' '-c' 'mkdir .mvn'
-    pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
     pnpm -r exec 'bash' '-c' 'echo -Xmx3g > .mvn/jvm.config'
     """.trim()
 
@@ -63,7 +62,6 @@ def setupPnpm(String mavenSettingsFileId = '') {
             sh """
             #!/bin/bash -el
             cp ${MAVEN_SETTINGS_FILE} ${WORKSPACE}/kie-settings.xml
-            pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
             """.trim()
         }
     }

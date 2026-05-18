@@ -29,11 +29,3 @@ runKogitoImageInstall({
   resourceDir: path.resolve(__dirname, "./resources"),
   imagePkgDir: __dirname,
 });
-
-/// Maven app
-
-const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
-setupMavenConfigFile(`
-    -Drevision=${env.kogitoDataIndexPostgresqlImage.version}
-    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
-`);

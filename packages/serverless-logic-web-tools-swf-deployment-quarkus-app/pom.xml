@@ -48,7 +48,8 @@
     <org.apache.commons.commons-compress.version>1.26.0</org.apache.commons.commons-compress.version>
     <com.github.erosb.everit-json-schema.version>1.14.2</com.github.erosb.everit-json-schema.version>
     <surefire-plugin.version>3.5.0</surefire-plugin.version>
-    <version.org.kie.kogito>${env.KOGITO_RUNTIME_version}</version.org.kie.kogito>
+    <version.org.kie.kogito>${project.version}</version.org.kie.kogito>
+    <version.quarkus>3.27.3</version.quarkus>
   </properties>
 
   <dependencyManagement>
@@ -167,30 +168,6 @@
           <artifactId>sonataflow-quarkus-devui</artifactId>
         </dependency>
       </dependencies>
-    </profile>
-    <profile>
-      <!--  -->
-      <!-- See `@kie-tools/maven-base` pom.xml for full details on this profile. -->
-      <!--  -->
-      <id>use-maven-repo-local-tail</id>
-      <activation>
-        <property>
-          <name>kieTools.do-not-use-this-property.ignoreMavenRepoLocalTail</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <artifactId>maven-install-plugin</artifactId>
-              <configuration>
-                <skip>true</skip>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
     </profile>
   </profiles>
 

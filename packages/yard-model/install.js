@@ -18,11 +18,6 @@
  */
 
 const { env } = require("./env");
-const { setupMavenConfigFile, installMvnw, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
-
-setupMavenConfigFile(`
-    -Drevision=${env.yardModel.version}
-    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
-`);
+const { installMvnw } = require("@kie-tools/maven-base");
 
 installMvnw();

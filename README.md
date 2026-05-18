@@ -157,7 +157,7 @@ To use it follow the steps:
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
-    <version>${revision}</version>
+    <version>0.0.0</version>
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
   ...
@@ -180,9 +180,8 @@ To use it follow the steps:
 }
 ```
 
-> IMPORTANT: the current version of the `maven-artifact-plugin` (3.4.1) used in `kie-tools` bans the `maven-flatten-plugin` that
-> we use to generate deployable artifacts using the dynamic `${revision}` variable. You can check the full list of banned
-> plugins [here](https://maven.apache.org/plugins-archives/maven-artifact-plugin-3.4.1/plugin-issues.html).
+> IMPORTANT: the current version of the `maven-artifact-plugin` (3.4.1) used in `kie-tools` bans the `maven-flatten-plugin`.
+> You can check the full list of banned plugins [here](https://maven.apache.org/plugins-archives/maven-artifact-plugin-3.4.1/plugin-issues.html).
 > The issue that caused the ban [flatten-maven-plugin/issues/256](https://github.com/mojohaus/flatten-maven-plugin/issues/256) was a result
 > of change in Maven behaviour between `v3.8.1` and `v3.8.2`, and isn't a problem on the `maven-flatten-plugin`.
 > Actually, in later versions of the `maven-artifact-plugin` the ban got revoked.

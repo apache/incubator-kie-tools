@@ -175,7 +175,7 @@ try {
 
 console.log(`[drools-and-kogito] Building OptaPlanner...`);
 execSync(
-  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true`,
   {
     ...execOpts,
     cwd: optaplannerRepoDir,
@@ -184,7 +184,7 @@ execSync(
 
 console.log(`[drools-and-kogito] Building Kogito Runtimes...`);
 execSync(
-  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true`,
   {
     ...execOpts,
     cwd: kogitoRuntimesRepoDir,
@@ -193,7 +193,7 @@ execSync(
 
 console.log(`[drools-and-kogito] Building Kogito Apps...`);
 execSync(
-  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
+  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dquarkus.container-image.build=false`,
   {
     ...execOpts,
     cwd: kogitoAppsRepoDir,

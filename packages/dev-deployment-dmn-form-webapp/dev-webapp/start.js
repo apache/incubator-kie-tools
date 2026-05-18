@@ -31,7 +31,6 @@ const mvn = spawn(
     `-Dquarkus.http.port=${env.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
     `-Dquarkus.http.host=0.0.0.0`,
     `-Dkogito.service.url=http://0.0.0.0:${env.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
-    `-Drevision=${env.devDeploymentDmnFormWebapp.version}`,
   ],
   { shell: true }
 );

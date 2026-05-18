@@ -54,7 +54,9 @@
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
 
+    <version.org.kie.kogito>${project.version}</version.org.kie.kogito>
     <!-- 3rd party -->
+    <version.quarkus>3.27.3</version.quarkus>
     <version.junit>4.13.2</version.junit>
     <version.org.apache.commons.commons-compress>1.28.0</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
@@ -247,33 +249,7 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-    <profile>
-      <!--  -->
-      <!-- See `@kie-tools/maven-base` pom.xml for full details on this profile. -->
-      <!--  -->
-      <id>use-maven-repo-local-tail</id>
-      <activation>
-        <property>
-          <name>kieTools.do-not-use-this-property.ignoreMavenRepoLocalTail</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-install-plugin</artifactId>
-              <configuration>
-                <skip>true</skip>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
+  <profiles />
 
   <build>
     <resources>
@@ -388,31 +364,6 @@
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>flatten-maven-plugin</artifactId>
-        <version>${version.codehaus.flatten.plugin}</version>
-        <configuration>
-          <updatePomFile>true</updatePomFile>
-          <flattenMode>resolveCiFriendliesOnly</flattenMode>
-        </configuration>
-        <executions>
-          <execution>
-            <id>flatten-revision</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>flatten</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>flatten-revision-clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

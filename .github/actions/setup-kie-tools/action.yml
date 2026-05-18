@@ -111,16 +111,6 @@ runs:
         sed -i '' "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${{ inputs.KOGITO_VERSION }}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
         echo "::endgroup::"
 
-    - name: Prepare maven-base with .mvn/maven.config
-      id: prepare_maven_base_config
-      shell: bash
-      run: |
-        echo "::group::Prepare maven-base with .mvn/maven.config"
-        cd ${{ inputs.WORKING_DIR }}
-        mkdir -p ./packages/maven-base/.mvn
-        echo "--no-snapshot-updates" >> "./packages/maven-base/.mvn/maven.config"
-        echo "::endgroup::"
-
     - name: Run pnpm bootstrap - second time
       run: |
         echo "::group::Run pnpm bootstrap - second time"

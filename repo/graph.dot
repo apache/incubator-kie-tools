@@ -210,7 +210,6 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-base-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/sonataflow-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "sonataflow-deployment-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];

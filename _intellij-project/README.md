@@ -22,7 +22,7 @@ To make it easier for developing Java-, Maven-based packages, this folder contai
 ### Importing this project on IntelliJ IDEA
 
 After cloning `kie-tools` locally:
-1. Bootstrap the repository with `pnpm bootstrap [pnpm-filter?]` command to wire everything together and configure `.mvn/maven.config` files for all packages. You only need to do it once per clone or when you change the dependency graph on `package.json` files.
+1. Bootstrap the repository with `pnpm bootstrap [pnpm-filter?]` command to wire everything together. You only need to do it once per clone or when you change the dependency graph on `package.json` files.
 2. Build the repository in development mode with `pnpm [pnpm-filter?] build:dev` to make sure your local Maven repository (Usually `~/.m2/repository`) is populated.
 
 It's recommended to that before opening IntelliJ IDEA to make indexing faster once you do.
