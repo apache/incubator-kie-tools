@@ -30,7 +30,7 @@ import { RestProperties, REST_PROPERTIES_KEYS, REST_TASK_ICON } from "./RestServ
 export function getRestServiceTask(i18n: BpmnEditorEnvelopeI18n): CustomTask {
   return {
     id: "rest-task",
-    displayGroup: i18n.flexibleProcesses,
+    displayGroup: i18n.restService.integration,
     displayName: i18n.restService.name,
     displayDescription: i18n.restService.description,
     iconSvgElement: REST_TASK_ICON,

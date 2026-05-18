@@ -57,7 +57,7 @@ export const en: BpmnEditorEnvelopeI18n = {
   unableToOpenFile: "Unable to open file.",
   errorMessage: "Error details: ",
   restService: {
-    name: "REST Service",
+    name: "Rest Service Task",
     integration: "Integration",
     description: "Call a REST API endpoint",
     url: "URL",
