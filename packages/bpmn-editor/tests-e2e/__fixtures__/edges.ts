@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { Diagram } from "./diagram";
 import { Nodes } from "./nodes";
 
@@ -35,12 +35,9 @@ export class Edges {
 
   public async get(args: { from: string; to: string }): Promise<Locator> {
     const fromId = args.from.startsWith("_") ? args.from : await this.nodes.getId({ name: args.from });
-
     const toId = args.to.startsWith("_") ? args.to : await this.nodes.getId({ name: args.to });
 
-    await this.page.locator(".react-flow__edge").first().waitFor({ state: "attached" });
-
-    const allEdges = this.page.locator(".react-flow__edge");
+    const allEdges = this.page.getByTestId(/kie-tools--bpmn-editor--edge-[^p]/);
     const edgeCount = await allEdges.count();
 
     if (edgeCount === 1) {
@@ -52,19 +49,22 @@ export class Edges {
 
     const fromBox = await fromNode.boundingBox();
     const toBox = await toNode.boundingBox();
+    expect(fromBox).not.toBeNull();
+    expect(toBox).not.toBeNull();
 
-    if (!fromBox || !toBox) {
-      throw new Error(`Could not get bounding boxes for nodes ${fromId} and ${toId}`);
-    }
-
-    const toCenter = { x: toBox.x + toBox.width / 2, y: toBox.y + toBox.height / 2 };
+    const toCenter = { x: toBox!.x + toBox!.width / 2, y: toBox!.y + toBox!.height / 2 };
 
     let bestMatch: { edge: Locator; distance: number } | null = null;
 
     for (let i = 0; i < edgeCount; i++) {
       const edge = allEdges.nth(i);
+      const edgeId = await edge.getAttribute("data-testid");
 
-      const pathElement = edge.locator("path.xyflow-react-kie-diagram--edge").first();
+      if (!edgeId) continue;
+
+      const actualEdgeId = edgeId.replace("kie-tools--bpmn-editor--edge-", "");
+
+      const pathElement = this.page.getByTestId(`kie-tools--bpmn-editor--edge-path-${actualEdgeId}`);
       const pathBox = await pathElement.boundingBox();
 
       if (!pathBox) continue;
@@ -79,13 +79,8 @@ export class Edges {
       }
     }
 
-    if (bestMatch) {
-      return bestMatch.edge;
-    }
-
-    throw new Error(
-      `Could not find edge from ${args.from} (${fromId}) to ${args.to} (${toId}). Found ${edgeCount} edges.`
-    );
+    expect(bestMatch).toBeDefined();
+    return bestMatch!.edge;
   }
 
   public async getType(args: { from: string; to: string }): Promise<EdgeType> {
@@ -98,23 +93,5 @@ export class Edges {
     const edge = await this.get(args);
     await edge.click();
     await this.diagram.get().press("Delete");
-  }
-
-  public async moveWaypoint(args: {
-    from: string;
-    to: string;
-    waypointIndex: number;
-    targetPosition: { x: number; y: number };
-  }) {
-    const edge = await this.get(args);
-    const waypoint = edge.locator(`[data-waypointindex="${args.waypointIndex}"]`);
-    await waypoint.dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-  }
-
-  public async deleteWaypoint(args: { from: string; to: string; waypointIndex: number }) {
-    const edge = await this.get(args);
-    const waypoint = edge.locator(`[data-waypointindex="${args.waypointIndex}"]`);
-    await waypoint.click({ button: "right" });
-    await this.page.getByText("Delete waypoint").click();
   }
 }

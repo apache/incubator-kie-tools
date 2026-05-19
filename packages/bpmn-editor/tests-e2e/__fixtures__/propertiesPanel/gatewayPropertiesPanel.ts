@@ -30,14 +30,13 @@ export class GatewayPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setDefaultFlow(args: { flowId: string }) {
-    const defaultFlowSelect = this.panel().locator("select").first();
-    await defaultFlowSelect.waitFor({ state: "visible" });
-    await defaultFlowSelect.selectOption(args.flowId);
+    const defaultFlowCombobox = this.panel().getByRole("combobox").first();
+    await defaultFlowCombobox.click();
+    await this.page.getByRole("option", { name: args.flowId, exact: true }).click();
   }
 
   public async getDefaultFlow(): Promise<string> {
-    const defaultFlowSelect = this.panel().locator("select").first();
-    await defaultFlowSelect.waitFor({ state: "visible" });
+    const defaultFlowSelect = this.panel().getByRole("combobox").first();
     return await defaultFlowSelect.inputValue();
   }
 }

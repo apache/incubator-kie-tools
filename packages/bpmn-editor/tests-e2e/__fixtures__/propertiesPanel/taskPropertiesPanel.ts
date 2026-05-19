@@ -31,46 +31,39 @@ export class TaskPropertiesPanel extends PropertiesPanelBase {
 
   public async setActors(args: { actors: string }) {
     const actorsInput = this.panel().getByPlaceholder(/Enter actors/i);
-    await actorsInput.waitFor({ state: "visible" });
     await actorsInput.fill(args.actors);
     await this.page.keyboard.press("Enter");
   }
 
   public async getActors(): Promise<string> {
     const actorsInput = this.panel().getByPlaceholder(/Enter actors/i);
-    await actorsInput.waitFor({ state: "visible" });
     return (await actorsInput.inputValue()) || "";
   }
 
   public async setGroups(args: { groups: string }) {
     const groupsInput = this.panel().getByPlaceholder(/Enter groups/i);
-    await groupsInput.waitFor({ state: "visible" });
     await groupsInput.fill(args.groups);
     await this.page.keyboard.press("Enter");
   }
 
   public async getGroups(): Promise<string> {
     const groupsInput = this.panel().getByPlaceholder(/Enter groups/i);
-    await groupsInput.waitFor({ state: "visible" });
     return (await groupsInput.inputValue()) || "";
   }
 
   public async setTaskName(args: { taskName: string }) {
     const taskNameInput = this.panel().getByPlaceholder(/Enter task name/i);
-    await taskNameInput.waitFor({ state: "visible" });
     await taskNameInput.fill(args.taskName);
     await this.page.keyboard.press("Enter");
   }
 
   public async getTaskName(): Promise<string> {
     const taskNameInput = this.panel().getByPlaceholder(/Enter task name/i);
-    await taskNameInput.waitFor({ state: "visible" });
     return (await taskNameInput.inputValue()) || "";
   }
 
   public async setImplementation(args: { implementation: string }) {
     const implButton = this.panel().getByRole("button", { name: args.implementation, exact: true });
-    await implButton.waitFor({ state: "visible" });
     await implButton.click();
   }
 
@@ -91,63 +84,50 @@ export class TaskPropertiesPanel extends PropertiesPanelBase {
 
   public async setInterface(args: { interfaceName: string }) {
     const interfaceInput = this.panel().getByPlaceholder(/Enter an interface/i);
-    await interfaceInput.waitFor({ state: "visible" });
     await interfaceInput.fill(args.interfaceName);
     await this.page.keyboard.press("Enter");
   }
 
   public async setOperation(args: { operationName: string }) {
     const operationInput = this.panel().getByPlaceholder(/Enter an operation/i);
-    await operationInput.waitFor({ state: "visible" });
     await operationInput.fill(args.operationName);
     await this.page.keyboard.press("Enter");
   }
 
   public async setScript(args: { script: string }) {
     const scriptTextarea = this.panel().getByPlaceholder(/Enter code/i);
-    await scriptTextarea.waitFor({ state: "visible" });
     await scriptTextarea.fill(args.script);
     await scriptTextarea.blur();
   }
 
   public async setRuleFlowGroup(args: { ruleFlowGroup: string }) {
     const drlButton = this.panel().getByRole("button", { name: "DRL", exact: true });
-    await drlButton.waitFor({ state: "visible" });
     await drlButton.click();
 
     const ruleFlowInput = this.panel().getByPlaceholder(/Enter a Rule flow group/i);
-    await ruleFlowInput.waitFor({ state: "visible" });
     await ruleFlowInput.fill(args.ruleFlowGroup);
     await ruleFlowInput.blur();
   }
 
   public async setDmnModel(args: { relativePath: string; namespace: string; modelName: string }) {
     const dmnButton = this.panel().getByRole("button", { name: "DMN", exact: true });
-    await dmnButton.waitFor({ state: "visible" });
     await dmnButton.click();
 
     const relativePathInput = this.panel().getByPlaceholder(/Enter a relative path/i);
-    await relativePathInput.waitFor({ state: "visible" });
     await relativePathInput.fill(args.relativePath);
     await relativePathInput.blur();
 
     const namespaceInput = this.panel().getByLabel("DMN model namespace");
-    await namespaceInput.waitFor({ state: "visible" });
     await namespaceInput.fill(args.namespace);
     await namespaceInput.blur();
 
     const modelNameInput = this.panel().getByLabel("DMN model name", { exact: true });
-    await modelNameInput.waitFor({ state: "visible" });
     await modelNameInput.fill(args.modelName);
     await modelNameInput.blur();
   }
 
   public async setMultiInstance(args: { type: "parallel" | "sequential" }) {
-    const multiInstanceCheckbox = this.panel().locator(
-      'input[id="kie-bpmn-editor--properties-panel--multi-instance-checkbox"]'
-    );
-    await multiInstanceCheckbox.waitFor({ state: "visible" });
-
+    const multiInstanceCheckbox = this.panel().getByRole("checkbox", { name: /multi-instance/i });
     const isChecked = await multiInstanceCheckbox.isChecked();
     if (!isChecked) {
       await multiInstanceCheckbox.click();
@@ -157,23 +137,18 @@ export class TaskPropertiesPanel extends PropertiesPanelBase {
       name: args.type === "parallel" ? "Parallel" : "Sequential",
       exact: true,
     });
-    await executionModeButton.waitFor({ state: "visible" });
     await executionModeButton.click();
   }
 
   public async setCollectionExpression(args: { expression: string }) {
-    const collectionFormGroup = this.panel()
-      .locator("div.pf-v5-c-form__group")
-      .filter({ hasText: /Collection input/i });
-    const collectionInput = collectionFormGroup.locator('input[type="text"]').first();
-    await collectionInput.waitFor({ state: "visible" });
-    await collectionInput.fill(args.expression);
+    const collectionInput = this.panel().getByRole("combobox").first();
+    await collectionInput.click();
+    await this.page.keyboard.type(args.expression);
     await this.page.keyboard.press("Enter");
   }
 
   public async setCompletionCondition(args: { condition: string }) {
     const conditionTextarea = this.panel().getByLabel("Completion condition");
-    await conditionTextarea.waitFor({ state: "visible" });
     await conditionTextarea.fill(args.condition);
     await conditionTextarea.blur();
   }
@@ -181,60 +156,53 @@ export class TaskPropertiesPanel extends PropertiesPanelBase {
   public async openDataMappingModal() {
     const dataMappingSection = this.panel().getByLabel(/⇆Data mapping/i);
     const dataMappingButton = dataMappingSection.getByRole("button", { name: "Manage" });
-    await dataMappingButton.waitFor({ state: "visible" });
     await dataMappingButton.click();
   }
 
   public async closeDataMappingModal() {
-    const saveButton = this.page.getByRole("button", { name: "Save" });
+    const saveButton = this.page.getByRole("button", { name: /save/i });
     await saveButton.click();
   }
 
   public async addDataInputInModal(args: { name: string }) {
     const addInputButton = this.page.getByRole("button", { name: /Add Input data mapping/i });
-    const isVisible = await addInputButton.isVisible().catch(() => false);
+    const buttonCount = await addInputButton.count();
+    const isVisible = buttonCount > 0 ? await addInputButton.isVisible() : false;
 
     if (isVisible) {
       await addInputButton.click();
     } else {
-      const inputsSection = this.page
-        .locator("div")
-        .filter({ hasText: /^Inputs$/ })
-        .first()
-        .locator("..");
+      const inputsSection = this.page.getByText("Inputs", { exact: true });
       const plusButton = inputsSection
-        .locator("button")
-        .filter({ has: this.page.locator("svg") })
+        .locator("..")
+        .getByRole("button", { name: "" })
+        .filter({ has: this.page.getByRole("img", { includeHidden: true }) })
         .first();
-      await plusButton.waitFor({ state: "visible" });
       await plusButton.click();
     }
 
-    const nameInput = this.page.locator('input[placeholder*="name"]').last();
+    const nameInput = this.page.getByPlaceholder(/name/i).last();
     await nameInput.fill(args.name);
   }
 
   public async addDataOutputInModal(args: { name: string }) {
     const addOutputButton = this.page.getByRole("button", { name: /Add Output data mapping/i });
-    const isVisible = await addOutputButton.isVisible().catch(() => false);
+    const buttonCount = await addOutputButton.count();
+    const isVisible = buttonCount > 0 ? await addOutputButton.isVisible() : false;
 
     if (isVisible) {
       await addOutputButton.click();
     } else {
-      const outputsSection = this.page
-        .locator("div")
-        .filter({ hasText: /^Outputs$/ })
-        .first()
-        .locator("..");
+      const outputsSection = this.page.getByText("Outputs", { exact: true });
       const plusButton = outputsSection
-        .locator("button")
-        .filter({ has: this.page.locator("svg") })
+        .locator("..")
+        .getByRole("button", { name: "" })
+        .filter({ has: this.page.getByRole("img", { includeHidden: true }) })
         .first();
-      await plusButton.waitFor({ state: "visible" });
       await plusButton.click();
     }
 
-    const nameInput = this.page.locator('input[placeholder*="name"]').last();
+    const nameInput = this.page.getByPlaceholder(/name/i).last();
     await nameInput.fill(args.name);
   }
 
@@ -251,7 +219,7 @@ export class TaskPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setAsync(args: { isAsync: boolean }) {
-    const asyncCheckbox = this.panel().locator('input[type="checkbox"][id*="async"]');
+    const asyncCheckbox = this.panel().getByRole("checkbox", { name: /async/i });
     const isChecked = await asyncCheckbox.isChecked();
 
     if (isChecked !== args.isAsync) {

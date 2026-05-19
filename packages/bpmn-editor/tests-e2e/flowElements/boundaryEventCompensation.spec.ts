@@ -38,7 +38,7 @@ test.describe("Compensation Boundary Events", () => {
     expect(boundaryEvent.__$$element).toBe("boundaryEvent");
     expect(boundaryEvent["@_attachedToRef"]).toBeDefined();
 
-    const eventNode = page.getByTestId("kie-tools--bpmn-editor--node-intermediate-catch-event").first();
+    const eventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
     await eventNode.click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
@@ -70,7 +70,7 @@ test.describe("Compensation Boundary Events", () => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-    const eventNode = page.getByTestId("kie-tools--bpmn-editor--node-intermediate-catch-event").first();
+    const eventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
     await expect(eventNode).toBeAttached();
     await eventNode.click();
 
@@ -91,22 +91,22 @@ test.describe("Compensation Boundary Events", () => {
 
     await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 300 } });
 
-    const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").last();
+    const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).last();
     await expect(startEvent).toBeAttached();
 
     const box = await startEvent.boundingBox();
-    if (!box) throw new Error("Start Event bounding box not found");
+    expect(box).not.toBeNull();
 
-    await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+    await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
     const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
     await expect(addSequenceFlowHandle).toBeVisible();
 
     const eventBox = await eventNode.boundingBox();
-    if (!eventBox) throw new Error("Boundary Event bounding box not found");
+    expect(eventBox).not.toBeNull();
 
     await addSequenceFlowHandle.dragTo(diagram.get(), {
-      targetPosition: { x: eventBox.x + eventBox.width / 2, y: eventBox.y + eventBox.height / 2 },
+      targetPosition: { x: eventBox!.x + eventBox!.width / 2, y: eventBox!.y + eventBox!.height / 2 },
     });
 
     const updatedProcess = await jsonModel.getProcess();
@@ -135,7 +135,7 @@ test.describe("Compensation Boundary Events", () => {
     expect(boundaryEvent).toBeDefined();
     expect(boundaryEvent["@_attachedToRef"]).toBe(subProcessElement["@_id"]);
 
-    const eventNode = page.getByTestId("kie-tools--bpmn-editor--node-intermediate-catch-event").first();
+    const eventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
     await eventNode.click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});

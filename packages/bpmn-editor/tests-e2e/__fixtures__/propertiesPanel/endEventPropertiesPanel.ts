@@ -49,7 +49,8 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.messageName);
 
     const createOption = this.page.getByText(`Create Message "${args.messageName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.messageName, exact: true }).click();
@@ -63,7 +64,8 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.signalName);
 
     const createOption = this.page.getByText(`Create Signal "${args.signalName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.signalName, exact: true }).click();
@@ -72,7 +74,6 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
 
   public async getSignalName(): Promise<string> {
     const signalInput = this.panel().getByRole("combobox").first();
-    await signalInput.waitFor({ state: "visible" });
     return (await signalInput.inputValue()) || "";
   }
 
@@ -83,7 +84,8 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.errorName);
 
     const createOption = this.page.getByText(`Create Error "${args.errorName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.errorName, exact: true }).click();
@@ -91,8 +93,8 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
 
     if (args.errorCode) {
       const errorCodeInput = this.panel().getByPlaceholder("Error code");
-      const isVisible = await errorCodeInput.isVisible().catch(() => false);
-      if (isVisible) {
+      const inputCount = await errorCodeInput.count();
+      if (inputCount > 0 && (await errorCodeInput.isVisible())) {
         await errorCodeInput.fill(args.errorCode);
         await errorCodeInput.blur();
       }
@@ -101,14 +103,13 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
 
   public async getErrorName(): Promise<string> {
     const errorInput = this.panel().getByRole("combobox").first();
-    await errorInput.waitFor({ state: "visible" });
     return (await errorInput.inputValue()) || "";
   }
 
   public async getErrorCode(): Promise<string> {
     const errorCodeInput = this.panel().getByPlaceholder("Error code");
-    const isVisible = await errorCodeInput.isVisible().catch(() => false);
-    if (!isVisible) return "";
+    const inputCount = await errorCodeInput.count();
+    if (inputCount === 0 || !(await errorCodeInput.isVisible())) return "";
     return (await errorCodeInput.inputValue()) || "";
   }
 
@@ -123,7 +124,8 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.escalationName);
 
     const createOption = this.page.getByText(`Create Escalation "${args.escalationName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.escalationName, exact: true }).click();
@@ -131,8 +133,8 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
 
     if (args.escalationCode) {
       const escalationCodeInput = this.panel().getByPlaceholder("Escalation code");
-      const isVisible = await escalationCodeInput.isVisible().catch(() => false);
-      if (isVisible) {
+      const inputCount = await escalationCodeInput.count();
+      if (inputCount > 0 && (await escalationCodeInput.isVisible())) {
         await escalationCodeInput.fill(args.escalationCode);
         await escalationCodeInput.blur();
       }
@@ -141,14 +143,13 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
 
   public async getEscalationName(): Promise<string> {
     const escalationInput = this.panel().getByRole("combobox").first();
-    await escalationInput.waitFor({ state: "visible" });
     return (await escalationInput.inputValue()) || "";
   }
 
   public async getEscalationCode(): Promise<string> {
     const escalationCodeInput = this.panel().getByPlaceholder("Escalation code");
-    const isVisible = await escalationCodeInput.isVisible().catch(() => false);
-    if (!isVisible) return "";
+    const inputCount = await escalationCodeInput.count();
+    if (inputCount === 0 || !(await escalationCodeInput.isVisible())) return "";
     return (await escalationCodeInput.inputValue()) || "";
   }
 
@@ -158,6 +159,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
 
   public async isCompensationDefinitionSet(): Promise<boolean> {
     const compensationSection = this.panel().getByText("Compensation");
-    return await compensationSection.isVisible().catch(() => false);
+    const sectionCount = await compensationSection.count();
+    return sectionCount > 0 ? await compensationSection.isVisible() : false;
   }
 }

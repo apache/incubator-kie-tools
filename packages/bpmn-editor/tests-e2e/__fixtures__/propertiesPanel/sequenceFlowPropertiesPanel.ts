@@ -31,7 +31,6 @@ export class SequenceFlowPropertiesPanel extends PropertiesPanelBase {
 
   public async setConditionExpression(args: { expression: string }) {
     const expressionInput = this.panel().getByPlaceholder("Enter code...");
-    await expressionInput.waitFor({ state: "visible" });
     await expressionInput.fill(args.expression);
     await expressionInput.blur();
   }
@@ -42,19 +41,18 @@ export class SequenceFlowPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setPriority(args: { priority: string }) {
-    const priorityInput = this.panel().locator('input[type="text"]').first();
-    await priorityInput.waitFor({ state: "visible" });
+    const priorityInput = this.panel().getByRole("textbox").first();
     await priorityInput.fill(args.priority);
     await priorityInput.blur();
   }
 
   public async getPriority(): Promise<string> {
-    const priorityInput = this.panel().locator('input[type="text"]').first();
+    const priorityInput = this.panel().getByRole("textbox").first();
     return await priorityInput.inputValue();
   }
 
   public async setImmediate(args: { immediate: boolean }) {
-    const immediateCheckbox = this.panel().locator('input[type="checkbox"][id*="immediate"]');
+    const immediateCheckbox = this.panel().getByRole("checkbox", { name: /immediate/i });
     const isChecked = await immediateCheckbox.isChecked();
 
     if (isChecked !== args.immediate) {
@@ -63,7 +61,7 @@ export class SequenceFlowPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async getImmediate(): Promise<boolean> {
-    const immediateCheckbox = this.panel().locator('input[type="checkbox"][id*="immediate"]');
+    const immediateCheckbox = this.panel().getByRole("checkbox", { name: /immediate/i });
     return await immediateCheckbox.isChecked();
   }
 }

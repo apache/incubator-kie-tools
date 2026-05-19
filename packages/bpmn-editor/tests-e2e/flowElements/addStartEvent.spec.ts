@@ -36,14 +36,14 @@ async function setupEventSubProcess(palette: Palette, nodes: Nodes, page: Page) 
   await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
 
   const box = await subProcess.boundingBox();
-  if (!box) throw new Error("Sub-Process not visible");
+  expect(box).not.toBeNull();
 
   await palette.dragNewNode({
     type: NodeType.START_EVENT,
-    targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
+    targetPosition: { x: box!.x + box!.width / 2 - 50, y: box!.y + box!.height / 2 + 50 },
   });
 
-  const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+  const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
   await expect(startEvent).toBeVisible();
 
   return startEvent;
@@ -56,14 +56,14 @@ async function setupRegularSubProcess(palette: Palette, nodes: Nodes, page: Page
   await expect(subProcess).toBeAttached();
 
   const box = await subProcess.boundingBox();
-  if (!box) throw new Error("Sub-Process not visible");
+  expect(box).not.toBeNull();
 
   await palette.dragNewNode({
     type: NodeType.START_EVENT,
-    targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
+    targetPosition: { x: box!.x + box!.width / 2 - 50, y: box!.y + box!.height / 2 + 50 },
   });
 
-  const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+  const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
   await expect(startEvent).toBeVisible();
 
   return startEvent;
@@ -77,7 +77,7 @@ test.describe("Add node - Start Event", () => {
       const startEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(startEvent.__$$element).toBe("startEvent");
 
-      const startEventNode = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEventNode).toBeAttached();
     });
 
@@ -91,8 +91,8 @@ test.describe("Add node - Start Event", () => {
 
       await diagram.resetFocus();
 
-      const firstStartEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
-      const secondStartEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").nth(1);
+      const firstStartEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+      const secondStartEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).nth(1);
       await expect(firstStartEvent).toBeAttached();
       await expect(secondStartEvent).toBeAttached();
     });
@@ -121,7 +121,7 @@ test.describe("Add node - Start Event", () => {
       }) => {
         await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 300, y: 300 } });
 
-        const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+        const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
         await expect(startEvent).toBeVisible();
 
         await nodes.morphNode({ nodeLocator: startEvent, targetMorphType: morphType });
@@ -147,7 +147,7 @@ test.describe("Add node - Start Event", () => {
     }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 300, y: 300 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeVisible();
 
       await nodes.openMorphingPanel({ nodeLocator: startEvent });
@@ -253,13 +253,13 @@ test.describe("Add node - Start Event", () => {
     test("should add connected Task node from Start Event", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeVisible();
 
       const box = await startEvent.boundingBox();
-      if (!box) throw new Error("Start Event bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addTaskHandle = startEvent.getByTitle("Add Task");
       await expect(addTaskHandle).toBeVisible();
@@ -273,47 +273,56 @@ test.describe("Add node - Start Event", () => {
     test("should add connected Gateway node from Start Event", async ({ diagram, palette, page }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeVisible();
 
       const box = await startEvent.boundingBox();
-      if (!box) throw new Error("Start Event bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addGatewayHandle = startEvent.getByTitle("Add Gateway");
       await expect(addGatewayHandle).toBeVisible();
 
       await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+      const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
       await expect(gateway).toBeAttached();
     });
 
-    test("should create sequence flow from Start Event to Sub-process", async ({ diagram, palette, page, edges }) => {
+    test("should create sequence flow from Start Event to Sub-process", async ({
+      diagram,
+      palette,
+      page,
+      edges,
+      nodes,
+    }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 350, y: 100 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeVisible();
       const startEventId = (await startEvent.getAttribute("data-nodehref")) ?? "";
 
-      const subProcess = page.locator('[data-nodelabel="New Sub-process"]').first();
+      const subProcess = await nodes.get({ name: "New Sub-process" });
       await expect(subProcess).toBeAttached();
 
       const box = await startEvent.boundingBox();
-      if (!box) throw new Error("Start Event bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
       const subProcessBox = await subProcess.boundingBox();
-      if (!subProcessBox) throw new Error("Sub-process bounding box not found");
+      expect(subProcessBox).not.toBeNull();
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: subProcessBox.x + subProcessBox.width / 2, y: subProcessBox.y + subProcessBox.height / 2 },
+        targetPosition: {
+          x: subProcessBox!.x + subProcessBox!.width / 2,
+          y: subProcessBox!.y + subProcessBox!.height / 2,
+        },
       });
 
       const edge = await edges.get({ from: startEventId, to: "New Sub-process" });
@@ -325,7 +334,7 @@ test.describe("Add node - Start Event", () => {
     test("should delete start event", async ({ palette, jsonModel, page }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 300, y: 300 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeVisible();
       await startEvent.click();
       await page.keyboard.press("Delete");
@@ -339,22 +348,23 @@ test.describe("Add node - Start Event", () => {
     test("should move start event to new position", async ({ palette, page, diagram }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 300, y: 300 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeAttached();
       await startEvent.scrollIntoViewIfNeeded();
 
       const startEventBox = await startEvent.boundingBox();
-      if (!startEventBox) throw new Error("Start Event bounding box not found");
+      expect(startEventBox).not.toBeNull();
 
       await startEvent.dragTo(diagram.get(), {
-        sourcePosition: { x: startEventBox.width / 2, y: startEventBox.height / 2 },
+        sourcePosition: { x: startEventBox!.width / 2, y: startEventBox!.height / 2 },
         targetPosition: { x: 500, y: 400 },
         force: true,
       });
 
       const boxAfter = await startEvent.boundingBox();
-      expect(boxAfter?.x).not.toBe(startEventBox.x);
-      expect(boxAfter?.y).not.toBe(startEventBox.y);
+      expect(boxAfter).not.toBeNull();
+      expect(boxAfter!.x).not.toBe(startEventBox!.x);
+      expect(boxAfter!.y).not.toBe(startEventBox!.y);
     });
   });
 });

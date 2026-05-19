@@ -64,19 +64,17 @@ test.describe("Add Data Object", () => {
     await dataObject.scrollIntoViewIfNeeded();
 
     const dataObjectBox = await dataObject.boundingBox();
-    if (!dataObjectBox) {
-      throw new Error("Data Object bounding box not found");
-    }
+    expect(dataObjectBox).not.toBeNull();
 
     await dataObject.dragTo(diagram.get(), {
-      sourcePosition: { x: dataObjectBox.width / 2, y: dataObjectBox.height / 2 },
+      sourcePosition: { x: dataObjectBox!.width / 2, y: dataObjectBox!.height / 2 },
       targetPosition: { x: 500, y: 400 },
       force: true,
     });
 
     const boxAfter = await dataObject.boundingBox();
-
-    expect(boxAfter?.x).not.toBe(dataObjectBox?.x);
-    expect(boxAfter?.y).not.toBe(dataObjectBox?.y);
+    expect(boxAfter).not.toBeNull();
+    expect(boxAfter!.x).not.toBe(dataObjectBox?.x);
+    expect(boxAfter!.y).not.toBe(dataObjectBox?.y);
   });
 });

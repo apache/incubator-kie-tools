@@ -56,20 +56,18 @@ test.describe("Add Lane", () => {
       await lane.scrollIntoViewIfNeeded();
 
       const laneBox = await lane.boundingBox();
-      if (!laneBox) {
-        throw new Error("Lane bounding box not found");
-      }
+      expect(laneBox).not.toBeNull();
 
       await lane.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: laneBox.height / 2 },
+        sourcePosition: { x: 20, y: laneBox!.height / 2 },
         targetPosition: { x: 500, y: 400 },
         force: true,
       });
 
       const boxAfter = await lane.boundingBox();
-
-      expect(boxAfter?.x).not.toBe(laneBox?.x);
-      expect(boxAfter?.y).not.toBe(laneBox?.y);
+      expect(boxAfter).not.toBeNull();
+      expect(boxAfter!.x).not.toBe(laneBox?.x);
+      expect(boxAfter!.y).not.toBe(laneBox?.y);
     });
 
     test("should rename lane", async ({ palette, nodes, jsonModel, page }) => {

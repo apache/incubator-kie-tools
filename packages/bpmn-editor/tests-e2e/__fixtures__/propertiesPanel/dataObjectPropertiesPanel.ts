@@ -34,7 +34,8 @@ export class DataObjectPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.itemSubjectRef);
 
     const createOption = this.page.getByText(`Create Data Type "${args.itemSubjectRef}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.itemSubjectRef, exact: true }).click();

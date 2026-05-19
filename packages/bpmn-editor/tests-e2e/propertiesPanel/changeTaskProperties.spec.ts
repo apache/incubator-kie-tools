@@ -89,7 +89,7 @@ test.describe("Change Properties - User Task", () => {
   test("should set async flag on User Task", async ({ taskPropertiesPanel, page }) => {
     await taskPropertiesPanel.setAsync({ isAsync: true });
 
-    const asyncCheckbox = page.locator('input[type="checkbox"][id*="async"]');
+    const asyncCheckbox = page.getByRole("checkbox", { name: /async/i });
     await expect(asyncCheckbox).toBeChecked();
   });
 });

@@ -39,7 +39,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setInterrupting(args: { isInterrupting: boolean }) {
-    const checkbox = this.panel().locator('input[id="cancel-activity"]');
+    const checkbox = this.panel().getByRole("checkbox", { name: /interrupting/i });
     const isChecked = await checkbox.isChecked();
     if (isChecked !== args.isInterrupting) {
       await checkbox.click();
@@ -47,12 +47,12 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async getInterrupting(): Promise<boolean> {
-    const checkbox = this.panel().locator('input[id="cancel-activity"]');
+    const checkbox = this.panel().getByRole("checkbox", { name: /interrupting/i });
     return await checkbox.isChecked();
   }
 
   public async isInterruptingVisible(): Promise<boolean> {
-    const checkbox = this.panel().locator('input[id="cancel-activity"]');
+    const checkbox = this.panel().getByRole("checkbox", { name: /interrupting/i });
     return await checkbox.isVisible();
   }
 
@@ -72,11 +72,9 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     const { label, placeholder } = timerTypeMap[args.type];
 
     const radioButton = this.panel().getByLabel(label);
-    await radioButton.waitFor({ state: "visible" });
     await radioButton.click();
 
-    const valueInput = this.panel().locator(`input[placeholder*="${placeholder}"]`);
-    await valueInput.waitFor({ state: "visible" });
+    const valueInput = this.panel().getByPlaceholder(new RegExp(placeholder, "i"));
     await valueInput.fill(args.value);
     await valueInput.blur();
   }
@@ -100,8 +98,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
       placeholder = "time cycle";
     }
 
-    const valueInput = this.panel().locator(`input[placeholder*="${placeholder}"]`);
-    await valueInput.waitFor({ state: "visible" });
+    const valueInput = this.panel().getByPlaceholder(new RegExp(placeholder, "i"));
     const value = (await valueInput.inputValue()) || "";
 
     return { type, value };
@@ -114,7 +111,8 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.messageName);
 
     const createOption = this.page.getByText(`Create Message "${args.messageName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.messageName, exact: true }).click();
@@ -128,7 +126,8 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.signalName);
 
     const createOption = this.page.getByText(`Create Signal "${args.signalName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.signalName, exact: true }).click();
@@ -138,15 +137,13 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   public async setConditionalExpression(args: { expression: string; startEventLocator: Locator }) {
     await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Conditional" });
 
-    const expressionInput = this.panel().locator("textarea").first();
-    await expressionInput.waitFor({ state: "visible" });
+    const expressionInput = this.panel().getByRole("textbox").first();
     await expressionInput.fill(args.expression);
     await expressionInput.blur();
   }
 
   public async getConditionalExpression(): Promise<string> {
-    const expressionInput = this.panel().locator("textarea").first();
-    await expressionInput.waitFor({ state: "visible" });
+    const expressionInput = this.panel().getByRole("textbox").first();
     return (await expressionInput.inputValue()) || "";
   }
 
@@ -157,7 +154,8 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.errorName);
 
     const createOption = this.page.getByText(`Create Error "${args.errorName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.errorName, exact: true }).click();
@@ -166,7 +164,6 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
 
   public async getErrorName(): Promise<string> {
     const errorInput = this.panel().getByRole("combobox").first();
-    await errorInput.waitFor({ state: "visible" });
     return (await errorInput.inputValue()) || "";
   }
 
@@ -177,7 +174,8 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.escalationName);
 
     const createOption = this.page.getByText(`Create Escalation "${args.escalationName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.escalationName, exact: true }).click();
@@ -186,7 +184,6 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
 
   public async getEscalationName(): Promise<string> {
     const escalationInput = this.panel().getByRole("combobox").first();
-    await escalationInput.waitFor({ state: "visible" });
     return (await escalationInput.inputValue()) || "";
   }
 
@@ -195,8 +192,8 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async isCompensationDefinitionSet(): Promise<boolean> {
-    return await this.panel()
-      .isVisible()
-      .catch(() => false);
+    const panel = this.panel();
+    const panelCount = await panel.count();
+    return panelCount > 0 ? await panel.isVisible() : false;
   }
 }

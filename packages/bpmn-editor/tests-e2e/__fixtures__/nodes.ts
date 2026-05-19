@@ -68,7 +68,7 @@ export class Nodes {
   ) {}
 
   public get(args: { name: string }) {
-    return this.page.locator(`div[data-nodelabel="${args.name}"]`);
+    return this.page.getByTestId(/kie-tools--bpmn-editor--node-/).and(this.page.getByLabel(args.name, { exact: true }));
   }
 
   public async getId(args: { name: string }): Promise<string> {
@@ -76,12 +76,25 @@ export class Nodes {
   }
 
   public getByType(type: NodeType) {
-    return this.page.locator(`div[data-nodetype="${type}"]`);
+    const nodeTypeMap: Record<NodeType, RegExp> = {
+      [NodeType.START_EVENT]: /^kie-tools--bpmn-editor--node-start-event-/,
+      [NodeType.INTERMEDIATE_CATCH_EVENT]: /^kie-tools--bpmn-editor--node-intermediate-catch-event-/,
+      [NodeType.INTERMEDIATE_THROW_EVENT]: /^kie-tools--bpmn-editor--node-intermediate-throw-event-/,
+      [NodeType.END_EVENT]: /^kie-tools--bpmn-editor--node-end-event-/,
+      [NodeType.TASK]: /^kie-tools--bpmn-editor--node-task-/,
+      [NodeType.CALL_ACTIVITY]: /^kie-tools--bpmn-editor--node-task-/, // Call activities are tasks
+      [NodeType.SUB_PROCESS]: /^kie-tools--bpmn-editor--node-sub-process-/,
+      [NodeType.GATEWAY]: /^kie-tools--bpmn-editor--node-gateway-/,
+      [NodeType.DATA_OBJECT]: /^kie-tools--bpmn-editor--node-data-object-/,
+      [NodeType.TEXT_ANNOTATION]: /^kie-tools--bpmn-editor--node-text-annotation-/,
+      [NodeType.GROUP]: /^kie-tools--bpmn-editor--node-group-/,
+      [NodeType.LANE]: /^kie-tools--bpmn-editor--node-lane-/,
+    };
+    return this.page.getByTestId(nodeTypeMap[type]);
   }
 
   public async getIdByType(type: NodeType): Promise<string> {
     const node = this.getByType(type).first();
-    await node.waitFor({ state: "attached" });
     return (await node.getAttribute("data-nodehref")) ?? "";
   }
 
@@ -140,7 +153,8 @@ export class Nodes {
       node = this.get({ name: args.from });
     }
 
-    const isGateway = await node.evaluate((el) => el.classList.contains("kie-bpmn-editor--gateway-node"));
+    const testId = await node.getAttribute("data-testid");
+    const isGateway = testId?.startsWith("kie-tools--bpmn-editor--node-gateway-") ?? false;
     if (isGateway) {
       const box = await node.boundingBox();
       if (box) {
@@ -152,19 +166,14 @@ export class Nodes {
 
     await node.getByTitle(addNodeTitle).dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
 
-    if (nodeName === "") {
-      await this.page.waitForSelector(`div[data-nodetype="${args.type}"]`, { state: "attached" });
-    } else {
-      await this.page.waitForSelector(`div[data-nodelabel="${nodeName}"]`, { state: "attached" });
-    }
-
     if (args.thenRenameTo) {
       await this.rename({ current: nodeName, new: args.thenRenameTo });
     }
   }
 
   public getById(args: { id: string }) {
-    return this.page.locator(`div[data-nodehref="${args.id}"]`);
+    const escapedId = args.id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return this.page.getByTestId(new RegExp(`^kie-tools--bpmn-editor--node-.+-${escapedId}$`));
   }
 
   public async selectById(args: { id: string; position?: NodePosition }) {
@@ -175,7 +184,8 @@ export class Nodes {
         : undefined;
     await node.click({ position: coordinates, force: true });
 
-    const isGateway = await node.evaluate((el) => el.classList.contains("kie-bpmn-editor--gateway-node"));
+    const testId = await node.getAttribute("data-testid");
+    const isGateway = testId?.startsWith("kie-tools--bpmn-editor--node-gateway-") ?? false;
 
     if (!isGateway) {
       await this.waitForNodeToBeFocused({ id: args.id });
@@ -193,14 +203,12 @@ export class Nodes {
     if (await textbox.isVisible()) {
       await textbox.fill(args.newName);
       await this.diagram.get().press("Enter");
-      await this.page.locator(`[data-nodelabel="${args.newName}"]`).waitFor({ state: "attached" });
       return;
     }
 
     await this.page.keyboard.press("Enter");
     await this.page.keyboard.type(args.newName);
     await this.diagram.resetFocus();
-    await this.page.locator(`[data-nodelabel="${args.newName}"]`).waitFor({ state: "attached" });
   }
 
   public async rename(args: { current: string; new: string }) {
@@ -217,13 +225,14 @@ export class Nodes {
     const node = this.get({ name: args.nodeName });
     await this.select({ name: args.nodeName, position: NodePosition.CENTER });
 
-    const resizeHandle = node.locator('[data-handlepos="right"]').first();
-    const box = await resizeHandle.boundingBox();
+    const nodeBox = await node.boundingBox();
+    if (nodeBox) {
+      const handleX = nodeBox.x + nodeBox.width;
+      const handleY = nodeBox.y + nodeBox.height / 2;
 
-    if (box) {
-      await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await this.page.mouse.move(handleX, handleY);
       await this.page.mouse.down();
-      await this.page.mouse.move(box.x + box.width / 2 + args.xOffset, box.y + box.height / 2 + args.yOffset);
+      await this.page.mouse.move(handleX + args.xOffset, handleY + args.yOffset);
       await this.page.mouse.up();
     }
   }
@@ -266,11 +275,18 @@ export class Nodes {
 
   public async waitForNodeToBeFocused(args: { name?: string; id?: string }) {
     if (args.id) {
-      await this.page.waitForSelector(`div[data-nodehref="${args.id}"][data-selected="true"]`);
-    } else if (args.name !== undefined) {
-      await this.page.waitForSelector(`div[data-nodelabel="${args.name}"][data-selected="true"]`);
-    } else {
-      throw new Error("Either name or id must be provided to waitForNodeToBeFocused");
+      await this.page.waitForFunction((id) => {
+        const element = document.querySelector(`[data-nodehref="${id}"]`);
+        return element?.getAttribute("data-selected") === "true";
+      }, args.id);
+      return;
+    }
+
+    if (args.name) {
+      await this.page.waitForFunction((name) => {
+        const element = document.querySelector(`[data-nodelabel="${name}"]`);
+        return element?.getAttribute("data-selected") === "true";
+      }, args.name);
     }
   }
 
@@ -278,14 +294,13 @@ export class Nodes {
     const exact = args.exact ?? false;
 
     const box = await args.nodeLocator.boundingBox();
-    if (!box) {
-      throw new Error("Node not visible - cannot retrieve bounding box for morphing");
-    }
+    expect(box).not.toBeNull();
 
-    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await this.page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
 
     const morphingToggle = args.nodeLocator.getByRole("button", { name: /morph/i });
-    const isToggleVisible = await morphingToggle.isVisible().catch(() => false);
+    const toggleCount = await morphingToggle.count();
+    const isToggleVisible = toggleCount > 0 ? await morphingToggle.isVisible() : false;
 
     if (!isToggleVisible) {
       return;
@@ -294,10 +309,9 @@ export class Nodes {
     await morphingToggle.click({ force: true });
 
     const morphingPanel = this.page.getByTestId("kie-tools--bpmn-editor--morphing-panel");
-    await morphingPanel.waitFor({ state: "visible" });
-
     const morphingOption = morphingPanel.getByTitle(args.targetMorphType, { exact });
-    const isOptionVisible = await morphingOption.isVisible().catch(() => false);
+    const optionCount = await morphingOption.count();
+    const isOptionVisible = optionCount > 0 ? await morphingOption.isVisible() : false;
 
     if (!isOptionVisible) {
       await this.diagram.resetFocus();
@@ -309,18 +323,13 @@ export class Nodes {
 
   public async openMorphingPanel(args: { nodeLocator: Locator }): Promise<void> {
     const box = await args.nodeLocator.boundingBox();
-    if (!box) {
-      throw new Error("Node not visible - cannot retrieve bounding box for morphing panel");
-    }
+    expect(box).not.toBeNull();
 
-    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await this.page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
 
     const morphingToggle = args.nodeLocator.getByRole("button", { name: /morph/i });
     await expect(morphingToggle).toBeVisible();
     await morphingToggle.click({ force: true });
-
-    const morphingPanel = this.page.getByTestId("kie-tools--bpmn-editor--morphing-panel");
-    await morphingPanel.waitFor({ state: "visible" });
   }
 
   private async getPositionalNodeHandleCoordinates(args: {
@@ -328,23 +337,21 @@ export class Nodes {
     position: NodePosition;
   }): Promise<{ x: number; y: number }> {
     const box = await args.node.boundingBox();
-    if (!box) {
-      throw new Error("Node bounding box not found");
-    }
+    expect(box).not.toBeNull();
 
     switch (args.position) {
       case NodePosition.TOP:
-        return { x: box.width / 2, y: 5 };
+        return { x: box!.width / 2, y: 5 };
       case NodePosition.BOTTOM:
-        return { x: box.width / 2, y: box.height - 5 };
+        return { x: box!.width / 2, y: box!.height - 5 };
       case NodePosition.LEFT:
-        return { x: 5, y: box.height / 2 };
+        return { x: 5, y: box!.height / 2 };
       case NodePosition.RIGHT:
-        return { x: box.width - 5, y: box.height / 2 };
+        return { x: box!.width - 5, y: box!.height / 2 };
       case NodePosition.CENTER:
-        return { x: box.width / 2, y: box.height / 2 };
+        return { x: box!.width / 2, y: box!.height / 2 };
       case NodePosition.TOP_PADDING:
-        return { x: box.width / 2, y: 15 };
+        return { x: box!.width / 2, y: 15 };
     }
   }
 

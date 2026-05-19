@@ -216,7 +216,7 @@ export const StartEventNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          data-testid="kie-tools--bpmn-editor--node-start-event"
+          data-testid={`kie-tools--bpmn-editor--node-start-event-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--task-node ${className} kie-bpmn-editor--selected-task-node`}
@@ -224,6 +224,7 @@ export const StartEventNode = React.memo(
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={startEvent["@_name"]}
+          aria-label={startEvent["@_name"] || id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -369,7 +370,7 @@ export const IntermediateCatchEventNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          data-testid="kie-tools--bpmn-editor--node-intermediate-catch-event"
+          data-testid={`kie-tools--bpmn-editor--node-intermediate-catch-event-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--intermediate-catch-event-node ${className} kie-bpmn-editor--selected-intermediate-catch-event-node`}
@@ -377,6 +378,7 @@ export const IntermediateCatchEventNode = React.memo(
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={id}
+          aria-label={id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -519,7 +521,7 @@ export const IntermediateThrowEventNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          data-testid="kie-tools--bpmn-editor--node-intermediate-throw-event"
+          data-testid={`kie-tools--bpmn-editor--node-intermediate-throw-event-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--intermediate-throw-event-node ${className} kie-bpmn-editor--selected-intermediate-throw-event-node`}
@@ -527,6 +529,7 @@ export const IntermediateThrowEventNode = React.memo(
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={id}
+          aria-label={id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -651,7 +654,7 @@ export const EndEventNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          data-testid="kie-tools--bpmn-editor--node-end-event"
+          data-testid={`kie-tools--bpmn-editor--node-end-event-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--end-event-node ${className} kie-bpmn-editor--selected-end-event-node`}
@@ -659,6 +662,7 @@ export const EndEventNode = React.memo(
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={id}
+          aria-label={id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -795,7 +799,7 @@ export const TaskNode = React.memo(
       }
     }, [customTasks, task]);
 
-    const selectedActionIdForMorphingPanel = useMemo(() => {
+    const customTaskId = useMemo(() => {
       if (task.__$$element === "task") {
         for (const ct of customTasks ?? []) {
           if (ct.matches(task)) {
@@ -803,9 +807,12 @@ export const TaskNode = React.memo(
           }
         }
       }
-
-      return task.__$$element;
+      return undefined;
     }, [customTasks, task]);
+
+    const selectedActionIdForMorphingPanel = useMemo(() => {
+      return customTaskId ?? task.__$$element;
+    }, [customTaskId, task]);
 
     return (
       <>
@@ -822,7 +829,7 @@ export const TaskNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          data-testid="kie-tools--bpmn-editor--node-task"
+          data-testid={`kie-tools--bpmn-editor--node-task-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--task-node ${className} kie-bpmn-editor--selected-task-node`}
@@ -830,6 +837,7 @@ export const TaskNode = React.memo(
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={task["@_name"]}
+          aria-label={task["@_name"] || id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -992,7 +1000,7 @@ export const SubProcessNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          data-testid="kie-tools--bpmn-editor--node-subprocess"
+          data-testid={`kie-tools--bpmn-editor--node-sub-process-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--sub-process-node ${className} kie-bpmn-editor--selected-sub-process-node`}
@@ -1000,6 +1008,7 @@ export const SubProcessNode = React.memo(
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={subProcess["@_name"]}
+          aria-label={subProcess["@_name"] || id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1134,13 +1143,14 @@ export const GatewayNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          data-testid="kie-tools--bpmn-editor--node-gateway"
+          data-testid={`kie-tools--bpmn-editor--node-gateway-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--gateway-node ${className} kie-bpmn-editor--selected-gateway-node`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
+          aria-label={gateway["@_name"] || id}
           data-nodelabel={gateway["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -1264,6 +1274,7 @@ export const DataObjectNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
+          data-testid={`kie-tools--bpmn-editor--node-data-object-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           style={style}
@@ -1272,6 +1283,7 @@ export const DataObjectNode = React.memo(
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={dataObject["@_name"]}
+          aria-label={dataObject["@_name"] || id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1390,11 +1402,12 @@ export const GroupNode = React.memo(
         </svg>
 
         <div
-          data-testid="kie-tools--bpmn-editor--node-group"
+          data-testid={`kie-tools--bpmn-editor--node-group-${id}`}
           className={`xyflow-react-kie-diagram--node kie-bpmn-editor--group-node ${className}`}
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={id}
+          aria-label={id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1472,12 +1485,14 @@ export const LaneNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
+          data-testid={`kie-tools--bpmn-editor--node-lane-${id}`}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           className={`kie-bpmn-editor--lane-node ${className} kie-bpmn-editor--selected-lane-node`}
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={lane["@_name"]}
+          aria-label={lane["@_name"] || id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1594,7 +1609,7 @@ export const TextAnnotationNode = React.memo(
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
-          data-testid="kie-tools--bpmn-editor--node-text-annotation"
+          data-testid={`kie-tools--bpmn-editor--node-text-annotation-${id}`}
           ref={ref}
           className={`xyflow-react-kie-diagram--node kie-bpmn-editor--text-annotation-node ${className}`}
           tabIndex={-1}
@@ -1602,6 +1617,7 @@ export const TextAnnotationNode = React.memo(
           onKeyDown={triggerEditingIfEnter}
           data-nodehref={id}
           data-nodelabel={String(textAnnotation.text)}
+          aria-label={String(textAnnotation.text) || id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}

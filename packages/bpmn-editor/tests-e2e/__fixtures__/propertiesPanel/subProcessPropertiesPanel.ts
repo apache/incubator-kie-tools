@@ -34,43 +34,39 @@ export class SubProcessPropertiesPanel extends PropertiesPanelBase {
       name: args.type === "parallel" ? "Parallel" : "Sequential",
       exact: true,
     });
-    await executionModeButton.waitFor({ state: "visible" });
     await executionModeButton.click();
   }
 
   public async setCollectionExpression(args: { expression: string }) {
-    const collectionInputFormGroup = this.panel()
-      .locator("div.pf-v5-c-form__group")
-      .filter({ hasText: /Collection input/i });
-    const collectionInput = collectionInputFormGroup.getByRole("combobox").first();
+    const collectionInput = this.panel()
+      .getByRole("group")
+      .filter({ hasText: "Collection input" })
+      .getByRole("combobox")
+      .first();
     await collectionInput.click();
-    await collectionInput.clear();
-    await collectionInput.fill(args.expression);
-    await this.page.getByRole("option", { name: args.expression, exact: true }).click();
+    await this.page.keyboard.type(args.expression);
+    await this.page.keyboard.press("Enter");
   }
 
   public async setCompletionCondition(args: { condition: string }) {
     const conditionTextarea = this.panel().getByLabel("Completion condition");
-    await conditionTextarea.waitFor({ state: "visible" });
     await conditionTextarea.fill(args.condition);
     await conditionTextarea.blur();
   }
 
   public async setAdHocOrdering(args: { ordering: "Parallel" | "Sequential" }) {
-    const orderingFormGroup = this.panel()
-      .locator("div.pf-v5-c-form__group")
-      .filter({ hasText: /Ad-hoc ordering/i });
-    const orderingSelect = orderingFormGroup.locator("select").first();
-    await orderingSelect.waitFor({ state: "visible" });
+    const orderingSelect = this.panel()
+      .getByRole("group")
+      .filter({ hasText: "Ad-hoc ordering" })
+      .getByRole("combobox")
+      .first();
     await orderingSelect.selectOption(args.ordering);
   }
 
   public async setAdHocCompletionCondition(args: { condition: string }) {
-    const completionConditionFormGroup = this.panel()
-      .locator("div.pf-v5-c-form__group")
-      .filter({ hasText: /Ad-hoc completion condition/i });
-    const conditionTextarea = completionConditionFormGroup.locator("textarea").first();
-    await conditionTextarea.waitFor({ state: "visible" });
+    const conditionTextarea = this.panel()
+      .getByRole("textbox", { name: /ad-hoc completion condition/i })
+      .first();
     await conditionTextarea.fill(args.condition);
     await conditionTextarea.blur();
   }

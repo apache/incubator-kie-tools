@@ -68,13 +68,13 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 100, y: 100 },
       });
 
-      const callActivity = page.locator('[data-nodelabel="New Call Activity"]').first();
+      const callActivity = nodes.get({ name: "New Call Activity" });
       await expect(callActivity).toBeAttached();
 
       const box = await callActivity.boundingBox();
-      if (!box) throw new Error("Call Activity bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addTaskHandle = callActivity.getByTitle("Add Task");
       await expect(addTaskHandle).toBeVisible();
@@ -84,19 +84,19 @@ test.describe("Add node - Call Activity", () => {
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
 
-    test("should add connected Gateway node from Call Activity", async ({ diagram, palette, page }) => {
+    test("should add connected Gateway node from Call Activity", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
         targetPosition: { x: 100, y: 100 },
       });
 
-      const callActivity = page.locator('[data-nodelabel="New Call Activity"]').first();
+      const callActivity = nodes.get({ name: "New Call Activity" });
       await expect(callActivity).toBeAttached();
 
       const box = await callActivity.boundingBox();
-      if (!box) throw new Error("Call Activity bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addGatewayHandle = callActivity.getByTitle("Add Gateway");
       await expect(addGatewayHandle).toBeVisible();
@@ -106,7 +106,7 @@ test.describe("Add node - Call Activity", () => {
       await expect(diagram.get()).toHaveScreenshot("add-gateway-node-from-call-activity.png");
     });
 
-    test("should create sequence flow from Call Activity to End Event", async ({ diagram, palette, page }) => {
+    test("should create sequence flow from Call Activity to End Event", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
         targetPosition: { x: 100, y: 100 },
@@ -117,25 +117,25 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 300, y: 100 },
       });
 
-      const callActivity = page.locator('[data-nodelabel="New Call Activity"]').first();
+      const callActivity = nodes.get({ name: "New Call Activity" });
       await expect(callActivity).toBeAttached();
 
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEvent).toBeVisible();
 
       const box = await callActivity.boundingBox();
-      if (!box) throw new Error("Call Activity bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addSequenceFlowHandle = callActivity.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
       const endEventBox = await endEvent.boundingBox();
-      if (!endEventBox) throw new Error("End Event bounding box not found");
+      expect(endEventBox).not.toBeNull();
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: endEventBox.x + endEventBox.width / 2, y: endEventBox.y + endEventBox.height / 2 },
+        targetPosition: { x: endEventBox!.x + endEventBox!.width / 2, y: endEventBox!.y + endEventBox!.height / 2 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-end-event.png");
@@ -147,20 +147,20 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 100, y: 100 },
       });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeAttached();
 
       const box = await startEvent.boundingBox();
-      if (!box) throw new Error("Start Event bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addTaskHandle = startEvent.getByTitle("Add Task");
       await expect(addTaskHandle).toBeVisible();
 
       await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const task = page.locator('[data-nodelabel="New Task"]').first();
+      const task = nodes.get({ name: "New Task" });
       await expect(task).toBeAttached();
 
       await nodes.morphNode({ nodeLocator: task, targetMorphType: "Call activity" });
@@ -172,6 +172,7 @@ test.describe("Add node - Call Activity", () => {
       diagram,
       palette,
       page,
+      nodes,
     }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
@@ -185,34 +186,34 @@ test.describe("Add node - Call Activity", () => {
         thenRenameTo: "Second Call Activity",
       });
 
-      const firstCallActivity = page.locator('[data-nodelabel="First Call Activity"]').first();
+      const firstCallActivity = nodes.get({ name: "First Call Activity" });
       await expect(firstCallActivity).toBeAttached();
 
-      const secondCallActivity = page.locator('[data-nodelabel="Second Call Activity"]').first();
+      const secondCallActivity = nodes.get({ name: "Second Call Activity" });
       await expect(secondCallActivity).toBeAttached();
 
       const box = await firstCallActivity.boundingBox();
-      if (!box) throw new Error("First Call Activity bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addSequenceFlowHandle = firstCallActivity.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
       const secondCallActivityBox = await secondCallActivity.boundingBox();
-      if (!secondCallActivityBox) throw new Error("Second Call Activity bounding box not found");
+      expect(secondCallActivityBox).not.toBeNull();
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
         targetPosition: {
-          x: secondCallActivityBox.x + secondCallActivityBox.width / 2,
-          y: secondCallActivityBox.y + secondCallActivityBox.height / 2,
+          x: secondCallActivityBox!.x + secondCallActivityBox!.width / 2,
+          y: secondCallActivityBox!.y + secondCallActivityBox!.height / 2,
         },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-call-activity.png");
     });
 
-    test("should create sequence flow from Gateway to Call Activity", async ({ diagram, palette, page }) => {
+    test("should create sequence flow from Gateway to Call Activity", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({
         type: NodeType.GATEWAY,
         targetPosition: { x: 100, y: 100 },
@@ -223,34 +224,34 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 350, y: 100 },
       });
 
-      const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+      const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
       await expect(gateway).toBeVisible();
 
-      const callActivity = page.locator('[data-nodelabel="New Call Activity"]').first();
+      const callActivity = nodes.get({ name: "New Call Activity" });
       await expect(callActivity).toBeAttached();
 
       const box = await gateway.boundingBox();
-      if (!box) throw new Error("Gateway bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addSequenceFlowHandle = gateway.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
       const callActivityBox = await callActivity.boundingBox();
-      if (!callActivityBox) throw new Error("Call Activity bounding box not found");
+      expect(callActivityBox).not.toBeNull();
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
         targetPosition: {
-          x: callActivityBox.x + callActivityBox.width / 2,
-          y: callActivityBox.y + callActivityBox.height / 2,
+          x: callActivityBox!.x + callActivityBox!.width / 2,
+          y: callActivityBox!.y + callActivityBox!.height / 2,
         },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-gateway-to-call-activity.png");
     });
 
-    test("should create sequence flow from Call Activity to Gateway", async ({ diagram, palette, page }) => {
+    test("should create sequence flow from Call Activity to Gateway", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
         targetPosition: { x: 100, y: 100 },
@@ -261,25 +262,25 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 350, y: 100 },
       });
 
-      const callActivity = page.locator('[data-nodelabel="New Call Activity"]').first();
+      const callActivity = nodes.get({ name: "New Call Activity" });
       await expect(callActivity).toBeAttached();
 
-      const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+      const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
       await expect(gateway).toBeVisible();
 
       const box = await callActivity.boundingBox();
-      if (!box) throw new Error("Call Activity bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addSequenceFlowHandle = callActivity.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
       const gatewayBox = await gateway.boundingBox();
-      if (!gatewayBox) throw new Error("Gateway bounding box not found");
+      expect(gatewayBox).not.toBeNull();
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: gatewayBox.x + gatewayBox.width / 2, y: gatewayBox.y + gatewayBox.height / 2 },
+        targetPosition: { x: gatewayBox!.x + gatewayBox!.width / 2, y: gatewayBox!.y + gatewayBox!.height / 2 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-gateway.png");
@@ -317,60 +318,60 @@ test.describe("Add node - Call Activity", () => {
       });
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 1000, y: 150 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeAttached();
 
       const prepareData = nodes.get({ name: "Prepare Data" });
       const callActivity = nodes.get({ name: "Execute Subprocess" });
       const processResults = nodes.get({ name: "Process Results" });
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
 
       // Connect Start Event -> Prepare Data
       let box = await startEvent.boundingBox();
-      if (!box) throw new Error("Start Event not visible");
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      expect(box).not.toBeNull();
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
       const handle1 = startEvent.getByTitle("Add Sequence Flow");
       await expect(handle1).toBeVisible();
       let targetBox = await prepareData.boundingBox();
-      if (!targetBox) throw new Error("Prepare Data not visible");
+      expect(targetBox).not.toBeNull();
       await handle1.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+        targetPosition: { x: targetBox!.x + targetBox!.width / 2, y: targetBox!.y + targetBox!.height / 2 },
       });
 
       // Connect Prepare Data -> Execute Subprocess
       box = await prepareData.boundingBox();
-      if (!box) throw new Error("Prepare Data not visible");
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      expect(box).not.toBeNull();
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
       const handle2 = prepareData.getByTitle("Add Sequence Flow");
       await expect(handle2).toBeVisible();
       targetBox = await callActivity.boundingBox();
-      if (!targetBox) throw new Error("Call Activity not visible");
+      expect(targetBox).not.toBeNull();
       await handle2.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+        targetPosition: { x: targetBox!.x + targetBox!.width / 2, y: targetBox!.y + targetBox!.height / 2 },
       });
 
       // Connect Execute Subprocess -> Process Results
       box = await callActivity.boundingBox();
-      if (!box) throw new Error("Call Activity not visible");
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      expect(box).not.toBeNull();
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
       const handle3 = callActivity.getByTitle("Add Sequence Flow");
       await expect(handle3).toBeVisible();
       targetBox = await processResults.boundingBox();
-      if (!targetBox) throw new Error("Process Results not visible");
+      expect(targetBox).not.toBeNull();
       await handle3.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+        targetPosition: { x: targetBox!.x + targetBox!.width / 2, y: targetBox!.y + targetBox!.height / 2 },
       });
 
       // Connect Process Results -> End Event
       box = await processResults.boundingBox();
-      if (!box) throw new Error("Process Results not visible");
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      expect(box).not.toBeNull();
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
       const handle4 = processResults.getByTitle("Add Sequence Flow");
       await expect(handle4).toBeVisible();
       targetBox = await endEvent.boundingBox();
-      if (!targetBox) throw new Error("End Event not visible");
+      expect(targetBox).not.toBeNull();
       await handle4.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+        targetPosition: { x: targetBox!.x + targetBox!.width / 2, y: targetBox!.y + targetBox!.height / 2 },
       });
 
       await diagram.resetFocus();
@@ -401,22 +402,23 @@ test.describe("Add node - Call Activity", () => {
     test("should move call activity to new position", async ({ palette, diagram, page }) => {
       await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 300, y: 300 } });
 
-      const callActivity = page.getByTestId("kie-tools--bpmn-editor--node-task").first();
+      const callActivity = page.getByTestId(/^kie-tools--bpmn-editor--node-task-/).first();
       await expect(callActivity).toBeAttached();
       await callActivity.scrollIntoViewIfNeeded();
 
       const callActivityBox = await callActivity.boundingBox();
-      if (!callActivityBox) throw new Error("Call Activity bounding box not found");
+      expect(callActivityBox).not.toBeNull();
 
       await callActivity.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: callActivityBox.height / 2 },
+        sourcePosition: { x: 20, y: callActivityBox!.height / 2 },
         targetPosition: { x: 500, y: 400 },
         force: true,
       });
 
       const boxAfter = await callActivity.boundingBox();
-      expect(boxAfter?.x).not.toBe(callActivityBox.x);
-      expect(boxAfter?.y).not.toBe(callActivityBox.y);
+      expect(boxAfter).not.toBeNull();
+      expect(boxAfter!.x).not.toBe(callActivityBox!.x);
+      expect(boxAfter!.y).not.toBe(callActivityBox!.y);
     });
 
     test("should rename call activity", async ({ palette, nodes, jsonModel }) => {

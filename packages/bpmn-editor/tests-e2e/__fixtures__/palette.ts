@@ -31,14 +31,7 @@ export class Palette {
   public async dragNewNode(args: { type: NodeType; targetPosition: { x: number; y: number }; thenRenameTo?: string }) {
     const { title, nodeName } = this.getNewNodeProperties(args.type);
 
-    await this.page
-      .getByTestId("rf__wrapper")
-      .getByTitle(title)
-      .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-
-    if (nodeName) {
-      await this.nodes.get({ name: nodeName }).waitFor({ state: "attached" });
-    }
+    await this.page.getByTitle(title).first().dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
 
     if (args.thenRenameTo && nodeName) {
       await this.nodes.rename({ current: nodeName, new: args.thenRenameTo });
@@ -47,30 +40,28 @@ export class Palette {
 
   public async openProcessVariables() {
     const variablesPanel = this.page.getByTestId("kie-tools--bpmn-editor--variables-popover");
-    const isPanelVisible = await variablesPanel.isVisible().catch(() => false);
+    const panelCount = await variablesPanel.count();
+    const isPanelVisible = panelCount > 0 ? await variablesPanel.isVisible() : false;
 
     if (isPanelVisible) {
       return;
     }
 
     const toggle = this.page.getByTitle("Process Variables");
-    await toggle.waitFor({ state: "visible" });
     await toggle.click();
-    await variablesPanel.waitFor({ state: "visible" });
   }
 
   public async closeProcessVariables() {
     const variablesPanel = this.page.getByTestId("kie-tools--bpmn-editor--variables-popover");
-    const isPanelVisible = await variablesPanel.isVisible().catch(() => false);
+    const panelCount = await variablesPanel.count();
+    const isPanelVisible = panelCount > 0 ? await variablesPanel.isVisible() : false;
 
     if (!isPanelVisible) {
       return;
     }
 
     const toggle = this.page.getByTitle("Process Variables");
-    await toggle.waitFor({ state: "visible" });
     await toggle.click();
-    await variablesPanel.waitFor({ state: "hidden" });
   }
 
   public async addProcessVariable(args: { name: string; dataType?: string }) {
@@ -78,18 +69,19 @@ export class Palette {
 
     const variablesPanel = this.page.getByTestId("kie-tools--bpmn-editor--variables-popover");
     const emptyStateAddButton = this.page.getByRole("button", { name: "Add Variable", exact: true });
-    const isEmptyState = await emptyStateAddButton.isVisible().catch(() => false);
+    const buttonCount = await emptyStateAddButton.count();
+    const isEmptyState = buttonCount > 0 ? await emptyStateAddButton.isVisible() : false;
 
     if (isEmptyState) {
       await emptyStateAddButton.click();
     } else {
-      const addButton = variablesPanel.locator("button.pf-m-plain").filter({ has: this.page.locator("svg") });
-      await addButton.first().waitFor({ state: "visible" });
+      const addButton = variablesPanel
+        .getByRole("button")
+        .filter({ has: this.page.getByRole("img", { includeHidden: true }) });
       await addButton.first().click();
     }
 
     const variableNameInput = variablesPanel.getByPlaceholder("Name...").last();
-    await variableNameInput.waitFor({ state: "visible" });
     await variableNameInput.fill(args.name);
 
     if (args.dataType) {
@@ -101,7 +93,6 @@ export class Palette {
       await this.page.keyboard.type(args.dataType);
 
       const dataTypeOption = this.page.getByRole("option", { name: args.dataType, exact: true });
-      await dataTypeOption.waitFor({ state: "visible" });
       await dataTypeOption.click();
 
       const selectedValue = await dataTypeInput.inputValue();

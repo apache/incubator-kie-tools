@@ -32,7 +32,7 @@ test.describe("Add node - End Event", () => {
       const endEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(endEvent.__$$element).toBe("endEvent");
 
-      const endEventNode = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEventNode).toBeAttached();
     });
 
@@ -42,8 +42,8 @@ test.describe("Add node - End Event", () => {
 
       await diagram.resetFocus();
 
-      const firstEndEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
-      const secondEndEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").nth(1);
+      const firstEndEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
+      const secondEndEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).nth(1);
       await expect(firstEndEvent).toBeAttached();
       await expect(secondEndEvent).toBeAttached();
     });
@@ -72,7 +72,7 @@ test.describe("Add node - End Event", () => {
       }) => {
         await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 300 } });
 
-        const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+        const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
         await expect(endEvent).toBeVisible();
 
         await nodes.morphNode({ nodeLocator: endEvent, targetMorphType: morphType });
@@ -97,7 +97,7 @@ test.describe("Add node - End Event", () => {
       await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 100 } });
 
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEvent).toBeVisible();
       const endEventId = (await endEvent.getAttribute("data-nodehref")) ?? "";
 
@@ -114,48 +114,48 @@ test.describe("Add node - End Event", () => {
     test("should add connected End Event from Gateway node", async ({ diagram, palette, page }) => {
       await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-      const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+      const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
       await expect(gateway).toBeVisible();
 
       const box = await gateway.boundingBox();
-      if (!box) throw new Error("Gateway bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width / 2, box.y + 10);
+      await page.mouse.move(box!.x + box!.width / 2, box!.y + 10);
 
       const addEndEventHandle = gateway.getByTitle("Add End Event");
       await expect(addEndEventHandle).toBeVisible();
 
       await addEndEventHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEvent).toBeAttached();
     });
 
-    test("should add connected End Event from Sub-process node", async ({ diagram, palette, page }) => {
+    test("should add connected End Event from Sub-process node", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 50, y: 100 } });
 
-      const subProcess = page.locator('[data-nodelabel="New Sub-process"]').first();
+      const subProcess = nodes.get({ name: "New Sub-process" });
       await expect(subProcess).toBeAttached();
 
       const box = await subProcess.boundingBox();
-      if (!box) throw new Error("Sub-Process bounding box not found");
+      expect(box).not.toBeNull();
 
-      await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
 
       const addEndEventHandle = subProcess.getByTitle("Add End Event");
       await expect(addEndEventHandle).toBeVisible();
 
       const handleBox = await addEndEventHandle.boundingBox();
-      if (!handleBox) throw new Error("Add End Event handle bounding box not found");
+      expect(handleBox).not.toBeNull();
 
-      await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+      await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2);
       await page.mouse.down();
       await page.mouse.move(600, 100);
       await page.mouse.up();
 
       await diagram.zoomOut({ clicks: 1 });
 
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEvent).toBeAttached();
     });
   });
@@ -164,7 +164,7 @@ test.describe("Add node - End Event", () => {
     test("should delete end event", async ({ palette, jsonModel, page }) => {
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 300 } });
 
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEvent).toBeVisible();
       await endEvent.click();
       await page.keyboard.press("Delete");
@@ -178,22 +178,23 @@ test.describe("Add node - End Event", () => {
     test("should move end event to new position", async ({ palette, page, diagram }) => {
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 300 } });
 
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEvent).toBeAttached();
       await endEvent.scrollIntoViewIfNeeded();
 
       const endEventBox = await endEvent.boundingBox();
-      if (!endEventBox) throw new Error("End Event bounding box not found");
+      expect(endEventBox).not.toBeNull();
 
       await endEvent.dragTo(diagram.get(), {
-        sourcePosition: { x: endEventBox.width / 2, y: endEventBox.height / 2 },
+        sourcePosition: { x: endEventBox!.width / 2, y: endEventBox!.height / 2 },
         targetPosition: { x: 500, y: 400 },
         force: true,
       });
 
       const boxAfter = await endEvent.boundingBox();
-      expect(boxAfter?.x).not.toBe(endEventBox.x);
-      expect(boxAfter?.y).not.toBe(endEventBox.y);
+      expect(boxAfter).not.toBeNull();
+      expect(boxAfter!.x).not.toBe(endEventBox!.x);
+      expect(boxAfter!.y).not.toBe(endEventBox!.y);
     });
   });
 });

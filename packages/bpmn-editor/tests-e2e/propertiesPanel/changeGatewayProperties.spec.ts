@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
@@ -29,7 +29,7 @@ test.describe("Change Properties - Exclusive Gateway", () => {
   test.beforeEach(async ({ palette, page }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+    const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
     await expect(gateway).toBeVisible();
 
     await gateway.click();
@@ -56,7 +56,7 @@ test.describe("Change Properties - Exclusive Gateway with Default Flow", () => {
   test.beforeEach(async ({ palette, page }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+    const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
     await expect(gateway).toBeVisible();
     await gateway.click();
   });
@@ -72,7 +72,7 @@ test.describe("Change Properties - Parallel Gateway", () => {
   test.beforeEach(async ({ palette, page, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+    const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
     await expect(gateway).toBeVisible();
     await gateway.click();
 
@@ -90,7 +90,7 @@ test.describe("Change Properties - Inclusive Gateway", () => {
   test.beforeEach(async ({ palette, page, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+    const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
     await expect(gateway).toBeVisible();
     await gateway.click();
 
@@ -108,7 +108,7 @@ test.describe("Change Properties - Event-Based Gateway", () => {
   test.beforeEach(async ({ palette, page, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+    const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
     await expect(gateway).toBeVisible();
     await gateway.click();
 
@@ -126,7 +126,7 @@ test.describe("Change Properties - Complex Gateway", () => {
   test.beforeEach(async ({ palette, page, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = page.getByTestId("kie-tools--bpmn-editor--node-gateway").first();
+    const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
     await expect(gateway).toBeVisible();
     await gateway.click();
 

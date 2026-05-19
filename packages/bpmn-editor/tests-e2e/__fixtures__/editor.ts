@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { Nodes } from "./nodes";
 
 export class Editor {
@@ -37,13 +37,13 @@ export class Editor {
   }
 
   private async initializeEditor() {
-    await this.page.locator(".react-flow").waitFor({ state: "visible" });
+    await expect(this.page.getByTestId("kie-bpmn-editor--diagram-container")).toBeVisible();
 
     const processIdInput = this.page.getByPlaceholder("e.g., hiring");
-    if (await processIdInput.isVisible().catch(() => false)) {
+    const inputCount = await processIdInput.count();
+    if (inputCount > 0 && (await processIdInput.isVisible())) {
       await processIdInput.fill("test");
       await this.page.getByRole("button", { name: "Start Modeling" }).click();
-      await this.page.locator(".react-flow").waitFor({ state: "visible" });
     }
   }
 

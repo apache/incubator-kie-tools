@@ -32,8 +32,8 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async selectEventDefinition(args: { eventType: string }) {
-    const catchEvent = this.page.getByTestId("kie-tools--bpmn-editor--node-intermediate-catch-event");
-    const throwEvent = this.page.getByTestId("kie-tools--bpmn-editor--node-intermediate-throw-event");
+    const catchEvent = this.page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/);
+    const throwEvent = this.page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-throw-event-/);
 
     const selectedNode = (await catchEvent.count()) > 0 ? catchEvent.first() : throwEvent.first();
 
@@ -70,7 +70,8 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.messageName);
 
     const createOption = this.page.getByText(`Create Message "${args.messageName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.messageName, exact: true }).click();
@@ -87,15 +88,16 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.signalName);
 
     const createOption = this.page.getByText(`Create Signal "${args.signalName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.signalName, exact: true }).click();
     }
 
     if (args.scope) {
-      const scopeSelect = this.panel().locator("select").first();
-      await scopeSelect.waitFor({ state: "visible" });
+      const scopeSelect = this.panel().getByRole("combobox").nth(1);
+      await expect(scopeSelect).toBeVisible();
       await scopeSelect.selectOption(args.scope);
     }
   }
@@ -103,36 +105,31 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   public async setConditionalExpression(args: { expression: string }) {
     await this.selectEventDefinition({ eventType: "Conditional" });
 
-    const expressionInput = this.panel().locator("textarea").first();
-    await expressionInput.waitFor({ state: "visible" });
+    const expressionInput = this.panel().getByRole("textbox").first();
     await expressionInput.fill(args.expression);
     await expressionInput.blur();
   }
 
   public async getConditionalExpression(): Promise<string> {
-    const expressionInput = this.panel().locator("textarea").first();
-    await expressionInput.waitFor({ state: "visible" });
+    const expressionInput = this.panel().getByRole("textbox").first();
     return (await expressionInput.inputValue()) || "";
   }
 
   public async setLinkDefinition(args: { linkName: string }) {
     await this.selectEventDefinition({ eventType: "Link" });
 
-    const linkInput = this.panel().locator('input[type="text"]').first();
-    await linkInput.waitFor({ state: "visible" });
+    const linkInput = this.panel().getByRole("textbox").first();
     await linkInput.fill(args.linkName);
     await linkInput.blur();
   }
 
   public async getLinkName(): Promise<string> {
-    const linkInput = this.panel().locator('input[type="text"]').first();
-    await linkInput.waitFor({ state: "visible" });
+    const linkInput = this.panel().getByRole("textbox").first();
     return (await linkInput.inputValue()) || "";
   }
 
   public async getSignalName(): Promise<string> {
     const signalInput = this.panel().getByRole("combobox").first();
-    await signalInput.waitFor({ state: "visible" });
     return (await signalInput.inputValue()) || "";
   }
 
@@ -143,14 +140,15 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.errorName);
 
     const createOption = this.page.getByText(`Create Error "${args.errorName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.errorName, exact: true }).click();
     }
 
     if (args.errorCode) {
-      const errorCodeInput = this.panel().locator('input[type="text"]').nth(1);
+      const errorCodeInput = this.panel().getByRole("textbox").nth(1);
       await errorCodeInput.fill(args.errorCode);
       await errorCodeInput.blur();
     }
@@ -158,7 +156,6 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
 
   public async getErrorName(): Promise<string> {
     const errorInput = this.panel().getByRole("combobox").first();
-    await errorInput.waitFor({ state: "visible" });
     return (await errorInput.inputValue()) || "";
   }
 
@@ -169,14 +166,15 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     await this.page.keyboard.type(args.escalationName);
 
     const createOption = this.page.getByText(`Create Escalation "${args.escalationName}"`, { exact: true });
-    if (await createOption.isVisible().catch(() => false)) {
+    const optionCount = await createOption.count();
+    if (optionCount > 0 && (await createOption.isVisible())) {
       await createOption.click();
     } else {
       await this.page.getByRole("option", { name: args.escalationName, exact: true }).click();
     }
 
     if (args.escalationCode) {
-      const escalationCodeInput = this.panel().locator('input[type="text"]').nth(1);
+      const escalationCodeInput = this.panel().getByRole("textbox").nth(1);
       await escalationCodeInput.fill(args.escalationCode);
       await escalationCodeInput.blur();
     }
@@ -184,7 +182,6 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
 
   public async getEscalationName(): Promise<string> {
     const escalationInput = this.panel().getByRole("combobox").first();
-    await escalationInput.waitFor({ state: "visible" });
     return (await escalationInput.inputValue()) || "";
   }
 
@@ -196,14 +193,15 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
       await this.page.keyboard.type(args.activityRef);
 
       const option = this.page.getByRole("option", { name: args.activityRef, exact: true });
-      if (await option.isVisible().catch(() => false)) {
+      const optionCount = await option.count();
+      if (optionCount > 0 && (await option.isVisible())) {
         await option.click();
       }
     }
   }
 
   public async setCancelActivity(args: { cancelActivity: boolean }) {
-    const cancelCheckbox = this.panel().locator('input[type="checkbox"][id*="cancel-activity"]');
+    const cancelCheckbox = this.panel().getByRole("checkbox", { name: /cancel activity/i });
     const isChecked = await cancelCheckbox.isChecked();
 
     if (isChecked !== args.cancelActivity) {
@@ -212,7 +210,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async getCancelActivity(): Promise<boolean> {
-    const cancelCheckbox = this.panel().locator('input[type="checkbox"][id*="cancel-activity"]');
+    const cancelCheckbox = this.panel().getByRole("checkbox", { name: /cancel activity/i });
     return await cancelCheckbox.isChecked();
   }
 }

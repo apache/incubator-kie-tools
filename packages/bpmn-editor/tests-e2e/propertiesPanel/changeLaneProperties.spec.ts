@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await editor.open();
@@ -118,13 +118,12 @@ test.describe("Change Properties - Lane with Tasks", () => {
 
     const task = nodes.get({ name: "Movable Task" });
     const box = await task.boundingBox();
+    expect(box).not.toBeNull();
 
-    if (box) {
-      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-      await page.mouse.down();
-      await page.mouse.move(400, 600);
-      await page.mouse.up();
-    }
+    await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(400, 600);
+    await page.mouse.up();
 
     await expect(diagram.get()).toHaveScreenshot("task-moved-between-lanes.png");
   });

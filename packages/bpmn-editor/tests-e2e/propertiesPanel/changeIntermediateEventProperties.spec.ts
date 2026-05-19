@@ -29,7 +29,7 @@ test.describe("Change Properties - Intermediate Catch Event", () => {
   test.beforeEach(async ({ palette, page }) => {
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
 
-    const event = page.getByTestId("kie-tools--bpmn-editor--node-intermediate-catch-event").first();
+    const event = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
     await expect(event).toBeVisible();
 
     await event.click();
@@ -52,7 +52,7 @@ test.describe("Change Properties - Intermediate Catch Event", () => {
   });
 
   test("should configure Timer definition with duration", async ({ intermediateEventPropertiesPanel, page, nodes }) => {
-    const catchEvent = page.getByTestId("kie-tools--bpmn-editor--node-intermediate-catch-event").first();
+    const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
     await expect(catchEvent).toBeVisible();
 
     await nodes.morphNode({ nodeLocator: catchEvent, targetMorphType: "Timer" });
@@ -104,7 +104,7 @@ test.describe("Change Properties - Intermediate Throw Event", () => {
   test.beforeEach(async ({ palette, page }) => {
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 100, y: 100 } });
 
-    const event = page.getByTestId("kie-tools--bpmn-editor--node-intermediate-throw-event").first();
+    const event = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-throw-event-/).first();
     await expect(event).toBeVisible();
 
     await event.click();

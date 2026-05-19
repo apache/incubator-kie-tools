@@ -58,7 +58,7 @@ test.describe("Add Custom Tasks", () => {
   test.describe("Rest API call Task", () => {
     test("should add Rest API call Task from custom tasks palette", async ({ customTasks, nodes, jsonModel }) => {
       await customTasks.dragCustomTask({
-        customTaskName: "Rest API call Task",
+        customTaskId: "rest-api-call-task",
         targetPosition: { x: 300, y: 300 },
         thenRenameTo: "Rest API call Task New",
       });
@@ -73,13 +73,13 @@ test.describe("Add Custom Tasks", () => {
 
     test("should add two Rest API call Tasks from palette", async ({ customTasks, nodes, diagram }) => {
       await customTasks.dragCustomTask({
-        customTaskName: "Rest API call Task",
+        customTaskId: "rest-api-call-task",
         targetPosition: { x: 200, y: 200 },
         thenRenameTo: "Rest API call Task A",
       });
 
       await customTasks.dragCustomTask({
-        customTaskName: "Rest API call Task",
+        customTaskId: "rest-api-call-task",
         targetPosition: { x: 400, y: 300 },
         thenRenameTo: "Rest API call Task B",
       });
@@ -94,7 +94,7 @@ test.describe("Add Custom Tasks", () => {
   test.describe("gRPC API call Task", () => {
     test("should add gRPC API call Task from custom tasks palette", async ({ customTasks, nodes, jsonModel }) => {
       await customTasks.dragCustomTask({
-        customTaskName: "gRPC API call Task",
+        customTaskId: "grpc-api-call-task",
         targetPosition: { x: 300, y: 300 },
         thenRenameTo: "gRPC API call Task New",
       });
@@ -109,13 +109,13 @@ test.describe("Add Custom Tasks", () => {
 
     test("should add two gRPC API call Tasks from palette", async ({ customTasks, nodes, diagram }) => {
       await customTasks.dragCustomTask({
-        customTaskName: "gRPC API call Task",
+        customTaskId: "grpc-api-call-task",
         targetPosition: { x: 200, y: 200 },
         thenRenameTo: "gRPC API call Task A",
       });
 
       await customTasks.dragCustomTask({
-        customTaskName: "gRPC API call Task",
+        customTaskId: "grpc-api-call-task",
         targetPosition: { x: 400, y: 300 },
         thenRenameTo: "gRPC API call Task B",
       });
@@ -129,7 +129,7 @@ test.describe("Add Custom Tasks", () => {
 
   test("should rename custom task", async ({ customTasks, nodes }) => {
     await customTasks.dragCustomTask({
-      customTaskName: "Rest API call Task",
+      customTaskId: "rest-api-call-task",
       targetPosition: { x: 300, y: 300 },
       thenRenameTo: "Fetch User Data",
     });
@@ -139,7 +139,7 @@ test.describe("Add Custom Tasks", () => {
 
   test("should delete custom task", async ({ customTasks, nodes }) => {
     await customTasks.dragCustomTask({
-      customTaskName: "gRPC API call Task",
+      customTaskId: "grpc-api-call-task",
       targetPosition: { x: 300, y: 300 },
       thenRenameTo: "gRPC Task to Delete",
     });
@@ -151,28 +151,29 @@ test.describe("Add Custom Tasks", () => {
 
   test("should move custom task to new position", async ({ customTasks, page, diagram }) => {
     await customTasks.dragCustomTask({
-      customTaskName: "Rest API call Task",
+      customTaskId: "rest-api-call-task",
       targetPosition: { x: 300, y: 300 },
       thenRenameTo: "Move Test Task",
     });
 
-    const task = page.getByTestId("kie-tools--bpmn-editor--node-task").first();
+    const task = page.getByTestId(/^kie-tools--bpmn-editor--node-task-/).last();
     await expect(task).toBeAttached();
 
     await task.scrollIntoViewIfNeeded();
 
     const taskBox = await task.boundingBox();
-    if (!taskBox) throw new Error("Custom Task bounding box not found");
+    expect(taskBox).not.toBeNull();
 
     await task.dragTo(diagram.get(), {
-      sourcePosition: { x: 20, y: taskBox.height / 2 },
+      sourcePosition: { x: 20, y: taskBox!.height / 2 },
       targetPosition: { x: 500, y: 400 },
       force: true,
     });
 
     const boxAfter = await task.boundingBox();
-    expect(boxAfter?.x).not.toBe(taskBox?.x);
-    expect(boxAfter?.y).not.toBe(taskBox?.y);
+    expect(boxAfter).not.toBeNull();
+    expect(boxAfter!.x).not.toBe(taskBox?.x);
+    expect(boxAfter!.y).not.toBe(taskBox?.y);
   });
 
   test.describe("Custom Tasks in Process Flow", () => {
@@ -185,41 +186,41 @@ test.describe("Add Custom Tasks", () => {
     }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 200 } });
       await customTasks.dragCustomTask({
-        customTaskName: "Rest API call Task",
+        customTaskId: "rest-api-call-task",
         targetPosition: { x: 300, y: 200 },
         thenRenameTo: "Rest API call Task Flow",
       });
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 500, y: 200 } });
 
-      const startEvent = page.getByTestId("kie-tools--bpmn-editor--node-start-event").first();
+      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
       await expect(startEvent).toBeAttached();
 
       const restApiTask = nodes.get({ name: "Rest API call Task Flow" });
       await expect(restApiTask).toBeAttached();
 
-      const endEvent = page.getByTestId("kie-tools--bpmn-editor--node-end-event").first();
+      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
       await expect(endEvent).toBeVisible();
 
       // Connect Start Event -> Rest API call Task
       const startBox = await startEvent.boundingBox();
-      if (!startBox) throw new Error("Start Event bounding box not found");
-      await page.mouse.move(startBox.x + startBox.width - 10, startBox.y + startBox.height / 2);
+      expect(startBox).not.toBeNull();
+      await page.mouse.move(startBox!.x + startBox!.width - 10, startBox!.y + startBox!.height / 2);
       const handle1 = startEvent.getByTitle("Add Sequence Flow");
       await expect(handle1).toBeVisible();
       const taskBox = await restApiTask.boundingBox();
-      if (!taskBox) throw new Error("Rest API call Task bounding box not found");
+      expect(taskBox).not.toBeNull();
       await handle1.dragTo(diagram.get(), {
-        targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
+        targetPosition: { x: taskBox!.x + taskBox!.width / 2, y: taskBox!.y + taskBox!.height / 2 },
       });
 
       // Connect Rest API call Task -> End Event
-      await page.mouse.move(taskBox.x + taskBox.width - 10, taskBox.y + taskBox.height / 2);
+      await page.mouse.move(taskBox!.x + taskBox!.width - 10, taskBox!.y + taskBox!.height / 2);
       const handle2 = restApiTask.getByTitle("Add Sequence Flow");
       await expect(handle2).toBeVisible();
       const endBox = await endEvent.boundingBox();
-      if (!endBox) throw new Error("End Event bounding box not found");
+      expect(endBox).not.toBeNull();
       await handle2.dragTo(diagram.get(), {
-        targetPosition: { x: endBox.x + endBox.width / 2, y: endBox.y + endBox.height / 2 },
+        targetPosition: { x: endBox!.x + endBox!.width / 2, y: endBox!.y + endBox!.height / 2 },
       });
 
       await diagram.resetFocus();

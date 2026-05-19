@@ -31,47 +31,36 @@ export class CustomTasks {
   public async openPalette() {
     const customTasksButton = this.page.getByTitle("Custom Tasks");
     await customTasksButton.click();
-    await this.page.getByTestId("kie-tools--bpmn-editor--custom-tasks-popover").waitFor({ state: "visible" });
   }
 
   public async closePalette() {
     const customTasksButton = this.page.getByTitle("Custom Tasks");
     await customTasksButton.click();
-    await this.page.getByTestId("kie-tools--bpmn-editor--custom-tasks-popover").waitFor({ state: "hidden" });
   }
 
   public async dragCustomTask(args: {
-    customTaskName: string;
+    customTaskId: string;
     targetPosition: { x: number; y: number };
     thenRenameTo?: string;
   }) {
     const popover = this.page.getByTestId("kie-tools--bpmn-editor--custom-tasks-popover");
-    const isVisible = await popover.isVisible().catch(() => false);
+    const popoverCount = await popover.count();
+    const isVisible = popoverCount > 0 ? await popover.isVisible() : false;
 
     if (!isVisible) {
       await this.openPalette();
     }
 
-    const customTaskElement = popover.getByRole("button").filter({ hasText: args.customTaskName });
-
-    await customTaskElement.waitFor({ state: "visible" });
+    const customTaskElement = popover.getByTestId(
+      `kie-tools--bpmn-editor--custom-task-palette-item-${args.customTaskId}`
+    );
 
     await customTaskElement.dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
 
-    const newNode = this.page.locator(`[data-nodelabel="${args.customTaskName}"]`).last();
-    await newNode.waitFor({ state: "attached" });
-
     if (args.thenRenameTo) {
-      const nodeId = await newNode.getAttribute("data-nodehref");
-
-      if (!nodeId) {
-        throw new Error("Node ID not found after creation");
-      }
-
-      const specificNode = this.page.locator(`[data-nodehref="${nodeId}"]`);
-
+      const newNode = this.page.getByTestId(/^kie-tools--bpmn-editor--node-task-/).last();
       await this.nodes.renameByLocator({
-        nodeLocator: specificNode,
+        nodeLocator: newNode,
         newName: args.thenRenameTo,
         needsSelection: false,
       });

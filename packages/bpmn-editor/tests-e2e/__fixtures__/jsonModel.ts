@@ -26,9 +26,7 @@ export class JsonModel {
   ) {}
 
   public async getModel(): Promise<any> {
-    const modelElement = this.page.locator('[data-testid="storybook--bpmn-editor-model"]');
-    await modelElement.waitFor({ state: "attached" });
-
+    const modelElement = this.page.getByTestId("storybook--bpmn-editor-model");
     const modelText = await modelElement.textContent();
     return modelText ? JSON.parse(modelText) : undefined;
   }
