@@ -48,7 +48,7 @@ The New BPMN Editor provides:
 | ---------------- | ------------------------- | ------------------------------ |
 | **Custom Tasks** | Mixed with standard tasks | Dedicated "Custom Tasks" panel |
 
-**Palette Icons:**
+**Palette Panel Icons:**
 
 - Start Events
 - Intermediate Catch Events
@@ -103,7 +103,7 @@ Manage message correlations:
 - Message Bindings
 - Subscriptions
 
-**Classic Editor**: Correlations accessed via "Collaboration" section in Properties Panel, opened through "Correlations" button in a modal dialog
+**Classic Editor**: Correlations accessed via "Collaboration" section in Properties panel, opened through "Correlations" button in a modal dialog
 **New Editor**: Dedicated left sidebar panel with tabbed interface (Properties tab and Keys tab)
 
 #### Properties Management Panel
@@ -321,7 +321,7 @@ We'll create a simple employee onboarding process with:
 
 **Classic Editor:**
 
-1. Expand "Start Events" in left palette
+1. Expand "Start Events" in palette panel
 2. Drag "Start" to canvas
 3. Click to select
 4. Properties panel shows Start Event properties
@@ -329,15 +329,15 @@ We'll create a simple employee onboarding process with:
 
 **New Editor:**
 
-1. From the Pallete panel Drag "Start" to canvas
+1. From the palette panel drag "Start" to canvas
 2. Element snaps to grid automatically
-3. In the Properties panel Set Name: "Application Received"
+3. In the Properties panel set Name: "Application Received"
 
 ### Step 5: Add User Task (HR Review)
 
 **Classic Editor:**
 
-1. Expand "Tasks" in palette
+1. Expand "Tasks" in palette panel
 2. Drag "User Task" to canvas
 3. Position manually
 4. Click to select
@@ -353,7 +353,7 @@ We'll create a simple employee onboarding process with:
 
 1. Drag and Drop "Task" to canvas
 2. Morph to "User Task"
-3. In the Properties panel Set Name: "HR Review Application"
+3. In the Properties panel set Name: "HR Review Application"
 4. Find "Task Name" field
 5. Set Task Name: "ReviewApplication"
 6. Find "Implementation/Execution" dropdown
@@ -372,7 +372,7 @@ We'll create a simple employee onboarding process with:
 
 **Classic Editor:**
 
-1. Drag "Business Rule Task" from palette
+1. Drag "Business Rule Task" from palette panel
 2. Set Name: "Background Check"
 3. Find "Implementation/Execution" dropdown
 4. Select "DMN"
@@ -383,7 +383,7 @@ We'll create a simple employee onboarding process with:
 
 **New Editor:**
 
-1. Drag "Task" from palette, morph to "Business Rule Task"
+1. Drag "Task" from palette panel, morph to "Business Rule Task"
 2. Set Name: "Background Check"
 3. Find "Implementation" section
 4. Select "DMN" radio button
@@ -397,7 +397,7 @@ We'll create a simple employee onboarding process with:
 
 **Classic Editor:**
 
-1. Expand "Gateways" in palette
+1. Expand "Gateways" in palette panel
 2. Drag "Exclusive" gateway
 3. Position after Business Rule Task
 4. Set Name: "Check Passed?"
@@ -405,7 +405,7 @@ We'll create a simple employee onboarding process with:
    - Click Background Check task
    - Drag connector to gateway
 6. Add two End Events for the diverging paths:
-   - Drag "End Event" from palette (for "Passed" path)
+   - Drag "End Event" from palette panel (for "Passed" path)
    - Set Name: "Onboarding Complete"
    - Drag another "End Event" (for "Failed" path)
    - Set Name: "Application Rejected"
@@ -415,12 +415,12 @@ We'll create a simple employee onboarding process with:
 
 **New Editor:**
 
-1. Drag "Gateways" from palette, morph to "Exclusive"
+1. Drag "Gateways" from palette panel, morph to "Exclusive"
 2. Set Name: "Check Passed?"
 3. Hover over Background Check task to see connection handles
 4. Drag from handle to gateway
 5. Add two End Events for the diverging paths:
-   - Click "End Events" icon in palette
+   - Click "End Events" icon in palette panel
    - Drag "End Event" (for "Passed" path)
    - Set Name: "Onboarding Complete"
    - Drag another "End Event" (for "Failed" path)
@@ -508,7 +508,7 @@ We'll create a simple employee onboarding process with:
 **New Editor:**
 
 1. Select User Task
-2. In the Properties Panel scroll to "Data Mapping" section
+2. In the Properties panel scroll to "Data Mapping" section
 3. Click on the "Data Mapping" section header (with edit icon)
 4. Modal opens: "HR Review Application Data I/O"
 5. In "Data Inputs and Assignments" section:
@@ -541,7 +541,7 @@ We'll create a simple employee onboarding process with:
 **Classic Editor:**
 
 1. Select User Task
-2. Find "Notifications" section in properties panel
+2. Find "Notifications" section in Properties panel
 3. Click on the "Notifications" section header
 4. Modal opens: "Notification"
 5. Configure notification:
@@ -566,7 +566,7 @@ We'll create a simple employee onboarding process with:
 **New Editor:**
 
 1. Select User Task
-2. Find "Notifications" section in properties panel
+2. Find "Notifications" section in Properties panel
 3. Click on the "Notifications" section header (with edit icon)
 4. Modal opens: "Notifications" with table interface
 5. Click "+ Add" button (top right) to add a notification
