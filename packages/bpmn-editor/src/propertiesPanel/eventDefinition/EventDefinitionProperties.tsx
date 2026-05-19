@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+import { BPMN20__tDefinitions, BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import * as React from "react";
 import { Normalized } from "../../normalization/normalize";
 import { SlaDueDateInput } from "../slaDueDate/SlaDueDateInput";
@@ -58,12 +58,46 @@ export function EventDefinitionProperties({ event }: { event: Event }) {
         const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
         visitFlowElementsAndArtifacts(process, ({ element: e }) => {
           if (e["@_id"] === event?.["@_id"] && e.__$$element === event.__$$element) {
+            let dataType: string | undefined;
+
+            if (
+              e.__$$element === "startEvent" ||
+              e.__$$element === "intermediateCatchEvent" ||
+              e.__$$element === "boundaryEvent"
+            ) {
+              const dataOutput = e.dataOutput?.[0];
+              if (dataOutput?.["@_itemSubjectRef"]) {
+                const itemDefinitions =
+                  s.bpmn.model.definitions.rootElement?.filter((el) => el.__$$element === "itemDefinition") ?? [];
+                const itemDef = itemDefinitions.find((el) => el["@_id"] === dataOutput["@_itemSubjectRef"]);
+                if (itemDef && itemDef.__$$element === "itemDefinition") {
+                  dataType = itemDef["@_structureRef"];
+                }
+              }
+            } else if (e.__$$element === "endEvent" || e.__$$element === "intermediateThrowEvent") {
+              const dataInput = e.dataInput?.[0];
+              if (dataInput?.["@_itemSubjectRef"]) {
+                const itemDefinitions =
+                  s.bpmn.model.definitions.rootElement?.filter((el) => el.__$$element === "itemDefinition") ?? [];
+                const itemDef = itemDefinitions.find((el) => el["@_id"] === dataInput["@_itemSubjectRef"]);
+                if (itemDef && itemDef.__$$element === "itemDefinition") {
+                  dataType = itemDef["@_structureRef"];
+                }
+              }
+            }
+
+            const { messageRef: actualMessageRef } = addOrGetMessages({
+              definitions: s.bpmn.model.definitions,
+              messageName: newMessage,
+              dataType: dataType,
+            });
+
             const messageEventDefinition = e.eventDefinition?.find(
               (event) => event.__$$element === "messageEventDefinition"
             );
             if (messageEventDefinition) {
               messageEventDefinition["@_drools:msgref"] = newMessage;
-              messageEventDefinition["@_messageRef"] = newMessageRef;
+              messageEventDefinition["@_messageRef"] = actualMessageRef;
             }
           }
         });
@@ -71,6 +105,28 @@ export function EventDefinitionProperties({ event }: { event: Event }) {
     },
     [bpmnEditorStoreApi, event]
   );
+
+  const compatibleItemRef = React.useMemo(() => {
+    if (!event) return undefined;
+
+    if (
+      event.__$$element === "startEvent" ||
+      event.__$$element === "intermediateCatchEvent" ||
+      event.__$$element === "boundaryEvent"
+    ) {
+      const dataOutput = event.dataOutput?.[0];
+      if (dataOutput?.["@_itemSubjectRef"]) {
+        return dataOutput["@_itemSubjectRef"];
+      }
+    } else if (event.__$$element === "endEvent" || event.__$$element === "intermediateThrowEvent") {
+      const dataInput = event.dataInput?.[0];
+      if (dataInput?.["@_itemSubjectRef"]) {
+        return dataInput["@_itemSubjectRef"];
+      }
+    }
+
+    return undefined;
+  }, [event]);
 
   const onSignalChange = React.useCallback<OnSignalChange>(
     (newSignalRef) => {
@@ -157,6 +213,7 @@ export function EventDefinitionProperties({ event }: { event: Event }) {
                     ]
                   }
                   onChange={onMessageChange}
+                  compatibleItemRef={compatibleItemRef}
                 />
               </FormGroup>
             </FormSection>

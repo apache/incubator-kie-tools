@@ -225,14 +225,33 @@ import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramEl
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { DEFAULT_DATA_TYPES } from "./addOrGetItemDefinitions";
 
+function updateMessageItemRefForMessageEvent(
+  definitions: Normalized<BPMN20__tDefinitions>,
+  event: any,
+  itemSubjectRef: string
+) {
+  const messageEventDef = event.eventDefinition?.find((ed: any) => ed.__$$element === "messageEventDefinition");
+  if (!messageEventDef?.["@_messageRef"]) return;
+
+  const messages = definitions.rootElement?.filter((e) => e.__$$element === "message") ?? [];
+  const message = messages.find((m) => m["@_id"] === messageEventDef["@_messageRef"]);
+
+  if (message && message["@_itemRef"] !== itemSubjectRef) {
+    message["@_itemRef"] = itemSubjectRef;
+  }
+}
+
 export function setInputDataMapping(
   itemDefinitionIdByDataTypes: Map<string, string>,
   inputDataMapping: DataMapping[],
   elementWithData: WithInputDataMapping | NonNullable<WithDataMapping["ioSpecification"]>,
-  elementWithAssociation: WithInputDataMapping | WithDataMapping
+  elementWithAssociation: WithInputDataMapping | WithDataMapping,
+  definitions?: Normalized<BPMN20__tDefinitions>
 ) {
   elementWithData.dataInput = [];
   elementWithAssociation.dataInputAssociation = [];
+
+  let eventDataItemSubjectRef: string | undefined;
 
   inputDataMapping.forEach((dataMapping) => {
     const dataInput: Unpacked<(typeof elementWithData)["dataInput"]> = {
@@ -241,6 +260,8 @@ export function setInputDataMapping(
       "@_drools:dtype": dataMapping.dtype,
       "@_itemSubjectRef": itemDefinitionIdByDataTypes.get(dataMapping.dtype),
     };
+
+    eventDataItemSubjectRef = dataInput["@_itemSubjectRef"];
 
     elementWithData.dataInput?.push(dataInput);
 
@@ -269,16 +290,23 @@ export function setInputDataMapping(
           }
     );
   });
+
+  if (definitions && eventDataItemSubjectRef) {
+    updateMessageItemRefForMessageEvent(definitions, elementWithAssociation, eventDataItemSubjectRef);
+  }
 }
 
 export function setOutputDataMapping(
   itemDefinitionIdByDataTypes: Map<string, string>,
   outputDataMapping: DataMapping[],
   elementWithData: WithOutputDataMapping | NonNullable<WithDataMapping["ioSpecification"]>,
-  elementWithAssociation: WithOutputDataMapping | WithDataMapping
+  elementWithAssociation: WithOutputDataMapping | WithDataMapping,
+  definitions?: Normalized<BPMN20__tDefinitions>
 ) {
   elementWithData.dataOutput = [];
   elementWithAssociation.dataOutputAssociation = [];
+
+  let eventDataItemSubjectRef: string | undefined;
 
   outputDataMapping.forEach((dataMapping) => {
     const dataOutput = {
@@ -287,6 +315,8 @@ export function setOutputDataMapping(
       "@_drools:dtype": dataMapping.dtype,
       "@_itemSubjectRef": itemDefinitionIdByDataTypes.get(dataMapping.dtype),
     };
+
+    eventDataItemSubjectRef = dataOutput["@_itemSubjectRef"];
 
     elementWithData.dataOutput?.push(dataOutput);
 
@@ -315,6 +345,10 @@ export function setOutputDataMapping(
           }
     );
   });
+
+  if (definitions && eventDataItemSubjectRef) {
+    updateMessageItemRefForMessageEvent(definitions, elementWithAssociation, eventDataItemSubjectRef);
+  }
 }
 
 export function setInputAndOutputDataMapping(
@@ -391,13 +425,13 @@ export function setDataMappingForElement({
       ) {
         setInputAndOutputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, outputDataMapping, e);
       } else if (e.__$$element === "endEvent" || e.__$$element === "intermediateThrowEvent") {
-        setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e, e);
+        setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e, e, definitions);
       } else if (
         e.__$$element === "startEvent" ||
         e.__$$element === "intermediateCatchEvent" ||
         e.__$$element === "boundaryEvent"
       ) {
-        setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e, e);
+        setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e, e, definitions);
       }
 
       return false; // Will stop visiting.

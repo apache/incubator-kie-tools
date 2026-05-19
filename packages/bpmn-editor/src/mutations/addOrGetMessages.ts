@@ -30,35 +30,54 @@ export const RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES = "__messageItemDefinition
 export function addOrGetMessages({
   definitions,
   messageName,
+  dataType,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
   messageName: string;
+  dataType?: string;
 }): {
   messageRef: string;
 } {
   definitions.rootElement ??= [];
   const messages = definitions.rootElement.filter((s) => s.__$$element === "message");
+
+  let itemDefinitionId: string;
+
+  if (dataType) {
+    const { itemDefinition } = addOrGetItemDefinitions({
+      definitions: definitions,
+      dataType: dataType,
+    });
+    itemDefinitionId = itemDefinition["@_id"];
+  } else {
+    const itemDefinitions = definitions.rootElement.filter((s) => s.__$$element === "itemDefinition");
+    const itemDefinitionForMessages = itemDefinitions.find(
+      (s) => s["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+    );
+
+    if (!itemDefinitionForMessages) {
+      addOrGetItemDefinitions({
+        definitions: definitions,
+        dataType: DEFAULT_DATA_TYPES.OBJECT,
+        id: RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
+      });
+    }
+    itemDefinitionId = RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES;
+  }
+
   const existingMessage = messages.find((s) => s["@_name"] === messageName);
 
   if (existingMessage) {
+    if (existingMessage["@_itemRef"] !== itemDefinitionId) {
+      existingMessage["@_itemRef"] = itemDefinitionId;
+    }
     return { messageRef: existingMessage["@_id"] };
-  }
-
-  const itemDefinitions = definitions.rootElement.filter((s) => s.__$$element === "itemDefinition");
-  const itemDefinitionForMessages = itemDefinitions.find((s) => s["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES);
-
-  if (!itemDefinitionForMessages) {
-    addOrGetItemDefinitions({
-      definitions: definitions,
-      dataType: DEFAULT_DATA_TYPES.OBJECT,
-      id: RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
-    });
   }
 
   const newMessage: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "message"> = {
     __$$element: "message",
     "@_id": generateUuid(),
-    "@_itemRef": RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
+    "@_itemRef": itemDefinitionId,
     "@_name": messageName,
   };
 
