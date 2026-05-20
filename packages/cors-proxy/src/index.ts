@@ -61,6 +61,8 @@ export const run = () => {
   startServer({
     allowedOrigins: getAllowedOrigins(),
     port: getPort(),
+    tlsCertificate: process.env.CORS_PROXY_TLS_CERTIFICATE_PATH ?? "",
+    tlsKey: process.env.CORS_PROXY_TLS_KEY_PATH ?? "",
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
     hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
     allowedHosts: getAllowedHosts(),

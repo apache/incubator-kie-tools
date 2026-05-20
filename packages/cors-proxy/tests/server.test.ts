@@ -43,6 +43,8 @@ describe("CORS handler logic test", () => {
       const args: ServerArgs = {
         allowedOrigins: ["http://localhost:9000"],
         port: 8080,
+        tlsCertificate: "",
+        tlsKey: "",
         verbose: false,
         hostsToUseHttp: [],
         allowedHosts: ["localhost"],
@@ -76,6 +78,8 @@ describe("CORS handler logic test", () => {
       const args: ServerArgs = {
         allowedOrigins: ["http://localhost:9000"],
         port: 8080,
+        tlsCertificate: "",
+        tlsKey: "",
         verbose: false,
         hostsToUseHttp: [],
         allowedHosts: ["localhost"],
@@ -113,6 +117,8 @@ describe("CORS handler logic test", () => {
         const args: ServerArgs = {
           allowedOrigins: ["http://example.com", "http://staging.example.com"],
           port: 8080,
+          tlsCertificate: "",
+          tlsKey: "",
           verbose: false,
           hostsToUseHttp: [],
           allowedHosts: ["localhost"],
@@ -147,6 +153,8 @@ describe("CORS handler logic test", () => {
       const args: ServerArgs = {
         allowedOrigins: ["http://example.com", "http://staging.example.com"],
         port: 8080,
+        tlsCertificate: "",
+        tlsKey: "",
         verbose: false,
         hostsToUseHttp: [],
         allowedHosts: ["localhost"],
@@ -180,6 +188,8 @@ describe("CORS handler logic test", () => {
       const args: ServerArgs = {
         allowedOrigins: ["http://localhost:9000"],
         port: 8080,
+        tlsCertificate: "",
+        tlsKey: "",
         verbose: false,
         hostsToUseHttp: [],
         allowedHosts: ["localhost"],

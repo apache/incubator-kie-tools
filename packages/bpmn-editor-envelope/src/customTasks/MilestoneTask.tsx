@@ -19,6 +19,10 @@
 
 import * as React from "react";
 import "@kie-tools/bpmn-marshaller/dist/drools-extension";
+import {
+  MILESTONE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS,
+  MILESTONE_TASK_VALUES,
+} from "@kie-tools/bpmn-marshaller/dist/drools-extension";
 import { CustomTask } from "@kie-tools/bpmn-editor/dist/BpmnEditor";
 import { useBpmnEditorStoreApi, useBpmnEditorStore } from "@kie-tools/bpmn-editor/dist/store/StoreContext";
 import { PropertiesPanelHeaderFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/singleNodeProperties/_PropertiesPanelHeaderFormSection";
@@ -31,6 +35,11 @@ import { SlaDueDateInput } from "@kie-tools/bpmn-editor/dist/propertiesPanel/sla
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { BpmnEditorEnvelopeI18n, bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries } from "../i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
+import {
+  addOrGetItemDefinitions,
+  DEFAULT_DATA_TYPES,
+} from "@kie-tools/bpmn-editor/dist/mutations/addOrGetItemDefinitions";
+import { DataMapping, setInputAndOutputDataMapping } from "@kie-tools/bpmn-editor/dist/mutations/_dataMapping";
 
 export const MILESTONE_TASK_ICON = (
   <svg
@@ -85,14 +94,51 @@ export function getMilestoneTask(i18n: BpmnEditorEnvelopeI18n): CustomTask {
     displayDescription: "",
     iconSvgElement: MILESTONE_TASK_ICON,
     propertiesPanelComponent: MilestoneTaskProperties,
-    matches: (task) => task["@_drools:taskName"] === "Milestone",
-    produce: () => ({
-      __$$element: "task",
-      "@_id": generateUuid(),
-      "@_drools:taskName": "Milestone",
-      "@_name": i18n.milestone,
-    }),
-    dataInputReservedNames: [],
+    matches: (task) => task["@_drools:taskName"] === MILESTONE_TASK_VALUES.TASK_NAME_VALUE,
+    produce: () => {
+      return {
+        __$$element: "task",
+        "@_id": generateUuid(),
+        "@_drools:taskName": MILESTONE_TASK_VALUES.TASK_NAME_VALUE,
+        "@_name": i18n.milestone,
+      };
+    },
+    onAdded: (state, task) => {
+      // Make sure String and Object data types are available
+      addOrGetItemDefinitions({
+        definitions: state.bpmn.model.definitions,
+        dataType: DEFAULT_DATA_TYPES.STRING,
+      });
+      addOrGetItemDefinitions({
+        definitions: state.bpmn.model.definitions,
+        dataType: DEFAULT_DATA_TYPES.OBJECT,
+      });
+
+      const inputs: DataMapping[] = [
+        {
+          dtype: DEFAULT_DATA_TYPES.STRING,
+          name: MILESTONE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.CONDITION,
+          isExpression: false,
+          variableRef: undefined,
+        },
+        {
+          dtype: DEFAULT_DATA_TYPES.OBJECT,
+          name: MILESTONE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.TASK_NAME,
+          isExpression: true,
+          value: MILESTONE_TASK_VALUES.TASK_NAME_VALUE,
+        },
+      ];
+      const outputs: DataMapping[] = [];
+
+      const itemDefinitionIdByDataTypes = new Map(
+        state.bpmn.model.definitions.rootElement
+          ?.filter((r) => r.__$$element === "itemDefinition")
+          .map((i) => [i["@_structureRef"]!, i["@_id"]])
+      );
+
+      setInputAndOutputDataMapping(itemDefinitionIdByDataTypes, inputs, outputs, task);
+    },
+    dataInputReservedNames: [MILESTONE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.TASK_NAME],
     dataOutputReservedNames: [],
   };
 }

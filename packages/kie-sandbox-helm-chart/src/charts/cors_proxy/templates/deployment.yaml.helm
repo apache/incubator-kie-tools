@@ -33,20 +33,49 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.account }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.tls.enabled }}
+          env:
+            - name: CORS_PROXY_TLS_CERTIFICATE_PATH
+              value: {{ .Values.tls.certPath | quote }}
+            - name: CORS_PROXY_TLS_KEY_PATH
+              value: {{ .Values.tls.keyPath | quote }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
+            {{- if .Values.tls.enabled }}
+            tcpSocket:
+              port: http
+            {{- else }}
             httpGet:
               path: /ping
               port: http
+            {{- end }}
           readinessProbe:
+            {{- if .Values.tls.enabled }}
+            tcpSocket:
+              port: http
+            {{- else }}
             httpGet:
               path: /ping
               port: http
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.tls.enabled }}
+          volumeMounts:
+            - name: tls-cert
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+          {{- end }}
+      {{- if .Values.tls.enabled }}
+      volumes:
+        - name: tls-cert
+          secret:
+            secretName: {{ required "tls.secretName is required when tls.enabled is true" .Values.tls.secretName }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
