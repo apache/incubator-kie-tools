@@ -5344,6 +5344,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
