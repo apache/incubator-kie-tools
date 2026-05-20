@@ -321,31 +321,25 @@ We'll create a simple employee onboarding process with:
 
 **Classic Editor:**
 
-1. Expand "Start Events" in palette panel
-2. Drag "Start" to canvas
-3. Click to select
-4. Properties panel shows Start Event properties
-5. Set Name: "Application Received"
+1. Drag "Start" from palette panel to canvas
+2. In the Properties panel set Name: "Application Received"
 
 **New Editor:**
 
-1. From the palette panel drag "Start" to canvas
-2. Element snaps to grid automatically
-3. In the Properties panel set Name: "Application Received"
+1. Drag "Start" from palette panel to canvas
+2. In the Properties panel set Name: "Application Received"
 
 ### Step 5: Add User Task (HR Review)
 
 **Classic Editor:**
 
-1. Expand "Tasks" in palette panel
-2. Drag "User Task" to canvas
-3. Position manually
-4. Click to select
-5. Set Name: "HR Review Application"
-6. Scroll to find "Actors" field
+1. Drag "Task" from palette panel to canvas
+2. Morph to "User Task"
+3. In the Properties panel set Name: "HR Review Application"
+4. Find "Task Name" field
+5. Set Task Name: "ReviewApplication"
+6. Find "Actors" field
 7. Set Actors: "hr" (or multiple: "hr,manager")
-8. Find "Task Name" field
-9. Set Task Name: "ReviewApplication"
 
 ![classic-editor-user-task](images/migration-guide/classic-editor-user-task.png)
 
@@ -372,12 +366,13 @@ We'll create a simple employee onboarding process with:
 
 **Classic Editor:**
 
-1. Drag "Business Rule Task" from palette panel
-2. Set Name: "Background Check"
-3. Find "Implementation/Execution" dropdown
-4. Select "DMN"
-5. Set DMN Model Name: "BackgroundCheckDecision"
-6. Set DMN Namespace: "https://company.com/dmn"
+1. Drag "Task" from palette panel to canvas
+2. Morph to "Business Rule Task"
+3. In the Properties panel set Name: "Background Check"
+4. Find "Implementation/Execution" dropdown
+5. Select "DMN"
+6. Set DMN Model Name: "BackgroundCheckDecision"
+7. Set DMN Namespace: "https://company.com/dmn"
 
 ![classic-editor-business-rule-task](images/migration-guide/classic-editor-business-rule-task.png)
 
@@ -397,19 +392,18 @@ We'll create a simple employee onboarding process with:
 
 **Classic Editor:**
 
-1. Expand "Gateways" in palette panel
-2. Drag "Exclusive" gateway
-3. Position after Business Rule Task
-4. Set Name: "Check Passed?"
-5. Connect Background Check task to gateway:
+1. Drag "Gateway" from palette panel to canvas
+2. Morph to "Exclusive"
+3. In the Properties panel set Name: "Check Passed?"
+4. Connect Background Check task to gateway:
    - Click Background Check task
    - Drag connector to gateway
-6. Add two End Events for the diverging paths:
+5. Add two End Events for the diverging paths:
    - Drag "End Event" from palette panel (for "Passed" path)
-   - Set Name: "Onboarding Complete"
+   - In the Properties panel set Name: "Onboarding Complete"
    - Drag another "End Event" (for "Failed" path)
-   - Set Name: "Application Rejected"
-7. Connect gateway to both End Events:
+   - In the Properties panel set Name: "Application Rejected"
+6. Connect gateway to both End Events:
    - From gateway to "Onboarding Complete" end event
    - From gateway to "Application Rejected" end event
 
