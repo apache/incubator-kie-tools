@@ -24,7 +24,7 @@ import { useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnRunnerErrorBoundary } from "./DmnRunnerErrorBoundary";
 
-export function DmnRunnerDrawer(props: React.PropsWithChildren<{}>) {
+export function DmnRunnerDrawer(props: React.PropsWithChildren<{ isDmnEditor: boolean }>) {
   const dmnRunnerState = useDmnRunnerState();
   return (
     <Drawer
@@ -37,9 +37,13 @@ export function DmnRunnerDrawer(props: React.PropsWithChildren<{}>) {
           !dmnRunnerState.isExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"
         }
         panelContent={
-          <DmnRunnerErrorBoundary>
-            <DmnRunnerDrawerPanelContent />
-          </DmnRunnerErrorBoundary>
+          props.isDmnEditor ? (
+            <DmnRunnerErrorBoundary>
+              <DmnRunnerDrawerPanelContent />
+            </DmnRunnerErrorBoundary>
+          ) : (
+            <></>
+          )
         }
       >
         <DrawerContentBody className={"kogito--editor__drawer-content-body"}>{props.children}</DrawerContentBody>
