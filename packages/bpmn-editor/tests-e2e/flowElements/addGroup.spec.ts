@@ -26,17 +26,17 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("Add node - Group", () => {
   test.describe("Add from palette", () => {
-    test("should add Group node from palette", async ({ palette, page, jsonModel }) => {
+    test("should add Group node from palette", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
 
-      const groupNode = page.getByTestId(/^kie-tools--bpmn-editor--node-group-/).first();
+      const groupNode = nodes.getByType(NodeType.GROUP);
       await expect(groupNode).toBeAttached();
 
       const process = await jsonModel.getProcess();
       expect(process.artifact?.length).toBeGreaterThan(0);
     });
 
-    test("should add two Group nodes from palette in a row", async ({ palette, diagram, page, jsonModel }) => {
+    test("should add two Group nodes from palette in a row", async ({ palette, diagram, nodes, jsonModel }) => {
       await palette.dragNewNode({
         type: NodeType.GROUP,
         targetPosition: { x: 100, y: 100 },
@@ -48,8 +48,8 @@ test.describe("Add node - Group", () => {
 
       await diagram.resetFocus();
 
-      const firstGroup = page.getByTestId(/^kie-tools--bpmn-editor--node-group-/).first();
-      const secondGroup = page.getByTestId(/^kie-tools--bpmn-editor--node-group-/).nth(1);
+      const firstGroup = nodes.getByType(NodeType.GROUP).first();
+      const secondGroup = nodes.getByType(NodeType.GROUP).nth(1);
       await expect(firstGroup).toBeAttached();
       await expect(secondGroup).toBeAttached();
 
@@ -68,27 +68,25 @@ test.describe("Add node - Group", () => {
       expect(process.artifact?.length || 0).toBe(0);
     });
 
-    test("should move group to new position", async ({ palette, page, diagram }) => {
+    test("should move group to new position", async ({ palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
 
-      const group = page.getByTestId(/^kie-tools--bpmn-editor--node-group-/).first();
+      const group = nodes.getByType(NodeType.GROUP);
       await expect(group).toBeAttached();
 
       await group.scrollIntoViewIfNeeded();
 
-      const groupBox = await group.boundingBox();
-      expect(groupBox).not.toBeNull();
+      const groupBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.GROUP) });
 
       await group.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: groupBox!.height / 2 },
+        sourcePosition: { x: 20, y: groupBox.height / 2 },
         targetPosition: { x: 500, y: 400 },
         force: true,
       });
 
-      const boxAfter = await group.boundingBox();
-      expect(boxAfter).not.toBeNull();
-      expect(boxAfter!.x).not.toBe(groupBox?.x);
-      expect(boxAfter!.y).not.toBe(groupBox?.y);
+      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.GROUP) });
+      expect(boxAfter.x).not.toBe(groupBox.x);
+      expect(boxAfter.y).not.toBe(groupBox.y);
     });
   });
 });

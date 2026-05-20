@@ -20,7 +20,7 @@
 import { expect, Page } from "@playwright/test";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 import { Diagram } from "../diagram";
-import { Nodes } from "../nodes";
+import { Nodes, NodeType } from "../nodes";
 
 export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   constructor(
@@ -32,8 +32,8 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async selectEventDefinition(args: { eventType: string }) {
-    const catchEvent = this.page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/);
-    const throwEvent = this.page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-throw-event-/);
+    const catchEvent = this.nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+    const throwEvent = this.nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
 
     const selectedNode = (await catchEvent.count()) > 0 ? catchEvent.first() : throwEvent.first();
 

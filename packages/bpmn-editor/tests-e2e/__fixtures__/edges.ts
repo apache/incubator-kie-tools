@@ -34,53 +34,10 @@ export class Edges {
   ) {}
 
   public async get(args: { from: string; to: string }): Promise<Locator> {
-    const fromId = args.from.startsWith("_") ? args.from : await this.nodes.getId({ name: args.from });
-    const toId = args.to.startsWith("_") ? args.to : await this.nodes.getId({ name: args.to });
+    const from = await this.nodes.getId({ name: args.from });
+    const to = await this.nodes.getId({ name: args.to });
 
-    const allEdges = this.page.getByTestId(/kie-tools--bpmn-editor--edge-[^p]/);
-    const edgeCount = await allEdges.count();
-
-    if (edgeCount === 1) {
-      return allEdges.first();
-    }
-
-    const fromNode = this.nodes.getById({ id: fromId });
-    const toNode = this.nodes.getById({ id: toId });
-
-    const fromBox = await fromNode.boundingBox();
-    const toBox = await toNode.boundingBox();
-    expect(fromBox).not.toBeNull();
-    expect(toBox).not.toBeNull();
-
-    const toCenter = { x: toBox!.x + toBox!.width / 2, y: toBox!.y + toBox!.height / 2 };
-
-    let bestMatch: { edge: Locator; distance: number } | null = null;
-
-    for (let i = 0; i < edgeCount; i++) {
-      const edge = allEdges.nth(i);
-      const edgeId = await edge.getAttribute("data-testid");
-
-      if (!edgeId) continue;
-
-      const actualEdgeId = edgeId.replace("kie-tools--bpmn-editor--edge-", "");
-
-      const pathElement = this.page.getByTestId(`kie-tools--bpmn-editor--edge-path-${actualEdgeId}`);
-      const pathBox = await pathElement.boundingBox();
-
-      if (!pathBox) continue;
-
-      const edgeEndX = pathBox.x + pathBox.width;
-      const edgeEndY = pathBox.y + pathBox.height / 2;
-
-      const distanceToTarget = Math.sqrt(Math.pow(edgeEndX - toCenter.x, 2) + Math.pow(edgeEndY - toCenter.y, 2));
-
-      if (!bestMatch || distanceToTarget < bestMatch.distance) {
-        bestMatch = { edge, distance: distanceToTarget };
-      }
-    }
-
-    expect(bestMatch).toBeDefined();
-    return bestMatch!.edge;
+    return this.page.getByRole("button", { name: `Edge from ${from} to ${to}` });
   }
 
   public async getType(args: { from: string; to: string }): Promise<EdgeType> {

@@ -26,24 +26,18 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("Add Boundary Event", () => {
   test.describe("Basic attachment", () => {
-    test("should attach intermediate catch event to task", async ({ palette, jsonModel, page }) => {
+    test("should attach intermediate catch event to task", async ({ palette, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
-
-      const boundaryEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
-      await expect(boundaryEventNode).toBeAttached();
 
       const boundaryEvent = await jsonModel.getFlowElement({ elementIndex: 1 });
       expect(boundaryEvent.__$$element).toBe("boundaryEvent");
       expect(boundaryEvent["@_attachedToRef"]).toBeDefined();
     });
 
-    test("should attach intermediate catch event to subprocess", async ({ palette, jsonModel, page }) => {
+    test("should attach intermediate catch event to subprocess", async ({ palette, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 550, y: 350 } });
-
-      const boundaryEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
-      await expect(boundaryEventNode).toBeAttached();
 
       const boundaryEvent = await jsonModel.getFlowElement({ elementIndex: 1 });
       expect(boundaryEvent.__$$element).toBe("boundaryEvent");
@@ -75,14 +69,13 @@ test.describe("Add Boundary Event", () => {
       palette,
       jsonModel,
       diagram,
-      page,
+      nodes,
     }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      const boundaryEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const boundaryEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(boundaryEventNode).toBeVisible();
-
       await boundaryEventNode.dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
 
       await expect(diagram.get()).toHaveScreenshot("detach-boundary-event-from-task.png");
@@ -110,13 +103,13 @@ test.describe("Add Boundary Event", () => {
       palette,
       jsonModel,
       diagram,
-      page,
+      nodes,
       intermediateEventPropertiesPanel,
     }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      const boundaryEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const boundaryEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(boundaryEventNode).toBeVisible();
       await boundaryEventNode.click();
 
@@ -165,12 +158,13 @@ test.describe("Add Boundary Event", () => {
   });
 
   test.describe("Operations", () => {
-    test("should delete boundary event", async ({ palette, jsonModel, page }) => {
+    test("should delete boundary event", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      const boundaryEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
-      await expect(boundaryEventNode).toBeVisible();
+      const boundaryEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      await expect(boundaryEventNode).toBeAttached();
+
       await boundaryEventNode.click();
       await boundaryEventNode.press("Delete");
 
@@ -183,35 +177,42 @@ test.describe("Add Boundary Event", () => {
       expect(process.flowElement?.find((e: { __$$element: string }) => e.__$$element === "task")).toBeDefined();
     });
 
-    test.skip("should delete task with boundary event", async ({ palette, nodes, jsonModel, diagram }) => {
-      // TODO: Enable when boundary event deletion logic is implemented
+    test.skip(
+      "should delete task with boundary event",
+      {
+        annotation: {
+          type: "issue",
+          description: "https://github.com/apache/incubator-kie-issues/issues/2318",
+        },
+      },
+      async ({ palette, nodes, jsonModel, diagram }) => {
+        await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+        await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
+
+        await nodes.delete({ name: DefaultNodeName.TASK });
+
+        const process = await jsonModel.getProcess();
+        expect(process.flowElement?.filter((e: { __$$element: string }) => e.__$$element === "task").length).toBe(0);
+        expect(
+          process.flowElement?.filter((e: { __$$element: string }) => e.__$$element === "boundaryEvent").length
+        ).toBe(0);
+
+        await expect(diagram.get()).toHaveScreenshot("delete-task-with-boundary-event.png");
+      }
+    );
+
+    test("should move task with boundary event", async ({ palette, jsonModel, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      await nodes.delete({ name: DefaultNodeName.TASK });
-
-      const process = await jsonModel.getProcess();
-      expect(process.flowElement?.filter((e: { __$$element: string }) => e.__$$element === "task").length).toBe(0);
-      expect(
-        process.flowElement?.filter((e: { __$$element: string }) => e.__$$element === "boundaryEvent").length
-      ).toBe(0);
-
-      await expect(diagram.get()).toHaveScreenshot("delete-task-with-boundary-event.png");
-    });
-
-    test("should move task with boundary event", async ({ palette, jsonModel, diagram, page }) => {
-      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
-      await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
-
-      const taskNode = page.getByTestId(/^kie-tools--bpmn-editor--node-task-/).first();
+      const taskNode = nodes.getByType(NodeType.TASK);
       await expect(taskNode).toBeAttached();
       await taskNode.scrollIntoViewIfNeeded();
 
-      const taskBox = await taskNode.boundingBox();
-      expect(taskBox).not.toBeNull();
+      const taskBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TASK) });
 
       await taskNode.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: taskBox!.height / 2 },
+        sourcePosition: { x: 20, y: taskBox.height / 2 },
         targetPosition: { x: 400, y: 350 },
         force: true,
       });

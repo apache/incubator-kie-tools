@@ -63,18 +63,16 @@ test.describe("Add Data Object", () => {
 
     await dataObject.scrollIntoViewIfNeeded();
 
-    const dataObjectBox = await dataObject.boundingBox();
-    expect(dataObjectBox).not.toBeNull();
+    const dataObjectBox = await nodes.getNodeBounds({ name: DefaultNodeName.DATA_OBJECT });
 
     await dataObject.dragTo(diagram.get(), {
-      sourcePosition: { x: dataObjectBox!.width / 2, y: dataObjectBox!.height / 2 },
+      sourcePosition: { x: dataObjectBox.width / 2, y: dataObjectBox.height / 2 },
       targetPosition: { x: 500, y: 400 },
       force: true,
     });
 
-    const boxAfter = await dataObject.boundingBox();
-    expect(boxAfter).not.toBeNull();
-    expect(boxAfter!.x).not.toBe(dataObjectBox?.x);
-    expect(boxAfter!.y).not.toBe(dataObjectBox?.y);
+    const boxAfter = await nodes.getNodeBounds({ name: DefaultNodeName.DATA_OBJECT });
+    expect(boxAfter.x).not.toBe(dataObjectBox.x);
+    expect(boxAfter.y).not.toBe(dataObjectBox.y);
   });
 });

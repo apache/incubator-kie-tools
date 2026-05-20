@@ -26,10 +26,10 @@ test.beforeEach(async ({ editor, page }) => {
 });
 
 test.describe("Change Properties - End Event", () => {
-  test.beforeEach(async ({ palette, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 100, y: 100 } });
 
-    const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
+    const endEvent = nodes.getByType(NodeType.END_EVENT);
     await expect(endEvent).toBeVisible();
 
     await endEvent.click();
@@ -51,55 +51,55 @@ test.describe("Change Properties - End Event", () => {
     );
   });
 
-  test("should configure Terminate event definition", async ({ endEventPropertiesPanel, page }) => {
+  test("should configure Terminate event definition", async ({ endEventPropertiesPanel, page, nodes }) => {
     await endEventPropertiesPanel.setTerminateDefinition({
-      endEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first(),
+      endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
     await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("end-event-terminate.png");
   });
 
-  test("should configure Message event definition", async ({ endEventPropertiesPanel, page }) => {
+  test("should configure Message event definition", async ({ endEventPropertiesPanel, page, nodes }) => {
     await endEventPropertiesPanel.setMessageDefinition({
       messageName: "CompletionMessage",
-      endEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first(),
+      endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
     await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("end-event-message.png");
   });
 
-  test("should configure Signal event definition", async ({ endEventPropertiesPanel, page }) => {
+  test("should configure Signal event definition", async ({ endEventPropertiesPanel, page, nodes }) => {
     await endEventPropertiesPanel.setSignalDefinition({
       signalName: "CompletionSignal",
-      endEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first(),
+      endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
     expect(await endEventPropertiesPanel.getSignalName()).toBe("CompletionSignal");
   });
 
-  test("should configure Error event definition", async ({ endEventPropertiesPanel, page }) => {
+  test("should configure Error event definition", async ({ endEventPropertiesPanel, page, nodes }) => {
     await endEventPropertiesPanel.setErrorDefinition({
       errorName: "ProcessError",
       errorCode: "ERR500",
-      endEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first(),
+      endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
     expect(await endEventPropertiesPanel.getErrorName()).toBe("ProcessError");
   });
 
-  test("should configure Escalation event definition", async ({ endEventPropertiesPanel, page }) => {
+  test("should configure Escalation event definition", async ({ endEventPropertiesPanel, page, nodes }) => {
     await endEventPropertiesPanel.setEscalationDefinition({
       escalationName: "ProcessEscalation",
       escalationCode: "ESC100",
-      endEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first(),
+      endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
     expect(await endEventPropertiesPanel.getEscalationName()).toBe("ProcessEscalation");
   });
 
-  test("should configure Compensation event definition", async ({ endEventPropertiesPanel, page, jsonModel }) => {
+  test("should configure Compensation event definition", async ({ endEventPropertiesPanel, jsonModel, nodes }) => {
     await endEventPropertiesPanel.setCompensationDefinition({
-      endEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first(),
+      endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
     const flowElement = await jsonModel.getFlowElement({ elementIndex: 0 });

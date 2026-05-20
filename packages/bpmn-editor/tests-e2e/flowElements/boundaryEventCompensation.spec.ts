@@ -28,8 +28,8 @@ test.describe("Compensation Boundary Events", () => {
   test("should create compensation boundary event on task", async ({
     palette,
     jsonModel,
-    page,
     intermediateEventPropertiesPanel,
+    nodes,
   }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
@@ -38,7 +38,7 @@ test.describe("Compensation Boundary Events", () => {
     expect(boundaryEvent.__$$element).toBe("boundaryEvent");
     expect(boundaryEvent["@_attachedToRef"]).toBeDefined();
 
-    const eventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+    const eventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
     await eventNode.click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
@@ -66,11 +66,12 @@ test.describe("Compensation Boundary Events", () => {
     page,
     diagram,
     intermediateEventPropertiesPanel,
+    nodes,
   }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-    const eventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+    const eventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
     await expect(eventNode).toBeAttached();
     await eventNode.click();
 
@@ -91,22 +92,19 @@ test.describe("Compensation Boundary Events", () => {
 
     await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 300 } });
 
-    const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).last();
+    const startEvent = nodes.getByType(NodeType.START_EVENT).last();
     await expect(startEvent).toBeAttached();
 
-    const box = await startEvent.boundingBox();
-    expect(box).not.toBeNull();
-
-    await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
+    const startEventId = (await startEvent.getAttribute("data-nodehref")) ?? "";
+    await nodes.showNodeHandles({ id: startEventId });
 
     const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
     await expect(addSequenceFlowHandle).toBeVisible();
 
-    const eventBox = await eventNode.boundingBox();
-    expect(eventBox).not.toBeNull();
+    const eventBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
     await addSequenceFlowHandle.dragTo(diagram.get(), {
-      targetPosition: { x: eventBox!.x + eventBox!.width / 2, y: eventBox!.y + eventBox!.height / 2 },
+      targetPosition: { x: eventBox.x + eventBox.width / 2, y: eventBox.y + eventBox.height / 2 },
     });
 
     const updatedProcess = await jsonModel.getProcess();
@@ -122,8 +120,8 @@ test.describe("Compensation Boundary Events", () => {
   test("should allow compensation boundary event on subprocess", async ({
     palette,
     jsonModel,
-    page,
     intermediateEventPropertiesPanel,
+    nodes,
   }) => {
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 550, y: 350 } });
@@ -135,7 +133,7 @@ test.describe("Compensation Boundary Events", () => {
     expect(boundaryEvent).toBeDefined();
     expect(boundaryEvent["@_attachedToRef"]).toBe(subProcessElement["@_id"]);
 
-    const eventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+    const eventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
     await eventNode.click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});

@@ -149,31 +149,29 @@ test.describe("Add Custom Tasks", () => {
     await expect(nodes.get({ name: "gRPC Task to Delete" })).not.toBeAttached();
   });
 
-  test("should move custom task to new position", async ({ customTasks, page, diagram }) => {
+  test("should move custom task to new position", async ({ customTasks, nodes, diagram }) => {
     await customTasks.dragCustomTask({
       customTaskId: "rest-api-call-task",
       targetPosition: { x: 300, y: 300 },
       thenRenameTo: "Move Test Task",
     });
 
-    const task = page.getByTestId(/^kie-tools--bpmn-editor--node-task-/).last();
+    const task = nodes.getByType(NodeType.TASK).last();
     await expect(task).toBeAttached();
 
     await task.scrollIntoViewIfNeeded();
 
-    const taskBox = await task.boundingBox();
-    expect(taskBox).not.toBeNull();
+    const taskBox = await nodes.getNodeBounds({ name: "Move Test Task" });
 
     await task.dragTo(diagram.get(), {
-      sourcePosition: { x: 20, y: taskBox!.height / 2 },
+      sourcePosition: { x: 20, y: taskBox.height / 2 },
       targetPosition: { x: 500, y: 400 },
       force: true,
     });
 
-    const boxAfter = await task.boundingBox();
-    expect(boxAfter).not.toBeNull();
-    expect(boxAfter!.x).not.toBe(taskBox?.x);
-    expect(boxAfter!.y).not.toBe(taskBox?.y);
+    const boxAfter = await nodes.getNodeBounds({ name: "Move Test Task" });
+    expect(boxAfter.x).not.toBe(taskBox.x);
+    expect(boxAfter.y).not.toBe(taskBox.y);
   });
 
   test.describe("Custom Tasks in Process Flow", () => {
@@ -182,7 +180,6 @@ test.describe("Add Custom Tasks", () => {
       customTasks,
       nodes,
       diagram,
-      page,
     }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 200 } });
       await customTasks.dragCustomTask({
@@ -192,35 +189,31 @@ test.describe("Add Custom Tasks", () => {
       });
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 500, y: 200 } });
 
-      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+      const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
 
       const restApiTask = nodes.get({ name: "Rest API call Task Flow" });
       await expect(restApiTask).toBeAttached();
 
-      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
+      const endEvent = nodes.getByType(NodeType.END_EVENT);
       await expect(endEvent).toBeVisible();
 
       // Connect Start Event -> Rest API call Task
-      const startBox = await startEvent.boundingBox();
-      expect(startBox).not.toBeNull();
-      await page.mouse.move(startBox!.x + startBox!.width - 10, startBox!.y + startBox!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
       const handle1 = startEvent.getByTitle("Add Sequence Flow");
       await expect(handle1).toBeVisible();
-      const taskBox = await restApiTask.boundingBox();
-      expect(taskBox).not.toBeNull();
+      const taskBox = await nodes.getNodeBounds({ name: "Rest API call Task Flow" });
       await handle1.dragTo(diagram.get(), {
-        targetPosition: { x: taskBox!.x + taskBox!.width / 2, y: taskBox!.y + taskBox!.height / 2 },
+        targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
       });
 
       // Connect Rest API call Task -> End Event
-      await page.mouse.move(taskBox!.x + taskBox!.width - 10, taskBox!.y + taskBox!.height / 2);
+      await nodes.showNodeHandles({ name: "Rest API call Task Flow" });
       const handle2 = restApiTask.getByTitle("Add Sequence Flow");
       await expect(handle2).toBeVisible();
-      const endBox = await endEvent.boundingBox();
-      expect(endBox).not.toBeNull();
+      const endBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
       await handle2.dragTo(diagram.get(), {
-        targetPosition: { x: endBox!.x + endBox!.width / 2, y: endBox!.y + endBox!.height / 2 },
+        targetPosition: { x: endBox.x + endBox.width / 2, y: endBox.y + endBox.height / 2 },
       });
 
       await diagram.resetFocus();

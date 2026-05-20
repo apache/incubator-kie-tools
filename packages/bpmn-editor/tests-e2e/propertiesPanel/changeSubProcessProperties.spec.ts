@@ -26,7 +26,7 @@ test.beforeEach(async ({ editor, page }) => {
 });
 
 test.describe("Change Properties - Sub-Process", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 200 } });
 
     await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
@@ -50,7 +50,7 @@ test.describe("Change Properties - Sub-Process", () => {
 });
 
 test.describe("Change Properties - Sub-Process Multi-Instance", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.addProcessVariable({ name: "orderItems", dataType: "Object" });
     await palette.addProcessVariable({ name: "tasks", dataType: "Object" });
 
@@ -82,7 +82,7 @@ test.describe("Change Properties - Sub-Process Multi-Instance", () => {
 });
 
 test.describe("Change Properties - Ad-Hoc Sub-Process", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 200 } });
 
     const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });

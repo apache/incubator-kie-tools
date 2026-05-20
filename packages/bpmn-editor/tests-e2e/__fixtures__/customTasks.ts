@@ -19,7 +19,7 @@
 
 import { Page } from "@playwright/test";
 import { Diagram } from "./diagram";
-import { Nodes } from "./nodes";
+import { Nodes, NodeType } from "./nodes";
 
 export class CustomTasks {
   constructor(
@@ -58,7 +58,7 @@ export class CustomTasks {
     await customTaskElement.dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
 
     if (args.thenRenameTo) {
-      const newNode = this.page.getByTestId(/^kie-tools--bpmn-editor--node-task-/).last();
+      const newNode = this.nodes.getByType(NodeType.TASK).last();
       await this.nodes.renameByLocator({
         nodeLocator: newNode,
         newName: args.thenRenameTo,

@@ -26,10 +26,10 @@ test.beforeEach(async ({ editor, page }) => {
 });
 
 test.describe("Change Properties - Start Event", () => {
-  test.beforeEach(async ({ palette, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
 
-    const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+    const startEvent = nodes.getByType(NodeType.START_EVENT);
     await expect(startEvent).toBeVisible();
   });
 
@@ -50,11 +50,11 @@ test.describe("Change Properties - Start Event", () => {
     );
   });
 
-  test("should configure Timer event definition with date", async ({ startEventPropertiesPanel, page }) => {
+  test("should configure Timer event definition with date", async ({ startEventPropertiesPanel, page, nodes }) => {
     await startEventPropertiesPanel.setTimerDefinition({
       type: "date",
       value: "2025-12-31T23:59:59",
-      startEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first(),
+      startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
     const timerDef = await startEventPropertiesPanel.getTimerDefinition();
@@ -64,11 +64,11 @@ test.describe("Change Properties - Start Event", () => {
     await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("start-event-timer-date.png");
   });
 
-  test("should configure Timer event definition with duration", async ({ startEventPropertiesPanel, page }) => {
+  test("should configure Timer event definition with duration", async ({ startEventPropertiesPanel, page, nodes }) => {
     await startEventPropertiesPanel.setTimerDefinition({
       type: "duration",
       value: "PT5M",
-      startEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first(),
+      startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
     const timerDef = await startEventPropertiesPanel.getTimerDefinition();
@@ -76,11 +76,11 @@ test.describe("Change Properties - Start Event", () => {
     expect(timerDef.value).toBe("PT5M");
   });
 
-  test("should configure Timer event definition with cycle", async ({ startEventPropertiesPanel, page }) => {
+  test("should configure Timer event definition with cycle", async ({ startEventPropertiesPanel, page, nodes }) => {
     await startEventPropertiesPanel.setTimerDefinition({
       type: "cycle",
       value: "R3/PT10M",
-      startEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first(),
+      startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
     const timerDef = await startEventPropertiesPanel.getTimerDefinition();
@@ -88,36 +88,36 @@ test.describe("Change Properties - Start Event", () => {
     expect(timerDef.value).toBe("R3/PT10M");
   });
 
-  test("should configure Message event definition", async ({ startEventPropertiesPanel, page }) => {
+  test("should configure Message event definition", async ({ startEventPropertiesPanel, page, nodes }) => {
     await startEventPropertiesPanel.setMessageDefinition({
       messageName: "StartMessage",
-      startEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first(),
+      startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
     await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("start-event-message.png");
   });
 
-  test("should configure Signal event definition", async ({ startEventPropertiesPanel, page }) => {
+  test("should configure Signal event definition", async ({ startEventPropertiesPanel, page, nodes }) => {
     await startEventPropertiesPanel.setSignalDefinition({
       signalName: "StartSignal",
-      startEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first(),
+      startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
     await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("start-event-signal.png");
   });
 
-  test("should configure Conditional event definition", async ({ startEventPropertiesPanel, page }) => {
+  test("should configure Conditional event definition", async ({ startEventPropertiesPanel, page, nodes }) => {
     await startEventPropertiesPanel.setConditionalExpression({
       expression: "${amount > 1000}",
-      startEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first(),
+      startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
     expect(await startEventPropertiesPanel.getConditionalExpression()).toBe("${amount > 1000}");
   });
 
-  test("should configure Compensation event definition", async ({ startEventPropertiesPanel, page }) => {
+  test("should configure Compensation event definition", async ({ startEventPropertiesPanel, nodes }) => {
     await startEventPropertiesPanel.setCompensationDefinition({
-      startEventLocator: page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first(),
+      startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
     expect(await startEventPropertiesPanel.isCompensationDefinitionSet()).toBe(true);
@@ -133,17 +133,16 @@ test.describe("Change Properties - Start Event in Event Sub-Process", () => {
 
     await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
 
-    const box = await subProcess.boundingBox();
-    expect(box).not.toBeNull();
+    const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
     const targetPosition = {
-      x: box!.x + box!.width / 2 - 50,
-      y: box!.y + box!.height / 2 + 50,
+      x: box.x + box.width / 2 - 50,
+      y: box.y + box.height / 2 + 50,
     };
 
     await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition });
 
-    const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+    const startEvent = nodes.getByType(NodeType.START_EVENT);
     await expect(startEvent).toBeVisible();
     await startEvent.click();
 
@@ -190,15 +189,14 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
 
     await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
 
-    const box = await subProcess.boundingBox();
-    expect(box).not.toBeNull();
+    const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
     await palette.dragNewNode({
       type: NodeType.START_EVENT,
-      targetPosition: { x: box!.x + box!.width / 2 - 50, y: box!.y + box!.height / 2 + 50 },
+      targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
     });
 
-    const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+    const startEvent = nodes.getByType(NodeType.START_EVENT);
     await expect(startEvent).toBeVisible();
     await startEvent.click();
 
@@ -225,15 +223,14 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
 
     await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
 
-    const box = await subProcess.boundingBox();
-    expect(box).not.toBeNull();
+    const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
     await palette.dragNewNode({
       type: NodeType.START_EVENT,
-      targetPosition: { x: box!.x + box!.width / 2 - 50, y: box!.y + box!.height / 2 + 50 },
+      targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
     });
 
-    const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+    const startEvent = nodes.getByType(NodeType.START_EVENT);
     await expect(startEvent).toBeVisible();
     await startEvent.click();
 

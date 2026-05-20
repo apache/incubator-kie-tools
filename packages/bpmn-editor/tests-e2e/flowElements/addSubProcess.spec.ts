@@ -59,89 +59,72 @@ test.describe("Add node - Sub-process", () => {
   });
 
   test.describe("Add connected Sub-process node", () => {
-    test("should add connected Task from Sub-process", async ({ diagram, palette, page, nodes }) => {
+    test("should add connected Task from Sub-process", async ({ diagram, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 100 } });
 
       const subProcess = await nodes.get({ name: "New Sub-process" });
       await expect(subProcess).toBeAttached();
 
-      const box = await subProcess.boundingBox();
-      expect(box).not.toBeNull();
-
-      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
+      await nodes.showNodeHandles({ name: "New Sub-process" });
 
       const addTaskHandle = subProcess.getByTitle("Add Task");
       await expect(addTaskHandle).toBeVisible();
 
-      const handleBox = await addTaskHandle.boundingBox();
-      expect(handleBox).not.toBeNull();
-
-      await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2);
-      await page.mouse.down();
-      await page.mouse.move(600, 100);
-      await page.mouse.up();
+      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 600, y: 100 } });
 
       await diagram.zoomOut({ clicks: 1 });
 
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
 
-    test("should create sequence flow from Start Event to Sub-process", async ({ diagram, palette, page, nodes }) => {
+    test("should create sequence flow from Start Event to Sub-process", async ({ diagram, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 100 } });
 
-      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+      const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
 
       const subProcess = await nodes.get({ name: "New Sub-process" });
       await expect(subProcess).toBeAttached();
 
-      const box = await startEvent.boundingBox();
-      expect(box).not.toBeNull();
-
-      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
 
       const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
-      const subProcessBox = await subProcess.boundingBox();
-      expect(subProcessBox).not.toBeNull();
+      const subProcessBox = await nodes.getNodeBounds({ name: "New Sub-process" });
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
         targetPosition: {
-          x: subProcessBox!.x + subProcessBox!.width / 2,
-          y: subProcessBox!.y + subProcessBox!.height / 2,
+          x: subProcessBox.x + subProcessBox.width / 2,
+          y: subProcessBox.y + subProcessBox.height / 2,
         },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-start-event-to-subprocess.png");
     });
 
-    test("should create sequence flow from Gateway to Sub-process", async ({ diagram, palette, page, nodes }) => {
+    test("should create sequence flow from Gateway to Sub-process", async ({ diagram, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 100 } });
 
-      const gateway = page.getByTestId(/^kie-tools--bpmn-editor--node-gateway-/).first();
+      const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
 
       const subProcess = await nodes.get({ name: "New Sub-process" });
       await expect(subProcess).toBeAttached();
 
-      const box = await gateway.boundingBox();
-      expect(box).not.toBeNull();
-
-      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
 
       const addSequenceFlowHandle = gateway.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
-      const subProcessBox = await subProcess.boundingBox();
-      expect(subProcessBox).not.toBeNull();
+      const subProcessBox = await nodes.getNodeBounds({ name: "New Sub-process" });
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
         targetPosition: {
-          x: subProcessBox!.x + subProcessBox!.width / 2,
-          y: subProcessBox!.y + subProcessBox!.height / 2,
+          x: subProcessBox.x + subProcessBox.width / 2,
+          y: subProcessBox.y + subProcessBox.height / 2,
         },
       });
 
@@ -177,12 +160,11 @@ test.describe("Add node - Sub-process", () => {
       const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
       await expect(subProcess).toBeAttached();
 
-      const box = await subProcess.boundingBox();
-      expect(box).not.toBeNull();
+      const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
       await palette.dragNewNode({
         type: NodeType.START_EVENT,
-        targetPosition: { x: box!.x + 50, y: box!.y + box!.height + 50 },
+        targetPosition: { x: box.x + 50, y: box.y + box.height + 50 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("add-start-event-inside-subprocess.png");
@@ -194,10 +176,9 @@ test.describe("Add node - Sub-process", () => {
       const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
       await expect(subProcess).toBeAttached();
 
-      const box = await subProcess.boundingBox();
-      expect(box).not.toBeNull();
+      const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
-      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: box!.x + 50, y: box!.y + 50 } });
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: box.x + 50, y: box.y + 50 } });
 
       await expect(diagram.get()).toHaveScreenshot("add-task-inside-subprocess.png");
     });
@@ -208,12 +189,11 @@ test.describe("Add node - Sub-process", () => {
       const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
       await expect(subProcess).toBeAttached();
 
-      const box = await subProcess.boundingBox();
-      expect(box).not.toBeNull();
+      const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
       await palette.dragNewNode({
         type: NodeType.GATEWAY,
-        targetPosition: { x: box!.x + box!.width / 4, y: box!.y + 100 },
+        targetPosition: { x: box.x + box.width / 4, y: box.y + 100 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("add-gateway-inside-subprocess.png");
@@ -222,7 +202,6 @@ test.describe("Add node - Sub-process", () => {
     test("should create complete flow inside Sub-process: Start Event -> Task -> End Event", async ({
       palette,
       nodes,
-      page,
       diagram,
     }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
@@ -230,51 +209,46 @@ test.describe("Add node - Sub-process", () => {
       const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
       await expect(subProcess).toBeAttached();
 
-      const box = await subProcess.boundingBox();
-      expect(box).not.toBeNull();
+      const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
       await palette.dragNewNode({
         type: NodeType.START_EVENT,
-        targetPosition: { x: box!.x + box!.width / 8, y: box!.y + 100 },
+        targetPosition: { x: box.x + box.width / 8, y: box.y + 100 },
       });
       await palette.dragNewNode({
         type: NodeType.TASK,
-        targetPosition: { x: box!.x + box!.width / 3, y: box!.y + 70 },
+        targetPosition: { x: box.x + box.width / 3, y: box.y + 70 },
       });
       await palette.dragNewNode({
         type: NodeType.END_EVENT,
-        targetPosition: { x: box!.x + box!.width - 100, y: box!.y + 100 },
+        targetPosition: { x: box.x + box.width - 100, y: box.y + 100 },
       });
 
-      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+      const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
 
       const task = await nodes.get({ name: "New Task" });
       await expect(task).toBeAttached();
 
-      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
+      const endEvent = nodes.getByType(NodeType.END_EVENT);
       await expect(endEvent).toBeVisible();
 
       // Connect Start Event -> Task
-      const startBox = await startEvent.boundingBox();
-      expect(startBox).not.toBeNull();
-      await page.mouse.move(startBox!.x + startBox!.width - 10, startBox!.y + startBox!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
       const handle1 = startEvent.getByTitle("Add Sequence Flow");
       await expect(handle1).toBeVisible();
-      const taskBox = await task.boundingBox();
-      expect(taskBox).not.toBeNull();
+      const taskBox = await nodes.getNodeBounds({ name: "New Task" });
       await handle1.dragTo(diagram.get(), {
-        targetPosition: { x: taskBox!.x + taskBox!.width / 2, y: taskBox!.y + taskBox!.height / 2 },
+        targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
       });
 
       // Connect Task -> End Event
-      await page.mouse.move(taskBox!.x + taskBox!.width - 10, taskBox!.y + taskBox!.height / 2);
+      await nodes.showNodeHandles({ name: "New Task" });
       const handle2 = task.getByTitle("Add Sequence Flow");
       await expect(handle2).toBeVisible();
-      const endBox = await endEvent.boundingBox();
-      expect(endBox).not.toBeNull();
+      const endBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
       await handle2.dragTo(diagram.get(), {
-        targetPosition: { x: endBox!.x + endBox!.width / 2, y: endBox!.y + endBox!.height / 2 },
+        targetPosition: { x: endBox.x + endBox.width / 2, y: endBox.y + endBox.height / 2 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("complete-flow-inside-subprocess.png");
@@ -292,26 +266,24 @@ test.describe("Add node - Sub-process", () => {
       expect(process.flowElement?.length).toBe(0);
     });
 
-    test("should move sub-process to new position", async ({ palette, page, diagram }) => {
+    test("should move sub-process to new position", async ({ palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
 
-      const subProcess = page.getByTestId(/^kie-tools--bpmn-editor--node-sub-process-/).first();
+      const subProcess = nodes.getByType(NodeType.SUB_PROCESS);
       await expect(subProcess).toBeAttached();
       await subProcess.scrollIntoViewIfNeeded();
 
-      const subProcessBox = await subProcess.boundingBox();
-      expect(subProcessBox).not.toBeNull();
+      const subProcessBox = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
       await subProcess.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: subProcessBox!.height / 2 },
+        sourcePosition: { x: 20, y: subProcessBox.height / 2 },
         targetPosition: { x: 500, y: 400 },
         force: true,
       });
 
-      const boxAfter = await subProcess.boundingBox();
-      expect(boxAfter).not.toBeNull();
-      expect(boxAfter!.x).not.toBe(subProcessBox!.x);
-      expect(boxAfter!.y).not.toBe(subProcessBox!.y);
+      const boxAfter = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
+      expect(boxAfter.x).not.toBe(subProcessBox.x);
+      expect(boxAfter.y).not.toBe(subProcessBox.y);
     });
 
     test("should rename sub-process", async ({ palette, nodes, jsonModel }) => {

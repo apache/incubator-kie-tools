@@ -26,7 +26,7 @@ test.beforeEach(async ({ editor, page }) => {
 });
 
 test.describe("Change Properties - Task Node", () => {
-  test.beforeEach(async ({ palette, page, nodes }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
     await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
@@ -51,7 +51,7 @@ test.describe("Change Properties - Task Node", () => {
 });
 
 test.describe("Change Properties - User Task", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
     const task = nodes.get({ name: DefaultNodeName.TASK });
@@ -95,7 +95,7 @@ test.describe("Change Properties - User Task", () => {
 });
 
 test.describe("Change Properties - Service Task", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
     const task = nodes.get({ name: DefaultNodeName.TASK });
@@ -121,7 +121,7 @@ test.describe("Change Properties - Service Task", () => {
 });
 
 test.describe("Change Properties - Script Task", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
     const task = nodes.get({ name: DefaultNodeName.TASK });
@@ -141,7 +141,7 @@ test.describe("Change Properties - Script Task", () => {
 });
 
 test.describe("Change Properties - Business Rule Task", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
     const task = nodes.get({ name: DefaultNodeName.TASK });
@@ -169,7 +169,7 @@ test.describe("Change Properties - Business Rule Task", () => {
 });
 
 test.describe("Change Properties - Task Multi-Instance", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.addProcessVariable({ name: "orderItems", dataType: "Object" });
     await palette.addProcessVariable({ name: "approvers", dataType: "Object" });
     await palette.addProcessVariable({ name: "tasks", dataType: "Object" });
@@ -211,7 +211,7 @@ test.describe("Change Properties - Task Multi-Instance", () => {
 });
 
 test.describe("Change Properties - Task Data I/O", () => {
-  test.beforeEach(async ({ palette, nodes, page }) => {
+  test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
     const task = nodes.get({ name: DefaultNodeName.TASK });

@@ -26,10 +26,10 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("Add node - Text Annotation", () => {
   test.describe("Add from palette", () => {
-    test("should add Text Annotation node from palette", async ({ palette, page, jsonModel }) => {
+    test("should add Text Annotation node from palette", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
 
-      const textAnnotationNode = page.getByTestId(/^kie-tools--bpmn-editor--node-text-annotation-/).first();
+      const textAnnotationNode = nodes.getByType(NodeType.TEXT_ANNOTATION);
       await expect(textAnnotationNode).toBeAttached();
 
       const process = await jsonModel.getProcess();
@@ -39,7 +39,7 @@ test.describe("Add node - Text Annotation", () => {
     test("should add two Text Annotation nodes from palette in a row", async ({
       palette,
       diagram,
-      page,
+      nodes,
       jsonModel,
     }) => {
       await palette.dragNewNode({
@@ -53,8 +53,8 @@ test.describe("Add node - Text Annotation", () => {
 
       await diagram.resetFocus();
 
-      const firstTextAnnotation = page.getByTestId(/^kie-tools--bpmn-editor--node-text-annotation-/).first();
-      const secondTextAnnotation = page.getByTestId(/^kie-tools--bpmn-editor--node-text-annotation-/).nth(1);
+      const firstTextAnnotation = nodes.getByType(NodeType.TEXT_ANNOTATION).first();
+      const secondTextAnnotation = nodes.getByType(NodeType.TEXT_ANNOTATION).nth(1);
       await expect(firstTextAnnotation).toBeAttached();
       await expect(secondTextAnnotation).toBeAttached();
 
@@ -73,27 +73,25 @@ test.describe("Add node - Text Annotation", () => {
       expect(process.artifact?.length || 0).toBe(0);
     });
 
-    test("should move text annotation to new position", async ({ palette, page, diagram }) => {
+    test("should move text annotation to new position", async ({ palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 300, y: 300 } });
 
-      const textAnnotation = page.getByTestId(/^kie-tools--bpmn-editor--node-text-annotation-/).first();
+      const textAnnotation = nodes.getByType(NodeType.TEXT_ANNOTATION);
       await expect(textAnnotation).toBeAttached();
 
       await textAnnotation.scrollIntoViewIfNeeded();
 
-      const textAnnotationBox = await textAnnotation.boundingBox();
-      expect(textAnnotationBox).not.toBeNull();
+      const textAnnotationBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TEXT_ANNOTATION) });
 
       await textAnnotation.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: textAnnotationBox!.height / 2 },
+        sourcePosition: { x: 20, y: textAnnotationBox.height / 2 },
         targetPosition: { x: 500, y: 100 },
         force: true,
       });
 
-      const boxAfter = await textAnnotation.boundingBox();
-      expect(boxAfter).not.toBeNull();
-      expect(boxAfter!.x).not.toBe(textAnnotationBox?.x);
-      expect(boxAfter!.y).not.toBe(textAnnotationBox?.y);
+      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TEXT_ANNOTATION) });
+      expect(boxAfter.x).not.toBe(textAnnotationBox.x);
+      expect(boxAfter.y).not.toBe(textAnnotationBox.y);
     });
   });
 });

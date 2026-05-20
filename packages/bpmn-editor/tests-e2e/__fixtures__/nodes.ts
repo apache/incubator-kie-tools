@@ -237,6 +237,75 @@ export class Nodes {
     }
   }
 
+  public async showNodeHandles(args: { name?: string; id?: string; position?: NodePosition }) {
+    const node = args.id ? this.getById({ id: args.id }) : this.get({ name: args.name! });
+    const box = await node.boundingBox();
+    expect(box).not.toBeNull();
+
+    const position = args.position ?? NodePosition.RIGHT;
+    let x: number, y: number;
+
+    switch (position) {
+      case NodePosition.RIGHT:
+        x = box!.x + box!.width - 10;
+        y = box!.y + box!.height / 2;
+        break;
+      case NodePosition.TOP:
+        x = box!.x + box!.width / 2;
+        y = box!.y + 10;
+        break;
+      case NodePosition.CENTER:
+        x = box!.x + box!.width / 2;
+        y = box!.y + box!.height / 2;
+        break;
+      case NodePosition.BOTTOM:
+        x = box!.x + box!.width / 2;
+        y = box!.y + box!.height - 10;
+        break;
+      case NodePosition.LEFT:
+        x = box!.x + 10;
+        y = box!.y + box!.height / 2;
+        break;
+      case NodePosition.TOP_PADDING:
+        x = box!.x + box!.width / 2;
+        y = box!.y + 15;
+        break;
+    }
+
+    await this.page.mouse.move(x, y);
+  }
+
+  public async hideNodeHandles() {
+    await this.page.mouse.move(0, 0);
+  }
+
+  public async getNodeBounds(args: { name?: string; id?: string }) {
+    const node = args.id ? this.getById({ id: args.id }) : this.get({ name: args.name! });
+    const box = await node.boundingBox();
+    expect(box).not.toBeNull();
+    return box!;
+  }
+
+  public async dragNodeToPosition(args: {
+    name?: string;
+    id?: string;
+    fromPosition?: NodePosition;
+    toPosition: { x: number; y: number };
+  }) {
+    const node = args.id ? this.getById({ id: args.id }) : this.get({ name: args.name! });
+    const box = await node.boundingBox();
+    expect(box).not.toBeNull();
+
+    const fromPos = args.fromPosition
+      ? await this.getPositionalNodeHandleCoordinates({ node, position: args.fromPosition })
+      : { x: box!.width / 2, y: box!.height / 2 };
+
+    await this.page.mouse.move(box!.x + fromPos.x, box!.y + fromPos.y);
+    await this.page.mouse.down();
+    await this.page.mouse.move(args.toPosition.x, args.toPosition.y);
+    await this.page.mouse.up();
+  }
+
   public async select(args: { name: string; position?: NodePosition }) {
     const node = this.get({ name: args.name });
 

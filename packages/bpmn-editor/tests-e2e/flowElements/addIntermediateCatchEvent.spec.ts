@@ -26,17 +26,17 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("Add node - Intermediate Catch Event", () => {
   test.describe("Add from palette", () => {
-    test("should add Intermediate Catch Event node from palette", async ({ palette, jsonModel, page }) => {
+    test("should add Intermediate Catch Event node from palette", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
 
       const catchEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(catchEvent.__$$element).toBe("intermediateCatchEvent");
 
-      const catchEventNode = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEventNode).toBeAttached();
     });
 
-    test("should add two Intermediate Catch Event nodes from palette in a row", async ({ palette, diagram, page }) => {
+    test("should add two Intermediate Catch Event nodes from palette in a row", async ({ palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({
         type: NodeType.INTERMEDIATE_CATCH_EVENT,
@@ -46,8 +46,8 @@ test.describe("Add node - Intermediate Catch Event", () => {
 
       await diagram.resetFocus();
 
-      const firstCatchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
-      const secondCatchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).nth(1);
+      const firstCatchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).first();
+      const secondCatchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).nth(1);
       await expect(firstCatchEvent).toBeAttached();
       await expect(secondCatchEvent).toBeAttached();
     });
@@ -70,16 +70,10 @@ test.describe("Add node - Intermediate Catch Event", () => {
     ];
 
     for (const { morphType, eventDefinition } of morphTestCases) {
-      test(`should morph Intermediate Catch Event to ${morphType}`, async ({
-        jsonModel,
-        palette,
-        diagram,
-        page,
-        nodes,
-      }) => {
+      test(`should morph Intermediate Catch Event to ${morphType}`, async ({ jsonModel, palette, diagram, nodes }) => {
         await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 300 } });
 
-        const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+        const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
         await expect(catchEvent).toBeVisible();
 
         await nodes.morphNode({ nodeLocator: catchEvent, targetMorphType: morphType });
@@ -101,16 +95,13 @@ test.describe("Add node - Intermediate Catch Event", () => {
   });
 
   test.describe("Add connected Intermediate Catch Event node", () => {
-    test("should add connected Task node from Intermediate Catch Event", async ({ diagram, palette, page }) => {
+    test("should add connected Task node from Intermediate Catch Event", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
 
-      const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      const box = await catchEvent.boundingBox();
-      expect(box).not.toBeNull();
-
-      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
       const addTaskHandle = catchEvent.getByTitle("Add Task");
       await expect(addTaskHandle).toBeVisible();
@@ -120,16 +111,18 @@ test.describe("Add node - Intermediate Catch Event", () => {
       await expect(diagram.get()).toHaveScreenshot("add-task-node-from-intermediate-catch-event.png");
     });
 
-    test("should add connected Gateway node from Intermediate Catch Event", async ({ diagram, palette, page }) => {
+    test("should add connected Gateway node from Intermediate Catch Event", async ({
+      diagram,
+      palette,
+      page,
+      nodes,
+    }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
 
-      const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      const box = await catchEvent.boundingBox();
-      expect(box).not.toBeNull();
-
-      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
       const addGatewayHandle = catchEvent.getByTitle("Add Gateway");
       await expect(addGatewayHandle).toBeVisible();
@@ -143,29 +136,26 @@ test.describe("Add node - Intermediate Catch Event", () => {
       diagram,
       palette,
       page,
+      nodes,
     }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 100 } });
 
-      const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      const endEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-end-event-/).first();
+      const endEvent = nodes.getByType(NodeType.END_EVENT);
       await expect(endEvent).toBeVisible();
 
-      const box = await catchEvent.boundingBox();
-      expect(box).not.toBeNull();
-
-      await page.mouse.move(box!.x + box!.width - 10, box!.y + box!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
       const addSequenceFlowHandle = catchEvent.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
-      const endBox = await endEvent.boundingBox();
-      expect(endBox).not.toBeNull();
+      const endBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: endBox!.x + endBox!.width / 2, y: endBox!.y + endBox!.height / 2 },
+        targetPosition: { x: endBox.x + endBox.width / 2, y: endBox.y + endBox.height / 2 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-intermediate-catch-event-to-end-event.png");
@@ -175,29 +165,26 @@ test.describe("Add node - Intermediate Catch Event", () => {
       diagram,
       palette,
       page,
+      nodes,
     }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 100 } });
 
-      const startEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-start-event-/).first();
+      const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
 
-      const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      const startBox = await startEvent.boundingBox();
-      expect(startBox).not.toBeNull();
-
-      await page.mouse.move(startBox!.x + startBox!.width - 10, startBox!.y + startBox!.height / 2);
+      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
 
       const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
-      const catchBox = await catchEvent.boundingBox();
-      expect(catchBox).not.toBeNull();
+      const catchBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: catchBox!.x + catchBox!.width / 2, y: catchBox!.y + catchBox!.height / 2 },
+        targetPosition: { x: catchBox.x + catchBox.width / 2, y: catchBox.y + catchBox.height / 2 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-start-event-to-intermediate-catch-event.png");
@@ -216,22 +203,18 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const task = await nodes.get({ name: "New Task" });
       await expect(task).toBeAttached();
 
-      const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      const taskBox = await task.boundingBox();
-      expect(taskBox).not.toBeNull();
-
-      await page.mouse.move(taskBox!.x + taskBox!.width - 10, taskBox!.y + taskBox!.height / 2);
+      await nodes.showNodeHandles({ name: "New Task" });
 
       const addSequenceFlowHandle = task.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
-      const catchBox = await catchEvent.boundingBox();
-      expect(catchBox).not.toBeNull();
+      const catchBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: catchBox!.x + catchBox!.width / 2, y: catchBox!.y + catchBox!.height / 2 },
+        targetPosition: { x: catchBox.x + catchBox.width / 2, y: catchBox.y + catchBox.height / 2 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-task-to-intermediate-catch-event.png");
@@ -239,10 +222,10 @@ test.describe("Add node - Intermediate Catch Event", () => {
   });
 
   test.describe("Intermediate Catch Event operations", () => {
-    test("should delete intermediate catch event", async ({ palette, jsonModel, page }) => {
+    test("should delete intermediate catch event", async ({ palette, jsonModel, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 300 } });
 
-      const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
       await catchEvent.click();
       await page.keyboard.press("Delete");
@@ -253,21 +236,19 @@ test.describe("Add node - Intermediate Catch Event", () => {
       expect(process.flowElement?.length).toBe(0);
     });
 
-    test("should move intermediate catch event to new position", async ({ palette, page, diagram }) => {
+    test("should move intermediate catch event to new position", async ({ palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 300 } });
 
-      const catchEvent = page.getByTestId(/^kie-tools--bpmn-editor--node-intermediate-catch-event-/).first();
+      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeAttached();
 
-      const boxBefore = await catchEvent.boundingBox();
-      expect(boxBefore).not.toBeNull();
+      const boxBefore = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
       await catchEvent.dragTo(diagram.get(), { targetPosition: { x: 500, y: 400 } });
 
-      const boxAfter = await catchEvent.boundingBox();
-      expect(boxAfter).not.toBeNull();
-      expect(boxAfter!.x).not.toBe(boxBefore!.x);
-      expect(boxAfter!.y).not.toBe(boxBefore!.y);
+      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
+      expect(boxAfter.x).not.toBe(boxBefore.x);
+      expect(boxAfter.y).not.toBe(boxBefore.y);
     });
   });
 });

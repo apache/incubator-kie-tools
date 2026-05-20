@@ -116,14 +116,7 @@ test.describe("Change Properties - Lane with Tasks", () => {
       thenRenameTo: "Movable Task",
     });
 
-    const task = nodes.get({ name: "Movable Task" });
-    const box = await task.boundingBox();
-    expect(box).not.toBeNull();
-
-    await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
-    await page.mouse.down();
-    await page.mouse.move(400, 600);
-    await page.mouse.up();
+    await nodes.dragNodeToPosition({ name: "Movable Task", toPosition: { x: 400, y: 600 } });
 
     await expect(diagram.get()).toHaveScreenshot("task-moved-between-lanes.png");
   });
