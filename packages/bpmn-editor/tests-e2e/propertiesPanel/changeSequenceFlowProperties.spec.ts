@@ -31,20 +31,17 @@ test.describe("Change Properties - Sequence Flow", () => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 400, y: 400 }, thenRenameTo: "Task B" });
     await diagram.resetFocus();
 
-    const taskA = nodes.get({ name: "Task A" });
-    const taskB = nodes.get({ name: "Task B" });
-
-    await taskA.scrollIntoViewIfNeeded();
-    await taskB.scrollIntoViewIfNeeded();
+    await nodes.get({ name: "Task A" }).scrollIntoViewIfNeeded();
+    await nodes.get({ name: "Task B" }).scrollIntoViewIfNeeded();
 
     await nodes.showNodeHandles({ name: "Task A" });
 
-    const addSequenceFlowHandle = taskA.getByTitle("Add Sequence Flow");
-    const taskBBox = await nodes.getNodeBounds({ name: "Task B" });
-
-    await addSequenceFlowHandle.dragTo(diagram.get(), {
-      targetPosition: { x: taskBBox.x + taskBBox.width / 2, y: taskBBox.y + taskBBox.height / 2 },
-    });
+    await nodes
+      .get({ name: "Task A" })
+      .getByTitle("Add Sequence Flow")
+      .dragTo(diagram.get(), {
+        targetPosition: await nodes.getNodeCenterPosition({ name: "Task B" }),
+      });
 
     const edge = await edges.get({ from: "Task A", to: "Task B" });
     await edge.scrollIntoViewIfNeeded();
@@ -90,37 +87,30 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
 
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 400 }, thenRenameTo: "Low Amount" });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
-    const gatewayId = (await gateway.getAttribute("data-nodehref")) ?? "";
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).getAttribute("data-nodehref")) ?? "";
 
-    const highAmountTask = nodes.get({ name: "High Amount" });
-    await expect(highAmountTask).toBeAttached();
+    await expect(nodes.get({ name: "High Amount" })).toBeAttached();
 
-    const lowAmountTask = nodes.get({ name: "Low Amount" });
-    await expect(lowAmountTask).toBeAttached();
+    await expect(nodes.get({ name: "Low Amount" })).toBeAttached();
 
     await nodes.showNodeHandles({ id: gatewayId });
 
-    const addTaskHandle1 = gateway.getByTitle("Add Sequence Flow");
-    await expect(addTaskHandle1).toBeVisible();
-
-    let taskBox = await nodes.getNodeBounds({ name: "High Amount" });
-
-    await addTaskHandle1.dragTo(diagram.get(), {
-      targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
-    });
+    await nodes
+      .getByType(NodeType.GATEWAY)
+      .getByTitle("Add Sequence Flow")
+      .dragTo(diagram.get(), {
+        targetPosition: await nodes.getNodeCenterPosition({ name: "High Amount" }),
+      });
 
     await nodes.showNodeHandles({ id: gatewayId });
 
-    const addTaskHandle2 = gateway.getByTitle("Add Sequence Flow");
-    await expect(addTaskHandle2).toBeVisible();
-
-    taskBox = await nodes.getNodeBounds({ name: "Low Amount" });
-
-    await addTaskHandle2.dragTo(diagram.get(), {
-      targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
-    });
+    await nodes
+      .getByType(NodeType.GATEWAY)
+      .getByTitle("Add Sequence Flow")
+      .dragTo(diagram.get(), {
+        targetPosition: await nodes.getNodeCenterPosition({ name: "Low Amount" }),
+      });
 
     const edge = await edges.get({ from: gatewayId, to: "High Amount" });
     await edge.scrollIntoViewIfNeeded();
@@ -134,14 +124,12 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
     diagram,
     nodes,
   }) => {
-    const gateway = nodes.getByType(NodeType.GATEWAY).first();
-    const gatewayId = (await gateway.getAttribute("data-nodehref")) ?? "";
+    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).first().getAttribute("data-nodehref")) ?? "";
 
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "High Amount Path" });
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${amount > 5000}" });
 
-    const edge = await edges.get({ from: gatewayId, to: "High Amount" });
-    await edge.click();
+    await (await edges.get({ from: gatewayId, to: "High Amount" })).click();
 
     await expect(diagram.get()).toHaveScreenshot("gateway-conditional-flow-high.png");
   });
@@ -152,14 +140,12 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
     diagram,
     nodes,
   }) => {
-    const gateway = nodes.getByType(NodeType.GATEWAY).first();
-    const gatewayId = (await gateway.getAttribute("data-nodehref")) ?? "";
+    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).first().getAttribute("data-nodehref")) ?? "";
 
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "High Amount" });
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${amount > 5000}" });
 
-    const edge2 = await edges.get({ from: gatewayId, to: "Low Amount" });
-    await edge2.click();
+    await (await edges.get({ from: gatewayId, to: "Low Amount" })).click();
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "Low Amount" });
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${amount <= 5000}" });
 
@@ -179,48 +165,38 @@ test.describe("Change Properties - Default Sequence Flow", () => {
       thenRenameTo: "Default Path",
     });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
 
-    const conditionATask = nodes.get({ name: "Condition A" });
-    await expect(conditionATask).toBeAttached();
+    await expect(nodes.get({ name: "Condition A" })).toBeAttached();
 
-    const defaultPathTask = nodes.get({ name: "Default Path" });
-    await expect(defaultPathTask).toBeAttached();
+    await expect(nodes.get({ name: "Default Path" })).toBeAttached();
 
     await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
 
-    const addTaskHandle1 = gateway.getByTitle("Add Sequence Flow");
-    await expect(addTaskHandle1).toBeVisible();
-
-    let taskBox = await nodes.getNodeBounds({ name: "Condition A" });
-
-    await addTaskHandle1.dragTo(diagram.get(), {
-      targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
-    });
+    await nodes
+      .getByType(NodeType.GATEWAY)
+      .getByTitle("Add Sequence Flow")
+      .dragTo(diagram.get(), {
+        targetPosition: await nodes.getNodeCenterPosition({ name: "Condition A" }),
+      });
 
     await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
 
-    const addTaskHandle2 = gateway.getByTitle("Add Sequence Flow");
-    await expect(addTaskHandle2).toBeVisible();
-
-    taskBox = await nodes.getNodeBounds({ name: "Default Path" });
-
-    await addTaskHandle2.dragTo(diagram.get(), {
-      targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
-    });
+    await nodes
+      .getByType(NodeType.GATEWAY)
+      .getByTitle("Add Sequence Flow")
+      .dragTo(diagram.get(), {
+        targetPosition: await nodes.getNodeCenterPosition({ name: "Default Path" }),
+      });
   });
 
   test("should configure default flow", async ({ edges, sequenceFlowPropertiesPanel, diagram, nodes }) => {
-    const gateway = nodes.getByType(NodeType.GATEWAY).first();
-    const gatewayId = (await gateway.getAttribute("data-nodehref")) ?? "";
+    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).first().getAttribute("data-nodehref")) ?? "";
 
-    const edge1 = await edges.get({ from: gatewayId, to: "Condition A" });
-    await edge1.click();
+    await (await edges.get({ from: gatewayId, to: "Condition A" })).click();
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${approved == true}" });
 
-    const edge2 = await edges.get({ from: gatewayId, to: "Default Path" });
-    await edge2.click();
+    await (await edges.get({ from: gatewayId, to: "Default Path" })).click();
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "Default" });
 
     await expect(diagram.get()).toHaveScreenshot("gateway-default-flow.png");

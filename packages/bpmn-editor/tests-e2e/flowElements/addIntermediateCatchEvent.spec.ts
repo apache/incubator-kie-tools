@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, EventNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -59,14 +59,14 @@ test.describe("Add node - Intermediate Catch Event", () => {
 
   test.describe("Intermediate catch event type morphing", () => {
     const morphTestCases = [
-      { morphType: "Message", eventDefinition: "messageEventDefinition" },
-      { morphType: "Timer", eventDefinition: "timerEventDefinition" },
-      { morphType: "Error", eventDefinition: "errorEventDefinition" },
-      { morphType: "Escalation", eventDefinition: "escalationEventDefinition" },
-      { morphType: "Compensation", eventDefinition: "compensateEventDefinition" },
-      { morphType: "Conditional", eventDefinition: "conditionalEventDefinition" },
-      { morphType: "Link", eventDefinition: "linkEventDefinition" },
-      { morphType: "Signal", eventDefinition: "signalEventDefinition" },
+      { morphType: EventNodeType.MESSAGE, eventDefinition: "messageEventDefinition" },
+      { morphType: EventNodeType.TIMER, eventDefinition: "timerEventDefinition" },
+      { morphType: EventNodeType.ERROR, eventDefinition: "errorEventDefinition" },
+      { morphType: EventNodeType.ESCALATION, eventDefinition: "escalationEventDefinition" },
+      { morphType: EventNodeType.COMPENSATION, eventDefinition: "compensateEventDefinition" },
+      { morphType: EventNodeType.CONDITIONAL, eventDefinition: "conditionalEventDefinition" },
+      { morphType: EventNodeType.LINK, eventDefinition: "linkEventDefinition" },
+      { morphType: EventNodeType.SIGNAL, eventDefinition: "signalEventDefinition" },
     ];
 
     for (const { morphType, eventDefinition } of morphTestCases) {
@@ -76,7 +76,7 @@ test.describe("Add node - Intermediate Catch Event", () => {
         const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
         await expect(catchEvent).toBeVisible();
 
-        await nodes.morphNode({ nodeLocator: catchEvent, targetMorphType: morphType });
+        await nodes.morph({ node: catchEvent, to: morphType });
 
         await expect
           .poll(async () => {
@@ -143,9 +143,7 @@ test.describe("Add node - Intermediate Catch Event", () => {
 
       const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
-
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEvent).toBeVisible();
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
       await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
 
@@ -202,9 +200,7 @@ test.describe("Add node - Intermediate Catch Event", () => {
 
       const task = await nodes.get({ name: "New Task" });
       await expect(task).toBeAttached();
-
-      const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-      await expect(catchEvent).toBeVisible();
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeVisible();
 
       await nodes.showNodeHandles({ name: "New Task" });
 

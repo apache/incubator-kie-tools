@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, SubProcessNodeType, EventNodeType } from "../__fixtures__/nodes";
 import type { Palette } from "../__fixtures__/palette";
 import type { Nodes } from "../__fixtures__/nodes";
 import type { Page } from "@playwright/test";
@@ -30,41 +30,37 @@ test.beforeEach(async ({ editor }) => {
 async function setupEventSubProcess(palette: Palette, nodes: Nodes, _page: Page) {
   await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 200 } });
 
-  const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
-  await expect(subProcess).toBeAttached();
+  await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-  await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
+  await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.EVENT });
 
-  const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
+  const center = await nodes.getNodeCenterPosition({ name: DefaultNodeName.SUB_PROCESS });
 
   await palette.dragNewNode({
     type: NodeType.START_EVENT,
-    targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
+    targetPosition: { x: center.x - 50, y: center.y + 50 },
   });
 
-  const startEvent = nodes.getByType(NodeType.START_EVENT);
-  await expect(startEvent).toBeVisible();
+  await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
 
-  return startEvent;
+  return nodes.getByType(NodeType.START_EVENT);
 }
 
 async function setupRegularSubProcess(palette: Palette, nodes: Nodes, _page: Page) {
   await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 200 } });
 
-  const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
-  await expect(subProcess).toBeAttached();
+  await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-  const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
+  const center = await nodes.getNodeCenterPosition({ name: DefaultNodeName.SUB_PROCESS });
 
   await palette.dragNewNode({
     type: NodeType.START_EVENT,
-    targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
+    targetPosition: { x: center.x - 50, y: center.y + 50 },
   });
 
-  const startEvent = nodes.getByType(NodeType.START_EVENT);
-  await expect(startEvent).toBeVisible();
+  await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
 
-  return startEvent;
+  return nodes.getByType(NodeType.START_EVENT);
 }
 
 test.describe("Add node - Start Event", () => {
@@ -75,8 +71,7 @@ test.describe("Add node - Start Event", () => {
       const startEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(startEvent.__$$element).toBe("startEvent");
 
-      const startEventNode = nodes.getByType(NodeType.START_EVENT);
-      await expect(startEventNode).toBeAttached();
+      await expect(nodes.getByType(NodeType.START_EVENT)).toBeAttached();
     });
 
     test("should add two Start Event nodes from palette in a row", async ({ palette, diagram, nodes }) => {
@@ -89,10 +84,8 @@ test.describe("Add node - Start Event", () => {
 
       await diagram.resetFocus();
 
-      const firstStartEvent = nodes.getByType(NodeType.START_EVENT).first();
-      const secondStartEvent = nodes.getByType(NodeType.START_EVENT).nth(1);
-      await expect(firstStartEvent).toBeAttached();
-      await expect(secondStartEvent).toBeAttached();
+      await expect(nodes.getByType(NodeType.START_EVENT).first()).toBeAttached();
+      await expect(nodes.getByType(NodeType.START_EVENT).nth(1)).toBeAttached();
     });
   });
 
@@ -103,10 +96,10 @@ test.describe("Add node - Start Event", () => {
 
   test.describe("Top-level process start event morphing", () => {
     const morphTestCases = [
-      { morphType: "Message", eventDefinition: "messageEventDefinition" },
-      { morphType: "Timer", eventDefinition: "timerEventDefinition" },
-      { morphType: "Conditional", eventDefinition: "conditionalEventDefinition" },
-      { morphType: "Signal", eventDefinition: "signalEventDefinition" },
+      { morphType: EventNodeType.MESSAGE, eventDefinition: "messageEventDefinition" },
+      { morphType: EventNodeType.TIMER, eventDefinition: "timerEventDefinition" },
+      { morphType: EventNodeType.CONDITIONAL, eventDefinition: "conditionalEventDefinition" },
+      { morphType: EventNodeType.SIGNAL, eventDefinition: "signalEventDefinition" },
     ];
 
     for (const { morphType, eventDefinition } of morphTestCases) {
@@ -121,7 +114,7 @@ test.describe("Add node - Start Event", () => {
         const startEvent = nodes.getByType(NodeType.START_EVENT);
         await expect(startEvent).toBeVisible();
 
-        await nodes.morphNode({ nodeLocator: startEvent, targetMorphType: morphType });
+        await nodes.morph({ node: startEvent, to: morphType });
 
         await expect
           .poll(async () => {
@@ -164,13 +157,13 @@ test.describe("Add node - Start Event", () => {
 
   test.describe("Event sub-process start event morphing", () => {
     const eventSubProcessMorphCases = [
-      { morphType: "Message", eventDefinition: "messageEventDefinition" },
-      { morphType: "Timer", eventDefinition: "timerEventDefinition" },
-      { morphType: "Error", eventDefinition: "errorEventDefinition" },
-      { morphType: "Escalation", eventDefinition: "escalationEventDefinition" },
-      { morphType: "Compensation", eventDefinition: "compensateEventDefinition" },
-      { morphType: "Conditional", eventDefinition: "conditionalEventDefinition" },
-      { morphType: "Signal", eventDefinition: "signalEventDefinition" },
+      { morphType: EventNodeType.MESSAGE, eventDefinition: "messageEventDefinition" },
+      { morphType: EventNodeType.TIMER, eventDefinition: "timerEventDefinition" },
+      { morphType: EventNodeType.ERROR, eventDefinition: "errorEventDefinition" },
+      { morphType: EventNodeType.ESCALATION, eventDefinition: "escalationEventDefinition" },
+      { morphType: EventNodeType.COMPENSATION, eventDefinition: "compensateEventDefinition" },
+      { morphType: EventNodeType.CONDITIONAL, eventDefinition: "conditionalEventDefinition" },
+      { morphType: EventNodeType.SIGNAL, eventDefinition: "signalEventDefinition" },
     ];
 
     for (const { morphType, eventDefinition } of eventSubProcessMorphCases) {
@@ -183,7 +176,7 @@ test.describe("Add node - Start Event", () => {
       }) => {
         const startEvent = await setupEventSubProcess(palette, nodes, page);
 
-        await nodes.morphNode({ nodeLocator: startEvent, targetMorphType: morphType });
+        await nodes.morph({ node: startEvent, to: morphType });
 
         await expect
           .poll(async () => {
@@ -277,8 +270,7 @@ test.describe("Add node - Start Event", () => {
 
       await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const gateway = nodes.getByType(NodeType.GATEWAY);
-      await expect(gateway).toBeAttached();
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
 
     test("should create sequence flow from Start Event to Sub-process", async ({
@@ -295,36 +287,31 @@ test.describe("Add node - Start Event", () => {
       await expect(startEvent).toBeVisible();
       const startEventId = (await startEvent.getAttribute("data-nodehref")) ?? "";
 
-      const subProcess = await nodes.get({ name: "New Sub-process" });
-      await expect(subProcess).toBeAttached();
+      await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
       await nodes.showNodeHandles({ id: startEventId });
 
       const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
       await expect(addSequenceFlowHandle).toBeVisible();
 
-      const subProcessBox = await nodes.getNodeBounds({ name: "New Sub-process" });
+      const subProcessCenter = await nodes.getNodeCenterPosition({ name: DefaultNodeName.SUB_PROCESS });
 
       await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: {
-          x: subProcessBox.x + subProcessBox.width / 2,
-          y: subProcessBox.y + subProcessBox.height / 2,
-        },
+        targetPosition: subProcessCenter,
       });
 
-      const edge = await edges.get({ from: startEventId, to: "New Sub-process" });
-      await expect(edge).toBeAttached();
+      await expect(await edges.get({ from: startEventId, to: DefaultNodeName.SUB_PROCESS })).toBeAttached();
     });
   });
 
   test.describe("Start Event operations", () => {
-    test("should delete start event", async ({ palette, jsonModel, page, nodes }) => {
+    test("should delete start event", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 300, y: 300 } });
 
       const startEvent = nodes.getByType(NodeType.START_EVENT);
-      await expect(startEvent).toBeVisible();
-      await startEvent.click();
-      await page.keyboard.press("Delete");
+      await expect(startEvent).toBeAttached();
+
+      await nodes.deleteByType({ type: NodeType.START_EVENT });
 
       await expect(startEvent).not.toBeAttached();
 
@@ -337,8 +324,8 @@ test.describe("Add node - Start Event", () => {
 
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
-      await startEvent.scrollIntoViewIfNeeded();
 
+      await startEvent.scrollIntoViewIfNeeded();
       const startEventBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.START_EVENT) });
 
       await startEvent.dragTo(diagram.get(), {

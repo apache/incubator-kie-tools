@@ -60,6 +60,48 @@ export enum NodePosition {
   TOP_PADDING,
 }
 
+export enum EventNodeType {
+  NONE = "None",
+  MESSAGE = "Message",
+  TIMER = "Timer",
+  ESCALATION = "Escalation",
+  CONDITIONAL = "Conditional",
+  LINK = "Link",
+  ERROR = "Error",
+  CANCEL = "Cancel",
+  COMPENSATION = "Compensation",
+  SIGNAL = "Signal",
+  MULTIPLE = "Multiple",
+  PARALLEL_MULTIPLE = "Parallel Multiple",
+  TERMINATE = "Terminate",
+}
+
+export enum TaskNodeType {
+  TASK = "Task",
+  USER = "User task",
+  MANUAL = "Manual",
+  SEND = "Send",
+  RECEIVE = "Receive",
+  SERVICE = "Service task",
+  SCRIPT = "Script task",
+  BUSINESS_RULE = "Business Rule task",
+  CALL_ACTIVITY = "Call activity",
+}
+
+export enum GatewayNodeType {
+  EXCLUSIVE = "Exclusive",
+  INCLUSIVE = "Inclusive",
+  PARALLEL = "Parallel",
+  EVENT_BASED = "Event",
+  COMPLEX = "Complex",
+}
+
+export enum SubProcessNodeType {
+  EVENT = "Event",
+  MULTI_INSTANCE = "Multi-instance",
+  AD_HOC = "Ad-hoc",
+}
+
 export class Nodes {
   constructor(
     public page: Page,
@@ -100,6 +142,12 @@ export class Nodes {
 
   public async delete(args: { name: string }) {
     await this.select({ name: args.name, position: NodePosition.TOP_PADDING });
+    await this.diagram.get().press("Delete");
+  }
+
+  public async deleteByType(args: { type: NodeType }) {
+    const node = this.getByType(args.type).first();
+    await node.click({ force: true });
     await this.diagram.get().press("Delete");
   }
 
@@ -286,6 +334,14 @@ export class Nodes {
     return box!;
   }
 
+  public async getNodeCenterPosition(args: { name?: string; id?: string }): Promise<{ x: number; y: number }> {
+    const box = await this.getNodeBounds(args);
+    return {
+      x: box.x + box.width / 2,
+      y: box.y + box.height / 2,
+    };
+  }
+
   public async dragNodeToPosition(args: {
     name?: string;
     id?: string;
@@ -359,34 +415,20 @@ export class Nodes {
     }
   }
 
-  public async morphNode(args: { nodeLocator: Locator; targetMorphType: string; exact?: boolean }): Promise<void> {
-    const exact = args.exact ?? false;
-
-    const box = await args.nodeLocator.boundingBox();
+  public async morph(args: {
+    node: Locator;
+    to: EventNodeType | TaskNodeType | GatewayNodeType | SubProcessNodeType;
+  }): Promise<void> {
+    const box = await args.node.boundingBox();
     expect(box).not.toBeNull();
 
     await this.page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
 
-    const morphingToggle = args.nodeLocator.getByRole("button", { name: /morph/i });
-    const toggleCount = await morphingToggle.count();
-    const isToggleVisible = toggleCount > 0 ? await morphingToggle.isVisible() : false;
-
-    if (!isToggleVisible) {
-      return;
-    }
-
+    const morphingToggle = args.node.getByRole("button", { name: /morph/i });
     await morphingToggle.click({ force: true });
 
     const morphingPanel = this.page.getByTestId("kie-tools--bpmn-editor--morphing-panel");
-    const morphingOption = morphingPanel.getByTitle(args.targetMorphType, { exact });
-    const optionCount = await morphingOption.count();
-    const isOptionVisible = optionCount > 0 ? await morphingOption.isVisible() : false;
-
-    if (!isOptionVisible) {
-      await this.diagram.resetFocus();
-      return;
-    }
-
+    const morphingOption = morphingPanel.getByTitle(args.to, { exact: true });
     await morphingOption.click({ force: true });
   }
 

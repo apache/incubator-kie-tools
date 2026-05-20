@@ -17,7 +17,7 @@
  * under the License.
  */
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, GatewayNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -31,8 +31,7 @@ test.describe("Add node - Gateway", () => {
       const gateway = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(gateway.__$$element).toBe("exclusiveGateway");
 
-      const gatewayNode = nodes.getByType(NodeType.GATEWAY);
-      await expect(gatewayNode).toBeAttached();
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
 
     test("should add two Gateway nodes from palette in a row", async ({ palette, diagram, nodes }) => {
@@ -57,20 +56,20 @@ test.describe("Add node - Gateway", () => {
 
   test.describe("Gateway type morphing", () => {
     const morphTestCases = [
-      { morphType: "Parallel", expectedElement: "parallelGateway", exact: false },
-      { morphType: "Inclusive", expectedElement: "inclusiveGateway", exact: false },
-      { morphType: "Event", expectedElement: "eventBasedGateway", exact: true },
-      { morphType: "Complex", expectedElement: "complexGateway", exact: false },
+      { morphType: GatewayNodeType.PARALLEL, expectedElement: "parallelGateway" },
+      { morphType: GatewayNodeType.INCLUSIVE, expectedElement: "inclusiveGateway" },
+      { morphType: GatewayNodeType.EVENT_BASED, expectedElement: "eventBasedGateway" },
+      { morphType: GatewayNodeType.COMPLEX, expectedElement: "complexGateway" },
     ];
 
-    for (const { morphType, expectedElement, exact } of morphTestCases) {
+    for (const { morphType, expectedElement } of morphTestCases) {
       test(`should morph Exclusive Gateway to ${morphType} Gateway`, async ({ jsonModel, palette, diagram, nodes }) => {
         await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
 
         const gateway = nodes.getByType(NodeType.GATEWAY);
         await expect(gateway).toBeVisible();
 
-        await nodes.morphNode({ nodeLocator: gateway, targetMorphType: morphType, exact });
+        await nodes.morph({ node: gateway, to: morphType });
 
         await expect
           .poll(async () => {
@@ -88,14 +87,14 @@ test.describe("Add node - Gateway", () => {
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
 
-      await nodes.morphNode({ nodeLocator: gateway, targetMorphType: "Parallel" });
+      await nodes.morph({ node: gateway, to: GatewayNodeType.PARALLEL });
 
       const parallelGateway = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(parallelGateway.__$$element).toBe("parallelGateway");
 
       await nodes.hideNodeHandles();
 
-      await nodes.morphNode({ nodeLocator: gateway, targetMorphType: "Exclusive" });
+      await nodes.morph({ node: gateway, to: GatewayNodeType.EXCLUSIVE });
 
       await expect
         .poll(async () => {
@@ -121,8 +120,7 @@ test.describe("Add node - Gateway", () => {
 
       await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const gatewayNode = nodes.getByType(NodeType.GATEWAY);
-      await expect(gatewayNode).toBeAttached();
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
 
     test("should add connected Gateway node from Gateway", async ({ diagram, palette, nodes }) => {
@@ -239,8 +237,7 @@ test.describe("Add node - Gateway", () => {
 
       await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const gateway = nodes.getByType(NodeType.GATEWAY);
-      await expect(gateway).toBeAttached();
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
 
     test("should add connected Gateway from Task node", async ({ diagram, palette, nodes }) => {
@@ -256,8 +253,7 @@ test.describe("Add node - Gateway", () => {
 
       await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const gateway = nodes.getByType(NodeType.GATEWAY);
-      await expect(gateway).toBeAttached();
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
   });
 

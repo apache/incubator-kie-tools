@@ -58,14 +58,13 @@ test.describe("Add Data Object", () => {
   test("should move data object to new position", async ({ palette, nodes, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DATA_OBJECT, targetPosition: { x: 300, y: 300 } });
 
-    const dataObject = nodes.get({ name: DefaultNodeName.DATA_OBJECT });
-    await expect(dataObject).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.DATA_OBJECT })).toBeAttached();
 
-    await dataObject.scrollIntoViewIfNeeded();
+    await nodes.get({ name: DefaultNodeName.DATA_OBJECT }).scrollIntoViewIfNeeded();
 
     const dataObjectBox = await nodes.getNodeBounds({ name: DefaultNodeName.DATA_OBJECT });
 
-    await dataObject.dragTo(diagram.get(), {
+    await nodes.get({ name: DefaultNodeName.DATA_OBJECT }).dragTo(diagram.get(), {
       sourcePosition: { x: dataObjectBox.width / 2, y: dataObjectBox.height / 2 },
       targetPosition: { x: 500, y: 400 },
       force: true,

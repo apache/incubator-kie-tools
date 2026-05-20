@@ -17,7 +17,7 @@
  * under the License.
  */
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType, NodePosition } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, NodePosition, EventNodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
 
 test.beforeEach(async ({ editor }) => {
@@ -54,12 +54,12 @@ test.describe("Add node - End Event", () => {
 
   test.describe("End event type morphing", () => {
     const morphTestCases = [
-      { morphType: "Message", eventDefinition: "messageEventDefinition" },
-      { morphType: "Error", eventDefinition: "errorEventDefinition" },
-      { morphType: "Escalation", eventDefinition: "escalationEventDefinition" },
-      { morphType: "Signal", eventDefinition: "signalEventDefinition" },
-      { morphType: "Compensation", eventDefinition: "compensateEventDefinition" },
-      { morphType: "Terminate", eventDefinition: "terminateEventDefinition" },
+      { morphType: EventNodeType.MESSAGE, eventDefinition: "messageEventDefinition" },
+      { morphType: EventNodeType.ERROR, eventDefinition: "errorEventDefinition" },
+      { morphType: EventNodeType.ESCALATION, eventDefinition: "escalationEventDefinition" },
+      { morphType: EventNodeType.SIGNAL, eventDefinition: "signalEventDefinition" },
+      { morphType: EventNodeType.COMPENSATION, eventDefinition: "compensateEventDefinition" },
+      { morphType: EventNodeType.TERMINATE, eventDefinition: "terminateEventDefinition" },
     ];
 
     for (const { morphType, eventDefinition } of morphTestCases) {
@@ -69,7 +69,7 @@ test.describe("Add node - End Event", () => {
         const endEvent = nodes.getByType(NodeType.END_EVENT);
         await expect(endEvent).toBeVisible();
 
-        await nodes.morphNode({ nodeLocator: endEvent, targetMorphType: morphType });
+        await nodes.morph({ node: endEvent, to: morphType });
 
         await expect
           .poll(async () => {
@@ -91,14 +91,22 @@ test.describe("Add node - End Event", () => {
       await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 100 } });
 
+      const task = await nodes.get({ name: DefaultNodeName.TASK });
+      await expect(task).toBeAttached();
+
       const endEvent = nodes.getByType(NodeType.END_EVENT);
       await expect(endEvent).toBeVisible();
       const endEventId = (await endEvent.getAttribute("data-nodehref")) ?? "";
 
-      await nodes.dragNewConnectedEdge({
-        type: EdgeType.SEQUENCE_FLOW,
-        from: DefaultNodeName.TASK,
-        to: endEventId,
+      await nodes.showNodeHandles({ name: DefaultNodeName.TASK });
+
+      const addSequenceFlowHandle = task.getByTitle("Add Sequence Flow");
+      await expect(addSequenceFlowHandle).toBeVisible();
+
+      const endEventBox = await nodes.getNodeBounds({ id: endEventId });
+
+      await addSequenceFlowHandle.dragTo(diagram.get(), {
+        targetPosition: { x: endEventBox.x + endEventBox.width / 2, y: endEventBox.y + endEventBox.height / 2 },
       });
 
       const edge = await edges.get({ from: DefaultNodeName.TASK, to: endEventId });
@@ -118,8 +126,7 @@ test.describe("Add node - End Event", () => {
 
       await addEndEventHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
 
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEvent).toBeAttached();
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeAttached();
     });
 
     test("should add connected End Event from Sub-process node", async ({ diagram, palette, page, nodes }) => {
@@ -137,8 +144,7 @@ test.describe("Add node - End Event", () => {
 
       await diagram.zoomOut({ clicks: 1 });
 
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEvent).toBeAttached();
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeAttached();
     });
   });
 

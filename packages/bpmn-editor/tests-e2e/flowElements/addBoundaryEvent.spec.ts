@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType, DefaultNodeName } from "../__fixtures__/nodes";
+import { NodeType, DefaultNodeName, TaskNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -74,9 +74,10 @@ test.describe("Add Boundary Event", () => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      const boundaryEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-      await expect(boundaryEventNode).toBeVisible();
-      await boundaryEventNode.dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeVisible();
+      await nodes
+        .getByType(NodeType.INTERMEDIATE_CATCH_EVENT)
+        .dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
 
       await expect(diagram.get()).toHaveScreenshot("detach-boundary-event-from-task.png");
 
@@ -109,9 +110,8 @@ test.describe("Add Boundary Event", () => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      const boundaryEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-      await expect(boundaryEventNode).toBeVisible();
-      await boundaryEventNode.click();
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeVisible();
+      await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
 
       await intermediateEventPropertiesPanel.setCancelActivity({ cancelActivity: false });
 
@@ -133,8 +133,7 @@ test.describe("Add Boundary Event", () => {
     test("should attach to user task", async ({ palette, nodes, jsonModel, diagram }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
 
-      const task = nodes.get({ name: DefaultNodeName.TASK });
-      await nodes.morphNode({ nodeLocator: task, targetMorphType: "User task" });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
 
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
@@ -162,13 +161,11 @@ test.describe("Add Boundary Event", () => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      const boundaryEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-      await expect(boundaryEventNode).toBeAttached();
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeAttached();
 
-      await boundaryEventNode.click();
-      await boundaryEventNode.press("Delete");
+      await nodes.deleteByType({ type: NodeType.INTERMEDIATE_CATCH_EVENT });
 
-      await expect(boundaryEventNode).not.toBeAttached();
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
       expect(
@@ -205,13 +202,12 @@ test.describe("Add Boundary Event", () => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-      const taskNode = nodes.getByType(NodeType.TASK);
-      await expect(taskNode).toBeAttached();
-      await taskNode.scrollIntoViewIfNeeded();
+      await expect(nodes.getByType(NodeType.TASK)).toBeAttached();
+      await nodes.getByType(NodeType.TASK).scrollIntoViewIfNeeded();
 
       const taskBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TASK) });
 
-      await taskNode.dragTo(diagram.get(), {
+      await nodes.getByType(NodeType.TASK).dragTo(diagram.get(), {
         sourcePosition: { x: 20, y: taskBox.height / 2 },
         targetPosition: { x: 400, y: 350 },
         force: true,

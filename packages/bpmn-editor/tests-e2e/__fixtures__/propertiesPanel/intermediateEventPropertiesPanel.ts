@@ -20,7 +20,7 @@
 import { expect, Page } from "@playwright/test";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 import { Diagram } from "../diagram";
-import { Nodes, NodeType } from "../nodes";
+import { Nodes, NodeType, EventNodeType } from "../nodes";
 
 export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   constructor(
@@ -31,7 +31,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     super(diagram, page);
   }
 
-  public async selectEventDefinition(args: { eventType: string }) {
+  public async selectEventDefinition(args: { eventType: EventNodeType }) {
     const catchEvent = this.nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
     const throwEvent = this.nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
 
@@ -39,9 +39,9 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
 
     await expect(selectedNode).toBeVisible();
 
-    await this.nodes.morphNode({
-      nodeLocator: selectedNode,
-      targetMorphType: args.eventType,
+    await this.nodes.morph({
+      node: selectedNode,
+      to: args.eventType,
     });
   }
 
@@ -64,7 +64,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setMessageDefinition(args: { messageName: string }) {
-    await this.selectEventDefinition({ eventType: "Message" });
+    await this.selectEventDefinition({ eventType: EventNodeType.MESSAGE });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.messageName);
@@ -82,7 +82,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     signalName: string;
     scope?: "default" | "processInstance" | "project" | "external";
   }) {
-    await this.selectEventDefinition({ eventType: "Signal" });
+    await this.selectEventDefinition({ eventType: EventNodeType.SIGNAL });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.signalName);
@@ -103,7 +103,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setConditionalExpression(args: { expression: string }) {
-    await this.selectEventDefinition({ eventType: "Conditional" });
+    await this.selectEventDefinition({ eventType: EventNodeType.CONDITIONAL });
 
     const expressionInput = this.panel().getByRole("textbox").first();
     await expressionInput.fill(args.expression);
@@ -116,7 +116,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setLinkDefinition(args: { linkName: string }) {
-    await this.selectEventDefinition({ eventType: "Link" });
+    await this.selectEventDefinition({ eventType: EventNodeType.LINK });
 
     const linkInput = this.panel().getByRole("textbox").first();
     await linkInput.fill(args.linkName);
@@ -134,7 +134,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setErrorDefinition(args: { errorName: string; errorCode?: string }) {
-    await this.selectEventDefinition({ eventType: "Error" });
+    await this.selectEventDefinition({ eventType: EventNodeType.ERROR });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.errorName);
@@ -160,7 +160,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setEscalationDefinition(args: { escalationName: string; escalationCode?: string }) {
-    await this.selectEventDefinition({ eventType: "Escalation" });
+    await this.selectEventDefinition({ eventType: EventNodeType.ESCALATION });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.escalationName);
@@ -186,7 +186,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setCompensationDefinition(args: { activityRef?: string }) {
-    await this.selectEventDefinition({ eventType: "Compensation" });
+    await this.selectEventDefinition({ eventType: EventNodeType.COMPENSATION });
 
     if (args.activityRef) {
       await this.panel().getByRole("combobox").first().click();

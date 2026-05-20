@@ -19,7 +19,7 @@
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType, NodePosition } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, NodePosition, TaskNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -51,11 +51,11 @@ test.describe("Add node - Task", () => {
 
   test.describe("Task type morphing", () => {
     const singleMorphCases = [
-      { morphType: "User task", expectedElement: "userTask", screenshot: "morph-task-to-user-task.png" },
-      { morphType: "Service task", expectedElement: "serviceTask", screenshot: "morph-task-to-service-task.png" },
-      { morphType: "Script task", expectedElement: "scriptTask", screenshot: "morph-task-to-script-task.png" },
+      { morphType: TaskNodeType.USER, expectedElement: "userTask", screenshot: "morph-task-to-user-task.png" },
+      { morphType: TaskNodeType.SERVICE, expectedElement: "serviceTask", screenshot: "morph-task-to-service-task.png" },
+      { morphType: TaskNodeType.SCRIPT, expectedElement: "scriptTask", screenshot: "morph-task-to-script-task.png" },
       {
-        morphType: "Business Rule task",
+        morphType: TaskNodeType.BUSINESS_RULE,
         expectedElement: "businessRuleTask",
         screenshot: "morph-task-to-business-rule-task.png",
       },
@@ -68,7 +68,7 @@ test.describe("Add node - Task", () => {
         await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
 
         const task = await nodes.get({ name: DefaultNodeName.TASK });
-        await nodes.morphNode({ nodeLocator: task, targetMorphType: morphType });
+        await nodes.morph({ node: task, to: morphType });
 
         const result = await jsonModel.getFlowElement({ elementIndex: 0 });
         expect(result.__$$element).toBe(expectedElement);
@@ -84,13 +84,13 @@ test.describe("Add node - Task", () => {
       await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
 
       const task = await nodes.get({ name: DefaultNodeName.TASK });
-      await nodes.morphNode({ nodeLocator: task, targetMorphType: "User task" });
+      await nodes.morph({ node: task, to: TaskNodeType.USER });
 
       expect((await jsonModel.getFlowElement({ elementIndex: 0 })).__$$element).toBe("userTask");
 
       await nodes.hideNodeHandles();
 
-      await nodes.morphNode({ nodeLocator: task, targetMorphType: "Service task" });
+      await nodes.morph({ node: task, to: TaskNodeType.SERVICE });
 
       const taskElement = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(taskElement.__$$element).toBe("serviceTask");
@@ -103,13 +103,13 @@ test.describe("Add node - Task", () => {
       await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
 
       const task = await nodes.get({ name: DefaultNodeName.TASK });
-      await nodes.morphNode({ nodeLocator: task, targetMorphType: "Script task" });
+      await nodes.morph({ node: task, to: TaskNodeType.SCRIPT });
 
       expect((await jsonModel.getFlowElement({ elementIndex: 0 })).__$$element).toBe("scriptTask");
 
       await nodes.hideNodeHandles();
 
-      await nodes.morphNode({ nodeLocator: task, targetMorphType: "Task", exact: true });
+      await nodes.morph({ node: task, to: TaskNodeType.TASK });
 
       const taskElement = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(taskElement.__$$element).toBe("task");

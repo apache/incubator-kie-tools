@@ -17,7 +17,7 @@
  * under the License.
  */
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, EventNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -31,8 +31,7 @@ test.describe("Add node - Intermediate Throw Event", () => {
       const throwEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(throwEvent.__$$element).toBe("intermediateThrowEvent");
 
-      const throwEventNode = nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
-      await expect(throwEventNode).toBeAttached();
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT)).toBeAttached();
     });
 
     test("should add two Intermediate Throw Event nodes from palette in a row", async ({ palette, diagram, nodes }) => {
@@ -58,11 +57,11 @@ test.describe("Add node - Intermediate Throw Event", () => {
 
   test.describe("Intermediate throw event type morphing", () => {
     const morphTestCases = [
-      { morphType: "Message", eventDefinition: "messageEventDefinition" },
-      { morphType: "Escalation", eventDefinition: "escalationEventDefinition" },
-      { morphType: "Compensation", eventDefinition: "compensateEventDefinition" },
-      { morphType: "Link", eventDefinition: "linkEventDefinition" },
-      { morphType: "Signal", eventDefinition: "signalEventDefinition" },
+      { morphType: EventNodeType.MESSAGE, eventDefinition: "messageEventDefinition" },
+      { morphType: EventNodeType.ESCALATION, eventDefinition: "escalationEventDefinition" },
+      { morphType: EventNodeType.COMPENSATION, eventDefinition: "compensateEventDefinition" },
+      { morphType: EventNodeType.LINK, eventDefinition: "linkEventDefinition" },
+      { morphType: EventNodeType.SIGNAL, eventDefinition: "signalEventDefinition" },
     ];
 
     for (const { morphType, eventDefinition } of morphTestCases) {
@@ -72,7 +71,7 @@ test.describe("Add node - Intermediate Throw Event", () => {
         const throwEvent = nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
         await expect(throwEvent).toBeVisible();
 
-        await nodes.morphNode({ nodeLocator: throwEvent, targetMorphType: morphType });
+        await nodes.morph({ node: throwEvent, to: morphType });
 
         await expect
           .poll(async () => {
@@ -139,9 +138,7 @@ test.describe("Add node - Intermediate Throw Event", () => {
 
       const throwEvent = nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
       await expect(throwEvent).toBeVisible();
-
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEvent).toBeVisible();
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
       await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_THROW_EVENT) });
 
@@ -198,9 +195,7 @@ test.describe("Add node - Intermediate Throw Event", () => {
 
       const task = await nodes.get({ name: "New Task" });
       await expect(task).toBeAttached();
-
-      const throwEvent = nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
-      await expect(throwEvent).toBeVisible();
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT)).toBeVisible();
 
       await nodes.showNodeHandles({ name: "New Task" });
 

@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, TaskNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
@@ -54,10 +54,9 @@ test.describe("Change Properties - User Task", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-    const task = nodes.get({ name: DefaultNodeName.TASK });
-    await expect(task).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: task, targetMorphType: "User task" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
   });
 
   test("should configure User Task actors", async ({ taskPropertiesPanel }) => {
@@ -98,10 +97,9 @@ test.describe("Change Properties - Service Task", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-    const task = nodes.get({ name: DefaultNodeName.TASK });
-    await expect(task).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: task, targetMorphType: "Service task" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SERVICE });
   });
 
   test("should configure Service Task implementation", async ({ taskPropertiesPanel }) => {
@@ -124,10 +122,9 @@ test.describe("Change Properties - Script Task", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-    const task = nodes.get({ name: DefaultNodeName.TASK });
-    await expect(task).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: task, targetMorphType: "Script task" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SCRIPT });
   });
 
   test("should configure Script Task script content", async ({ taskPropertiesPanel, page }) => {
@@ -144,10 +141,9 @@ test.describe("Change Properties - Business Rule Task", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-    const task = nodes.get({ name: DefaultNodeName.TASK });
-    await expect(task).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: task, targetMorphType: "Business rule task" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.BUSINESS_RULE });
   });
 
   test("should configure Business Rule Task with DRL rule flow group", async ({ taskPropertiesPanel, page }) => {
@@ -177,10 +173,9 @@ test.describe("Change Properties - Task Multi-Instance", () => {
 
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-    const task = nodes.get({ name: DefaultNodeName.TASK });
-    await expect(task).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: task, targetMorphType: "User task" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
   });
 
   test("should configure parallel multi-instance", async ({ taskPropertiesPanel, page }) => {
@@ -214,10 +209,9 @@ test.describe("Change Properties - Task Data I/O", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-    const task = nodes.get({ name: DefaultNodeName.TASK });
-    await expect(task).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: task, targetMorphType: "User task" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
   });
 
   test("should add data input to Task", async ({ taskPropertiesPanel, page }) => {

@@ -19,7 +19,7 @@
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, TaskNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -113,9 +113,7 @@ test.describe("Add node - Call Activity", () => {
 
       const callActivity = nodes.get({ name: "New Call Activity" });
       await expect(callActivity).toBeAttached();
-
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEvent).toBeVisible();
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
       await nodes.showNodeHandles({ name: "New Call Activity" });
 
@@ -150,7 +148,7 @@ test.describe("Add node - Call Activity", () => {
       const task = nodes.get({ name: "New Task" });
       await expect(task).toBeAttached();
 
-      await nodes.morphNode({ nodeLocator: task, targetMorphType: "Call activity" });
+      await nodes.morph({ node: task, to: TaskNodeType.CALL_ACTIVITY });
 
       await expect(diagram.get()).toHaveScreenshot("add-call-activity-from-start-event.png");
     });
@@ -208,9 +206,7 @@ test.describe("Add node - Call Activity", () => {
 
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
-
-      const callActivity = nodes.get({ name: "New Call Activity" });
-      await expect(callActivity).toBeAttached();
+      await expect(nodes.get({ name: "New Call Activity" })).toBeAttached();
 
       await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
 
@@ -242,9 +238,7 @@ test.describe("Add node - Call Activity", () => {
 
       const callActivity = nodes.get({ name: "New Call Activity" });
       await expect(callActivity).toBeAttached();
-
-      const gateway = nodes.getByType(NodeType.GATEWAY);
-      await expect(gateway).toBeVisible();
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
 
       await nodes.showNodeHandles({ name: "New Call Activity" });
 

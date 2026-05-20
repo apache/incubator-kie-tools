@@ -156,18 +156,20 @@ test.describe("Add Custom Tasks", () => {
       thenRenameTo: "Move Test Task",
     });
 
-    const task = nodes.getByType(NodeType.TASK).last();
-    await expect(task).toBeAttached();
+    await expect(nodes.getByType(NodeType.TASK).last()).toBeAttached();
 
-    await task.scrollIntoViewIfNeeded();
+    await nodes.getByType(NodeType.TASK).last().scrollIntoViewIfNeeded();
 
     const taskBox = await nodes.getNodeBounds({ name: "Move Test Task" });
 
-    await task.dragTo(diagram.get(), {
-      sourcePosition: { x: 20, y: taskBox.height / 2 },
-      targetPosition: { x: 500, y: 400 },
-      force: true,
-    });
+    await nodes
+      .getByType(NodeType.TASK)
+      .last()
+      .dragTo(diagram.get(), {
+        sourcePosition: { x: 20, y: taskBox.height / 2 },
+        targetPosition: { x: 500, y: 400 },
+        force: true,
+      });
 
     const boxAfter = await nodes.getNodeBounds({ name: "Move Test Task" });
     expect(boxAfter.x).not.toBe(taskBox.x);
@@ -189,32 +191,29 @@ test.describe("Add Custom Tasks", () => {
       });
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 500, y: 200 } });
 
-      const startEvent = nodes.getByType(NodeType.START_EVENT);
-      await expect(startEvent).toBeAttached();
+      await expect(nodes.getByType(NodeType.START_EVENT)).toBeAttached();
 
-      const restApiTask = nodes.get({ name: "Rest API call Task Flow" });
-      await expect(restApiTask).toBeAttached();
+      await expect(nodes.get({ name: "Rest API call Task Flow" })).toBeAttached();
 
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEvent).toBeVisible();
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
       // Connect Start Event -> Rest API call Task
       await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-      const handle1 = startEvent.getByTitle("Add Sequence Flow");
-      await expect(handle1).toBeVisible();
-      const taskBox = await nodes.getNodeBounds({ name: "Rest API call Task Flow" });
-      await handle1.dragTo(diagram.get(), {
-        targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
-      });
+      await nodes
+        .getByType(NodeType.START_EVENT)
+        .getByTitle("Add Sequence Flow")
+        .dragTo(diagram.get(), {
+          targetPosition: await nodes.getNodeCenterPosition({ name: "Rest API call Task Flow" }),
+        });
 
       // Connect Rest API call Task -> End Event
       await nodes.showNodeHandles({ name: "Rest API call Task Flow" });
-      const handle2 = restApiTask.getByTitle("Add Sequence Flow");
-      await expect(handle2).toBeVisible();
-      const endBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
-      await handle2.dragTo(diagram.get(), {
-        targetPosition: { x: endBox.x + endBox.width / 2, y: endBox.y + endBox.height / 2 },
-      });
+      await nodes
+        .get({ name: "Rest API call Task Flow" })
+        .getByTitle("Add Sequence Flow")
+        .dragTo(diagram.get(), {
+          targetPosition: await nodes.getNodeCenterPosition({ id: await nodes.getIdByType(NodeType.END_EVENT) }),
+        });
 
       await diagram.resetFocus();
 

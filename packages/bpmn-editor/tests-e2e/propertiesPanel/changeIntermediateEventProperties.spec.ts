@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, EventNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
@@ -29,10 +29,9 @@ test.describe("Change Properties - Intermediate Catch Event", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
 
-    const event = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-    await expect(event).toBeVisible();
+    await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeVisible();
 
-    await event.click();
+    await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
   });
 
   test("should change the Intermediate Catch Event name", async ({ intermediateEventPropertiesPanel }) => {
@@ -52,10 +51,9 @@ test.describe("Change Properties - Intermediate Catch Event", () => {
   });
 
   test("should configure Timer definition with duration", async ({ intermediateEventPropertiesPanel, page, nodes }) => {
-    const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).first();
-    await expect(catchEvent).toBeVisible();
+    await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).first()).toBeVisible();
 
-    await nodes.morphNode({ nodeLocator: catchEvent, targetMorphType: "Timer" });
+    await nodes.morph({ node: nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).first(), to: EventNodeType.TIMER });
     await intermediateEventPropertiesPanel.setTimerDefinition({ type: "duration", value: "PT1H" });
 
     await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot(
@@ -104,10 +102,9 @@ test.describe("Change Properties - Intermediate Throw Event", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 100, y: 100 } });
 
-    const event = nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
-    await expect(event).toBeVisible();
+    await expect(nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT)).toBeVisible();
 
-    await event.click();
+    await nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT).click();
   });
 
   test("should change the Intermediate Throw Event name", async ({ intermediateEventPropertiesPanel }) => {

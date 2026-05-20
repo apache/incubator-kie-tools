@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, GatewayNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
@@ -29,10 +29,9 @@ test.describe("Change Properties - Exclusive Gateway", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
 
-    await gateway.click();
+    await nodes.getByType(NodeType.GATEWAY).click();
   });
 
   test("should change the Gateway name", async ({ gatewayPropertiesPanel }) => {
@@ -56,9 +55,8 @@ test.describe("Change Properties - Exclusive Gateway with Default Flow", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
-    await gateway.click();
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+    await nodes.getByType(NodeType.GATEWAY).click();
   });
 
   test("should configure Exclusive Gateway properties", async ({ gatewayPropertiesPanel, page }) => {
@@ -72,11 +70,10 @@ test.describe("Change Properties - Parallel Gateway", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
-    await gateway.click();
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+    await nodes.getByType(NodeType.GATEWAY).click();
 
-    await nodes.morphNode({ nodeLocator: gateway, targetMorphType: "Parallel" });
+    await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.PARALLEL });
   });
 
   test("should configure Parallel Gateway properties", async ({ gatewayPropertiesPanel, page }) => {
@@ -90,11 +87,10 @@ test.describe("Change Properties - Inclusive Gateway", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
-    await gateway.click();
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+    await nodes.getByType(NodeType.GATEWAY).click();
 
-    await nodes.morphNode({ nodeLocator: gateway, targetMorphType: "Inclusive" });
+    await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.INCLUSIVE });
   });
 
   test("should configure Inclusive Gateway properties", async ({ gatewayPropertiesPanel }) => {
@@ -108,11 +104,10 @@ test.describe("Change Properties - Event-Based Gateway", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
-    await gateway.click();
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+    await nodes.getByType(NodeType.GATEWAY).click();
 
-    await nodes.morphNode({ nodeLocator: gateway, targetMorphType: "Event" });
+    await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.EVENT_BASED });
   });
 
   test("should configure Event-Based Gateway name", async ({ gatewayPropertiesPanel }) => {
@@ -126,11 +121,10 @@ test.describe("Change Properties - Complex Gateway", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-    const gateway = nodes.getByType(NodeType.GATEWAY);
-    await expect(gateway).toBeVisible();
-    await gateway.click();
+    await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+    await nodes.getByType(NodeType.GATEWAY).click();
 
-    await nodes.morphNode({ nodeLocator: gateway, targetMorphType: "Complex" });
+    await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.COMPLEX });
   });
 
   test("should configure Complex Gateway name", async ({ gatewayPropertiesPanel }) => {

@@ -19,7 +19,7 @@
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, SubProcessNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -83,9 +83,7 @@ test.describe("Add node - Sub-process", () => {
 
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
-
-      const subProcess = await nodes.get({ name: "New Sub-process" });
-      await expect(subProcess).toBeAttached();
+      await expect(nodes.get({ name: "New Sub-process" })).toBeAttached();
 
       await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
 
@@ -110,9 +108,7 @@ test.describe("Add node - Sub-process", () => {
 
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
-
-      const subProcess = await nodes.get({ name: "New Sub-process" });
-      await expect(subProcess).toBeAttached();
+      await expect(nodes.get({ name: "New Sub-process" })).toBeAttached();
 
       await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
 
@@ -134,9 +130,9 @@ test.describe("Add node - Sub-process", () => {
 
   test.describe("Sub-process morphing", () => {
     const morphTestCases = [
-      { title: "Event", screenshot: "morph-subprocess-to-event.png" },
-      { title: "Multi-instance", screenshot: "morph-subprocess-to-multi-instance.png" },
-      { title: "Ad-hoc", screenshot: "morph-subprocess-to-adhoc.png" },
+      { title: SubProcessNodeType.EVENT, screenshot: "morph-subprocess-to-event.png" },
+      { title: SubProcessNodeType.MULTI_INSTANCE, screenshot: "morph-subprocess-to-multi-instance.png" },
+      { title: SubProcessNodeType.AD_HOC, screenshot: "morph-subprocess-to-adhoc.png" },
     ];
 
     for (const { title, screenshot } of morphTestCases) {
@@ -146,7 +142,7 @@ test.describe("Add node - Sub-process", () => {
         const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
         await expect(subProcess).toBeAttached();
 
-        await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: title });
+        await nodes.morph({ node: subProcess, to: title });
 
         await expect(diagram.get()).toHaveScreenshot(screenshot);
       });
@@ -229,9 +225,7 @@ test.describe("Add node - Sub-process", () => {
 
       const task = await nodes.get({ name: "New Task" });
       await expect(task).toBeAttached();
-
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEvent).toBeVisible();
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
       // Connect Start Event -> Task
       await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });

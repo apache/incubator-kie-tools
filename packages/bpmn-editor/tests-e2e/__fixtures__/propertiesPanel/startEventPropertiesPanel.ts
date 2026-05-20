@@ -20,7 +20,7 @@
 import { Page, Locator } from "@playwright/test";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 import { Diagram } from "../diagram";
-import { Nodes } from "../nodes";
+import { Nodes, EventNodeType } from "../nodes";
 
 export class StartEventPropertiesPanel extends PropertiesPanelBase {
   constructor(
@@ -31,10 +31,10 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     super(diagram, page);
   }
 
-  private async morphToEventType(args: { startEventLocator: Locator; eventType: string }) {
-    await this.nodes.morphNode({
-      nodeLocator: args.startEventLocator,
-      targetMorphType: args.eventType,
+  private async morphToEventType(args: { startEventLocator: Locator; eventType: EventNodeType }) {
+    await this.nodes.morph({
+      node: args.startEventLocator,
+      to: args.eventType,
     });
   }
 
@@ -61,7 +61,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     value: string;
     startEventLocator: Locator;
   }) {
-    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Timer" });
+    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: EventNodeType.TIMER });
 
     const timerTypeMap = {
       date: { label: "Fire at a specific date", placeholder: "date value" },
@@ -105,7 +105,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setMessageDefinition(args: { messageName: string; startEventLocator: Locator }) {
-    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Message" });
+    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: EventNodeType.MESSAGE });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.messageName);
@@ -120,7 +120,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setSignalDefinition(args: { signalName: string; startEventLocator: Locator }) {
-    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Signal" });
+    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: EventNodeType.SIGNAL });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.signalName);
@@ -135,7 +135,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setConditionalExpression(args: { expression: string; startEventLocator: Locator }) {
-    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Conditional" });
+    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: EventNodeType.CONDITIONAL });
 
     const expressionInput = this.panel().getByRole("textbox").first();
     await expressionInput.fill(args.expression);
@@ -148,7 +148,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setErrorDefinition(args: { errorName: string; startEventLocator: Locator }) {
-    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Error" });
+    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: EventNodeType.ERROR });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.errorName);
@@ -168,7 +168,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setEscalationDefinition(args: { escalationName: string; startEventLocator: Locator }) {
-    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Escalation" });
+    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: EventNodeType.ESCALATION });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.escalationName);
@@ -188,7 +188,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setCompensationDefinition(args: { startEventLocator: Locator }) {
-    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: "Compensation" });
+    await this.morphToEventType({ startEventLocator: args.startEventLocator, eventType: EventNodeType.COMPENSATION });
   }
 
   public async isCompensationDefinitionSet(): Promise<boolean> {

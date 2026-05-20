@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, SubProcessNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
@@ -59,7 +59,7 @@ test.describe("Change Properties - Sub-Process Multi-Instance", () => {
     const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
     await expect(subProcess).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Multi-instance" });
+    await nodes.morph({ node: subProcess, to: SubProcessNodeType.MULTI_INSTANCE });
   });
 
   test("should configure Sub-Process multi-instance parallel", async ({ subProcessPropertiesPanel, page }) => {
@@ -88,7 +88,7 @@ test.describe("Change Properties - Ad-Hoc Sub-Process", () => {
     const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
     await expect(subProcess).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Ad-hoc" });
+    await nodes.morph({ node: subProcess, to: SubProcessNodeType.AD_HOC });
   });
 
   test("should configure Ad-Hoc Sub-Process", async ({ subProcessPropertiesPanel, page }) => {

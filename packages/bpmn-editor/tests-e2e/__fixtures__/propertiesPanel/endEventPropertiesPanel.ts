@@ -20,7 +20,7 @@
 import { Page, Locator } from "@playwright/test";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 import { Diagram } from "../diagram";
-import { Nodes } from "../nodes";
+import { Nodes, EventNodeType } from "../nodes";
 
 export class EndEventPropertiesPanel extends PropertiesPanelBase {
   constructor(
@@ -31,19 +31,19 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     super(diagram, page);
   }
 
-  private async morphToEventType(args: { endEventLocator: Locator; eventType: string }) {
-    await this.nodes.morphNode({
-      nodeLocator: args.endEventLocator,
-      targetMorphType: args.eventType,
+  private async morphToEventType(args: { endEventLocator: Locator; eventType: EventNodeType }) {
+    await this.nodes.morph({
+      node: args.endEventLocator,
+      to: args.eventType,
     });
   }
 
   public async setTerminateDefinition(args: { endEventLocator: Locator }) {
-    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: "Terminate" });
+    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.TERMINATE });
   }
 
   public async setMessageDefinition(args: { messageName: string; endEventLocator: Locator }) {
-    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: "Message" });
+    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.MESSAGE });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.messageName);
@@ -58,7 +58,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setSignalDefinition(args: { signalName: string; endEventLocator: Locator }) {
-    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: "Signal" });
+    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.SIGNAL });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.signalName);
@@ -78,7 +78,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setErrorDefinition(args: { errorName: string; errorCode?: string; endEventLocator: Locator }) {
-    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: "Error" });
+    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.ERROR });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.errorName);
@@ -118,7 +118,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     escalationCode?: string;
     endEventLocator: Locator;
   }) {
-    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: "Escalation" });
+    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.ESCALATION });
 
     await this.panel().getByRole("combobox").first().click();
     await this.page.keyboard.type(args.escalationName);
@@ -154,7 +154,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setCompensationDefinition(args: { endEventLocator: Locator }) {
-    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: "Compensation" });
+    await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.COMPENSATION });
   }
 
   public async isCompensationDefinitionSet(): Promise<boolean> {

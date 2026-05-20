@@ -29,8 +29,7 @@ test.describe("Add node - Text Annotation", () => {
     test("should add Text Annotation node from palette", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
 
-      const textAnnotationNode = nodes.getByType(NodeType.TEXT_ANNOTATION);
-      await expect(textAnnotationNode).toBeAttached();
+      await expect(nodes.getByType(NodeType.TEXT_ANNOTATION)).toBeAttached();
 
       const process = await jsonModel.getProcess();
       expect(process.artifact?.length).toBeGreaterThan(0);
@@ -53,10 +52,8 @@ test.describe("Add node - Text Annotation", () => {
 
       await diagram.resetFocus();
 
-      const firstTextAnnotation = nodes.getByType(NodeType.TEXT_ANNOTATION).first();
-      const secondTextAnnotation = nodes.getByType(NodeType.TEXT_ANNOTATION).nth(1);
-      await expect(firstTextAnnotation).toBeAttached();
-      await expect(secondTextAnnotation).toBeAttached();
+      await expect(nodes.getByType(NodeType.TEXT_ANNOTATION).first()).toBeAttached();
+      await expect(nodes.getByType(NodeType.TEXT_ANNOTATION).nth(1)).toBeAttached();
 
       const process = await jsonModel.getProcess();
       expect(process.artifact?.length).toBe(2);
@@ -64,10 +61,10 @@ test.describe("Add node - Text Annotation", () => {
   });
 
   test.describe("Text Annotation operations", () => {
-    test("should delete text annotation", async ({ palette, jsonModel, page }) => {
+    test("should delete text annotation", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 300, y: 300 } });
 
-      await page.keyboard.press("Delete");
+      await nodes.deleteByType({ type: NodeType.TEXT_ANNOTATION });
 
       const process = await jsonModel.getProcess();
       expect(process.artifact?.length || 0).toBe(0);
@@ -76,14 +73,13 @@ test.describe("Add node - Text Annotation", () => {
     test("should move text annotation to new position", async ({ palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 300, y: 300 } });
 
-      const textAnnotation = nodes.getByType(NodeType.TEXT_ANNOTATION);
-      await expect(textAnnotation).toBeAttached();
+      await expect(nodes.getByType(NodeType.TEXT_ANNOTATION)).toBeAttached();
 
-      await textAnnotation.scrollIntoViewIfNeeded();
+      await nodes.getByType(NodeType.TEXT_ANNOTATION).scrollIntoViewIfNeeded();
 
       const textAnnotationBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TEXT_ANNOTATION) });
 
-      await textAnnotation.dragTo(diagram.get(), {
+      await nodes.getByType(NodeType.TEXT_ANNOTATION).dragTo(diagram.get(), {
         sourcePosition: { x: 20, y: textAnnotationBox.height / 2 },
         targetPosition: { x: 500, y: 100 },
         force: true,

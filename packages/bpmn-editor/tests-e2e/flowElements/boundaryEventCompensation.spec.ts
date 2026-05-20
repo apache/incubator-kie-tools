@@ -38,8 +38,7 @@ test.describe("Compensation Boundary Events", () => {
     expect(boundaryEvent.__$$element).toBe("boundaryEvent");
     expect(boundaryEvent["@_attachedToRef"]).toBeDefined();
 
-    const eventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-    await eventNode.click();
+    await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
     await intermediateEventPropertiesPanel.setCancelActivity({ cancelActivity: false });
@@ -71,9 +70,8 @@ test.describe("Compensation Boundary Events", () => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-    const eventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-    await expect(eventNode).toBeAttached();
-    await eventNode.click();
+    await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeAttached();
+    await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
 
@@ -92,20 +90,20 @@ test.describe("Compensation Boundary Events", () => {
 
     await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 300 } });
 
-    const startEvent = nodes.getByType(NodeType.START_EVENT).last();
-    await expect(startEvent).toBeAttached();
+    await expect(nodes.getByType(NodeType.START_EVENT).last()).toBeAttached();
 
-    const startEventId = (await startEvent.getAttribute("data-nodehref")) ?? "";
+    const startEventId = (await nodes.getByType(NodeType.START_EVENT).last().getAttribute("data-nodehref")) ?? "";
     await nodes.showNodeHandles({ id: startEventId });
 
-    const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
-    await expect(addSequenceFlowHandle).toBeVisible();
-
-    const eventBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
-
-    await addSequenceFlowHandle.dragTo(diagram.get(), {
-      targetPosition: { x: eventBox.x + eventBox.width / 2, y: eventBox.y + eventBox.height / 2 },
-    });
+    await nodes
+      .getByType(NodeType.START_EVENT)
+      .last()
+      .getByTitle("Add Sequence Flow")
+      .dragTo(diagram.get(), {
+        targetPosition: await nodes.getNodeCenterPosition({
+          id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT),
+        }),
+      });
 
     const updatedProcess = await jsonModel.getProcess();
     const sequenceFlows =
@@ -133,8 +131,7 @@ test.describe("Compensation Boundary Events", () => {
     expect(boundaryEvent).toBeDefined();
     expect(boundaryEvent["@_attachedToRef"]).toBe(subProcessElement["@_id"]);
 
-    const eventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-    await eventNode.click();
+    await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
     await intermediateEventPropertiesPanel.setCancelActivity({ cancelActivity: false });

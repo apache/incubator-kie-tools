@@ -29,10 +29,9 @@ test.describe("Change Properties - Data Object", () => {
   test.beforeEach(async ({ palette, nodes, page }) => {
     await palette.dragNewNode({ type: NodeType.DATA_OBJECT, targetPosition: { x: 100, y: 100 } });
 
-    const dataObject = nodes.get({ name: DefaultNodeName.DATA_OBJECT });
-    await expect(dataObject).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.DATA_OBJECT })).toBeAttached();
 
-    await dataObject.click();
+    await nodes.get({ name: DefaultNodeName.DATA_OBJECT }).click();
   });
 
   test("should change the Data Object name", async ({ dataObjectPropertiesPanel }) => {

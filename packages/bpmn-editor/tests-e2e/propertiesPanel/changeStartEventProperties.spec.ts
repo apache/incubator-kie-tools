@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, SubProcessNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await editor.open();
@@ -29,8 +29,7 @@ test.describe("Change Properties - Start Event", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
 
-    const startEvent = nodes.getByType(NodeType.START_EVENT);
-    await expect(startEvent).toBeVisible();
+    await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
   });
 
   test("should change the Start Event name", async ({ startEventPropertiesPanel, page }) => {
@@ -128,10 +127,9 @@ test.describe("Change Properties - Start Event in Event Sub-Process", () => {
   test.beforeEach(async ({ palette, nodes, page, startEventPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 200 } });
 
-    const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
-    await expect(subProcess).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.EVENT });
 
     const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
@@ -142,16 +140,15 @@ test.describe("Change Properties - Start Event in Event Sub-Process", () => {
 
     await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition });
 
-    const startEvent = nodes.getByType(NodeType.START_EVENT);
-    await expect(startEvent).toBeVisible();
-    await startEvent.click();
+    await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
+    await nodes.getByType(NodeType.START_EVENT).click();
 
     await startEventPropertiesPanel.setMessageDefinition({
       messageName: "StartMessage",
-      startEventLocator: startEvent,
+      startEventLocator: nodes.getByType(NodeType.START_EVENT),
     });
 
-    await startEvent.click();
+    await nodes.getByType(NodeType.START_EVENT).click();
   });
 
   test("should display interrupting checkbox for Start Event in Event Sub-Process", async ({
@@ -184,26 +181,24 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
     // Setup: Create Event Sub-Process with Start Event
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 200 } });
 
-    const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
-    await expect(subProcess).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.EVENT });
 
-    const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
+    const center = await nodes.getNodeCenterPosition({ name: DefaultNodeName.SUB_PROCESS });
 
     await palette.dragNewNode({
       type: NodeType.START_EVENT,
-      targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
+      targetPosition: { x: center.x - 50, y: center.y + 50 },
     });
 
-    const startEvent = nodes.getByType(NodeType.START_EVENT);
-    await expect(startEvent).toBeVisible();
-    await startEvent.click();
+    await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
+    await nodes.getByType(NodeType.START_EVENT).click();
 
     // Test: Configure Error definition
     await startEventPropertiesPanel.setErrorDefinition({
       errorName: "StartError",
-      startEventLocator: startEvent,
+      startEventLocator: nodes.getByType(NodeType.START_EVENT),
     });
 
     expect(await startEventPropertiesPanel.getErrorName()).toBe("StartError");
@@ -218,26 +213,24 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
     // Setup: Create Event Sub-Process with Start Event
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 200 } });
 
-    const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
-    await expect(subProcess).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-    await nodes.morphNode({ nodeLocator: subProcess, targetMorphType: "Event" });
+    await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.EVENT });
 
-    const box = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
+    const center = await nodes.getNodeCenterPosition({ name: DefaultNodeName.SUB_PROCESS });
 
     await palette.dragNewNode({
       type: NodeType.START_EVENT,
-      targetPosition: { x: box.x + box.width / 2 - 50, y: box.y + box.height / 2 + 50 },
+      targetPosition: { x: center.x - 50, y: center.y + 50 },
     });
 
-    const startEvent = nodes.getByType(NodeType.START_EVENT);
-    await expect(startEvent).toBeVisible();
-    await startEvent.click();
+    await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
+    await nodes.getByType(NodeType.START_EVENT).click();
 
     // Test: Configure Escalation definition
     await startEventPropertiesPanel.setEscalationDefinition({
       escalationName: "StartEscalation",
-      startEventLocator: startEvent,
+      startEventLocator: nodes.getByType(NodeType.START_EVENT),
     });
 
     expect(await startEventPropertiesPanel.getEscalationName()).toBe("StartEscalation");

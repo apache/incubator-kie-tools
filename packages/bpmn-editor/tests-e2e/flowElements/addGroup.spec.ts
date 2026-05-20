@@ -29,8 +29,7 @@ test.describe("Add node - Group", () => {
     test("should add Group node from palette", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
 
-      const groupNode = nodes.getByType(NodeType.GROUP);
-      await expect(groupNode).toBeAttached();
+      await expect(nodes.getByType(NodeType.GROUP)).toBeAttached();
 
       const process = await jsonModel.getProcess();
       expect(process.artifact?.length).toBeGreaterThan(0);
@@ -48,10 +47,8 @@ test.describe("Add node - Group", () => {
 
       await diagram.resetFocus();
 
-      const firstGroup = nodes.getByType(NodeType.GROUP).first();
-      const secondGroup = nodes.getByType(NodeType.GROUP).nth(1);
-      await expect(firstGroup).toBeAttached();
-      await expect(secondGroup).toBeAttached();
+      await expect(nodes.getByType(NodeType.GROUP).first()).toBeAttached();
+      await expect(nodes.getByType(NodeType.GROUP).nth(1)).toBeAttached();
 
       const process = await jsonModel.getProcess();
       expect(process.artifact?.length).toBe(2);
@@ -59,10 +56,13 @@ test.describe("Add node - Group", () => {
   });
 
   test.describe("Group operations", () => {
-    test("should delete group", async ({ palette, jsonModel, page }) => {
+    test("should delete group", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
 
-      await page.keyboard.press("Delete");
+      const groupId = await nodes.getIdByType(NodeType.GROUP);
+      await nodes.delete({ name: groupId });
+
+      await expect(nodes.getByType(NodeType.GROUP)).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
       expect(process.artifact?.length || 0).toBe(0);
@@ -71,14 +71,13 @@ test.describe("Add node - Group", () => {
     test("should move group to new position", async ({ palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
 
-      const group = nodes.getByType(NodeType.GROUP);
-      await expect(group).toBeAttached();
+      await expect(nodes.getByType(NodeType.GROUP)).toBeAttached();
 
-      await group.scrollIntoViewIfNeeded();
+      await nodes.getByType(NodeType.GROUP).scrollIntoViewIfNeeded();
 
       const groupBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.GROUP) });
 
-      await group.dragTo(diagram.get(), {
+      await nodes.getByType(NodeType.GROUP).dragTo(diagram.get(), {
         sourcePosition: { x: 20, y: groupBox.height / 2 },
         targetPosition: { x: 500, y: 400 },
         force: true,
