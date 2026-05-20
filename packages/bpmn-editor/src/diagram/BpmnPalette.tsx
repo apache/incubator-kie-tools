@@ -491,7 +491,7 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
                   ref={submenuRef}
                   className={"kie-bpmn-editor--palette-nodes-popover kie-bpmn-editor--palette-more-items"}
                 >
-                  <div className={"kie-bpmn-editor--more-items-grid"}>
+                  <div className={"kie-bpmn-editor--palette-more-items-grid"}>
                     {paletteIcons.slice(visibleIconCount).map(renderPaletteIcon)}
                   </div>
                 </div>
@@ -499,7 +499,7 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
               <button
                 ref={ellipsisButtonRef}
                 title={i18n.bpmnPalette.moreItems}
-                className={`kie-bpmn-editor--palette-button kie-bpmn-editor--ellipsis-button ${openGroupSubmenu === paletteGroups.corePaletteGroup.id ? "active" : ""}`}
+                className={`kie-bpmn-editor--palette-button kie-bpmn-editor--palette-ellipsis-button ${openGroupSubmenu === paletteGroups.corePaletteGroup.id ? "active" : ""}`}
                 onClick={() =>
                   setOpenGroupSubmenu(
                     openGroupSubmenu === paletteGroups.corePaletteGroup.id ? null : paletteGroups.corePaletteGroup.id

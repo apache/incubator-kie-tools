@@ -85,7 +85,7 @@
   z-index: 1;
 }
 
-.kie-bpmn-editor--more-items-grid {
+.kie-bpmn-editor--palette-more-items-grid {
   display: grid;
   grid-template-columns: repeat(2, 40px);
   gap: 8px;
@@ -93,7 +93,7 @@
   width: fit-content;
 }
 
-.kie-bpmn-editor--more-items-grid .kie-bpmn-editor--palette-button {
+.kie-bpmn-editor--palette-more-items-grid .kie-bpmn-editor--palette-button {
   margin: 0;
   padding: 0;
   width: 40px;
@@ -104,18 +104,18 @@
   background: white;
 }
 
-.kie-bpmn-editor--more-items-grid .kie-bpmn-editor--palette-button svg {
+.kie-bpmn-editor--palette-more-items-grid .kie-bpmn-editor--palette-button svg {
   width: 40px;
   height: 40px;
   pointer-events: none;
 }
 
-.kie-bpmn-editor--more-items-grid .kie-bpmn-editor--palette-button:hover {
+.kie-bpmn-editor--palette-more-items-grid .kie-bpmn-editor--palette-button:hover {
   filter: brightness(95%);
   cursor: grab;
 }
 
-.kie-bpmn-editor--more-items-grid .kie-bpmn-editor--palette-button:active {
+.kie-bpmn-editor--palette-more-items-grid .kie-bpmn-editor--palette-button:active {
   filter: brightness(90%);
   cursor: grabbing;
 }
@@ -159,7 +159,7 @@
   color: #006ba4;
 }
 
-.kie-bpmn-editor--ellipsis-button {
+.kie-bpmn-editor--palette-ellipsis-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,16 +174,16 @@
   overflow: hidden;
 }
 
-.kie-bpmn-editor--ellipsis-button:hover {
+.kie-bpmn-editor--palette-ellipsis-button:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.kie-bpmn-editor--ellipsis-button.active {
+.kie-bpmn-editor--palette-ellipsis-button.active {
   background: rgba(0, 107, 164, 0.1);
   color: #006ba4;
 }
 
-.kie-bpmn-editor--ellipsis-button svg {
+.kie-bpmn-editor--palette-ellipsis-button svg {
   width: 16px;
   height: 16px;
 }
