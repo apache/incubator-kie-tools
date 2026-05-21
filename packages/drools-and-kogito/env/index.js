@@ -24,11 +24,11 @@ const rootEnv = require("@kie-tools/root-env/env");
 module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DROOLS_AND_KOGITO__droolsRepoUrl: {
-      default: "https://github.com/gitgabrio/drools",
+      default: "https://github.com/apache/incubator-kie-drools",
       description: "Git repository URL for Drools",
     },
     DROOLS_AND_KOGITO__droolsRepoGitRef: {
-      default: "incubator-kie-issues#2029",
+      default: "7aa4989de544b56970c1ce7ab186b88822039c82",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__optaplannerRepoUrl: {
@@ -40,19 +40,19 @@ module.exports = composeEnv([rootEnv], {
       description: "Git ref for the OptaPlanner repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoUrl: {
-      default: "https://github.com/gitgabrio/kogito-runtimes",
+      default: "https://github.com/apache/incubator-kie-kogito-runtimes",
       description: "Git repository URL for Kogito Runtimes",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: {
-      default: "incubator-kie-issues#2029",
+      default: "d80caafa81e946015ff4a7f3434cd0bec62594b8",
       description: "Git ref for the Kogito Runtimes repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoUrl: {
-      default: "https://github.com/gitgabrio/kogito-apps",
+      default: "https://github.com/apache/incubator-kie-kogito-apps",
       description: "Git repository URL for Kogito Apps",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: {
-      default: "incubator-kie-issues#2029",
+      default: "2d6b4a5bdf60f08412c6b854e16921b910713641",
       description: "Git ref for the Kogito Apps repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
