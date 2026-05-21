@@ -26,7 +26,7 @@
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-quarkus-bom</artifactId>
     <version>${revision}</version>
-    <relativePath>./node_modules/@kie-tools/maven-quarkus-bom/pom.xml</relativePath>
+    <relativePath>./node_modules/@kie-tools/quarkus-bom/pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>

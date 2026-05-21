@@ -252,8 +252,8 @@ packages/kie-sandbox-helm-chart/src/templates/NOTES.txt
 packages/kie-sandbox-helm-chart/src/templates/_helpers.tpl
 packages/maven-base/kie-tools-maven-base.iml
 packages/maven-base/settings.xml
-/packages/maven-quarkus-bom/maven-quarkus-bom.iml
-/packages/maven-spring-boot-bom/maven-spring-boot-bom.iml
+/packages/quarkus-bom/quarkus-bom.iml
+/packages/spring-boot-bom/spring-boot-bom.iml
 packages/maven-m2-repo-via-http-image/settings.xml.envsubst
 packages/online-editor/Caddyfile
 packages/online-editor/src/accelerators/test.dmn

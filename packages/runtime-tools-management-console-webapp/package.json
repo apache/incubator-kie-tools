@@ -70,7 +70,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/jbpm-quarkus-devui": "workspace:*",
     "@kie-tools/maven-base": "workspace:*",
-    "@kie-tools/maven-quarkus-bom": "workspace:*",
+    "@kie-tools/quarkus-bom": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/react": "^17.0.6",

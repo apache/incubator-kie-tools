@@ -15,11 +15,11 @@
    under the License.
 -->
 
-## @kie-tools/maven-quarkus-bom
+## @kie-tools/spring-boot-bom
 
-Quarkus BOM Extenstion files for Maven-based packages.
+Spring Boot BOM Extenstion files for Maven-based packages.
 
-- `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based Quarkus pacakges.
+- `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based Spring Boot pacakges.
 
 For more information, refer to the [KIE Tools :: Manual](../../repo/MANUAL.md#specifics--maven)
 
