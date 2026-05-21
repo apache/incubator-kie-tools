@@ -28,7 +28,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Git repository URL for Drools",
     },
     DROOLS_AND_KOGITO__droolsRepoGitRef: {
-      default: "a37cfec845c83311201047359f4001295dafa792",
+      default: "e5fe94bfe604c0e3fed3344a55db4f0f13db7b71",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__optaplannerRepoUrl: {
@@ -44,7 +44,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Git repository URL for Kogito Runtimes",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: {
-      default: "04d91cb35cfd460aa0cb3e2b093d1ad3affb58dc",
+      default: "ea7b99d5869158a308f080e8529aa851753932e9",
       description: "Git ref for the Kogito Runtimes repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoUrl: {
@@ -52,7 +52,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Git repository URL for Kogito Apps",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: {
-      default: "109a7853eda8aa49a6f865b002a4ea27fbaa732f",
+      default: "c31279ebe533e5219fb965a3f8696b9c60e46aab",
       description: "Git ref for the Kogito Apps repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
