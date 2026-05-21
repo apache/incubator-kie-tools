@@ -40495,7 +40495,7 @@ snapshots:
   react-shallow-renderer@16.15.0(react@18.3.1):
     dependencies:
       object-assign: 4.1.1
-      react: 17.0.2
+      react: 18.3.1
       react-is: 18.1.0
     optional: true
 
