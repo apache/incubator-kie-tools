@@ -42,38 +42,50 @@ function addOrGetGroup<K, V>(map: Map<K, V[]>, key: K): V[] {
   return group;
 }
 
-function remapRef(remap: Map<string, string>, id: string | undefined): string | undefined {
-  return id === undefined ? undefined : remap.get(id) ?? id;
+function getRefToRemap(
+  itemDefinitionIdsToRemap: Map<string, string>,
+  id: string | undefined
+): string | undefined {
+  return id === undefined ? undefined : itemDefinitionIdsToRemap.get(id) ?? id;
 }
 
-function remapDataItems(remap: Map<string, string>, items: Array<{ "@_itemSubjectRef"?: string }> | undefined) {
+function remapDataItems(
+  itemDefinitionIdsToRemap: Map<string, string>,
+  items: Array<{ "@_itemSubjectRef"?: string }> | undefined
+) {
   if (!items) {
     return;
   }
   for (const item of items) {
     if (item["@_itemSubjectRef"] !== undefined) {
-      item["@_itemSubjectRef"] = remapRef(remap, item["@_itemSubjectRef"]);
+      item["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, item["@_itemSubjectRef"]);
     }
   }
 }
 
-function remapProperties(remap: Map<string, string>, properties: Array<{ "@_itemSubjectRef"?: string }> | undefined) {
+function remapProperties(
+  itemDefinitionIdsToRemap: Map<string, string>,
+  properties: Array<{ "@_itemSubjectRef"?: string }> | undefined
+) {
   if (!properties) {
     return;
   }
   for (const p of properties) {
-    p["@_itemSubjectRef"] = remapRef(remap, p["@_itemSubjectRef"]);
+    p["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, p["@_itemSubjectRef"]);
   }
 }
 
-function remapFlowElements(remap: Map<string, string>, flowElements: NonNullable<BPMN20__tProcess["flowElement"]>) {
+function remapFlowElements(
+  itemDefinitionIdsToRemap: Map<string, string>,
+  flowElements: NonNullable<BPMN20__tProcess["flowElement"]>
+) {
   for (const el of flowElements) {
     if (
       el.__$$element === "dataObject" ||
       el.__$$element === "dataObjectReference" ||
       el.__$$element === "dataStoreReference"
     ) {
-      el["@_itemSubjectRef"] = remapRef(remap, el["@_itemSubjectRef"]);
+      el["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, el["@_itemSubjectRef"]);
     }
 
     if (
@@ -82,14 +94,14 @@ function remapFlowElements(remap: Map<string, string>, flowElements: NonNullable
       el.__$$element === "serviceTask" ||
       el.__$$element === "userTask"
     ) {
-      remapDataItems(remap, el.ioSpecification?.dataInput);
-      remapDataItems(remap, el.ioSpecification?.dataOutput);
-      remapProperties(remap, el.property);
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataInput);
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
     }
 
     if (el.__$$element === "endEvent" || el.__$$element === "intermediateThrowEvent") {
-      remapDataItems(remap, el.dataInput);
-      remapProperties(remap, el.property);
+      remapDataItems(itemDefinitionIdsToRemap, el.dataInput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
     }
 
     if (
@@ -97,16 +109,16 @@ function remapFlowElements(remap: Map<string, string>, flowElements: NonNullable
       el.__$$element === "intermediateCatchEvent" ||
       el.__$$element === "boundaryEvent"
     ) {
-      remapDataItems(remap, el.dataOutput);
-      remapProperties(remap, el.property);
+      remapDataItems(itemDefinitionIdsToRemap, el.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
     }
 
     if (el.__$$element === "subProcess" || el.__$$element === "adHocSubProcess" || el.__$$element === "transaction") {
-      remapDataItems(remap, el.ioSpecification?.dataInput);
-      remapDataItems(remap, el.ioSpecification?.dataOutput);
-      remapProperties(remap, el.property);
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataInput);
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
       if (el.flowElement) {
-        remapFlowElements(remap, el.flowElement);
+        remapFlowElements(itemDefinitionIdsToRemap, el.flowElement);
       }
     }
   }
@@ -180,52 +192,52 @@ export function normalize(model: BpmnLatestModel): State["bpmn"]["model"] {
 
 // Keep one itemDefinition per structureRef and update references to point to it.
 export function deduplicateItemDefinitions(definitions: BpmnLatestModel["definitions"]): void {
-  const itemDefGroups = new Map<string, Array<{ "@_id"?: string }>>();
+  const itemDefinitionsGroupedStructureRef = new Map<string, Array<{ "@_id"?: string }>>();
   for (const rootElement of definitions.rootElement ?? []) {
     if (rootElement.__$$element === "itemDefinition") {
-      const key = rootElement["@_structureRef"] ?? "";
-      addOrGetGroup(itemDefGroups, key).push(rootElement);
+      const itemDefinitionStructureRef = rootElement["@_structureRef"] ?? "";
+      addOrGetGroup(itemDefinitionsGroupedStructureRef, itemDefinitionStructureRef).push(rootElement);
     }
   }
 
   // Map each duplicate id to the id of the first occurrence we keep.
-  const itemDefIdRemap = new Map<string, string>();
-  for (const group of itemDefGroups.values()) {
-    if (group.length <= 1) {
+  const itemDefinitionIdsToRemap = new Map<string, string>();
+  for (const itemDefinitionsGroup of itemDefinitionsGroupedStructureRef.values()) {
+    if (itemDefinitionsGroup.length <= 1) {
       continue;
     }
-    const survivorId = group[0]["@_id"];
+    const survivorId = itemDefinitionsGroup[0]["@_id"];
     if (!survivorId) {
       continue;
     }
-    for (let i = 1; i < group.length; i++) {
-      const duplicateId = group[i]["@_id"];
+    for (let i = 1; i < itemDefinitionsGroup.length; i++) {
+      const duplicateId = itemDefinitionsGroup[i]["@_id"];
       if (duplicateId) {
-        itemDefIdRemap.set(duplicateId, survivorId);
+        itemDefinitionIdsToRemap.set(duplicateId, survivorId);
       }
     }
   }
 
-  if (itemDefIdRemap.size === 0) {
+  if (itemDefinitionIdsToRemap.size === 0) {
     return;
   }
 
   // Remove the duplicate itemDefinitions and update every itemSubjectRef.
-  const idsToRemove = new Set(itemDefIdRemap.keys());
+  const itemDefinitionIdsToRemove = new Set(itemDefinitionIdsToRemap.keys());
   definitions.rootElement = definitions.rootElement?.filter(
-    (e) => !(e.__$$element === "itemDefinition" && e["@_id"] && idsToRemove.has(e["@_id"]))
+    (e) => !(e.__$$element === "itemDefinition" && e["@_id"] && itemDefinitionIdsToRemove.has(e["@_id"]))
   );
 
   for (const rootElement of definitions.rootElement ?? []) {
     if (rootElement.__$$element === "dataStore") {
-      rootElement["@_itemSubjectRef"] = remapRef(itemDefIdRemap, rootElement["@_itemSubjectRef"]);
+      rootElement["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, rootElement["@_itemSubjectRef"]);
     }
     if (rootElement.__$$element === "process") {
-      remapDataItems(itemDefIdRemap, rootElement.ioSpecification?.dataInput);
-      remapDataItems(itemDefIdRemap, rootElement.ioSpecification?.dataOutput);
-      remapProperties(itemDefIdRemap, rootElement.property);
+      remapDataItems(itemDefinitionIdsToRemap, rootElement.ioSpecification?.dataInput);
+      remapDataItems(itemDefinitionIdsToRemap, rootElement.ioSpecification?.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, rootElement.property);
       if (rootElement.flowElement) {
-        remapFlowElements(itemDefIdRemap, rootElement.flowElement);
+        remapFlowElements(itemDefinitionIdsToRemap, rootElement.flowElement);
       }
     }
   }
