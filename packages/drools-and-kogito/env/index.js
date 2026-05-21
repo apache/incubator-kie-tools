@@ -36,7 +36,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Git repository URL for OptaPlanner",
     },
     DROOLS_AND_KOGITO__optaplannerRepoGitRef: {
-      default: "e998ba7139a66fb18640a7729c4a9b211f6bacc4",
+      default: "e04742c7b6fdd0782098005b9740314e439d9809",
       description: "Git ref for the OptaPlanner repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoUrl: {
