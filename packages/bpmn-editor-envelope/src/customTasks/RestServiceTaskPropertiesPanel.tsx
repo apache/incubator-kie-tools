@@ -51,18 +51,6 @@ import {
   REST_PROPERTIES_DATA_TYPES,
 } from "./RestServiceTaskConstants";
 
-type RestPropertiesState = {
-  Method?: string;
-  Url?: string;
-  Protocol?: string;
-  Host?: string;
-  Port?: string;
-  ContentData?: string;
-  RequestTimeout?: string;
-  AccessTokenAcquisitionStrategy?: string;
-  RestServiceCallTaskId?: string;
-};
-
 export type HeaderParameter = {
   id: string;
   name: string;
@@ -99,8 +87,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
 
   const [headers, setHeaders] = React.useState<HeaderParameter[]>([]);
   const [queryParams, setQueryParams] = React.useState<QueryParameter[]>([]);
-
-  const [localValues, setLocalValues] = React.useState<RestPropertiesState>({});
+  const headerIdMapRef = React.useRef<Map<string, string>>(new Map());
+  const queryIdMapRef = React.useRef<Map<string, string>>(new Map());
 
   const upsert = React.useCallback(
     (list: typeof inputDataMapping | undefined, name: RestProperties, val: string): typeof inputDataMapping => {
@@ -131,8 +119,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   );
 
   const updateRestProperties = React.useCallback(
-    <K extends RestProperties>(key: K, value: RestPropertiesState[K]) => {
-      const updatedInputDataMapping = upsert(inputDataMapping, key, value as string);
+    (key: RestProperties, value: string | undefined) => {
+      const updatedInputDataMapping = upsert(inputDataMapping, key, value ?? "");
 
       bpmnEditorStoreApi.setState((s) => {
         setDataMappingForElement({
@@ -147,39 +135,10 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     [task, inputDataMapping, bpmnEditorStoreApi, outputDataMapping, upsert]
   );
 
-  const restPropertiesState = React.useMemo(() => {
-    return (inputDataMapping ?? []).reduce((prop: Record<string, string>, item) => {
-      if (item?.name && (REST_PROPERTIES_KEYS as readonly string[]).includes(item.name) && item?.isExpression) {
-        prop[item.name] = item?.value;
-      }
-      return prop;
-    }, {} as RestPropertiesState);
-  }, [inputDataMapping]);
-
-  React.useEffect(() => {
-    setLocalValues(restPropertiesState);
-  }, [restPropertiesState]);
-
-  const handleLocalChange = React.useCallback(<K extends RestProperties>(key: K, value: string) => {
-    setLocalValues((prev) => ({ ...prev, [key]: value }));
-  }, []);
-
-  const localValuesRef = React.useRef(localValues);
-  const restPropertiesStateRef = React.useRef(restPropertiesState);
-
-  React.useEffect(() => {
-    localValuesRef.current = localValues;
-    restPropertiesStateRef.current = restPropertiesState;
-  }, [localValues, restPropertiesState]);
-
-  const handleBlur = React.useCallback(
-    <K extends RestProperties>(key: K) => {
-      const value = localValuesRef.current[key];
-      if (value !== restPropertiesStateRef.current[key]) {
-        updateRestProperties(key, value);
-      }
-    },
-    [updateRestProperties]
+  const getValue = React.useCallback(
+    (fieldName: RestProperties) =>
+      (inputDataMapping ?? []).filter((dm) => dm.isExpression).find((dm) => dm.name === fieldName)?.value ?? "",
+    [inputDataMapping]
   );
 
   React.useEffect(() => {
@@ -190,15 +149,27 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       if (item?.name && item?.isExpression) {
         if (item.name.startsWith("HEADER_")) {
           const headerName = item.name.substring(7);
+          const key = `HEADER_${headerName}`;
+
+          if (!headerIdMapRef.current.has(key)) {
+            headerIdMapRef.current.set(key, generateUuid());
+          }
+
           extractedHeaders.push({
-            id: generateUuid(),
+            id: headerIdMapRef.current.get(key)!,
             name: headerName,
             value: item.value || "",
           });
         } else if (item.name.startsWith("QUERY_")) {
           const queryName = item.name.substring(6);
+          const key = `QUERY_${queryName}`;
+
+          if (!queryIdMapRef.current.has(key)) {
+            queryIdMapRef.current.set(key, generateUuid());
+          }
+
           extractedQueryParams.push({
-            id: generateUuid(),
+            id: queryIdMapRef.current.get(key)!,
             name: queryName,
             value: item.value || "",
           });
@@ -210,68 +181,18 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     setQueryParams(extractedQueryParams);
   }, [inputDataMapping]);
 
-  const saveHeaders = React.useCallback(() => {
-    bpmnEditorStoreApi.setState((s) => {
-      const filteredInputs = (inputDataMapping ?? []).filter((item) => !item?.name?.startsWith("HEADER_"));
-
-      const headerMappings: DataMapping[] = headers
-        .filter((h) => h.name.trim() || h.value.trim())
-        .map((h) => ({
-          name: `HEADER_${h.name}`,
-          dtype: DEFAULT_DATA_TYPES.STRING,
-          isExpression: true,
-          value: h.value,
-        }));
-
-      const updatedInputDataMapping = [...filteredInputs, ...headerMappings];
-
-      setDataMappingForElement({
-        definitions: s.bpmn.model.definitions,
-        inputDataMapping: updatedInputDataMapping,
-        outputDataMapping,
-        elementId: task["@_id"],
-        element: task.__$$element,
-      });
-    });
-  }, [headers, inputDataMapping, outputDataMapping, task, bpmnEditorStoreApi]);
-
-  const saveQueryParams = React.useCallback(() => {
-    bpmnEditorStoreApi.setState((s) => {
-      const filteredInputs = (inputDataMapping ?? []).filter((item) => !item?.name?.startsWith("QUERY_"));
-
-      const queryMappings: DataMapping[] = queryParams
-        .filter((q) => q.name.trim() || q.value.trim())
-        .map((q) => ({
-          name: `QUERY_${q.name}`,
-          dtype: DEFAULT_DATA_TYPES.STRING,
-          isExpression: true,
-          value: q.value,
-        }));
-
-      const updatedInputDataMapping = [...filteredInputs, ...queryMappings];
-
-      setDataMappingForElement({
-        definitions: s.bpmn.model.definitions,
-        inputDataMapping: updatedInputDataMapping,
-        outputDataMapping,
-        elementId: task["@_id"],
-        element: task.__$$element,
-      });
-    });
-  }, [queryParams, inputDataMapping, outputDataMapping, task, bpmnEditorStoreApi]);
-
   const handleTestRequest = React.useCallback(async () => {
     setTestError(null);
     setTestResult(null);
     setIsLoading(true);
 
     try {
-      let url = restPropertiesState?.Url?.trim();
-      const method = restPropertiesState?.Method?.toUpperCase() || "GET";
-      const authStrategy = restPropertiesState?.AccessTokenAcquisitionStrategy;
-      const protocol = restPropertiesState?.Protocol?.trim();
-      const host = restPropertiesState?.Host?.trim();
-      const port = restPropertiesState?.Port?.trim();
+      let url = getValue(RestProperties.Url).trim();
+      const method = getValue(RestProperties.Method).toUpperCase() || "GET";
+      const authStrategy = getValue(RestProperties.AccessTokenAcquisitionStrategy);
+      const protocol = getValue(RestProperties.Protocol).trim();
+      const host = getValue(RestProperties.Host).trim();
+      const port = getValue(RestProperties.Port).trim();
 
       const hasExpression = url && /#{[^}]+}/.test(url);
 
@@ -305,7 +226,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         requestHeaders["Authorization"] = `Bearer ${testToken.trim()}`;
       }
 
-      if (restPropertiesState?.ContentData && ["POST", "PUT", "PATCH"].includes(method)) {
+      const contentData = getValue(RestProperties.ContentData);
+      if (contentData && ["POST", "PUT", "PATCH"].includes(method)) {
         requestHeaders["Content-Type"] = "application/json";
       }
 
@@ -325,8 +247,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       }
 
       let body: string | undefined;
-      if (["POST", "PUT", "PATCH"].includes(method) && restPropertiesState?.ContentData) {
-        body = restPropertiesState.ContentData;
+      if (["POST", "PUT", "PATCH"].includes(method) && contentData) {
+        body = contentData;
       }
 
       if (!channelApi.requests.bpmnEditor_restTaskTest) {
@@ -349,13 +271,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       setIsLoading(false);
     }
   }, [
-    restPropertiesState?.Url,
-    restPropertiesState?.Method,
-    restPropertiesState?.AccessTokenAcquisitionStrategy,
-    restPropertiesState?.Protocol,
-    restPropertiesState?.Host,
-    restPropertiesState?.Port,
-    restPropertiesState.ContentData,
+    getValue,
     testToken,
     headers,
     queryParams,
@@ -365,22 +281,33 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     i18n.restService.urlRequired,
   ]);
 
-  const [shouldSaveHeaders, setShouldSaveHeaders] = React.useState(false);
-  const [shouldSaveQueryParams, setShouldSaveQueryParams] = React.useState(false);
+  const updateParameterMapping = React.useCallback(
+    (prefix: "HEADER_" | "QUERY_", parameters: Array<{ name: string; value: string }>) => {
+      bpmnEditorStoreApi.setState((s) => {
+        const filteredInputs = (inputDataMapping ?? []).filter((item) => !item?.name?.startsWith(prefix));
 
-  React.useEffect(() => {
-    if (shouldSaveHeaders) {
-      saveHeaders();
-      setShouldSaveHeaders(false);
-    }
-  }, [headers, shouldSaveHeaders, saveHeaders]);
+        const paramMappings: DataMapping[] = parameters
+          .filter((p) => p.name.trim() || p.value.trim())
+          .map((p) => ({
+            name: `${prefix}${p.name}`,
+            dtype: DEFAULT_DATA_TYPES.STRING,
+            isExpression: true,
+            value: p.value,
+          }));
 
-  React.useEffect(() => {
-    if (shouldSaveQueryParams) {
-      saveQueryParams();
-      setShouldSaveQueryParams(false);
-    }
-  }, [queryParams, shouldSaveQueryParams, saveQueryParams]);
+        const updatedInputDataMapping = [...filteredInputs, ...paramMappings];
+
+        setDataMappingForElement({
+          definitions: s.bpmn.model.definitions,
+          inputDataMapping: updatedInputDataMapping,
+          outputDataMapping,
+          elementId: task["@_id"],
+          element: task.__$$element,
+        });
+      });
+    },
+    [bpmnEditorStoreApi, inputDataMapping, outputDataMapping, task]
+  );
 
   const addHeader = React.useCallback(() => {
     const newHeader: HeaderParameter = {
@@ -389,21 +316,45 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       value: "",
     };
     setHeaders((prev) => [...prev, newHeader]);
-  }, [setHeaders]);
+  }, []);
 
   const updateHeader = React.useCallback(
     (id: string, field: "name" | "value", value: string) => {
-      setHeaders((prev) => prev.map((h) => (h.id === id ? { ...h, [field]: value } : h)));
+      setHeaders((prev) => {
+        if (field === "name") {
+          const oldHeader = prev.find((h) => h.id === id);
+          if (oldHeader && oldHeader.name) {
+            const oldKey = `HEADER_${oldHeader.name}`;
+            headerIdMapRef.current.delete(oldKey);
+          }
+          if (value.trim()) {
+            const newKey = `HEADER_${value}`;
+            headerIdMapRef.current.set(newKey, id);
+          }
+        }
+
+        const updated = prev.map((h) => (h.id === id ? { ...h, [field]: value } : h));
+        updateParameterMapping("HEADER_", updated);
+        return updated;
+      });
     },
-    [setHeaders]
+    [updateParameterMapping]
   );
 
   const removeHeader = React.useCallback(
     (id: string) => {
-      setHeaders((prev) => prev.filter((h) => h.id !== id));
-      setShouldSaveHeaders(true);
+      setHeaders((prev) => {
+        const headerToRemove = prev.find((h) => h.id === id);
+        if (headerToRemove) {
+          const key = `HEADER_${headerToRemove.name}`;
+          headerIdMapRef.current.delete(key);
+        }
+        const updated = prev.filter((h) => h.id !== id);
+        updateParameterMapping("HEADER_", updated);
+        return updated;
+      });
     },
-    [setHeaders]
+    [updateParameterMapping]
   );
 
   const addQueryParam = React.useCallback(() => {
@@ -413,21 +364,45 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       value: "",
     };
     setQueryParams((prev) => [...prev, newParam]);
-  }, [setQueryParams]);
+  }, []);
 
   const updateQueryParam = React.useCallback(
     (id: string, field: "name" | "value", value: string) => {
-      setQueryParams((prev) => prev.map((q) => (q.id === id ? { ...q, [field]: value } : q)));
+      setQueryParams((prev) => {
+        if (field === "name") {
+          const oldParam = prev.find((q) => q.id === id);
+          if (oldParam && oldParam.name) {
+            const oldKey = `QUERY_${oldParam.name}`;
+            queryIdMapRef.current.delete(oldKey);
+          }
+          if (value.trim()) {
+            const newKey = `QUERY_${value}`;
+            queryIdMapRef.current.set(newKey, id);
+          }
+        }
+
+        const updated = prev.map((q) => (q.id === id ? { ...q, [field]: value } : q));
+        updateParameterMapping("QUERY_", updated);
+        return updated;
+      });
     },
-    [setQueryParams]
+    [updateParameterMapping]
   );
 
   const removeQueryParam = React.useCallback(
     (id: string) => {
-      setQueryParams((prev) => prev.filter((q) => q.id !== id));
-      setShouldSaveQueryParams(true);
+      setQueryParams((prev) => {
+        const queryToRemove = prev.find((q) => q.id === id);
+        if (queryToRemove) {
+          const key = `QUERY_${queryToRemove.name}`;
+          queryIdMapRef.current.delete(key);
+        }
+        const updated = prev.filter((q) => q.id !== id);
+        updateParameterMapping("QUERY_", updated);
+        return updated;
+      });
     },
-    [setQueryParams]
+    [updateParameterMapping]
   );
 
   return (
@@ -443,9 +418,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         <FormGroup label={i18n.restService.url} isRequired fieldId="rest-url">
           <TextInput
             id="rest-url"
-            value={localValues?.Url || ""}
-            onChange={(_, value) => handleLocalChange(RestProperties.Url, value)}
-            onBlur={() => handleBlur(RestProperties.Url)}
+            value={getValue(RestProperties.Url)}
+            onChange={(_, value) => updateRestProperties(RestProperties.Url, value)}
             placeholder={i18n.restService.urlPlaceholder}
           />
           <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>{i18n.restService.urlHelp}</div>
@@ -454,11 +428,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         <FormGroup label={i18n.restService.method} fieldId="rest-method">
           <FormSelect
             id="rest-method"
-            value={localValues?.Method || "GET"}
-            onChange={(_, value) => {
-              handleLocalChange(RestProperties.Method, value);
-              updateRestProperties(RestProperties.Method, value);
-            }}
+            value={getValue(RestProperties.Method) || "GET"}
+            onChange={(_, value) => updateRestProperties(RestProperties.Method, value)}
           >
             {HTTP_METHODS.map((method) => (
               <FormSelectOption key={method} value={method} label={method} />
@@ -469,9 +440,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         <FormGroup label={i18n.restService.protocol} fieldId="rest-protocol">
           <TextInput
             id="rest-protocol"
-            value={localValues?.Protocol || ""}
-            onChange={(_, value) => handleLocalChange(RestProperties.Protocol, value)}
-            onBlur={() => handleBlur(RestProperties.Protocol)}
+            value={getValue(RestProperties.Protocol)}
+            onChange={(_, value) => updateRestProperties(RestProperties.Protocol, value)}
             placeholder={i18n.restService.protocolPlaceholder}
           />
           <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>
@@ -482,9 +452,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         <FormGroup label={i18n.restService.host} fieldId="rest-host">
           <TextInput
             id="rest-host"
-            value={localValues?.Host || ""}
-            onChange={(_, value) => handleLocalChange(RestProperties.Host, value)}
-            onBlur={() => handleBlur(RestProperties.Host)}
+            value={getValue(RestProperties.Host)}
+            onChange={(_, value) => updateRestProperties(RestProperties.Host, value)}
             placeholder={i18n.restService.hostPlaceholder}
           />
           <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>
@@ -496,9 +465,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           <TextInput
             id="rest-port"
             type="number"
-            value={localValues?.Port || ""}
-            onChange={(_, value) => handleLocalChange(RestProperties.Port, value)}
-            onBlur={() => handleBlur(RestProperties.Port)}
+            value={getValue(RestProperties.Port)}
+            onChange={(_, value) => updateRestProperties(RestProperties.Port, value)}
             placeholder={i18n.restService.portPlaceholder}
           />
           <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>
@@ -506,13 +474,12 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           </div>
         </FormGroup>
 
-        {["POST", "PUT", "PATCH"].includes(localValues?.Method || "") && (
+        {["POST", "PUT", "PATCH"].includes(getValue(RestProperties.Method)) && (
           <FormGroup label={i18n.restService.contentData} fieldId="rest-content-data">
             <TextArea
               id="rest-content-data"
-              value={localValues?.ContentData || ""}
-              onChange={(_, value) => handleLocalChange(RestProperties.ContentData, value)}
-              onBlur={() => handleBlur(RestProperties.ContentData)}
+              value={getValue(RestProperties.ContentData)}
+              onChange={(_, value) => updateRestProperties(RestProperties.ContentData, value)}
               placeholder={i18n.restService.contentDataPlaceholder}
               rows={5}
             />
@@ -523,9 +490,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           <TextInput
             id="rest-timeout"
             type="number"
-            value={localValues?.RequestTimeout || ""}
-            onChange={(_, value) => handleLocalChange(RestProperties.RequestTimeout, value)}
-            onBlur={() => handleBlur(RestProperties.RequestTimeout)}
+            value={getValue(RestProperties.RequestTimeout)}
+            onChange={(_, value) => updateRestProperties(RestProperties.RequestTimeout, value)}
             placeholder="30000"
           />
         </FormGroup>
@@ -542,7 +508,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                 id={`header-name-${header.id}`}
                 value={header.name}
                 onChange={(_, value) => updateHeader(header.id, "name", value)}
-                onBlur={saveHeaders}
                 aria-label={`Header ${index + 1} name`}
               />
             </GridItem>
@@ -551,7 +516,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                 id={`header-value-${header.id}`}
                 value={header.value}
                 onChange={(_, value) => updateHeader(header.id, "value", value)}
-                onBlur={saveHeaders}
                 aria-label={`Header ${index + 1} value`}
               />
             </GridItem>
@@ -588,7 +552,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                 id={`query-name-${param.id}`}
                 value={param.name}
                 onChange={(_, value) => updateQueryParam(param.id, "name", value)}
-                onBlur={saveQueryParams}
                 aria-label={`Query parameter ${index + 1} name`}
               />
             </GridItem>
@@ -597,7 +560,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                 id={`query-value-${param.id}`}
                 value={param.value}
                 onChange={(_, value) => updateQueryParam(param.id, "value", value)}
-                onBlur={saveQueryParams}
                 aria-label={`Query parameter ${index + 1} value`}
               />
             </GridItem>
@@ -627,11 +589,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         <FormGroup label={i18n.restService.accessTokenStrategy} isRequired fieldId="rest-auth-strategy">
           <FormSelect
             id="rest-auth-strategy"
-            value={localValues?.AccessTokenAcquisitionStrategy || "none"}
-            onChange={(_, value) => {
-              handleLocalChange(RestProperties.AccessTokenAcquisitionStrategy, value);
-              updateRestProperties(RestProperties.AccessTokenAcquisitionStrategy, value);
-            }}
+            value={getValue(RestProperties.AccessTokenAcquisitionStrategy) || "none"}
+            onChange={(_, value) => updateRestProperties(RestProperties.AccessTokenAcquisitionStrategy, value)}
           >
             {AUTH_STRATEGIES.map((strategy) => (
               <FormSelectOption key={strategy} value={strategy} label={strategy} />
@@ -639,20 +598,19 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           </FormSelect>
         </FormGroup>
 
-        {localValues?.AccessTokenAcquisitionStrategy === "configured" && (
+        {getValue(RestProperties.AccessTokenAcquisitionStrategy) === "configured" && (
           <FormGroup label={i18n.restService.restServiceCallTaskId} isRequired fieldId="rest-task-id">
             <TextInput
               id="rest-task-id"
-              value={localValues?.RestServiceCallTaskId || ""}
-              onChange={(_, value) => handleLocalChange(RestProperties.RestServiceCallTaskId, value)}
-              onBlur={() => handleBlur(RestProperties.RestServiceCallTaskId)}
+              value={getValue(RestProperties.RestServiceCallTaskId)}
+              onChange={(_, value) => updateRestProperties(RestProperties.RestServiceCallTaskId, value)}
               placeholder={i18n.restService.restServiceCallTaskIdPlaceholder}
             />
           </FormGroup>
         )}
 
-        {(localValues?.AccessTokenAcquisitionStrategy === "propagated" ||
-          localValues?.AccessTokenAcquisitionStrategy === "configured") && (
+        {(getValue(RestProperties.AccessTokenAcquisitionStrategy) === "propagated" ||
+          getValue(RestProperties.AccessTokenAcquisitionStrategy) === "configured") && (
           <FormGroup label={i18n.restService.testToken} fieldId="rest-test-token">
             <TextInput
               id="rest-test-token"
@@ -688,7 +646,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             isBlock
             id="rest-test-btn"
             onClick={() => handleTestRequest()}
-            isDisabled={isLoading || !localValues?.Url}
+            isDisabled={isLoading || !getValue(RestProperties.Url)}
           >
             {isLoading ? i18n.restService.testing : i18n.restService.testRequest}
           </Button>
