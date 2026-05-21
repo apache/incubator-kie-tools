@@ -91,19 +91,20 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   );
 
   const onLogicTypeReset = useCallback(() => {
-    setWidthsById(({ newMap }) => {
-      for (const id of findAllIdsDeep(expression)) {
-        newMap.delete(id);
-      }
-    });
-
     setExpression({
-      setExpressionAction: () => {
+      setExpressionAction: (prev: Normalized<BoxedExpression>) => {
+        // Clean up widths using the current expression state (prev)
+        // This ensures we always work with the latest state, avoiding stale closures
+        setWidthsById(({ newMap }) => {
+          for (const id of findAllIdsDeep(prev)) {
+            newMap.delete(id);
+          }
+        });
         return undefined; // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
       },
       expressionChangedArgs: { action: Action.ExpressionReset },
     });
-  }, [expression, setExpression, setWidthsById]);
+  }, [setExpression, setWidthsById]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
