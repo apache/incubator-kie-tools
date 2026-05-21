@@ -18,6 +18,8 @@
  */
 
 import * as express from "express";
+import * as https from "https";
+import * as fs from "fs";
 import * as cors from "cors";
 
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
@@ -25,6 +27,8 @@ import { ExpressCorsProxy } from "./ExpressCorsProxy";
 export type ServerArgs = {
   allowedOrigins: string[];
   port: number;
+  tlsCertificate: string;
+  tlsKey: string;
   verbose: boolean;
   hostsToUseHttp: string[];
   allowedHosts: string[];
@@ -97,5 +101,17 @@ export const startServer = (args: ServerArgs): void => {
     </html>`);
   });
 
-  app.listen(args.port, () => console.log(`CORS proxy listening at port ${args.port}`));
+  if (args.tlsCertificate && args.tlsKey) {
+    https
+      .createServer(
+        {
+          cert: fs.readFileSync(args.tlsCertificate),
+          key: fs.readFileSync(args.tlsKey),
+        },
+        app
+      )
+      .listen(args.port, () => console.log(`CORS proxy listening at port ${args.port} (HTTPS)`));
+  } else {
+    app.listen(args.port, () => console.log(`CORS proxy listening at port ${args.port}`));
+  }
 };

@@ -434,7 +434,7 @@ Error details: ${err}`);
                   <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
                   <Divider />
                   <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
-                    <DmnRunnerDrawer>
+                    <DmnRunnerDrawer isDmnEditor={file.workspaceFile.extension.toLocaleLowerCase() === "dmn"}>
                       <EditorPageDockDrawer>
                         {embeddedEditorFile && (
                           <EmbeddedEditor

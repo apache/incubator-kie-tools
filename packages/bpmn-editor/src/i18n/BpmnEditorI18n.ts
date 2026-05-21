@@ -66,6 +66,7 @@ interface BpmnEditorDictionary
       textAnnotation: string;
       customTasks: string;
       propertiesManagement: string;
+      moreItems: string;
     };
     versionUpgraded: string;
     bpmnLatestVersion: string;

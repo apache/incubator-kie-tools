@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect, useRef, useMemo } from "react";
 import * as RF from "reactflow";
 import {
   BpmnNodeElement,
@@ -45,6 +45,7 @@ import {
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { PeopleCarryIcon } from "@patternfly/react-icons/dist/js/icons/people-carry-icon";
 import { ServicesIcon } from "@patternfly/react-icons/dist/js/icons/services-icon";
+import { EllipsisHIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-h-icon";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../store/StoreContext";
 import { BpmnDiagramLhsPanel } from "../store/Store";
 import { addOrGetProcessAndDiagramElements } from "../mutations/addOrGetProcessAndDiagramElements";
@@ -73,8 +74,201 @@ import { useBpmnEditorI18n } from "../i18n";
 
 export const MIME_TYPE_FOR_BPMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-bpmn-editor--new-node-from-palette";
 
+export const ELEMENT_TYPES = Object.fromEntries(Object.keys(elementToNodeType).map((k) => [k, k])) as {
+  [K in keyof typeof elementToNodeType]: K;
+};
+
+const VIEWPORT_PADDING = 20;
+
+function calculateVisibleIconCount(
+  panelRect: DOMRect,
+  paletteRect: DOMRect,
+  viewportHeight: number,
+  iconHeight: number,
+  ellipsisHeight: number,
+  totalIcons: number
+): number {
+  const effectiveViewportHeight = viewportHeight - VIEWPORT_PADDING;
+  const currentPaletteHeight = paletteRect.height;
+  const fullPaletteHeight = totalIcons * iconHeight;
+
+  const heightDifference = fullPaletteHeight - currentPaletteHeight;
+  const panelBottomIfAllVisible = panelRect.bottom + heightDifference;
+
+  if (panelBottomIfAllVisible > effectiveViewportHeight) {
+    const availableSpace = effectiveViewportHeight - (panelRect.bottom - currentPaletteHeight);
+    const spaceForIcons = availableSpace - ellipsisHeight;
+
+    const iconsThatFit = Math.floor(spaceForIcons / iconHeight);
+
+    return Math.max(1, Math.min(totalIcons - 1, iconsThatFit));
+  }
+
+  return totalIcons;
+}
+
 export function BpmnPalette({ pulse }: { pulse: boolean }) {
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
+  const { i18n } = useBpmnEditorI18n();
+
+  const panelRef = useRef<HTMLDivElement>(null);
+  const paletteRef = useRef<HTMLDivElement>(null);
+  const submenuRef = useRef<HTMLDivElement>(null);
+  const iconMeasureRef = useRef<HTMLDivElement>(null);
+  const ellipsisButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Palette groups structure: groups with >2 items can have submenu, ≤2 items always visible
+  const paletteGroups = useMemo(
+    () => ({
+      corePaletteGroup: {
+        id: "corePaletteGroup",
+        icons: [
+          {
+            id: 1,
+            title: i18n.bpmnPalette.startEvents,
+            className: "start-event",
+            Icon: StartEventIcon,
+            nodeType: NODE_TYPES.startEvent,
+            element: ELEMENT_TYPES.startEvent,
+          },
+          {
+            id: 2,
+            title: i18n.bpmnPalette.intermediateCatchEvents,
+            className: "intermediate-catch-event",
+            Icon: IntermediateCatchEventIcon,
+            nodeType: NODE_TYPES.intermediateCatchEvent,
+            element: ELEMENT_TYPES.intermediateCatchEvent,
+          },
+          {
+            id: 3,
+            title: i18n.bpmnPalette.intermediateThrowEvents,
+            className: "intermediate-throw-event",
+            Icon: IntermediateThrowEventIcon,
+            nodeType: NODE_TYPES.intermediateThrowEvent,
+            element: ELEMENT_TYPES.intermediateThrowEvent,
+          },
+          {
+            id: 4,
+            title: i18n.bpmnPalette.endEvents,
+            className: "end-event",
+            Icon: EndEventIcon,
+            nodeType: NODE_TYPES.endEvent,
+            element: ELEMENT_TYPES.endEvent,
+          },
+          {
+            id: 5,
+            title: i18n.bpmnPalette.tasks,
+            className: "task",
+            Icon: TaskIcon,
+            nodeType: NODE_TYPES.task,
+            element: ELEMENT_TYPES.task,
+          },
+          {
+            id: 6,
+            title: i18n.bpmnPalette.callActivity,
+            className: "callActivity",
+            Icon: CallActivityIcon,
+            nodeType: NODE_TYPES.task,
+            element: ELEMENT_TYPES.callActivity,
+          },
+          {
+            id: 7,
+            title: i18n.bpmnPalette.subProcesses,
+            className: "subProcess",
+            Icon: SubProcessIcon,
+            nodeType: NODE_TYPES.subProcess,
+            element: ELEMENT_TYPES.subProcess,
+          },
+          {
+            id: 8,
+            title: i18n.bpmnPalette.gateways,
+            className: "gateway",
+            Icon: GatewayIcon,
+            nodeType: NODE_TYPES.gateway,
+            element: ELEMENT_TYPES.exclusiveGateway,
+          },
+          {
+            id: 9,
+            title: i18n.bpmnPalette.lanes,
+            className: "lane",
+            Icon: LaneIcon,
+            nodeType: NODE_TYPES.lane,
+            element: ELEMENT_TYPES.lane,
+          },
+        ],
+      },
+    }),
+    [i18n]
+  );
+
+  // Flatten all group icons for current single-group rendering
+  const paletteIcons = useMemo(() => Object.values(paletteGroups).flatMap((group) => group.icons), [paletteGroups]);
+  const totalIcons = useMemo(() => paletteIcons.length, [paletteIcons]);
+
+  const [visibleIconCount, setVisibleIconCount] = useState<number>(() => totalIcons);
+  const [openGroupSubmenu, setOpenGroupSubmenu] = useState<string | null>(null);
+
+  const iconHeightRef = useRef(40);
+  const ellipsisHeightRef = useRef(40);
+
+  useEffect(() => {
+    if (iconMeasureRef.current) {
+      const rect = iconMeasureRef.current.getBoundingClientRect();
+      if (rect.height) {
+        iconHeightRef.current = rect.height;
+      }
+    }
+
+    if (ellipsisButtonRef.current) {
+      const rect = ellipsisButtonRef.current.getBoundingClientRect();
+      if (rect.height) {
+        ellipsisHeightRef.current = rect.height;
+      }
+    }
+  }, [visibleIconCount]);
+
+  const showSubmenu = visibleIconCount < totalIcons;
+
+  useEffect(() => {
+    let animationFrameId: number | null = null;
+    let lastCount: number = totalIcons;
+
+    const updateVisibleIcons = () => {
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
+
+      animationFrameId = requestAnimationFrame(() => {
+        if (!panelRef.current || !paletteRef.current) {
+          if (lastCount !== totalIcons) {
+            setVisibleIconCount(totalIcons);
+            lastCount = totalIcons;
+          }
+          return;
+        }
+
+        const newCount = calculateVisibleIconCount(
+          panelRef.current.getBoundingClientRect(),
+          paletteRef.current.getBoundingClientRect(),
+          window.innerHeight,
+          iconHeightRef.current,
+          ellipsisHeightRef.current,
+          totalIcons
+        );
+
+        if (newCount !== lastCount) {
+          setVisibleIconCount(newCount);
+          lastCount = newCount;
+        }
+      });
+    };
+
+    updateVisibleIcons();
+    window.addEventListener("resize", updateVisibleIcons);
+
+    return () => {
+      window.removeEventListener("resize", updateVisibleIcons);
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
+    };
+  }, [totalIcons]);
 
   const onDragStart = useCallback(
     <T extends BpmnNodeType>(
@@ -158,11 +352,32 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
 
   const { customTasks, customTasksPaletteIcon } = useCustomTasks();
 
-  const { i18n } = useBpmnEditorI18n();
+  const renderPaletteIcon = useCallback(
+    (icon: (typeof paletteIcons)[number]) => {
+      const { Icon, title, className, nodeType, element } = icon;
+      return (
+        <div
+          key={icon.id}
+          title={title}
+          className={`kie-bpmn-editor--palette-button dndnode ${className}`}
+          onDragStart={(event) => onDragStart(event, nodeType, element)}
+          onDragEnd={onDragEnd}
+          draggable={true}
+        >
+          <Icon />
+        </div>
+      );
+    },
+    [onDragStart, onDragEnd]
+  );
 
   return (
     <>
       <RF.Panel position={"top-left"} className={"kie-bpmn-editor--top-left-panel"}>
+        <div
+          ref={panelRef}
+          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+        />
         <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
         <aside
           className={"kie-bpmn-editor--variables-panel-toggle"}
@@ -256,88 +471,51 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
           </button>
         </aside>
 
-        <aside className={`kie-bpmn-editor--palette ${pulse ? "pulse" : ""}`} style={{ pointerEvents: "all" }}>
-          <div
-            title={i18n.bpmnPalette.startEvents}
-            className={"kie-bpmn-editor--palette-button dndnode start-event"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.startEvent, "startEvent")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <StartEventIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.intermediateCatchEvents}
-            className={"kie-bpmn-editor--palette-button dndnode intermediate-catch-event"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.intermediateCatchEvent, "intermediateCatchEvent")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <IntermediateCatchEventIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.intermediateThrowEvents}
-            className={"kie-bpmn-editor--palette-button dndnode intermediate-throw-event"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.intermediateThrowEvent, "intermediateThrowEvent")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <IntermediateThrowEventIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.endEvents}
-            className={"kie-bpmn-editor--palette-button dndnode end-event"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.endEvent, "endEvent")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <EndEventIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.tasks}
-            className={"kie-bpmn-editor--palette-button dndnode task"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.task, "task")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <TaskIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.callActivity}
-            className={"kie-bpmn-editor--palette-button dndnode callActivity"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.task, "callActivity")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <CallActivityIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.subProcesses}
-            className={"kie-bpmn-editor--palette-button dndnode subProcess"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.subProcess, "subProcess")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <SubProcessIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.gateways}
-            className={"kie-bpmn-editor--palette-button dndnode gateway"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.gateway, "exclusiveGateway")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <GatewayIcon />
-          </div>
-          <div
-            title={i18n.bpmnPalette.lanes}
-            className={"kie-bpmn-editor--palette-button dndnode lane"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.lane, "lane")}
-            onDragEnd={onDragEnd}
-            draggable={true}
-          >
-            <LaneIcon />
-          </div>
+        <aside
+          ref={paletteRef}
+          className={`kie-bpmn-editor--palette ${pulse ? "pulse" : ""}`}
+          style={{ position: "relative", pointerEvents: "all" }}
+        >
+          {paletteIcons.slice(0, visibleIconCount).map((icon, index) => {
+            const element = renderPaletteIcon(icon);
+
+            if (index === 0) {
+              return (
+                <div key={icon.id} ref={iconMeasureRef}>
+                  {element}
+                </div>
+              );
+            }
+
+            return element;
+          })}
+
+          {showSubmenu && (
+            <>
+              {openGroupSubmenu === paletteGroups.corePaletteGroup.id && (
+                <div
+                  ref={submenuRef}
+                  className={"kie-bpmn-editor--palette-nodes-popover kie-bpmn-editor--palette-more-items"}
+                >
+                  <div className={"kie-bpmn-editor--palette-more-items-grid"}>
+                    {paletteIcons.slice(visibleIconCount).map(renderPaletteIcon)}
+                  </div>
+                </div>
+              )}
+              <button
+                ref={ellipsisButtonRef}
+                title={i18n.bpmnPalette.moreItems}
+                className={`kie-bpmn-editor--palette-button kie-bpmn-editor--palette-ellipsis-button ${openGroupSubmenu === paletteGroups.corePaletteGroup.id ? "active" : ""}`}
+                onClick={() =>
+                  setOpenGroupSubmenu(
+                    openGroupSubmenu === paletteGroups.corePaletteGroup.id ? null : paletteGroups.corePaletteGroup.id
+                  )
+                }
+              >
+                <EllipsisHIcon />
+              </button>
+            </>
+          )}
         </aside>
 
         <aside className={`kie-bpmn-editor--palette ${pulse ? "pulse" : ""}`} style={{ pointerEvents: "all" }}>
