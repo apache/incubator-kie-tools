@@ -25,7 +25,7 @@ import { PropertiesPanelHeaderFormSection } from "./_PropertiesPanelHeaderFormSe
 import { TaskIcon } from "../../diagram/nodes/NodeIcons";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { CodeInput } from "../codeInput/CodeInput";
-import { getScriptFormat } from "../scriptFormats";
+import { getScriptFormat, ScriptLanguage } from "../scriptFormats";
 import { AdhocAutostartCheckbox } from "../adhocAutostartCheckbox/AdhocAutostartCheckbox";
 import { AsyncCheckbox } from "../asyncCheckbox/AsyncCheckbox";
 import { useBpmnEditorStoreApi } from "../../store/StoreContext";
@@ -63,7 +63,7 @@ export function ScriptTaskProperties({
                 if (e["@_id"] === scriptTask["@_id"] && e.__$$element === scriptTask.__$$element) {
                   e.script ??= { __$$text: newScript || "" };
                   e.script.__$$text = newScript;
-                  e["@_scriptFormat"] = getScriptFormat("Java");
+                  e["@_scriptFormat"] = getScriptFormat(ScriptLanguage.Java);
                 }
               });
             });

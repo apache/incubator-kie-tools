@@ -17,18 +17,20 @@
  * under the License.
  */
 
-export const SCRIPT_LANGUAGE_FORMATS: Record<string, string> = {
-  Java: "http://www.java.com/java",
-  MVEL: "http://www.mvel.org/2.0",
-  Drools: "http://www.jboss.org/drools/rule",
-  DROOLS: "http://www.jboss.org/drools/rule",
-  drools: "http://www.jboss.org/drools/rule",
-  FEEL: "http://www.omg.org/spec/DMN/20180521/FEEL/",
+export enum ScriptLanguage {
+  Java = "Java",
+  MVEL = "MVEL",
+  Drools = "Drools",
+  FEEL = "FEEL",
+}
+
+const SCRIPT_LANGUAGE_FORMATS: Record<ScriptLanguage, string> = {
+  [ScriptLanguage.Java]: "http://www.java.com/java",
+  [ScriptLanguage.MVEL]: "http://www.mvel.org/2.0",
+  [ScriptLanguage.Drools]: "http://www.jboss.org/drools/rule",
+  [ScriptLanguage.FEEL]: "http://www.omg.org/spec/DMN/20180521/FEEL/",
 };
 
-export function getScriptFormat(language: string | undefined): string {
-  if (!language) {
-    return SCRIPT_LANGUAGE_FORMATS.Java;
-  }
-  return SCRIPT_LANGUAGE_FORMATS[language] ?? SCRIPT_LANGUAGE_FORMATS.Java;
+export function getScriptFormat(language: ScriptLanguage): string {
+  return SCRIPT_LANGUAGE_FORMATS[language];
 }

@@ -23,7 +23,7 @@ import { useState } from "react";
 import { SectionHeader } from "@kie-tools/xyflow-react-kie-diagram/dist/propertiesPanel/SectionHeader";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { CodeInput } from "../codeInput/CodeInput";
-import { getScriptFormat } from "../scriptFormats";
+import { getScriptFormat, ScriptLanguage } from "../scriptFormats";
 import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
@@ -87,7 +87,7 @@ export function OnEntryAndExitScriptsFormSection({ element }: { element: WithOnE
                       if (e["@_id"] === element?.["@_id"] && e.__$$element === element.__$$element) {
                         e.extensionElements ??= {};
                         e.extensionElements["drools:onEntry-script"] ??= {
-                          "@_scriptFormat": getScriptFormat("Java"),
+                          "@_scriptFormat": getScriptFormat(ScriptLanguage.Java),
                           "drools:script": { __$$text: "" },
                         };
                         e.extensionElements["drools:onEntry-script"]["drools:script"].__$$text = newValue;
@@ -110,7 +110,7 @@ export function OnEntryAndExitScriptsFormSection({ element }: { element: WithOnE
                       if (e["@_id"] === element?.["@_id"] && e.__$$element === element.__$$element) {
                         e.extensionElements ??= {};
                         e.extensionElements["drools:onExit-script"] ??= {
-                          "@_scriptFormat": getScriptFormat("Java"),
+                          "@_scriptFormat": getScriptFormat(ScriptLanguage.Java),
                           "drools:script": { __$$text: "" },
                         };
                         e.extensionElements["drools:onExit-script"]["drools:script"].__$$text = newValue;
