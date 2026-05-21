@@ -32,7 +32,7 @@ type WithRequiredDeep<T, K extends keyof any> = T extends undefined
         ? { [P in K]-?: NonNullable<WithRequiredDeep<T[P], K>> }
         : T);
 
-// Returns the existing array for `key`, creating and storing a new empty one if absent.
+// Get the array for `key`, or create an empty one if missing.
 function addOrGetGroup<K, V>(map: Map<K, V[]>, key: K): V[] {
   let group = map.get(key);
   if (!group) {
@@ -170,16 +170,25 @@ export function normalize(model: BpmnLatestModel): State["bpmn"]["model"] {
     }
   });
 
-  // Deduplicate itemDefinitions that share the same structureRef
+  // Merge itemDefinitions that share the same structureRef.
+  deduplicateItemDefinitions(model.definitions);
+
+  const normalizedModel = model as Normalized<BpmnLatestModel>;
+
+  return normalizedModel;
+}
+
+// Keep one itemDefinition per structureRef and update references to point to it.
+export function deduplicateItemDefinitions(definitions: BpmnLatestModel["definitions"]): void {
   const itemDefGroups = new Map<string, Array<{ "@_id"?: string }>>();
-  for (const rootElement of model.definitions.rootElement ?? []) {
+  for (const rootElement of definitions.rootElement ?? []) {
     if (rootElement.__$$element === "itemDefinition") {
       const key = rootElement["@_structureRef"] ?? "";
       addOrGetGroup(itemDefGroups, key).push(rootElement);
     }
   }
 
-  // Map duplicate ids to the first occurrence
+  // Map each duplicate id to the id of the first occurrence we keep.
   const itemDefIdRemap = new Map<string, string>();
   for (const group of itemDefGroups.values()) {
     if (group.length <= 1) {
@@ -197,29 +206,27 @@ export function normalize(model: BpmnLatestModel): State["bpmn"]["model"] {
     }
   }
 
-  if (itemDefIdRemap.size > 0) {
-    // Drop the duplicates and remap all itemSubjectRef references
-    const idsToRemove = new Set(itemDefIdRemap.keys());
-    model.definitions.rootElement = model.definitions.rootElement?.filter(
-      (e) => !(e.__$$element === "itemDefinition" && e["@_id"] && idsToRemove.has(e["@_id"]))
-    );
+  if (itemDefIdRemap.size === 0) {
+    return;
+  }
 
-    for (const rootElement of model.definitions.rootElement ?? []) {
-      if (rootElement.__$$element === "dataStore") {
-        rootElement["@_itemSubjectRef"] = remapRef(itemDefIdRemap, rootElement["@_itemSubjectRef"]);
-      }
-      if (rootElement.__$$element === "process") {
-        remapDataItems(itemDefIdRemap, rootElement.ioSpecification?.dataInput);
-        remapDataItems(itemDefIdRemap, rootElement.ioSpecification?.dataOutput);
-        remapProperties(itemDefIdRemap, rootElement.property);
-        if (rootElement.flowElement) {
-          remapFlowElements(itemDefIdRemap, rootElement.flowElement);
-        }
+  // Remove the duplicate itemDefinitions and update every itemSubjectRef.
+  const idsToRemove = new Set(itemDefIdRemap.keys());
+  definitions.rootElement = definitions.rootElement?.filter(
+    (e) => !(e.__$$element === "itemDefinition" && e["@_id"] && idsToRemove.has(e["@_id"]))
+  );
+
+  for (const rootElement of definitions.rootElement ?? []) {
+    if (rootElement.__$$element === "dataStore") {
+      rootElement["@_itemSubjectRef"] = remapRef(itemDefIdRemap, rootElement["@_itemSubjectRef"]);
+    }
+    if (rootElement.__$$element === "process") {
+      remapDataItems(itemDefIdRemap, rootElement.ioSpecification?.dataInput);
+      remapDataItems(itemDefIdRemap, rootElement.ioSpecification?.dataOutput);
+      remapProperties(itemDefIdRemap, rootElement.property);
+      if (rootElement.flowElement) {
+        remapFlowElements(itemDefIdRemap, rootElement.flowElement);
       }
     }
   }
-
-  const normalizedModel = model as Normalized<BpmnLatestModel>;
-
-  return normalizedModel;
 }
