@@ -68,7 +68,12 @@ The New BPMN Editor provides:
 
 ### 3. Properties Panel
 
-**Properties Panel Sections:**
+| Feature                | Classic Editor                                                                                                     | New Editor                                                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| **Layout**             | Tabbed interface                                                                                                   | Expandable sections                                                                                                |
+| **Sections Available** | Element Properties, Execution Properties, Data Mapping, Scripts, Notifications, Reassignments, Variables, Metadata | Element Properties, Execution Properties, Data Mapping, Scripts, Notifications, Reassignments, Variables, Metadata |
+
+**Common Sections in Both Editors:**
 
 - Element Properties (Name, Documentation, ID)
 - Execution Properties (Async, Multi-instance, SLA)
@@ -81,45 +86,45 @@ The New BPMN Editor provides:
 
 ---
 
-### 4. Left Sidebar Panels (New)
+### 4. Left Sidebar Panels
 
 #### Process Variables Panel
 
-**Location**: Left sidebar, first icon
-
-Dedicated panel for managing process variables with data types and custom tags.
-
-**Classic Editor**: Variables managed in Properties panel
-**New Editor**: Dedicated panel
+| Feature       | Classic Editor                          | New Editor                                          |
+| ------------- | --------------------------------------- | --------------------------------------------------- |
+| **Location**  | Properties panel (when canvas selected) | Left sidebar panel                                  |
+| **Interface** | Inline in properties                    | Dedicated panel                                     |
+| **Features**  | Basic variable management               | Variable management with data types and custom tags |
 
 #### Correlations Panel
 
-**Location**: Left sidebar, second icon
+| Feature       | Classic Editor                                                   | New Editor                  |
+| ------------- | ---------------------------------------------------------------- | --------------------------- |
+| **Location**  | Properties panel -> Collaboration section -> Correlations button | Left sidebar panel          |
+| **Interface** | Modal dialog                                                     | Dedicated panel with tabs   |
+| **Tabs**      | Single modal view                                                | Properties tab and Keys tab |
 
-Manage message correlations:
+**Manages:**
 
 - Correlation Properties
 - Correlation Keys
 - Message Bindings
 - Subscriptions
 
-**Classic Editor**: Correlations accessed via "Collaboration" section in Properties panel, opened through "Correlations" button in a modal dialog
-**New Editor**: Dedicated left sidebar panel with tabbed interface (Properties tab and Keys tab)
-
 #### Properties Management Panel
 
-**Location**: Left sidebar, third icon
+| Feature       | Classic Editor                    | New Editor                         |
+| ------------- | --------------------------------- | ---------------------------------- |
+| **Location**  | Scattered across multiple dialogs | Left sidebar panel                 |
+| **Interface** | Multiple separate dialogs         | Single centralized panel with tabs |
 
-Centralized management for:
+**Manages:**
 
 - Data Types
 - Messages
 - Signals
 - Escalations
 - Errors
-
-**Classic Editor**: Scattered across dialogs
-**New Editor**: Single panel
 
 ---
 
@@ -151,12 +156,11 @@ Centralized management for:
 
 ### 7. Keyboard Shortcuts
 
-Standard shortcuts remain the same (Ctrl+Z, Ctrl+C, Ctrl+V, Delete, etc.).
-
-**New**:
-
-- Mouse wheel for zoom (in addition to Ctrl+/-)
-- Toggle Properties panel
+| Feature                | Classic Editor                 | New Editor                            |
+| ---------------------- | ------------------------------ | ------------------------------------- |
+| **Standard Shortcuts** | Ctrl+Z, Ctrl+C, Ctrl+V, Delete | Ctrl+Z, Ctrl+C, Ctrl+V, Delete (same) |
+| **Zoom**               | Ctrl+/-                        | Ctrl+/- + Mouse wheel                 |
+| **Properties Panel**   | Toggle on/off (same)           |
 
 ---
 
