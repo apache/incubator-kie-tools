@@ -134,7 +134,7 @@ Centralized management for:
 
 ---
 
-### 8. Global Properties
+### 6. Global Properties
 
 | Feature                | Classic Editor     | New Editor                  |
 | ---------------------- | ------------------ | --------------------------- |
@@ -149,7 +149,7 @@ Centralized management for:
 
 ---
 
-### 9. Keyboard Shortcuts
+### 7. Keyboard Shortcuts
 
 Standard shortcuts remain the same (Ctrl+Z, Ctrl+C, Ctrl+V, Delete, etc.).
 
@@ -248,6 +248,7 @@ We'll create a simple employee onboarding process with:
 
 &nbsp;
 <img src="images/migration-guide/new-editor-process-properties.png" alt="new-editor-process-properties" width="500" />
+![alt text](image.png)
 &nbsp;
 
 **Differences Encountered:**
