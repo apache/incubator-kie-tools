@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, NodePosition } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -75,15 +75,16 @@ test.describe("Add node - Group", () => {
 
       await nodes.getByType(NodeType.GROUP).scrollIntoViewIfNeeded();
 
-      const groupBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.GROUP) });
+      const groupId = await nodes.getIdByType(NodeType.GROUP);
+      const groupBox = await nodes.getNodeBounds({ id: groupId });
 
-      await nodes.getByType(NodeType.GROUP).dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: groupBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        id: groupId,
+        fromPosition: NodePosition.LEFT,
+        toPosition: { x: 500, y: 400 },
       });
 
-      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.GROUP) });
+      const boxAfter = await nodes.getNodeBounds({ id: groupId });
       expect(boxAfter.x).not.toBe(groupBox.x);
       expect(boxAfter.y).not.toBe(groupBox.y);
     });

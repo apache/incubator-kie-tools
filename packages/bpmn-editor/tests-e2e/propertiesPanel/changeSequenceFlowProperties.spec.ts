@@ -34,14 +34,7 @@ test.describe("Change Properties - Sequence Flow", () => {
     await nodes.get({ name: "Task A" }).scrollIntoViewIfNeeded();
     await nodes.get({ name: "Task B" }).scrollIntoViewIfNeeded();
 
-    await nodes.showNodeHandles({ name: "Task A" });
-
-    await nodes
-      .get({ name: "Task A" })
-      .getByTitle("Add Sequence Flow")
-      .dragTo(diagram.get(), {
-        targetPosition: await nodes.getNodeCenterPosition({ name: "Task B" }),
-      });
+    await nodes.createSequenceFlow({ from: "Task A", to: "Task B" });
 
     const edge = await edges.get({ from: "Task A", to: "Task B" });
     await edge.scrollIntoViewIfNeeded();
@@ -88,29 +81,14 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 400 }, thenRenameTo: "Low Amount" });
 
     await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
-    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).getAttribute("data-nodehref")) ?? "";
+    const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+    expect(gatewayId).not.toBe("");
 
     await expect(nodes.get({ name: "High Amount" })).toBeAttached();
-
     await expect(nodes.get({ name: "Low Amount" })).toBeAttached();
 
-    await nodes.showNodeHandles({ id: gatewayId });
-
-    await nodes
-      .getByType(NodeType.GATEWAY)
-      .getByTitle("Add Sequence Flow")
-      .dragTo(diagram.get(), {
-        targetPosition: await nodes.getNodeCenterPosition({ name: "High Amount" }),
-      });
-
-    await nodes.showNodeHandles({ id: gatewayId });
-
-    await nodes
-      .getByType(NodeType.GATEWAY)
-      .getByTitle("Add Sequence Flow")
-      .dragTo(diagram.get(), {
-        targetPosition: await nodes.getNodeCenterPosition({ name: "Low Amount" }),
-      });
+    await nodes.createSequenceFlow({ from: gatewayId, to: "High Amount" });
+    await nodes.createSequenceFlow({ from: gatewayId, to: "Low Amount" });
 
     const edge = await edges.get({ from: gatewayId, to: "High Amount" });
     await edge.scrollIntoViewIfNeeded();
@@ -124,7 +102,8 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
     diagram,
     nodes,
   }) => {
-    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).first().getAttribute("data-nodehref")) ?? "";
+    const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+    expect(gatewayId).not.toBe("");
 
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "High Amount Path" });
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${amount > 5000}" });
@@ -140,7 +119,8 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
     diagram,
     nodes,
   }) => {
-    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).first().getAttribute("data-nodehref")) ?? "";
+    const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+    expect(gatewayId).not.toBe("");
 
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "High Amount" });
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${amount > 5000}" });
@@ -171,27 +151,14 @@ test.describe("Change Properties - Default Sequence Flow", () => {
 
     await expect(nodes.get({ name: "Default Path" })).toBeAttached();
 
-    await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-    await nodes
-      .getByType(NodeType.GATEWAY)
-      .getByTitle("Add Sequence Flow")
-      .dragTo(diagram.get(), {
-        targetPosition: await nodes.getNodeCenterPosition({ name: "Condition A" }),
-      });
-
-    await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-    await nodes
-      .getByType(NodeType.GATEWAY)
-      .getByTitle("Add Sequence Flow")
-      .dragTo(diagram.get(), {
-        targetPosition: await nodes.getNodeCenterPosition({ name: "Default Path" }),
-      });
+    const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+    await nodes.createSequenceFlow({ from: gatewayId, to: "Condition A" });
+    await nodes.createSequenceFlow({ from: gatewayId, to: "Default Path" });
   });
 
   test("should configure default flow", async ({ edges, sequenceFlowPropertiesPanel, diagram, nodes }) => {
-    const gatewayId = (await nodes.getByType(NodeType.GATEWAY).first().getAttribute("data-nodehref")) ?? "";
+    const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+    expect(gatewayId).not.toBe("");
 
     await (await edges.get({ from: gatewayId, to: "Condition A" })).click();
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${approved == true}" });

@@ -17,7 +17,7 @@
  * under the License.
  */
 import { test, expect } from "../__fixtures__/base";
-import { NodeType, GatewayNodeType } from "../__fixtures__/nodes";
+import { NodeType, GatewayNodeType, NodePosition, DefaultNodeName } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -113,12 +113,12 @@ test.describe("Add node - Gateway", () => {
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-      const addTaskHandle = gateway.getByTitle("Add Task");
-      await expect(addTaskHandle).toBeVisible();
-
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: gatewayId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
@@ -129,12 +129,12 @@ test.describe("Add node - Gateway", () => {
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-      const addGatewayHandle = gateway.getByTitle("Add Gateway");
-      await expect(addGatewayHandle).toBeVisible();
-
-      await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.GATEWAY,
+        from: gatewayId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       const secondGateway = nodes.getByType(NodeType.GATEWAY).nth(1);
       await expect(secondGateway).toBeAttached();
@@ -146,23 +146,18 @@ test.describe("Add node - Gateway", () => {
 
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
-      const gatewayId = (await gateway.getAttribute("data-nodehref")) ?? "";
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      expect(gatewayId).not.toBe("");
 
-      const task = nodes.get({ name: "New Task" });
+      const task = nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
 
-      await nodes.showNodeHandles({ id: gatewayId });
-
-      const addSequenceFlowHandle = gateway.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const taskBox = await nodes.getNodeBounds({ name: "New Task" });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
+      await nodes.createSequenceFlow({
+        from: gatewayId,
+        to: DefaultNodeName.TASK,
       });
 
-      const edge = await edges.get({ from: gatewayId, to: "New Task" });
+      const edge = await edges.get({ from: gatewayId, to: DefaultNodeName.TASK });
       await expect(edge).toBeAttached();
     });
 
@@ -173,21 +168,17 @@ test.describe("Add node - Gateway", () => {
 
       const gateway = nodes.getByType(NodeType.GATEWAY).first();
       await expect(gateway).toBeVisible();
-      const gatewayId = (await gateway.getAttribute("data-nodehref")) ?? "";
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      expect(gatewayId).not.toBe("");
 
       const endEvent = nodes.getByType(NodeType.END_EVENT).first();
       await expect(endEvent).toBeVisible();
-      const endEventId = (await endEvent.getAttribute("data-nodehref")) ?? "";
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      expect(endEventId).not.toBe("");
 
-      await nodes.showNodeHandles({ id: gatewayId });
-
-      const addSequenceFlowHandle = gateway.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const endEventBox = await nodes.getNodeBounds({ id: endEventId });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: endEventBox.x + endEventBox.width / 2, y: endEventBox.y + endEventBox.height / 2 },
+      await nodes.createSequenceFlow({
+        from: gatewayId,
+        to: endEventId,
       });
 
       const edge = await edges.get({ from: gatewayId, to: endEventId });
@@ -200,24 +191,17 @@ test.describe("Add node - Gateway", () => {
 
       const firstGateway = nodes.getByType(NodeType.GATEWAY).first();
       await expect(firstGateway).toBeVisible();
-      const firstGatewayId = (await firstGateway.getAttribute("data-nodehref")) ?? "";
+      const firstGatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      expect(firstGatewayId).not.toBe("");
 
       const secondGateway = nodes.getByType(NodeType.GATEWAY).nth(1);
       await expect(secondGateway).toBeAttached();
-      const secondGatewayId = (await secondGateway.getAttribute("data-nodehref")) ?? "";
+      const secondGatewayId = await nodes.getIdByType(NodeType.GATEWAY, 1);
+      expect(secondGatewayId).not.toBe("");
 
-      await nodes.showNodeHandles({ id: firstGatewayId });
-
-      const addSequenceFlowHandle = firstGateway.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const secondGatewayBox = await nodes.getNodeBounds({ id: secondGatewayId });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: {
-          x: secondGatewayBox.x + secondGatewayBox.width / 2,
-          y: secondGatewayBox.y + secondGatewayBox.height / 2,
-        },
+      await nodes.createSequenceFlow({
+        from: firstGatewayId,
+        to: secondGatewayId,
       });
 
       const edge = await edges.get({ from: firstGatewayId, to: secondGatewayId });
@@ -230,12 +214,12 @@ test.describe("Add node - Gateway", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-
-      const addGatewayHandle = startEvent.getByTitle("Add Gateway");
-      await expect(addGatewayHandle).toBeVisible();
-
-      await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.GATEWAY,
+        from: startEventId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
@@ -243,15 +227,14 @@ test.describe("Add node - Gateway", () => {
     test("should add connected Gateway from Task node", async ({ diagram, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-      const task = nodes.get({ name: "New Task" });
+      const task = nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
 
-      await nodes.showNodeHandles({ name: "New Task" });
-
-      const addGatewayHandle = task.getByTitle("Add Gateway");
-      await expect(addGatewayHandle).toBeVisible();
-
-      await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        type: NodeType.GATEWAY,
+        from: DefaultNodeName.TASK,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
@@ -282,10 +265,10 @@ test.describe("Add node - Gateway", () => {
       const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
       const gatewayBox = await nodes.getNodeBounds({ id: gatewayId });
 
-      await gateway.dragTo(diagram.get(), {
-        sourcePosition: { x: gatewayBox.width / 2, y: gatewayBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        id: gatewayId,
+        fromPosition: NodePosition.CENTER,
+        toPosition: { x: 500, y: 400 },
       });
 
       const boxAfter = await nodes.getNodeBounds({ id: gatewayId });

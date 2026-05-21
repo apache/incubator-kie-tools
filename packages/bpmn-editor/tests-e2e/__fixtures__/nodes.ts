@@ -114,7 +114,9 @@ export class Nodes {
   }
 
   public async getId(args: { name: string }): Promise<string> {
-    return (await this.get({ name: args.name }).getAttribute("data-nodehref")) ?? "";
+    const id = await this.get({ name: args.name }).getAttribute("data-nodehref");
+    expect(id).not.toBeNull();
+    return id!;
   }
 
   public getByType(type: NodeType) {
@@ -135,9 +137,11 @@ export class Nodes {
     return this.page.getByTestId(nodeTypeMap[type]);
   }
 
-  public async getIdByType(type: NodeType): Promise<string> {
-    const node = this.getByType(type).first();
-    return (await node.getAttribute("data-nodehref")) ?? "";
+  public async getIdByType(type: NodeType, index: number = 0): Promise<string> {
+    const node = index === 0 ? this.getByType(type).first() : this.getByType(type).nth(index);
+    const id = await node.getAttribute("data-nodehref");
+    expect(id).not.toBeNull();
+    return id!;
   }
 
   public async delete(args: { name: string }) {
@@ -219,6 +223,27 @@ export class Nodes {
     }
   }
 
+  public async createSequenceFlow(args: { from: string; to: string; fromPosition?: NodePosition }) {
+    const fromIsId = args.from.startsWith("_");
+    const toIsId = args.to.startsWith("_");
+
+    if (fromIsId) {
+      await this.showNodeHandles({ id: args.from, position: args.fromPosition });
+    } else {
+      await this.showNodeHandles({ name: args.from, position: args.fromPosition });
+    }
+
+    const fromNode = fromIsId ? this.getById({ id: args.from }) : this.get({ name: args.from });
+    const addSequenceFlowHandle = fromNode.getByTitle("Add Sequence Flow");
+    const targetPosition = toIsId
+      ? await this.getNodeCenterPosition({ id: args.to })
+      : await this.getNodeCenterPosition({ name: args.to });
+
+    await addSequenceFlowHandle.dragTo(this.diagram.get(), {
+      targetPosition,
+    });
+  }
+
   public getById(args: { id: string }) {
     const escapedId = args.id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     return this.page.getByTestId(new RegExp(`^kie-tools--bpmn-editor--node-.+-${escapedId}$`));
@@ -234,8 +259,9 @@ export class Nodes {
 
     const testId = await node.getAttribute("data-testid");
     const isGateway = testId?.startsWith("kie-tools--bpmn-editor--node-gateway-") ?? false;
+    const isEvent = testId?.includes("-event-") ?? false;
 
-    if (!isGateway) {
+    if (!isGateway && !isEvent) {
       await this.waitForNodeToBeFocused({ id: args.id });
     }
   }
@@ -245,8 +271,6 @@ export class Nodes {
     newName: string;
     needsSelection?: boolean;
   }) {
-    const needsSelection = args.needsSelection ?? true;
-
     const textbox = args.nodeLocator.getByRole("textbox").first();
     if (await textbox.isVisible()) {
       await textbox.fill(args.newName);
@@ -291,36 +315,9 @@ export class Nodes {
     expect(box).not.toBeNull();
 
     const position = args.position ?? NodePosition.RIGHT;
-    let x: number, y: number;
+    const { x, y } = await this.getPositionalNodeHandleCoordinates({ node, position });
 
-    switch (position) {
-      case NodePosition.RIGHT:
-        x = box!.x + box!.width - 10;
-        y = box!.y + box!.height / 2;
-        break;
-      case NodePosition.TOP:
-        x = box!.x + box!.width / 2;
-        y = box!.y + 10;
-        break;
-      case NodePosition.CENTER:
-        x = box!.x + box!.width / 2;
-        y = box!.y + box!.height / 2;
-        break;
-      case NodePosition.BOTTOM:
-        x = box!.x + box!.width / 2;
-        y = box!.y + box!.height - 10;
-        break;
-      case NodePosition.LEFT:
-        x = box!.x + 10;
-        y = box!.y + box!.height / 2;
-        break;
-      case NodePosition.TOP_PADDING:
-        x = box!.x + box!.width / 2;
-        y = box!.y + 15;
-        break;
-    }
-
-    await this.page.mouse.move(x, y);
+    await this.page.mouse.move(box!.x + x, box!.y + y);
   }
 
   public async hideNodeHandles() {

@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType, DefaultNodeName } from "../__fixtures__/nodes";
+import { NodeType, DefaultNodeName, NodePosition } from "../__fixtures__/nodes";
 
 test.describe("Add Data Object", () => {
   test.beforeEach(async ({ editor }) => {
@@ -64,10 +64,10 @@ test.describe("Add Data Object", () => {
 
     const dataObjectBox = await nodes.getNodeBounds({ name: DefaultNodeName.DATA_OBJECT });
 
-    await nodes.get({ name: DefaultNodeName.DATA_OBJECT }).dragTo(diagram.get(), {
-      sourcePosition: { x: dataObjectBox.width / 2, y: dataObjectBox.height / 2 },
-      targetPosition: { x: 500, y: 400 },
-      force: true,
+    await nodes.dragNodeToPosition({
+      name: DefaultNodeName.DATA_OBJECT,
+      fromPosition: NodePosition.CENTER,
+      toPosition: { x: 500, y: 400 },
     });
 
     const boxAfter = await nodes.getNodeBounds({ name: DefaultNodeName.DATA_OBJECT });

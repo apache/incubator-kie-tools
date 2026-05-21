@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, NodePosition } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -77,15 +77,16 @@ test.describe("Add node - Text Annotation", () => {
 
       await nodes.getByType(NodeType.TEXT_ANNOTATION).scrollIntoViewIfNeeded();
 
-      const textAnnotationBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TEXT_ANNOTATION) });
+      const textAnnotationId = await nodes.getIdByType(NodeType.TEXT_ANNOTATION);
+      const textAnnotationBox = await nodes.getNodeBounds({ id: textAnnotationId });
 
-      await nodes.getByType(NodeType.TEXT_ANNOTATION).dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: textAnnotationBox.height / 2 },
-        targetPosition: { x: 500, y: 100 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        id: textAnnotationId,
+        fromPosition: NodePosition.LEFT,
+        toPosition: { x: 500, y: 100 },
       });
 
-      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TEXT_ANNOTATION) });
+      const boxAfter = await nodes.getNodeBounds({ id: textAnnotationId });
       expect(boxAfter.x).not.toBe(textAnnotationBox.x);
       expect(boxAfter.y).not.toBe(textAnnotationBox.y);
     });

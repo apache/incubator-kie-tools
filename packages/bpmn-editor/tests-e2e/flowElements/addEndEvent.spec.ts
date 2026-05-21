@@ -96,18 +96,10 @@ test.describe("Add node - End Event", () => {
 
       const endEvent = nodes.getByType(NodeType.END_EVENT);
       await expect(endEvent).toBeVisible();
-      const endEventId = (await endEvent.getAttribute("data-nodehref")) ?? "";
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      expect(endEventId).not.toBe("");
 
-      await nodes.showNodeHandles({ name: DefaultNodeName.TASK });
-
-      const addSequenceFlowHandle = task.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const endEventBox = await nodes.getNodeBounds({ id: endEventId });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: endEventBox.x + endEventBox.width / 2, y: endEventBox.y + endEventBox.height / 2 },
-      });
+      await nodes.createSequenceFlow({ from: DefaultNodeName.TASK, to: endEventId });
 
       const edge = await edges.get({ from: DefaultNodeName.TASK, to: endEventId });
       await expect(edge).toBeAttached();
@@ -119,12 +111,14 @@ test.describe("Add node - End Event", () => {
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY), position: NodePosition.TOP });
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      expect(gatewayId).not.toBe("");
 
-      const addEndEventHandle = gateway.getByTitle("Add End Event");
-      await expect(addEndEventHandle).toBeVisible();
-
-      await addEndEventHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        type: NodeType.END_EVENT,
+        from: gatewayId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.getByType(NodeType.END_EVENT)).toBeAttached();
     });
@@ -132,15 +126,14 @@ test.describe("Add node - End Event", () => {
     test("should add connected End Event from Sub-process node", async ({ diagram, palette, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 50, y: 100 } });
 
-      const subProcess = nodes.get({ name: "New Sub-process" });
+      const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
       await expect(subProcess).toBeAttached();
 
-      await nodes.showNodeHandles({ name: "New Sub-process" });
-
-      const addEndEventHandle = subProcess.getByTitle("Add End Event");
-      await expect(addEndEventHandle).toBeVisible();
-
-      await addEndEventHandle.dragTo(diagram.get(), { targetPosition: { x: 600, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        type: NodeType.END_EVENT,
+        from: DefaultNodeName.SUB_PROCESS,
+        targetPosition: { x: 600, y: 100 },
+      });
 
       await diagram.zoomOut({ clicks: 1 });
 
@@ -170,15 +163,16 @@ test.describe("Add node - End Event", () => {
       await expect(endEvent).toBeAttached();
       await endEvent.scrollIntoViewIfNeeded();
 
-      const endEventBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      const endEventBox = await nodes.getNodeBounds({ id: endEventId });
 
-      await endEvent.dragTo(diagram.get(), {
-        sourcePosition: { x: endEventBox.width / 2, y: endEventBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        id: endEventId,
+        fromPosition: NodePosition.CENTER,
+        toPosition: { x: 500, y: 400 },
       });
 
-      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
+      const boxAfter = await nodes.getNodeBounds({ id: endEventId });
       expect(boxAfter.x).not.toBe(endEventBox.x);
       expect(boxAfter.y).not.toBe(endEventBox.y);
     });

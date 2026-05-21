@@ -124,10 +124,12 @@ test.describe("Add node - Task", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-
-      const addTaskHandle = startEvent.getByTitle("Add Task");
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: startEventId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
@@ -138,10 +140,12 @@ test.describe("Add node - Task", () => {
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-      const addTaskHandle = gateway.getByTitle("Add Task");
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: gatewayId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
@@ -149,15 +153,16 @@ test.describe("Add node - Task", () => {
     test("should add connected Task from another Task", async ({ diagram, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
 
-      const task = await nodes.get({ name: "New Task" });
+      const task = await nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
 
-      await nodes.showNodeHandles({ name: "New Task" });
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: DefaultNodeName.TASK,
+        targetPosition: { x: 300, y: 100 },
+      });
 
-      const addTaskHandle = task.getByTitle("Add Task");
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
-
-      const secondTask = (await nodes.get({ name: "New Task" })).nth(1);
+      const secondTask = (await nodes.get({ name: DefaultNodeName.TASK })).nth(1);
       await expect(secondTask).toBeAttached();
     });
 
@@ -166,21 +171,17 @@ test.describe("Add node - Task", () => {
       await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 100 } });
 
-      const task = await nodes.get({ name: "New Task" });
+      const task = await nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
 
       const endEvent = nodes.getByType(NodeType.END_EVENT);
       await expect(endEvent).toBeVisible();
-      const endEventId = (await endEvent.getAttribute("data-nodehref")) ?? "";
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      expect(endEventId).not.toBe("");
 
-      await nodes.showNodeHandles({ name: "New Task" });
-
-      const addSequenceFlowHandle = task.getByTitle("Add Sequence Flow");
-
-      const endEventBox = await nodes.getNodeBounds({ id: endEventId });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: endEventBox.x + endEventBox.width / 2, y: endEventBox.y + endEventBox.height / 2 },
+      await nodes.createSequenceFlow({
+        from: DefaultNodeName.TASK,
+        to: endEventId,
       });
 
       const edge = await edges.get({ from: DefaultNodeName.TASK, to: endEventId });
@@ -191,21 +192,17 @@ test.describe("Add node - Task", () => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 350, y: 100 } });
 
-      const task = await nodes.get({ name: "New Task" });
+      const task = await nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
 
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
-      const gatewayId = (await gateway.getAttribute("data-nodehref")) ?? "";
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      expect(gatewayId).not.toBe("");
 
-      await nodes.showNodeHandles({ name: "New Task" });
-
-      const addSequenceFlowHandle = task.getByTitle("Add Sequence Flow");
-
-      const gatewayBox = await nodes.getNodeBounds({ id: gatewayId });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: gatewayBox.x + gatewayBox.width / 2, y: gatewayBox.y + gatewayBox.height / 2 },
+      await nodes.createSequenceFlow({
+        from: DefaultNodeName.TASK,
+        to: gatewayId,
       });
 
       const edge = await edges.get({ from: DefaultNodeName.TASK, to: gatewayId });
@@ -233,10 +230,10 @@ test.describe("Add node - Task", () => {
 
       const taskBox = await nodes.getNodeBounds({ name: DefaultNodeName.TASK });
 
-      await task.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: taskBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        name: DefaultNodeName.TASK,
+        fromPosition: NodePosition.LEFT,
+        toPosition: { x: 500, y: 400 },
       });
 
       const boxAfter = await nodes.getNodeBounds({ name: DefaultNodeName.TASK });

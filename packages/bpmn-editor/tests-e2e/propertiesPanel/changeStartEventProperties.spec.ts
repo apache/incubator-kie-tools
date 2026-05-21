@@ -178,7 +178,6 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
     nodes,
     page,
   }) => {
-    // Setup: Create Event Sub-Process with Start Event
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 200 } });
 
     await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
@@ -195,7 +194,6 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
     await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
     await nodes.getByType(NodeType.START_EVENT).click();
 
-    // Test: Configure Error definition
     await startEventPropertiesPanel.setErrorDefinition({
       errorName: "StartError",
       startEventLocator: nodes.getByType(NodeType.START_EVENT),
@@ -210,7 +208,6 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
     nodes,
     page,
   }) => {
-    // Setup: Create Event Sub-Process with Start Event
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 200 } });
 
     await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
@@ -227,7 +224,6 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
     await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
     await nodes.getByType(NodeType.START_EVENT).click();
 
-    // Test: Configure Escalation definition
     await startEventPropertiesPanel.setEscalationDefinition({
       escalationName: "StartEscalation",
       startEventLocator: nodes.getByType(NodeType.START_EVENT),

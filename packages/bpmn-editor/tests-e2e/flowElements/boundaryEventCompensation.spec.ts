@@ -58,63 +58,6 @@ test.describe("Compensation Boundary Events", () => {
     expect(cancelActivity).toBe(false);
   });
 
-  test.skip("should not allow incoming sequence flows to compensation boundary event", async ({
-    // TODO: Enable when compensation boundary event validation is implemented
-    palette,
-    jsonModel,
-    page,
-    diagram,
-    intermediateEventPropertiesPanel,
-    nodes,
-  }) => {
-    await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
-    await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
-
-    await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeAttached();
-    await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
-
-    await intermediateEventPropertiesPanel.setCompensationDefinition({});
-
-    await expect
-      .poll(async () => {
-        const process = await jsonModel.getProcess();
-        return process.flowElement?.find((e: { __$$element: string }) => e.__$$element === "boundaryEvent");
-      })
-      .toMatchObject({
-        __$$element: "boundaryEvent",
-        eventDefinition: [{ __$$element: "compensateEventDefinition" }],
-      });
-
-    const process = await jsonModel.getProcess();
-    const boundaryEvent = process.flowElement?.find((e: { __$$element: string }) => e.__$$element === "boundaryEvent");
-
-    await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 300 } });
-
-    await expect(nodes.getByType(NodeType.START_EVENT).last()).toBeAttached();
-
-    const startEventId = (await nodes.getByType(NodeType.START_EVENT).last().getAttribute("data-nodehref")) ?? "";
-    await nodes.showNodeHandles({ id: startEventId });
-
-    await nodes
-      .getByType(NodeType.START_EVENT)
-      .last()
-      .getByTitle("Add Sequence Flow")
-      .dragTo(diagram.get(), {
-        targetPosition: await nodes.getNodeCenterPosition({
-          id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT),
-        }),
-      });
-
-    const updatedProcess = await jsonModel.getProcess();
-    const sequenceFlows =
-      updatedProcess.flowElement?.filter((e: { __$$element: string }) => e.__$$element === "sequenceFlow") ?? [];
-    const incomingFlowToBoundary = sequenceFlows.find(
-      (flow: { "@_targetRef"?: string }) => flow["@_targetRef"] === boundaryEvent["@_id"]
-    );
-
-    expect(incomingFlowToBoundary).toBeUndefined();
-  });
-
   test("should allow compensation boundary event on subprocess", async ({
     palette,
     jsonModel,

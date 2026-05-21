@@ -19,7 +19,7 @@
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType, SubProcessNodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, SubProcessNodeType, NodePosition } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -62,15 +62,14 @@ test.describe("Add node - Sub-process", () => {
     test("should add connected Task from Sub-process", async ({ diagram, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 100 } });
 
-      const subProcess = await nodes.get({ name: "New Sub-process" });
+      const subProcess = await nodes.get({ name: DefaultNodeName.SUB_PROCESS });
       await expect(subProcess).toBeAttached();
 
-      await nodes.showNodeHandles({ name: "New Sub-process" });
-
-      const addTaskHandle = subProcess.getByTitle("Add Task");
-      await expect(addTaskHandle).toBeVisible();
-
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 600, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: DefaultNodeName.SUB_PROCESS,
+        targetPosition: { x: 600, y: 100 },
+      });
 
       await diagram.zoomOut({ clicks: 1 });
 
@@ -83,21 +82,10 @@ test.describe("Add node - Sub-process", () => {
 
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
-      await expect(nodes.get({ name: "New Sub-process" })).toBeAttached();
+      await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-
-      const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const subProcessBox = await nodes.getNodeBounds({ name: "New Sub-process" });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: {
-          x: subProcessBox.x + subProcessBox.width / 2,
-          y: subProcessBox.y + subProcessBox.height / 2,
-        },
-      });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.createSequenceFlow({ from: startEventId, to: DefaultNodeName.SUB_PROCESS });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-start-event-to-subprocess.png");
     });
@@ -108,21 +96,10 @@ test.describe("Add node - Sub-process", () => {
 
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
-      await expect(nodes.get({ name: "New Sub-process" })).toBeAttached();
+      await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-      const addSequenceFlowHandle = gateway.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const subProcessBox = await nodes.getNodeBounds({ name: "New Sub-process" });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: {
-          x: subProcessBox.x + subProcessBox.width / 2,
-          y: subProcessBox.y + subProcessBox.height / 2,
-        },
-      });
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      await nodes.createSequenceFlow({ from: gatewayId, to: DefaultNodeName.SUB_PROCESS });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-gateway-to-subprocess.png");
     });
@@ -223,27 +200,17 @@ test.describe("Add node - Sub-process", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
 
-      const task = await nodes.get({ name: "New Task" });
+      const task = await nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
       await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
       // Connect Start Event -> Task
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-      const handle1 = startEvent.getByTitle("Add Sequence Flow");
-      await expect(handle1).toBeVisible();
-      const taskBox = await nodes.getNodeBounds({ name: "New Task" });
-      await handle1.dragTo(diagram.get(), {
-        targetPosition: { x: taskBox.x + taskBox.width / 2, y: taskBox.y + taskBox.height / 2 },
-      });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.createSequenceFlow({ from: startEventId, to: DefaultNodeName.TASK });
 
       // Connect Task -> End Event
-      await nodes.showNodeHandles({ name: "New Task" });
-      const handle2 = task.getByTitle("Add Sequence Flow");
-      await expect(handle2).toBeVisible();
-      const endBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
-      await handle2.dragTo(diagram.get(), {
-        targetPosition: { x: endBox.x + endBox.width / 2, y: endBox.y + endBox.height / 2 },
-      });
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      await nodes.createSequenceFlow({ from: DefaultNodeName.TASK, to: endEventId });
 
       await expect(diagram.get()).toHaveScreenshot("complete-flow-inside-subprocess.png");
     });
@@ -269,10 +236,10 @@ test.describe("Add node - Sub-process", () => {
 
       const subProcessBox = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });
 
-      await subProcess.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: subProcessBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        name: DefaultNodeName.SUB_PROCESS,
+        fromPosition: NodePosition.LEFT,
+        toPosition: { x: 500, y: 400 },
       });
 
       const boxAfter = await nodes.getNodeBounds({ name: DefaultNodeName.SUB_PROCESS });

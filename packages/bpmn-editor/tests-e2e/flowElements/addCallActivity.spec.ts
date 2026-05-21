@@ -19,7 +19,7 @@
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType, TaskNodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, TaskNodeType, NodePosition } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -68,15 +68,14 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 100, y: 100 },
       });
 
-      const callActivity = nodes.get({ name: "New Call Activity" });
+      const callActivity = nodes.get({ name: DefaultNodeName.CALL_ACTIVITY });
       await expect(callActivity).toBeAttached();
 
-      await nodes.showNodeHandles({ name: "New Call Activity" });
-
-      const addTaskHandle = callActivity.getByTitle("Add Task");
-      await expect(addTaskHandle).toBeVisible();
-
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: DefaultNodeName.CALL_ACTIVITY,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
@@ -87,15 +86,14 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 100, y: 100 },
       });
 
-      const callActivity = nodes.get({ name: "New Call Activity" });
+      const callActivity = nodes.get({ name: DefaultNodeName.CALL_ACTIVITY });
       await expect(callActivity).toBeAttached();
 
-      await nodes.showNodeHandles({ name: "New Call Activity" });
-
-      const addGatewayHandle = callActivity.getByTitle("Add Gateway");
-      await expect(addGatewayHandle).toBeVisible();
-
-      await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        type: NodeType.GATEWAY,
+        from: DefaultNodeName.CALL_ACTIVITY,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(diagram.get()).toHaveScreenshot("add-gateway-node-from-call-activity.png");
     });
@@ -111,19 +109,14 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 300, y: 100 },
       });
 
-      const callActivity = nodes.get({ name: "New Call Activity" });
+      const callActivity = nodes.get({ name: DefaultNodeName.CALL_ACTIVITY });
       await expect(callActivity).toBeAttached();
       await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
-      await nodes.showNodeHandles({ name: "New Call Activity" });
-
-      const addSequenceFlowHandle = callActivity.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const endEventBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: endEventBox.x + endEventBox.width / 2, y: endEventBox.y + endEventBox.height / 2 },
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      await nodes.createSequenceFlow({
+        from: DefaultNodeName.CALL_ACTIVITY,
+        to: endEventId,
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-end-event.png");
@@ -138,14 +131,14 @@ test.describe("Add node - Call Activity", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: startEventId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
-      const addTaskHandle = startEvent.getByTitle("Add Task");
-      await expect(addTaskHandle).toBeVisible();
-
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
-
-      const task = nodes.get({ name: "New Task" });
+      const task = nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
 
       await nodes.morph({ node: task, to: TaskNodeType.CALL_ACTIVITY });
@@ -176,18 +169,9 @@ test.describe("Add node - Call Activity", () => {
       const secondCallActivity = nodes.get({ name: "Second Call Activity" });
       await expect(secondCallActivity).toBeAttached();
 
-      await nodes.showNodeHandles({ name: "First Call Activity" });
-
-      const addSequenceFlowHandle = firstCallActivity.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const secondCallActivityBox = await nodes.getNodeBounds({ name: "Second Call Activity" });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: {
-          x: secondCallActivityBox.x + secondCallActivityBox.width / 2,
-          y: secondCallActivityBox.y + secondCallActivityBox.height / 2,
-        },
+      await nodes.createSequenceFlow({
+        from: "First Call Activity",
+        to: "Second Call Activity",
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-call-activity.png");
@@ -206,20 +190,12 @@ test.describe("Add node - Call Activity", () => {
 
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
-      await expect(nodes.get({ name: "New Call Activity" })).toBeAttached();
+      await expect(nodes.get({ name: DefaultNodeName.CALL_ACTIVITY })).toBeAttached();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-      const addSequenceFlowHandle = gateway.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const callActivityBox = await nodes.getNodeBounds({ name: "New Call Activity" });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: {
-          x: callActivityBox.x + callActivityBox.width / 2,
-          y: callActivityBox.y + callActivityBox.height / 2,
-        },
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      await nodes.createSequenceFlow({
+        from: gatewayId,
+        to: DefaultNodeName.CALL_ACTIVITY,
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-gateway-to-call-activity.png");
@@ -236,19 +212,14 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 350, y: 100 },
       });
 
-      const callActivity = nodes.get({ name: "New Call Activity" });
+      const callActivity = nodes.get({ name: DefaultNodeName.CALL_ACTIVITY });
       await expect(callActivity).toBeAttached();
       await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
 
-      await nodes.showNodeHandles({ name: "New Call Activity" });
-
-      const addSequenceFlowHandle = callActivity.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const gatewayBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.GATEWAY) });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: gatewayBox.x + gatewayBox.width / 2, y: gatewayBox.y + gatewayBox.height / 2 },
+      const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
+      await nodes.createSequenceFlow({
+        from: DefaultNodeName.CALL_ACTIVITY,
+        to: gatewayId,
       });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-gateway.png");
@@ -283,48 +254,31 @@ test.describe("Add node - Call Activity", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
 
-      const prepareData = nodes.get({ name: "Prepare Data" });
-      const callActivity = nodes.get({ name: "Execute Subprocess" });
-      const processResults = nodes.get({ name: "Process Results" });
-      const endEvent = nodes.getByType(NodeType.END_EVENT);
-
       // Connect Start Event -> Prepare Data
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-      const handle1 = startEvent.getByTitle("Add Sequence Flow");
-      await expect(handle1).toBeVisible();
-      let targetBox = await nodes.getNodeBounds({ name: "Prepare Data" });
-      await handle1.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.createSequenceFlow({
+        from: startEventId,
+        to: "Prepare Data",
       });
 
       // Connect Prepare Data -> Execute Subprocess
-      await nodes.showNodeHandles({ name: "Prepare Data" });
-      const handle2 = prepareData.getByTitle("Add Sequence Flow");
-      await expect(handle2).toBeVisible();
-      targetBox = await nodes.getNodeBounds({ name: "Execute Subprocess" });
-      await handle2.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+      await nodes.createSequenceFlow({
+        from: "Prepare Data",
+        to: "Execute Subprocess",
       });
 
       // Connect Execute Subprocess -> Process Results
-      await nodes.showNodeHandles({ name: "Execute Subprocess" });
-      const handle3 = callActivity.getByTitle("Add Sequence Flow");
-      await expect(handle3).toBeVisible();
-      targetBox = await nodes.getNodeBounds({ name: "Process Results" });
-      await handle3.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+      await nodes.createSequenceFlow({
+        from: "Execute Subprocess",
+        to: "Process Results",
       });
 
       // Connect Process Results -> End Event
-      await nodes.showNodeHandles({ name: "Process Results" });
-      const handle4 = processResults.getByTitle("Add Sequence Flow");
-      await expect(handle4).toBeVisible();
-      targetBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
-      await handle4.dragTo(diagram.get(), {
-        targetPosition: { x: targetBox.x + targetBox.width / 2, y: targetBox.y + targetBox.height / 2 },
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      await nodes.createSequenceFlow({
+        from: "Process Results",
+        to: endEventId,
       });
-
-      await diagram.resetFocus();
 
       const process = await jsonModel.getProcess();
       const callActivityElement = process.flowElement?.find(
@@ -358,10 +312,10 @@ test.describe("Add node - Call Activity", () => {
 
       const callActivityBox = await nodes.getNodeBounds({ name: DefaultNodeName.CALL_ACTIVITY });
 
-      await callActivity.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: callActivityBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        name: DefaultNodeName.CALL_ACTIVITY,
+        fromPosition: NodePosition.LEFT,
+        toPosition: { x: 500, y: 400 },
       });
 
       const boxAfter = await nodes.getNodeBounds({ name: DefaultNodeName.CALL_ACTIVITY });

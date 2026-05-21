@@ -57,10 +57,10 @@ test.describe("Add Lane", () => {
 
       const laneBox = await nodes.getNodeBounds({ name: DefaultNodeName.LANE });
 
-      await lane.dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: laneBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        name: DefaultNodeName.LANE,
+        fromPosition: NodePosition.LEFT,
+        toPosition: { x: 500, y: 400 },
       });
 
       const boxAfter = await nodes.getNodeBounds({ name: DefaultNodeName.LANE });

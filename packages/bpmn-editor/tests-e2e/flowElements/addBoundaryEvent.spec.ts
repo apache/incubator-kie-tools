@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType, DefaultNodeName, TaskNodeType } from "../__fixtures__/nodes";
+import { NodeType, DefaultNodeName, TaskNodeType, NodePosition } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -75,9 +75,9 @@ test.describe("Add Boundary Event", () => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
       await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeVisible();
-      await nodes
-        .getByType(NodeType.INTERMEDIATE_CATCH_EVENT)
-        .dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
+
+      const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      await nodes.dragNodeToPosition({ id: catchEventId, toPosition: { x: 500, y: 100 } });
 
       await expect(diagram.get()).toHaveScreenshot("detach-boundary-event-from-task.png");
 
@@ -205,12 +205,13 @@ test.describe("Add Boundary Event", () => {
       await expect(nodes.getByType(NodeType.TASK)).toBeAttached();
       await nodes.getByType(NodeType.TASK).scrollIntoViewIfNeeded();
 
-      const taskBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.TASK) });
+      const taskId = await nodes.getIdByType(NodeType.TASK);
+      expect(taskId).not.toBe("");
 
-      await nodes.getByType(NodeType.TASK).dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: taskBox.height / 2 },
-        targetPosition: { x: 400, y: 350 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        id: taskId,
+        fromPosition: NodePosition.LEFT,
+        toPosition: { x: 400, y: 350 },
       });
 
       await expect(diagram.get()).toHaveScreenshot("move-task-with-boundary-event.png");

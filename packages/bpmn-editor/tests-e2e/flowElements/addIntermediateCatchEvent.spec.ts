@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType, EventNodeType } from "../__fixtures__/nodes";
+import { NodeType, EventNodeType, DefaultNodeName } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -101,12 +101,12 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
-
-      const addTaskHandle = catchEvent.getByTitle("Add Task");
-      await expect(addTaskHandle).toBeVisible();
-
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: catchEventId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(diagram.get()).toHaveScreenshot("add-task-node-from-intermediate-catch-event.png");
     });
@@ -122,12 +122,12 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
-
-      const addGatewayHandle = catchEvent.getByTitle("Add Gateway");
-      await expect(addGatewayHandle).toBeVisible();
-
-      await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.GATEWAY,
+        from: catchEventId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(diagram.get()).toHaveScreenshot("add-gateway-node-from-intermediate-catch-event.png");
     });
@@ -145,16 +145,9 @@ test.describe("Add node - Intermediate Catch Event", () => {
       await expect(catchEvent).toBeVisible();
       await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
-
-      const addSequenceFlowHandle = catchEvent.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const endBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.END_EVENT) });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: endBox.x + endBox.width / 2, y: endBox.y + endBox.height / 2 },
-      });
+      const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      await nodes.createSequenceFlow({ from: catchEventId, to: endEventId });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-intermediate-catch-event-to-end-event.png");
     });
@@ -174,16 +167,9 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-
-      const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const catchBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: catchBox.x + catchBox.width / 2, y: catchBox.y + catchBox.height / 2 },
-      });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      await nodes.createSequenceFlow({ from: startEventId, to: catchEventId });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-start-event-to-intermediate-catch-event.png");
     });
@@ -198,20 +184,12 @@ test.describe("Add node - Intermediate Catch Event", () => {
       await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 100 } });
 
-      const task = await nodes.get({ name: "New Task" });
+      const task = await nodes.get({ name: DefaultNodeName.TASK });
       await expect(task).toBeAttached();
       await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeVisible();
 
-      await nodes.showNodeHandles({ name: "New Task" });
-
-      const addSequenceFlowHandle = task.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const catchBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: { x: catchBox.x + catchBox.width / 2, y: catchBox.y + catchBox.height / 2 },
-      });
+      const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      await nodes.createSequenceFlow({ from: DefaultNodeName.TASK, to: catchEventId });
 
       await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-task-to-intermediate-catch-event.png");
     });
@@ -238,11 +216,12 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeAttached();
 
-      const boxBefore = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
+      const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
+      const boxBefore = await nodes.getNodeBounds({ id: catchEventId });
 
-      await catchEvent.dragTo(diagram.get(), { targetPosition: { x: 500, y: 400 } });
+      await nodes.dragNodeToPosition({ id: catchEventId, toPosition: { x: 500, y: 400 } });
 
-      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT) });
+      const boxAfter = await nodes.getNodeBounds({ id: catchEventId });
       expect(boxAfter.x).not.toBe(boxBefore.x);
       expect(boxAfter.y).not.toBe(boxBefore.y);
     });

@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType, SubProcessNodeType, EventNodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, SubProcessNodeType, EventNodeType, NodePosition } from "../__fixtures__/nodes";
 import type { Palette } from "../__fixtures__/palette";
 import type { Nodes } from "../__fixtures__/nodes";
 import type { Page } from "@playwright/test";
@@ -246,13 +246,12 @@ test.describe("Add node - Start Event", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-
-      const addTaskHandle = startEvent.getByTitle("Add Task");
-      await expect(addTaskHandle).toBeVisible();
-
-      await addTaskHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
-      await diagram.resetFocus();
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.TASK,
+        from: startEventId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
@@ -263,12 +262,12 @@ test.describe("Add node - Start Event", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
 
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-
-      const addGatewayHandle = startEvent.getByTitle("Add Gateway");
-      await expect(addGatewayHandle).toBeVisible();
-
-      await addGatewayHandle.dragTo(diagram.get(), { targetPosition: { x: 300, y: 100 } });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.dragNewConnectedNode({
+        type: NodeType.GATEWAY,
+        from: startEventId,
+        targetPosition: { x: 300, y: 100 },
+      });
 
       await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
     });
@@ -285,20 +284,12 @@ test.describe("Add node - Start Event", () => {
 
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeVisible();
-      const startEventId = (await startEvent.getAttribute("data-nodehref")) ?? "";
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      expect(startEventId).not.toBe("");
 
       await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-      await nodes.showNodeHandles({ id: startEventId });
-
-      const addSequenceFlowHandle = startEvent.getByTitle("Add Sequence Flow");
-      await expect(addSequenceFlowHandle).toBeVisible();
-
-      const subProcessCenter = await nodes.getNodeCenterPosition({ name: DefaultNodeName.SUB_PROCESS });
-
-      await addSequenceFlowHandle.dragTo(diagram.get(), {
-        targetPosition: subProcessCenter,
-      });
+      await nodes.createSequenceFlow({ from: startEventId, to: DefaultNodeName.SUB_PROCESS });
 
       await expect(await edges.get({ from: startEventId, to: DefaultNodeName.SUB_PROCESS })).toBeAttached();
     });
@@ -326,15 +317,16 @@ test.describe("Add node - Start Event", () => {
       await expect(startEvent).toBeAttached();
 
       await startEvent.scrollIntoViewIfNeeded();
-      const startEventBox = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.START_EVENT) });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      const startEventBox = await nodes.getNodeBounds({ id: startEventId });
 
-      await startEvent.dragTo(diagram.get(), {
-        sourcePosition: { x: startEventBox.width / 2, y: startEventBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
+      await nodes.dragNodeToPosition({
+        id: startEventId,
+        fromPosition: NodePosition.CENTER,
+        toPosition: { x: 500, y: 400 },
       });
 
-      const boxAfter = await nodes.getNodeBounds({ id: await nodes.getIdByType(NodeType.START_EVENT) });
+      const boxAfter = await nodes.getNodeBounds({ id: startEventId });
       expect(boxAfter.x).not.toBe(startEventBox.x);
       expect(boxAfter.y).not.toBe(startEventBox.y);
     });

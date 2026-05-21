@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/nodes";
+import { NodeType, NodePosition } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, nodes }) => {
   await editor.openCustomTasks({ nodes });
@@ -162,14 +162,11 @@ test.describe("Add Custom Tasks", () => {
 
     const taskBox = await nodes.getNodeBounds({ name: "Move Test Task" });
 
-    await nodes
-      .getByType(NodeType.TASK)
-      .last()
-      .dragTo(diagram.get(), {
-        sourcePosition: { x: 20, y: taskBox.height / 2 },
-        targetPosition: { x: 500, y: 400 },
-        force: true,
-      });
+    await nodes.dragNodeToPosition({
+      name: "Move Test Task",
+      fromPosition: NodePosition.LEFT,
+      toPosition: { x: 500, y: 400 },
+    });
 
     const boxAfter = await nodes.getNodeBounds({ name: "Move Test Task" });
     expect(boxAfter.x).not.toBe(taskBox.x);
@@ -198,22 +195,12 @@ test.describe("Add Custom Tasks", () => {
       await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
       // Connect Start Event -> Rest API call Task
-      await nodes.showNodeHandles({ id: await nodes.getIdByType(NodeType.START_EVENT) });
-      await nodes
-        .getByType(NodeType.START_EVENT)
-        .getByTitle("Add Sequence Flow")
-        .dragTo(diagram.get(), {
-          targetPosition: await nodes.getNodeCenterPosition({ name: "Rest API call Task Flow" }),
-        });
+      const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+      await nodes.createSequenceFlow({ from: startEventId, to: "Rest API call Task Flow" });
 
       // Connect Rest API call Task -> End Event
-      await nodes.showNodeHandles({ name: "Rest API call Task Flow" });
-      await nodes
-        .get({ name: "Rest API call Task Flow" })
-        .getByTitle("Add Sequence Flow")
-        .dragTo(diagram.get(), {
-          targetPosition: await nodes.getNodeCenterPosition({ id: await nodes.getIdByType(NodeType.END_EVENT) }),
-        });
+      const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
+      await nodes.createSequenceFlow({ from: "Rest API call Task Flow", to: endEventId });
 
       await diagram.resetFocus();
 
