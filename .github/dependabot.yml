@@ -1,0 +1,47 @@
+version: 2
+
+updates:
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:00"
+    open-pull-requests-limit: 0
+    target-branch: "main"
+    commit-message:
+      prefix: "[bot][main]"
+
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:00"
+    open-pull-requests-limit: 0
+    target-branch: "9.105.x-prod"
+    commit-message:
+      prefix: "[bot][9.105.x-prod]"
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:00"
+    open-pull-requests-limit: 0
+    target-branch: "main"
+    commit-message:
+      prefix: "[bot][main]"
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:00"
+    open-pull-requests-limit: 0
+    target-branch: "9.105.x-prod"
+    commit-message:
+      prefix: "[bot][9.105.x-prod]"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
