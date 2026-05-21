@@ -61,7 +61,7 @@ module.exports = composeEnv([rootEnv], {
         "Whether or not to skip the entire package. No artifacts will be downloaded nor built when this flag is 'true'.",
     },
     DROOLS_AND_KOGITO__forceBuild: {
-      default: `${true}`,
+      default: `${false}`,
       description: "Will always build, even if there's a cached build available.",
     },
     DROOLS_AND_KOGITO__cacheDownloadCommand: {
