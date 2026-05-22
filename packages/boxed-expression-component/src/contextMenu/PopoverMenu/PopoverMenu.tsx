@@ -102,25 +102,12 @@ export const PopoverMenu = React.forwardRef(
       onShown();
     }, [setCurrentlyOpenContextMenu, id, onShown]);
 
-    const shouldOpen: PopoverProps["shouldOpen"] = useCallback(
-      (
-        _event: MouseEvent | KeyboardEvent | React.KeyboardEvent<any> | React.MouseEvent<any>,
-        showFunction?: () => void
-      ) => {
-        showFunction?.();
-      },
-      []
-    );
-
-    const hide = useCallback(() => {
-      setCurrentlyOpenContextMenu(undefined);
-    }, [setCurrentlyOpenContextMenu]);
+    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((_event: any, showFunction: () => void) => {
+      showFunction?.();
+    }, []);
 
     const shouldClose: PopoverProps["shouldClose"] = useCallback(
-      (
-        event: MouseEvent | KeyboardEvent | React.KeyboardEvent<any> | React.MouseEvent<any>,
-        hideFunction?: () => void
-      ): void => {
+      (event: MouseEvent | KeyboardEvent | undefined, hideFunction: () => void): void => {
         if (event instanceof KeyboardEvent && NavigationKeysUtils.isEsc(event.key)) {
           onCancel(event);
         } else {
@@ -139,10 +126,6 @@ export const PopoverMenu = React.forwardRef(
         setCurrentlyOpenContextMenu(undefined);
       }
     }, [currentlyOpenContextMenu, onHidden, setCurrentlyOpenContextMenu]);
-
-    const bodyContent = useMemo(() => {
-      return typeof body === "function" ? body(hide) : body;
-    }, [body, hide]);
 
     useImperativeHandle(
       ref,
@@ -186,7 +169,7 @@ export const PopoverMenu = React.forwardRef(
         appendTo={appendTo}
         // Need this 1px to render something and not break it.
         headerContent={<div style={{ height: "1px" }}></div>}
-        bodyContent={bodyContent}
+        bodyContent={body}
         isVisible={isPopoverVisible}
         onShown={onPopoverShown}
         onHidden={onHiddenCallback}

@@ -21,7 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Boxed Function", () => {
-  test.only("should correctly populate boxed function", async ({ stories, page, bee, resizing, monaco }) => {
+  test("should correctly populate boxed function", async ({ stories, page, bee, resizing, monaco }) => {
     await stories.openBoxedFunction();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
