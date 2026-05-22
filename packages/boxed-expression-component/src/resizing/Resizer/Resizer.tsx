@@ -129,12 +129,34 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       // React 18 automatic batching handles the state updates efficiently.
       // Pretend that the startResizingWidth is different from the one we're going to stop with.
+      // NOTE: We cannot call onResizeStop(e, ...) here because e.nativeEvent.detail === 2 (double-click),
+      // which causes onResizeStop to return early without saving widths to widthsById.
       setTimeout(() => {
         setStartResizingWidth({ width: 0 });
-        onResizeStop(e, { size: { width: newWidth } } as ResizeCallbackData);
+        for (const resizerRef of getResizerRefs()) {
+          if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+            resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+          }
+        }
+        if (newWidth !== width) {
+          setWidth?.(newWidth);
+        }
+        setResizing?.(false);
+        _setResizing(false);
+        setResizingWidth?.({ value: newWidth, isPivoting: false });
       }, 0);
     },
-    [getWidthToFitData, minWidth, onResizeStart, onResizeStop]
+    [
+      _setResizing,
+      getResizerRefs,
+      getWidthToFitData,
+      minWidth,
+      onResizeStart,
+      setResizing,
+      setResizingWidth,
+      setWidth,
+      width,
+    ]
   );
 
   const style = useMemo(() => {
