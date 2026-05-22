@@ -66,7 +66,7 @@
     "@types/jest-when": "^3.5.5",
     "@types/lodash": "^4.14.168",
     "@types/minimatch": "^3.0.5",
-    "@types/node": "^24.10.11",
+    "@types/node": "^24.12.4",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "buffer": "^6.0.3",
@@ -88,10 +88,10 @@
     "start-server-and-test": "^2.0.3",
     "storybook": "^7.3.2",
     "typescript": "^5.9.3",
-    "webpack": "^5.104.1",
+    "webpack": "^5.107.1",
     "webpack-bundle-analyzer": "^4.10.2",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.4",
     "webpack-merge": "^5.9.0"
   }
 }

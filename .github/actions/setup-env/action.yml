@@ -195,10 +195,7 @@ runs:
         if [ "${{ runner.os }}" == "Linux" ]; then
           sudo apt update && \
           sudo apt install -y \
-          build-essential \
-          libgtk-3-dev \
-          libayatana-appindicator3-dev \
-          gir1.2-appindicator3-0.1
+          build-essential
         fi
 
     - name: "Allow unprivileged user namespace (Ubuntu Only)"
@@ -213,7 +210,6 @@ runs:
         echo "STEP: Update bash for macOS (macOS Only)"
         brew update
         brew install bash
-        brew uninstall node@20
         echo "/usr/local/bin" >> $GITHUB_PATH
 
     - name: "Print storage usage (after setup)"
