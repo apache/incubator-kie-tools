@@ -22,3 +22,7 @@
 - Zustand and Immer are used to manage state, wrapped inside the `useBpmnEditorStoreApi()` hook. Calling `bpmnEditorStoreApi.setState(...)` will let you update any state, including the BPMN workflow.
 - Complicated operations done to the BPMN workflow are managed by mutations inside the `mutations` directory.
 - The BPMN diagram is rendered by `@kie-tools/xyflow-react-kie-diagram`, which uses ReactFlow.
+
+---
+
+For migration from the Classic BPMN Editor (Stunner/GWT-based, last available in Apache KIE 10.1), see [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) for differences, new features, and step-by-step instructions.

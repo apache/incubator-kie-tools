@@ -26,3 +26,6 @@ overrides:
   # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203: Fix security vulnerability in undici
   # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version
   "undici": "^6.24.0"
+  # CVE-2026-41907: Fix security vulnerability in uuid
+  # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
+  "uuid": "^11.1.1"

@@ -62,7 +62,7 @@ module.exports = async (webpackEnv) => {
     devServer: {
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
-      https: true,
+      server: "https",
       port: env.chromeExtension.dev.port,
     },
     plugins: [

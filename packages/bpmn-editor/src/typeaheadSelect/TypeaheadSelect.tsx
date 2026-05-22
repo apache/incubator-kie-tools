@@ -35,6 +35,14 @@ import { useBpmnEditorI18n } from "../i18n";
 
 export type TypeaheadSelectOption = SelectOptionProps & { customLabel?: string | React.ReactElement };
 
+const hasRenderableOptionLabel = (option: TypeaheadSelectOption) => {
+  return (
+    !!option.customLabel ||
+    React.isValidElement(option.children) ||
+    (option.children !== undefined && option.children !== null && String(option.children).trim().length > 0)
+  );
+};
+
 // Based on https://v5-archive.patternfly.org/components/menus/select/#typeahead-with-create-option
 export function TypeaheadSelect({
   id,
@@ -71,10 +79,10 @@ export function TypeaheadSelect({
   const [isOpen, setIsOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string | undefined>();
   const [filterValue, setFilterValue] = React.useState<string>("");
-  const [selectOptions, setSelectOptions] = React.useState<TypeaheadSelectOption[]>(options);
   const [focusedItemIndex, setFocusedItemIndex] = React.useState<number | null>(null);
   const [activeItemId, setActiveItemId] = React.useState<string | null>(null);
   const textInputRef = React.useRef<HTMLInputElement>();
+  const keepOpenRef = React.useRef(false);
 
   const CREATE_NEW = useMemo(() => generateUuid(), []);
 
@@ -97,33 +105,35 @@ export function TypeaheadSelect({
     [filterValue, options, selected, showCreateOptionWhen]
   );
 
-  React.useEffect(() => {
-    let newSelectOptions: TypeaheadSelectOption[] = options;
+  const renderableOptions = useMemo(() => options.filter(hasRenderableOptionLabel), [options]);
 
-    // Filter menu items based on the text input value when one exists
+  const selectOptions = useMemo(() => {
+    let filtered: TypeaheadSelectOption[] = renderableOptions;
+
     if (filterValue) {
-      newSelectOptions = options.filter((menuItem) =>
+      filtered = renderableOptions.filter((menuItem) =>
         String(menuItem.children).toLowerCase().includes(filterValue.toLowerCase())
       );
     }
 
     if (showCreateOption) {
-      newSelectOptions = [
+      filtered = [
         {
           children: <i style={{ color: "#0067cc" }}>{`${createNewOptionLabel} "${filterValue}"`}</i>,
           value: CREATE_NEW,
         },
-        ...newSelectOptions,
+        ...filtered,
       ];
     }
 
-    // Open the menu when the input value changes and the new value is not empty
-    if (!isOpen && filterValue) {
-      setIsOpen(true);
-    }
+    return filtered;
+  }, [CREATE_NEW, createNewOptionLabel, filterValue, renderableOptions, showCreateOption]);
 
-    setSelectOptions(newSelectOptions);
-  }, [CREATE_NEW, createNewOptionLabel, filterValue, isOpen, options, showCreateOption]);
+  const selectedOptionExists = useMemo(
+    () => renderableOptions.some((option) => option.value === selected),
+    [renderableOptions, selected]
+  );
+  const safeSelected = selectedOptionExists ? selected : undefined;
 
   const getSelectOptionId = (value: any) => `select-typeahead-${value?.replace(" ", "-")}`;
 
@@ -156,24 +166,38 @@ export function TypeaheadSelect({
   const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
     if (value) {
       if (value === CREATE_NEW) {
-        const newValue = onCreateNewOption?.(filterValue);
-        setSelected(newValue, filterValue, { triggeredByCreateNewOption: true });
-        setFilterValue("");
-        closeMenu();
+        const newOptionLabel = filterValue;
+        const newValue = onCreateNewOption?.(newOptionLabel);
+        setSelected(newValue, newOptionLabel, { triggeredByCreateNewOption: true });
+
+        if (isMultiple) {
+          keepOpenRef.current = true;
+          setInputValue("");
+        } else {
+          setInputValue(newOptionLabel);
+          closeMenu();
+        }
+      } else if (isMultiple) {
+        keepOpenRef.current = true;
+        const optionText = selectOptions.find((option) => option.value === value)?.children;
+        setSelected(String(value), String(optionText), { triggeredByCreateNewOption: false });
       } else {
         const optionText = selectOptions.find((option) => option.value === value)?.children;
         setInputValue(String(optionText));
         setSelected(String(value), String(optionText), { triggeredByCreateNewOption: false });
-
-        setFilterValue("");
         closeMenu();
       }
+      setFilterValue("");
     }
   };
 
   const onTextInputChange = (_event: React.FormEvent<HTMLInputElement>, value: string) => {
     setInputValue(value);
     setFilterValue(value);
+
+    if (!isOpen && value) {
+      setIsOpen(true);
+    }
 
     resetActiveAndFocusedItem();
     setActiveAndFocusedItem(0);
@@ -276,16 +300,21 @@ export function TypeaheadSelect({
     textInputRef?.current?.focus();
   };
 
-  const onBlur = (e: React.MouseEvent<HTMLElement>) => {
-    if ((e.relatedTarget as HTMLElement | undefined)?.id?.includes(CREATE_NEW)) {
-      // If we're blurring the typeahead input because we're creating
-      // a new element with a mouse click, then we don't need to do anything.
-      return;
-    }
-
+  const onBlur = () => {
     const optionText = options.find((option) => option.value === selected)?.children;
     setInputValue(optionText as string);
     setFilterValue("");
+  };
+
+  const onOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen && keepOpenRef.current) {
+      keepOpenRef.current = false;
+      return;
+    }
+    setIsOpen(nextOpen);
+    if (!nextOpen) {
+      resetActiveAndFocusedItem();
+    }
   };
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
@@ -330,19 +359,17 @@ export function TypeaheadSelect({
     <Select
       id={id}
       isOpen={isOpen}
-      selected={selected}
+      selected={safeSelected}
       onSelect={onSelect}
       className={"kie-bpmn-editor--typeahead-selector"}
-      onOpenChange={(isOpen: boolean) => {
-        !isOpen && closeMenu();
-      }}
+      onOpenChange={onOpenChange}
       popperProps={{
         appendTo: document.body,
       }}
       toggle={toggle}
       shouldFocusFirstItemOnOpen={false}
     >
-      <SelectList id="select-create-typeahead-listbox">
+      <SelectList id="select-create-typeahead-listbox" onMouseDown={(e) => e.preventDefault()}>
         {selectOptions.length <= 0 && (
           <>
             {(!filterValue && (
