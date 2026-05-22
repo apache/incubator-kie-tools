@@ -192,6 +192,7 @@ export const PopoverMenu = React.forwardRef(
         onHidden={onHiddenCallback}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
+        animationDuration={0}
         flipBehavior={["bottom-start", "bottom", "bottom-end", "right-start", "left-start", "right-end", "left-end"]}
       >
         {children}
