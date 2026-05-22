@@ -50,7 +50,7 @@ test.describe("Populate Boxed Conditional", () => {
     );
   });
 
-  test("should create the Monthly Fee Conditional", async ({ bee, stories }) => {
+  test("should create the Monthly Fee Conditional", async ({ page, bee, stories }) => {
     await stories.openBoxedConditional();
 
     // HEADER

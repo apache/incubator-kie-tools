@@ -44,6 +44,9 @@ export class Monaco {
     await this.page.keyboard.press("Home");
     if (args.submit === undefined || args.submit) {
       await this.page.keyboard.press("Enter");
+      // React 18 batches state updates, so the editor may still be visible immediately
+      // after the key event. Wait for it to close before proceeding.
+      await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").waitFor({ state: "hidden" });
     }
   }
 
