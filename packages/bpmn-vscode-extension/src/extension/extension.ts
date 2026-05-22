@@ -17,11 +17,41 @@
  * under the License.
  */
 
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import { activateBpmnEditor } from "./extension-bpmn-editor";
+import { generateFormsCommand } from "@kie-tools/form-code-generator-vscode-command/dist/generateFormCodeCommand";
+import { BpmnEditorChannelApiImpl } from "../channelApi/BpmnEditorChannelApiImpl";
 
 export function activate(context: vscode.ExtensionContext) {
-  activateBpmnEditor(context);
+  console.info("Extension is alive.");
+
+  KogitoVsCode.startExtension({
+    extensionName: "kie-group.bpmn-vscode-extension",
+    context: context,
+    viewType: "kieKogitoWebviewEditorsBpmn",
+    generateSvgCommandId: "extension.kogito.getPreviewSvgBpmn",
+    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgBpmn",
+    channelApiProducer: { get: (...args) => new BpmnEditorChannelApiImpl(...args) },
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping({
+        type: "bpmn",
+        filePathGlob: "**/*.bpmn?(2)",
+        resourcesPathPrefix: "dist/webview/editors/bpmn",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/BpmnEditorEnvelopeApp.js" },
+      }),
+    ]),
+  });
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.apache.kie.bpmnEditor.generateFormCode", async (args: any) =>
+      generateFormsCommand()
+    )
+  );
+
+  KogitoVsCode.VsCodeRecommendation.showExtendedServicesRecommendation(context);
+
+  console.info("Extension is successfully setup.");
 }
 
 export function deactivate() {

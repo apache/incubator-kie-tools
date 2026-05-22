@@ -32,6 +32,34 @@ export enum RestProperties {
   RestServiceCallTaskId = "RestServiceCallTaskId",
 }
 
+export enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  PATCH = "PATCH",
+  DELETE = "DELETE",
+}
+
+export enum AuthStrategy {
+  PROPAGATED = "propagated",
+  CONFIGURED = "configured",
+  NONE = "none",
+}
+
+export const HTTP_METHODS_OPTIONS = [
+  { value: HttpMethod.GET, labelKey: "httpMethodGet" },
+  { value: HttpMethod.POST, labelKey: "httpMethodPost" },
+  { value: HttpMethod.PUT, labelKey: "httpMethodPut" },
+  { value: HttpMethod.PATCH, labelKey: "httpMethodPatch" },
+  { value: HttpMethod.DELETE, labelKey: "httpMethodDelete" },
+] as const;
+
+export const AUTH_STRATEGIES_OPTIONS = [
+  { value: AuthStrategy.PROPAGATED, labelKey: "authStrategyPropagated" },
+  { value: AuthStrategy.CONFIGURED, labelKey: "authStrategyConfigured" },
+  { value: AuthStrategy.NONE, labelKey: "authStrategyNone" },
+] as const;
+
 export const REST_PROPERTIES_KEYS = [
   RestProperties.Method,
   RestProperties.Url,

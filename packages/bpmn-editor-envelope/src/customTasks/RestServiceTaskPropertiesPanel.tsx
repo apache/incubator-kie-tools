@@ -20,25 +20,27 @@
 import * as React from "react";
 import { CustomTask } from "@kie-tools/bpmn-editor/dist/BpmnEditor";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
-import { useBpmnEditorStoreApi } from "@kie-tools/bpmn-editor/dist/store/StoreContext";
+import { useBpmnEditorStoreApi, useBpmnEditorStore } from "@kie-tools/bpmn-editor/dist/store/StoreContext";
 import { useKogitoEditorEnvelopeContext, ChannelType } from "@kie-tools-core/editor/dist/api";
 import { useBpmnEditorChannelType } from "../BpmnMultiplyingArchitectureEditorFactory";
 import { PropertiesPanelHeaderFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/singleNodeProperties/_PropertiesPanelHeaderFormSection";
 import { NameDocumentationAndId } from "@kie-tools/bpmn-editor/dist/propertiesPanel/nameDocumentationAndId/NameDocumentationAndId";
+import { TypeaheadSelect } from "@kie-tools/bpmn-editor/dist/typeaheadSelect/TypeaheadSelect";
 import {
   BidirectionalDataMappingFormSection,
   useDataMapping,
 } from "@kie-tools/bpmn-editor/dist/propertiesPanel/dataMapping/DataMappingFormSection";
 import { OnEntryAndExitScriptsFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/onEntryAndExitScripts/OnEntryAndExitScriptsFormSection";
-import { FormGroup, FormSection, ActionGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { FormGroup, FormSection, ActionGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { BpmnEditorEnvelopeI18n, bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries } from "../i18n";
+import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries } from "../i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { DataMapping, setDataMappingForElement } from "@kie-tools/bpmn-editor/dist/mutations/_dataMapping";
 import { DEFAULT_DATA_TYPES } from "@kie-tools/bpmn-editor/dist/mutations/addOrGetItemDefinitions";
@@ -46,10 +48,16 @@ import { BpmnEditorChannelApi } from "../BpmnEditorChannelApi";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   RestProperties,
-  REST_PROPERTIES_KEYS,
   REST_TASK_ICON,
   REST_PROPERTIES_DATA_TYPES,
+  REST_PROPERTIES_KEYS,
+  HTTP_METHODS_OPTIONS,
+  AUTH_STRATEGIES_OPTIONS,
+  HttpMethod,
+  AuthStrategy,
 } from "./RestServiceTaskConstants";
+import { ContentDataInput } from "./ContentDataInput";
+import "@kie-tools/bpmn-editor/dist/propertiesPanel/metadata/Metadata.css";
 
 export type HeaderParameter = {
   id: string;
@@ -63,8 +71,10 @@ export type QueryParameter = {
   value: string;
 };
 
-const HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
-const AUTH_STRATEGIES = ["propagated", "configured", "none"];
+export type ContentDataVariable = {
+  variableName: string;
+  variableValue: string | null;
+};
 
 export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponent"] = ({ task }) => {
   const i18n = new I18n(bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries).getCurrent();
@@ -72,6 +82,15 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   const { inputDataMapping, outputDataMapping } = useDataMapping(task, () => {});
   const envelopeContext = useKogitoEditorEnvelopeContext();
   const channelApi = envelopeContext.channelApi as unknown as MessageBusClientApi<BpmnEditorChannelApi>;
+
+  const dataInputVariables = React.useMemo(
+    () =>
+      inputDataMapping
+        ?.filter((data) => data.name && !(REST_PROPERTIES_KEYS as readonly string[]).includes(data.name))
+        ?.map((v) => v?.name)
+        ?.filter((name): name is string => name !== undefined),
+    [inputDataMapping]
+  );
 
   const channelType = useBpmnEditorChannelType();
   const isVSCode = React.useMemo(
@@ -87,8 +106,18 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
 
   const [headers, setHeaders] = React.useState<HeaderParameter[]>([]);
   const [queryParams, setQueryParams] = React.useState<QueryParameter[]>([]);
+  const [contentDataVariables, setContentDataVariables] = React.useState<ContentDataVariable[]>([]);
+  const [contentDataValue, setContentDataValue] = React.useState<string>("");
   const headerIdMapRef = React.useRef<Map<string, string>>(new Map());
   const queryIdMapRef = React.useRef<Map<string, string>>(new Map());
+  const entryStyle = {
+    padding: "4px",
+    margin: "8px",
+    width: "calc(100% - 2 * 4px - 2 * 8px)",
+  };
+
+  const [hoveredHeaderIndex, setHoveredHeaderIndex] = React.useState<number | undefined>(undefined);
+  const [hoveredQueryIndex, setHoveredQueryIndex] = React.useState<number | undefined>(undefined);
 
   const upsert = React.useCallback(
     (list: typeof inputDataMapping | undefined, name: RestProperties, val: string): typeof inputDataMapping => {
@@ -140,6 +169,46 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       (inputDataMapping ?? []).filter((dm) => dm.isExpression).find((dm) => dm.name === fieldName)?.value ?? "",
     [inputDataMapping]
   );
+
+  React.useEffect(() => {
+    const storedValue = getValue(RestProperties.ContentData);
+    setContentDataValue(storedValue);
+  }, [getValue]);
+
+  React.useEffect(() => {
+    if (!dataInputVariables) return;
+
+    if (!contentDataValue) {
+      setContentDataVariables([]);
+      return;
+    }
+
+    const matches = contentDataValue.match(/{{\s*([\w.-]+)\s*}}/g) || [];
+    const variableNames = matches.map((m) => m.replace(/{{\s*|\s*}}/g, ""));
+    const validVariables = variableNames.filter((name) => dataInputVariables.includes(name));
+
+    setContentDataVariables((prevVariables) => {
+      const preservedEntries = prevVariables.filter((entry) => validVariables.includes(entry.variableName));
+
+      const newEntries = validVariables
+        .filter((name) => !preservedEntries.some((entry) => entry.variableName === name))
+        .map((name) => ({
+          variableName: name,
+          variableValue: null,
+        }));
+
+      const updatedVariables = [...preservedEntries, ...newEntries];
+
+      const isSame =
+        updatedVariables.length === prevVariables.length &&
+        updatedVariables.every((item, index) => {
+          const current = prevVariables[index];
+          return current && current.variableName === item.variableName && current.variableValue === item.variableValue;
+        });
+
+      return isSame ? prevVariables : updatedVariables;
+    });
+  }, [dataInputVariables, contentDataValue]);
 
   React.useEffect(() => {
     const extractedHeaders: HeaderParameter[] = [];
@@ -203,7 +272,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           if (!url) {
             throw new Error(i18n.restService.urlRequired);
           }
-          throw new Error("Host is required when URL is not complete");
+          throw new Error(i18n.restService.hostRequiredError);
         }
 
         const baseUrl = `${protocol ? `${protocol}://` : ""}${host}${port ? `:${port}` : ""}`;
@@ -220,15 +289,30 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         throw new Error(`Test token is required for ${authStrategy} authentication strategy`);
       }
 
+      if (Array.isArray(contentDataVariables) && contentDataVariables.length > 0) {
+        for (const { variableName, variableValue } of contentDataVariables) {
+          if (variableValue == null || String(variableValue).trim() === "") {
+            throw new Error(`${i18n.restService.testVariableMissingError} ({{${variableName}}})`);
+          }
+        }
+      }
+
       const requestHeaders: Record<string, string> = {};
 
       if (testToken.trim() && authStrategy !== "none") {
         requestHeaders["Authorization"] = `Bearer ${testToken.trim()}`;
       }
 
-      const contentData = getValue(RestProperties.ContentData);
-      if (contentData && ["POST", "PUT", "PATCH"].includes(method)) {
-        requestHeaders["Content-Type"] = "application/json";
+      let contentData = getValue(RestProperties.ContentData);
+
+      if (contentData && contentDataVariables.length > 0) {
+        contentDataVariables.forEach(({ variableName, variableValue }) => {
+          if (variableValue != null) {
+            const regex = new RegExp(`{{\\s*${variableName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*}}`, "g");
+            const replacementValue = typeof variableValue === "string" ? variableValue : JSON.stringify(variableValue);
+            contentData = contentData.replace(regex, replacementValue);
+          }
+        });
       }
 
       headers.forEach((header) => {
@@ -236,6 +320,17 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           requestHeaders[header.name] = header.value;
         }
       });
+
+      if (contentData && ["POST", "PUT", "PATCH"].includes(method) && !requestHeaders["Content-Type"]) {
+        const trimmedData = contentData.trim();
+        if (trimmedData.startsWith("{") || trimmedData.startsWith("[")) {
+          requestHeaders["Content-Type"] = "application/json";
+        } else if (trimmedData.startsWith("#{")) {
+          requestHeaders["Content-Type"] = "application/json";
+        } else {
+          requestHeaders["Content-Type"] = "application/json";
+        }
+      }
 
       const queryString = queryParams
         .filter((q) => q.name.trim())
@@ -275,6 +370,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     testToken,
     headers,
     queryParams,
+    contentDataVariables,
     channelApi.requests,
     isVSCode,
     useCorsProxy,
@@ -410,196 +506,389 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       <PropertiesPanelHeaderFormSection
         title={task["@_name"] || i18n.restService.name}
         icon={REST_TASK_ICON}
-        shouldStartExpanded={false}
+        shouldStartExpanded={true}
       >
         <NameDocumentationAndId element={task} />
-      </PropertiesPanelHeaderFormSection>
-      <FormSection style={{ "--pf-v5-c-form__section--Gap": "0.5rem" } as React.CSSProperties}>
-        <FormGroup label={i18n.restService.url} isRequired fieldId="rest-url">
-          <TextInput
-            id="rest-url"
-            value={getValue(RestProperties.Url)}
-            onChange={(_, value) => updateRestProperties(RestProperties.Url, value)}
-            placeholder={i18n.restService.urlPlaceholder}
-          />
-          <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>{i18n.restService.urlHelp}</div>
-        </FormGroup>
+        <FormSection style={{ "--pf-v5-c-form__section--Gap": "0.5rem" } as React.CSSProperties}>
+          <FormGroup label={i18n.restService.url} isRequired fieldId="rest-url">
+            <TextInput
+              id="rest-url"
+              value={getValue(RestProperties.Url)}
+              onChange={(_, value) => updateRestProperties(RestProperties.Url, value)}
+              placeholder={i18n.restService.urlPlaceholder}
+              aria-describedby="rest-url-helper"
+            />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem>{i18n.restService.urlHelp}</HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          </FormGroup>
 
-        <FormGroup label={i18n.restService.method} fieldId="rest-method">
-          <FormSelect
-            id="rest-method"
-            value={getValue(RestProperties.Method) || "GET"}
-            onChange={(_, value) => updateRestProperties(RestProperties.Method, value)}
-          >
-            {HTTP_METHODS.map((method) => (
-              <FormSelectOption key={method} value={method} label={method} />
-            ))}
-          </FormSelect>
-        </FormGroup>
-
-        <FormGroup label={i18n.restService.protocol} fieldId="rest-protocol">
-          <TextInput
-            id="rest-protocol"
-            value={getValue(RestProperties.Protocol)}
-            onChange={(_, value) => updateRestProperties(RestProperties.Protocol, value)}
-            placeholder={i18n.restService.protocolPlaceholder}
-          />
-          <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>
-            {i18n.restService.protocolHelp}
-          </div>
-        </FormGroup>
-
-        <FormGroup label={i18n.restService.host} fieldId="rest-host">
-          <TextInput
-            id="rest-host"
-            value={getValue(RestProperties.Host)}
-            onChange={(_, value) => updateRestProperties(RestProperties.Host, value)}
-            placeholder={i18n.restService.hostPlaceholder}
-          />
-          <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>
-            {i18n.restService.hostHelp}
-          </div>
-        </FormGroup>
-
-        <FormGroup label={i18n.restService.port} fieldId="rest-port">
-          <TextInput
-            id="rest-port"
-            type="number"
-            value={getValue(RestProperties.Port)}
-            onChange={(_, value) => updateRestProperties(RestProperties.Port, value)}
-            placeholder={i18n.restService.portPlaceholder}
-          />
-          <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>
-            {i18n.restService.portHelp}
-          </div>
-        </FormGroup>
-
-        {["POST", "PUT", "PATCH"].includes(getValue(RestProperties.Method)) && (
-          <FormGroup label={i18n.restService.contentData} fieldId="rest-content-data">
-            <TextArea
-              id="rest-content-data"
-              value={getValue(RestProperties.ContentData)}
-              onChange={(_, value) => updateRestProperties(RestProperties.ContentData, value)}
-              placeholder={i18n.restService.contentDataPlaceholder}
-              rows={5}
+          <FormGroup label={i18n.restService.method} fieldId="rest-method">
+            <TypeaheadSelect
+              id="rest-method"
+              selected={getValue(RestProperties.Method) || HttpMethod.GET}
+              isMultiple={false}
+              setSelected={(value) => {
+                if (value) {
+                  updateRestProperties(RestProperties.Method, value);
+                }
+              }}
+              options={HTTP_METHODS_OPTIONS.map((option) => ({
+                value: option.value,
+                children: i18n.restService[option.labelKey],
+              }))}
+              showCreateOptionWhen="never"
             />
           </FormGroup>
-        )}
 
-        <FormGroup label={i18n.restService.requestTimeout} fieldId="rest-timeout">
-          <TextInput
-            id="rest-timeout"
-            type="number"
-            value={getValue(RestProperties.RequestTimeout)}
-            onChange={(_, value) => updateRestProperties(RestProperties.RequestTimeout, value)}
-            placeholder="30000"
-          />
-        </FormGroup>
-      </FormSection>
+          <FormGroup label={i18n.restService.protocol} fieldId="rest-protocol">
+            <TextInput
+              id="rest-protocol"
+              value={getValue(RestProperties.Protocol)}
+              onChange={(_, value) => updateRestProperties(RestProperties.Protocol, value)}
+              placeholder={i18n.restService.protocolPlaceholder}
+              aria-describedby="rest-protocol-helper"
+            />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem>{i18n.restService.protocolHelp}</HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          </FormGroup>
 
-      <FormSection
-        title={i18n.restService.headers}
-        style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}
-      >
-        {headers.map((header, index) => (
-          <Grid key={header.id} hasGutter style={{ marginBottom: "0.25rem" }}>
-            <GridItem span={5}>
-              <TextInput
-                id={`header-name-${header.id}`}
-                value={header.name}
-                onChange={(_, value) => updateHeader(header.id, "name", value)}
-                aria-label={`Header ${index + 1} name`}
-              />
-            </GridItem>
-            <GridItem span={5}>
-              <TextInput
-                id={`header-value-${header.id}`}
-                value={header.value}
-                onChange={(_, value) => updateHeader(header.id, "value", value)}
-                aria-label={`Header ${index + 1} value`}
-              />
-            </GridItem>
-            <GridItem span={2}>
-              <Button
-                variant="plain"
-                onClick={() => removeHeader(header.id)}
-                aria-label={`Remove header ${index + 1}`}
-                style={{
-                  fontSize: "1.5rem",
-                  padding: "0.25rem 0.5rem",
-                  color: "#c9190b",
-                }}
-              >
-                ×
-              </Button>
-            </GridItem>
-          </Grid>
-        ))}
+          <FormGroup label={i18n.restService.host} fieldId="rest-host">
+            <TextInput
+              id="rest-host"
+              value={getValue(RestProperties.Host)}
+              onChange={(_, value) => updateRestProperties(RestProperties.Host, value)}
+              placeholder={i18n.restService.hostPlaceholder}
+              aria-describedby="rest-host-helper"
+            />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem>{i18n.restService.hostHelp}</HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          </FormGroup>
 
-        <Button variant="secondary" onClick={addHeader} style={{ marginTop: "0.5rem" }}>
-          {i18n.restService.addHeader}
-        </Button>
-      </FormSection>
+          <FormGroup label={i18n.restService.port} fieldId="rest-port">
+            <TextInput
+              id="rest-port"
+              type="number"
+              value={getValue(RestProperties.Port)}
+              onChange={(_, value) => updateRestProperties(RestProperties.Port, value)}
+              placeholder={i18n.restService.portPlaceholder}
+              aria-describedby="rest-port-helper"
+            />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem>{i18n.restService.portHelp}</HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          </FormGroup>
 
-      <FormSection
-        title={i18n.restService.queryParameters}
-        style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}
-      >
-        {queryParams.map((param, index) => (
-          <Grid key={param.id} hasGutter style={{ marginBottom: "0.25rem" }}>
-            <GridItem span={5}>
-              <TextInput
-                id={`query-name-${param.id}`}
-                value={param.name}
-                onChange={(_, value) => updateQueryParam(param.id, "name", value)}
-                aria-label={`Query parameter ${index + 1} name`}
-              />
-            </GridItem>
-            <GridItem span={5}>
-              <TextInput
-                id={`query-value-${param.id}`}
-                value={param.value}
-                onChange={(_, value) => updateQueryParam(param.id, "value", value)}
-                aria-label={`Query parameter ${index + 1} value`}
-              />
-            </GridItem>
-            <GridItem span={2}>
-              <Button
-                variant="plain"
-                onClick={() => removeQueryParam(param.id)}
-                aria-label={`Remove query parameter ${index + 1}`}
-                style={{
-                  fontSize: "1.5rem",
-                  padding: "0.25rem 0.5rem",
-                  color: "#c9190b",
-                }}
-              >
-                ×
-              </Button>
-            </GridItem>
-          </Grid>
-        ))}
+          {["POST", "PUT", "PATCH"].includes(getValue(RestProperties.Method)) && (
+            <>
+              <FormGroup label={i18n.restService.contentData} fieldId="rest-content-data">
+                <ContentDataInput
+                  value={contentDataValue}
+                  onChange={(value) => {
+                    setContentDataValue(value);
+                    updateRestProperties(RestProperties.ContentData, value);
+                  }}
+                  variableSuggestions={dataInputVariables}
+                  placeholder={i18n.restService.contentDataPlaceholder}
+                  aria-describedby="rest-content-data-helper"
+                />
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="indeterminate">{i18n.restService.contentDataHelperText}</HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              </FormGroup>
 
-        <Button variant="secondary" onClick={addQueryParam} style={{ marginTop: "0.5rem" }}>
-          {i18n.restService.addQueryParameter}
-        </Button>
-      </FormSection>
+              {contentDataVariables.length > 0 && (
+                <FormGroup label={i18n.restService.testVariables} fieldId="rest-content-data-variables">
+                  <div style={{ padding: "0 8px", marginTop: "8px" }}>
+                    <Grid md={6} style={{ alignItems: "center", marginBottom: "8px" }}>
+                      <GridItem span={5}>
+                        <div style={entryStyle}>
+                          <b>{i18n.restService.variableName}</b>
+                        </div>
+                      </GridItem>
+                      <GridItem span={7}>
+                        <div style={entryStyle}>
+                          <b>{i18n.restService.variableValue}</b>
+                        </div>
+                      </GridItem>
+                    </Grid>
+                  </div>
+                  {contentDataVariables.map((variable, index) => (
+                    <div key={`${variable.variableName}-${index}`} style={{ padding: "0 8px" }}>
+                      <Grid md={6} className={"kie-bpmn-editor--properties-panel--metadata-entry"}>
+                        <GridItem span={5}>
+                          <input
+                            style={entryStyle}
+                            type="text"
+                            value={variable.variableName}
+                            disabled
+                            aria-label={`Variable ${index + 1} name`}
+                          />
+                        </GridItem>
+                        <GridItem span={7}>
+                          <input
+                            style={entryStyle}
+                            type="text"
+                            placeholder={i18n.restService.variableValuePlaceholder}
+                            value={variable.variableValue || ""}
+                            onChange={(e) => {
+                              const updatedVariables = [...contentDataVariables];
+                              updatedVariables[index] = {
+                                ...updatedVariables[index],
+                                variableValue: e.target.value,
+                              };
+                              setContentDataVariables(updatedVariables);
+                            }}
+                            aria-label={`Variable ${index + 1} value`}
+                          />
+                        </GridItem>
+                      </Grid>
+                    </div>
+                  ))}
+                </FormGroup>
+              )}
+            </>
+          )}
 
-      <FormSection style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}>
-        <FormGroup label={i18n.restService.accessTokenStrategy} isRequired fieldId="rest-auth-strategy">
-          <FormSelect
-            id="rest-auth-strategy"
-            value={getValue(RestProperties.AccessTokenAcquisitionStrategy) || "none"}
-            onChange={(_, value) => updateRestProperties(RestProperties.AccessTokenAcquisitionStrategy, value)}
+          <FormGroup label={i18n.restService.requestTimeout} fieldId="rest-timeout">
+            <TextInput
+              id="rest-timeout"
+              type="number"
+              value={getValue(RestProperties.RequestTimeout)}
+              onChange={(_, value) => updateRestProperties(RestProperties.RequestTimeout, value)}
+              placeholder="30000"
+            />
+          </FormGroup>
+        </FormSection>
+
+        <FormSection
+          title={i18n.restService.headers}
+          style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}
+        >
+          {headers.length > 0 ? (
+            <>
+              <div style={{ padding: "0 8px" }}>
+                <Grid md={6} style={{ alignItems: "center" }}>
+                  <GridItem span={5}>
+                    <div style={entryStyle}>
+                      <b>{i18n.restService.headerName}</b>
+                    </div>
+                  </GridItem>
+                  <GridItem span={6}>
+                    <div style={entryStyle}>
+                      <b>{i18n.restService.headerValue}</b>
+                    </div>
+                  </GridItem>
+                  <GridItem span={1}>
+                    <div style={{ textAlign: "right" }}>
+                      <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addHeader} aria-label="Add header">
+                        <PlusCircleIcon />
+                      </Button>
+                    </div>
+                  </GridItem>
+                </Grid>
+              </div>
+              {headers.map((header, index) => (
+                <div key={header.id} style={{ padding: "0 8px" }}>
+                  <Grid
+                    md={6}
+                    className={"kie-bpmn-editor--properties-panel--metadata-entry"}
+                    onMouseEnter={() => setHoveredHeaderIndex(index)}
+                    onMouseLeave={() => setHoveredHeaderIndex(undefined)}
+                  >
+                    <GridItem span={5}>
+                      <input
+                        autoFocus={true}
+                        style={entryStyle}
+                        type="text"
+                        placeholder={i18n.restService.headerNamePlaceholder}
+                        value={header.name}
+                        onChange={(e) => updateHeader(header.id, "name", e.target.value)}
+                        aria-label={`Header ${index + 1} name`}
+                      />
+                    </GridItem>
+                    <GridItem span={6}>
+                      <input
+                        style={entryStyle}
+                        type="text"
+                        placeholder={i18n.restService.headerValuePlaceholder}
+                        value={header.value}
+                        onChange={(e) => updateHeader(header.id, "value", e.target.value)}
+                        aria-label={`Header ${index + 1} value`}
+                      />
+                    </GridItem>
+                    <GridItem span={1} style={{ textAlign: "right" }}>
+                      {hoveredHeaderIndex === index && (
+                        <Button
+                          tabIndex={9999}
+                          variant="plain"
+                          style={{ paddingLeft: 0 }}
+                          onClick={() => removeHeader(header.id)}
+                          aria-label={`Remove header ${index + 1}`}
+                        >
+                          <TimesIcon />
+                        </Button>
+                      )}
+                    </GridItem>
+                  </Grid>
+                </div>
+              ))}
+            </>
+          ) : (
+            <div style={{ position: "relative" }}>
+              <div style={{ padding: "10px", background: "#eee", borderRadius: "10px", textAlign: "center" }}>
+                {i18n.restService.noHeaders}
+              </div>
+              <div style={{ position: "absolute", top: "calc(50% - 16px)", right: "0" }}>
+                <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addHeader}>
+                  <PlusCircleIcon />
+                </Button>
+              </div>
+            </div>
+          )}
+        </FormSection>
+
+        <FormSection
+          title={i18n.restService.queryParameters}
+          style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}
+        >
+          {queryParams.length > 0 ? (
+            <>
+              <div style={{ padding: "0 8px" }}>
+                <Grid md={6} style={{ alignItems: "center" }}>
+                  <GridItem span={5}>
+                    <div style={entryStyle}>
+                      <b>{i18n.restService.queryParameterName}</b>
+                    </div>
+                  </GridItem>
+                  <GridItem span={6}>
+                    <div style={entryStyle}>
+                      <b>{i18n.restService.queryParameterValue}</b>
+                    </div>
+                  </GridItem>
+                  <GridItem span={1}>
+                    <div style={{ textAlign: "right" }}>
+                      <Button
+                        variant="plain"
+                        style={{ paddingLeft: 0 }}
+                        onClick={addQueryParam}
+                        aria-label="Add query parameter"
+                      >
+                        <PlusCircleIcon />
+                      </Button>
+                    </div>
+                  </GridItem>
+                </Grid>
+              </div>
+              {queryParams.map((param, index) => (
+                <div key={param.id} style={{ padding: "0 8px" }}>
+                  <Grid
+                    md={6}
+                    className={"kie-bpmn-editor--properties-panel--metadata-entry"}
+                    onMouseEnter={() => setHoveredQueryIndex(index)}
+                    onMouseLeave={() => setHoveredQueryIndex(undefined)}
+                  >
+                    <GridItem span={5}>
+                      <input
+                        autoFocus={true}
+                        style={entryStyle}
+                        type="text"
+                        placeholder={i18n.restService.queryParameterName}
+                        value={param.name}
+                        onChange={(e) => updateQueryParam(param.id, "name", e.target.value)}
+                        aria-label={`Query parameter ${index + 1} name`}
+                      />
+                    </GridItem>
+                    <GridItem span={6}>
+                      <input
+                        style={entryStyle}
+                        type="text"
+                        placeholder={i18n.restService.queryParameterValue}
+                        value={param.value}
+                        onChange={(e) => updateQueryParam(param.id, "value", e.target.value)}
+                        aria-label={`Query parameter ${index + 1} value`}
+                      />
+                    </GridItem>
+                    <GridItem span={1} style={{ textAlign: "right" }}>
+                      {hoveredQueryIndex === index && (
+                        <Button
+                          tabIndex={9999}
+                          variant="plain"
+                          style={{ paddingLeft: 0 }}
+                          onClick={() => removeQueryParam(param.id)}
+                          aria-label={`Remove query parameter ${index + 1}`}
+                        >
+                          <TimesIcon />
+                        </Button>
+                      )}
+                    </GridItem>
+                  </Grid>
+                </div>
+              ))}
+            </>
+          ) : (
+            <div style={{ position: "relative" }}>
+              <div style={{ padding: "10px", background: "#eee", borderRadius: "10px", textAlign: "center" }}>
+                {i18n.restService.noQueryParameters}
+              </div>
+              <div style={{ position: "absolute", top: "calc(50% - 16px)", right: "0" }}>
+                <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addQueryParam}>
+                  <PlusCircleIcon />
+                </Button>
+              </div>
+            </div>
+          )}
+        </FormSection>
+
+        <FormSection style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}>
+          <FormGroup label={i18n.restService.accessTokenStrategy} isRequired fieldId="rest-auth-strategy">
+            <TypeaheadSelect
+              id="rest-auth-strategy"
+              selected={getValue(RestProperties.AccessTokenAcquisitionStrategy) || AuthStrategy.NONE}
+              isMultiple={false}
+              setSelected={(value) => {
+                if (value) {
+                  updateRestProperties(RestProperties.AccessTokenAcquisitionStrategy, value);
+                }
+              }}
+              options={AUTH_STRATEGIES_OPTIONS.map((option) => ({
+                value: option.value,
+                children: i18n.restService[option.labelKey],
+              }))}
+              showCreateOptionWhen="never"
+            />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem>
+                  {getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.PROPAGATED &&
+                    i18n.restService.accessTokenStrategyPropagatedHelp}
+                  {getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.CONFIGURED &&
+                    i18n.restService.accessTokenStrategyConfiguredHelp}
+                  {(getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.NONE ||
+                    !getValue(RestProperties.AccessTokenAcquisitionStrategy)) &&
+                    i18n.restService.accessTokenStrategyNoneHelp}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          </FormGroup>
+
+          <FormGroup
+            label={i18n.restService.restServiceCallTaskId}
+            isRequired={getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.CONFIGURED}
+            fieldId="rest-task-id"
           >
-            {AUTH_STRATEGIES.map((strategy) => (
-              <FormSelectOption key={strategy} value={strategy} label={strategy} />
-            ))}
-          </FormSelect>
-        </FormGroup>
-
-        {getValue(RestProperties.AccessTokenAcquisitionStrategy) === "configured" && (
-          <FormGroup label={i18n.restService.restServiceCallTaskId} isRequired fieldId="rest-task-id">
             <TextInput
               id="rest-task-id"
               value={getValue(RestProperties.RestServiceCallTaskId)}
@@ -607,69 +896,75 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               placeholder={i18n.restService.restServiceCallTaskIdPlaceholder}
             />
           </FormGroup>
-        )}
 
-        {(getValue(RestProperties.AccessTokenAcquisitionStrategy) === "propagated" ||
-          getValue(RestProperties.AccessTokenAcquisitionStrategy) === "configured") && (
-          <FormGroup label={i18n.restService.testToken} fieldId="rest-test-token">
-            <TextInput
-              id="rest-test-token"
-              type="password"
-              value={testToken}
-              onChange={(_, value) => setTestToken(value)}
-              placeholder={i18n.restService.testTokenPlaceholder}
-            />
-            <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.5rem" }}>
-              {i18n.restService.testTokenHelper}
-            </div>
-          </FormGroup>
-        )}
+          {(getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.PROPAGATED ||
+            getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.CONFIGURED) && (
+            <FormGroup label={i18n.restService.testToken} fieldId="rest-test-token">
+              <TextInput
+                id="rest-test-token"
+                type="password"
+                value={testToken}
+                onChange={(_, value) => setTestToken(value)}
+                placeholder={i18n.restService.testTokenPlaceholder}
+                aria-describedby="rest-test-token-helper"
+              />
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem>{i18n.restService.testTokenHelper}</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            </FormGroup>
+          )}
 
-        {!isVSCode && (
-          <FormGroup fieldId="rest-use-cors-proxy">
-            <Checkbox
-              id="rest-use-cors-proxy"
-              label={i18n.restService.useCorsProxy}
-              isChecked={useCorsProxy}
-              onChange={(_, checked) => setUseCorsProxy(checked)}
-              aria-label={i18n.restService.useCorsProxyAriaLabel}
-            />
-            <div style={{ fontSize: "0.875rem", color: "#6a6e73", marginTop: "0.25rem" }}>
-              {i18n.restService.useCorsProxyHelper}
-            </div>
-          </FormGroup>
-        )}
+          {!isVSCode && (
+            <FormGroup fieldId="rest-use-cors-proxy">
+              <Checkbox
+                id="rest-use-cors-proxy"
+                label={i18n.restService.useCorsProxy}
+                isChecked={useCorsProxy}
+                onChange={(_, checked) => setUseCorsProxy(checked)}
+                aria-label={i18n.restService.useCorsProxyAriaLabel}
+                aria-describedby="rest-use-cors-proxy-helper"
+              />
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem>{i18n.restService.useCorsProxyHelper}</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            </FormGroup>
+          )}
 
-        <ActionGroup>
-          <Button
-            variant="primary"
-            isBlock
-            id="rest-test-btn"
-            onClick={() => handleTestRequest()}
-            isDisabled={isLoading || !getValue(RestProperties.Url)}
-          >
-            {isLoading ? i18n.restService.testing : i18n.restService.testRequest}
-          </Button>
-        </ActionGroup>
-      </FormSection>
+          <ActionGroup>
+            <Button
+              variant="primary"
+              isBlock
+              id="rest-test-btn"
+              onClick={() => handleTestRequest()}
+              isDisabled={isLoading || !getValue(RestProperties.Url)}
+            >
+              {isLoading ? i18n.restService.testing : i18n.restService.testRequest}
+            </Button>
+          </ActionGroup>
+        </FormSection>
 
-      <FormSection style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}>
-        {testError && (
-          <Alert variant="danger" isInline title={i18n.restService.testFailed}>
-            {testError}
-          </Alert>
-        )}
+        <FormSection style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}>
+          {testError && (
+            <Alert variant="danger" isInline title={i18n.restService.testFailed}>
+              {testError}
+            </Alert>
+          )}
 
-        {testResult && (
-          <FormGroup label={i18n.restService.testResult} fieldId="rest-test-result">
-            <Alert
-              variant={testResult.status >= 200 && testResult.status < 300 ? "success" : "warning"}
-              isInline
-              title={`Status: ${testResult.status}`}
-            />
-          </FormGroup>
-        )}
-      </FormSection>
+          {testResult && (
+            <FormGroup label={i18n.restService.testResult} fieldId="rest-test-result">
+              <Alert
+                variant={testResult.status >= 200 && testResult.status < 300 ? "success" : "warning"}
+                isInline
+                title={`Status: ${testResult.status}`}
+              />
+            </FormGroup>
+          )}
+        </FormSection>
+      </PropertiesPanelHeaderFormSection>
 
       <BidirectionalDataMappingFormSection element={task} />
 
