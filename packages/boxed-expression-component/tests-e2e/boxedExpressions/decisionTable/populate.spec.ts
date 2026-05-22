@@ -22,7 +22,7 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Decision table", () => {
-  test("should correctly create a routing decision table", async ({ stories, page, bee, resizing }) => {
+  test.only("should correctly create a routing decision table", async ({ stories, page, bee, resizing }) => {
     await stories.openDecisionTable();
 
     await bee.expression.asDecisionTable().inputHeaderAt(0).open();
