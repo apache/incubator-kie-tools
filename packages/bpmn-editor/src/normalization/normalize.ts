@@ -42,10 +42,7 @@ function addOrGetGroup<K, V>(map: Map<K, V[]>, key: K): V[] {
   return group;
 }
 
-function getRefToRemap(
-  itemDefinitionIdsToRemap: Map<string, string>,
-  id: string | undefined
-): string | undefined {
+function getRefToRemap(itemDefinitionIdsToRemap: Map<string, string>, id: string | undefined): string | undefined {
   return id === undefined ? undefined : itemDefinitionIdsToRemap.get(id) ?? id;
 }
 
