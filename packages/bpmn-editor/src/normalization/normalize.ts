@@ -32,20 +32,6 @@ type WithRequiredDeep<T, K extends keyof any> = T extends undefined
         ? { [P in K]-?: NonNullable<WithRequiredDeep<T[P], K>> }
         : T);
 
-// Get the array for `key`, or create an empty one if missing.
-function addOrGetGroup<K, V>(map: Map<K, V[]>, key: K): V[] {
-  let group = map.get(key);
-  if (!group) {
-    group = [];
-    map.set(key, group);
-  }
-  return group;
-}
-
-function getRefToRemap(itemDefinitionIdsToRemap: Map<string, string>, id: string | undefined): string | undefined {
-  return id === undefined ? undefined : itemDefinitionIdsToRemap.get(id) ?? id;
-}
-
 function remapDataItems(
   itemDefinitionIdsToRemap: Map<string, string>,
   items: Array<{ "@_itemSubjectRef"?: string }> | undefined
@@ -55,7 +41,7 @@ function remapDataItems(
   }
   for (const item of items) {
     if (item["@_itemSubjectRef"] !== undefined) {
-      item["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, item["@_itemSubjectRef"]);
+      item["@_itemSubjectRef"] = itemDefinitionIdsToRemap.get(item["@_itemSubjectRef"]) ?? item["@_itemSubjectRef"];
     }
   }
 }
@@ -68,7 +54,9 @@ function remapProperties(
     return;
   }
   for (const p of properties) {
-    p["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, p["@_itemSubjectRef"]);
+    if (p["@_itemSubjectRef"]) {
+      p["@_itemSubjectRef"] = itemDefinitionIdsToRemap.get(p["@_itemSubjectRef"]) ?? p["@_itemSubjectRef"];
+    }
   }
 }
 
@@ -82,10 +70,10 @@ function remapFlowElements(
       el.__$$element === "dataObjectReference" ||
       el.__$$element === "dataStoreReference"
     ) {
-      el["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, el["@_itemSubjectRef"]);
-    }
-
-    if (
+      if (el["@_itemSubjectRef"] !== undefined) {
+        el["@_itemSubjectRef"] = itemDefinitionIdsToRemap.get(el["@_itemSubjectRef"]) ?? el["@_itemSubjectRef"];
+      }
+    } else if (
       el.__$$element === "businessRuleTask" ||
       el.__$$element === "callActivity" ||
       el.__$$element === "serviceTask" ||
@@ -94,29 +82,28 @@ function remapFlowElements(
       remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataInput);
       remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataOutput);
       remapProperties(itemDefinitionIdsToRemap, el.property);
-    }
-
-    if (el.__$$element === "endEvent" || el.__$$element === "intermediateThrowEvent") {
+    } else if (el.__$$element === "endEvent" || el.__$$element === "intermediateThrowEvent") {
       remapDataItems(itemDefinitionIdsToRemap, el.dataInput);
       remapProperties(itemDefinitionIdsToRemap, el.property);
-    }
-
-    if (
+    } else if (
       el.__$$element === "startEvent" ||
       el.__$$element === "intermediateCatchEvent" ||
       el.__$$element === "boundaryEvent"
     ) {
       remapDataItems(itemDefinitionIdsToRemap, el.dataOutput);
       remapProperties(itemDefinitionIdsToRemap, el.property);
-    }
-
-    if (el.__$$element === "subProcess" || el.__$$element === "adHocSubProcess" || el.__$$element === "transaction") {
+    } else if (
+      el.__$$element === "subProcess" ||
+      el.__$$element === "adHocSubProcess" ||
+      el.__$$element === "transaction"
+    ) {
       remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataInput);
       remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataOutput);
       remapProperties(itemDefinitionIdsToRemap, el.property);
       if (el.flowElement) {
         remapFlowElements(itemDefinitionIdsToRemap, el.flowElement);
       }
+    } else {
     }
   }
 }
@@ -179,21 +166,24 @@ export function normalize(model: BpmnLatestModel): State["bpmn"]["model"] {
     }
   });
 
-  // Merge itemDefinitions that share the same structureRef.
-  deduplicateItemDefinitions(model.definitions);
-
   const normalizedModel = model as Normalized<BpmnLatestModel>;
+
+  // Merge itemDefinitions that share the same structureRef.
+  deduplicateItemDefinitions(normalizedModel.definitions);
 
   return normalizedModel;
 }
 
 // Keep one itemDefinition per structureRef and update references to point to it.
-export function deduplicateItemDefinitions(definitions: BpmnLatestModel["definitions"]): void {
-  const itemDefinitionsGroupedStructureRef = new Map<string, Array<{ "@_id"?: string }>>();
+export function deduplicateItemDefinitions(definitions: Normalized<BpmnLatestModel["definitions"]>): void {
+  const itemDefinitionsGroupedStructureRef = new Map<string, Array<string>>();
   for (const rootElement of definitions.rootElement ?? []) {
     if (rootElement.__$$element === "itemDefinition") {
       const itemDefinitionStructureRef = rootElement["@_structureRef"] ?? "";
-      addOrGetGroup(itemDefinitionsGroupedStructureRef, itemDefinitionStructureRef).push(rootElement);
+      itemDefinitionsGroupedStructureRef.set(itemDefinitionStructureRef, [
+        ...(itemDefinitionsGroupedStructureRef.get(itemDefinitionStructureRef) ?? []),
+        rootElement["@_id"],
+      ]);
     }
   }
 
@@ -203,15 +193,9 @@ export function deduplicateItemDefinitions(definitions: BpmnLatestModel["definit
     if (itemDefinitionsGroup.length <= 1) {
       continue;
     }
-    const survivorId = itemDefinitionsGroup[0]["@_id"];
-    if (!survivorId) {
-      continue;
-    }
+    const survivorId = itemDefinitionsGroup[0];
     for (let i = 1; i < itemDefinitionsGroup.length; i++) {
-      const duplicateId = itemDefinitionsGroup[i]["@_id"];
-      if (duplicateId) {
-        itemDefinitionIdsToRemap.set(duplicateId, survivorId);
-      }
+      itemDefinitionIdsToRemap.set(itemDefinitionsGroup[i], survivorId);
     }
   }
 
@@ -219,23 +203,33 @@ export function deduplicateItemDefinitions(definitions: BpmnLatestModel["definit
     return;
   }
 
-  // Remove the duplicate itemDefinitions and update every itemSubjectRef.
-  const itemDefinitionIdsToRemove = new Set(itemDefinitionIdsToRemap.keys());
+  // Remove the duplicate itemDefinitions and update every reference to them.
   definitions.rootElement = definitions.rootElement?.filter(
-    (e) => !(e.__$$element === "itemDefinition" && e["@_id"] && itemDefinitionIdsToRemove.has(e["@_id"]))
+    (e) => !(e.__$$element === "itemDefinition" && itemDefinitionIdsToRemap.has(e["@_id"]))
   );
 
   for (const rootElement of definitions.rootElement ?? []) {
     if (rootElement.__$$element === "dataStore") {
-      rootElement["@_itemSubjectRef"] = getRefToRemap(itemDefinitionIdsToRemap, rootElement["@_itemSubjectRef"]);
-    }
-    if (rootElement.__$$element === "process") {
+      if (rootElement["@_itemSubjectRef"] !== undefined) {
+        rootElement["@_itemSubjectRef"] =
+          itemDefinitionIdsToRemap.get(rootElement["@_itemSubjectRef"]) ?? rootElement["@_itemSubjectRef"];
+      }
+    } else if (rootElement.__$$element === "message") {
+      if (rootElement["@_itemRef"] !== undefined) {
+        rootElement["@_itemRef"] = itemDefinitionIdsToRemap.get(rootElement["@_itemRef"]) ?? rootElement["@_itemRef"];
+      }
+    } else if (rootElement.__$$element === "correlationProperty") {
+      if (rootElement["@_type"] !== undefined) {
+        rootElement["@_type"] = itemDefinitionIdsToRemap.get(rootElement["@_type"]) ?? rootElement["@_type"];
+      }
+    } else if (rootElement.__$$element === "process") {
       remapDataItems(itemDefinitionIdsToRemap, rootElement.ioSpecification?.dataInput);
       remapDataItems(itemDefinitionIdsToRemap, rootElement.ioSpecification?.dataOutput);
       remapProperties(itemDefinitionIdsToRemap, rootElement.property);
       if (rootElement.flowElement) {
         remapFlowElements(itemDefinitionIdsToRemap, rootElement.flowElement);
       }
+    } else {
     }
   }
 }
