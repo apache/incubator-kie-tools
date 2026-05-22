@@ -45,8 +45,8 @@
       { "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" },
       { "id": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" },
       { "id": "@kie-tools-examples/process-accelerator" },
+      { "id": "@kie-tools/quarkus-bom" },
       { "id": "@kie-tools/maven-base" },
-      { "id": "@kie-tools-core/drools-and-kogito" },
       { "id": "@kie-tools-examples/process-business-calendar" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
@@ -90,6 +90,7 @@
       { "id": "@kie-tools/cors-proxy-image" },
       { "id": "@kie-tools/dev-deployment-base-image" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
+      { "id": "@kie-tools-core/drools-and-kogito" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp" },
       { "id": "@kie-tools/dmn-uniforms-patternfly-form-wrapper" },
       { "id": "@kie-tools/uniforms-patternfly-form-wrapper" },
@@ -138,6 +139,7 @@
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/scesim-marshaller" },
+      { "id": "@kie-tools/spring-boot-bom" },
       { "id": "@kie-tools/text-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" }
@@ -340,16 +342,15 @@
         "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
         "weight": 1
       },
-      { "source": "@kie-tools-examples/process-accelerator", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools-examples/process-accelerator", "target": "@kie-tools/quarkus-bom", "weight": 1 },
+      { "source": "@kie-tools/quarkus-bom", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/maven-base", "target": "@kie-tools-core/drools-and-kogito", "weight": 1 },
-      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools-scripts/build-env", "weight": 1 },
-      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools-examples/process-business-calendar",
         "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
-      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/quarkus-bom", "weight": 1 },
       {
         "source": "@kie-tools/jbpm-quarkus-devui",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
@@ -529,6 +530,8 @@
       },
       { "source": "@kie-tools/dev-deployment-base-image", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/dev-deployment-upload-service", "target": "@kie-tools/jest-base", "weight": 1 },
+      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools-scripts/build-env", "weight": 1 },
+      { "source": "@kie-tools-core/drools-and-kogito", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-dmn-form-webapp",
         "target": "@kie-tools-core/patternfly-base",
@@ -539,7 +542,7 @@
         "target": "@kie-tools/dmn-uniforms-patternfly-form-wrapper",
         "weight": 1
       },
-      { "source": "@kie-tools/dev-deployment-dmn-form-webapp", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools/dev-deployment-dmn-form-webapp", "target": "@kie-tools/quarkus-bom", "weight": 1 },
       {
         "source": "@kie-tools/dmn-uniforms-patternfly-form-wrapper",
         "target": "@kie-tools/uniforms-patternfly-form-wrapper",
@@ -640,7 +643,7 @@
       { "source": "@kie-tools-core/i18n", "target": "@kie-tools/jest-base", "weight": 1 },
       { "source": "@kie-tools-core/i18n", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools-core/workspace", "target": "@kie-tools-core/operating-system", "weight": 1 },
-      { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/quarkus-bom", "weight": 1 },
       { "source": "extended-services-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "extended-services-vscode-extension", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "extended-services-vscode-extension", "target": "@kie-tools/extended-services-java", "weight": 1 },
@@ -852,6 +855,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/scesim-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
+      { "source": "@kie-tools/spring-boot-bom", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -996,6 +1000,7 @@
     ["@kie-tools/pmml-editor", "packages/pmml-editor"],
     ["@kie-tools/pmml-editor-marshaller", "packages/pmml-editor-marshaller"],
     ["pmml-vscode-extension", "packages/pmml-vscode-extension"],
+    ["@kie-tools/quarkus-bom", "packages/quarkus-bom"],
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
@@ -1011,6 +1016,7 @@
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-editor-envelope", "packages/scesim-editor-envelope"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
+    ["@kie-tools/spring-boot-bom", "packages/spring-boot-bom"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools-core/switch-expression-ts", "packages/switch-expression-ts"],
     ["@kie-tools/text-editor", "packages/text-editor"],

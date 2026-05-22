@@ -1,0 +1,94 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import { test, expect } from "../__fixtures__/base";
+import { NodeType } from "../__fixtures__/nodes";
+
+test.beforeEach(async ({ editor }) => {
+  await editor.open();
+});
+
+test.describe("Compensation Boundary Events", () => {
+  test("should create compensation boundary event on task", async ({
+    palette,
+    jsonModel,
+    intermediateEventPropertiesPanel,
+    nodes,
+  }) => {
+    await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+    await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
+
+    const boundaryEvent = await jsonModel.getFlowElement({ elementIndex: 1 });
+    expect(boundaryEvent.__$$element).toBe("boundaryEvent");
+    expect(boundaryEvent["@_attachedToRef"]).toBeDefined();
+
+    await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
+
+    await intermediateEventPropertiesPanel.setCompensationDefinition({});
+    await intermediateEventPropertiesPanel.setCancelActivity({ cancelActivity: false });
+
+    await expect
+      .poll(async () => {
+        return await jsonModel.getFlowElement({ elementIndex: 1 });
+      })
+      .toMatchObject({
+        __$$element: "boundaryEvent",
+        "@_attachedToRef": expect.stringMatching(/.+/),
+        "@_cancelActivity": false,
+        eventDefinition: [{ __$$element: "compensateEventDefinition" }],
+      });
+
+    const cancelActivity = await intermediateEventPropertiesPanel.getCancelActivity();
+    expect(cancelActivity).toBe(false);
+  });
+
+  test("should allow compensation boundary event on subprocess", async ({
+    palette,
+    jsonModel,
+    intermediateEventPropertiesPanel,
+    nodes,
+  }) => {
+    await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
+    await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 550, y: 350 } });
+
+    const process = await jsonModel.getProcess();
+    const boundaryEvent = process.flowElement?.find((e: { __$$element: string }) => e.__$$element === "boundaryEvent");
+    const subProcessElement = process.flowElement?.find((e: { __$$element: string }) => e.__$$element === "subProcess");
+
+    expect(boundaryEvent).toBeDefined();
+    expect(boundaryEvent["@_attachedToRef"]).toBe(subProcessElement["@_id"]);
+
+    await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
+
+    await intermediateEventPropertiesPanel.setCompensationDefinition({});
+    await intermediateEventPropertiesPanel.setCancelActivity({ cancelActivity: false });
+
+    await expect
+      .poll(async () => {
+        const updatedProcess = await jsonModel.getProcess();
+        return updatedProcess.flowElement?.find((e: { __$$element: string }) => e.__$$element === "boundaryEvent");
+      })
+      .toMatchObject({
+        __$$element: "boundaryEvent",
+        "@_attachedToRef": subProcessElement["@_id"],
+        "@_cancelActivity": false,
+        eventDefinition: [{ __$$element: "compensateEventDefinition" }],
+      });
+  });
+});

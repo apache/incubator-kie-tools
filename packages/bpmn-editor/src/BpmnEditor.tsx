@@ -364,7 +364,7 @@ export const BpmnEditorInternal = ({
   const propertiesPanel = useMemo(() => <PropertiesPanel />, []);
 
   return (
-    <div ref={bpmnEditorRootElementRef} className={"kie-bpmn-editor--root"}>
+    <div ref={bpmnEditorRootElementRef} className={"kie-bpmn-editor--root"} data-testid="kie-tools--bpmn-editor--root">
       <Drawer isExpanded={isPropertiesPanelOpen} isInline={true} position={"right"}>
         <DrawerContent panelContent={propertiesPanel}>
           <DrawerContentBody>

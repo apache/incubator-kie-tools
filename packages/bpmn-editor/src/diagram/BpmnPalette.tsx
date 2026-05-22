@@ -384,12 +384,18 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
           style={{ position: "relative", pointerEvents: "all" }}
         >
           {openLhsPanel === BpmnDiagramLhsPanel.VARIABLES && (
-            <div className={"kie-bpmn-editor--palette-nodes-popover variables"}>
+            <div
+              className={"kie-bpmn-editor--palette-nodes-popover variables"}
+              data-testid="kie-tools--bpmn-editor--variables-popover"
+            >
               <Variables p={process} EmptyState={VariablesEmptyState} />
             </div>
           )}
           {openLhsPanel === BpmnDiagramLhsPanel.CUSTOM_TASKS && (
-            <div className={"kie-bpmn-editor--palette-nodes-popover custom-tasks"}>
+            <div
+              className={"kie-bpmn-editor--palette-nodes-popover custom-tasks"}
+              data-testid="kie-tools--bpmn-editor--custom-tasks-popover"
+            >
               <CustomTasksPalette onDragStart={onDragStart} />
             </div>
           )}
