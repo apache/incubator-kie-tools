@@ -25,13 +25,6 @@ export class NameAndDataTypeWithStandalonePopoverCell {
 
   public async open() {
     await this.locator.nth(0).click();
-    // React 18: PatternFly Popper calls onShown (which resets expressionName) via
-    // setTimeout(0) inside a useEffect that runs after React renders the popover.
-    // If fill() runs before onShown fires, the reset overwrites the filled value.
-    // Wait for the textbox to be visible (React rendered, Popper's setTimeout was
-    // already scheduled), then yield one macrotask so Popper's setTimeout fires first.
-    await (await this.getPopoverMenu()).getByRole("textbox").waitFor({ state: "visible" });
-    await this.locator.page().evaluate(() => new Promise<void>((resolve) => setTimeout(resolve, 0)));
   }
 
   public async getPopoverMenu() {

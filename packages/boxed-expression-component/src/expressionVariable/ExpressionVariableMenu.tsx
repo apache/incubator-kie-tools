@@ -162,7 +162,9 @@ export function ExpressionVariableMenu({
   }, [resetFormData]);
 
   const onShown = useCallback(() => {
-    expressionNameRef.current?.focus();
+    requestAnimationFrame(() => {
+      expressionNameRef.current?.focus();
+    });
   }, []);
 
   const onKeyDown = useCallback(
