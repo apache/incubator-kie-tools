@@ -36,9 +36,13 @@ import { useBpmnEditorI18n } from "../i18n";
 export type TypeaheadSelectOption = SelectOptionProps & { customLabel?: string | React.ReactElement };
 
 const hasRenderableOptionLabel = (option: TypeaheadSelectOption): boolean => {
-  if (option.customLabel != null) return true;
+  if (option.customLabel !== null && option.customLabel !== undefined) {
+    return true;
+  }
   const { children } = option;
-  if (children == null || typeof children === "boolean") return false;
+  if (children === null || children === undefined || typeof children === "boolean") {
+    return false;
+  }
   // React elements and arrays are objects — we can't inspect their text, but they're renderable
   return typeof children === "object" || String(children).trim().length > 0;
 };
