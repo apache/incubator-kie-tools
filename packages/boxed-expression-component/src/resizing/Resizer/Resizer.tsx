@@ -159,15 +159,10 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       // Set the resizing width immediately so it's visible
       setResizingWidth({ value: newWidth, isPivoting: true });
 
-      // Use flushSync to ensure the resizing width is set before triggering the stop sequence
-      flushSync(() => {
-        // Set startResizingWidth to a different value to ensure the effect processes the change
-        setStartResizingWidth({ width: 0 });
-      });
-
       // Trigger the resizeStop effect by setting resizingStop__data
       // Use setTimeout to ensure this happens after the resizingWidth update
       setTimeout(() => {
+        setStartResizingWidth({ width: 0 });
         setResizingStop__data({ width: newWidth });
       }, 0);
     },
