@@ -33,6 +33,7 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
   fixedOverflowWidgets: true,
   lineNumbers: "off",
   fontSize: 13,
+  lineHeight: CELL_LINE_HEIGHT,
   renderLineHighlight: "none",
   lineDecorationsWidth: 1,
   automaticLayout: true,
@@ -140,7 +141,6 @@ export function BeeTableEditableCellContent({
 
           setEditing(false);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
-          e.preventDefault();
         }
       }
 
@@ -199,7 +199,7 @@ export function BeeTableEditableCellContent({
   }, [mode]);
 
   const onKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
+    (e: React.KeyboardEvent<Element>) => {
       // When inside FEEL Input, all keyboard events should be kept inside it.
       // Exceptions to this strategy are handled on `onFeelKeyDown`.
       // NOTE: In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled

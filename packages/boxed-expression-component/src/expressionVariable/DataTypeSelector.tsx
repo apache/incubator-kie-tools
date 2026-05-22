@@ -38,8 +38,6 @@ export interface DataTypeSelectorProps {
   /** On DataType selection callback */
   onChange: (dataType: string | undefined) => void;
   /** By default the menu will be appended inline, but it is possible to append on the parent or on other elements */
-  /** Callback for toggle select behavior */
-  onToggle?: (isOpen: boolean) => void;
   /** event fired when the user press a key */
   onKeyDown?: (e: React.KeyboardEvent) => void;
   menuAppendTo?: HTMLElement | "inline" | (() => HTMLElement) | "parent";
@@ -56,8 +54,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   value,
   onChange,
   menuAppendTo,
-  onToggle = () => {},
-  onKeyDown = () => {},
+  onKeyDown,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { dataTypes } = useBoxedExpressionEditor();
@@ -67,15 +64,11 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   const selectContainerRef = useRef<HTMLDivElement>(null);
 
   const onSelect = useCallback(
-    (
-      _event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-      selection: string | SelectOptionObject
-    ) => {
+    (_event: any, selection: string | SelectOptionObject) => {
       /* this setTimeout keeps the context menu open after type selection changes. Without this Popover component thinks there has been a click outside the context menu, after DataTypeSelector has changed. This because the Select component has been removed from the html*/
       setTimeout(() => setOpen(false), 0);
-
-      const selectionString = selection.toString();
-      onChange(selectionString === DmnBuiltInDataType.Undefined ? undefined : selectionString);
+      const safeSelection = selection.toString();
+      onChange(safeSelection === DmnBuiltInDataType.Undefined ? undefined : safeSelection);
 
       // Because Select leave the focus to the detached btn, give back the focus to the selectWrapperRef
       (selectContainerRef.current?.querySelector("button") as HTMLInputElement)?.focus();
@@ -111,7 +104,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
 
   // We should not filter based a JSX Element value, but rather based on the data alone.
   const onFilter = useCallback(
-    (_event: React.ChangeEvent<HTMLInputElement> | null, textInput: string) => {
+    (_: any, textInput: string) => {
       if (textInput === "") {
         return buildSelectGroups();
       }
@@ -133,16 +126,9 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
     [buildSelectGroups]
   );
 
-  const onSelectToggle = useCallback(
-    (
-      _event: React.KeyboardEvent<Element> | Event | React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
-      isOpen: boolean
-    ) => {
-      setOpen(isOpen);
-      onToggle(isOpen);
-    },
-    [onToggle]
-  );
+  const onSelectToggle = useCallback((_: any, isExpanded: boolean) => {
+    setOpen(isExpanded);
+  }, []);
 
   const boundingClientRect = selectContainerRef.current?.getBoundingClientRect();
   const selectMenuHeight = useMemo(() => {

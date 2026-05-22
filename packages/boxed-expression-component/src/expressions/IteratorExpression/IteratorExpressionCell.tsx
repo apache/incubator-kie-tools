@@ -20,9 +20,9 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { BoxedIterator, generateUuid, Normalized } from "../../api";
-import { OnSetExpression } from "../../BoxedExpressionEditorContext";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
@@ -43,38 +43,42 @@ export function IteratorExpressionCell({
 }: IteratorExpressionCellExpressionCellProps & { parentElementId: string }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback<OnSetExpression>(
+  const onSetExpression: OnSetExpression = useCallback(
     ({ getNewExpression, expressionChangedArgs }) => {
       setExpression({
-        setExpressionAction: (prev) => {
-          const iterator = prev as Normalized<BoxedIterator>;
+        setExpressionAction: (prev: Normalized<BoxedIterator>) => {
+          // Do not inline these variables for type safety. See https://github.com/microsoft/TypeScript/issues/241
           switch (rowIndex) {
-            case 1:
-              return {
-                ...iterator,
+            case 1: {
+              const ret: Normalized<BoxedIterator> = {
+                ...prev,
                 in: {
                   "@_id": generateUuid(),
-                  expression: getNewExpression(iterator.in.expression) ?? iterator.in.expression,
+                  expression: getNewExpression(prev.in.expression)!, // SPEC DISCREPANCY
                 },
               };
+              return ret;
+            }
             case 2:
             default:
-              if (iterator.__$$element === "for") {
-                return {
-                  ...iterator,
+              if (prev.__$$element === "for") {
+                const ret: Normalized<BoxedIterator> = {
+                  ...prev,
                   return: {
                     "@_id": generateUuid(),
-                    expression: getNewExpression(iterator.return.expression) ?? iterator.return.expression,
+                    expression: getNewExpression(prev.return.expression)!, // SPEC DISCREPANCY
                   },
                 };
+                return ret;
               } else {
-                return {
-                  ...iterator,
+                const ret: Normalized<BoxedIterator> = {
+                  ...prev,
                   satisfies: {
                     "@_id": generateUuid(),
-                    expression: getNewExpression(iterator.satisfies.expression) ?? iterator.satisfies.expression,
+                    expression: getNewExpression(prev.satisfies.expression)!, // SPEC DISCREPANCY
                   },
                 };
+                return ret;
               }
           }
         },

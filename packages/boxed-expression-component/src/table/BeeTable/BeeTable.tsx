@@ -52,7 +52,7 @@ export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTa
   columns: R[],
   depth: number = 0
 ): R[] {
-  return _.flatMap(columns, (column: R) => {
+  return _.flatMap(columns, (column) => {
     if (!column.columns) {
       return column;
     }
@@ -231,9 +231,7 @@ export function BeeTableInternal<R extends object>({
   const defaultColumn = useMemo(
     () => ({
       Cell: (cellProps: ReactTable.CellProps<R>) => {
-        const columnIndex = cellProps.allColumns.findIndex(
-          (c: ReactTable.ColumnInstance<R>) => c.id === cellProps.column.id
-        );
+        const columnIndex = cellProps.allColumns.findIndex((c) => c.id === cellProps.column.id);
         const CellComponentForColumn =
           cellComponentByColumnAccessor?.[cellProps.column.id] ?? cellComponentByColumnAccessor?.["___default"];
         if (CellComponentForColumn) {
@@ -321,7 +319,7 @@ export function BeeTableInternal<R extends object>({
         return reactTableInstance.allColumns.length;
       } else {
         return _.nth(reactTableInstance.headerGroups, rowIndex)!.headers.reduce(
-          (acc: number, column: ReactTable.ColumnInstance<R>) => acc + (column.placeholderOf ? 0 : 1),
+          (acc, column) => acc + (column.placeholderOf ? 0 : 1),
           0
         );
       }

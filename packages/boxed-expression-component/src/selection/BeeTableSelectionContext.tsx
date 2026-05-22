@@ -267,13 +267,21 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   }, [selection]);
 
   //
-  // paste batching strategy
+  // paste batching strategy (begin)
   //
-  // React 18's automatic batching handles multiple state updates efficiently, even in async operations.
-  // All state updates within the promise callback are automatically batched by React 18.
+  // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setValue`.
   // Every call to `setValue` mutates the expression, so batching is essential for performance reasons.
+  // This effect runs once when pasteData is truthy. Then, after running, it sets pasteData to a falsy value, which short-circuits it.
   //
-  const handlePaste = useCallback((clipboardValue: string) => {
+  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers and hooks.
+  const [pasteData, setPasteData] = useState("");
+  useEffect(() => {
+    if (!pasteData) {
+      return;
+    }
+
+    const clipboardValue = pasteData;
+
     if (!selectionRef.current?.selectionStart || !selectionRef.current?.selectionEnd) {
       return;
     }
@@ -287,7 +295,6 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     const pasteEndRow = Math.max(endRow, startRow + clipboardMatrix.length - 1);
     const pasteEndColumn = Math.max(endColumn, startColumn + clipboardMatrix[0].length - 1);
 
-    // React 18 automatically batches all state updates, even in async callbacks
     for (let r = startRow; r <= pasteEndRow; r++) {
       for (let c = startColumn; c <= pasteEndColumn; c++) {
         refs.current
@@ -314,7 +321,11 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         isEditing: false,
       },
     });
-  }, []);
+
+    setPasteData("");
+  }, [pasteData]);
+
+  // paste batching strategy (end)
 
   const value = useMemo(() => {
     return {
@@ -643,7 +654,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
       },
       paste: () => {
         navigator.clipboard.readText().then((clipboardValue) => {
-          handlePaste(clipboardValue);
+          setPasteData(clipboardValue);
         });
       },
       erase: () => {
@@ -798,7 +809,6 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     depth,
     resetParentSelectionAt,
     setCurrentDepth,
-    handlePaste,
   ]);
 
   // If there's no selection on the table that is coming into focus, we focus at the top-left cell.
