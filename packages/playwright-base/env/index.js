@@ -26,7 +26,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Toggles the installation of Playwright dependencies. Can be `true` or `false`.",
     },
     PLAYWRIGHT_BASE__enableChromiumProject: {
-      default: "true",
+      default: "false",
       description: "Enable or disable Chromium project",
     },
     PLAYWRIGHT_BASE__enableGoogleChromeProject: {
@@ -34,15 +34,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Enable or disable Google Chrome project",
     },
     PLAYWRIGHT_BASE__enableWebkitProject: {
-      default: "true",
+      default: "false",
       description: "Enable or disable Webkit project",
     },
     PLAYWRIGHT_BASE__projectTimeout: {
-      default: "90000",
+      default: "10000",
       description: "The timeout of a test in the project (Chromium, Google Chrome and Webkit)",
     },
     PLAYWRIGHT_BASE__expectTimeout: {
-      default: "30000",
+      default: "5000",
       description: "The timeout of an expect assertion",
     },
     PLAYWRIGHT_BASE__maxDiffPixelRatio: {
@@ -55,7 +55,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The amount of times a test will re-run if it fails",
     },
     PLAYWRIGHT_BASE__workers: {
-      default: "2",
+      default: "6",
       description: "The number of workers that will be used to run the tests",
     },
   }),
