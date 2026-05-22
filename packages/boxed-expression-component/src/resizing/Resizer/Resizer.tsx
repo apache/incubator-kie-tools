@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import { Resizable } from "react-resizable";
 import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
@@ -98,7 +99,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
     setResizing?.(false);
     _setResizing(false);
-    setResizingWidth?.({ value: resizingStopWidth, isPivoting: false });
+    setResizingWidth({ value: resizingStopWidth, isPivoting: false });
     setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
   }, [
     _setResizing,
@@ -142,6 +143,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
+      e.preventDefault();
 
       let widthToFitData;
       try {
@@ -152,17 +154,24 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
 
-      // This starts the resizing process again with the correct width.
-      onResizeStart(undefined, { size: { width: newWidth } });
+      console.debug(`Double-click reset to width: ${newWidth}`);
 
-      // Wait for an event loop iteration, leaving time for the resizeStart to propagate.
-      // Then, pretend that the startResizingWidth is different from the one we're going to stop with.
-      setTimeout(() => {
+      // Set the resizing width immediately so it's visible
+      setResizingWidth({ value: newWidth, isPivoting: true });
+
+      // Use flushSync to ensure the resizing width is set before triggering the stop sequence
+      flushSync(() => {
+        // Set startResizingWidth to a different value to ensure the effect processes the change
         setStartResizingWidth({ width: 0 });
+      });
+
+      // Trigger the resizeStop effect by setting resizingStop__data
+      // Use setTimeout to ensure this happens after the resizingWidth update
+      setTimeout(() => {
         setResizingStop__data({ width: newWidth });
       }, 0);
     },
-    [getWidthToFitData, minWidth, onResizeStart]
+    [getWidthToFitData, minWidth, setResizingWidth]
   );
 
   const style = useMemo(() => {
