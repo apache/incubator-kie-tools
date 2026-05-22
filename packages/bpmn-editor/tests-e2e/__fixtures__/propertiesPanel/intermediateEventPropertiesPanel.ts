@@ -76,6 +76,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.messageName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async setSignalDefinition(args: {
@@ -94,6 +95,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.signalName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
 
     if (args.scope) {
       const scopeSelect = this.panel().getByRole("combobox").nth(1);
@@ -146,6 +148,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.errorName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
 
     if (args.errorCode) {
       const errorCodeInput = this.panel().getByRole("textbox").nth(1);
@@ -172,6 +175,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.escalationName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
 
     if (args.escalationCode) {
       const escalationCodeInput = this.panel().getByRole("textbox").nth(1);
@@ -197,6 +201,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
       if (optionCount > 0 && (await option.isVisible())) {
         await option.click();
       }
+      await this.panel().getByRole("combobox").first().blur();
     }
   }
 

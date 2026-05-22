@@ -55,6 +55,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.messageName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async setSignalDefinition(args: { signalName: string; endEventLocator: Locator }) {
@@ -70,6 +71,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.signalName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async getSignalName(): Promise<string> {
@@ -90,6 +92,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.errorName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
 
     if (args.errorCode) {
       const errorCodeInput = this.panel().getByPlaceholder("Error code");
@@ -130,6 +133,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.escalationName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
 
     if (args.escalationCode) {
       const escalationCodeInput = this.panel().getByPlaceholder("Escalation code");

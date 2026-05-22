@@ -40,6 +40,7 @@ export class DataObjectPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.itemSubjectRef, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async getItemSubjectRef(): Promise<string> {
