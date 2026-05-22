@@ -104,6 +104,7 @@ function remapFlowElements(
         remapFlowElements(itemDefinitionIdsToRemap, el.flowElement);
       }
     } else {
+      // Other flow elements do not reference itemDefinitions.
     }
   }
 }
@@ -230,6 +231,7 @@ export function deduplicateItemDefinitions(definitions: Normalized<BpmnLatestMod
         remapFlowElements(itemDefinitionIdsToRemap, rootElement.flowElement);
       }
     } else {
+      // Other rootElement types do not reference itemDefinitions.
     }
   }
 }
