@@ -117,6 +117,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.messageName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async setSignalDefinition(args: { signalName: string; startEventLocator: Locator }) {
@@ -132,6 +133,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.signalName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async setConditionalExpression(args: { expression: string; startEventLocator: Locator }) {
@@ -160,6 +162,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.errorName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async getErrorName(): Promise<string> {
@@ -180,6 +183,7 @@ export class StartEventPropertiesPanel extends PropertiesPanelBase {
     } else {
       await this.page.getByRole("option", { name: args.escalationName, exact: true }).click();
     }
+    await this.panel().getByRole("combobox").first().blur();
   }
 
   public async getEscalationName(): Promise<string> {
