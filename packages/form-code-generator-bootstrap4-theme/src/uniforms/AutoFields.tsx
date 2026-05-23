@@ -30,10 +30,10 @@ export type AutoFieldsProps = {
 };
 
 const AutoFields: React.FC<AutoFieldsProps> = ({
-  autoField,
-  element,
+  autoField = AutoField,
+  element = "div",
   fields,
-  omitFields,
+  omitFields = [],
   ...props
 }: AutoFieldsProps) => {
   const { schema } = useForm();
@@ -45,12 +45,6 @@ const AutoFields: React.FC<AutoFieldsProps> = ({
       .filter((field) => !omitFields!.includes(field))
       .map((field) => createElement(autoField!, { key: field, name: field }))
   );
-};
-
-AutoFields.defaultProps = {
-  autoField: AutoField,
-  element: "div",
-  omitFields: [],
 };
 
 export default AutoFields;
