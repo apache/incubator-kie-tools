@@ -28,7 +28,7 @@ export class NameProperties {
   public async setName(args: { newName: string }) {
     const nameInput = this.panel.getByPlaceholder("Enter a name...");
     await nameInput.fill(args.newName);
-    await this.page.keyboard.press("Enter");
+    await nameInput.blur();
   }
 
   public async getName(): Promise<string> {
@@ -39,6 +39,6 @@ export class NameProperties {
   public async clearName() {
     const nameInput = this.panel.getByPlaceholder("Enter a name...");
     await nameInput.clear();
-    await this.page.keyboard.press("Enter");
+    await nameInput.blur();
   }
 }
