@@ -35,7 +35,7 @@ test.describe("Selection", () => {
   });
 
   test.describe("Cell selection", () => {
-    test.only("should select multiple cells and write on them", async ({ stories, page }) => {
+    test("should select multiple cells and write on them", async ({ stories, page }) => {
       await stories.openRelation("bigger");
       await page.getByTestId("monaco-container").nth(5).dragTo(page.getByTestId("monaco-container").nth(10));
 
