@@ -19,7 +19,7 @@
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   feelDefaultConfig,
   feelDefaultSuggestions,
@@ -295,7 +295,10 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     }, [options]);
 
     // This creates the Monaco Editor
-    useEffect(() => {
+    // useLayoutEffect (vs useEffect) ensures Monaco is created and focused synchronously
+    // within a flushSync call, so key events fired immediately after activating edit mode
+    // are received by Monaco rather than lost (React 18 schedules useEffect asynchronously).
+    useLayoutEffect(() => {
       if (enabled && !monacoRef.current) {
         const element = monacoContainer.current!;
         const editor = Monaco.editor.create(element, config);
@@ -321,7 +324,9 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     }, [config, enabled, onBlur, onChange, onKeyDown]);
 
     // This updates the Monaco Editor instance if the value is changed externally
-    useEffect(() => {
+    // useLayoutEffect matches the creation effect above so the initial setValue("") runs
+    // within the same flushSync as creation, before any subsequent key events are processed.
+    useLayoutEffect(() => {
       if (enabled) {
         monacoRef.current?.setValue(value ?? "");
         monacoRef.current?.setPosition(calculatePosition(value ?? ""));

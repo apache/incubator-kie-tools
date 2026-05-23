@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Resizable } from "react-resizable";
 import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
@@ -169,6 +169,8 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     [getWidthToFitData, minWidth, setResizingWidth]
   );
 
+  const handleRef = useRef<HTMLDivElement>(null);
+
   const style = useMemo(() => {
     return { width: resizingWidth?.value, minWidth };
   }, [minWidth, resizingWidth?.value]);
@@ -208,8 +210,10 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           minConstraints={minConstraints}
           className={"resizable-div"}
           axis={"x"}
+          draggableOpts={{ nodeRef: handleRef }}
           handle={
             <div
+              ref={handleRef}
               className="pf-v5-c-drawer"
               onDoubleClick={onDoubleClick}
               data-testid={"kie-tools--bee--resizer-handle"}
