@@ -27,6 +27,7 @@ const buildEnv: any = env; // build-env is not typed
 const customConfig = defineConfig({
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
+    video: "retain-on-failure",
   },
   /* Run your local dev server before starting the tests */
   webServer: {

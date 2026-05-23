@@ -51,7 +51,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         "The threshold of the maximum pixel difference on screenshot comparisons (percentage in decimal form)",
     },
     PLAYWRIGHT_BASE__retries: {
-      default: "0",
+      default: "2",
       description: "The amount of times a test will re-run if it fails",
     },
     PLAYWRIGHT_BASE__workers: {

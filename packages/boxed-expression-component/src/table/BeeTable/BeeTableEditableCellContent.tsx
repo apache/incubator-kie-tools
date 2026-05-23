@@ -20,7 +20,8 @@
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import "./BeeTableEditableCellContent.css";
@@ -121,9 +122,11 @@ export function BeeTableEditableCellContent({
         if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing.
         } else {
-          updateValue(newValue);
-          setEditing(false);
-          onFeelTabKeyDown?.({ isShiftPressed: e.shiftKey });
+          flushSync(() => {
+            updateValue(newValue);
+            setEditing(false);
+            onFeelTabKeyDown?.({ isShiftPressed: e.shiftKey });
+          });
           e.preventDefault();
         }
       }
@@ -174,7 +177,7 @@ export function BeeTableEditableCellContent({
   );
 
   const editableCellRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isActive && !isEditing) {
       const cellElement = editableCellRef.current;
       if (!cellElement) {
@@ -210,9 +213,15 @@ export function BeeTableEditableCellContent({
       }
 
       // This is used to start editing a cell without being in edit mode.
+      // flushSync forces a synchronous React render so the Monaco editor mounts and
+      // receives focus before the browser processes the next key event (React 18
+      // schedules renders asynchronously, which would otherwise cause typed characters
+      // to be lost before Monaco is ready).
       if (!isReadOnly && isActive && !isEditing && isEditModeTriggeringKey(e)) {
-        setEditingValue("");
-        setEditing(true);
+        flushSync(() => {
+          setEditingValue("");
+          setEditing(true);
+        });
       }
     },
     [isActive, isEditing, isReadOnly, setEditing]
