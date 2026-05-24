@@ -150,7 +150,7 @@ function DevPlayground(args: BpmnEditorProps) {
   }, []);
 
   const onSelectModel = useCallback(
-    (newModel) => {
+    (newModel: string) => {
       onModelChange(normalize(getMarshaller(newModel, { upgradeTo: "latest" }).parser.parse()));
     },
     [onModelChange]

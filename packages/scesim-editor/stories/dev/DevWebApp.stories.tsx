@@ -130,7 +130,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
   }, []);
 
   const onSelectModel = useCallback(
-    (newModel, fileName) => {
+    (newModel: any, fileName: React.SetStateAction<string | undefined>) => {
       onModelChange(getMarshaller(newModel).parser.parse());
       setFileName(fileName);
     },
