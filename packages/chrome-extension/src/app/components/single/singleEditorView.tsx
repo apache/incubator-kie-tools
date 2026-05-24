@@ -28,7 +28,6 @@ import {
   waitForElementToBeReady,
   setReactRoot,
 } from "../../utils";
-import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import { createPortal } from "react-dom";
 import { Globals, Main } from "../common/Main";

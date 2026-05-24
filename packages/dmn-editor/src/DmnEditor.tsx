@@ -21,7 +21,6 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import * as RF from "reactflow";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";

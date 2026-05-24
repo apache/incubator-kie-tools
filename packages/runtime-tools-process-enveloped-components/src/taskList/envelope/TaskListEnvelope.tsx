@@ -17,7 +17,6 @@
  * under the License.
  */
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { TaskListChannelApi, TaskListEnvelopeApi } from "../api";

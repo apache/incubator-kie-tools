@@ -18,8 +18,8 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
 import { useIsolatedEditorTogglingEffect } from "../common/customEffects";
