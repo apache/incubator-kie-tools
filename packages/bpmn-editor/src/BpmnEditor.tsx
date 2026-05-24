@@ -26,7 +26,6 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { original, WritableDraft } from "immer";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
-import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import * as RF from "reactflow";

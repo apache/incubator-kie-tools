@@ -18,10 +18,10 @@
  */
 
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { GlobalContext, useGlobals } from "./GlobalContext";
 import { Logger } from "../../../Logger";
 import { GitHubContextProvider, useGitHubApi } from "./GitHubContext";
-import * as ReactDOM from "react-dom";
 import { KogitoMenu } from "./KogitoMenu";
 import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";

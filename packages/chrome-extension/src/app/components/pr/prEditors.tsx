@@ -16,8 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import { createPortal } from "react-dom";
 import * as React from "react";

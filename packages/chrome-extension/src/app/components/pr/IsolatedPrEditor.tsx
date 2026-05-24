@@ -18,12 +18,12 @@
  */
 
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { useCallback, useMemo, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import { useInitialAsyncCallEffect, useIsolatedEditorTogglingEffect } from "../common/customEffects";
 import { useIsolatedEditorRef } from "../common/IsolatedEditorRef";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
-import * as ReactDOM from "react-dom";
 import { PrToolbar } from "./PrToolbar";
 import { IsolatedEditor } from "../common/IsolatedEditor";
 import {

@@ -18,7 +18,6 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import { createPortal } from "react-dom";
 import { Globals, Main } from "../common/Main";
