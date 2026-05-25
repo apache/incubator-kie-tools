@@ -245,7 +245,7 @@ jobs:
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         env:
           KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
             ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
