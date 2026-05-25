@@ -69,7 +69,7 @@ export const test = base.extend<BoxedExpressionFixtures>({
     await use(new ExpressionHeader(page));
   },
   selectExpressionMenu: async ({ page }, use) => {
-    await use(new SelectExpressionMenu(page.locator("body")));
+    await use(new SelectExpressionMenu(page));
   },
 });
 

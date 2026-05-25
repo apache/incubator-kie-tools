@@ -162,10 +162,11 @@ export function ExpressionVariableMenu({
   }, [resetFormData]);
 
   const onShown = useCallback(() => {
-    requestAnimationFrame(() => {
-      expressionNameRef.current?.focus();
-    });
-  }, []);
+    // We need to refresh the expression name from the selectedExpressionName,
+    // otherwise it will show the older name set in expressionName.
+    setExpressionName(selectedExpressionName);
+    expressionNameRef.current?.focus();
+  }, [selectedExpressionName]);
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

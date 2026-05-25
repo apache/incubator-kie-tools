@@ -22,7 +22,6 @@ import { useCallback, useMemo } from "react";
 import { BoxedIterator, generateUuid, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
-  OnSetExpression,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
@@ -43,42 +42,37 @@ export function IteratorExpressionCell({
 }: IteratorExpressionCellExpressionCellProps & { parentElementId: string }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression: OnSetExpression = useCallback(
+  const onSetExpression = useCallback(
     ({ getNewExpression, expressionChangedArgs }) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedIterator>) => {
-          // Do not inline these variables for type safety. See https://github.com/microsoft/TypeScript/issues/241
           switch (rowIndex) {
-            case 1: {
-              const ret: Normalized<BoxedIterator> = {
+            case 1:
+              return {
                 ...prev,
                 in: {
                   "@_id": generateUuid(),
-                  expression: getNewExpression(prev.in.expression)!, // SPEC DISCREPANCY
+                  expression: getNewExpression(prev.in.expression),
                 },
               };
-              return ret;
-            }
             case 2:
             default:
               if (prev.__$$element === "for") {
-                const ret: Normalized<BoxedIterator> = {
+                return {
                   ...prev,
                   return: {
                     "@_id": generateUuid(),
-                    expression: getNewExpression(prev.return.expression)!, // SPEC DISCREPANCY
+                    expression: getNewExpression(prev.return.expression),
                   },
                 };
-                return ret;
               } else {
-                const ret: Normalized<BoxedIterator> = {
+                return {
                   ...prev,
                   satisfies: {
                     "@_id": generateUuid(),
-                    expression: getNewExpression(prev.satisfies.expression)!, // SPEC DISCREPANCY
+                    expression: getNewExpression(prev.satisfies.expression),
                   },
                 };
-                return ret;
               }
           }
         },

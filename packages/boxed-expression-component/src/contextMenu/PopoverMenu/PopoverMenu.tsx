@@ -31,7 +31,7 @@ export interface PopoverMenuProps {
   /** A function which returns the HTMLElement where the popover's arrow should be placed */
   arrowPlacement?: () => HTMLElement;
   /** The content of the popover itself */
-  body: React.ReactNode | ((hide: () => void) => React.ReactNode);
+  body: React.ReactNode;
   /** The node where to append the popover content */
   appendTo?: HTMLElement | ((ref?: HTMLElement) => HTMLElement);
   /** Additional classname to be used for the popover */
@@ -102,12 +102,12 @@ export const PopoverMenu = React.forwardRef(
       onShown();
     }, [setCurrentlyOpenContextMenu, id, onShown]);
 
-    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((_event: any, showFunction: () => void) => {
+    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((_event, showFunction) => {
       showFunction?.();
     }, []);
 
     const shouldClose: PopoverProps["shouldClose"] = useCallback(
-      (event: MouseEvent | KeyboardEvent | undefined, hideFunction: () => void): void => {
+      (event, hideFunction): void => {
         if (event instanceof KeyboardEvent && NavigationKeysUtils.isEsc(event.key)) {
           onCancel(event);
         } else {
@@ -175,7 +175,6 @@ export const PopoverMenu = React.forwardRef(
         onHidden={onHiddenCallback}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
-        animationDuration={0}
         flipBehavior={["bottom-start", "bottom", "bottom-end", "right-start", "left-start", "right-end", "left-end"]}
       >
         {children}
