@@ -306,12 +306,19 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       let contentData = getValue(RestProperties.ContentData);
 
       if (contentData && contentDataVariables.length > 0) {
-        contentDataVariables.forEach(({ variableName, variableValue }) => {
-          if (variableValue != null) {
-            const regex = new RegExp(`{{\\s*${variableName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*}}`, "g");
-            const replacementValue = typeof variableValue === "string" ? variableValue : JSON.stringify(variableValue);
-            contentData = contentData.replace(regex, replacementValue);
-          }
+        const lookup = Object.fromEntries(
+          contentDataVariables
+            .filter((item) => item.variableValue != null)
+            .map((item) => [item.variableName, item.variableValue])
+        );
+
+        contentData = contentData.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, varName) => {
+          if (!(varName in lookup)) return match;
+
+          const value = lookup[varName];
+          const replacementValue = typeof value === "string" ? value : JSON.stringify(value);
+
+          return replacementValue.replace(/\$/g, "$$$$");
         });
       }
 
@@ -374,7 +381,9 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     channelApi.requests,
     isVSCode,
     useCorsProxy,
+    i18n.restService.hostRequiredError,
     i18n.restService.urlRequired,
+    i18n.restService.testVariableMissingError,
   ]);
 
   const updateParameterMapping = React.useCallback(
