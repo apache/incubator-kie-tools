@@ -170,6 +170,7 @@ test.describe("Change Boxed Expression Name and Data Type", () => {
       test("should change Data Type - Pressing Enter - Literal Expression", async ({ bee }) => {
         await bee.selectExpressionMenu.selectLiteral();
         await bee.expression.asLiteral().expressionHeaderCell.open();
+        await bee.expression.asLiteral().expressionHeaderCell.open();
         await bee.expression
           .asLiteral()
           .expressionHeaderCell.setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
