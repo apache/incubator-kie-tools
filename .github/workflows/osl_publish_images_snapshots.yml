@@ -125,7 +125,7 @@ jobs:
           eval "pnpm -F @kie-tools/sonataflow-operator... --workspace-concurrency=1 image:bundle:build"
 
       - name: "Login to Quay"
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_ROBOT_ACCOUNT }}
