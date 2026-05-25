@@ -20,6 +20,16 @@ on:
         type: string
         required: false
         default: "main"
+      build_operator_bundle:
+        description: "Flag to build operator bundle."
+        type: boolean
+        required: false
+        default: true
+      build_operator_catalog:
+        description: "Flag to build operator catalog."
+        type: boolean
+        required: false
+        default: true
 
 permissions:
   contents: read
@@ -27,7 +37,6 @@ permissions:
 jobs:
   publish_images_snapshots:
     runs-on: ubuntu-latest
-
     steps:
       - name: "Print workflow inputs"
         run: |
@@ -39,7 +48,7 @@ jobs:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.IMAGE_TAG }}
+          ref: ${{ inputs.IMAGE_TAG }}
 
       - name: "Exporting KOGITO_RUNTIME_version"
         run: |
@@ -76,15 +85,15 @@ jobs:
           USE_REMOTE_ARTIFACTS: ${{ inputs.USE_REMOTE_ARTIFACTS }}
 
       - name: "Build Images"
+        shell: bash
         env:
           DROOLS_AND_KOGITO__skip: true
           KOGITO_RUNTIME_version: "${{ inputs.KOGITO_VERSION }}"
           SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion: "${{ inputs.KOGITO_VERSION }}"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
           KIE_TOOLS_BUILD__runEndToEndTests: "false"
-          KIE_TOOLS_BUILD__runTests:
-            "false"
-            # TODO: on upstream implement a root-env named defaultRegistry and defaultAccount and change on every image package
+          KIE_TOOLS_BUILD__runTests: "false"
+          # TODO: on upstream implement a root-env named defaultRegistry and defaultAccount and change on every image package
           SONATAFLOW_BUILDER_IMAGE__registry: "quay.io"
           SONATAFLOW_BUILDER_IMAGE__account: "kubesmarts"
           SONATAFLOW_DEVMODE_IMAGE__registry: "quay.io"
@@ -111,9 +120,9 @@ jobs:
           SONATAFLOW_OPERATOR__account: "kubesmarts"
           KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry: "quay.io"
           KOGITO_DB_MIGRATOR_TOOL_IMAGE__account: "kubesmarts"
-        shell: bash
         run: |
           eval "pnpm ${{ vars.IMAGES_UPSTREAM_PNPM_FILTER }} --workspace-concurrency=1 build:prod"
+          eval "pnpm -F @kie-tools/sonataflow-operator... --workspace-concurrency=1 image:bundle:build"
 
       - name: "Login to Quay"
         uses: docker/login-action@v3
@@ -137,3 +146,64 @@ jobs:
               docker push quay.io/kubesmarts/$image:${{ env.OSL_IMAGE_TAG }} || { echo "Failed to push $image with tag $OSL_IMAGE_TAG to Quay"; exit 1; }
             fi
           done
+
+      - name: "Push operator bundle to Quay"
+        if: ${{ !inputs.dry_run }}
+        run: |
+          echo "Pushing operator bundle to Quay"
+
+          if [ "${{ env.OSL_IMAGE_TAG }}" = "main" ]; then
+            echo "OSL_IMAGE_TAG is 'main'. Pushing main tag."
+            docker push quay.io/kubesmarts/logic-rhel9-operator-bundle:main || { echo "Failed to push logic-rhel9-operator-bundle:main"; exit 1; }
+          else
+            echo "OSL_IMAGE_TAG is not 'main'. Tagging and pushing snapshot."
+            docker tag quay.io/kubesmarts/logic-rhel9-operator-bundle:main quay.io/kubesmarts/logic-rhel9-operator-bundle:${{ env.OSL_IMAGE_TAG }}
+            docker push quay.io/kubesmarts/logic-rhel9-operator-bundle:${{ env.OSL_IMAGE_TAG }} || { echo "Failed to push logic-rhel9-operator-bundle with tag $OSL_IMAGE_TAG to Quay"; exit 1; }
+          fi
+
+      - name: "Build operator catalog"
+        shell: bash
+        env:
+          DROOLS_AND_KOGITO__skip: true
+          KOGITO_RUNTIME_version: "${{ inputs.KOGITO_VERSION }}"
+          SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion: "${{ inputs.KOGITO_VERSION }}"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "false"
+          KIE_TOOLS_BUILD__runTests: "false"
+          SONATAFLOW_BUILDER_IMAGE__registry: "quay.io"
+          SONATAFLOW_BUILDER_IMAGE__account: "kubesmarts"
+          SONATAFLOW_DEVMODE_IMAGE__registry: "quay.io"
+          SONATAFLOW_DEVMODE_IMAGE__account: "kubesmarts"
+          SONATAFLOW_MANAGEMENT_CONSOLE__registry: "quay.io"
+          SONATAFLOW_MANAGEMENT_CONSOLE__account: "kubesmarts"
+          KOGITO_DATA_INDEX_EPHEMERAL_IMAGE__registry: "quay.io"
+          KOGITO_DATA_INDEX_EPHEMERAL_IMAGE__account: "kubesmarts"
+          KOGITO_DATA_INDEX_POSTGRESQL_IMAGE__registry: "quay.io"
+          KOGITO_DATA_INDEX_POSTGRESQL_IMAGE__account: "kubesmarts"
+          KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE__registry: "quay.io"
+          KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE__account: "kubesmarts"
+          KOGITO_JOBS_SERVICE_POSTGRESQL_IMAGE__registry: "quay.io"
+          KOGITO_JOBS_SERVICE_POSTGRESQL_IMAGE__account: "kubesmarts"
+          SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
+          SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kubesmarts"
+          SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry: "quay.io"
+          SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount: "kubesmarts"
+          SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry: "quay.io"
+          SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount: "kubesmarts"
+          DASHBUILDER__viewerImageRegistry: "quay.io"
+          DASHBUILDER__viewerImageAccount: "kubesmarts"
+          SONATAFLOW_OPERATOR__registry: "quay.io"
+          SONATAFLOW_OPERATOR__account: "kubesmarts"
+          KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry: "quay.io"
+          KOGITO_DB_MIGRATOR_TOOL_IMAGE__account: "kubesmarts"
+          IMAGE_TAG: ${{ env.OSL_IMAGE_TAG }}
+        run: |
+          eval "pnpm -F @kie-tools/sonataflow-operator... --workspace-concurrency=1 image:catalog:build"
+
+      - name: "Push operator catalog to Quay"
+        if: ${{ !inputs.dry_run }}
+        run: |
+          echo "Pushing operator catalog to Quay"
+
+          echo "Pushing logic-rhel9-operator-catalog:${{ env.OSL_IMAGE_TAG }}"
+          docker push quay.io/kubesmarts/logic-rhel9-operator-catalog:${{ env.OSL_IMAGE_TAG }} || { echo "Failed to push logic-rhel9-operator-catalog with tag $OSL_IMAGE_TAG to Quay"; exit 1; }

@@ -28,10 +28,10 @@
     "prefetch:win32": "pnpm powershell \"cross-env JBANG_REPO=$(Resolve-Path . | Write-Host)\\dist-m2 node dist/dependenciesFetch.js\""
   },
   "dependencies": {
-    "@jbangdev/jbang": "0.7.1"
+    "@jbangdev/jbang": "0.7.1",
+    "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/drools-and-kogito": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "cross-env": "^7.0.3",

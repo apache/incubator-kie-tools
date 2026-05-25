@@ -83,6 +83,22 @@ module.exports = {
   },
 
   /**
+   * Builds a single Maven repository directory using hard links from the default local Maven repository.
+   *
+   * @param tmpM2Dir Relative path of this new Maven repository directory. It will be deleted and recreated for each invocation.
+   */
+  prepareHardLinkedM2ForPackage: (tmpM2Dir) => {
+    const resolvedTmpM2Dir = path.resolve(tmpM2Dir);
+    if (fs.existsSync(resolvedTmpM2Dir)) {
+      fs.rmSync(resolvedTmpM2Dir, { recursive: true, force: true });
+    }
+    fs.mkdirSync(resolvedTmpM2Dir, { recursive: true });
+
+    // Copy from default local repository using hard links
+    cp.execSync(`cp -nal ${DEFAULT_LOCAL_REPO}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
+  },
+
+  /**
    * Sets a property on a POM.
    *
    * @param entry An object with `key` and `value` properties

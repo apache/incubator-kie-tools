@@ -23,9 +23,7 @@
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
-  "dependencies": {
-    "@kie-tools-core/drools-and-kogito": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "run-script-os": "^1.1.6"

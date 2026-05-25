@@ -66,7 +66,7 @@ runs:
         echo "::group::Get Kiegroup git ref urls"
 
         # Get Kiegroup Drools Git Ref
-        DROOLS_GIT_REF=$(git ls-remote "${{ inputs.DROOLS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} | awk '{print $1}')
+        DROOLS_GIT_REF=$(git ls-remote "${{ inputs.DROOLS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} 2>/dev/null | awk '{print $1}' || true)
         if [ -z "$DROOLS_GIT_REF" ]; then
           echo "::warning::Branch ${{ inputs.DEPS_BRANCHNAME }} not found in ${{ inputs.DROOLS_REPO_URL }}, falling back to kiegroup/drools main branch"
           DROOLS_GIT_REF=$(git ls-remote "https://github.com/kiegroup/drools" refs/heads/main | awk '{print $1}')
@@ -74,7 +74,7 @@ runs:
         echo "DROOLS_AND_KOGITO__droolsRepoGitRef=$DROOLS_GIT_REF" >> "$GITHUB_OUTPUT"
 
         # Get Kiegroup Runtimes Git Ref
-        RUNTIMES_GIT_REF=$(git ls-remote "${{ inputs.KOGITO_RUNTIMES_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} | awk '{print $1}')
+        RUNTIMES_GIT_REF=$(git ls-remote "${{ inputs.KOGITO_RUNTIMES_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} 2>/dev/null | awk '{print $1}' || true)
         if [ -z "$RUNTIMES_GIT_REF" ]; then
           echo "::warning::Branch ${{ inputs.DEPS_BRANCHNAME }} not found in ${{ inputs.KOGITO_RUNTIMES_REPO_URL }}, falling back to kiegroup/kogito-runtimes main branch"
           RUNTIMES_GIT_REF=$(git ls-remote "https://github.com/kiegroup/kogito-runtimes" refs/heads/main | awk '{print $1}')
@@ -82,7 +82,7 @@ runs:
         echo "DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef=$RUNTIMES_GIT_REF" >> "$GITHUB_OUTPUT"
 
         # Get Kiegroup Apps Git Ref
-        APPS_GIT_REF=$(git ls-remote "${{ inputs.KOGITO_APPS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} | awk '{print $1}')
+        APPS_GIT_REF=$(git ls-remote "${{ inputs.KOGITO_APPS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} 2>/dev/null | awk '{print $1}' || true)
         if [ -z "$APPS_GIT_REF" ]; then
           echo "::warning::Branch ${{ inputs.DEPS_BRANCHNAME }} not found in ${{ inputs.KOGITO_APPS_REPO_URL }}, falling back to kiegroup/kogito-apps main branch"
           APPS_GIT_REF=$(git ls-remote "https://github.com/kiegroup/kogito-apps" refs/heads/main | awk '{print $1}')
@@ -110,7 +110,7 @@ runs:
 
         echo "::group::Cloning drools ${{ inputs.DEPS_BRANCHNAME }} branch..."
         # Check if branch exists in the specified repository
-        DROOLS_BRANCH_CHECK=$(git ls-remote "${{ inputs.DROOLS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} | awk '{print $1}')
+        DROOLS_BRANCH_CHECK=$(git ls-remote "${{ inputs.DROOLS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} 2>/dev/null | awk '{print $1}' || true)
         if [ -z "$DROOLS_BRANCH_CHECK" ]; then
           echo "::warning::Branch ${{ inputs.DEPS_BRANCHNAME }} not found in ${{ inputs.DROOLS_REPO_URL }}, using kiegroup/drools main branch"
           DROOLS_REPO_URL="https://github.com/kiegroup/drools"
@@ -129,7 +129,7 @@ runs:
 
         echo "::group::Cloning kogito-runtimes ${{ inputs.DEPS_BRANCHNAME }} branch..."
         # Check if branch exists in the specified repository
-        RUNTIMES_BRANCH_CHECK=$(git ls-remote "${{ inputs.KOGITO_RUNTIMES_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} | awk '{print $1}')
+        RUNTIMES_BRANCH_CHECK=$(git ls-remote "${{ inputs.KOGITO_RUNTIMES_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} 2>/dev/null | awk '{print $1}' || true)
         if [ -z "$RUNTIMES_BRANCH_CHECK" ]; then
           echo "::warning::Branch ${{ inputs.DEPS_BRANCHNAME }} not found in ${{ inputs.KOGITO_RUNTIMES_REPO_URL }}, using kiegroup/kogito-runtimes main branch"
           RUNTIMES_REPO_URL="https://github.com/kiegroup/kogito-runtimes"
@@ -148,7 +148,7 @@ runs:
 
         echo "::group::Cloning kogito-apps ${{ inputs.DEPS_BRANCHNAME }} branch..."
         # Check if branch exists in the specified repository
-        APPS_BRANCH_CHECK=$(git ls-remote "${{ inputs.KOGITO_APPS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} | awk '{print $1}')
+        APPS_BRANCH_CHECK=$(git ls-remote "${{ inputs.KOGITO_APPS_REPO_URL }}" refs/heads/${{ inputs.DEPS_BRANCHNAME }} 2>/dev/null | awk '{print $1}' || true)
         if [ -z "$APPS_BRANCH_CHECK" ]; then
           echo "::warning::Branch ${{ inputs.DEPS_BRANCHNAME }} not found in ${{ inputs.KOGITO_APPS_REPO_URL }}, using kiegroup/kogito-apps main branch"
           APPS_REPO_URL="https://github.com/kiegroup/kogito-apps"

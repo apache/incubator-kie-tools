@@ -20,6 +20,7 @@
 import * as path from "path";
 const { env } = require("../env");
 const jbang = require("@jbangdev/jbang");
+const { DEFAULT_LOCAL_REPO } = require("@kie-tools/maven-base");
 
 const parentScriptPath = path.join(__dirname, "..", "src", "DmnMarshallerBackendCompatibilityTesterScript.java");
 const dmnValidationScriptPath = path.join(__dirname, "..", "src", "DmnValidation.java");
@@ -82,13 +83,7 @@ function executeScript(scriptPath: string, args?: string[]) {
 
   const jbangArgs = [] as string[];
   jbangArgs.push("-Dkogito-runtime.version=" + env.versions.kogito);
-  jbangArgs.push(
-    "-DdroolsAndKogitoLocalM2Repo=" +
-      path.join(
-        path.dirname(require.resolve("@kie-tools-core/drools-and-kogito/package.json")),
-        "dist/1st-party-m2/repository"
-      )
-  );
+  jbangArgs.push("-DdroolsAndKogitoLocalM2Repo=" + DEFAULT_LOCAL_REPO);
   jbangArgs.push(scriptPath);
   args?.forEach((arg) => jbangArgs.push(quoteChar + arg + quoteChar));
 
