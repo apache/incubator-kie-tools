@@ -23,7 +23,7 @@ import { State } from "../store/Store";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
 import { ElementExclusion } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
-import { isSubProcessElement, findSubProcessRecursively } from "./moveNodesOutOfSubProcess";
+import { isSubProcessElement, findSubProcessRecursively, shouldMoveSequenceFlow } from "./moveNodesOutOfSubProcess";
 
 export function moveNodesInsideSubProcess({
   definitions,
@@ -48,34 +48,19 @@ export function moveNodesInsideSubProcess({
 
   const nodeIdsToMoveInside = new Set(__readonly_nodeIds);
   const subProcessNodes = new Set<string>();
-  subProcess.flowElement?.forEach((flowElement) => {
-    if (flowElement.__$$element !== "sequenceFlow" && flowElement["@_id"]) {
+  subProcess.flowElement?.forEach((flowElement: Normalized<Unpacked<NonNullable<typeof subProcess.flowElement>>>) => {
+    if (flowElement.__$$element !== "sequenceFlow") {
       subProcessNodes.add(flowElement["@_id"]);
     }
   });
 
-  const toMove: Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>[] = [];
+  const toMove: Normalized<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>>[] = [];
 
-  function shouldMoveSequenceFlow(
-    flowElement: Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
-    nodeIds: Set<string>,
-    existingNodes: Set<string>
-  ): boolean {
-    return (
-      flowElement.__$$element === "sequenceFlow" &&
-      !!flowElement["@_sourceRef"] &&
-      !!flowElement["@_targetRef"] &&
-      ((nodeIds.has(flowElement["@_sourceRef"]) && nodeIds.has(flowElement["@_targetRef"])) ||
-        (existingNodes.has(flowElement["@_sourceRef"]) && nodeIds.has(flowElement["@_targetRef"])) ||
-        (nodeIds.has(flowElement["@_sourceRef"]) && existingNodes.has(flowElement["@_targetRef"])))
-    );
-  }
-
-  const collectElements = (flowElements: NonNullable<BPMN20__tProcess["flowElement"]>): void => {
+  const collectElements = (flowElements: Normalized<NonNullable<BPMN20__tProcess["flowElement"]>>): void => {
     for (let i = flowElements.length - 1; i >= 0; i--) {
       const flowElement = flowElements[i];
       if (
-        (flowElement["@_id"] && nodeIdsToMoveInside.has(flowElement["@_id"])) ||
+        nodeIdsToMoveInside.has(flowElement["@_id"]) ||
         (flowElement.__$$element === "boundaryEvent" &&
           flowElement["@_attachedToRef"] &&
           nodeIdsToMoveInside.has(flowElement["@_attachedToRef"]))
@@ -90,12 +75,13 @@ export function moveNodesInsideSubProcess({
   };
 
   collectElements(process.flowElement ?? []);
-  flowElementsToMove.push(...(toMove as typeof flowElementsToMove));
+  flowElementsToMove.push(...toMove);
 
   for (let i = 0; i < (process.artifact ?? []).length; i++) {
     const artifact = (process.artifact ?? [])[i];
-    if (artifact["@_id"] && nodeIdsToMoveInside.has(artifact["@_id"])) {
-      artifactsToMove.push(...((process.artifact?.splice(i, 1) ?? []) as typeof artifactsToMove));
+    if (artifact.__$$element !== "association" && nodeIdsToMoveInside.has(artifact["@_id"])) {
+      const spliced = process.artifact?.splice(i, 1) ?? [];
+      artifactsToMove.push(...spliced.filter((a) => a.__$$element !== "association"));
       i--; // repeat one index because we just altered the array we're iterating over.
     }
   }

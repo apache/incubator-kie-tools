@@ -276,10 +276,15 @@ export function BpmnDiagram({
       console.log("BPMN EDITOR DIAGRAM: onNodeUnparented");
       if (exParentNode.type === NODE_TYPES.subProcess) {
         // ContainmentMode was INSIDE
+
+        const targetSubProcessId =
+          dropTarget?.node?.type === NODE_TYPES.subProcess ? dropTarget.node.data.bpmnElement?.["@_id"] : null;
+
         moveNodesOutOfSubProcess({
           definitions: state.bpmn.model.definitions,
           __readonly_subProcessId: exParentNode.data.bpmnElement?.["@_id"],
           __readonly_nodeIds: selectedNodes.flatMap((s) => s.data.bpmnElement?.["@_id"] ?? []),
+          __readonly_targetSubProcessId: targetSubProcessId,
         });
       }
 

@@ -111,7 +111,6 @@ export function computeDiagramData(
               } else {
                 parentIdsById.set(flowElement["@_id"], parentId);
               }
-
               if (flowElement.__$$element !== "sequenceFlow") {
                 if (
                   flowElement.__$$element !== "callChoreography" &&
@@ -125,10 +124,11 @@ export function computeDiagramData(
                   flowElement.__$$element !== "subChoreography"
                 ) {
                   nodeBpmnElementsById.set(flowElement["@_id"], flowElement);
-
                   if (isSubProcessElement(flowElement)) {
                     processSubProcessElements(flowElement, flowElement["@_id"]);
                   }
+                } else {
+                  // ignore on purpose. those flowElements are not nodes.
                 }
               } else {
                 edgeBpmnElementsById.set(flowElement["@_id"], flowElement);
@@ -144,7 +144,6 @@ export function computeDiagramData(
               }
             }
           };
-
           processSubProcessElements(bpmnElement, bpmnElement["@_id"]);
         }
 
@@ -340,19 +339,44 @@ export function computeDiagramData(
     new Map<string, RF.Edge<BpmnDiagramEdgeData>>()
   );
 
-  // Sort nodes by nesting depth to ensure React Flow sees parents before children
   const depthCache = new Map<string, number>();
-  const getDepth = (nodeId: string): number => {
+
+  const getDepth = (nodeId: string, visiting = new Set<string>()): number => {
     if (depthCache.has(nodeId)) {
       return depthCache.get(nodeId)!;
     }
+
+    if (visiting.has(nodeId)) {
+      console.warn(`Cycle detected in BPMN containment hierarchy at node: ${nodeId}`);
+      return 0;
+    }
+
+    visiting.add(nodeId);
     const parentId = parentIdsById.get(nodeId);
-    const depth = parentId ? getDepth(parentId) + 1 : 0;
+    const depth = parentId ? getDepth(parentId, visiting) + 1 : 0;
+    visiting.delete(nodeId);
     depthCache.set(nodeId, depth);
     return depth;
   };
 
-  const sortedNodes = [...nodes].sort((a, b) => getDepth(a.id) - getDepth(b.id));
+  const typePriority = (type: BpmnNodeType): number => {
+    switch (type) {
+      case NODE_TYPES.group:
+        return 0;
+      case NODE_TYPES.lane:
+        return 1;
+      case NODE_TYPES.subProcess:
+        return 2;
+      default:
+        return 3;
+    }
+  };
+
+  const sortedNodes = [...nodes].sort((a, b) => {
+    const depthDiff = getDepth(a.id) - getDepth(b.id);
+    if (depthDiff !== 0) return depthDiff;
+    return typePriority(a.type!) - typePriority(b.type!);
+  });
 
   const finalNodes = newNodeProjection ? [...sortedNodes, newNodeProjection] : sortedNodes;
 
