@@ -18,6 +18,7 @@
  */
 
 import { BpmnLatestModel } from "@kie-tools/bpmn-marshaller";
+import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { getNewBpmnIdRandomizer } from "../idRandomizer/bpmnIdRandomizer";
 import { State } from "../store/Store";
 
@@ -30,6 +31,83 @@ type WithRequiredDeep<T, K extends keyof any> = T extends undefined
     : { [P in keyof T]: WithRequiredDeep<T[P], K> } & (K extends keyof T
         ? { [P in K]-?: NonNullable<WithRequiredDeep<T[P], K>> }
         : T);
+
+function remapDataItems(
+  itemDefinitionIdsToRemap: Map<string, string>,
+  items: Array<{ "@_itemSubjectRef"?: string }> | undefined
+) {
+  if (!items) {
+    return;
+  }
+  for (const item of items) {
+    if (item["@_itemSubjectRef"] !== undefined) {
+      item["@_itemSubjectRef"] = itemDefinitionIdsToRemap.get(item["@_itemSubjectRef"]) ?? item["@_itemSubjectRef"];
+    }
+  }
+}
+
+function remapProperties(
+  itemDefinitionIdsToRemap: Map<string, string>,
+  properties: Array<{ "@_itemSubjectRef"?: string }> | undefined
+) {
+  if (!properties) {
+    return;
+  }
+  for (const p of properties) {
+    if (p["@_itemSubjectRef"]) {
+      p["@_itemSubjectRef"] = itemDefinitionIdsToRemap.get(p["@_itemSubjectRef"]) ?? p["@_itemSubjectRef"];
+    }
+  }
+}
+
+function remapFlowElements(
+  itemDefinitionIdsToRemap: Map<string, string>,
+  flowElements: NonNullable<BPMN20__tProcess["flowElement"]>
+) {
+  for (const el of flowElements) {
+    if (
+      el.__$$element === "dataObject" ||
+      el.__$$element === "dataObjectReference" ||
+      el.__$$element === "dataStoreReference"
+    ) {
+      if (el["@_itemSubjectRef"] !== undefined) {
+        el["@_itemSubjectRef"] = itemDefinitionIdsToRemap.get(el["@_itemSubjectRef"]) ?? el["@_itemSubjectRef"];
+      }
+    } else if (
+      el.__$$element === "businessRuleTask" ||
+      el.__$$element === "callActivity" ||
+      el.__$$element === "serviceTask" ||
+      el.__$$element === "userTask"
+    ) {
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataInput);
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
+    } else if (el.__$$element === "endEvent" || el.__$$element === "intermediateThrowEvent") {
+      remapDataItems(itemDefinitionIdsToRemap, el.dataInput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
+    } else if (
+      el.__$$element === "startEvent" ||
+      el.__$$element === "intermediateCatchEvent" ||
+      el.__$$element === "boundaryEvent"
+    ) {
+      remapDataItems(itemDefinitionIdsToRemap, el.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
+    } else if (
+      el.__$$element === "subProcess" ||
+      el.__$$element === "adHocSubProcess" ||
+      el.__$$element === "transaction"
+    ) {
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataInput);
+      remapDataItems(itemDefinitionIdsToRemap, el.ioSpecification?.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, el.property);
+      if (el.flowElement) {
+        remapFlowElements(itemDefinitionIdsToRemap, el.flowElement);
+      }
+    } else {
+      // Other flow elements do not reference itemDefinitions.
+    }
+  }
+}
 
 export function normalize(model: BpmnLatestModel): State["bpmn"]["model"] {
   getNewBpmnIdRandomizer()
@@ -91,5 +169,69 @@ export function normalize(model: BpmnLatestModel): State["bpmn"]["model"] {
 
   const normalizedModel = model as Normalized<BpmnLatestModel>;
 
+  // Merge itemDefinitions that share the same structureRef.
+  deduplicateItemDefinitions(normalizedModel.definitions);
+
   return normalizedModel;
+}
+
+// Keep one itemDefinition per structureRef and update references to point to it.
+export function deduplicateItemDefinitions(definitions: Normalized<BpmnLatestModel["definitions"]>): void {
+  const itemDefinitionsGroupedStructureRef = new Map<string, Array<string>>();
+  for (const rootElement of definitions.rootElement ?? []) {
+    if (rootElement.__$$element === "itemDefinition") {
+      const itemDefinitionStructureRef = rootElement["@_structureRef"] ?? "";
+      itemDefinitionsGroupedStructureRef.set(itemDefinitionStructureRef, [
+        ...(itemDefinitionsGroupedStructureRef.get(itemDefinitionStructureRef) ?? []),
+        rootElement["@_id"],
+      ]);
+    }
+  }
+
+  // Map each duplicate id to the id of the first occurrence we keep.
+  const itemDefinitionIdsToRemap = new Map<string, string>();
+  for (const itemDefinitionsGroup of itemDefinitionsGroupedStructureRef.values()) {
+    if (itemDefinitionsGroup.length <= 1) {
+      continue;
+    }
+    const survivorId = itemDefinitionsGroup[0];
+    for (let i = 1; i < itemDefinitionsGroup.length; i++) {
+      itemDefinitionIdsToRemap.set(itemDefinitionsGroup[i], survivorId);
+    }
+  }
+
+  if (itemDefinitionIdsToRemap.size === 0) {
+    return;
+  }
+
+  // Remove the duplicate itemDefinitions and update every reference to them.
+  definitions.rootElement = definitions.rootElement?.filter(
+    (e) => !(e.__$$element === "itemDefinition" && itemDefinitionIdsToRemap.has(e["@_id"]))
+  );
+
+  for (const rootElement of definitions.rootElement ?? []) {
+    if (rootElement.__$$element === "dataStore") {
+      if (rootElement["@_itemSubjectRef"] !== undefined) {
+        rootElement["@_itemSubjectRef"] =
+          itemDefinitionIdsToRemap.get(rootElement["@_itemSubjectRef"]) ?? rootElement["@_itemSubjectRef"];
+      }
+    } else if (rootElement.__$$element === "message") {
+      if (rootElement["@_itemRef"] !== undefined) {
+        rootElement["@_itemRef"] = itemDefinitionIdsToRemap.get(rootElement["@_itemRef"]) ?? rootElement["@_itemRef"];
+      }
+    } else if (rootElement.__$$element === "correlationProperty") {
+      if (rootElement["@_type"] !== undefined) {
+        rootElement["@_type"] = itemDefinitionIdsToRemap.get(rootElement["@_type"]) ?? rootElement["@_type"];
+      }
+    } else if (rootElement.__$$element === "process") {
+      remapDataItems(itemDefinitionIdsToRemap, rootElement.ioSpecification?.dataInput);
+      remapDataItems(itemDefinitionIdsToRemap, rootElement.ioSpecification?.dataOutput);
+      remapProperties(itemDefinitionIdsToRemap, rootElement.property);
+      if (rootElement.flowElement) {
+        remapFlowElements(itemDefinitionIdsToRemap, rootElement.flowElement);
+      }
+    } else {
+      // Other rootElement types do not reference itemDefinitions.
+    }
+  }
 }

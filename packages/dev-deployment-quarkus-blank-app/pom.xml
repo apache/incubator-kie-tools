@@ -60,7 +60,7 @@
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.commons-io>2.20.0</version.commons-io>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
-    <version.io.netty>4.1.133.Final</version.io.netty>
+    <version.io.netty>4.1.132.Final</version.io.netty>
 
     <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
@@ -80,30 +80,11 @@
       <!-- End of various transitive overrides. -->
 
       <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
+        <artifactId>kogito-apps-quarkus-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-apps-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-with-drools-quarkus</artifactId>
-        <version>${version.org.kie.kogito}</version>
       </dependency>
 
       <!-- Forcing of netty version to fix vulnerabilities. -->

@@ -64,14 +64,18 @@ export function NodeMorphingPanel<A extends MorphingAction>({
       {!isReadOnly && isToggleVisible && (
         <>
           <div className={`kie-bpmn-editor--node-morphing-panel-toggle`}>
-            <div className={`${isExpanded ? "expanded" : ""}`} onClick={toggle}>
+            <div className={`${isExpanded ? "expanded" : ""}`} onClick={toggle} role="button" aria-label="Morph node">
               <>{isExpanded ? <TimesIcon /> : <ProcessAutomationIcon />}</>
             </div>
           </div>
         </>
       )}
       {!isReadOnly && isToggleVisible && isExpanded && (
-        <div ref={ref} className={"kie-bpmn-editor--node-morphing-panel"}>
+        <div
+          ref={ref}
+          className={"kie-bpmn-editor--node-morphing-panel"}
+          data-testid="kie-tools--bpmn-editor--morphing-panel"
+        >
           <div>
             {actions.map(({ id, key, action, icon, title }) => {
               const disabled = disabledActionIds.has(id) || selectedActionId === id;

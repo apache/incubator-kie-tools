@@ -23,7 +23,7 @@ This package exposes the `<BpmnEditor>` React component. Features include:
 
 - Support for the BPMN 2.0 specification
 - Best-effort backwards compatibility with the [Apache KIE BPMN Editor (classic)](https://www.npmjs.com/package/@kie-tools/kie-editors-standalone) — no longer available (last available in Apache KIE 10.1).
-- Extension points compatible with the jBPM Engine and Kogito.
+- Extension points compatible with the jBPM Engine and Kogito. See [EXTENSIONS.md](./docs/EXTENSIONS.md) for complete documentation.
   - WorkItemDefinition (`.wid`) files for bindings with WorkItemHandlers (WIHs).
   - Acitivity SLAs
   - onEntry/onExit scripts
@@ -64,6 +64,7 @@ The Apache KIE BPMN Editor is built with [Reactflow](https://reactflow.dev/) and
 - 👉 [DEV.md](./docs/DEV.md)
 - 👉 [TESTS.md](./docs/TESTS.md)
 - 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+- 👉 [EXTENSIONS.md](./docs/EXTENSIONS.md) - Extension points and conventions beyond BPMN 2.0
 
 ---
 

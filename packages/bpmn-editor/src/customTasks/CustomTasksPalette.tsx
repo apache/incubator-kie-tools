@@ -58,10 +58,12 @@ export function CustomTasksPalette({ onDragStart }: { onDragStart: any }) {
             {(customTasks ?? []).map((customTask) => (
               <Flex
                 key={customTask.id}
+                data-testid={`kie-tools--bpmn-editor--custom-task-palette-item-${customTask.id}`}
                 className={"kie-bpmn-editor--custom-tasks-palette--custom-task"}
                 gap={{ default: "gapSm" }}
                 draggable={true}
                 onDragStart={(event) => onDragStart(event, NODE_TYPES.task, "task", customTask.produce())}
+                role="button"
               >
                 <FlexItem>{customTask.iconSvgElement}</FlexItem>
                 <FlexItem

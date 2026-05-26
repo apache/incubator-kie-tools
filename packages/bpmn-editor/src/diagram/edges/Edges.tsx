@@ -131,8 +131,13 @@ export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeD
         onMouseMove={onMouseMoveOnEdge}
         onDoubleClick={onDoubleClickEdge}
         data-edgetype={"information-requirement"}
+        data-testid={`kie-tools--bpmn-editor--edge-${props.id}`}
       />
-      <SequenceFlowPath d={path} className={`xyflow-react-kie-diagram--edge ${className}`} />
+      <SequenceFlowPath
+        d={path}
+        className={`xyflow-react-kie-diagram--edge ${className}`}
+        data-testid={`kie-tools--bpmn-editor--edge-path-${props.id}`}
+      />
 
       {props.data?.bpmnElement.__$$element === "sequenceFlow" &&
         (!!props.data.bpmnElement["@_name"] || isEditingLabel) && (
@@ -209,11 +214,13 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeDa
         onMouseMove={onMouseMoveOnEdge}
         onDoubleClick={onDoubleClickEdge}
         data-edgetype={"association"}
+        data-testid={`kie-tools--bpmn-editor--edge-${props.id}`}
         direction={association?.["@_associationDirection"]}
       />
       <AssociationPath
         d={path}
         className={`kie-bpmn-editor--edge ${className}`}
+        data-testid={`kie-tools--bpmn-editor--edge-path-${props.id}`}
         direction={association?.["@_associationDirection"]}
       />
 
