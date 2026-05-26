@@ -20,7 +20,7 @@
 import * as React from "react";
 import { CustomTask } from "@kie-tools/bpmn-editor/dist/BpmnEditor";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
-import { useBpmnEditorStoreApi, useBpmnEditorStore } from "@kie-tools/bpmn-editor/dist/store/StoreContext";
+import { useBpmnEditorStoreApi } from "@kie-tools/bpmn-editor/dist/store/StoreContext";
 import { useKogitoEditorEnvelopeContext, ChannelType } from "@kie-tools-core/editor/dist/api";
 import { useBpmnEditorChannelType } from "../BpmnMultiplyingArchitectureEditorFactory";
 import { PropertiesPanelHeaderFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/singleNodeProperties/_PropertiesPanelHeaderFormSection";
@@ -82,6 +82,13 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   const { inputDataMapping, outputDataMapping } = useDataMapping(task, () => {});
   const envelopeContext = useKogitoEditorEnvelopeContext();
   const channelApi = envelopeContext.channelApi as unknown as MessageBusClientApi<BpmnEditorChannelApi>;
+
+  const [localUrl, setLocalUrl] = React.useState<string>("");
+  const [localProtocol, setLocalProtocol] = React.useState<string>("");
+  const [localHost, setLocalHost] = React.useState<string>("");
+  const [localPort, setLocalPort] = React.useState<string>("");
+  const [localRequestTimeout, setLocalRequestTimeout] = React.useState<string>("");
+  const [localRestServiceCallTaskId, setLocalRestServiceCallTaskId] = React.useState<string>("");
 
   const dataInputVariables = React.useMemo(
     () =>
@@ -171,9 +178,26 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   );
 
   React.useEffect(() => {
+    setLocalUrl(getValue(RestProperties.Url));
+    setLocalProtocol(getValue(RestProperties.Protocol));
+    setLocalHost(getValue(RestProperties.Host));
+    setLocalPort(getValue(RestProperties.Port));
+    setLocalRequestTimeout(getValue(RestProperties.RequestTimeout));
+    setLocalRestServiceCallTaskId(getValue(RestProperties.RestServiceCallTaskId));
+  }, [getValue]);
+
+  React.useEffect(() => {
     const storedValue = getValue(RestProperties.ContentData);
     setContentDataValue(storedValue);
   }, [getValue]);
+
+  const handleTextInputChange = React.useCallback(
+    (key: RestProperties, value: string, setLocalState: React.Dispatch<React.SetStateAction<string>>) => {
+      setLocalState(value);
+      updateRestProperties(key, value);
+    },
+    [updateRestProperties]
+  );
 
   React.useEffect(() => {
     if (!dataInputVariables) return;
@@ -256,12 +280,12 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     setIsLoading(true);
 
     try {
-      let url = getValue(RestProperties.Url).trim();
+      let url = localUrl.trim();
       const method = getValue(RestProperties.Method).toUpperCase() || "GET";
       const authStrategy = getValue(RestProperties.AccessTokenAcquisitionStrategy);
-      const protocol = getValue(RestProperties.Protocol).trim();
-      const host = getValue(RestProperties.Host).trim();
-      const port = getValue(RestProperties.Port).trim();
+      const protocol = localProtocol.trim();
+      const host = localHost.trim();
+      const port = localPort.trim();
 
       const hasExpression = url && /#{[^}]+}/.test(url);
 
@@ -373,6 +397,10 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       setIsLoading(false);
     }
   }, [
+    localUrl,
+    localProtocol,
+    localHost,
+    localPort,
     getValue,
     testToken,
     headers,
@@ -522,8 +550,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           <FormGroup label={i18n.restService.url} isRequired fieldId="rest-url">
             <TextInput
               id="rest-url"
-              value={getValue(RestProperties.Url)}
-              onChange={(_, value) => updateRestProperties(RestProperties.Url, value)}
+              value={localUrl}
+              onChange={(_, value) => handleTextInputChange(RestProperties.Url, value, setLocalUrl)}
               placeholder={i18n.restService.urlPlaceholder}
               aria-describedby="rest-url-helper"
             />
@@ -555,8 +583,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           <FormGroup label={i18n.restService.protocol} fieldId="rest-protocol">
             <TextInput
               id="rest-protocol"
-              value={getValue(RestProperties.Protocol)}
-              onChange={(_, value) => updateRestProperties(RestProperties.Protocol, value)}
+              value={localProtocol}
+              onChange={(_, value) => handleTextInputChange(RestProperties.Protocol, value, setLocalProtocol)}
               placeholder={i18n.restService.protocolPlaceholder}
               aria-describedby="rest-protocol-helper"
             />
@@ -570,8 +598,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           <FormGroup label={i18n.restService.host} fieldId="rest-host">
             <TextInput
               id="rest-host"
-              value={getValue(RestProperties.Host)}
-              onChange={(_, value) => updateRestProperties(RestProperties.Host, value)}
+              value={localHost}
+              onChange={(_, value) => handleTextInputChange(RestProperties.Host, value, setLocalHost)}
               placeholder={i18n.restService.hostPlaceholder}
               aria-describedby="rest-host-helper"
             />
@@ -586,8 +614,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             <TextInput
               id="rest-port"
               type="number"
-              value={getValue(RestProperties.Port)}
-              onChange={(_, value) => updateRestProperties(RestProperties.Port, value)}
+              value={localPort}
+              onChange={(_, value) => handleTextInputChange(RestProperties.Port, value, setLocalPort)}
               placeholder={i18n.restService.portPlaceholder}
               aria-describedby="rest-port-helper"
             />
@@ -675,8 +703,10 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             <TextInput
               id="rest-timeout"
               type="number"
-              value={getValue(RestProperties.RequestTimeout)}
-              onChange={(_, value) => updateRestProperties(RestProperties.RequestTimeout, value)}
+              value={localRequestTimeout}
+              onChange={(_, value) =>
+                handleTextInputChange(RestProperties.RequestTimeout, value, setLocalRequestTimeout)
+              }
               placeholder="30000"
             />
           </FormGroup>
@@ -900,8 +930,10 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           >
             <TextInput
               id="rest-task-id"
-              value={getValue(RestProperties.RestServiceCallTaskId)}
-              onChange={(_, value) => updateRestProperties(RestProperties.RestServiceCallTaskId, value)}
+              value={localRestServiceCallTaskId}
+              onChange={(_, value) =>
+                handleTextInputChange(RestProperties.RestServiceCallTaskId, value, setLocalRestServiceCallTaskId)
+              }
               placeholder={i18n.restService.restServiceCallTaskIdPlaceholder}
             />
           </FormGroup>
@@ -949,7 +981,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               isBlock
               id="rest-test-btn"
               onClick={() => handleTestRequest()}
-              isDisabled={isLoading || !getValue(RestProperties.Url)}
+              isDisabled={isLoading || !localUrl}
             >
               {isLoading ? i18n.restService.testing : i18n.restService.testRequest}
             </Button>
