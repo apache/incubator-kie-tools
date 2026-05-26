@@ -60,6 +60,7 @@ export const domParser = {
       parsererrorElements.forEach((element) => {
         element.parentNode?.removeChild(element);
       });
+      throw new Error("XML parsing error detected. The XML structure is invalid and cannot be parsed.");
     }
 
     return domdoc;
