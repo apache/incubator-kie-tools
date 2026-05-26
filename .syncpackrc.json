@@ -9,8 +9,8 @@
       ]
     },
     {
-      "dependencies": ["react", "react-dom"],
-      "policy": "sameRange"
+      "dependencies": ["@types/react", "@types/react-dom"],
+      "isIgnored": true
     },
     {
       "label": "Use workspace protocol when developing local packages",
