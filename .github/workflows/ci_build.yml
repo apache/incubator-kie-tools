@@ -49,14 +49,10 @@ jobs:
         if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
-      - name: "Checkout @ GitHub default"
+      - name: "Checkout"
         uses: actions/checkout@v3
-
-      - name: "Checkout @ Simulated squashed-merge if PR"
-        id: checkout_pr
-        uses: ./.github/actions/checkout-pr
         with:
-          ref: ${{ github.base_ref }}
+          fetch-depth: 0
 
       - name: "Setup pnpm"
         uses: pnpm/action-setup@v6
@@ -87,8 +83,8 @@ jobs:
             --outputPath='/tmp/partitions.json' \
             --tmpPartitionFilterPath='/tmp/partition-filter.txt' \
             --forceFull='${{ !github.event.pull_request }}' \
-            --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
-            --headSha='${{steps.checkout_pr.outputs.head_sha }}' \
+            --baseSha='${{ github.event.pull_request.base.sha || github.event.before }}' \
+            --headSha='${{ github.sha }}' \
             --graphJsonPath='./repo/graph.json' \
             --partition='./.github/supporting-files/ci/partitions/partition0.txt' \
             --partition='./.github/supporting-files/ci/partitions/partition1.txt'
