@@ -228,7 +228,8 @@ export function ContextExpression({
   }, [isNested]);
 
   const updateVariable = useCallback(
-    (index: number, { expression, variable }: ExpressionWithVariable, variableChangedArgs) => {
+    (index: number, { expression, variable }: ExpressionWithVariable, variableChangedArgs: any) => {
+      // TODO: Do proper typing for variableChangedArgs
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedContext>) => {
           const contextEntries = [...(prev.contextEntry ?? [])];

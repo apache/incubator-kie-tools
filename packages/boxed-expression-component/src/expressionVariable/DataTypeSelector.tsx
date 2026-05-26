@@ -17,7 +17,13 @@
  * under the License.
  */
 
-import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
+import {
+  Select,
+  SelectGroup,
+  SelectOption,
+  SelectOptionObject,
+  SelectVariant,
+} from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useBoxedExpressionEditorI18n } from "../i18n";
@@ -61,11 +67,13 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   const selectContainerRef = useRef<HTMLDivElement>(null);
 
   const onSelect = useCallback(
-    (event, selection) => {
+    (_event: any, selection: string | SelectOptionObject | undefined) => {
       /* this setTimeout keeps the context menu open after type selection changes. Without this Popover component thinks there has been a click outside the context menu, after DataTypeSelector has changed. This because the Select component has been removed from the html*/
       setTimeout(() => setOpen(false), 0);
 
-      onChange(selection === DmnBuiltInDataType.Undefined ? undefined : selection);
+      const selectionValue = typeof selection === "string" ? selection : selection?.toString();
+
+      onChange(selectionValue === DmnBuiltInDataType.Undefined ? undefined : selectionValue);
 
       // Because Select leave the focus to the detached btn, give back the focus to the selectWrapperRef
       (selectContainerRef.current?.querySelector("button") as HTMLInputElement)?.focus();
@@ -101,7 +109,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
 
   // We should not filter based a JSX Element value, but rather based on the data alone.
   const onFilter = useCallback(
-    (_, textInput: string) => {
+    (_: any, textInput: string) => {
       if (textInput === "") {
         return buildSelectGroups();
       }
@@ -124,7 +132,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   );
 
   const onSelectToggle = useCallback(
-    (isOpen) => {
+    (_event: any, isOpen: boolean) => {
       setOpen(isOpen);
       onToggle(isOpen);
     },

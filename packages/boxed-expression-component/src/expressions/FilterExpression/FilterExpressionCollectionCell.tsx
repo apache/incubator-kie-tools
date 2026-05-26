@@ -19,9 +19,10 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { BeeTableCellProps, BoxedFilter, Normalized } from "../../api";
+import { BeeTableCellProps, BoxedExpression, BoxedFilter, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
@@ -36,7 +37,7 @@ export function FilterExpressionCollectionCell({
 }: BeeTableCellProps<ROWTYPE> & { parentElementId: string }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const onSetExpression: OnSetExpression = useCallback(
     ({ getNewExpression, expressionChangedArgs }) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedFilter>) => {
@@ -46,7 +47,7 @@ export function FilterExpressionCollectionCell({
               ...prev.in,
               expression: getNewExpression(prev.in.expression),
             },
-          };
+          } as Normalized<BoxedExpression>; // TODO: Remove this type casting and ensure types match.
         },
         expressionChangedArgs,
       });

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Resizable } from "react-resizable";
+import { Resizable, ResizeCallbackData } from "react-resizable";
 import { ResizerStopBehavior, ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
@@ -58,7 +58,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const [resizingStop__data, setResizingStop__data] = useState({ width: 0 });
   const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
-  const onResizeStop = useCallback((e, data) => {
+  const onResizeStop = useCallback((e: React.MouseEvent, data: ResizeCallbackData) => {
     if (e.detail === 2) {
       console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
       return;
@@ -114,14 +114,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   }, [minWidth]);
 
   const onResize = useCallback(
-    (_, data) => {
+    (_: any, data: { size: { width: number } }) => {
       setResizingWidth?.({ value: Math.floor(data.size.width), isPivoting: true });
     },
     [setResizingWidth]
   );
 
   const onResizeStart = useCallback(
-    (_, data) => {
+    (_: any, data: { size: { width: number } }) => {
       const startResizingWidth = Math.floor(data.size.width);
 
       console.debug(`Start resizing: ${startResizingWidth}`);

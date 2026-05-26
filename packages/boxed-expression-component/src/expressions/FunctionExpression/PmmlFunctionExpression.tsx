@@ -466,7 +466,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
   }, [contextExpression]);
 
   const onSelect = useCallback(
-    (event, newDocument) => {
+    (_event: any, newDocument: string) => {
       setSelectOpen(false);
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
@@ -475,7 +475,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
         expressionChangedArgs: { action: Action.ExpressionCreated },
       });
     },
-    [pmmlFunctionExpression, setExpression]
+    [setExpression]
   );
 
   const [isSelectOpen, setSelectOpen] = React.useState(false);
@@ -526,7 +526,7 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSelect = useCallback(
-    (event, newModel) => {
+    (_event: any, newModel: string) => {
       setSelectOpen(false);
 
       setExpression({

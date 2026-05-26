@@ -19,9 +19,10 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BoxedIterator, generateUuid, Normalized } from "../../api";
+import { BoxedExpression, BoxedIterator, generateUuid, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
@@ -42,7 +43,7 @@ export function IteratorExpressionCell({
 }: IteratorExpressionCellExpressionCellProps & { parentElementId: string }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const onSetExpression: OnSetExpression = useCallback(
     ({ getNewExpression, expressionChangedArgs }) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedIterator>) => {
@@ -54,7 +55,7 @@ export function IteratorExpressionCell({
                   "@_id": generateUuid(),
                   expression: getNewExpression(prev.in.expression),
                 },
-              };
+              } as Normalized<BoxedExpression>; // TODO: Remove this type casting and ensure types match.;
             case 2:
             default:
               if (prev.__$$element === "for") {
@@ -64,7 +65,7 @@ export function IteratorExpressionCell({
                     "@_id": generateUuid(),
                     expression: getNewExpression(prev.return.expression),
                   },
-                };
+                } as Normalized<BoxedExpression>; // TODO: Remove this type casting and ensure types match.;
               } else {
                 return {
                   ...prev,
@@ -72,7 +73,7 @@ export function IteratorExpressionCell({
                     "@_id": generateUuid(),
                     expression: getNewExpression(prev.satisfies.expression),
                   },
-                };
+                } as Normalized<BoxedExpression>; // TODO: Remove this type casting and ensure types match.;
               }
           }
         },
