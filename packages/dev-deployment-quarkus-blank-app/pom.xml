@@ -80,30 +80,11 @@
       <!-- End of various transitive overrides. -->
 
       <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
+        <artifactId>kogito-apps-quarkus-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-apps-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-with-drools-quarkus</artifactId>
-        <version>${version.org.kie.kogito}</version>
       </dependency>
 
       <!-- Forcing of netty version to fix vulnerabilities. -->

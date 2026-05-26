@@ -27,14 +27,14 @@ setupMavenConfigFile(
 `
 );
 
-if (!env.properties.setKogitoVersion.skip) {
+if (env.properties.setKogitoVersion.skip !== "true") {
   setPomProperty({
     key: "version.org.kie.kogito",
     value: env.versions.kogito,
   });
 }
 
-if (!env.properties.setQuarkusVersion.skip) {
+if (env.properties.setQuarkusVersion.skip !== "true") {
   setPomProperty({
     key: "version.quarkus",
     value: env.versions.quarkus,

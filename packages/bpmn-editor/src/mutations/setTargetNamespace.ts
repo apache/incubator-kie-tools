@@ -21,7 +21,7 @@ import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid
 import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { Normalized } from "../normalization/normalize";
 
-export const DEFAULT_BPMN_NAMESPACE_PREFIX = "https://kie.apache.org/bpmn/";
+export const DEFAULT_BPMN_NAMESPACE_PREFIX = "https://kie.apache.org/bpmn";
 
 export function setTargetNamespace({
   definitions,

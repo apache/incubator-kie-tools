@@ -36,7 +36,7 @@ module.exports = (webpackEnv) => {
     },
     devServer: {
       compress: true,
-      https: true,
+      server: "https",
       port: env.microFrontendsMultiplyingArchitectureBase64PngEditorChromeExtension.base64PngEditorEnvelopeApp.port,
     },
     plugins: [

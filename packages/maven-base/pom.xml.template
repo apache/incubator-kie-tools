@@ -121,69 +121,16 @@
     <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20260429-local</version.org.kie.kogito>
-
-    <!-- Quarkus -->
-    <version.quarkus>3.27.3</version.quarkus>
+    <version.org.kie.kogito><!-- SET BY INSTALL SCRIPT --></version.org.kie.kogito>
 
     <!-- 3rd party dependencies -->
-    <version.junit>4.13.2</version.junit>
-    <version.org.apache.commons.commons-compress>1.28.0</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
-    <version.org.freemarker>2.3.34</version.org.freemarker>
-    <version.org.assertj>3.27.7</version.org.assertj>
-    <version.org.junit.jupiter>5.13.4</version.org.junit.jupiter>
-    <version.org.mockito>5.18.0</version.org.mockito>
-    <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
-    <version.io.netty>4.1.132.Final</version.io.netty>
-
-    <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
-           They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
-    <version.tomcat.embed.core>10.1.54</version.tomcat.embed.core>
-    <version.apache.commons.lang3>3.18.0</version.apache.commons.lang3>
-    <version.angus.mail>2.0.5</version.angus.mail>
-    <!-- End of various transitive overrides. -->
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
-           They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
-      <dependency>
-        <groupId>org.eclipse.angus</groupId>
-        <artifactId>angus-mail</artifactId>
-        <version>${version.angus.mail}</version>
-      </dependency>
-      <!-- End of various transitive overrides. -->
-
-      <!-- Not directly used, but used to override transitive versions from other dependencies to fix vulnerabilities -->
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>${version.tomcat.embed.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${version.apache.commons.lang3}</version>
-      </dependency>
-
       <!-- Apache KIE -->
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-apps-bom</artifactId>
@@ -191,170 +138,9 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-test-utils</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-test-resources</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <classifier>tests</classifier>
-      </dependency>
-
-      <!-- Quarkus -->
-
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
 
       <!-- 3rd party -->
 
-      <!-- Forced version of the majority of general netty dependencies. This is to enforce an aligned netty libraries version in transitive dependencies, due to possible CVEs. -->
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-buffer</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-dns</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-haproxy</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-http</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-memcache</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-mqtt</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-redis</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-smtp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-socks</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-stomp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-xml</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-dev-tools</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler-proxy</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler-ssl-ocsp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-resolver</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-resolver-dns</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-rxtx</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-sctp</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-udt</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-all</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>${version.org.apache.commons.commons-compress}</version>
-      </dependency>
       <dependency>
         <groupId>org.iq80.snappy</groupId>
         <artifactId>snappy</artifactId>
@@ -369,29 +155,6 @@
         <groupId>org.apache.james</groupId>
         <artifactId>apache-mime4j-core</artifactId>
         <version>${version.org.apache.mime4j}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.freemarker</groupId>
-        <artifactId>freemarker</artifactId>
-        <version>${version.org.freemarker}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${version.org.junit.jupiter}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${version.org.assertj}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${version.org.mockito}</version>
-        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -472,13 +235,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>flatten-maven-plugin</artifactId>
           <version>${version.codehaus.flatten.plugin}</version>
-        </plugin>
-
-        <!-- Quarkus -->
-        <plugin>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-maven-plugin</artifactId>
-          <version>${version.quarkus}</version>
         </plugin>
 
         <!-- 3rd party -->

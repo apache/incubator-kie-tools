@@ -16,9 +16,14 @@
     "start": "run-script-os",
     "start:linux:darwin": "cross-env STORYBOOK_PORT=$(build-env bpmnEditor.storybook.port) pnpm exec kie-tools--storybook --storybookArgs=\"dev --no-open\"",
     "start:win32": "pnpm powershell \"cross-env STORYBOOK_PORT=$(build-env bpmnEditor.storybook.port) pnpm exec kie-tools--storybook --storybookArgs='dev --no-open'",
-    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\"",
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test-e2e:condition\"",
+    "test-e2e:condition": "run-script-if --bool \"$(build-env endToEndTests.containerized)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:container:run\" --else \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\"",
+    "test-e2e:container:clean": "playwright-base-container clean",
+    "test-e2e:container:run": "start-server-and-test 'pnpm start' http://localhost:$(build-env bpmnEditor.storybook.port)/iframe.html \"playwright-base-container run --additional-env=KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT=$(build-env bpmnEditor.storybook.port) --container-workdir=incubator-kie-tools/packages/bpmn-editor --container-name=kie-tools-playwright-containerization-bpmn-editor -- $@\"",
+    "test-e2e:container:shell": "start-server-and-test 'pnpm start' http://localhost:$(build-env bpmnEditor.storybook.port)/iframe.html 'playwright-base-container shell --additional-env=KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT=$(build-env bpmnEditor.storybook.port) --container-workdir=incubator-kie-tools/packages/bpmn-editor --container-name=kie-tools-playwright-containerization-bpmn-editor'",
     "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
-    "test-e2e:run": "pnpm exec playwright test --pass-with-no-tests"
+    "test-e2e:run": "pnpm exec playwright test",
+    "test-e2e:run:update-snapshots": "pnpm exec playwright test --update-snapshots"
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
@@ -49,7 +54,7 @@
     "react-dom": "^17.0.2",
     "react-error-boundary": "^4.1.2",
     "reactflow": "^11.8.3",
-    "uuid": "^8.3.2",
+    "uuid": "^11.1.1",
     "zustand": "^4.4.2"
   },
   "devDependencies": {
@@ -74,7 +79,7 @@
     "@types/d3-drag": "^3.0.3",
     "@types/d3-selection": "^3.0.6",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^24.10.11",
+    "@types/node": "^24.12.4",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "@types/uuid": "^8.3.0",
@@ -90,9 +95,9 @@
     "start-server-and-test": "^2.0.3",
     "storybook": "^7.3.2",
     "typescript": "^5.9.3",
-    "webpack": "^5.104.1",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.2",
+    "webpack": "^5.107.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.4",
     "webpack-merge": "^5.9.0"
   },
   "peerDependencies": {

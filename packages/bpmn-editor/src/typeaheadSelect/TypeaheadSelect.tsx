@@ -28,12 +28,30 @@ import {
 } from "@patternfly/react-core/dist/js/components/TextInputGroup";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import "./TypeaheadSelect.css";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useBpmnEditorI18n } from "../i18n";
 
 export type TypeaheadSelectOption = SelectOptionProps & { customLabel?: string | React.ReactElement };
+
+const hasRenderableOptionLabel = (option: TypeaheadSelectOption): boolean => {
+  if (option.customLabel !== null && option.customLabel !== undefined) {
+    return true;
+  }
+  const { children } = option;
+  if (children === null || children === undefined || typeof children === "boolean") {
+    return false;
+  }
+  // React elements and arrays are objects — we can't inspect their text, but they're renderable
+  return typeof children === "object" || String(children).trim().length > 0;
+};
+
+// Handles undefined and non-string values (e.g. numbers) safely
+const getSelectOptionId = (value: string | number | undefined) =>
+  `select-typeahead-${String(value ?? "").replaceAll(" ", "-")}`;
+
+const POPPER_PROPS = { appendTo: document.body };
 
 // Based on https://v5-archive.patternfly.org/components/menus/select/#typeahead-with-create-option
 export function TypeaheadSelect({
@@ -69,18 +87,17 @@ export function TypeaheadSelect({
 }) {
   const { i18n } = useBpmnEditorI18n();
   const [isOpen, setIsOpen] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState<string | undefined>();
+  const [inputValue, setInputValue] = React.useState("");
   const [filterValue, setFilterValue] = React.useState<string>("");
-  const [selectOptions, setSelectOptions] = React.useState<TypeaheadSelectOption[]>(options);
   const [focusedItemIndex, setFocusedItemIndex] = React.useState<number | null>(null);
   const [activeItemId, setActiveItemId] = React.useState<string | null>(null);
-  const textInputRef = React.useRef<HTMLInputElement>();
+  const textInputRef = React.useRef<HTMLInputElement>(null);
 
   const CREATE_NEW = useMemo(() => generateUuid(), []);
 
   React.useEffect(() => {
     const optionText = options.find((option) => option.value === selected)?.children;
-    setInputValue(optionText as string);
+    setInputValue(typeof optionText === "string" ? optionText : "");
     setFilterValue("");
   }, [options, selected]);
 
@@ -97,252 +114,309 @@ export function TypeaheadSelect({
     [filterValue, options, selected, showCreateOptionWhen]
   );
 
-  React.useEffect(() => {
-    let newSelectOptions: TypeaheadSelectOption[] = options;
+  const renderableOptions = useMemo(() => options.filter(hasRenderableOptionLabel), [options]);
 
-    // Filter menu items based on the text input value when one exists
+  const selectOptions = useMemo(() => {
+    let filtered: TypeaheadSelectOption[] = renderableOptions;
+
     if (filterValue) {
-      newSelectOptions = options.filter((menuItem) =>
+      filtered = renderableOptions.filter((menuItem) =>
         String(menuItem.children).toLowerCase().includes(filterValue.toLowerCase())
       );
     }
 
     if (showCreateOption) {
-      newSelectOptions = [
+      filtered = [
         {
           children: <i style={{ color: "#0067cc" }}>{`${createNewOptionLabel} "${filterValue}"`}</i>,
           value: CREATE_NEW,
         },
-        ...newSelectOptions,
+        ...filtered,
       ];
     }
 
-    // Open the menu when the input value changes and the new value is not empty
-    if (!isOpen && filterValue) {
-      setIsOpen(true);
-    }
+    return filtered;
+  }, [CREATE_NEW, createNewOptionLabel, filterValue, renderableOptions, showCreateOption]);
 
-    setSelectOptions(newSelectOptions);
-  }, [CREATE_NEW, createNewOptionLabel, filterValue, isOpen, options, showCreateOption]);
+  const selectedOptionExists = useMemo(
+    () => renderableOptions.some((option) => option.value === selected),
+    [renderableOptions, selected]
+  );
 
-  const getSelectOptionId = (value: any) => `select-typeahead-${value?.replace(" ", "-")}`;
+  const safeSelected = useMemo(() => (selectedOptionExists ? selected : undefined), [selected, selectedOptionExists]);
 
-  const setActiveAndFocusedItem = (itemIndex: number) => {
-    setFocusedItemIndex(itemIndex);
-    const focusedItem = selectOptions[itemIndex];
-    setActiveItemId(getSelectOptionId(focusedItem.value));
-  };
+  const setActiveAndFocusedItem = useCallback(
+    (itemIndex: number) => {
+      setFocusedItemIndex(itemIndex);
+      const focusedItem = selectOptions[itemIndex];
+      setActiveItemId(getSelectOptionId(focusedItem.value));
+    },
+    [selectOptions]
+  );
 
-  const resetActiveAndFocusedItem = () => {
+  const resetActiveAndFocusedItem = useCallback(() => {
     setFocusedItemIndex(null);
     setActiveItemId(null);
-  };
+  }, []);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     if (closeAfterSelect ?? true) {
       setIsOpen(false);
       resetActiveAndFocusedItem();
     }
-  };
+  }, [closeAfterSelect, resetActiveAndFocusedItem]);
 
-  const onInputClick = () => {
+  const onInputClick = useCallback(() => {
     if (!isOpen) {
       setIsOpen(true);
     } else if (!inputValue) {
       closeMenu();
     }
-  };
+  }, [closeMenu, inputValue, isOpen]);
 
-  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
-    if (value) {
-      if (value === CREATE_NEW) {
-        const newValue = onCreateNewOption?.(filterValue);
-        setSelected(newValue, filterValue, { triggeredByCreateNewOption: true });
+  const onSelect = useCallback(
+    (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+      if (value) {
+        if (value === CREATE_NEW) {
+          const newOptionLabel = filterValue;
+          const newValue = onCreateNewOption?.(newOptionLabel);
+          setSelected(newValue, newOptionLabel, { triggeredByCreateNewOption: true });
+
+          if (isMultiple) {
+            setInputValue("");
+            // PF's window click listener sees the CREATE_NEW <li> as detached after
+            // React's synchronous re-render and calls onOpenChange(false). Re-open in
+            // the next macrotask so the dropdown stays visible after adding a custom tag.
+            setTimeout(() => {
+              setIsOpen(true);
+              setFilterValue("");
+            }, 0);
+            return;
+          } else {
+            setInputValue(newOptionLabel);
+            closeMenu();
+          }
+        } else if (isMultiple) {
+          const optionText = selectOptions.find((option) => option.value === value)?.children;
+          setSelected(String(value), String(optionText), { triggeredByCreateNewOption: false });
+        } else {
+          const optionText = selectOptions.find((option) => option.value === value)?.children;
+          setInputValue(typeof optionText === "string" ? optionText : "");
+          setSelected(String(value), String(optionText), { triggeredByCreateNewOption: false });
+          closeMenu();
+        }
         setFilterValue("");
-        closeMenu();
-      } else {
-        const optionText = selectOptions.find((option) => option.value === value)?.children;
-        setInputValue(String(optionText));
-        setSelected(String(value), String(optionText), { triggeredByCreateNewOption: false });
-
-        setFilterValue("");
-        closeMenu();
       }
-    }
-  };
+    },
+    [CREATE_NEW, closeMenu, filterValue, isMultiple, onCreateNewOption, selectOptions, setSelected]
+  );
 
-  const onTextInputChange = (_event: React.FormEvent<HTMLInputElement>, value: string) => {
-    setInputValue(value);
-    setFilterValue(value);
+  const onTextInputChange = useCallback(
+    (_event: React.FormEvent<HTMLInputElement>, value: string) => {
+      setInputValue(value);
+      setFilterValue(value);
 
-    resetActiveAndFocusedItem();
-    setActiveAndFocusedItem(0);
-  };
-
-  const handleMenuArrowKeys = (key: string) => {
-    let indexToFocus = 0;
-
-    if (!isOpen) {
-      setIsOpen(true);
-    }
-
-    if (selectOptions.every((option) => option.isDisabled)) {
-      return;
-    }
-
-    if (key === "ArrowUp") {
-      // When no index is set or at the first index, focus to the last, otherwise decrement focus index
-      if (focusedItemIndex === null || focusedItemIndex === 0) {
-        indexToFocus = selectOptions.length - 1;
-      } else {
-        indexToFocus = focusedItemIndex - 1;
+      if (!isOpen && value) {
+        setIsOpen(true);
       }
 
-      // Skip disabled options
-      while (selectOptions[indexToFocus].isDisabled) {
-        indexToFocus--;
-        if (indexToFocus === -1) {
+      resetActiveAndFocusedItem();
+      if (selectOptions.length > 0) {
+        setActiveAndFocusedItem(0);
+      }
+    },
+    [isOpen, resetActiveAndFocusedItem, selectOptions, setActiveAndFocusedItem]
+  );
+
+  const handleMenuArrowKeys = useCallback(
+    (key: string) => {
+      let indexToFocus = 0;
+
+      if (!isOpen) {
+        setIsOpen(true);
+      }
+
+      if (selectOptions.every((option) => option.isDisabled)) {
+        return;
+      }
+
+      if (key === "ArrowUp") {
+        // When no index is set or at the first index, focus to the last, otherwise decrement focus index
+        if (focusedItemIndex === null || focusedItemIndex === 0) {
           indexToFocus = selectOptions.length - 1;
+        } else {
+          indexToFocus = focusedItemIndex - 1;
+        }
+
+        // Skip disabled options
+        while (selectOptions[indexToFocus].isDisabled) {
+          indexToFocus--;
+          if (indexToFocus === -1) {
+            indexToFocus = selectOptions.length - 1;
+          }
         }
       }
-    }
 
-    if (key === "ArrowDown") {
-      // When no index is set or at the last index, focus to the first, otherwise increment focus index
-      if (focusedItemIndex === null || focusedItemIndex === selectOptions.length - 1) {
-        indexToFocus = 0;
-      } else {
-        indexToFocus = focusedItemIndex + 1;
-      }
-
-      // Skip disabled options
-      while (selectOptions[indexToFocus].isDisabled) {
-        indexToFocus++;
-        if (indexToFocus === selectOptions.length) {
+      if (key === "ArrowDown") {
+        // When no index is set or at the last index, focus to the first, otherwise increment focus index
+        if (focusedItemIndex === null || focusedItemIndex === selectOptions.length - 1) {
           indexToFocus = 0;
+        } else {
+          indexToFocus = focusedItemIndex + 1;
+        }
+
+        // Skip disabled options
+        while (selectOptions[indexToFocus].isDisabled) {
+          indexToFocus++;
+          if (indexToFocus === selectOptions.length) {
+            indexToFocus = 0;
+          }
         }
       }
-    }
 
-    setActiveAndFocusedItem(indexToFocus);
-  };
+      setActiveAndFocusedItem(indexToFocus);
+    },
+    [focusedItemIndex, isOpen, selectOptions, setActiveAndFocusedItem]
+  );
 
-  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const focusedItem = focusedItemIndex !== null ? selectOptions[focusedItemIndex] : null;
+  const onInputKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      const focusedItem = focusedItemIndex !== null ? selectOptions[focusedItemIndex] : null;
 
-    switch (event.key) {
-      case "Enter":
-        if (isOpen && focusedItem && !focusedItem.isAriaDisabled) {
-          event.stopPropagation();
+      switch (event.key) {
+        case "Enter":
+          if (isOpen && focusedItem && !focusedItem.isAriaDisabled) {
+            event.stopPropagation();
+            event.preventDefault();
+            onSelect(undefined, focusedItem.value as string);
+          }
+
+          if (!isOpen) {
+            setIsOpen(true);
+          }
+
+          break;
+        case "Escape":
+          if (isOpen) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            setIsOpen(false);
+            const optionText = options.find((option) => option.value === selected)?.children;
+            setInputValue(typeof optionText === "string" ? optionText : "");
+            setFilterValue("");
+          }
+          break;
+        case "ArrowUp":
+        case "ArrowDown":
           event.preventDefault();
-          onSelect(undefined, focusedItem.value as string);
-        }
+          handleMenuArrowKeys(event.key);
+          break;
+      }
+    },
+    [focusedItemIndex, handleMenuArrowKeys, isOpen, onSelect, options, selectOptions, selected]
+  );
 
-        if (!isOpen) {
-          setIsOpen(true);
-        }
+  const onToggleClick = useCallback(() => {
+    setIsOpen((prev) => !prev);
+    textInputRef.current?.focus();
+  }, []);
 
-        break;
-      case "Escape":
-        if (isOpen) {
-          event.stopPropagation();
-          event.preventDefault();
-
-          // Blur
-          setIsOpen(false);
-          const optionText = options.find((option) => option.value === selected)?.children;
-          setInputValue(optionText as string);
-          setFilterValue("");
-        }
-        break;
-      case "ArrowUp":
-      case "ArrowDown":
-        event.preventDefault();
-        handleMenuArrowKeys(event.key);
-        break;
-    }
-  };
-
-  const onToggleClick = () => {
-    setIsOpen(!isOpen);
-    textInputRef?.current?.focus();
-  };
-
-  const onClearButtonClick = () => {
+  const onClearButtonClick = useCallback(() => {
     setSelected(undefined, undefined, { triggeredByCreateNewOption: false });
     setInputValue("");
     setFilterValue("");
     resetActiveAndFocusedItem();
     textInputRef?.current?.focus();
-  };
+  }, [resetActiveAndFocusedItem, setSelected]);
 
-  const onBlur = (e: React.MouseEvent) => {
-    if ((e.relatedTarget as HTMLElement | undefined)?.id?.includes(CREATE_NEW)) {
-      // If we're blurring the typeahead input because we're creating
-      // a new element with a mouse click, then we don't need to do anything.
-      return;
-    }
-
+  const onBlur = useCallback(() => {
     const optionText = options.find((option) => option.value === selected)?.children;
-    setInputValue(optionText as string);
+    setInputValue(typeof optionText === "string" ? optionText : "");
     setFilterValue("");
-  };
+  }, [options, selected]);
 
-  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle
-      ref={toggleRef}
-      variant={"typeahead"}
-      aria-label={"Typeahead creatable menu toggle"}
-      onClick={onToggleClick}
-      isExpanded={isOpen}
-      isDisabled={isDisabled}
-      isFullWidth={true}
-    >
-      <TextInputGroup isPlain>
-        <TextInputGroupMain
-          value={inputValue}
-          onClick={onInputClick}
-          onChange={onTextInputChange}
-          onKeyDown={onInputKeyDown}
-          onBlur={onBlur}
-          id={"create-typeahead-select-input"}
-          autoComplete={"off"}
-          innerRef={textInputRef}
-          placeholder={placeholder ?? i18n.propertiesPanel.undefined}
-          {...(activeItemId && { "aria-activedescendant": activeItemId })}
-          role={"combobox"}
-          isExpanded={isOpen}
-          aria-controls={"select-create-typeahead-listbox"}
-          style={{ flexWrap: "nowrap" }}
-        >
-          {isMultiple && <Label>{options.filter((s) => s.isSelected).length}</Label>}
-        </TextInputGroupMain>
-        <TextInputGroupUtilities {...(!inputValue ? { style: { display: "none" } } : {})}>
-          <Button variant="plain" onClick={onClearButtonClick} aria-label="Clear input value">
-            <TimesIcon aria-hidden />
-          </Button>
-        </TextInputGroupUtilities>
-      </TextInputGroup>
-    </MenuToggle>
+  const onOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      setIsOpen(nextOpen);
+      if (!nextOpen) {
+        resetActiveAndFocusedItem();
+      }
+    },
+    [resetActiveAndFocusedItem]
+  );
+
+  const onSelectListMouseDown = useCallback((e: React.MouseEvent) => e.preventDefault(), []);
+
+  const toggle = useCallback(
+    (toggleRef: React.Ref<MenuToggleElement>) => (
+      <MenuToggle
+        ref={toggleRef}
+        variant={"typeahead"}
+        aria-label={"Typeahead creatable menu toggle"}
+        onClick={onToggleClick}
+        isExpanded={isOpen}
+        isDisabled={isDisabled}
+        isFullWidth={true}
+      >
+        <TextInputGroup isPlain>
+          <TextInputGroupMain
+            value={inputValue}
+            onClick={onInputClick}
+            onChange={onTextInputChange}
+            onKeyDown={onInputKeyDown}
+            onBlur={onBlur}
+            id={"create-typeahead-select-input"}
+            autoComplete={"off"}
+            innerRef={textInputRef}
+            placeholder={placeholder ?? i18n.propertiesPanel.undefined}
+            {...(activeItemId && { "aria-activedescendant": activeItemId })}
+            role={"combobox"}
+            isExpanded={isOpen}
+            aria-controls={"select-create-typeahead-listbox"}
+            style={{ flexWrap: "nowrap" }}
+          >
+            {isMultiple && <Label>{options.filter((s) => s.isSelected).length}</Label>}
+          </TextInputGroupMain>
+          <TextInputGroupUtilities {...(!inputValue ? { style: { display: "none" } } : {})}>
+            <Button variant="plain" onClick={onClearButtonClick} aria-label="Clear input value">
+              <TimesIcon aria-hidden />
+            </Button>
+          </TextInputGroupUtilities>
+        </TextInputGroup>
+      </MenuToggle>
+    ),
+    [
+      activeItemId,
+      i18n.propertiesPanel.undefined,
+      inputValue,
+      isDisabled,
+      isMultiple,
+      isOpen,
+      onBlur,
+      onClearButtonClick,
+      onInputClick,
+      onInputKeyDown,
+      onTextInputChange,
+      onToggleClick,
+      options,
+      placeholder,
+    ]
   );
 
   return (
     <Select
       id={id}
       isOpen={isOpen}
-      selected={selected}
+      selected={safeSelected}
       onSelect={onSelect}
       className={"kie-bpmn-editor--typeahead-selector"}
-      onOpenChange={(isOpen) => {
-        !isOpen && closeMenu();
-      }}
-      popperProps={{
-        appendTo: document.body,
-      }}
+      onOpenChange={onOpenChange}
+      popperProps={POPPER_PROPS}
       toggle={toggle}
       shouldFocusFirstItemOnOpen={false}
     >
-      <SelectList id="select-create-typeahead-listbox">
+      <SelectList id="select-create-typeahead-listbox" onMouseDown={onSelectListMouseDown}>
         {selectOptions.length <= 0 && (
           <>
             {(!filterValue && (
@@ -360,7 +434,7 @@ export function TypeaheadSelect({
           const { children, customLabel, ...option } = { ..._option };
           return (
             <SelectOption
-              key={option.value || children}
+              key={String(option.value ?? index)}
               isFocused={focusedItemIndex === index}
               className={option.className}
               id={getSelectOptionId(option.value)}
