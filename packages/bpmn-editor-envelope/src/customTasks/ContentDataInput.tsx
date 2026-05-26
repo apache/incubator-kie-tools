@@ -28,7 +28,7 @@ Monaco.languages.register({ id: MONACO_LANGUAGE_ID });
 
 Monaco.languages.setMonarchTokensProvider(MONACO_LANGUAGE_ID, {
   tokenizer: {
-    root: [[/\{\{\s*[\w.-]+\s*\}\}/, "variable-token"]],
+    root: [[/#\{\s*[\w.-]+\s*\}/, "variable-token"]],
   },
 });
 
@@ -83,7 +83,7 @@ export const ContentDataInput: React.FC<ContentDataInputProps> = ({
 
   const completionItemProvider = useCallback(
     (): Monaco.languages.CompletionItemProvider => ({
-      triggerCharacters: ["{", "#"],
+      triggerCharacters: ["{"],
       provideCompletionItems: (model, position) => {
         const textUntilPosition = model.getValueInRange({
           startLineNumber: position.lineNumber,
@@ -92,16 +92,12 @@ export const ContentDataInput: React.FC<ContentDataInputProps> = ({
           endColumn: position.column,
         });
 
-        const testVariableMatch = textUntilPosition.match(/\{\{([\w\s.-]*)$/);
-        const processVariableMatch = textUntilPosition.match(/#\{([\w\s.-]*)$/);
-
-        const variableMatch = testVariableMatch || processVariableMatch;
+        const variableMatch = textUntilPosition.match(/#\{([\w\s.-]*)$/);
         if (!variableMatch) {
           return { suggestions: [] };
         }
 
         const partialVariableName = variableMatch[1].trim() || "";
-        const isTestVariable = !!testVariableMatch;
 
         if (!variableSuggestions || variableSuggestions.length === 0) {
           return { suggestions: [] };
@@ -114,7 +110,7 @@ export const ContentDataInput: React.FC<ContentDataInputProps> = ({
               ({
                 label: variableName,
                 kind: Monaco.languages.CompletionItemKind.Variable,
-                insertText: variableName + (isTestVariable ? "}}" : "}"),
+                insertText: variableName + "}",
                 insertTextRules: Monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
                 range: {
                   startLineNumber: position.lineNumber,
@@ -122,9 +118,7 @@ export const ContentDataInput: React.FC<ContentDataInputProps> = ({
                   startColumn: position.column - partialVariableName.length,
                   endColumn: position.column,
                 },
-                documentation: isTestVariable
-                  ? `Test mock variable: ${variableName}`
-                  : `Runtime process variable: ${variableName}`,
+                documentation: `Process variable: ${variableName}`,
                 sortText: `0${variableName}`,
               }) as Monaco.languages.CompletionItem
           );

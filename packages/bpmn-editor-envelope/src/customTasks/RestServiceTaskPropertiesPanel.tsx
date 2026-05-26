@@ -126,6 +126,23 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   const [hoveredHeaderIndex, setHoveredHeaderIndex] = React.useState<number | undefined>(undefined);
   const [hoveredQueryIndex, setHoveredQueryIndex] = React.useState<number | undefined>(undefined);
 
+  // Detect if URL contains protocol, host, or port
+  const hasUrlProtocol = React.useMemo(() => {
+    return /^https?:\/\//i.test(localUrl.trim());
+  }, [localUrl]);
+
+  const hasUrlHost = React.useMemo(() => {
+    return /^https?:\/\/[^/]+/i.test(localUrl.trim());
+  }, [localUrl]);
+
+  const hasUrlPort = React.useMemo(() => {
+    return /:\d+/.test(localUrl.trim());
+  }, [localUrl]);
+
+  const protocolConflict = localProtocol.trim() && hasUrlProtocol;
+  const hostConflict = localHost.trim() && hasUrlHost;
+  const portConflict = localPort.trim() && hasUrlPort;
+
   const upsert = React.useCallback(
     (list: typeof inputDataMapping | undefined, name: RestProperties, val: string): typeof inputDataMapping => {
       const safeList = list ?? [];
@@ -207,8 +224,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       return;
     }
 
-    const matches = contentDataValue.match(/{{\s*([\w.-]+)\s*}}/g) || [];
-    const variableNames = matches.map((m) => m.replace(/{{\s*|\s*}}/g, ""));
+    const matches = contentDataValue.match(/#\{\s*([\w.-]+)\s*\}/g) || [];
+    const variableNames = matches.map((m) => m.replace(/#\{\s*|\s*\}/g, ""));
     const validVariables = variableNames.filter((name) => dataInputVariables.includes(name));
 
     setContentDataVariables((prevVariables) => {
@@ -313,10 +330,14 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         throw new Error(`Test token is required for ${authStrategy} authentication strategy`);
       }
 
+      if (authStrategy === "configured" && !localRestServiceCallTaskId.trim()) {
+        throw new Error(i18n.restService.restServiceCallTaskIdRequiredError);
+      }
+
       if (Array.isArray(contentDataVariables) && contentDataVariables.length > 0) {
         for (const { variableName, variableValue } of contentDataVariables) {
           if (variableValue == null || String(variableValue).trim() === "") {
-            throw new Error(`${i18n.restService.testVariableMissingError} ({{${variableName}}})`);
+            throw new Error(`${i18n.restService.testVariableMissingError} (#{${variableName}})`);
           }
         }
       }
@@ -336,7 +357,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             .map((item) => [item.variableName, item.variableValue])
         );
 
-        contentData = contentData.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, varName) => {
+        contentData = contentData.replace(/#\{\s*(.*?)\s*\}/g, (match, varName) => {
           if (!(varName in lookup)) return match;
 
           const value = lookup[varName];
@@ -557,7 +578,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             />
             <FormHelperText>
               <HelperText>
-                <HelperTextItem>{i18n.restService.urlHelp}</HelperTextItem>
+                <HelperTextItem variant="indeterminate">{i18n.restService.urlHelp}</HelperTextItem>
               </HelperText>
             </FormHelperText>
           </FormGroup>
@@ -584,13 +605,16 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             <TextInput
               id="rest-protocol"
               value={localProtocol}
+              validated={protocolConflict ? "error" : "default"}
               onChange={(_, value) => handleTextInputChange(RestProperties.Protocol, value, setLocalProtocol)}
               placeholder={i18n.restService.protocolPlaceholder}
               aria-describedby="rest-protocol-helper"
             />
             <FormHelperText>
               <HelperText>
-                <HelperTextItem>{i18n.restService.protocolHelp}</HelperTextItem>
+                <HelperTextItem variant={protocolConflict ? "error" : "indeterminate"}>
+                  {protocolConflict ? i18n.restService.protocolConflictError : i18n.restService.protocolHelp}
+                </HelperTextItem>
               </HelperText>
             </FormHelperText>
           </FormGroup>
@@ -599,13 +623,16 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             <TextInput
               id="rest-host"
               value={localHost}
+              validated={hostConflict ? "error" : "default"}
               onChange={(_, value) => handleTextInputChange(RestProperties.Host, value, setLocalHost)}
               placeholder={i18n.restService.hostPlaceholder}
               aria-describedby="rest-host-helper"
             />
             <FormHelperText>
               <HelperText>
-                <HelperTextItem>{i18n.restService.hostHelp}</HelperTextItem>
+                <HelperTextItem variant={hostConflict ? "error" : "indeterminate"}>
+                  {hostConflict ? i18n.restService.hostConflictError : i18n.restService.hostHelp}
+                </HelperTextItem>
               </HelperText>
             </FormHelperText>
           </FormGroup>
@@ -615,13 +642,16 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               id="rest-port"
               type="number"
               value={localPort}
+              validated={portConflict ? "error" : "default"}
               onChange={(_, value) => handleTextInputChange(RestProperties.Port, value, setLocalPort)}
               placeholder={i18n.restService.portPlaceholder}
               aria-describedby="rest-port-helper"
             />
             <FormHelperText>
               <HelperText>
-                <HelperTextItem>{i18n.restService.portHelp}</HelperTextItem>
+                <HelperTextItem variant={portConflict ? "error" : "indeterminate"}>
+                  {portConflict ? i18n.restService.portConflictError : i18n.restService.portHelp}
+                </HelperTextItem>
               </HelperText>
             </FormHelperText>
           </FormGroup>
@@ -910,7 +940,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             />
             <FormHelperText>
               <HelperText>
-                <HelperTextItem>
+                <HelperTextItem variant="indeterminate">
                   {getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.PROPAGATED &&
                     i18n.restService.accessTokenStrategyPropagatedHelp}
                   {getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.CONFIGURED &&
@@ -951,7 +981,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               />
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem>{i18n.restService.testTokenHelper}</HelperTextItem>
+                  <HelperTextItem variant="indeterminate">{i18n.restService.testTokenHelper}</HelperTextItem>
                 </HelperText>
               </FormHelperText>
             </FormGroup>
@@ -969,7 +999,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               />
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem>{i18n.restService.useCorsProxyHelper}</HelperTextItem>
+                  <HelperTextItem variant="indeterminate">{i18n.restService.useCorsProxyHelper}</HelperTextItem>
                 </HelperText>
               </FormHelperText>
             </FormGroup>

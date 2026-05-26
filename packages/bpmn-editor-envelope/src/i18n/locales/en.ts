@@ -80,8 +80,8 @@ export const en: BpmnEditorEnvelopeI18n = {
     portHelp: "Alternative to full URL",
     portPlaceholder: "443",
     contentData: "Content Data",
-    contentDataPlaceholder: '{"key": "value"} or use {variableName} for process variables',
-    contentDataHelperText: "Literal JSON, process variable #{var}, or {{var}} for test interpolation",
+    contentDataPlaceholder: '{"key": "value"} or use #{variableName} for process variables',
+    contentDataHelperText: "Literal JSON or process variable #{var}",
     testVariables: "Test Variables",
     testVariableMissingError: "Value for variable is missing. Please enter a value.",
     variableName: "Variable Name",
@@ -96,6 +96,7 @@ export const en: BpmnEditorEnvelopeI18n = {
     accessTokenStrategy: "Access Token Acquisition Strategy",
     restServiceCallTaskId: "REST Service Call Task ID",
     restServiceCallTaskIdPlaceholder: "Enter task ID",
+    restServiceCallTaskIdRequiredError: "Task ID is required when Access Token Strategy is Configured",
     testToken: "Test Token",
     testTokenPlaceholder: "Enter Bearer token for testing",
     testTokenHelper: "For testing only. Not saved in BPMN.",
@@ -120,5 +121,8 @@ export const en: BpmnEditorEnvelopeI18n = {
     accessTokenStrategyConfiguredHelp:
       "Access Token is taken from the application.properties configuration using the RestServiceCallTaskId.",
     accessTokenStrategyNoneHelp: "The request is sent without any authentication.",
+    protocolConflictError: "Protocol conflict: URL already defines protocol",
+    hostConflictError: "Host conflict: URL already defines host",
+    portConflictError: "Port conflict: URL already defines port",
   },
 };

@@ -96,6 +96,7 @@ interface BpmnEditorEnvelopeDictionary
       accessTokenStrategy: string;
       restServiceCallTaskId: string;
       restServiceCallTaskIdPlaceholder: string;
+      restServiceCallTaskIdRequiredError: string;
       testTokenHelper: string;
       testToken: string;
       testTokenPlaceholder: string;
@@ -118,6 +119,9 @@ interface BpmnEditorEnvelopeDictionary
       accessTokenStrategyPropagatedHelp: string;
       accessTokenStrategyConfiguredHelp: string;
       accessTokenStrategyNoneHelp: string;
+      protocolConflictError: string;
+      hostConflictError: string;
+      portConflictError: string;
     };
   }> {}
 
