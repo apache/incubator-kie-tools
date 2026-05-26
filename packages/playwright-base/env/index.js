@@ -30,19 +30,19 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Enable or disable Chromium project",
     },
     PLAYWRIGHT_BASE__enableGoogleChromeProject: {
-      default: "false",
+      default: "true",
       description: "Enable or disable Google Chrome project",
     },
     PLAYWRIGHT_BASE__enableWebkitProject: {
-      default: "false",
+      default: "true",
       description: "Enable or disable Webkit project",
     },
     PLAYWRIGHT_BASE__projectTimeout: {
-      default: "15000",
+      default: "90000",
       description: "The timeout of a test in the project (Chromium, Google Chrome and Webkit)",
     },
     PLAYWRIGHT_BASE__expectTimeout: {
-      default: "10000",
+      default: "30000",
       description: "The timeout of an expect assertion",
     },
     PLAYWRIGHT_BASE__maxDiffPixelRatio: {
