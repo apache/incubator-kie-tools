@@ -18,7 +18,7 @@
  */
 
 const { env } = require("./env");
-const { setupMavenConfigFile, buildTailFromPackageJsonDependencies, setPomProperty } = require("@kie-tools/maven-base");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
 setupMavenConfigFile(
   `
@@ -26,8 +26,3 @@ setupMavenConfigFile(
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `
 );
-
-setPomProperty({
-  key: "version.quarkus",
-  value: env.versions.quarkus,
-});
