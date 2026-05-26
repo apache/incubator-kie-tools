@@ -67,6 +67,8 @@ export function moveNodesInsideSubProcess({
       ) {
         toMove.push(...flowElements.splice(i, 1));
       } else if (shouldMoveSequenceFlow(flowElement, nodeIdsToMoveInside, subProcessNodes)) {
+        // If the source and target are both outside of the sub-process
+        // or if the source and target is already in the sub process the sequenceFlow must be copied
         toMove.push(...flowElements.splice(i, 1));
       } else if (isSubProcessElement(flowElement) && flowElement.flowElement) {
         collectElements(flowElement.flowElement);
