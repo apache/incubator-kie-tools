@@ -19,7 +19,6 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import { Resizable } from "react-resizable";
 import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
@@ -208,12 +207,17 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           onResizeStop={onResizeStop}
           onResizeStart={onResizeStart}
           minConstraints={minConstraints}
+          maxConstraints={[Infinity, Infinity]}
+          handleSize={[20, 20]}
+          lockAspectRatio={false}
+          resizeHandles={["e"]}
+          transformScale={1}
           className={"resizable-div"}
           axis={"x"}
           draggableOpts={{ nodeRef: handleRef }}
-          handle={
+          handle={(_resizeHandleAxis, resizableRef: React.RefObject<HTMLDivElement>) => (
             <div
-              ref={handleRef}
+              ref={resizableRef}
               className="pf-v5-c-drawer"
               onDoubleClick={onDoubleClick}
               data-testid={"kie-tools--bee--resizer-handle"}
@@ -222,7 +226,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
                 <div className={`pf-v5-c-drawer__splitter-handle`} />
               </div>
             </div>
-          }
+          )}
         >
           <div style={style} />
         </Resizable>

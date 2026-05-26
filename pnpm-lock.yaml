@@ -1186,8 +1186,8 @@ importers:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1(react@18.3.1)
       react-resizable:
-        specifier: ^1.11.0
-        version: 1.11.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^4.0.1
+        version: 4.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-table:
         specifier: ^7.6.2
         version: 7.7.0(react@18.3.1)
@@ -1261,9 +1261,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.1
         version: 18.3.7(@types/react@18.3.29)
-      '@types/react-resizable':
-        specifier: ^1.7.2
-        version: 1.7.4
       '@types/react-table':
         specifier: ^7.0.25
         version: 7.7.7
@@ -2415,7 +2412,7 @@ importers:
         version: link:../tsconfig
       '@testing-library/jest-dom':
         specifier: ^6.4.6
-        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))
+        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.3.1(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2448,7 +2445,7 @@ importers:
         version: 5.6.4(webpack@5.107.1)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))
+        version: 29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3))
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -2457,7 +2454,7 @@ importers:
         version: 17.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
         version: 2.0.1(webpack@5.107.1)
@@ -2469,10 +2466,10 @@ importers:
         version: 3.0.2
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))(typescript@5.9.3)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -4821,7 +4818,7 @@ importers:
         version: 4.0.5
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))
+        version: 29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3))
       jest-junit:
         specifier: ^17.0.0
         version: 17.0.0
@@ -4830,10 +4827,10 @@ importers:
         version: 3.0.2
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))(typescript@5.9.3)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -5690,7 +5687,7 @@ importers:
         version: 1.45.2
       '@testing-library/jest-dom':
         specifier: ^6.4.6
-        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))
+        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.3.1(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5735,7 +5732,7 @@ importers:
         version: 5.6.4(webpack@5.107.1)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))
+        version: 29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3))
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -5744,7 +5741,7 @@ importers:
         version: 17.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))
       process:
         specifier: ^0.11.10
         version: 0.11.10
@@ -5759,10 +5756,10 @@ importers:
         version: 2.0.3
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))(typescript@5.9.3)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -5983,7 +5980,7 @@ importers:
         version: link:../tsconfig
       '@testing-library/jest-dom':
         specifier: ^6.4.6
-        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))
+        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.3.1(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -6037,7 +6034,7 @@ importers:
         version: 6.2.0(webpack@5.107.1)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))
+        version: 29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3))
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -6046,7 +6043,7 @@ importers:
         version: 17.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -6058,10 +6055,10 @@ importers:
         version: 2.0.3
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))(typescript@5.9.3)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -6475,7 +6472,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@24.12.4)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)
+        version: 2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@25.9.1)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(encoding@0.1.13)(graphql@14.3.1)
@@ -6746,7 +6743,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@24.12.4)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)
+        version: 2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@25.9.1)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(encoding@0.1.13)(graphql@14.3.1)
@@ -7084,7 +7081,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@24.12.4)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)
+        version: 2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@25.9.1)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(encoding@0.1.13)(graphql@14.3.1)
@@ -7959,7 +7956,7 @@ importers:
         version: 5.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/jest-dom':
         specifier: ^6.4.6
-        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))
+        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.3.1(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -7983,7 +7980,7 @@ importers:
         version: 11.0.0(webpack@5.107.1)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))
+        version: 29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3))
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -7998,10 +7995,10 @@ importers:
         version: 1.13.1
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.1.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.3))(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))(typescript@5.9.3)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -14098,9 +14095,6 @@ packages:
   '@types/react-redux@7.1.34':
     resolution: {integrity: sha512-GdFaVjEbYv4Fthm2ZLvj1VSCedV7TqE5y1kNwnjSdBOTXuRSgowux6J8TAct15T3CKBr63UMk+2CO7ilRhyrAQ==}
 
-  '@types/react-resizable@1.7.4':
-    resolution: {integrity: sha512-+xsGkd+Gvb9+8mLR1EyhNN8kBRJcsT1uJF4WpkFpFPIoApX2S89BmJA2RVtMdkhwe6YxV4RbHfaJ3bIdcgHc7g==}
-
   '@types/react-svg-pan-zoom@3.3.9':
     resolution: {integrity: sha512-/VA3nI3OmIjgrvWPPeesyON2OxoC27v4yuZ2VRjItXrQnmGZTnQb2WUafLm7+weTUsfFfmngGAyH8oIlbKDkNA==}
 
@@ -15728,8 +15722,8 @@ packages:
     resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
     engines: {node: '>=0.8'}
 
-  clsx@1.1.1:
-    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+  clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
 
   cmd-extension@1.0.2:
@@ -21121,8 +21115,8 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  react-draggable@4.4.4:
-    resolution: {integrity: sha512-6e0WdcNLwpBx/YIDpoyd2Xb04PB0elrDrulKUgdrIlwuYvxh5Ok9M+F8cljm8kPXXs43PmMzek9RrB1b7mLMqA==}
+  react-draggable@4.5.0:
+    resolution: {integrity: sha512-VC+HBLEZ0XJxnOxVAZsdRi8rD04Iz3SiiKOoYzamjylUcju/hP9np/aZdLHf/7WOD268WMoNJMvYfB5yAK45cw==}
     peerDependencies:
       react: '>= 16.3.0'
       react-dom: '>= 16.3.0'
@@ -21254,11 +21248,11 @@ packages:
       '@types/react':
         optional: true
 
-  react-resizable@1.11.1:
-    resolution: {integrity: sha512-S70gbLaAYqjuAd49utRHibtHLrHXInh7GuOR+6OO6RO6uleQfuBnWmZjRABfqNEx3C3Z6VPLg0/0uOYFrkfu9Q==}
+  react-resizable@4.0.1:
+    resolution: {integrity: sha512-FR25Rcfxpi1iKiC7taIrqc1Tz6VnslqM94/IrA1LxoM5C3ap2EqaKLnCit/aKrcn3H4wfzO0nFBadFBc+SzEWA==}
     peerDependencies:
-      react: 0.14.x || 15.x || 16.x || 17.x
-      react-dom: 0.14.x || 15.x || 16.x || 17.x
+      react: '>= 16.3'
+      react-dom: '>= 16.3'
 
   react-router-dom@6.30.3:
     resolution: {integrity: sha512-pxPcv1AczD4vso7G4Z3TKcvlxK7g7TNt3/FNGMhfqyntocvYKj+GCatfigGDjbLozC4baguJ0ReCigoDJXb0ag==}
@@ -26289,7 +26283,7 @@ snapshots:
       graphql: 14.3.1
       tslib: 2.4.1
 
-  '@graphql-codegen/cli@2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@24.12.4)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)':
+  '@graphql-codegen/cli@2.16.5(@babel/core@7.28.3)(@swc/core@1.3.92)(@types/node@25.9.1)(encoding@0.1.13)(enquirer@2.4.1)(graphql@14.3.1)(typescript@5.9.3)':
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/template': 7.28.6
@@ -26299,22 +26293,22 @@ snapshots:
       '@graphql-tools/apollo-engine-loader': 7.3.26(encoding@0.1.13)(graphql@14.3.1)
       '@graphql-tools/code-file-loader': 7.3.23(@babel/core@7.28.3)(graphql@14.3.1)
       '@graphql-tools/git-loader': 7.3.0(@babel/core@7.28.3)(graphql@14.3.1)
-      '@graphql-tools/github-loader': 7.3.28(@babel/core@7.28.3)(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)
+      '@graphql-tools/github-loader': 7.3.28(@babel/core@7.28.3)(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)
       '@graphql-tools/graphql-file-loader': 7.5.17(graphql@14.3.1)
       '@graphql-tools/json-file-loader': 7.4.18(graphql@14.3.1)
       '@graphql-tools/load': 7.8.14(graphql@14.3.1)
-      '@graphql-tools/prisma-loader': 7.2.72(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)
-      '@graphql-tools/url-loader': 7.17.18(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)
+      '@graphql-tools/prisma-loader': 7.2.72(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)
+      '@graphql-tools/url-loader': 7.17.18(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
-      '@whatwg-node/fetch': 0.6.9(@types/node@24.12.4)
+      '@whatwg-node/fetch': 0.6.9(@types/node@25.9.1)
       chalk: 4.1.2
       chokidar: 3.6.0
       cosmiconfig: 7.0.1
-      cosmiconfig-typescript-loader: 4.4.0(@types/node@24.12.4)(cosmiconfig@7.0.1)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))(typescript@5.9.3)
+      cosmiconfig-typescript-loader: 4.4.0(@types/node@25.9.1)(cosmiconfig@7.0.1)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3))(typescript@5.9.3)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 14.3.1
-      graphql-config: 4.5.0(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)
+      graphql-config: 4.5.0(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)
       inquirer: 8.2.4
       is-glob: 4.0.3
       json-to-pretty-yaml: 1.2.2
@@ -26323,7 +26317,7 @@ snapshots:
       shell-quote: 1.8.3
       string-env-interpolation: 1.0.1
       ts-log: 2.2.5
-      ts-node: 10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)
+      ts-node: 10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)
       tslib: 2.8.1
       yaml: 1.10.3
       yargs: 17.7.2
@@ -26524,7 +26518,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@graphql-tools/executor-http@0.1.10(@types/node@24.12.4)(graphql@14.3.1)':
+  '@graphql-tools/executor-http@0.1.10(@types/node@25.9.1)(graphql@14.3.1)':
     dependencies:
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       '@repeaterjs/repeater': 3.0.4
@@ -26532,7 +26526,7 @@ snapshots:
       dset: 3.1.2
       extract-files: 11.0.0
       graphql: 14.3.1
-      meros: 1.3.0(@types/node@24.12.4)
+      meros: 1.3.0(@types/node@25.9.1)
       tslib: 2.8.1
       value-or-promise: 1.0.12
     transitivePeerDependencies:
@@ -26572,10 +26566,10 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  '@graphql-tools/github-loader@7.3.28(@babel/core@7.28.3)(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)':
+  '@graphql-tools/github-loader@7.3.28(@babel/core@7.28.3)(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)':
     dependencies:
       '@ardatan/sync-fetch': 0.0.1(encoding@0.1.13)
-      '@graphql-tools/executor-http': 0.1.10(@types/node@24.12.4)(graphql@14.3.1)
+      '@graphql-tools/executor-http': 0.1.10(@types/node@25.9.1)(graphql@14.3.1)
       '@graphql-tools/graphql-tag-pluck': 7.5.2(@babel/core@7.28.3)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       '@whatwg-node/fetch': 0.8.8
@@ -26658,9 +26652,9 @@ snapshots:
       graphql: 14.3.1
       tslib: 2.8.1
 
-  '@graphql-tools/prisma-loader@7.2.72(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)':
+  '@graphql-tools/prisma-loader@7.2.72(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)':
     dependencies:
-      '@graphql-tools/url-loader': 7.17.18(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)
+      '@graphql-tools/url-loader': 7.17.18(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       '@types/js-yaml': 4.0.5
       '@types/json-stable-stringify': 1.0.34
@@ -26712,12 +26706,12 @@ snapshots:
       tslib: 2.8.1
       value-or-promise: 1.0.12
 
-  '@graphql-tools/url-loader@7.17.18(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)':
+  '@graphql-tools/url-loader@7.17.18(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)':
     dependencies:
       '@ardatan/sync-fetch': 0.0.1(encoding@0.1.13)
       '@graphql-tools/delegate': 9.0.35(graphql@14.3.1)
       '@graphql-tools/executor-graphql-ws': 0.0.14(graphql@14.3.1)
-      '@graphql-tools/executor-http': 0.1.10(@types/node@24.12.4)(graphql@14.3.1)
+      '@graphql-tools/executor-http': 0.1.10(@types/node@25.9.1)(graphql@14.3.1)
       '@graphql-tools/executor-legacy-ws': 0.0.11(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       '@graphql-tools/wrap': 9.4.2(graphql@14.3.1)
@@ -31023,21 +31017,6 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)))':
-    dependencies:
-      '@adobe/css-tools': 4.4.0
-      '@babel/runtime': 7.29.2
-      aria-query: 5.1.3
-      chalk: 3.0.0
-      css.escape: 1.5.1
-      dom-accessibility-api: 0.6.3
-      lodash: 4.18.1
-      redent: 3.0.0
-    optionalDependencies:
-      '@jest/globals': 29.7.0
-      '@types/jest': 29.5.12
-      jest: 29.7.0(@types/node@24.12.4)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))
-
   '@testing-library/jest-dom@6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@25.9.1)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)))':
     dependencies:
       '@adobe/css-tools': 4.4.0
@@ -31559,7 +31538,6 @@ snapshots:
   '@types/node@25.9.1':
     dependencies:
       undici-types: 7.24.6
-    optional: true
 
   '@types/nodemailer@7.0.9':
     dependencies:
@@ -31601,10 +31579,6 @@ snapshots:
       '@types/react': 18.3.28
       hoist-non-react-statics: 3.3.2
       redux: 4.1.0
-
-  '@types/react-resizable@1.7.4':
-    dependencies:
-      '@types/react': 18.3.29
 
   '@types/react-svg-pan-zoom@3.3.9':
     dependencies:
@@ -32062,10 +32036,10 @@ snapshots:
 
   '@whatwg-node/events@0.0.3': {}
 
-  '@whatwg-node/fetch@0.6.9(@types/node@24.12.4)':
+  '@whatwg-node/fetch@0.6.9(@types/node@25.9.1)':
     dependencies:
       '@peculiar/webcrypto': 1.4.3
-      '@whatwg-node/node-fetch': 0.0.5(@types/node@24.12.4)
+      '@whatwg-node/node-fetch': 0.0.5(@types/node@25.9.1)
       busboy: 1.6.0
       urlpattern-polyfill: 6.0.2
       web-streams-polyfill: 3.2.1
@@ -32080,9 +32054,9 @@ snapshots:
       urlpattern-polyfill: 8.0.2
       web-streams-polyfill: 3.2.1
 
-  '@whatwg-node/node-fetch@0.0.5(@types/node@24.12.4)':
+  '@whatwg-node/node-fetch@0.0.5(@types/node@25.9.1)':
     dependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
       '@whatwg-node/events': 0.0.2
       busboy: 1.6.0
       tslib: 2.8.1
@@ -33849,7 +33823,7 @@ snapshots:
 
   clone@2.1.2: {}
 
-  clsx@1.1.1: {}
+  clsx@2.1.1: {}
 
   cmd-extension@1.0.2: {}
 
@@ -34115,11 +34089,11 @@ snapshots:
 
   corser@2.0.1: {}
 
-  cosmiconfig-typescript-loader@4.4.0(@types/node@24.12.4)(cosmiconfig@7.0.1)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3))(typescript@5.9.3):
+  cosmiconfig-typescript-loader@4.4.0(@types/node@25.9.1)(cosmiconfig@7.0.1)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3))(typescript@5.9.3):
     dependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
       cosmiconfig: 7.0.1
-      ts-node: 10.9.2(@swc/core@1.3.92)(@types/node@24.12.4)(typescript@5.9.3)
+      ts-node: 10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3)
       typescript: 5.9.3
 
   cosmiconfig@6.0.0:
@@ -36340,13 +36314,13 @@ snapshots:
     dependencies:
       lodash: 4.18.1
 
-  graphql-config@4.5.0(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1):
+  graphql-config@4.5.0(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1):
     dependencies:
       '@graphql-tools/graphql-file-loader': 7.5.17(graphql@14.3.1)
       '@graphql-tools/json-file-loader': 7.4.18(graphql@14.3.1)
       '@graphql-tools/load': 7.8.14(graphql@14.3.1)
       '@graphql-tools/merge': 8.4.2(graphql@14.3.1)
-      '@graphql-tools/url-loader': 7.17.18(@types/node@24.12.4)(encoding@0.1.13)(graphql@14.3.1)
+      '@graphql-tools/url-loader': 7.17.18(@types/node@25.9.1)(encoding@0.1.13)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       cosmiconfig: 8.0.0
       graphql: 14.3.1
@@ -38525,9 +38499,9 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  meros@1.3.0(@types/node@24.12.4):
+  meros@1.3.0(@types/node@25.9.1):
     optionalDependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
 
   message-box@0.2.7:
     dependencies:
@@ -40388,9 +40362,9 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-draggable@4.4.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-draggable@4.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      clsx: 1.1.1
+      clsx: 2.1.1
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -40511,12 +40485,12 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.28
 
-  react-resizable@1.11.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-resizable@4.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-draggable: 4.4.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-draggable: 4.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   react-router-dom@6.30.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -42349,6 +42323,7 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.3.92
+    optional: true
 
   ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.1)(typescript@5.9.3):
     dependencies:
@@ -42369,7 +42344,6 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.3.92
-    optional: true
 
   tsconfig-paths-webpack-plugin@3.5.2:
     dependencies:
@@ -42535,8 +42509,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici-types@7.24.6:
-    optional: true
+  undici-types@7.24.6: {}
 
   undici@6.24.0: {}
 
