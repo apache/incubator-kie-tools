@@ -419,19 +419,21 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     }
   }, [
     localUrl,
+    getValue,
     localProtocol,
     localHost,
     localPort,
-    getValue,
     testToken,
+    localRestServiceCallTaskId,
+    contentDataVariables,
     headers,
     queryParams,
-    contentDataVariables,
     channelApi.requests,
     isVSCode,
     useCorsProxy,
     i18n.restService.hostRequiredError,
     i18n.restService.urlRequired,
+    i18n.restService.restServiceCallTaskIdRequiredError,
     i18n.restService.testVariableMissingError,
   ]);
 
@@ -591,6 +593,12 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               setSelected={(value) => {
                 if (value) {
                   updateRestProperties(RestProperties.Method, value);
+                  setTestError(null);
+                  setTestResult(null);
+                  if (!["POST", "PUT", "PATCH"].includes(value)) {
+                    setContentDataValue("");
+                    setContentDataVariables([]);
+                  }
                 }
               }}
               options={HTTP_METHODS_OPTIONS.map((option) => ({

@@ -81,7 +81,7 @@ export const en: BpmnEditorEnvelopeI18n = {
     portPlaceholder: "443",
     contentData: "Content Data",
     contentDataPlaceholder: '{"key": "value"} or use #{variableName} for process variables',
-    contentDataHelperText: "Literal JSON or process variable #{var}",
+    contentDataHelperText: "Literal, JSON or process variable #{var}",
     testVariables: "Test Variables",
     testVariableMissingError: "Value for variable is missing. Please enter a value.",
     variableName: "Variable Name",
