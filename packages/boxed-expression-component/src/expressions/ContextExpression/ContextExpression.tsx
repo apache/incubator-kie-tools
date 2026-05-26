@@ -31,6 +31,7 @@ import {
   BoxedExpression,
   DmnBuiltInDataType,
   ExpressionChangedArgs,
+  VariableChangedArgs,
   generateUuid,
   getNextAvailablePrefixedName,
   Normalized,
@@ -228,7 +229,7 @@ export function ContextExpression({
   }, [isNested]);
 
   const updateVariable = useCallback(
-    (index: number, { expression, variable }: ExpressionWithVariable, variableChangedArgs) => {
+    (index: number, { expression, variable }: ExpressionWithVariable, variableChangedArgs: VariableChangedArgs) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedContext>) => {
           const contextEntries = [...(prev.contextEntry ?? [])];
@@ -246,7 +247,7 @@ export function ContextExpression({
 
           return ret;
         },
-        expressionChangedArgs: variableChangedArgs,
+        expressionChangedArgs: { action: Action.VariableChanged, ...variableChangedArgs },
       });
     },
     [setExpression]

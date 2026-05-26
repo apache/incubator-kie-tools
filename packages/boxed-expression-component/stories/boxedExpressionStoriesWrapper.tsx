@@ -102,7 +102,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
   );
 
   const onWidthsChange = useCallback(
-    (newWidthsById) => {
+    (newWidthsById: Map<string, number[]> | ((prev: Map<string, number[]>) => Map<string, number[]>)) => {
       if (typeof newWidthsById === "function") {
         setWidthsByIdState((prev: Record<string, number[]>) => {
           const newWidhtsByIdState = toObject(newWidthsById(toMap(prev)));

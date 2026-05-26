@@ -140,13 +140,16 @@ export function BeeTableContextMenuHandler({
     setCurrentlyOpenContextMenu(undefined);
   }, [menuId, setCurrentlyOpenContextMenu]);
 
-  const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
-    setMenuDrilledIn((prev) => [...prev, fromMenuId]);
-    setDrillDownPath((prev) => [...prev, pathId]);
-    setLastActiveMenu(toMenuId);
-  }, []);
+  const drillIn = useCallback(
+    (_event: any, fromMenuId: string, toMenuId: React.SetStateAction<string>, pathId: string) => {
+      setMenuDrilledIn((prev) => [...prev, fromMenuId]);
+      setDrillDownPath((prev) => [...prev, pathId]);
+      setLastActiveMenu(toMenuId);
+    },
+    []
+  );
 
-  const drillOut = useCallback((_event, toMenuId) => {
+  const drillOut = useCallback((_event: any, toMenuId: React.SetStateAction<string>) => {
     setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));
     setDrillDownPath((prev) => prev.slice(0, prev.length - 1));
     setLastActiveMenu(toMenuId);

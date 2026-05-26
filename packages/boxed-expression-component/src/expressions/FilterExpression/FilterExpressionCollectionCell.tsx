@@ -22,6 +22,7 @@ import { useCallback } from "react";
 import { BeeTableCellProps, BoxedFilter, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
@@ -36,17 +37,19 @@ export function FilterExpressionCollectionCell({
 }: BeeTableCellProps<ROWTYPE> & { parentElementId: string }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const onSetExpression: OnSetExpression = useCallback(
     ({ getNewExpression, expressionChangedArgs }) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedFilter>) => {
-          return {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFilter> = {
             ...prev,
             in: {
               ...prev.in,
-              expression: getNewExpression(prev.in.expression),
+              expression: getNewExpression(prev.in.expression)!, // SPEC DISCREPANCY
             },
           };
+          return ret;
         },
         expressionChangedArgs,
       });
