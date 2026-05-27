@@ -69,7 +69,15 @@ test.describe("Populate Boxed Invocation", () => {
     await resizing.reset(page.getByRole("cell", { name: "Required monthly installment" }));
 
     await bee.expression.asInvocation().invokedFunctionNameCell.click();
-    await page.keyboard.type(`Affordability calculation`);
+
+    const textbox = bee.expression.asInvocation().invokedFunctionNameCell.getByRole("textbox");
+
+    await expect(textbox).toBeVisible();
+
+    await textbox.focus();
+
+    await page.keyboard.type("Affordability calculation");
+
     await page.keyboard.press("Enter");
 
     await monaco.fill({ monacoParentLocator: page, nth: 0, content: "Aplicant data.Monthly.Income" });
