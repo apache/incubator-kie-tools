@@ -155,15 +155,23 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       console.debug(`Double-click reset to width: ${newWidth}`);
 
-      // Set the resizing width immediately so it's visible
+      // React 18's automatic batching coalesces the width-propagation chain
+      // (parent column → outer container → nested expressions) into too few
+      // renders for the cascading hooks to converge. We force multiple render
+      // cycles via requestAnimationFrame so the chain gets the same convergence
+      // opportunities as a real drag (where each mousemove is a separate event).
       setResizingWidth({ value: newWidth, isPivoting: true });
-
-      // Trigger the resizeStop effect by setting resizingStop__data
-      // Use setTimeout to ensure this happens after the resizingWidth update
-      setTimeout(() => {
-        setStartResizingWidth({ width: 0 });
-        setResizingStop__data({ width: newWidth });
-      }, 0);
+      let tick = 0;
+      const propagate = () => {
+        if (tick++ < 16) {
+          setResizingWidth({ value: newWidth, isPivoting: true });
+          requestAnimationFrame(propagate);
+        } else {
+          setStartResizingWidth({ width: 0 });
+          setResizingStop__data({ width: newWidth });
+        }
+      };
+      requestAnimationFrame(propagate);
     },
     [getWidthToFitData, minWidth, setResizingWidth]
   );
