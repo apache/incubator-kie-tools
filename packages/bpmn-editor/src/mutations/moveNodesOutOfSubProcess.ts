@@ -57,16 +57,16 @@ export function findSubProcessRecursively(
   return undefined;
 }
 
-function findParentFlowElements(
+export function findParentFlowElements(
   flowElements: NonNullable<BPMN20__tProcess["flowElement"]>,
-  subProcessId: string
+  elementId: string
 ): NonNullable<BPMN20__tProcess["flowElement"]> | undefined {
   for (const element of flowElements) {
-    if (element["@_id"] === subProcessId) {
+    if (element["@_id"] === elementId) {
       return flowElements;
     }
     if (isSubProcessElement(element) && element.flowElement) {
-      const found = findParentFlowElements(element.flowElement, subProcessId);
+      const found = findParentFlowElements(element.flowElement, elementId);
       if (found) {
         return found;
       }
@@ -75,20 +75,20 @@ function findParentFlowElements(
   return undefined;
 }
 
-function findParentSubProcess(
+export function findParentSubProcess(
   flowElements: NonNullable<BPMN20__tProcess["flowElement"]>,
-  subProcessId: string
+  elementId: string
 ): SubProcessElement | undefined {
   for (const element of flowElements) {
     if (isSubProcessElement(element) && element.flowElement) {
       // Check if this subprocess directly contains the target
       for (const child of element.flowElement) {
-        if (child["@_id"] === subProcessId) {
+        if (child["@_id"] === elementId) {
           return element;
         }
       }
       // Recurse into nested subprocesses
-      const found = findParentSubProcess(element.flowElement, subProcessId);
+      const found = findParentSubProcess(element.flowElement, elementId);
       if (found) {
         return found;
       }

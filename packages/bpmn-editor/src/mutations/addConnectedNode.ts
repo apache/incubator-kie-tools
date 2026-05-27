@@ -29,6 +29,7 @@ import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramEl
 import { NodeNature, nodeNatures } from "./_NodeNature";
 import { addEdge } from "./addEdge";
 import { PositionalNodeHandleId } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/PositionalNodeHandles";
+import { findParentFlowElements, findParentSubProcess } from "./moveNodesOutOfSubProcess";
 
 export function addConnectedNode({
   definitions,
@@ -51,10 +52,19 @@ export function addConnectedNode({
 
   const { process, diagramElements } = addOrGetProcessAndDiagramElements({ definitions });
 
-  if (newNodeNature === NodeNature.PROCESS_FLOW_ELEMENT || newNodeNature === NodeNature.CONTAINER) {
-    process.flowElement ??= [];
+  const parentFlowElements = findParentFlowElements(
+    process.flowElement ?? [],
+    __readonly_sourceNode.bpmnElement["@_id"]
+  );
+  const parentSubProcess = findParentSubProcess(process.flowElement ?? [], __readonly_sourceNode.bpmnElement["@_id"]);
 
-    process.flowElement?.push(
+  let targetFlowElements = parentFlowElements ?? process.flowElement;
+  let targetArtifacts = parentSubProcess?.artifact ?? process.artifact;
+
+  if (newNodeNature === NodeNature.PROCESS_FLOW_ELEMENT || newNodeNature === NodeNature.CONTAINER) {
+    targetFlowElements ??= [];
+
+    targetFlowElements.push(
       switchExpression(
         __readonly_newNode.type as Exclude<
           BpmnNodeType,
@@ -107,8 +117,8 @@ export function addConnectedNode({
       )
     );
   } else if (newNodeNature === NodeNature.ARTIFACT) {
-    process.artifact ??= [];
-    process.artifact.push(
+    targetArtifacts ??= [];
+    targetArtifacts.push(
       ...switchExpression(__readonly_newNode.type as Extract<BpmnNodeType, "node_group" | "node_textAnnotation">, {
         [NODE_TYPES.group]: [
           {
