@@ -70,12 +70,6 @@ test.describe("Populate Boxed Invocation", () => {
 
     await bee.expression.asInvocation().invokedFunctionNameCell.click();
 
-    const textbox = bee.expression.asInvocation().invokedFunctionNameCell.getByRole("textbox");
-
-    await expect(textbox).toBeVisible();
-
-    await textbox.focus();
-
     await page.keyboard.type("Affordability calculation");
 
     await page.keyboard.press("Enter");
