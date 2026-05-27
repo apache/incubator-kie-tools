@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Clone kie-tools"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           path: kie-tools
           ref: ${{ inputs.tag }}
@@ -112,7 +112,7 @@ jobs:
           pnpm -F @kie-tools/serverless-logic-web-tools... build:prod
 
       - name: "Checkout serverless-logic-sandbox-deployment"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.KIE1_TOKEN }}
           path: serverless-logic-sandbox-deployment
