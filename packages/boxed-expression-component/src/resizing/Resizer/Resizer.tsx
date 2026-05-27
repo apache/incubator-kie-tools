@@ -168,8 +168,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     [getWidthToFitData, minWidth, setResizingWidth]
   );
 
-  const handleRef = useRef<HTMLDivElement>(null);
-
   const style = useMemo(() => {
     return { width: resizingWidth?.value, minWidth };
   }, [minWidth, resizingWidth?.value]);
@@ -214,7 +212,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           transformScale={1}
           className={"resizable-div"}
           axis={"x"}
-          draggableOpts={{ nodeRef: handleRef }}
           handle={(_resizeHandleAxis, resizableRef: React.RefObject<HTMLDivElement>) => (
             <div
               ref={resizableRef}
