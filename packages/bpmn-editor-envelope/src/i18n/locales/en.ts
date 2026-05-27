@@ -107,6 +107,7 @@ export const en: BpmnEditorEnvelopeI18n = {
     testing: "Testing...",
     testFailed: "Test Failed",
     testResult: "Test Result",
+    response: "Test Response",
     urlRequired: "URL is required",
     headerName: "Name",
     headerValue: "Value",

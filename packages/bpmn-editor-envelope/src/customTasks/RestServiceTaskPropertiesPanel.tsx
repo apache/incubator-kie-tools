@@ -33,6 +33,7 @@ import {
 import { OnEntryAndExitScriptsFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/onEntryAndExitScripts/OnEntryAndExitScriptsFormSection";
 import { FormGroup, FormSection, ActionGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
@@ -106,7 +107,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     [channelType]
   );
 
-  const [testResult, setTestResult] = React.useState<{ status: number } | null>(null);
+  const [testResult, setTestResult] = React.useState<{ status: number; data?: any } | null>(null);
   const [testError, setTestError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [testToken, setTestToken] = React.useState<string>("");
@@ -416,7 +417,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         useCorsProxy: isVSCode ? false : useCorsProxy,
       });
 
-      setTestResult({ status: result.status });
+      setTestResult({ status: result.status, data: result.data });
     } catch (error) {
       console.error("REST Test Error:", error);
       setTestError((error as Error).message || i18n.restService.genericTestError);
@@ -1055,13 +1056,29 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           )}
 
           {testResult && (
-            <FormGroup label={i18n.restService.testResult} fieldId="rest-test-result">
-              <Alert
-                variant={testResult.status >= 200 && testResult.status < 300 ? "success" : "warning"}
-                isInline
-                title={`Status: ${testResult.status}`}
-              />
-            </FormGroup>
+            <>
+              <FormGroup label={i18n.restService.testResult} fieldId="rest-test-result">
+                <Alert
+                  variant={testResult.status >= 200 && testResult.status < 300 ? "success" : "warning"}
+                  isInline
+                  title={`Status: ${testResult.status}`}
+                />
+              </FormGroup>
+              {testResult.data && (
+                <FormGroup label={i18n.restService.response} fieldId="rest-test-response">
+                  <TextArea
+                    id="rest-test-response"
+                    value={
+                      typeof testResult.data === "string" ? testResult.data : JSON.stringify(testResult.data, null, 2)
+                    }
+                    readOnly
+                    rows={10}
+                    resizeOrientation="vertical"
+                    aria-label="Response data"
+                  />
+                </FormGroup>
+              )}
+            </>
           )}
         </FormSection>
       </PropertiesPanelHeaderFormSection>

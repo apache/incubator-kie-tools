@@ -107,6 +107,7 @@ interface BpmnEditorEnvelopeDictionary
       testing: string;
       testFailed: string;
       testResult: string;
+      response: string;
       urlRequired: string;
       headerName: string;
       headerValue: string;
