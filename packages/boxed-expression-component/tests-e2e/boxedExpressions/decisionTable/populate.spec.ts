@@ -102,7 +102,7 @@ test.describe("Populate Decision table", () => {
     await page.getByText("U", { exact: true }).click();
     await page.getByRole("menuitem", { name: "PRIORITY" }).click();
     await page.keyboard.press("Escape");
-
+    await page.waitForTimeout(300);
     await expect(bee.getContainer()).toHaveScreenshot("decision-table-routing.png");
   });
 });
