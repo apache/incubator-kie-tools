@@ -124,5 +124,8 @@ export const en: BpmnEditorEnvelopeI18n = {
     protocolConflictError: "Protocol conflict: URL already defines protocol",
     hostConflictError: "Host conflict: URL already defines host",
     portConflictError: "Port conflict: URL already defines port",
+    testTokenRequiredError: "Test token is required for authentication strategy",
+    apiNotAvailableError: "REST task test API is not available. Please ensure the editor is properly initialized.",
+    genericTestError: "An error occurred while testing the REST call",
   },
 };

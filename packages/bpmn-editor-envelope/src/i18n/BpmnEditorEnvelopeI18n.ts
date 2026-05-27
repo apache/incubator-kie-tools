@@ -122,6 +122,9 @@ interface BpmnEditorEnvelopeDictionary
       protocolConflictError: string;
       hostConflictError: string;
       portConflictError: string;
+      testTokenRequiredError: string;
+      apiNotAvailableError: string;
+      genericTestError: string;
     };
   }> {}
 

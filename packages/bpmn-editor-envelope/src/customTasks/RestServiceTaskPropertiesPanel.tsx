@@ -33,6 +33,7 @@ import {
 import { OnEntryAndExitScriptsFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/onEntryAndExitScripts/OnEntryAndExitScriptsFormSection";
 import { FormGroup, FormSection, ActionGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -105,7 +106,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     [channelType]
   );
 
-  const [testResult, setTestResult] = React.useState<{ status: number; data: any; headers?: any } | null>(null);
+  const [testResult, setTestResult] = React.useState<{ status: number } | null>(null);
   const [testError, setTestError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [testToken, setTestToken] = React.useState<string>("");
@@ -204,8 +205,13 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   }, [getValue]);
 
   React.useEffect(() => {
-    const storedValue = getValue(RestProperties.ContentData);
-    setContentDataValue(storedValue);
+    const currentMethod = getValue(RestProperties.Method);
+    if (["POST", "PUT", "PATCH"].includes(currentMethod)) {
+      const storedValue = getValue(RestProperties.ContentData);
+      setContentDataValue(storedValue);
+    } else {
+      setContentDataValue("");
+    }
   }, [getValue]);
 
   const handleTextInputChange = React.useCallback(
@@ -327,7 +333,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       }
 
       if ((authStrategy === "propagated" || authStrategy === "configured") && !testToken.trim()) {
-        throw new Error(`Test token is required for ${authStrategy} authentication strategy`);
+        throw new Error(`${i18n.restService.testTokenRequiredError}: ${authStrategy}`);
       }
 
       if (authStrategy === "configured" && !localRestServiceCallTaskId.trim()) {
@@ -363,7 +369,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           const value = lookup[varName];
           const replacementValue = typeof value === "string" ? value : JSON.stringify(value);
 
-          return replacementValue.replace(/\$/g, "$$$$");
+          return replacementValue.replace(/\$/g, "$$");
         });
       }
 
@@ -399,7 +405,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       }
 
       if (!channelApi.requests.bpmnEditor_restTaskTest) {
-        throw new Error("REST task test API is not available");
+        throw new Error(i18n.restService.apiNotAvailableError);
       }
 
       const result = await channelApi.requests.bpmnEditor_restTaskTest({
@@ -410,10 +416,10 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         useCorsProxy: isVSCode ? false : useCorsProxy,
       });
 
-      setTestResult(result);
+      setTestResult({ status: result.status });
     } catch (error) {
       console.error("REST Test Error:", error);
-      setTestError((error as Error).message || "An error occurred while testing the REST call");
+      setTestError((error as Error).message || i18n.restService.genericTestError);
     } finally {
       setIsLoading(false);
     }
@@ -433,8 +439,11 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     useCorsProxy,
     i18n.restService.hostRequiredError,
     i18n.restService.urlRequired,
+    i18n.restService.testTokenRequiredError,
     i18n.restService.restServiceCallTaskIdRequiredError,
     i18n.restService.testVariableMissingError,
+    i18n.restService.apiNotAvailableError,
+    i18n.restService.genericTestError,
   ]);
 
   const updateParameterMapping = React.useCallback(
@@ -571,42 +580,56 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         <NameDocumentationAndId element={task} />
         <FormSection style={{ "--pf-v5-c-form__section--Gap": "0.5rem" } as React.CSSProperties}>
           <FormGroup label={i18n.restService.url} isRequired fieldId="rest-url">
-            <TextInput
-              id="rest-url"
-              value={localUrl}
-              onChange={(_, value) => handleTextInputChange(RestProperties.Url, value, setLocalUrl)}
-              placeholder={i18n.restService.urlPlaceholder}
-              aria-describedby="rest-url-helper"
-            />
+            <InputGroup>
+              <InputGroupItem style={{ width: "120px", flexShrink: 0 }}>
+                <TypeaheadSelect
+                  id="rest-method"
+                  selected={getValue(RestProperties.Method) || HttpMethod.GET}
+                  isMultiple={false}
+                  setSelected={(value) => {
+                    if (value) {
+                      setTestError(null);
+                      setTestResult(null);
+                      if (!["POST", "PUT", "PATCH"].includes(value)) {
+                        let updatedInputDataMapping = upsert(inputDataMapping, RestProperties.Method, value);
+                        updatedInputDataMapping = upsert(updatedInputDataMapping, RestProperties.ContentData, "");
+
+                        bpmnEditorStoreApi.setState((s) => {
+                          setDataMappingForElement({
+                            definitions: s.bpmn.model.definitions,
+                            inputDataMapping: updatedInputDataMapping,
+                            outputDataMapping,
+                            elementId: task["@_id"],
+                            element: task.__$$element,
+                          });
+                        });
+                      } else {
+                        updateRestProperties(RestProperties.Method, value);
+                      }
+                    }
+                  }}
+                  options={HTTP_METHODS_OPTIONS.map((option) => ({
+                    value: option.value,
+                    children: i18n.restService[option.labelKey],
+                  }))}
+                  showCreateOptionWhen="never"
+                />
+              </InputGroupItem>
+              <InputGroupItem isFill>
+                <TextInput
+                  id="rest-url"
+                  value={localUrl}
+                  onChange={(_, value) => handleTextInputChange(RestProperties.Url, value, setLocalUrl)}
+                  placeholder={i18n.restService.urlPlaceholder}
+                  aria-describedby="rest-url-helper"
+                />
+              </InputGroupItem>
+            </InputGroup>
             <FormHelperText>
               <HelperText>
                 <HelperTextItem variant="indeterminate">{i18n.restService.urlHelp}</HelperTextItem>
               </HelperText>
             </FormHelperText>
-          </FormGroup>
-
-          <FormGroup label={i18n.restService.method} fieldId="rest-method">
-            <TypeaheadSelect
-              id="rest-method"
-              selected={getValue(RestProperties.Method) || HttpMethod.GET}
-              isMultiple={false}
-              setSelected={(value) => {
-                if (value) {
-                  updateRestProperties(RestProperties.Method, value);
-                  setTestError(null);
-                  setTestResult(null);
-                  if (!["POST", "PUT", "PATCH"].includes(value)) {
-                    setContentDataValue("");
-                    setContentDataVariables([]);
-                  }
-                }
-              }}
-              options={HTTP_METHODS_OPTIONS.map((option) => ({
-                value: option.value,
-                children: i18n.restService[option.labelKey],
-              }))}
-              showCreateOptionWhen="never"
-            />
           </FormGroup>
 
           <FormGroup label={i18n.restService.protocol} fieldId="rest-protocol">
@@ -809,7 +832,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                     <GridItem span={1} style={{ textAlign: "right" }}>
                       {hoveredHeaderIndex === index && (
                         <Button
-                          tabIndex={9999}
                           variant="plain"
                           style={{ paddingLeft: 0 }}
                           onClick={() => removeHeader(header.id)}
@@ -901,7 +923,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                     <GridItem span={1} style={{ textAlign: "right" }}>
                       {hoveredQueryIndex === index && (
                         <Button
-                          tabIndex={9999}
                           variant="plain"
                           style={{ paddingLeft: 0 }}
                           onClick={() => removeQueryParam(param.id)}
