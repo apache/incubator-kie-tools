@@ -56,14 +56,10 @@ export function addConnectedNode({
     process.flowElement ?? [],
     __readonly_sourceNode.bpmnElement["@_id"]
   );
-  const parentSubProcess = findParentSubProcess(process.flowElement ?? [], __readonly_sourceNode.bpmnElement["@_id"]);
 
-  let targetFlowElements = parentFlowElements ?? process.flowElement;
-  let targetArtifacts = parentSubProcess?.artifact ?? process.artifact;
+  const targetFlowElements = parentFlowElements ?? process.flowElement ?? [];
 
   if (newNodeNature === NodeNature.PROCESS_FLOW_ELEMENT || newNodeNature === NodeNature.CONTAINER) {
-    targetFlowElements ??= [];
-
     targetFlowElements.push(
       switchExpression(
         __readonly_newNode.type as Exclude<
@@ -117,7 +113,8 @@ export function addConnectedNode({
       )
     );
   } else if (newNodeNature === NodeNature.ARTIFACT) {
-    targetArtifacts ??= [];
+    const parentSubProcess = findParentSubProcess(process.flowElement ?? [], __readonly_sourceNode.bpmnElement["@_id"]);
+    const targetArtifacts = parentSubProcess?.artifact ?? process.artifact ?? [];
     targetArtifacts.push(
       ...switchExpression(__readonly_newNode.type as Extract<BpmnNodeType, "node_group" | "node_textAnnotation">, {
         [NODE_TYPES.group]: [
