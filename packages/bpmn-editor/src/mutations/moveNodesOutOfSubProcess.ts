@@ -26,7 +26,7 @@ import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramEl
 
 export type SubProcessElement = Normalized<
   Extract<
-    Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
+    Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>,
     { __$$element: "subProcess" | "adHocSubProcess" | "transaction" }
   >
 >;
@@ -40,9 +40,12 @@ export function isSubProcessElement(element: { __$$element?: string }): element 
 }
 
 export function findSubProcessRecursively(
-  flowElements: NonNullable<BPMN20__tProcess["flowElement"]>,
+  flowElements: Normalized<BPMN20__tProcess>["flowElement"],
   subProcessId: string
 ): SubProcessElement | undefined {
+  if (!flowElements) {
+    return undefined;
+  }
   for (const element of flowElements) {
     if (element["@_id"] === subProcessId && isSubProcessElement(element)) {
       return element;
@@ -58,9 +61,12 @@ export function findSubProcessRecursively(
 }
 
 export function findParentFlowElements(
-  flowElements: NonNullable<BPMN20__tProcess["flowElement"]>,
+  flowElements: Normalized<BPMN20__tProcess>["flowElement"],
   elementId: string
-): NonNullable<BPMN20__tProcess["flowElement"]> | undefined {
+): Normalized<BPMN20__tProcess>["flowElement"] | undefined {
+  if (!flowElements) {
+    return undefined;
+  }
   for (const element of flowElements) {
     if (element["@_id"] === elementId) {
       return flowElements;
@@ -76,9 +82,12 @@ export function findParentFlowElements(
 }
 
 export function findParentSubProcess(
-  flowElements: NonNullable<BPMN20__tProcess["flowElement"]>,
+  flowElements: Normalized<BPMN20__tProcess>["flowElement"],
   elementId: string
 ): SubProcessElement | undefined {
+  if (!flowElements) {
+    return undefined;
+  }
   for (const element of flowElements) {
     if (isSubProcessElement(element) && element.flowElement) {
       // Check if this subprocess directly contains the target
@@ -98,7 +107,7 @@ export function findParentSubProcess(
 }
 
 export function shouldMoveSequenceFlow(
-  flowElement: Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
+  flowElement: Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>,
   nodeIds: Set<string>,
   existingNodesIds: Set<string>
 ): boolean {
@@ -130,7 +139,7 @@ export function moveNodesOutOfSubProcess({
     throw new Error(`Cannot find subprocess with ID: ${__readonly_subProcessId}`);
   }
 
-  let parentFlowElements: NonNullable<BPMN20__tProcess["flowElement"]>;
+  let parentFlowElements: Normalized<BPMN20__tProcess>["flowElement"];
   let targetSubProcess: SubProcessElement | undefined;
 
   if (__readonly_targetSubProcessId) {
@@ -148,15 +157,18 @@ export function moveNodesOutOfSubProcess({
       findParentFlowElements(process.flowElement ?? [], __readonly_subProcessId ?? "") ?? process.flowElement ?? [];
   }
 
-  const flowElementsToMove: Normalized<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>>[] = [];
+  const flowElementsToMove: Normalized<Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>>[] = [];
   const artifactsToMove: Normalized<
-    ElementExclusion<Unpacked<NonNullable<BPMN20__tProcess["artifact"]>>, "association">
+    ElementExclusion<Unpacked<Normalized<BPMN20__tProcess>["artifact"]>, "association">
   >[] = [];
 
   const nodeIdsToMoveOut = new Set(__readonly_nodeIds);
 
   const subProcessNodes = new Set<string>();
-  const collectSubProcessNodeIds = (flowElements: NonNullable<BPMN20__tProcess["flowElement"]>): void => {
+  const collectSubProcessNodeIds = (flowElements: Normalized<BPMN20__tProcess>["flowElement"]): void => {
+    if (!flowElements) {
+      return;
+    }
     for (const flowElement of flowElements) {
       if (flowElement.__$$element !== "sequenceFlow" && flowElement["@_id"]) {
         subProcessNodes.add(flowElement["@_id"]);

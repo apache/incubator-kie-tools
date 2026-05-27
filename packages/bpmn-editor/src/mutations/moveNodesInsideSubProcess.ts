@@ -41,22 +41,25 @@ export function moveNodesInsideSubProcess({
     throw new Error(`Cannot find subprocess with ID: ${__readonly_subProcessId}`);
   }
 
-  const flowElementsToMove: Normalized<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>>[] = [];
+  const flowElementsToMove: Normalized<Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>>[] = [];
   const artifactsToMove: Normalized<
-    ElementExclusion<Unpacked<NonNullable<BPMN20__tProcess["artifact"]>>, "association">
+    ElementExclusion<Unpacked<Normalized<BPMN20__tProcess>["artifact"]>, "association">
   >[] = [];
 
   const nodeIdsToMoveInside = new Set(__readonly_nodeIds);
   const subProcessNodes = new Set<string>();
-  subProcess.flowElement?.forEach((flowElement: Normalized<Unpacked<NonNullable<typeof subProcess.flowElement>>>) => {
+  subProcess.flowElement?.forEach((flowElement: Normalized<Unpacked<typeof subProcess.flowElement>>) => {
     if (flowElement.__$$element !== "sequenceFlow") {
       subProcessNodes.add(flowElement["@_id"]);
     }
   });
 
-  const toMove: Normalized<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>>[] = [];
+  const toMove: Normalized<Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>>[] = [];
 
-  const collectElements = (flowElements: Normalized<NonNullable<BPMN20__tProcess["flowElement"]>>): void => {
+  const collectElements = (flowElements: Normalized<BPMN20__tProcess>["flowElement"]): void => {
+    if (!flowElements) {
+      return;
+    }
     for (let i = flowElements.length - 1; i >= 0; i--) {
       const flowElement = flowElements[i];
       if (
