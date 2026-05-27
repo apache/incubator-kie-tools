@@ -152,26 +152,10 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       }
 
       const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
-
       console.debug(`Double-click reset to width: ${newWidth}`);
 
-      // React 18's automatic batching coalesces the width-propagation chain
-      // (parent column → outer container → nested expressions) into too few
-      // renders for the cascading hooks to converge. We force multiple render
-      // cycles via requestAnimationFrame so the chain gets the same convergence
-      // opportunities as a real drag (where each mousemove is a separate event).
       setResizingWidth({ value: newWidth, isPivoting: true });
-      let tick = 0;
-      const propagate = () => {
-        if (tick++ < 16) {
-          setResizingWidth({ value: newWidth, isPivoting: true });
-          requestAnimationFrame(propagate);
-        } else {
-          setStartResizingWidth({ width: 0 });
-          setResizingStop__data({ width: newWidth });
-        }
-      };
-      requestAnimationFrame(propagate);
+      setResizingStop__data({ width: newWidth });
     },
     [getWidthToFitData, minWidth, setResizingWidth]
   );

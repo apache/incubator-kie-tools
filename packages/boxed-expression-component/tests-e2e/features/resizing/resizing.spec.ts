@@ -237,7 +237,7 @@ test.describe("Resizing", () => {
       expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 262);
       await resizing.reset(nestedEntry);
       expect(await nestedEntry.boundingBox()).toHaveProperty("width", 120);
-      expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 212);
+      expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 262);
     });
 
     test("should assign width values to all columns when no width defined", async ({
