@@ -182,6 +182,11 @@ export function addConnectedNode({
       href: newBpmnElementId,
       shapeId: newShapeId,
     },
+    __readonly_parentFlowElements: parentFlowElements,
+    __readonly_parentArtifacts:
+      newNodeNature === NodeNature.ARTIFACT
+        ? findParentSubProcess(process.flowElement ?? [], __readonly_sourceNode.bpmnElement["@_id"])?.artifact
+        : undefined,
   });
 
   return { id: newBpmnElementId, href: newBpmnElementId };
