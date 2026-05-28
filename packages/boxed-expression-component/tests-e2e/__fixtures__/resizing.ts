@@ -38,8 +38,23 @@ export class Resizing {
     });
   }
 
-  public async reset(target: Locator) {
+  public async resizeCellManually(page: Page, target: Locator, relativePosition: { to: Position }) {
     await target.hover();
+    await target.getByTestId("kie-tools--bee--resizer-handle").hover({ position: { x: 1, y: 1 }, force: true });
+    await page.mouse.down({ button: "left" });
+    await page.mouse.move(relativePosition.to.x, relativePosition.to.y);
+    await page.mouse.up({ button: "left" });
+  }
+
+  public async reset(target: Locator) {
+    await target.hover({ position: { x: 1, y: 1 } });
     await target.getByTestId("kie-tools--bee--resizer-handle").dblclick();
+  }
+
+  public async resetManually(page: Page, target: Locator) {
+    await target.hover({ position: { x: 1, y: 1 } });
+    await target.getByTestId("kie-tools--bee--resizer-handle").hover({ position: { x: 1, y: 1 }, force: true });
+    await page.mouse.down({ button: "left", clickCount: 2 });
+    await page.mouse.up();
   }
 }

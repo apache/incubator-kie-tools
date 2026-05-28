@@ -446,7 +446,7 @@ test.describe("Resizing", () => {
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 290);
 
-      await resizing.reset(annotationsHeader);
+      await resizing.resetManually(page, annotationsHeader);
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 100);
@@ -1253,14 +1253,12 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Conditional expression", async () => {
-    test("should resize a Conditional", async ({ bee, resizing, stories }) => {
+    test("should resize a Conditional", async ({ page, bee, resizing, stories }) => {
       await stories.openBoxedConditional();
 
-      await resizing.resizeCell(
-        bee.expression.asConditional().expressionHeaderCell.content,
-        { x: 0, y: 0 },
-        { x: 250, y: 0 }
-      );
+      await resizing.resizeCellManually(page, bee.expression.asConditional().expressionHeaderCell.content, {
+        to: { x: 566, y: 0 },
+      });
 
       await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-root.png");
     });
