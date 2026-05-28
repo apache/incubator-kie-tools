@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
+import { Monaco } from "./monaco";
 import { Page } from "@playwright/test";
 
 export enum DataType {
@@ -145,6 +145,7 @@ export class DataTypes {
 
   public async addExpressionConstraint(args: { value: string }) {
     await this.monaco.fill({ monacoParentLocator: this.get(), content: args.value });
+    await this.page;
   }
 
   // The current method only supports "string", "number"

@@ -39,7 +39,7 @@ import { DrgNodes } from "./drgNodes";
 import { DataTypes } from "./dataTypes";
 import { BeePropertiesPanel } from "./propertiesPanel/beePropertiesPanel";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/boxedExpression";
-import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
+import { Monaco } from "./monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 import { Stories } from "./stories";
 import { IncludedModels } from "./includedModels";

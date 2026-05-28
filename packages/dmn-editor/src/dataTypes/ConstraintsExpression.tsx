@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { FeelInput } from "@kie-tools/feel-input-component/dist";
+import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component/dist";
 import "./ConstraintsExpression.css";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
@@ -28,6 +28,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { TypeHelper } from "./Constraints";
 import { useDmnEditorI18n } from "../i18n";
 import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
+import * as Monaco from "@kie-tools-core/monaco-editor";
 
 export function ConstraintsExpression({
   id,
@@ -50,6 +51,7 @@ export function ConstraintsExpression({
   const valueCopy = useRef(value);
   const FEEL_HANDBOOK_URL = "https://kiegroup.github.io/dmn-feel-handbook/#feel-values";
   const { locale } = useDmnEditorI18n();
+  const feelInputRef = useRef<FeelInputRef>(null);
 
   const onFeelBlur = useCallback((valueOnBlur: string) => {
     setEditing(false);
@@ -62,6 +64,26 @@ export function ConstraintsExpression({
     },
     [onSave]
   );
+
+  const onFeelKeyDown = useCallback((e: Monaco.IKeyboardEvent, newValue: string) => {
+    const eventKey = e?.code ?? "";
+
+    if (eventKey === "Tab") {
+      if (feelInputRef.current?.isSuggestionWidgetOpen()) {
+        // Do nothing.
+      } else {
+        e.preventDefault();
+      }
+    } else if (eventKey === "Enter") {
+      if (e.ctrlKey || e.metaKey || e.altKey) {
+        feelInputRef.current?.insertNewLineToMonaco();
+      } else if (feelInputRef.current?.isSuggestionWidgetOpen()) {
+        // Do nothing;
+      } else {
+        e.preventDefault();
+      }
+    }
+  }, []);
 
   const onPreviewChanged = useCallback((newPreview: string) => setPreview(newPreview), []);
 
@@ -126,7 +148,9 @@ export function ConstraintsExpression({
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}
         <FeelInput
+          ref={feelInputRef}
           value={isEditing ? valueCopy.current : value}
+          onKeyDown={onFeelKeyDown}
           onChange={onFeelChange}
           onBlur={onFeelBlur}
           onPreviewChanged={onPreviewChanged}
