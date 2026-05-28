@@ -18,11 +18,24 @@
  */
 
 const { env } = require("./env");
-const { installMvnw } = require("@kie-tools/maven-base");
+const cp = require("child_process");
 
 const version = env.vscodeJavaCodeCompletionExtensionPlugin.version;
 
-installMvnw();
+// Custom installMvnw that disables the 'plugin' profile to avoid Tycho version validation issues
+// The 'plugin' profile triggers source bundle generation which fails with single-segment versions like 111-SNAPSHOT
+console.info(`[maven-base] Installing mvnw...`);
+console.time(`[maven-base] Installing mvnw...`);
+
+const cmd = `mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper -P-include-1st-party-dependencies,-plugin`;
+
+if (process.platform === "win32") {
+  cp.execSync(cmd.replaceAll(" -", " `-"), { stdio: "inherit", shell: "powershell.exe" });
+} else {
+  cp.execSync(cmd, { stdio: "inherit" });
+}
+
+console.timeEnd(`[maven-base] Installing mvnw...`);
 
 // Manifest file
 

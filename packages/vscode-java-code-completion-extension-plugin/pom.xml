@@ -47,6 +47,10 @@
     <version.tycho>4.0.12</version.tycho>
     <version.tycho.extras>${version.tycho}</version.tycho.extras>
 
+    <!-- OSGi-compliant version derived from Maven version -->
+    <!-- Converts 111-SNAPSHOT to 111.0.0.qualifier for OSGi bundles -->
+    <osgi.bundle.version>111.0.0.qualifier</osgi.bundle.version>
+
     <!-- Tycho -->
     <tycho.scmUrl>scm:git:https://github.com/apache/incubator-kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
@@ -107,12 +111,23 @@
             <sourceReferences>
               <generate>${tycho.generateSourceReferences}</generate>
             </sourceReferences>
+            <!-- Disable version derivation - use MANIFEST.MF version as-is -->
+            <deriveHeaderFromProject>false</deriveHeaderFromProject>
+            <strictVersions>false</strictVersions>
+            <archive>
+              <addMavenDescriptor>false</addMavenDescriptor>
+            </archive>
           </configuration>
           <dependencies>
             <dependency>
               <groupId>org.eclipse.tycho.extras</groupId>
               <artifactId>tycho-sourceref-jgit</artifactId>
               <version>${version.tycho.extras}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.eclipse.tycho</groupId>
+              <artifactId>tycho-buildtimestamp-jgit</artifactId>
+              <version>${version.tycho}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -162,19 +177,6 @@
       </properties>
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>tycho-source-plugin</artifactId>
-            <version>${version.tycho}</version>
-            <executions>
-              <execution>
-                <id>attach-source</id>
-                <goals>
-                  <goal>plugin-source</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>

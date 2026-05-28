@@ -71,7 +71,6 @@ def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
         "kogito-base-builder",              // jenkinsfile.kogito-base-builder-image
         "kogito-data-index-ephemeral",      // jenkinsfile.kogito-data-index-ephemeral-image
         "kogito-data-index-postgresql",     // jenkinsfile.kogito-data-index-postgresql-image
-        "kogito-jit-runner",                // jenkinsfile.kogito-jit-runner-image
         "kogito-jobs-service-allinone",     // jenkinsfile.kogito-jobs-service-allinone-image
         "kogito-jobs-service-ephemeral",    // jenkinsfile.kogito-jobs-service-ephemeral-image
         "kogito-jobs-service-postgresql"    // jenkinsfile.kogito-jobs-service-postgresql-image

@@ -154,17 +154,6 @@ pipeline {
                     }
                 }
 
-                stage('KIE Kogito Jit Runner Image') {
-                    when {
-                        expression { env.KOGITO_JIT_RUNNER_IMAGE == 'true' }
-                    }
-                    steps {
-                        script {
-                            kogitoJitRunnerImageBuildJob()
-                        }
-                    }
-                }
-
                 stage('KIE Sandbox Accelerator Quarkus') {
                     when {
                         expression { env.KIE_SANDBOX_ACCELERATOR_QUARKUS == 'true' }
@@ -679,31 +668,6 @@ def kogitoJobsServicePostgresqlImageBuildJob() {
     ).result
 }
 
-def kogitoJitRunnerImageBuildJob() {
-    env.KOGITO_JIT_RUNNER_IMAGE_JOB_RESULT = build(
-        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-jit-runner-image",
-        parameters: [
-            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
-            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
-        ]
-    ).result
-}
-
-def devDeploymentQuarkusBlankAppImageBuildJob() {
-    env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
-        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/dev-deployment-quarkus-blank-app-image",
-        parameters: [
-            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
-            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
-        ]
-    ).result
-}
 
 def devDeploymentUploadServiceBuildJob() {
     env.DEV_DEPLOYMENT_UPLOAD_SERVICE_JOB_RESULT = build(
@@ -1032,20 +996,6 @@ def kieSandboxImageBuildJob() {
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL', value: "${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}"),
             string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
-            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
-        ]
-    ).result
-    env.KIE_SANDBOX_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox', "${pipelineVars.openshiftCredentialsId}")
-}
-
-def kieSandboxAcceleratorQuarkusBuildJob() {
-    env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
-        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kie-sandbox-accelerator-quarkus",
-        parameters: [
-            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
             string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]

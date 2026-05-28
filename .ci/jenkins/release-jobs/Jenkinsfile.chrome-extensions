@@ -51,7 +51,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
-        PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
+        PNPM_FILTER_STRING = '-F chrome-extension-serverless-workflow-editor...'
         
         MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
@@ -159,15 +159,6 @@ pipeline {
                 expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
-                        "chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
-                }
             }
         }
 
@@ -190,8 +181,6 @@ pipeline {
                         echo "Copy Chrome Extension resources"
                         rm -rf ${CHROME_EXTENSION_DIR}
                         mkdir -p ${CHROME_EXTENSION_DIR}
-                        cp -r ${WORKSPACE}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} ${CHROME_EXTENSION_DIR}
-                        ln -s ../../${EDITORS_DIR}/bpmn ${CHROME_EXTENSION_DIR}/bpmn
                         ln -s ../../${EDITORS_DIR}/dmn ${CHROME_EXTENSION_DIR}/dmn
                         ln -s ../../${EDITORS_DIR}/scesim ${CHROME_EXTENSION_DIR}/scesim
 
@@ -372,10 +361,8 @@ pipeline {
                     env.SWF_CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-chrome-extension-editors.zip"
 
                     sh """#!/bin/bash -el
-                    mkdir -p ${env.RELEASE_ARTIFACTS_DIR}/{business-automation-chrome-extension-editors,sonataflow-chrome-extension-editors}
-                    cp -r kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} "${env.RELEASE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors"
+                    mkdir -p ${env.RELEASE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors
                     cp -r kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} "${env.RELEASE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors"
-                    cp "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip" "${env.RELEASE_ARTIFACTS_DIR}/${CHROME_EXTENSION_RELEASE_ZIP_FILE}"
                     cp "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip" "${env.RELEASE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE}"
                     cd "${env.RELEASE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE}" .
                     cd "${env.RELEASE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.SWF_CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE}" .

@@ -55,9 +55,25 @@
     </dependency>
   </dependencies>
 
+  <properties>
+    <!-- Override parent property to disable source bundle generation for this module -->
+    <maven.source.skip>true</maven.source.skip>
+  </properties>
+
   <build>
     <finalName>${project.artifactId}</finalName>
     <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <configuration>
+          <!-- Disable automatic version replacement to use MANIFEST.MF version -->
+          <strictVersions>false</strictVersions>
+          <deriveHeaderFromProject>false</deriveHeaderFromProject>
+          <!-- Explicitly set the qualifier to create valid OSGi version -->
+          <format>'v'yyyyMMdd-HHmm</format>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>

@@ -77,7 +77,6 @@ In detail, the involved module's categories are:
 - Jenkins and GitHub actions configuration files;
 - GWT based modules;
 - Images generation modules;
-- Quarkus-based application (E.g., extended-services-java)
 - Java application (E.g., vscode-java-code-completion-extension-plugin-core)
 - JBang scripts (E.g., dmn-marshaller tests)
 

@@ -47,7 +47,7 @@ kie-tools--accelerator-git-http-server [port] [content-root-path] [accelerator-n
 Example:
 
 ```bash
-kie-tools--accelerator-git-http-server 8080 ./dist-dev kie-sandbox-accelerator-quarkus-git-http-server
+kie-tools--accelerator-git-http-server 8080 ./dist-dev my-git-http-server
 ```
 
 ## Configuration Options
