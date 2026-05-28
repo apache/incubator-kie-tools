@@ -227,16 +227,18 @@ import { DEFAULT_DATA_TYPES } from "./addOrGetItemDefinitions";
 
 function updateMessageItemRefForMessageEvent(
   definitions: Normalized<BPMN20__tDefinitions>,
-  event: any,
+  event: WithInputDataMapping | WithOutputDataMapping | WithDataMapping,
   itemSubjectRef: string
 ) {
-  const messageEventDef = event.eventDefinition?.find((ed: any) => ed.__$$element === "messageEventDefinition");
+  if (!("eventDefinition" in event)) return;
+  const messageEventDef = event.eventDefinition?.find((ed) => ed.__$$element === "messageEventDefinition");
   if (!messageEventDef?.["@_messageRef"]) return;
 
-  const messages = definitions.rootElement?.filter((e) => e.__$$element === "message") ?? [];
-  const message = messages.find((m) => m["@_id"] === messageEventDef["@_messageRef"]);
+  const message = definitions.rootElement?.find(
+    (e) => e.__$$element === "message" && e["@_id"] === messageEventDef["@_messageRef"]
+  );
 
-  if (message && message["@_itemRef"] !== itemSubjectRef) {
+  if (message && message.__$$element === "message" && message["@_itemRef"] !== itemSubjectRef) {
     message["@_itemRef"] = itemSubjectRef;
   }
 }
