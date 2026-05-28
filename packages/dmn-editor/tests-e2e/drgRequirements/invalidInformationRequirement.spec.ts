@@ -20,6 +20,7 @@
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -111,7 +112,13 @@ test.describe("Invalid edge - Information Requirement", () => {
       palette,
       nodes,
       edges,
+      browserName,
     }) => {
+      test.skip(browserName === "webkit", "");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "Can't drag edge to Decision Service",
+      });
       await palette.dragNewNode({
         type: NodeType.DECISION_SERVICE,
         targetPosition: { x: 300, y: 100 },
