@@ -82,6 +82,22 @@ openshiftRoute:
     termination: edge
     insecureEdgeTerminationPolicy: None
 
+# -- CORS Proxy in-container TLS configuration.
+# When enabled, mounts a Kubernetes TLS Secret into the container and the Node.js server serves HTTPS on service.port.
+# Intended for use with OpenShift passthrough Routes (set openshiftRoute.tls.termination=passthrough and openshiftRoute.tls.insecureEdgeTerminationPolicy=Redirect).
+# The Secret must be of type kubernetes.io/tls and contain tls.crt and tls.key keys.
+# Note: CORS Proxy does not expose a separate HTTPS port - the single service.port (default 8080) serves HTTPS when TLS is enabled.
+tls:
+  enabled: false
+  # -- Name of the Kubernetes TLS Secret (type: kubernetes.io/tls) to mount. Required when tls.enabled is true.
+  secretName: ""
+  # -- Mount path for the TLS Secret inside the container.
+  mountPath: /etc/tls
+  # -- Path to the TLS certificate file inside the container (consumed by CORS_PROXY_TLS_CERTIFICATE_PATH).
+  certPath: /etc/tls/tls.crt
+  # -- Path to the TLS private key file inside the container (consumed by CORS_PROXY_TLS_KEY_PATH).
+  keyPath: /etc/tls/tls.key
+
 # @ignored
 resources: {}
 

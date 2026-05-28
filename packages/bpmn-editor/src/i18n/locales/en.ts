@@ -67,6 +67,7 @@ export const en: BpmnEditorI18n = {
     textAnnotation: "Text Annotation",
     customTasks: "Custom Tasks",
     propertiesManagement: "Properties Management",
+    moreItems: "More Items",
   },
   versionUpgraded: "Version upgraded!",
   bpmnLatestVersion: "2.0",

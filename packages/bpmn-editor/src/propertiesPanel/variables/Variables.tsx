@@ -129,6 +129,7 @@ export function Variables({
               <Grid
                 md={6}
                 className={"kie-bpmn-editor--properties-panel--variables-entry"}
+                data-testid="kie-tools--bpmn-editor--variable-entry"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(undefined)}
                 style={{ columnGap: "12px" }}

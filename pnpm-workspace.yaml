@@ -10,8 +10,10 @@ overrides:
   "d3-color": "3.1.0"
   "graphql": "14.3.1"
   "json-refs>js-yaml": "^3.14.2"
+  # CVE-2026-33750: Fix security vulnerability in brace-expansion
+  # Overriding transitive dependency until minimatch updates to patched brace-expansion version
   "minimatch@^3>brace-expansion": "1.1.13"
-  "minimatch@^5>brace-expansion": "^2.0.2"
+  "minimatch@^5>brace-expansion": "^2.0.3"
   "openapi-types": "7.2.3"
   "path-to-regexp@^0": "0.1.13"
   "react-dropzone": "^11.4.2"
@@ -22,3 +24,9 @@ overrides:
   "minimatch@^10": "10.2.1"
   "minimatch@^5": "5.1.9"
   "minimatch@^4": "5.1.9"
+  # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203: Fix security vulnerability in undici
+  # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version
+  "undici": "^6.24.0"
+  # CVE-2026-41907: Fix security vulnerability in uuid
+  # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
+  "uuid": "^11.1.1"

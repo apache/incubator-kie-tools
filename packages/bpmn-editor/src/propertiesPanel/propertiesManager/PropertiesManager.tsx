@@ -49,6 +49,7 @@ import {
 import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "../../mutations/addOrGetItemDefinitions";
 import { deleteItemDefinition } from "../../mutations/deleteItemDefinition";
 import { renameItemDefinition } from "../../mutations/renameItemDefinition";
+import { deduplicateItemDefinitions } from "../../normalization/normalize";
 import { addOrGetMessages, RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "../../mutations/addOrGetMessages";
 import { renameMessage } from "../../mutations/renameMessage";
 import { deleteMessage } from "../../mutations/deleteMessage";
@@ -174,6 +175,14 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                               id: entry["@_id"],
                               newItemDefinitionName: e.target.value,
                             });
+                          });
+                        }}
+                        onBlur={() => {
+                          if (!entry["@_structureRef"]) {
+                            return;
+                          }
+                          bpmnEditorStoreApi.setState((s) => {
+                            deduplicateItemDefinitions(s.bpmn.model.definitions);
                           });
                         }}
                       />
