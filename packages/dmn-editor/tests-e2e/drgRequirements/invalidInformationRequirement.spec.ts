@@ -114,11 +114,8 @@ test.describe("Invalid edge - Information Requirement", () => {
       edges,
       browserName,
     }) => {
-      test.skip(browserName === "webkit", "");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "Can't drag edge to Decision Service",
-      });
+      test.skip(browserName === "webkit", "React 18: Temporary skip");
+
       await palette.dragNewNode({
         type: NodeType.DECISION_SERVICE,
         targetPosition: { x: 300, y: 100 },
