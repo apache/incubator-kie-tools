@@ -31,11 +31,18 @@ index.domParser.getDomDocument = (xml: string | Buffer) => {
 
   const parsererrorElements = domdoc.querySelectorAll("parsererror");
   if (parsererrorElements.length > 0) {
+    const hasRealError = Array.from(parsererrorElements).some(
+      (element) => element.textContent && element.textContent.trim() !== ""
+    );
+
     console.warn("XML parsing error detected and filtered. Document may be incomplete.");
     parsererrorElements.forEach((element) => {
       element.parentNode?.removeChild(element);
     });
-    throw new Error("XML parsing error detected. The XML structure is invalid and cannot be parsed.");
+
+    if (hasRealError && xml && xml.toString().trim() !== "") {
+      throw new Error("XML parsing error detected. The XML structure is invalid and cannot be parsed.");
+    }
   }
 
   return domdoc;
