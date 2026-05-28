@@ -61,6 +61,7 @@ import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 import { dmnEditorDictionaries, DmnEditorI18nContext, dmnEditorI18nDefaults, useDmnEditorI18n } from "./i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import { flushSync } from "react-dom";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -277,23 +278,25 @@ export const DmnEditorInternal = ({
           bounds.height + (state.computed(state).isAlternativeInputDataShape() ? SVG_PADDING * 5 : SVG_PADDING * 2) + ""
         );
 
-        createRoot(svg).render(
-          // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
-          <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
-            <DmnDiagramSvg
-              nodes={nodes}
-              edges={edges}
-              snapGrid={state.diagram.snapGrid}
-              importsByNamespace={state.computed(state).importsByNamespace()}
-              thisDmn={state.dmn}
-              isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
-              allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
-              allTopLevelItemDefinitionUniqueNames={
-                state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
-              }
-            />
-          </g>
-        );
+        flushSync(() => {
+          createRoot(svg).render(
+            // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
+            <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
+              <DmnDiagramSvg
+                nodes={nodes}
+                edges={edges}
+                snapGrid={state.diagram.snapGrid}
+                importsByNamespace={state.computed(state).importsByNamespace()}
+                thisDmn={state.dmn}
+                isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
+                allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
+                allTopLevelItemDefinitionUniqueNames={
+                  state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+                }
+              />
+            </g>
+          );
+        });
 
         return new XMLSerializer().serializeToString(svg);
       },
