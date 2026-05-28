@@ -189,19 +189,6 @@ export function Correlations() {
             if (cpre.messagePath) {
               cpre.messagePath["@_evaluatesToTypeRef"] = newItemDefinitionRef;
             }
-
-            if (cpre["@_messageRef"]) {
-              const message = s.bpmn.model.definitions.rootElement?.find(
-                (e) => e.__$$element === "message" && e["@_id"] === cpre["@_messageRef"]
-              );
-
-              if (message && message.__$$element === "message") {
-                message["@_itemRef"] =
-                  newItemDefinitionRef && newItemDefinitionRef !== "__messageItemDefinition"
-                    ? newItemDefinitionRef
-                    : "__messageItemDefinition";
-              }
-            }
           });
 
           const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
@@ -240,11 +227,6 @@ export function Correlations() {
     (propertyId: string) => {
       bpmnEditorStoreApi.setState((s) => {
         s.bpmn.model.definitions.rootElement ??= [];
-        const property = s.bpmn.model.definitions.rootElement.find(
-          (e) => e.__$$element === "correlationProperty" && e["@_id"] === propertyId
-        );
-        const itemDefId = property && property.__$$element === "correlationProperty" ? property["@_type"] : undefined;
-
         s.bpmn.model.definitions.rootElement = s.bpmn.model.definitions.rootElement?.filter(
           (e) => e["@_id"] !== propertyId
         );
@@ -266,16 +248,6 @@ export function Correlations() {
             }
           });
         deleteOrphanedCorrelationSubscriptions({ definitions: s.bpmn.model.definitions });
-
-        if (itemDefId && itemDefId !== "__messageItemDefinition") {
-          s.bpmn.model.definitions.rootElement
-            ?.filter((e) => e.__$$element === "message" && e["@_itemRef"] === itemDefId)
-            .forEach((message) => {
-              if (message.__$$element === "message") {
-                message["@_itemRef"] = "__messageItemDefinition";
-              }
-            });
-        }
         deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
       });
     },
@@ -325,63 +297,8 @@ export function Correlations() {
         const property = s.bpmn.model.definitions.rootElement
           ?.filter((p) => p.__$$element === "correlationProperty")
           .find((p) => p["@_id"] === selectedPropertyId);
-
         if (property) {
-          const oldMessageRef = property.correlationPropertyRetrievalExpression[i]["@_messageRef"];
-          const propertyType = property["@_type"];
-
-          if (oldMessageRef && oldMessageRef !== newMessageRef) {
-            const oldMessage = s.bpmn.model.definitions.rootElement?.find(
-              (e) => e.__$$element === "message" && e["@_id"] === oldMessageRef
-            );
-
-            if (oldMessage && oldMessage.__$$element === "message") {
-              const messageStillUsed = s.bpmn.model.definitions.rootElement
-                ?.filter((p) => p.__$$element === "correlationProperty")
-                .some((p) =>
-                  p.correlationPropertyRetrievalExpression?.some((expr, exprIndex) => {
-                    if (p["@_id"] === selectedPropertyId && exprIndex === i) {
-                      return false;
-                    }
-                    return expr["@_messageRef"] === oldMessageRef;
-                  })
-                );
-
-              if (!messageStillUsed) {
-                oldMessage["@_itemRef"] = "__messageItemDefinition";
-              }
-            }
-          }
-
           property.correlationPropertyRetrievalExpression[i]["@_messageRef"] = newMessageRef || "";
-
-          if (newMessageRef) {
-            const newMessage = s.bpmn.model.definitions.rootElement?.find(
-              (e) => e.__$$element === "message" && e["@_id"] === newMessageRef
-            );
-
-            if (newMessage && newMessage.__$$element === "message") {
-              const otherProperties =
-                s.bpmn.model.definitions.rootElement?.filter(
-                  (p) => p.__$$element === "correlationProperty" && p["@_id"] !== selectedPropertyId
-                ) ?? [];
-
-              const messageUsedByOtherProperties = otherProperties.some((p) => {
-                if (p.__$$element === "correlationProperty") {
-                  return p.correlationPropertyRetrievalExpression?.some(
-                    (expr) => expr["@_messageRef"] === newMessageRef
-                  );
-                }
-                return false;
-              });
-
-              if (propertyType && propertyType !== "__messageItemDefinition") {
-                if (!messageUsedByOtherProperties || newMessage["@_itemRef"] === "__messageItemDefinition") {
-                  newMessage["@_itemRef"] = propertyType;
-                }
-              }
-            }
-          }
         }
       });
     },
@@ -396,69 +313,7 @@ export function Correlations() {
           .find((p) => p["@_id"] === selectedPropertyId);
 
         if (property) {
-          const messageRef = property.correlationPropertyRetrievalExpression[i]?.["@_messageRef"];
-          const propertyType = property["@_type"];
           property.correlationPropertyRetrievalExpression.splice(i, 1);
-
-          if (
-            property.correlationPropertyRetrievalExpression.length === 0 &&
-            propertyType &&
-            propertyType !== "__messageItemDefinition"
-          ) {
-            const otherProperties =
-              s.bpmn.model.definitions.rootElement?.filter(
-                (e) => e.__$$element === "correlationProperty" && e["@_id"] !== selectedPropertyId
-              ) ?? [];
-
-            s.bpmn.model.definitions.rootElement
-              ?.filter((e) => e.__$$element === "message" && e["@_itemRef"] === propertyType)
-              .forEach((message) => {
-                if (message.__$$element === "message") {
-                  const messageUsedElsewhere = otherProperties.some(
-                    (prop) =>
-                      prop.__$$element === "correlationProperty" &&
-                      prop.correlationPropertyRetrievalExpression?.some(
-                        (cpre) => cpre["@_messageRef"] === message["@_id"]
-                      )
-                  );
-
-                  if (!messageUsedElsewhere) {
-                    message["@_itemRef"] = "__messageItemDefinition";
-                  }
-                }
-              });
-          } else if (messageRef) {
-            const stillUsedInThisProperty = property.correlationPropertyRetrievalExpression.some(
-              (cpre) => cpre["@_messageRef"] === messageRef
-            );
-
-            if (!stillUsedInThisProperty) {
-              const otherProperties =
-                s.bpmn.model.definitions.rootElement?.filter(
-                  (e) => e.__$$element === "correlationProperty" && e["@_id"] !== selectedPropertyId
-                ) ?? [];
-
-              const stillUsedInOtherProperties = otherProperties.some(
-                (prop) =>
-                  prop.__$$element === "correlationProperty" &&
-                  prop.correlationPropertyRetrievalExpression?.some((cpre) => cpre["@_messageRef"] === messageRef)
-              );
-
-              if (!stillUsedInOtherProperties) {
-                const message = s.bpmn.model.definitions.rootElement?.find(
-                  (e) => e.__$$element === "message" && e["@_id"] === messageRef
-                );
-
-                if (
-                  message &&
-                  message.__$$element === "message" &&
-                  message["@_itemRef"] !== "__messageItemDefinition"
-                ) {
-                  message["@_itemRef"] = "__messageItemDefinition";
-                }
-              }
-            }
-          }
           deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
         }
       });

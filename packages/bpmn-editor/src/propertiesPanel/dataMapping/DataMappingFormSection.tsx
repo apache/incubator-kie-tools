@@ -367,6 +367,14 @@ export function DataMappingsList({
 
   const [hoveredIndex, setHoveredIndex] = useState<number | undefined>(undefined);
 
+  const hasMessageEventDefinition =
+    "eventDefinition" in flowElement
+      ? flowElement.eventDefinition?.some((ed) => ed.__$$element === "messageEventDefinition")
+      : false;
+
+  const currentMappings = section === "input" ? inputDataMapping : outputDataMapping;
+  const canAddMoreMappings = !hasMessageEventDefinition || currentMappings.length === 0;
+
   const { lastColumnLabel, entryTitle } = useMemo(() => {
     if (section === "input") {
       return {
@@ -422,8 +430,15 @@ export function DataMappingsList({
                     variant={ButtonVariant.plain}
                     style={{ paddingLeft: 0 }}
                     onClick={() => addDataMapping(section, { isExpression: false })}
+                    isDisabled={!canAddMoreMappings || isReadOnly}
                   >
-                    <PlusCircleIcon color="var(--pf-c-button--m-primary--BackgroundColor)" />
+                    <PlusCircleIcon
+                      color={
+                        canAddMoreMappings && !isReadOnly
+                          ? "var(--pf-c-button--m-primary--BackgroundColor)"
+                          : "var(--pf-global--disabled-color--100)"
+                      }
+                    />
                   </Button>
                 </GridItem>
               </Grid>
