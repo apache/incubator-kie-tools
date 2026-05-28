@@ -851,6 +851,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                         {hoveredHeaderIndex === index && (
                           <Button
                             variant="plain"
+                            style={{ paddingLeft: 0 }}
                             onClick={() => removeHeader(header.id)}
                             aria-label={`Remove header ${index + 1}`}
                           >
@@ -934,6 +935,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                         {hoveredQueryIndex === index && (
                           <Button
                             variant="plain"
+                            style={{ paddingLeft: 0 }}
                             onClick={() => removeQueryParam(param.id)}
                             aria-label={`Remove query parameter ${index + 1}`}
                           >
