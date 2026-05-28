@@ -31,6 +31,10 @@ export class Diagram {
     return this.page.getByTestId("kie-tools--dmn-editor--diagram-container");
   }
 
+  public async click(position: { x: number; y: number }) {
+    return this.get().click({ position: { x: position.x + VIEWPORT_OFFSET_X, y: position.y + VIEWPORT_OFFSET_Y } });
+  }
+
   public async dblclick(position: { x: number; y: number }) {
     return this.get().dblclick({ position: { x: position.x + VIEWPORT_OFFSET_X, y: position.y + VIEWPORT_OFFSET_Y } });
   }

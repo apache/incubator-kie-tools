@@ -72,6 +72,10 @@ export class Edges {
         .slice(2)
         .split(",");
 
+      await this.diagram.click({
+        x: (parseInt(fromX) + parseInt(toX)) / 2,
+        y: (parseInt(fromY) + parseInt(toY)) / 2,
+      });
       await this.diagram.dblclick({
         x: (parseInt(fromX) + parseInt(toX)) / 2,
         y: (parseInt(fromY) + parseInt(toY)) / 2,
