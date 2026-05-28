@@ -259,7 +259,19 @@ export function GlobalProperties() {
                         const { process } = addOrGetProcessAndDiagramElements({
                           definitions: state.bpmn.model.definitions,
                         });
+                        const oldProcessId = process["@_id"];
                         process["@_id"] = newId;
+                        const collaboration = state.bpmn.model.definitions.rootElement?.find(
+                          (e) => e.__$$element === "collaboration"
+                        );
+                        if (collaboration && collaboration.__$$element === "collaboration") {
+                          const participant = collaboration.participant?.find(
+                            (p) => p["@_processRef"] === oldProcessId
+                          );
+                          if (participant) {
+                            participant["@_processRef"] = newId;
+                          }
+                        }
                       });
                     }}
                     aria-describedby="process-id-helper"
