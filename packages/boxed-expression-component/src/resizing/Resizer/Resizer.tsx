@@ -210,6 +210,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
               className="pf-v5-c-drawer"
               onDoubleClick={onDoubleClick}
               data-testid={"kie-tools--bee--resizer-handle"}
+              style={{ height: "100%" }}
             >
               <div className={`pf-v5-c-drawer__splitter pf-m-vertical ${debuggingHandleClassNames}`}>
                 <div className={`pf-v5-c-drawer__splitter-handle`} />
