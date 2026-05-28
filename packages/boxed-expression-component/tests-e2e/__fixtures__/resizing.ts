@@ -30,7 +30,6 @@ export class Resizing {
   public async resizeCell(target: Locator, from: Position = { x: 0, y: 0 }, to: Position = { x: 0, y: 0 }) {
     await target.hover();
     const handle = target.getByTestId("kie-tools--bee--resizer-handle");
-    await handle.waitFor({ state: "visible" });
     await handle.dragTo(handle, {
       force: true,
       sourcePosition: from,
