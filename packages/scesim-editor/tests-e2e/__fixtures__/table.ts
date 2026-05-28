@@ -94,7 +94,7 @@ export class Table {
   }
 
   public getNumberedCell(args: { name: string }) {
-    return this.page.getByRole("cell", { name: args.name });
+    return this.page.getByRole("cell", { name: args.name }).nth(0);
   }
 
   public getColumnHeader(args: { name: string; columnNumber?: number }) {
