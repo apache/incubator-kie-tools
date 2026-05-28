@@ -77,7 +77,7 @@ export const en: BpmnEditorEnvelopeI18n = {
     contentData: "Content Data",
     contentDataHelp: "Literal, JSON or process variable #{var}",
     testVariables: "Test Variables",
-    testVariablesHelp: "Provide mock values for process variables used in the content data for the REST endpoint.",
+    testVariablesHelp: "Provide test values for process variables used in the content data for the test request.",
     testVariableMissingError: "Value for variable is missing. Please enter a value.",
     variableName: "Variable Name",
     variableValue: "Test Value",
