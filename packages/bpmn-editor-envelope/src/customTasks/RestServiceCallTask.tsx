@@ -18,7 +18,6 @@
  */
 
 import * as React from "react";
-import "@kie-tools/bpmn-marshaller/dist/drools-extension";
 import { CustomTask } from "@kie-tools/bpmn-editor/dist/BpmnEditor";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { BpmnEditorEnvelopeI18n } from "../i18n";
@@ -78,7 +77,7 @@ export function getRestServiceTask(i18n: BpmnEditorEnvelopeI18n): CustomTask {
       );
       setInputAndOutputDataMapping(itemDefinitionIdByDataTypes, inputs, outputs, task);
     },
-    dataInputReservedNames: ["TaskName", ...REST_PROPERTIES_KEYS],
+    dataInputReservedNames: ["TaskName", ...REST_PROPERTIES_KEYS, "HEADER_*", "QUERY_*"],
     dataOutputReservedNames: [],
   };
 }

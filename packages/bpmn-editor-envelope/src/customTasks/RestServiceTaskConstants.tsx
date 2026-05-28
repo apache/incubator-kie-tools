@@ -99,3 +99,6 @@ export const REST_PROPERTIES_DATA_TYPES = {
   [RestProperties.AccessTokenAcquisitionStrategy]: DEFAULT_DATA_TYPES.STRING,
   [RestProperties.RestServiceCallTaskId]: DEFAULT_DATA_TYPES.STRING,
 };
+
+export const HEADER_PREFIX = "HEADER_";
+export const QUERY_PREFIX = "QUERY_";

@@ -21,12 +21,14 @@ import * as React from "react";
 import { CustomTask } from "@kie-tools/bpmn-editor/dist/BpmnEditor";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { useBpmnEditorStoreApi } from "@kie-tools/bpmn-editor/dist/store/StoreContext";
-import { useKogitoEditorEnvelopeContext, ChannelType } from "@kie-tools-core/editor/dist/api";
+import { useKogitoEditorEnvelopeContext, ChannelType, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { useBpmnEditorChannelType } from "../BpmnMultiplyingArchitectureEditorFactory";
 import { PropertiesPanelHeaderFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/singleNodeProperties/_PropertiesPanelHeaderFormSection";
 import { NameDocumentationAndId } from "@kie-tools/bpmn-editor/dist/propertiesPanel/nameDocumentationAndId/NameDocumentationAndId";
 import { Select, SelectList, SelectOption } from "@patternfly/react-core/dist/js/components/Select";
 import { MenuToggle, MenuToggleElement } from "@patternfly/react-core/dist/js/components/MenuToggle";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
+import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table/dist/js/components/Table";
 import {
   BidirectionalDataMappingFormSection,
   useDataMapping,
@@ -40,15 +42,16 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries } from "../i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { DataMapping, setDataMappingForElement } from "@kie-tools/bpmn-editor/dist/mutations/_dataMapping";
 import { DEFAULT_DATA_TYPES } from "@kie-tools/bpmn-editor/dist/mutations/addOrGetItemDefinitions";
 import { BpmnEditorChannelApi } from "../BpmnEditorChannelApi";
-import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   RestProperties,
   REST_TASK_ICON,
@@ -58,6 +61,8 @@ import {
   AUTH_STRATEGIES_OPTIONS,
   HttpMethod,
   AuthStrategy,
+  HEADER_PREFIX,
+  QUERY_PREFIX,
 } from "./RestServiceTaskConstants";
 import { ContentDataInput } from "./ContentDataInput";
 import "@kie-tools/bpmn-editor/dist/propertiesPanel/metadata/Metadata.css";
@@ -83,8 +88,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   const i18n = new I18n(bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries).getCurrent();
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
   const { inputDataMapping, outputDataMapping } = useDataMapping(task, () => {});
-  const envelopeContext = useKogitoEditorEnvelopeContext();
-  const channelApi = envelopeContext.channelApi as unknown as MessageBusClientApi<BpmnEditorChannelApi>;
+  const { channelApi } = useKogitoEditorEnvelopeContext<KogitoEditorEnvelopeApi, BpmnEditorChannelApi>();
 
   const [localUrl, setLocalUrl] = React.useState<string>("");
   const [localProtocol, setLocalProtocol] = React.useState<string>("");
@@ -97,7 +101,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     () =>
       inputDataMapping
         ?.filter((data) => data.name && !(REST_PROPERTIES_KEYS as readonly string[]).includes(data.name))
-        ?.map((v) => v?.name)
+        ?.map((dataMapping) => dataMapping?.name)
         ?.filter((name): name is string => name !== undefined),
     [inputDataMapping]
   );
@@ -228,6 +232,33 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
     [updateRestProperties]
   );
 
+  const handleMethodChange = React.useCallback(
+    (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+      if (value) {
+        setTestError(null);
+        setTestResult(null);
+        if (!["POST", "PUT", "PATCH"].includes(String(value))) {
+          let updatedInputDataMapping = upsert(inputDataMapping, RestProperties.Method, String(value));
+          updatedInputDataMapping = upsert(updatedInputDataMapping, RestProperties.ContentData, "");
+
+          bpmnEditorStoreApi.setState((s) => {
+            setDataMappingForElement({
+              definitions: s.bpmn.model.definitions,
+              inputDataMapping: updatedInputDataMapping,
+              outputDataMapping,
+              elementId: task["@_id"],
+              element: task.__$$element,
+            });
+          });
+        } else {
+          updateRestProperties(RestProperties.Method, String(value));
+        }
+      }
+      setIsMethodDropdownOpen(false);
+    },
+    [inputDataMapping, outputDataMapping, task, bpmnEditorStoreApi, upsert, updateRestProperties]
+  );
+
   React.useEffect(() => {
     if (!dataInputVariables) return;
 
@@ -269,8 +300,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
 
     (inputDataMapping ?? []).forEach((item) => {
       if (item?.name && item?.isExpression) {
-        if (item.name.startsWith("HEADER_")) {
-          const headerName = item.name.substring(7);
+        if (item.name.startsWith(HEADER_PREFIX)) {
+          const headerName = item.name.substring(HEADER_PREFIX.length);
           const key = `HEADER_${headerName}`;
 
           if (!headerIdMapRef.current.has(key)) {
@@ -282,8 +313,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
             name: headerName,
             value: item.value || "",
           });
-        } else if (item.name.startsWith("QUERY_")) {
-          const queryName = item.name.substring(6);
+        } else if (item.name.startsWith(QUERY_PREFIX)) {
+          const queryName = item.name.substring(QUERY_PREFIX.length);
           const key = `QUERY_${queryName}`;
 
           if (!queryIdMapRef.current.has(key)) {
@@ -386,14 +417,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
       });
 
       if (contentData && ["POST", "PUT", "PATCH"].includes(method) && !requestHeaders["Content-Type"]) {
-        const trimmedData = contentData.trim();
-        if (trimmedData.startsWith("{") || trimmedData.startsWith("[")) {
-          requestHeaders["Content-Type"] = "application/json";
-        } else if (trimmedData.startsWith("#{")) {
-          requestHeaders["Content-Type"] = "application/json";
-        } else {
-          requestHeaders["Content-Type"] = "application/json";
-        }
+        requestHeaders["Content-Type"] = "application/json";
       }
 
       const queryString = queryParams
@@ -453,7 +477,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   ]);
 
   const updateParameterMapping = React.useCallback(
-    (prefix: "HEADER_" | "QUERY_", parameters: Array<{ name: string; value: string }>) => {
+    (prefix: typeof HEADER_PREFIX | typeof QUERY_PREFIX, parameters: Array<{ name: string; value: string }>) => {
       bpmnEditorStoreApi.setState((s) => {
         const filteredInputs = (inputDataMapping ?? []).filter((item) => !item?.name?.startsWith(prefix));
 
@@ -505,7 +529,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         }
 
         const updated = prev.map((h) => (h.id === id ? { ...h, [field]: value } : h));
-        updateParameterMapping("HEADER_", updated);
+        updateParameterMapping(HEADER_PREFIX, updated);
         return updated;
       });
     },
@@ -521,7 +545,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           headerIdMapRef.current.delete(key);
         }
         const updated = prev.filter((h) => h.id !== id);
-        updateParameterMapping("HEADER_", updated);
+        updateParameterMapping(HEADER_PREFIX, updated);
         return updated;
       });
     },
@@ -553,7 +577,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         }
 
         const updated = prev.map((q) => (q.id === id ? { ...q, [field]: value } : q));
-        updateParameterMapping("QUERY_", updated);
+        updateParameterMapping(QUERY_PREFIX, updated);
         return updated;
       });
     },
@@ -569,7 +593,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           queryIdMapRef.current.delete(key);
         }
         const updated = prev.filter((q) => q.id !== id);
-        updateParameterMapping("QUERY_", updated);
+        updateParameterMapping(QUERY_PREFIX, updated);
         return updated;
       });
     },
@@ -593,32 +617,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                   isOpen={isMethodDropdownOpen}
                   selected={getValue(RestProperties.Method) || HttpMethod.GET}
                   shouldFocusFirstItemOnOpen={false}
-                  onSelect={(
-                    _event: React.MouseEvent<Element, MouseEvent> | undefined,
-                    value: string | number | undefined
-                  ) => {
-                    if (value) {
-                      setTestError(null);
-                      setTestResult(null);
-                      if (!["POST", "PUT", "PATCH"].includes(String(value))) {
-                        let updatedInputDataMapping = upsert(inputDataMapping, RestProperties.Method, String(value));
-                        updatedInputDataMapping = upsert(updatedInputDataMapping, RestProperties.ContentData, "");
-
-                        bpmnEditorStoreApi.setState((s) => {
-                          setDataMappingForElement({
-                            definitions: s.bpmn.model.definitions,
-                            inputDataMapping: updatedInputDataMapping,
-                            outputDataMapping,
-                            elementId: task["@_id"],
-                            element: task.__$$element,
-                          });
-                        });
-                      } else {
-                        updateRestProperties(RestProperties.Method, String(value));
-                      }
-                    }
-                    setIsMethodDropdownOpen(false);
-                  }}
+                  onSelect={handleMethodChange}
                   onOpenChange={setIsMethodDropdownOpen}
                   toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                     <MenuToggle
@@ -651,7 +650,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                   id="rest-url"
                   value={localUrl}
                   onChange={(_, value) => handleTextInputChange(RestProperties.Url, value, setLocalUrl)}
-                  placeholder={i18n.restService.urlPlaceholder}
                   aria-describedby="rest-url-helper"
                 />
               </InputGroupItem>
@@ -669,7 +667,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               value={localProtocol}
               validated={protocolConflict ? "error" : "default"}
               onChange={(_, value) => handleTextInputChange(RestProperties.Protocol, value, setLocalProtocol)}
-              placeholder={i18n.restService.protocolPlaceholder}
               aria-describedby="rest-protocol-helper"
             />
             <FormHelperText>
@@ -687,7 +684,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               value={localHost}
               validated={hostConflict ? "error" : "default"}
               onChange={(_, value) => handleTextInputChange(RestProperties.Host, value, setLocalHost)}
-              placeholder={i18n.restService.hostPlaceholder}
               aria-describedby="rest-host-helper"
             />
             <FormHelperText>
@@ -706,7 +702,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               value={localPort}
               validated={portConflict ? "error" : "default"}
               onChange={(_, value) => handleTextInputChange(RestProperties.Port, value, setLocalPort)}
-              placeholder={i18n.restService.portPlaceholder}
               aria-describedby="rest-port-helper"
             />
             <FormHelperText>
@@ -728,63 +723,14 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                     updateRestProperties(RestProperties.ContentData, value);
                   }}
                   variableSuggestions={dataInputVariables}
-                  placeholder={i18n.restService.contentDataPlaceholder}
                   aria-describedby="rest-content-data-helper"
                 />
                 <FormHelperText>
                   <HelperText>
-                    <HelperTextItem variant="indeterminate">{i18n.restService.contentDataHelperText}</HelperTextItem>
+                    <HelperTextItem variant="indeterminate">{i18n.restService.contentDataHelp}</HelperTextItem>
                   </HelperText>
                 </FormHelperText>
               </FormGroup>
-
-              {contentDataVariables.length > 0 && (
-                <FormGroup label={i18n.restService.testVariables} fieldId="rest-content-data-variables">
-                  <div>
-                    <Grid md={6}>
-                      <GridItem span={5}>
-                        <div style={entryStyle}>{i18n.restService.variableName}</div>
-                      </GridItem>
-                      <GridItem span={7}>
-                        <div style={entryStyle}>{i18n.restService.variableValue}</div>
-                      </GridItem>
-                    </Grid>
-                  </div>
-                  {contentDataVariables.map((variable, index) => (
-                    <div key={`${variable.variableName}-${index}`}>
-                      <Grid md={6} className={"kie-bpmn-editor--properties-panel--metadata-entry"}>
-                        <GridItem span={5}>
-                          <input
-                            style={entryStyle}
-                            type="text"
-                            value={variable.variableName}
-                            disabled
-                            aria-label={`Variable ${index + 1} name`}
-                          />
-                        </GridItem>
-                        <GridItem span={6}>
-                          <input
-                            style={entryStyle}
-                            type="text"
-                            placeholder={i18n.restService.variableValuePlaceholder}
-                            value={variable.variableValue || ""}
-                            onChange={(e) => {
-                              const updatedVariables = [...contentDataVariables];
-                              updatedVariables[index] = {
-                                ...updatedVariables[index],
-                                variableValue: e.target.value,
-                              };
-                              setContentDataVariables(updatedVariables);
-                            }}
-                            aria-label={`Variable ${index + 1} value`}
-                          />
-                        </GridItem>
-                        <GridItem span={1}></GridItem>
-                      </Grid>
-                    </div>
-                  ))}
-                </FormGroup>
-              )}
             </>
           )}
 
@@ -796,7 +742,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               onChange={(_, value) =>
                 handleTextInputChange(RestProperties.RequestTimeout, value, setLocalRequestTimeout)
               }
-              placeholder="30000"
             />
           </FormGroup>
 
@@ -831,7 +776,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                           autoFocus={true}
                           style={entryStyle}
                           type="text"
-                          placeholder={i18n.restService.headerNamePlaceholder}
                           value={header.name}
                           onChange={(e) => updateHeader(header.id, "name", e.target.value)}
                           aria-label={`Header ${index + 1} name`}
@@ -841,7 +785,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                         <input
                           style={entryStyle}
                           type="text"
-                          placeholder={i18n.restService.headerValuePlaceholder}
                           value={header.value}
                           onChange={(e) => updateHeader(header.id, "value", e.target.value)}
                           aria-label={`Header ${index + 1} value`}
@@ -915,7 +858,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                           autoFocus={true}
                           style={entryStyle}
                           type="text"
-                          placeholder={i18n.restService.queryParameterName}
                           value={param.name}
                           onChange={(e) => updateQueryParam(param.id, "name", e.target.value)}
                           aria-label={`Query parameter ${index + 1} name`}
@@ -925,7 +867,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                         <input
                           style={entryStyle}
                           type="text"
-                          placeholder={i18n.restService.queryParameterValue}
                           value={param.value}
                           onChange={(e) => updateQueryParam(param.id, "value", e.target.value)}
                           aria-label={`Query parameter ${index + 1} value`}
@@ -1032,10 +973,96 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               placeholder={i18n.restService.restServiceCallTaskIdPlaceholder}
             />
           </FormGroup>
+        </FormSection>
+
+        <FormSection title={i18n.restService.testSection}>
+          {["POST", "PUT", "PATCH"].includes(getValue(RestProperties.Method)) && contentDataVariables.length > 0 && (
+            <FormGroup
+              label={i18n.restService.testVariables}
+              fieldId="rest-content-data-variables"
+              labelIcon={
+                <Popover
+                  headerContent={i18n.restService.testVariables}
+                  bodyContent={
+                    <List>
+                      <ListItem>{i18n.restService.testVariablesHelp}</ListItem>
+                    </List>
+                  }
+                >
+                  <button
+                    type="button"
+                    aria-label={i18n.restService.moreInfoForTestVariables}
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-v5-c-form__group-label-help"
+                  >
+                    <HelpIcon />
+                  </button>
+                </Popover>
+              }
+            >
+              <div style={{ marginTop: "8px" }}>
+                <Table aria-label={i18n.restService.contentDataVariablesTable} variant="compact">
+                  <Thead>
+                    <Tr>
+                      <Th>{i18n.restService.variableName}</Th>
+                      <Th>{i18n.restService.variableValue}</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {contentDataVariables.map((variable, index) => (
+                      <Tr key={`${variable.variableName}-${index}`}>
+                        <Td dataLabel={i18n.restService.variableName}>{variable.variableName}</Td>
+                        <Td dataLabel={i18n.restService.variableValue}>
+                          <TextInput
+                            aria-label={i18n.restService.valueForVariable.replace(
+                              "{{variableName}}",
+                              variable.variableName
+                            )}
+                            value={variable.variableValue || ""}
+                            onChange={(_, value) => {
+                              const updatedVariables = [...contentDataVariables];
+                              updatedVariables[index] = {
+                                ...updatedVariables[index],
+                                variableValue: value,
+                              };
+                              setContentDataVariables(updatedVariables);
+                            }}
+                            isRequired={true}
+                          />
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </div>
+            </FormGroup>
+          )}
 
           {(getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.PROPAGATED ||
             getValue(RestProperties.AccessTokenAcquisitionStrategy) === AuthStrategy.CONFIGURED) && (
-            <FormGroup label={i18n.restService.testToken} fieldId="rest-test-token">
+            <FormGroup
+              label={i18n.restService.testToken}
+              fieldId="rest-test-token"
+              labelIcon={
+                <Popover
+                  headerContent={i18n.restService.testToken}
+                  bodyContent={
+                    <List>
+                      <ListItem>{i18n.restService.testTokenHelper}</ListItem>
+                    </List>
+                  }
+                >
+                  <button
+                    type="button"
+                    aria-label="More info for test token"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-v5-c-form__group-label-help"
+                  >
+                    <HelpIcon />
+                  </button>
+                </Popover>
+              }
+            >
               <TextInput
                 id="rest-test-token"
                 type="password"
@@ -1044,11 +1071,6 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                 placeholder={i18n.restService.testTokenPlaceholder}
                 aria-describedby="rest-test-token-helper"
               />
-              <FormHelperText>
-                <HelperText>
-                  <HelperTextItem variant="indeterminate">{i18n.restService.testTokenHelper}</HelperTextItem>
-                </HelperText>
-              </FormHelperText>
             </FormGroup>
           )}
 
