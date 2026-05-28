@@ -57,6 +57,7 @@ export class ContextMenu {
   public async clickMenuItem(args: { menuItem: MenuItem }) {
     const menuItem = this.page.getByRole("menuitem", { name: `${args.menuItem}` });
     // Ensure menuItem is visible before clicking
+    await menuItem.scrollIntoViewIfNeeded();
     const menuBox = await menuItem.boundingBox();
     if (menuBox) {
       await this.page.mouse.click(menuBox.x + menuBox.width / 2, menuBox.y + menuBox.height / 2);
