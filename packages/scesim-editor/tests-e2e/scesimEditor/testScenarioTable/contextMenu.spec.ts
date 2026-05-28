@@ -31,7 +31,7 @@ test.describe("Test scenario table context menu", () => {
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1", columnNumber: 1 });
     });
 
-    test("should render select context menu", async ({ contextMenu }) => {
+    test("Test Scenario Table - should render select context menu", async ({ contextMenu }) => {
       await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).toBeAttached();
@@ -39,7 +39,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).not.toBeAttached();
     });
 
-    test("should render field context menu", async ({ contextMenu }) => {
+    test("Test Scenario Table - should render field context menu", async ({ contextMenu }) => {
       await contextMenu.openOnColumnHeader({ name: "PROPERTY-1 (<Undefined>)" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -47,7 +47,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).not.toBeAttached();
     });
 
-    test("should render instance context menu", async ({ contextMenu }) => {
+    test("Test Scenario Table - should render instance context menu", async ({ contextMenu }) => {
       await contextMenu.openOnColumnHeader({ name: "INSTANCE-1 (<Undefined>)" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -55,7 +55,11 @@ test.describe("Test scenario table context menu", () => {
       await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).toBeAttached();
     });
 
-    test("should add and delete instance column left", async ({ contextMenu, table, testScenarioTable }) => {
+    test("Test Scenario Table - should add and delete instance column left", async ({
+      contextMenu,
+      table,
+      testScenarioTable,
+    }) => {
       await table.addInstanceColumn({
         targetCellName: "INSTANCE-1 (<Undefined>)",
         position: AddColumnPosition.LEFT,
@@ -68,7 +72,11 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
     });
 
-    test("should add and delete instance column right", async ({ contextMenu, table, testScenarioTable }) => {
+    test("Test Scenario Table - should add and delete instance column right", async ({
+      contextMenu,
+      table,
+      testScenarioTable,
+    }) => {
       await table.addInstanceColumn({
         targetCellName: "INSTANCE-1 (<Undefined>)",
         position: AddColumnPosition.RIGHT,
@@ -81,7 +89,11 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
     });
 
-    test("should add and delete property column left", async ({ contextMenu, table, testScenarioTable }) => {
+    test("Test Scenario Table - should add and delete property column left", async ({
+      contextMenu,
+      table,
+      testScenarioTable,
+    }) => {
       await table.addPropertyColumn({
         targetCellName: "PROPERTY-1 (<Undefined>)",
         position: AddColumnPosition.LEFT,
@@ -99,7 +111,11 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
     });
 
-    test("should add and delete property column right", async ({ contextMenu, table, testScenarioTable }) => {
+    test("Test Scenario Table - should add and delete property column right", async ({
+      contextMenu,
+      table,
+      testScenarioTable,
+    }) => {
       await table.addPropertyColumn({
         targetCellName: "PROPERTY-1 (<Undefined>)",
         position: AddColumnPosition.RIGHT,
@@ -117,7 +133,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
     });
 
-    test("should add and delete row below", async ({ table, contextMenu }) => {
+    test("Test Scenario Table - should add and delete row below", async ({ table, contextMenu }) => {
       await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
       await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).toContainText("test");
 
@@ -126,7 +142,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "3", columnNumber: 0 })).not.toBeAttached();
     });
 
-    test("should add and delete row above", async ({ table, contextMenu }) => {
+    test("Test Scenario Table - should add and delete row above", async ({ table, contextMenu }) => {
       await table.addRow({ targetCellName: "1", position: AddRowPosition.ABOVE });
       await expect(table.getCell({ rowNumber: "2", columnNumber: 2 })).toContainText("test");
 
@@ -135,7 +151,11 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "3", columnNumber: 0 })).not.toBeAttached();
     });
 
-    test("should not render context menu on the hash header", async ({ table, testScenarioTable, contextMenu }) => {
+    test("Test Scenario Table - should not render context menu on the hash header", async ({
+      table,
+      testScenarioTable,
+      contextMenu,
+    }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -150,7 +170,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-hash-no-context-menu.png");
     });
 
-    test("should not render context menu on the scenario description header", async ({
+    test("Test Scenario Table - should not render context menu on the scenario description header", async ({
       table,
       testScenarioTable,
       contextMenu,
@@ -171,7 +191,11 @@ test.describe("Test scenario table context menu", () => {
       );
     });
 
-    test("should not render context menu on the given header", async ({ table, testScenarioTable, contextMenu }) => {
+    test("Test Scenario Table - should not render context menu on the given header", async ({
+      table,
+      testScenarioTable,
+      contextMenu,
+    }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -186,7 +210,11 @@ test.describe("Test scenario table context menu", () => {
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-given-no-context-menu.png");
     });
 
-    test("should not render context menu on the expect header", async ({ table, testScenarioTable, contextMenu }) => {
+    test("Test Scenario Table - should not render context menu on the expect header", async ({
+      table,
+      testScenarioTable,
+      contextMenu,
+    }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -201,7 +229,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-expect-no-context-menu.png");
     });
 
-    test("deleting instance when only one given column present should generate a new column", async ({
+    test("Test Scenario Table - deleting instance when only one given column present should generate a new column", async ({
       contextMenu,
       table,
     }) => {
@@ -217,7 +245,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
     });
 
-    test("deleting property when only one given column present should generate a new column", async ({
+    test("Test Scenario Table - deleting property when only one given column present should generate a new column", async ({
       contextMenu,
       table,
     }) => {
@@ -233,7 +261,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
     });
 
-    test("deleting instance when only one expect column present should generate a new column", async ({
+    test("Test Scenario Table - deleting instance when only one expect column present should generate a new column", async ({
       contextMenu,
       table,
       testScenarioTable,
@@ -250,7 +278,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).not.toContainText("test");
     });
 
-    test("deleting property when only one expect column present should generate a new column", async ({
+    test("Test Scenario Table - deleting property when only one expect column present should generate a new column", async ({
       contextMenu,
       table,
       testScenarioTable,
@@ -267,7 +295,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).not.toContainText("test");
     });
 
-    test("deleting scenario when only one expect column present should generate a new row", async ({
+    test("Test Scenario Table - deleting scenario when only one expect column present should generate a new row", async ({
       contextMenu,
       table,
     }) => {

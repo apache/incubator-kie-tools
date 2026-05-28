@@ -55,7 +55,14 @@ export class ContextMenu {
   }
 
   public async clickMenuItem(args: { menuItem: MenuItem }) {
-    await this.page.getByRole("menuitem", { name: `${args.menuItem}` }).click();
+    const menuItem = this.page.getByRole("menuitem", { name: `${args.menuItem}` });
+    // Ensure menuItem is visible before clicking
+    const menuBox = await menuItem.boundingBox();
+    if (menuBox) {
+      await this.page.mouse.click(menuBox.x + menuBox.width / 2, menuBox.y + menuBox.height / 2);
+    } else {
+      await menuItem.click();
+    }
   }
 
   public getMenuItem(args: { menuItem: MenuItem }) {

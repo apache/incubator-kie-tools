@@ -27,7 +27,7 @@ test.describe("Use Selector Panel on background table based on traffic violation
     await editor.switchToBackgroundTable();
     await selectorPanel.open();
   });
-  test("should correctly populate column headers of traffic violation use case", async ({
+  test("Background Table - should correctly populate column headers of traffic violation use case", async ({
     table,
     selectorPanel,
     backgroundTable,
@@ -98,7 +98,10 @@ test.describe("Use Selector Panel on background table based on traffic violation
     await expect(backgroundTable.get()).toHaveScreenshot("background-table-traffic-violation-headers.png");
   });
 
-  test("should correctly remove instance from selector panel once assigned", async ({ table, selectorPanel }) => {
+  test("Background Table - should correctly remove instance from selector panel once assigned", async ({
+    table,
+    selectorPanel,
+  }) => {
     await table.addPropertyColumn({
       targetCellName: "PROPERTY-1 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
@@ -117,7 +120,10 @@ test.describe("Use Selector Panel on background table based on traffic violation
     await expect(selectorPanel.getAttribute({ name: "Driver" })).not.toBeAttached();
   });
 
-  test("should correctly remove property from selector panel once assigned", async ({ table, selectorPanel }) => {
+  test("Background Table - should correctly remove property from selector panel once assigned", async ({
+    table,
+    selectorPanel,
+  }) => {
     await table.selectColumnHeader({ name: "INSTANCE 1 (<Undefined>)" });
     await selectorPanel.assign({ name: "Violation" });
 
@@ -134,7 +140,10 @@ test.describe("Use Selector Panel on background table based on traffic violation
     await expect(selectorPanel.getAttribute({ name: "Speed Limit" })).not.toBeAttached();
   });
 
-  test("should correctly populate an instance by assigning a property", async ({ table, selectorPanel }) => {
+  test("Background Table - should correctly populate an instance by assigning a property", async ({
+    table,
+    selectorPanel,
+  }) => {
     await expect(table.getColumnHeader({ name: "Violation" })).not.toBeAttached();
 
     await table.selectColumnHeader({ name: "PROPERTY-1 (<Undefined>)" });

@@ -27,7 +27,10 @@ test.describe("Background table misc", () => {
     await editor.switchToBackgroundTable();
   });
 
-  test("should render add column plus symbols on Instance headers", async ({ table, backgroundTable }) => {
+  test("Background Table - should render add column plus symbols on Instance headers", async ({
+    table,
+    backgroundTable,
+  }) => {
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1354");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
@@ -40,19 +43,25 @@ test.describe("Background table misc", () => {
     await expect(table.getColumnHeader({ name: "INSTANCE-2 (<Undefined>)" })).toBeAttached();
   });
 
-  test("should render add column plus symbols on Property headers", async ({ table, backgroundTable }) => {
+  test("Background Table - should render add column plus symbols on Property headers", async ({
+    table,
+    backgroundTable,
+  }) => {
     await expect(table.getColumnHeader({ name: "INSTANCE-2 (<Undefined>)" })).not.toBeAttached();
     await table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 }).hover();
     await backgroundTable.clickPlusIcon();
     await expect(table.getColumnHeader({ name: "INSTANCE-2 (<Undefined>)" })).toBeAttached();
   });
 
-  test("should not render add column plus symbol on Given header", async ({ table, backgroundTable }) => {
+  test("Background Table - should not render add column plus symbol on Given header", async ({
+    table,
+    backgroundTable,
+  }) => {
     await table.getColumnHeader({ name: "GIVEN" }).hover();
     await expect(backgroundTable.getPlusIcon()).not.toBeAttached();
   });
 
-  test("should not render add row plus symbol on table cell", async ({ table, backgroundTable }) => {
+  test("Background Table - should not render add row plus symbol on table cell", async ({ table, backgroundTable }) => {
     await table.getCell({ rowNumber: "1", columnNumber: 0 }).hover();
     await expect(backgroundTable.getPlusIcon()).not.toBeAttached();
   });
