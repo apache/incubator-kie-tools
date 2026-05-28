@@ -25,7 +25,8 @@ import { useKogitoEditorEnvelopeContext, ChannelType } from "@kie-tools-core/edi
 import { useBpmnEditorChannelType } from "../BpmnMultiplyingArchitectureEditorFactory";
 import { PropertiesPanelHeaderFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/singleNodeProperties/_PropertiesPanelHeaderFormSection";
 import { NameDocumentationAndId } from "@kie-tools/bpmn-editor/dist/propertiesPanel/nameDocumentationAndId/NameDocumentationAndId";
-import { TypeaheadSelect } from "@kie-tools/bpmn-editor/dist/typeaheadSelect/TypeaheadSelect";
+import { Select, SelectList, SelectOption } from "@patternfly/react-core/dist/js/components/Select";
+import { MenuToggle, MenuToggleElement } from "@patternfly/react-core/dist/js/components/MenuToggle";
 import {
   BidirectionalDataMappingFormSection,
   useDataMapping,
@@ -112,6 +113,8 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   const [isLoading, setIsLoading] = React.useState(false);
   const [testToken, setTestToken] = React.useState<string>("");
   const [useCorsProxy, setUseCorsProxy] = React.useState<boolean>(false);
+  const [isMethodDropdownOpen, setIsMethodDropdownOpen] = React.useState(false);
+  const [isAuthStrategyDropdownOpen, setIsAuthStrategyDropdownOpen] = React.useState(false);
 
   const [headers, setHeaders] = React.useState<HeaderParameter[]>([]);
   const [queryParams, setQueryParams] = React.useState<QueryParameter[]>([]);
@@ -191,8 +194,10 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
   );
 
   const getValue = React.useCallback(
-    (fieldName: RestProperties) =>
-      (inputDataMapping ?? []).filter((dm) => dm.isExpression).find((dm) => dm.name === fieldName)?.value ?? "",
+    (fieldName: RestProperties) => {
+      const mapping = (inputDataMapping ?? []).find((dm) => dm.isExpression && dm.name === fieldName);
+      return mapping && mapping.isExpression ? mapping.value : "";
+    },
     [inputDataMapping]
   );
 
@@ -579,20 +584,24 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         shouldStartExpanded={true}
       >
         <NameDocumentationAndId element={task} />
-        <FormSection style={{ "--pf-v5-c-form__section--Gap": "0.5rem" } as React.CSSProperties}>
+        <FormSection>
           <FormGroup label={i18n.restService.url} isRequired fieldId="rest-url">
             <InputGroup>
               <InputGroupItem style={{ width: "120px", flexShrink: 0 }}>
-                <TypeaheadSelect
+                <Select
                   id="rest-method"
+                  isOpen={isMethodDropdownOpen}
                   selected={getValue(RestProperties.Method) || HttpMethod.GET}
-                  isMultiple={false}
-                  setSelected={(value) => {
+                  shouldFocusFirstItemOnOpen={false}
+                  onSelect={(
+                    _event: React.MouseEvent<Element, MouseEvent> | undefined,
+                    value: string | number | undefined
+                  ) => {
                     if (value) {
                       setTestError(null);
                       setTestResult(null);
-                      if (!["POST", "PUT", "PATCH"].includes(value)) {
-                        let updatedInputDataMapping = upsert(inputDataMapping, RestProperties.Method, value);
+                      if (!["POST", "PUT", "PATCH"].includes(String(value))) {
+                        let updatedInputDataMapping = upsert(inputDataMapping, RestProperties.Method, String(value));
                         updatedInputDataMapping = upsert(updatedInputDataMapping, RestProperties.ContentData, "");
 
                         bpmnEditorStoreApi.setState((s) => {
@@ -605,16 +614,37 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                           });
                         });
                       } else {
-                        updateRestProperties(RestProperties.Method, value);
+                        updateRestProperties(RestProperties.Method, String(value));
                       }
                     }
+                    setIsMethodDropdownOpen(false);
                   }}
-                  options={HTTP_METHODS_OPTIONS.map((option) => ({
-                    value: option.value,
-                    children: i18n.restService[option.labelKey],
-                  }))}
-                  showCreateOptionWhen="never"
-                />
+                  onOpenChange={setIsMethodDropdownOpen}
+                  toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                    <MenuToggle
+                      ref={toggleRef}
+                      onClick={() => setIsMethodDropdownOpen(!isMethodDropdownOpen)}
+                      isExpanded={isMethodDropdownOpen}
+                      isFullWidth
+                    >
+                      {
+                        i18n.restService[
+                          HTTP_METHODS_OPTIONS.find(
+                            (opt) => opt.value === (getValue(RestProperties.Method) || HttpMethod.GET)
+                          )?.labelKey as keyof typeof i18n.restService
+                        ]
+                      }
+                    </MenuToggle>
+                  )}
+                >
+                  <SelectList>
+                    {HTTP_METHODS_OPTIONS.map((option) => (
+                      <SelectOption key={option.value} value={option.value}>
+                        {i18n.restService[option.labelKey]}
+                      </SelectOption>
+                    ))}
+                  </SelectList>
+                </Select>
               </InputGroupItem>
               <InputGroupItem isFill>
                 <TextInput
@@ -710,22 +740,18 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
 
               {contentDataVariables.length > 0 && (
                 <FormGroup label={i18n.restService.testVariables} fieldId="rest-content-data-variables">
-                  <div style={{ padding: "0 8px", marginTop: "8px" }}>
-                    <Grid md={6} style={{ alignItems: "center", marginBottom: "8px" }}>
+                  <div>
+                    <Grid md={6}>
                       <GridItem span={5}>
-                        <div style={entryStyle}>
-                          <b>{i18n.restService.variableName}</b>
-                        </div>
+                        <div style={entryStyle}>{i18n.restService.variableName}</div>
                       </GridItem>
                       <GridItem span={7}>
-                        <div style={entryStyle}>
-                          <b>{i18n.restService.variableValue}</b>
-                        </div>
+                        <div style={entryStyle}>{i18n.restService.variableValue}</div>
                       </GridItem>
                     </Grid>
                   </div>
                   {contentDataVariables.map((variable, index) => (
-                    <div key={`${variable.variableName}-${index}`} style={{ padding: "0 8px" }}>
+                    <div key={`${variable.variableName}-${index}`}>
                       <Grid md={6} className={"kie-bpmn-editor--properties-panel--metadata-entry"}>
                         <GridItem span={5}>
                           <input
@@ -736,7 +762,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                             aria-label={`Variable ${index + 1} name`}
                           />
                         </GridItem>
-                        <GridItem span={7}>
+                        <GridItem span={6}>
                           <input
                             style={entryStyle}
                             type="text"
@@ -753,6 +779,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
                             aria-label={`Variable ${index + 1} value`}
                           />
                         </GridItem>
+                        <GridItem span={1}></GridItem>
                       </Grid>
                     </div>
                   ))}
@@ -772,202 +799,208 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
               placeholder="30000"
             />
           </FormGroup>
-        </FormSection>
 
-        <FormSection
-          title={i18n.restService.headers}
-          style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}
-        >
-          {headers.length > 0 ? (
-            <>
-              <div style={{ padding: "0 8px" }}>
-                <Grid md={6} style={{ alignItems: "center" }}>
-                  <GridItem span={5}>
-                    <div style={entryStyle}>
-                      <b>{i18n.restService.headerName}</b>
-                    </div>
-                  </GridItem>
-                  <GridItem span={6}>
-                    <div style={entryStyle}>
-                      <b>{i18n.restService.headerValue}</b>
-                    </div>
-                  </GridItem>
-                  <GridItem span={1}>
-                    <div style={{ textAlign: "right" }}>
-                      <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addHeader} aria-label="Add header">
-                        <PlusCircleIcon />
-                      </Button>
-                    </div>
-                  </GridItem>
-                </Grid>
-              </div>
-              {headers.map((header, index) => (
-                <div key={header.id} style={{ padding: "0 8px" }}>
-                  <Grid
-                    md={6}
-                    className={"kie-bpmn-editor--properties-panel--metadata-entry"}
-                    onMouseEnter={() => setHoveredHeaderIndex(index)}
-                    onMouseLeave={() => setHoveredHeaderIndex(undefined)}
-                  >
+          <FormGroup label={i18n.restService.headers} fieldId="rest-headers">
+            {headers.length > 0 ? (
+              <>
+                <div>
+                  <Grid md={6}>
                     <GridItem span={5}>
-                      <input
-                        autoFocus={true}
-                        style={entryStyle}
-                        type="text"
-                        placeholder={i18n.restService.headerNamePlaceholder}
-                        value={header.name}
-                        onChange={(e) => updateHeader(header.id, "name", e.target.value)}
-                        aria-label={`Header ${index + 1} name`}
-                      />
+                      <div style={entryStyle}>{i18n.restService.headerName}</div>
                     </GridItem>
                     <GridItem span={6}>
-                      <input
-                        style={entryStyle}
-                        type="text"
-                        placeholder={i18n.restService.headerValuePlaceholder}
-                        value={header.value}
-                        onChange={(e) => updateHeader(header.id, "value", e.target.value)}
-                        aria-label={`Header ${index + 1} value`}
-                      />
+                      <div style={entryStyle}>{i18n.restService.headerValue}</div>
                     </GridItem>
-                    <GridItem span={1} style={{ textAlign: "right" }}>
-                      {hoveredHeaderIndex === index && (
-                        <Button
-                          variant="plain"
-                          style={{ paddingLeft: 0 }}
-                          onClick={() => removeHeader(header.id)}
-                          aria-label={`Remove header ${index + 1}`}
-                        >
-                          <TimesIcon />
-                        </Button>
-                      )}
+                    <GridItem span={1}>
+                      <Button variant="plain" onClick={addHeader} aria-label="Add header">
+                        <PlusCircleIcon />
+                      </Button>
                     </GridItem>
                   </Grid>
                 </div>
-              ))}
-            </>
-          ) : (
-            <div style={{ position: "relative" }}>
-              <div style={{ padding: "10px", background: "#eee", borderRadius: "10px", textAlign: "center" }}>
-                {i18n.restService.noHeaders}
+                {headers.map((header, index) => (
+                  <div key={header.id}>
+                    <Grid
+                      md={6}
+                      className={"kie-bpmn-editor--properties-panel--metadata-entry"}
+                      onMouseEnter={() => setHoveredHeaderIndex(index)}
+                      onMouseLeave={() => setHoveredHeaderIndex(undefined)}
+                    >
+                      <GridItem span={5}>
+                        <input
+                          autoFocus={true}
+                          style={entryStyle}
+                          type="text"
+                          placeholder={i18n.restService.headerNamePlaceholder}
+                          value={header.name}
+                          onChange={(e) => updateHeader(header.id, "name", e.target.value)}
+                          aria-label={`Header ${index + 1} name`}
+                        />
+                      </GridItem>
+                      <GridItem span={6}>
+                        <input
+                          style={entryStyle}
+                          type="text"
+                          placeholder={i18n.restService.headerValuePlaceholder}
+                          value={header.value}
+                          onChange={(e) => updateHeader(header.id, "value", e.target.value)}
+                          aria-label={`Header ${index + 1} value`}
+                        />
+                      </GridItem>
+                      <GridItem span={1}>
+                        {hoveredHeaderIndex === index && (
+                          <Button
+                            variant="plain"
+                            onClick={() => removeHeader(header.id)}
+                            aria-label={`Remove header ${index + 1}`}
+                          >
+                            <TimesIcon />
+                          </Button>
+                        )}
+                      </GridItem>
+                    </Grid>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div style={{ position: "relative" }}>
+                <div style={{ padding: "10px", background: "#eee", borderRadius: "10px", textAlign: "center" }}>
+                  {i18n.restService.noHeaders}
+                </div>
+                <div style={{ position: "absolute", top: "calc(50% - 16px)", right: "0" }}>
+                  <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addHeader}>
+                    <PlusCircleIcon />
+                  </Button>
+                </div>
               </div>
-              <div style={{ position: "absolute", top: "calc(50% - 16px)", right: "0" }}>
-                <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addHeader}>
-                  <PlusCircleIcon />
-                </Button>
-              </div>
-            </div>
-          )}
-        </FormSection>
+            )}
+          </FormGroup>
 
-        <FormSection
-          title={i18n.restService.queryParameters}
-          style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}
-        >
-          {queryParams.length > 0 ? (
-            <>
-              <div style={{ padding: "0 8px" }}>
-                <Grid md={6} style={{ alignItems: "center" }}>
-                  <GridItem span={5}>
-                    <div style={entryStyle}>
-                      <b>{i18n.restService.queryParameterName}</b>
-                    </div>
-                  </GridItem>
-                  <GridItem span={6}>
-                    <div style={entryStyle}>
-                      <b>{i18n.restService.queryParameterValue}</b>
-                    </div>
-                  </GridItem>
-                  <GridItem span={1}>
-                    <div style={{ textAlign: "right" }}>
-                      <Button
-                        variant="plain"
-                        style={{ paddingLeft: 0 }}
-                        onClick={addQueryParam}
-                        aria-label="Add query parameter"
-                      >
-                        <PlusCircleIcon />
-                      </Button>
-                    </div>
-                  </GridItem>
-                </Grid>
-              </div>
-              {queryParams.map((param, index) => (
-                <div key={param.id} style={{ padding: "0 8px" }}>
-                  <Grid
-                    md={6}
-                    className={"kie-bpmn-editor--properties-panel--metadata-entry"}
-                    onMouseEnter={() => setHoveredQueryIndex(index)}
-                    onMouseLeave={() => setHoveredQueryIndex(undefined)}
-                  >
+          <FormGroup label={i18n.restService.queryParameters} fieldId="rest-query-parameters">
+            {queryParams.length > 0 ? (
+              <>
+                <div>
+                  <Grid md={6}>
                     <GridItem span={5}>
-                      <input
-                        autoFocus={true}
-                        style={entryStyle}
-                        type="text"
-                        placeholder={i18n.restService.queryParameterName}
-                        value={param.name}
-                        onChange={(e) => updateQueryParam(param.id, "name", e.target.value)}
-                        aria-label={`Query parameter ${index + 1} name`}
-                      />
+                      <div style={entryStyle}>{i18n.restService.queryParameterName}</div>
                     </GridItem>
                     <GridItem span={6}>
-                      <input
-                        style={entryStyle}
-                        type="text"
-                        placeholder={i18n.restService.queryParameterValue}
-                        value={param.value}
-                        onChange={(e) => updateQueryParam(param.id, "value", e.target.value)}
-                        aria-label={`Query parameter ${index + 1} value`}
-                      />
+                      <div style={entryStyle}>{i18n.restService.queryParameterValue}</div>
                     </GridItem>
-                    <GridItem span={1} style={{ textAlign: "right" }}>
-                      {hoveredQueryIndex === index && (
+                    <GridItem span={1}>
+                      <div style={{ textAlign: "right" }}>
                         <Button
                           variant="plain"
                           style={{ paddingLeft: 0 }}
-                          onClick={() => removeQueryParam(param.id)}
-                          aria-label={`Remove query parameter ${index + 1}`}
+                          onClick={addQueryParam}
+                          aria-label="Add query parameter"
                         >
-                          <TimesIcon />
+                          <PlusCircleIcon />
                         </Button>
-                      )}
+                      </div>
                     </GridItem>
                   </Grid>
                 </div>
-              ))}
-            </>
-          ) : (
-            <div style={{ position: "relative" }}>
-              <div style={{ padding: "10px", background: "#eee", borderRadius: "10px", textAlign: "center" }}>
-                {i18n.restService.noQueryParameters}
+                {queryParams.map((param, index) => (
+                  <div key={param.id}>
+                    <Grid
+                      md={6}
+                      className={"kie-bpmn-editor--properties-panel--metadata-entry"}
+                      onMouseEnter={() => setHoveredQueryIndex(index)}
+                      onMouseLeave={() => setHoveredQueryIndex(undefined)}
+                    >
+                      <GridItem span={5}>
+                        <input
+                          autoFocus={true}
+                          style={entryStyle}
+                          type="text"
+                          placeholder={i18n.restService.queryParameterName}
+                          value={param.name}
+                          onChange={(e) => updateQueryParam(param.id, "name", e.target.value)}
+                          aria-label={`Query parameter ${index + 1} name`}
+                        />
+                      </GridItem>
+                      <GridItem span={6}>
+                        <input
+                          style={entryStyle}
+                          type="text"
+                          placeholder={i18n.restService.queryParameterValue}
+                          value={param.value}
+                          onChange={(e) => updateQueryParam(param.id, "value", e.target.value)}
+                          aria-label={`Query parameter ${index + 1} value`}
+                        />
+                      </GridItem>
+                      <GridItem span={1}>
+                        {hoveredQueryIndex === index && (
+                          <Button
+                            variant="plain"
+                            onClick={() => removeQueryParam(param.id)}
+                            aria-label={`Remove query parameter ${index + 1}`}
+                          >
+                            <TimesIcon />
+                          </Button>
+                        )}
+                      </GridItem>
+                    </Grid>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div style={{ position: "relative" }}>
+                <div style={{ padding: "10px", background: "#eee", borderRadius: "10px", textAlign: "center" }}>
+                  {i18n.restService.noQueryParameters}
+                </div>
+                <div style={{ position: "absolute", top: "calc(50% - 16px)", right: "0" }}>
+                  <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addQueryParam}>
+                    <PlusCircleIcon />
+                  </Button>
+                </div>
               </div>
-              <div style={{ position: "absolute", top: "calc(50% - 16px)", right: "0" }}>
-                <Button variant="plain" style={{ paddingLeft: 0 }} onClick={addQueryParam}>
-                  <PlusCircleIcon />
-                </Button>
-              </div>
-            </div>
-          )}
-        </FormSection>
+            )}
+          </FormGroup>
 
-        <FormSection style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}>
           <FormGroup label={i18n.restService.accessTokenStrategy} isRequired fieldId="rest-auth-strategy">
-            <TypeaheadSelect
+            <Select
               id="rest-auth-strategy"
+              isOpen={isAuthStrategyDropdownOpen}
               selected={getValue(RestProperties.AccessTokenAcquisitionStrategy) || AuthStrategy.NONE}
-              isMultiple={false}
-              setSelected={(value) => {
+              shouldFocusFirstItemOnOpen={false}
+              onSelect={(
+                _event: React.MouseEvent<Element, MouseEvent> | undefined,
+                value: string | number | undefined
+              ) => {
                 if (value) {
-                  updateRestProperties(RestProperties.AccessTokenAcquisitionStrategy, value);
+                  updateRestProperties(RestProperties.AccessTokenAcquisitionStrategy, String(value));
                 }
+                setIsAuthStrategyDropdownOpen(false);
               }}
-              options={AUTH_STRATEGIES_OPTIONS.map((option) => ({
-                value: option.value,
-                children: i18n.restService[option.labelKey],
-              }))}
-              showCreateOptionWhen="never"
-            />
+              onOpenChange={setIsAuthStrategyDropdownOpen}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  ref={toggleRef}
+                  onClick={() => setIsAuthStrategyDropdownOpen(!isAuthStrategyDropdownOpen)}
+                  isExpanded={isAuthStrategyDropdownOpen}
+                  isFullWidth
+                >
+                  {
+                    i18n.restService[
+                      AUTH_STRATEGIES_OPTIONS.find(
+                        (opt) =>
+                          opt.value === (getValue(RestProperties.AccessTokenAcquisitionStrategy) || AuthStrategy.NONE)
+                      )?.labelKey as keyof typeof i18n.restService
+                    ]
+                  }
+                </MenuToggle>
+              )}
+            >
+              <SelectList>
+                {AUTH_STRATEGIES_OPTIONS.map((option) => (
+                  <SelectOption key={option.value} value={option.value}>
+                    {i18n.restService[option.labelKey]}
+                  </SelectOption>
+                ))}
+              </SelectList>
+            </Select>
             <FormHelperText>
               <HelperText>
                 <HelperTextItem variant="indeterminate">
@@ -1048,7 +1081,7 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
           </ActionGroup>
         </FormSection>
 
-        <FormSection style={{ "--pf-v5-c-form__section--Gap": "1rem" } as React.CSSProperties}>
+        <FormSection>
           {testError && (
             <Alert variant="danger" isInline title={i18n.restService.testFailed}>
               {testError}
