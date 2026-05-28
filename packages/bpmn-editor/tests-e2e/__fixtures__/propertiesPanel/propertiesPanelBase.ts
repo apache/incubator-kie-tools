@@ -62,4 +62,11 @@ export abstract class PropertiesPanelBase {
   public async isOpen(): Promise<boolean> {
     return await this.panel().isVisible();
   }
+
+  public async fillCombobox(value: string, index: number = 0): Promise<void> {
+    const combobox =
+      index === 0 ? this.panel().getByRole("combobox").first() : this.panel().getByRole("combobox").nth(index);
+    await combobox.click();
+    await combobox.fill(value);
+  }
 }

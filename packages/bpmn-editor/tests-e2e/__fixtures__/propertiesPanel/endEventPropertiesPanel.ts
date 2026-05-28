@@ -45,8 +45,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
   public async setMessageDefinition(args: { messageName: string; endEventLocator: Locator }) {
     await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.MESSAGE });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.messageName);
+    await this.fillCombobox(args.messageName);
 
     const createOption = this.page.getByText(`Create Message "${args.messageName}"`, { exact: true });
     const optionCount = await createOption.count();
@@ -61,8 +60,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
   public async setSignalDefinition(args: { signalName: string; endEventLocator: Locator }) {
     await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.SIGNAL });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.signalName);
+    await this.fillCombobox(args.signalName);
 
     const createOption = this.page.getByText(`Create Signal "${args.signalName}"`, { exact: true });
     const optionCount = await createOption.count();
@@ -82,8 +80,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
   public async setErrorDefinition(args: { errorName: string; errorCode?: string; endEventLocator: Locator }) {
     await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.ERROR });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.errorName);
+    await this.fillCombobox(args.errorName);
 
     const createOption = this.page.getByText(`Create Error "${args.errorName}"`, { exact: true });
     const optionCount = await createOption.count();
@@ -123,8 +120,7 @@ export class EndEventPropertiesPanel extends PropertiesPanelBase {
   }) {
     await this.morphToEventType({ endEventLocator: args.endEventLocator, eventType: EventNodeType.ESCALATION });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.escalationName);
+    await this.fillCombobox(args.escalationName);
 
     const createOption = this.page.getByText(`Create Escalation "${args.escalationName}"`, { exact: true });
     const optionCount = await createOption.count();
