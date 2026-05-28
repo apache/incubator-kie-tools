@@ -39,7 +39,9 @@ export class SelectorPanel {
   }
 
   public async assign(args: { name: string }) {
-    await this.page.getByRole("button", { name: args.name, exact: true }).click();
+    const button = this.page.getByRole("button", { name: args.name, exact: true });
+    await button.scrollIntoViewIfNeeded();
+    await button.click();
     await this.page.getByRole("button", { name: "Assign" }).click();
   }
 }
