@@ -54,6 +54,7 @@ import { addEdge } from "../mutations/addEdge";
 import { addEdgeWaypoint } from "../mutations/addEdgeWaypoint";
 import { moveNodesInsideLane } from "../mutations/moveNodesInsideLane";
 import { moveNodesInsideSubProcess } from "../mutations/moveNodesInsideSubProcess";
+import { findParentFlowElements, findParentSubProcess } from "../mutations/moveNodesOutOfSubProcess";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { deleteEdgeWaypoint } from "../mutations/deleteEdgeWaypoint";
@@ -387,40 +388,72 @@ export function BpmnDiagram({
 
   // edges
 
+  const findCommonParentContainer = useCallback((state: State, sourceNodeId: string, targetNodeId: string) => {
+    const process = state.bpmn.model.definitions.rootElement?.find((e) => e.__$$element === "process");
+    if (!process) {
+      return { parentFlowElements: undefined, parentArtifacts: undefined };
+    }
+
+    const sourceParentFlowElements = findParentFlowElements(process.flowElement ?? [], sourceNodeId);
+    const targetParentFlowElements = findParentFlowElements(process.flowElement ?? [], targetNodeId);
+
+    const parentFlowElements =
+      sourceParentFlowElements === targetParentFlowElements ? sourceParentFlowElements : undefined;
+
+    const sourceParentSubProcess = findParentSubProcess(process.flowElement ?? [], sourceNodeId);
+    const targetParentSubProcess = findParentSubProcess(process.flowElement ?? [], targetNodeId);
+
+    const parentArtifacts =
+      sourceParentSubProcess === targetParentSubProcess ? sourceParentSubProcess?.artifact : undefined;
+
+    return { parentFlowElements, parentArtifacts };
+  }, []);
+
   const onEdgeAdded = useCallback<
     OnEdgeAdded<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
-  >(({ state, edgeType, sourceNode, targetNode, targetHandle }) => {
-    console.log("BPMN EDITOR DIAGRAM: onEdgeAdded");
-    addEdge({
-      definitions: state.bpmn.model.definitions,
-      __readonly_edge: {
-        type: edgeType as BpmnEdgeType,
-        targetHandle: targetHandle,
-        sourceHandle: PositionalNodeHandleId.Center,
-        autoPositionedEdgeMarker: undefined,
-        name: undefined,
-        documentation: undefined,
-      },
-      __readonly_sourceNode: {
-        type: sourceNode.type as BpmnNodeType,
-        href: sourceNode.id,
-        bounds: sourceNode.data.shape["dc:Bounds"],
-        shapeId: sourceNode.data.shape["@_id"],
-      },
-      __readonly_targetNode: {
-        type: targetNode.type as BpmnNodeType,
-        href: targetNode.id,
-        bounds: targetNode.data.shape["dc:Bounds"],
-        shapeId: targetNode.data.shape["@_id"],
-      },
-      __readonly_keepWaypoints: false,
-    });
-  }, []);
+  >(
+    ({ state, edgeType, sourceNode, targetNode, targetHandle }) => {
+      console.log("BPMN EDITOR DIAGRAM: onEdgeAdded");
+
+      const { parentFlowElements, parentArtifacts } = findCommonParentContainer(state, sourceNode.id, targetNode.id);
+
+      addEdge({
+        definitions: state.bpmn.model.definitions,
+        __readonly_edge: {
+          type: edgeType as BpmnEdgeType,
+          targetHandle: targetHandle,
+          sourceHandle: PositionalNodeHandleId.Center,
+          autoPositionedEdgeMarker: undefined,
+          name: undefined,
+          documentation: undefined,
+        },
+        __readonly_sourceNode: {
+          type: sourceNode.type as BpmnNodeType,
+          href: sourceNode.id,
+          bounds: sourceNode.data.shape["dc:Bounds"],
+          shapeId: sourceNode.data.shape["@_id"],
+        },
+        __readonly_targetNode: {
+          type: targetNode.type as BpmnNodeType,
+          href: targetNode.id,
+          bounds: targetNode.data.shape["dc:Bounds"],
+          shapeId: targetNode.data.shape["@_id"],
+        },
+        __readonly_keepWaypoints: false,
+        __readonly_parentFlowElements: parentFlowElements,
+        __readonly_parentArtifacts: parentArtifacts,
+      });
+    },
+    [findCommonParentContainer]
+  );
 
   const onEdgeUpdated = useCallback<
     OnEdgeUpdated<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
   >(({ state, edge, targetNode, sourceNode, targetHandle, sourceHandle, firstWaypoint, lastWaypoint }) => {
     console.log("BPMN EDITOR DIAGRAM: onEdgeUpdated");
+
+    const { parentFlowElements, parentArtifacts } = findCommonParentContainer(state, sourceNode.id, targetNode.id);
+
     const { newBpmnEdge } = addEdge({
       definitions: state.bpmn.model.definitions,
       __readonly_edge: {
@@ -449,6 +482,8 @@ export function BpmnDiagram({
         shapeId: targetNode.data.shape["@_id"],
       },
       __readonly_keepWaypoints: true,
+      __readonly_parentFlowElements: parentFlowElements,
+      __readonly_parentArtifacts: parentArtifacts,
     });
 
     // The BPMN Edge changed nodes, so we need to delete the old one, but keep the waypoints.
