@@ -69,10 +69,11 @@ export function addOrGetMessages({
     itemDefinitionId = RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES;
   }
 
-  const existingMessage = messages.find((s) => s["@_name"] === messageName);
-
-  if (existingMessage) {
-    return { messageRef: existingMessage["@_id"] };
+  if (messageName) {
+    const existingMessage = messages.find((s) => s["@_name"] === messageName);
+    if (existingMessage) {
+      return { messageRef: existingMessage["@_id"] };
+    }
   }
 
   const newMessage: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "message"> = {
