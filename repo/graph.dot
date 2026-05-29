@@ -154,7 +154,6 @@ digraph G {
   "@kie-tools/sonataflow-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-devmode-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "pmml-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/python-venv" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-shared-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -479,8 +478,6 @@ digraph G {
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
-  "pmml-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
-  "pmml-vscode-extension" -> "@kie-tools/pmml-editor" [ style = "solid", color = "blue" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];

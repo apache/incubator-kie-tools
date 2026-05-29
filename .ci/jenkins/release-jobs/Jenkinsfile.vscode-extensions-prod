@@ -42,7 +42,7 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-        PNPM_FILTER_STRING = '-F bpmn-vscode-extension... -F dmn-vscode-extension... -F pmml-vscode-extension... -F vscode-extension-kogito-bundle... -F swf-vscode-extension... -F vscode-extension-kie-ba-bundle... -F vscode-extension-dashbuilder-editor... -F yard-vscode-extension... -F extended-services-vscode-extension...'
+        PNPM_FILTER_STRING = '-F bpmn-vscode-extension... -F dmn-vscode-extension... -F vscode-extension-kogito-bundle... -F swf-vscode-extension... -F vscode-extension-kie-ba-bundle... -F vscode-extension-dashbuilder-editor... -F yard-vscode-extension... -F extended-services-vscode-extension...'
         
         MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
@@ -159,25 +159,6 @@ pipeline {
                             "${params.UPLOAD_ASSET_URL}",
                             "packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
                             "dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                        )
-                    }
-                }
-            }
-        }
-
-        stage('Upload VS Code Extension - PMML Editor (prod)') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-                dir('kie-tools') {
-                    script {
-                        githubUtils.uploadReleaseAsset(
-                            "${params.UPLOAD_ASSET_URL}",
-                            "packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            "pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
                             'application/zip',
                             "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                         )
@@ -308,7 +289,6 @@ pipeline {
                 script {
                     env.BPMN_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-bpmn-vscode-extension.vsix"
                     env.DMN_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-dmn-vscode-extension.vsix"
-                    env.PMML_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-pmml-vscode-extension.vsix"
                     env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-dashbuilder-vscode-extension.vsix"
                     env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-vscode-extension.vsix"
                     env.YARD_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-yard-vscode-extension.vsix"
@@ -320,7 +300,6 @@ pipeline {
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
                     cp "kie-tools/packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/yard-vscode-extension/dist/yard_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}"
@@ -342,7 +321,6 @@ pipeline {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
                         releaseUtils.signArtifact("${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}")
