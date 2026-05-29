@@ -929,12 +929,45 @@ export const SubProcessNode = React.memo(
       (s) => (isHovered || isResizing) && s.xyFlowReactKieDiagram.draggingNodes.length === 0
     );
 
+    // useIsHovered(ref) doesn't work here for two reasons:
+    // 1. Child nodes (e.g. Tasks inside this Sub-Process) are separate DOM elements rendered at the
+    //    same level as this node but with a higher z-index, so they sit on top and block mouseenter.
+    // 2. InfoNodePanel and OutgoingStuffNodePanel float outside this node's bounding box but are
+    //    still DOM descendants — when they unmount because isTargeted changed, the browser fires a
+    //    spurious mouseleave with the cursor at a position outside getBoundingClientRect(), which
+    //    would incorrectly clear the hover state and cause a toggle loop.
+    // Tracking the cursor position on every mousemove is immune to both problems.
+    const isConnectionBeingMade = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== id);
+    const [isHoveredByBounds, setIsHoveredByBounds] = useState(false);
+    useEffect(() => {
+      if (!isConnectionBeingMade) {
+        setIsHoveredByBounds(false);
+        return;
+      }
+      const onMouseMove = (e: MouseEvent) => {
+        const nodeEl = ref.current?.parentElement;
+        if (!nodeEl) return;
+        const r = nodeEl.getBoundingClientRect();
+        setIsHoveredByBounds(
+          e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
+        );
+      };
+      document.addEventListener("mousemove", onMouseMove);
+      return () => {
+        document.removeEventListener("mousemove", onMouseMove);
+        setIsHoveredByBounds(false);
+      };
+    }, [isConnectionBeingMade]);
+
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const bpmnEditorStoreApi = useBpmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(
+      id,
+      shouldActLikeHovered || isHoveredByBounds
+    );
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
