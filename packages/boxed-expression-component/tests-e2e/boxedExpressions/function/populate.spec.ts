@@ -22,7 +22,7 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Boxed Function", () => {
   test("should correctly populate boxed function", async ({ browserName, stories, page, bee, resizing, monaco }) => {
-    test.skip(browserName === "webkit", "React 18: Temporaty skip");
+    test.skip(browserName === "webkit", "React 18: Temporary skip");
     await stories.openBoxedFunction();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
