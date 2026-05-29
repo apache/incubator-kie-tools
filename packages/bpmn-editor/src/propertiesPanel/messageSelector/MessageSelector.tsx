@@ -62,7 +62,6 @@ export function MessageSelector({
     const allMessages = s.bpmn.model.definitions.rootElement?.filter((e) => e.__$$element === "message") ?? [];
     const serviceTaskMessageIds = getServiceTaskMessageIds(s.bpmn.model.definitions);
 
-    // Filter out messages used by service tasks (they have different semantics)
     const filteredMessages = allMessages.filter((msg) => !serviceTaskMessageIds.has(msg["@_id"]));
 
     return new Map(filteredMessages.map((m) => [m["@_id"], m] as [string, BPMN20__tMessage]));

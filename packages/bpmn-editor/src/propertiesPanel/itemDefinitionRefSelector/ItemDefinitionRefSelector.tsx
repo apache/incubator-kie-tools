@@ -56,7 +56,6 @@ export function ItemDefinitionRefSelector({
     (s) =>
       s.bpmn.model.definitions.rootElement
         ?.filter((s) => s.__$$element === "itemDefinition")
-        .filter((s) => s["@_id"] !== RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES)
         .map((s) => ({ itemDefinitionRef: s["@_id"], dataType: s["@_structureRef"] })) ?? []
   );
 
