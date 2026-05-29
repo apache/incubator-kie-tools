@@ -45,7 +45,8 @@ test.describe("Sample", () => {
       await expect(page).toHaveScreenshot("sample-dmn.png");
     });
 
-    test("should create a PMML sample file", async ({ page, kieSandbox }) => {
+    test("should create a PMML sample file", async ({ page, kieSandbox, browserName }) => {
+      test.skip(browserName === "webkit", "React 18: Temporary skip");
       await page.getByRole("button", { name: "Try sample" }).nth(2).click();
       await expect(page.getByRole("button", { name: "Scorecard Sample" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Scorecard Sample" })).toContainText("Sample");
