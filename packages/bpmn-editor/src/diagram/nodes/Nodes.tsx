@@ -56,6 +56,7 @@ import { OutgoingStuffNodePanel } from "@kie-tools/xyflow-react-kie-diagram/dist
 import { PositionalNodeHandles } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/PositionalNodeHandles";
 import { useIsHovered } from "@kie-tools/xyflow-react-kie-diagram/dist/reactExt/useIsHovered";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useHoverPosition } from "../../hover/useHoverPosition";
 import { updateFlowElement, updateLane, updateTextAnnotation } from "../../mutations/renameNode";
 import { Normalized } from "../../normalization/normalize";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
@@ -939,24 +940,15 @@ export const SubProcessNode = React.memo(
     // Tracking the cursor position on every mousemove is immune to both problems.
     const isConnectionBeingMade = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== id);
     const [isHoveredByBounds, setIsHoveredByBounds] = useState(false);
+    const checkBounds = useCallback((x: number, y: number) => {
+      const r = ref.current?.parentElement?.getBoundingClientRect();
+      setIsHoveredByBounds(!!r && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
+    }, []);
+    useHoverPosition(isConnectionBeingMade, checkBounds);
     useEffect(() => {
       if (!isConnectionBeingMade) {
         setIsHoveredByBounds(false);
-        return;
       }
-      const onMouseMove = (e: MouseEvent) => {
-        const nodeEl = ref.current?.parentElement;
-        if (!nodeEl) return;
-        const r = nodeEl.getBoundingClientRect();
-        setIsHoveredByBounds(
-          e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
-        );
-      };
-      document.addEventListener("mousemove", onMouseMove);
-      return () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        setIsHoveredByBounds(false);
-      };
     }, [isConnectionBeingMade]);
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
