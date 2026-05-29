@@ -359,6 +359,20 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                                   }
                                 });
                               }
+                              const hasMessagesUsingReservedItemDef = s.bpmn.model.definitions.rootElement?.some(
+                                (e) =>
+                                  e.__$$element === "message" &&
+                                  e["@_itemRef"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+                              );
+                              if (!hasMessagesUsingReservedItemDef) {
+                                s.bpmn.model.definitions.rootElement = s.bpmn.model.definitions.rootElement?.filter(
+                                  (e) =>
+                                    !(
+                                      e.__$$element === "itemDefinition" &&
+                                      e["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+                                    )
+                                );
+                              }
                             }
                           });
                         }}

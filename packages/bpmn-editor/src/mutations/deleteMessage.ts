@@ -44,7 +44,10 @@ export function deleteMessage({
 
   const remainingMessages = definitions.rootElement?.filter((s) => s.__$$element === "message") ?? [];
 
-  if (remainingMessages.length === 0) {
+  const hasMessagesUsingReservedItemDef = remainingMessages.some(
+    (msg) => msg.__$$element === "message" && msg["@_itemRef"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+  );
+  if (!hasMessagesUsingReservedItemDef) {
     const itemDefinitionIndex = definitions.rootElement?.findIndex(
       (s) => s.__$$element === "itemDefinition" && s["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
     );

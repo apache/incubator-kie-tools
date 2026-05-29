@@ -56,11 +56,15 @@ export function addOrGetMessages({
     );
 
     if (!itemDefinitionForMessages) {
-      addOrGetItemDefinitions({
-        definitions: definitions,
-        dataType: DEFAULT_DATA_TYPES.OBJECT,
-        id: RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
-      });
+      const newItemDefinition: ElementFilter<
+        Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>,
+        "itemDefinition"
+      > = {
+        __$$element: "itemDefinition",
+        "@_id": RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
+        "@_structureRef": DEFAULT_DATA_TYPES.OBJECT,
+      };
+      definitions.rootElement.push(newItemDefinition);
     }
     itemDefinitionId = RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES;
   }
