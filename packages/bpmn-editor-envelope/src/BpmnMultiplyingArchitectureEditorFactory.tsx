@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, createContext, useContext } from "react";
 import {
   Editor,
   EditorFactory,
@@ -41,6 +41,12 @@ import {
   useBpmnEditorEnvelopeI18n,
 } from "./i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+
+const BpmnEditorChannelTypeContext = createContext<ChannelType | undefined>(undefined);
+
+export function useBpmnEditorChannelType(): ChannelType | undefined {
+  return useContext(BpmnEditorChannelTypeContext);
+}
 
 export class BpmnMultiplyingArchitectureEditorFactory
   implements EditorFactory<BpmnMultiplyingArchitectureEditor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
@@ -173,20 +179,22 @@ export function BpmnEditorRootWrapper({
   );
 
   return (
-    <BpmnEditorRoot
-      exposing={exposing}
-      onNewEdit={onNewEdit}
-      onRequestWorkspaceFilesList={onRequestWorkspaceFilesList}
-      onRequestWorkspaceFileContent={onRequestWorkspaceFileContent}
-      onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
-        onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
-      }
-      customTasksManager={customTasksManager}
-      workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
-      keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
-      isReadOnly={isReadOnly}
-      i18n={i18n}
-      locale={locale}
-    />
+    <BpmnEditorChannelTypeContext.Provider value={channelType}>
+      <BpmnEditorRoot
+        exposing={exposing}
+        onNewEdit={onNewEdit}
+        onRequestWorkspaceFilesList={onRequestWorkspaceFilesList}
+        onRequestWorkspaceFileContent={onRequestWorkspaceFileContent}
+        onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
+          onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
+        }
+        customTasksManager={customTasksManager}
+        workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
+        keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
+        isReadOnly={isReadOnly}
+        i18n={i18n}
+        locale={locale}
+      />
+    </BpmnEditorChannelTypeContext.Provider>
   );
 }

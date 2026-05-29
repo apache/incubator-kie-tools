@@ -18,10 +18,10 @@
  */
 
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { generateFormsCommand } from "@kie-tools/form-code-generator-vscode-command/dist/generateFormCodeCommand";
+import { BpmnEditorChannelApiImpl } from "../channelApi/BpmnEditorChannelApiImpl";
 
 export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -32,6 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewEditorsBpmn",
     generateSvgCommandId: "extension.kogito.getPreviewSvgBpmn",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgBpmn",
+    channelApiProducer: { get: (...args) => new BpmnEditorChannelApiImpl(...args) },
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "bpmn",

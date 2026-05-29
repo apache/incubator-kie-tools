@@ -24,11 +24,16 @@ import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./Toolbar/EditorToolbar";
 import { useOnlineI18n } from "../i18n";
 import { ChannelType, DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH } from "@kie-tools-core/editor/dist/api";
-import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
+import {
+  EmbeddedEditor,
+  EmbeddedEditorRef,
+  useStateControlSubscription,
+  EmbeddedEditorChannelApiImpl,
+} from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DevDeploymentsConfirmDeployModal } from "../devDeployments/DevDeploymentsConfirmDeployModal";
-import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "../dmnRunner/DmnRunnerDrawer";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
@@ -62,10 +67,9 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useEnv } from "../env/hooks/EnvContext";
-import { useSettings } from "../settings/SettingsContext";
-import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
 import * as __path from "path";
 import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
+import { BpmnEditorChannelApi } from "@kie-tools/bpmn-editor-envelope/dist/BpmnEditorChannelApi";
 
 let saveVersion = 1;
 let refreshVersion = 0;
@@ -91,8 +95,14 @@ export function EditorPage() {
   const [_, setEditorPageError] = useState(false);
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(workspaceId, fileRelativePath);
+  const [isReady, setReady] = useState(false);
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
+  const stateControl = useMemo(() => {
+    return new StateControl();
+    // Same as in EmbeddedEditor, therefore ignoring the warning.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [embeddedEditorFile?.getFileContents]);
 
   useEffect(() => {
     document.title = `${env.KIE_SANDBOX_APP_NAME} :: ${fileRelativePath}`;
@@ -327,10 +337,89 @@ export function EditorPage() {
     [workspaceFilePromise, workspaces, navigate, routes]
   );
 
+  const handleRestTaskTest = useCallback(
+    async (request: {
+      url: string;
+      method: string;
+      headers: Record<string, string>;
+      body?: string;
+      useCorsProxy: boolean;
+    }): Promise<{ status: number; data: string; headers?: Record<string, string> }> => {
+      try {
+        const targetUrl =
+          request.useCorsProxy && env.KIE_SANDBOX_CORS_PROXY_URL
+            ? `${env.KIE_SANDBOX_CORS_PROXY_URL}/${request.url.replace(/^https?:\/\//, "")}`
+            : request.url;
+
+        const response = await fetch(targetUrl, {
+          method: request.method,
+          headers: request.headers,
+          body: request.body,
+        });
+
+        const contentType = response.headers.get("content-type");
+        let data: any;
+
+        if (contentType?.includes("application/json")) {
+          data = await response.json();
+        } else {
+          data = await response.text();
+        }
+
+        const responseHeaders: Record<string, string> = {};
+        response.headers.forEach((value, key) => {
+          responseHeaders[key] = value;
+        });
+
+        return {
+          status: response.status,
+          data,
+          headers: responseHeaders,
+        };
+      } catch (error) {
+        console.error("REST task test request failed:", error);
+        throw error;
+      }
+    },
+    [env.KIE_SANDBOX_CORS_PROXY_URL]
+  );
+
   const handleSetContentError = useCallback(() => {
     setFileBroken(true);
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
+
+  const kieSandboxEditorChannelApiImpl = useMemo<BpmnEditorChannelApi | undefined>(() => {
+    if (!embeddedEditorFile) {
+      return undefined;
+    }
+    const defaultApi = new EmbeddedEditorChannelApiImpl(stateControl, embeddedEditorFile, locale, {});
+    return {
+      kogitoWorkspace_newEdit: (...args) => defaultApi.kogitoWorkspace_newEdit(...args),
+      kogitoEditor_stateControlCommandUpdate: (...args) => defaultApi.kogitoEditor_stateControlCommandUpdate(...args),
+      kogitoEditor_contentRequest: (...args) => defaultApi.kogitoEditor_contentRequest(...args),
+      kogitoWorkspace_resourceContentRequest: handleResourceContentRequest,
+      kogitoWorkspace_resourceListRequest: handleResourceListRequest,
+      kogitoWorkspace_openFile: handleOpenFile,
+      kogitoEditor_ready: () => setReady(true),
+      kogitoEditor_setContentError: handleSetContentError,
+      kogitoEditor_theme: (...args) => defaultApi.kogitoEditor_theme(...args),
+      kogitoI18n_getLocale: (...args) => defaultApi.kogitoI18n_getLocale(...args),
+      kogitoNotifications_createNotification: (...args) => defaultApi.kogitoNotifications_createNotification(...args),
+      kogitoNotifications_setNotifications: (...args) => defaultApi.kogitoNotifications_setNotifications(...args),
+      kogitoNotifications_removeNotifications: (...args) => defaultApi.kogitoNotifications_removeNotifications(...args),
+      bpmnEditor_restTaskTest: handleRestTaskTest,
+    };
+  }, [
+    embeddedEditorFile,
+    stateControl,
+    locale,
+    handleResourceContentRequest,
+    handleResourceListRequest,
+    handleOpenFile,
+    handleSetContentError,
+    handleRestTaskTest,
+  ]);
 
   const dmnLanguageService = useMemo(() => {
     if (!workspaceFilePromise.data?.workspaceFile) {
@@ -436,7 +525,7 @@ Error details: ${err}`);
                   <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
                     <DmnRunnerDrawer isDmnEditor={file.workspaceFile.extension.toLocaleLowerCase() === "dmn"}>
                       <EditorPageDockDrawer>
-                        {embeddedEditorFile && (
+                        {embeddedEditorFile && kieSandboxEditorChannelApiImpl && (
                           <EmbeddedEditor
                             /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
                              * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
@@ -444,10 +533,9 @@ Error details: ${err}`);
                             key={uniqueFileId}
                             ref={editorRef}
                             file={embeddedEditorFile}
-                            kogitoWorkspace_openFile={handleOpenFile}
-                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                            kogitoEditor_setContentError={handleSetContentError}
+                            customChannelApiImpl={kieSandboxEditorChannelApiImpl}
+                            stateControl={stateControl}
+                            isReady={isReady}
                             channelType={ChannelType.ONLINE_MULTI_FILE}
                             editorEnvelopeLocator={editorEnvelopeLocator}
                             locale={locale}

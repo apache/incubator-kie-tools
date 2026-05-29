@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import { BpmnEditorRootProps, TARGET_DIRECTORY } from "../BpmnEditorRoot";
 import { getMilestoneTask } from "./MilestoneTask";
 import * as WidClientParser from "./WidClientParser";
+import { getRestServiceTask } from "./RestServiceCallTask";
 import "@kie-tools/bpmn-marshaller/dist/drools-extension";
 import { DataMapping, setInputAndOutputDataMapping } from "@kie-tools/bpmn-editor/dist/mutations/_dataMapping";
 import {
@@ -190,7 +191,7 @@ export const WidEnabledCustomTasksManager: BpmnEditorRootProps["customTasksManag
       })
       .then((wids) => {
         if (!canceled) {
-          onChange([getMilestoneTask(i18n), ...wids.map((wid) => toCustomTask(wid))]);
+          onChange([getMilestoneTask(i18n), getRestServiceTask(i18n), ...wids.map((wid) => toCustomTask(wid))]);
         }
         doneBootstrapping.resolve();
       });
@@ -204,6 +205,7 @@ export const WidEnabledCustomTasksManager: BpmnEditorRootProps["customTasksManag
     envelopeContext.channelApi.requests,
     onChange,
     thisBpmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
+    i18n,
   ]);
 
   return <></>;

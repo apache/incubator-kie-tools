@@ -19,4 +19,22 @@
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 
-export interface BpmnEditorChannelApi extends KogitoEditorChannelApi {}
+export interface RestTaskTestRequest {
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+  body?: string;
+  useCorsProxy: boolean;
+}
+
+export interface RestTaskTestResponse {
+  status: number;
+  data: unknown;
+  headers?: Record<string, string>;
+}
+
+export interface BpmnServiceApi {
+  bpmnEditor_restTaskTest?(request: RestTaskTestRequest): Promise<RestTaskTestResponse>;
+}
+
+export interface BpmnEditorChannelApi extends KogitoEditorChannelApi, BpmnServiceApi {}

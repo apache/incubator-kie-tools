@@ -122,10 +122,23 @@ function flaggedDataInputs<T extends { name?: string; "@_name"?: string }>(
         MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.IN_COLLECTION ||
       (DATA_INPUT_RESERVED_NAMES.get(element.__$$element) ?? new Set()).has((dataInput["@_name"] ?? dataInput.name)!) ||
       (element.__$$element === "task" &&
-        !!customTasks.find(
-          (c) =>
-            c.matches(element) && !!c.dataInputReservedNames.find((n) => n === (dataInput["@_name"] ?? dataInput.name))
-        )),
+        !!customTasks.find((c) => {
+          if (!c.matches(element)) {
+            return false;
+          }
+          const dataInputName = dataInput["@_name"] ?? dataInput.name;
+          return !!c.dataInputReservedNames.find((n) => {
+            if (n.startsWith("*")) {
+              const suffix = n.slice(1);
+              return dataInputName?.endsWith(suffix);
+            } else if (n.endsWith("*")) {
+              const prefix = n.slice(0, -1);
+              return dataInputName?.startsWith(prefix);
+            } else {
+              return n === dataInputName;
+            }
+          });
+        })),
   }));
 }
 
