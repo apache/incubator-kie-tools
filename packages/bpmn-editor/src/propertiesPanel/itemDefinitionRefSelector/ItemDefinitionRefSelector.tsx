@@ -25,7 +25,6 @@ import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreCont
 import { TypeaheadSelect } from "../../typeaheadSelect/TypeaheadSelect";
 import "./ItemDefinitionRefSelector.css";
 import { useBpmnEditorI18n } from "../../i18n";
-import { RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "../../mutations/addOrGetMessages";
 
 const DEFAULT_OPTIONS = [
   { itemDefinitionRef: "String", dataType: DEFAULT_DATA_TYPES.STRING },
