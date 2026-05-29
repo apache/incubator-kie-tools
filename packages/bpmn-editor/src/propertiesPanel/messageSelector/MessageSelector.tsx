@@ -32,7 +32,6 @@ import { addOrGetMessages } from "../../mutations/addOrGetMessages";
 import "./MessageSelector.css";
 import { useBpmnEditorI18n } from "../../i18n";
 import { getServiceTaskMessageIds } from "../../store/getServiceTaskMessageIds";
-import { RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "../../mutations/addOrGetMessages";
 
 export type EventWithMessage =
   | undefined
@@ -49,12 +48,10 @@ export function MessageSelector({
   value,
   onChange,
   disableValues,
-  compatibleItemRef,
 }: {
   value: string | undefined;
   onChange: OnMessageChange;
   disableValues?: string[];
-  compatibleItemRef?: string;
 }) {
   const { i18n } = useBpmnEditorI18n();
   const isReadOnly = useBpmnEditorStore((s) => s.settings.isReadOnly);
@@ -65,16 +62,8 @@ export function MessageSelector({
     const allMessages = s.bpmn.model.definitions.rootElement?.filter((e) => e.__$$element === "message") ?? [];
     const serviceTaskMessageIds = getServiceTaskMessageIds(s.bpmn.model.definitions);
 
-    let filteredMessages = allMessages.filter((msg) => !serviceTaskMessageIds.has(msg["@_id"]));
-
-    if (compatibleItemRef) {
-      filteredMessages = filteredMessages.filter(
-        (msg) =>
-          !msg["@_itemRef"] ||
-          msg["@_itemRef"] === compatibleItemRef ||
-          msg["@_itemRef"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
-      );
-    }
+    // Filter out messages used by service tasks (they have different semantics)
+    const filteredMessages = allMessages.filter((msg) => !serviceTaskMessageIds.has(msg["@_id"]));
 
     return new Map(filteredMessages.map((m) => [m["@_id"], m] as [string, BPMN20__tMessage]));
   });

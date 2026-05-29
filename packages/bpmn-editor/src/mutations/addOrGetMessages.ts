@@ -68,9 +68,6 @@ export function addOrGetMessages({
   const existingMessage = messages.find((s) => s["@_name"] === messageName);
 
   if (existingMessage) {
-    if (existingMessage["@_itemRef"] !== itemDefinitionId) {
-      existingMessage["@_itemRef"] = itemDefinitionId;
-    }
     return { messageRef: existingMessage["@_id"] };
   }
 

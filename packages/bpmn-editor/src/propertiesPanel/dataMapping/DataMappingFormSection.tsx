@@ -41,6 +41,8 @@ import { ItemDefinitionRefSelector } from "../itemDefinitionRefSelector/ItemDefi
 import { VariableSelector } from "../variableSelector/VariableSelector";
 import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
 import { ExportIcon } from "@patternfly/react-icons/dist/js/icons/export-icon";
+import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import {
   DATA_INPUT_RESERVED_NAMES,
   DataMapping,
@@ -472,12 +474,22 @@ export function DataMappingsList({
                         />
                       </GridItem>
                       <GridItem span={3}>
-                        <ItemDefinitionRefSelector
-                          value={itemDefinitionIdByDataTypes.get(entry.dtype)}
-                          onChange={(_, newDataType) => {
-                            handleInputChange(i, "dtype", newDataType!, "input", { isExpression: false });
-                          }}
-                        />
+                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          <div style={{ flex: 1 }}>
+                            <ItemDefinitionRefSelector
+                              value={itemDefinitionIdByDataTypes.get(entry.dtype)}
+                              onChange={(_, newDataType) => {
+                                handleInputChange(i, "dtype", newDataType!, "input", { isExpression: false });
+                              }}
+                              isDisabled={hasMessageEventDefinition}
+                            />
+                          </div>
+                          {hasMessageEventDefinition && (
+                            <Tooltip content={<div>{i18n.dataMapping.messageInfoIconHelperText}</div>}>
+                              <InfoCircleIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            </Tooltip>
+                          )}
+                        </div>
                       </GridItem>
                       <GridItem span={4}>
                         <VariableSelector
@@ -536,12 +548,22 @@ export function DataMappingsList({
                         />
                       </GridItem>
                       <GridItem span={3}>
-                        <ItemDefinitionRefSelector
-                          value={itemDefinitionIdByDataTypes.get(entry.dtype) ?? entry.dtype}
-                          onChange={(_, newDataType) => {
-                            handleInputChange(i, "dtype", newDataType!, "output", { isExpression: false });
-                          }}
-                        />
+                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          <div style={{ flex: 1 }}>
+                            <ItemDefinitionRefSelector
+                              value={itemDefinitionIdByDataTypes.get(entry.dtype) ?? entry.dtype}
+                              onChange={(_, newDataType) => {
+                                handleInputChange(i, "dtype", newDataType!, "output", { isExpression: false });
+                              }}
+                              isDisabled={hasMessageEventDefinition}
+                            />
+                          </div>
+                          {hasMessageEventDefinition && (
+                            <Tooltip content={<div>{i18n.dataMapping.messageInfoIconHelperText}</div>}>
+                              <InfoCircleIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            </Tooltip>
+                          )}
+                        </div>
                       </GridItem>
                       <GridItem span={4}>
                         <VariableSelector
@@ -669,9 +691,42 @@ export function useDataMapping(
 
   const addDataMapping = useCallback(
     (section: "input" | "output", { isExpression }: { isExpression: boolean }) => {
+      let initialDataType = "";
+
+      const isMessageEvent =
+        "eventDefinition" in element &&
+        element.eventDefinition?.some((ed) => ed.__$$element === "messageEventDefinition");
+
+      if (isMessageEvent && "eventDefinition" in element) {
+        const messageEventDef = element.eventDefinition?.find((ed) => ed.__$$element === "messageEventDefinition");
+        if (messageEventDef && messageEventDef.__$$element === "messageEventDefinition") {
+          const messageRef = messageEventDef["@_messageRef"];
+          if (messageRef) {
+            const message = bpmnEditorStoreApi
+              .getState()
+              .bpmn.model.definitions.rootElement?.find(
+                (el) => el.__$$element === "message" && el["@_id"] === messageRef
+              );
+            if (message && message.__$$element === "message") {
+              const itemDefId = message["@_itemRef"];
+              if (itemDefId) {
+                const itemDef = bpmnEditorStoreApi
+                  .getState()
+                  .bpmn.model.definitions.rootElement?.find(
+                    (el) => el.__$$element === "itemDefinition" && el["@_id"] === itemDefId
+                  );
+                if (itemDef && itemDef.__$$element === "itemDefinition") {
+                  initialDataType = itemDef["@_structureRef"] || "";
+                }
+              }
+            }
+          }
+        }
+      }
+
       const newDataMapping: DataMapping = isExpression
-        ? { name: "", dtype: "", isExpression: true, value: "" }
-        : { name: "", dtype: "", isExpression: false, variableRef: undefined };
+        ? { name: "", dtype: initialDataType, isExpression: true, value: "" }
+        : { name: "", dtype: initialDataType, isExpression: false, variableRef: undefined };
 
       if (section === "input") {
         setInputDataMapping([...inputDataMapping, newDataMapping]);
@@ -679,7 +734,7 @@ export function useDataMapping(
         setOutputDataMapping([...outputDataMapping, newDataMapping]);
       }
     },
-    [inputDataMapping, outputDataMapping]
+    [inputDataMapping, outputDataMapping, element, bpmnEditorStoreApi]
   );
 
   const removeDataMapping = useCallback(

@@ -225,24 +225,6 @@ import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramEl
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { DEFAULT_DATA_TYPES } from "./addOrGetItemDefinitions";
 
-function updateMessageItemRefForMessageEvent(
-  definitions: Normalized<BPMN20__tDefinitions>,
-  event: WithInputDataMapping | WithOutputDataMapping | WithDataMapping,
-  itemSubjectRef: string
-) {
-  if (!("eventDefinition" in event)) return;
-  const messageEventDef = event.eventDefinition?.find((ed) => ed.__$$element === "messageEventDefinition");
-  if (!messageEventDef?.["@_messageRef"]) return;
-
-  const message = definitions.rootElement?.find(
-    (e) => e.__$$element === "message" && e["@_id"] === messageEventDef["@_messageRef"]
-  );
-
-  if (message && message.__$$element === "message" && message["@_itemRef"] !== itemSubjectRef) {
-    message["@_itemRef"] = itemSubjectRef;
-  }
-}
-
 export function setInputDataMapping(
   itemDefinitionIdByDataTypes: Map<string, string>,
   inputDataMapping: DataMapping[],
@@ -253,8 +235,6 @@ export function setInputDataMapping(
   elementWithData.dataInput = [];
   elementWithAssociation.dataInputAssociation = [];
 
-  let eventDataItemSubjectRef: string | undefined;
-
   inputDataMapping.forEach((dataMapping) => {
     const dataInput: Unpacked<(typeof elementWithData)["dataInput"]> = {
       "@_id": generateUuid(),
@@ -262,8 +242,6 @@ export function setInputDataMapping(
       "@_drools:dtype": dataMapping.dtype,
       "@_itemSubjectRef": itemDefinitionIdByDataTypes.get(dataMapping.dtype),
     };
-
-    eventDataItemSubjectRef = dataInput["@_itemSubjectRef"];
 
     elementWithData.dataInput?.push(dataInput);
 
@@ -292,10 +270,6 @@ export function setInputDataMapping(
           }
     );
   });
-
-  if (definitions && eventDataItemSubjectRef) {
-    updateMessageItemRefForMessageEvent(definitions, elementWithAssociation, eventDataItemSubjectRef);
-  }
 }
 
 export function setOutputDataMapping(
@@ -308,8 +282,6 @@ export function setOutputDataMapping(
   elementWithData.dataOutput = [];
   elementWithAssociation.dataOutputAssociation = [];
 
-  let eventDataItemSubjectRef: string | undefined;
-
   outputDataMapping.forEach((dataMapping) => {
     const dataOutput = {
       "@_name": dataMapping.name,
@@ -317,8 +289,6 @@ export function setOutputDataMapping(
       "@_drools:dtype": dataMapping.dtype,
       "@_itemSubjectRef": itemDefinitionIdByDataTypes.get(dataMapping.dtype),
     };
-
-    eventDataItemSubjectRef = dataOutput["@_itemSubjectRef"];
 
     elementWithData.dataOutput?.push(dataOutput);
 
@@ -347,10 +317,6 @@ export function setOutputDataMapping(
           }
     );
   });
-
-  if (definitions && eventDataItemSubjectRef) {
-    updateMessageItemRefForMessageEvent(definitions, elementWithAssociation, eventDataItemSubjectRef);
-  }
 }
 
 export function setInputAndOutputDataMapping(
