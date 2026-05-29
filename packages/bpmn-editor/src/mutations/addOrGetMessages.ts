@@ -62,7 +62,7 @@ export function addOrGetMessages({
       > = {
         __$$element: "itemDefinition",
         "@_id": RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
-        "@_structureRef": DEFAULT_DATA_TYPES.OBJECT,
+        "@_structureRef": "",
       };
       definitions.rootElement.push(newItemDefinition);
     }
