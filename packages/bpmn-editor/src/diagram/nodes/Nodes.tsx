@@ -934,7 +934,7 @@ export const SubProcessNode = React.memo(
     //    same level as this node but with a higher z-index, so they sit on top and block mouseenter.
     // 2. InfoNodePanel and OutgoingStuffNodePanel float outside this node's bounding box but are
     //    still DOM descendants — when they unmount because isTargeted changed, the browser fires a
-    //    spurious mouseleave with the cursor at a position outside getBoundingClientRect(), which
+    //    fake mouseleave with the cursor at a position outside getBoundingClientRect(), which
     //    would incorrectly clear the hover state and cause a toggle loop.
     // Tracking the cursor position on every mousemove is immune to both problems.
     const isConnectionBeingMade = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== id);
