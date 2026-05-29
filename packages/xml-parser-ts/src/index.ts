@@ -53,6 +53,27 @@ export const domParser = {
     // console.time("parsing dom took (DOMParser)");
     const domdoc = new DOMParser().parseFromString(xml.toString(), "application/xml");
     // console.timeEnd("parsing dom took (DOMParser)");
+
+    // console.time("parsing dom took (DOMParser) parsererror");
+    const parsererrorElements = domdoc.querySelectorAll("parsererror");
+    if (parsererrorElements.length > 0) {
+      let hasRealError = false;
+      for (let i = 0; i < parsererrorElements.length; i++) {
+        const element = parsererrorElements[i];
+        if (!hasRealError && element.textContent?.trim()) {
+          hasRealError = true;
+        }
+        element.parentNode?.removeChild(element);
+      }
+
+      console.warn("XML parsing error detected and filtered. Document may be incomplete.");
+      if (hasRealError && xml && xml.toString().trim() !== "") {
+        // console.timeEnd("parsing dom took (DOMParser) parsererror");
+        throw new Error("XML parsing error detected. The XML structure is invalid and cannot be parsed.");
+      }
+    }
+    // console.timeEnd("parsing dom took (DOMParser) parsererror");
+
     return domdoc;
   },
 };
