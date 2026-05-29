@@ -1892,6 +1892,12 @@ importers:
       '@kie-tools-core/vscode-extension':
         specifier: workspace:*
         version: link:../vscode-extension
+      '@kie-tools-core/vscode-java-code-completion':
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion
+      '@kie-tools-core/workspace':
+        specifier: workspace:*
+        version: link:../workspace
       '@kie-tools/bpmn-editor-envelope':
         specifier: workspace:*
         version: link:../bpmn-editor-envelope

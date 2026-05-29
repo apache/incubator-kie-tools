@@ -29,11 +29,11 @@ export interface RestTaskTestRequest {
 
 export interface RestTaskTestResponse {
   status: number;
-  data: string;
+  data: unknown;
   headers?: Record<string, string>;
 }
 
-export interface BpmnServiceApi extends KogitoEditorChannelApi {
+export interface BpmnServiceApi {
   bpmnEditor_restTaskTest?(request: RestTaskTestRequest): Promise<RestTaskTestResponse>;
 }
 

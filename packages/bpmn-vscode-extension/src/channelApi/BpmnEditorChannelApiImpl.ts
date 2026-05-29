@@ -18,6 +18,13 @@
  */
 
 import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
+import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl";
+import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { ResourceContentService } from "@kie-tools-core/workspace/dist/api";
 import {
   BpmnEditorChannelApi,
   RestTaskTestRequest,
@@ -26,13 +33,13 @@ import {
 
 export class BpmnEditorChannelApiImpl extends DefaultVsCodeKieEditorChannelApiImpl implements BpmnEditorChannelApi {
   constructor(
-    protected readonly editor: any,
-    protected readonly resourceContentService: any,
-    protected readonly vscodeWorkspace: any,
-    protected readonly vscodeNotifications: any,
-    protected readonly javaCodeCompletionApi: any,
+    protected readonly editor: VsCodeKieEditorController,
+    protected readonly resourceContentService: ResourceContentService,
+    protected readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
+    protected readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
+    protected readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     protected readonly viewType: string,
-    protected readonly i18n: any
+    protected readonly i18n: I18n<VsCodeI18n>
   ) {
     super(editor, resourceContentService, vscodeWorkspace, vscodeNotifications, javaCodeCompletionApi, viewType, i18n);
   }
