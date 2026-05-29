@@ -52,6 +52,8 @@ test.describe("New file", () => {
       await page.getByRole("button", { name: "New Scorecard" }).click();
       await expect(page.getByRole("button", { name: "Scorecard Untitled" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Scorecard Untitled" })).toContainText("Untitled");
+      // Wait for iframe to be ready before accessing its content
+      await kieSandbox.getEditor().locator("body").waitFor({ state: "attached" });
       await expect(kieSandbox.getEditor().getByRole("button", { name: "Set Data Dictionary" })).toBeAttached();
       await expect(page).toHaveScreenshot("new-file-pmml.png");
     });

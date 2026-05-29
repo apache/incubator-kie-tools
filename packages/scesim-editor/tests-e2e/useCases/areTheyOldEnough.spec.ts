@@ -27,7 +27,6 @@ test.describe("Check are they old enough test case", () => {
     resizing,
     table,
   }) => {
-    test.skip(browserName === "webkit", "React 18: Temporary skip");
     await useCases.openAreTheyOldEnoughTest();
     await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
     await expect(testScenarioTable.get()).toHaveScreenshot("are-they-old-enough-test.png");
