@@ -37,6 +37,7 @@ import { BpmnXyFlowDiagramState, State } from "./Store";
 import { NODE_LAYERS } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/Hooks";
 import { ContainmentMode } from "@kie-tools/xyflow-react-kie-diagram/dist/graph/graphStructure";
 import { BPMN20__tLane } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+import { isSubProcessElement } from "../mutations/moveNodesOutOfSubProcess";
 
 export function computeDiagramData(
   definitions: State["bpmn"]["model"]["definitions"],
@@ -102,46 +103,48 @@ export function computeDiagramData(
         nodeBpmnElementsById.set(bpmnElement["@_id"], bpmnElement);
 
         // sub-processes
-        if (
-          bpmnElement?.__$$element === "subProcess" ||
-          bpmnElement?.__$$element === "adHocSubProcess" ||
-          bpmnElement?.__$$element === "transaction"
-        ) {
-          for (const flowElement of bpmnElement.flowElement ?? []) {
-            if (flowElement.__$$element === "boundaryEvent") {
-              parentIdsById.set(flowElement["@_id"], flowElement["@_attachedToRef"]);
-            } else {
-              parentIdsById.set(flowElement["@_id"], bpmnElement["@_id"]);
+        if (isSubProcessElement(bpmnElement)) {
+          const processSubProcessElements = (subProcess: typeof bpmnElement, parentId: string): void => {
+            for (const flowElement of subProcess.flowElement ?? []) {
+              if (flowElement.__$$element === "boundaryEvent") {
+                parentIdsById.set(flowElement["@_id"], flowElement["@_attachedToRef"]);
+              } else {
+                parentIdsById.set(flowElement["@_id"], parentId);
+              }
+              if (flowElement.__$$element !== "sequenceFlow") {
+                if (
+                  flowElement.__$$element !== "callChoreography" &&
+                  flowElement.__$$element !== "choreographyTask" &&
+                  flowElement.__$$element !== "dataObjectReference" &&
+                  flowElement.__$$element !== "dataStoreReference" &&
+                  flowElement.__$$element !== "implicitThrowEvent" &&
+                  flowElement.__$$element !== "manualTask" &&
+                  flowElement.__$$element !== "receiveTask" &&
+                  flowElement.__$$element !== "sendTask" &&
+                  flowElement.__$$element !== "subChoreography"
+                ) {
+                  nodeBpmnElementsById.set(flowElement["@_id"], flowElement);
+                  if (isSubProcessElement(flowElement)) {
+                    processSubProcessElements(flowElement, flowElement["@_id"]);
+                  }
+                } else {
+                  // ignore on purpose. those flowElements are not nodes.
+                }
+              } else {
+                edgeBpmnElementsById.set(flowElement["@_id"], flowElement);
+              }
             }
-            if (flowElement.__$$element !== "sequenceFlow") {
-              if (
-                flowElement.__$$element !== "callChoreography" &&
-                flowElement.__$$element !== "choreographyTask" &&
-                flowElement.__$$element !== "dataObjectReference" &&
-                flowElement.__$$element !== "dataStoreReference" &&
-                flowElement.__$$element !== "implicitThrowEvent" &&
-                flowElement.__$$element !== "manualTask" &&
-                flowElement.__$$element !== "receiveTask" &&
-                flowElement.__$$element !== "sendTask" &&
-                flowElement.__$$element !== "subChoreography"
-              ) {
+
+            for (const flowElement of subProcess.artifact ?? []) {
+              parentIdsById.set(flowElement["@_id"], parentId);
+              if (flowElement.__$$element !== "association") {
                 nodeBpmnElementsById.set(flowElement["@_id"], flowElement);
               } else {
-                // ignore on purpose. those flowElements are not nodes.
+                edgeBpmnElementsById.set(flowElement["@_id"], flowElement);
               }
-            } else {
-              edgeBpmnElementsById.set(flowElement["@_id"], flowElement);
             }
-          }
-
-          for (const flowElement of bpmnElement.artifact ?? []) {
-            parentIdsById.set(flowElement["@_id"], bpmnElement["@_id"]);
-            if (flowElement.__$$element !== "association") {
-              nodeBpmnElementsById.set(flowElement["@_id"], flowElement);
-            } else {
-              edgeBpmnElementsById.set(flowElement["@_id"], flowElement);
-            }
-          }
+          };
+          processSubProcessElements(bpmnElement, bpmnElement["@_id"]);
         }
 
         // lanes
@@ -336,10 +339,44 @@ export function computeDiagramData(
     new Map<string, RF.Edge<BpmnDiagramEdgeData>>()
   );
 
-  const sortedNodes = [...nodes]
-    .sort((a, b) => Number(b.type === NODE_TYPES.subProcess) - Number(a.type === NODE_TYPES.subProcess))
-    .sort((a, b) => Number(b.type === NODE_TYPES.lane) - Number(a.type === NODE_TYPES.lane))
-    .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
+  const depthCache = new Map<string, number>();
+
+  const getDepth = (nodeId: string, visiting = new Set<string>()): number => {
+    if (depthCache.has(nodeId)) {
+      return depthCache.get(nodeId)!;
+    }
+
+    if (visiting.has(nodeId)) {
+      console.warn(`Cycle detected in BPMN containment hierarchy at node: ${nodeId}`);
+      return 0;
+    }
+
+    visiting.add(nodeId);
+    const parentId = parentIdsById.get(nodeId);
+    const depth = parentId ? getDepth(parentId, visiting) + 1 : 0;
+    visiting.delete(nodeId);
+    depthCache.set(nodeId, depth);
+    return depth;
+  };
+
+  const typePriority = (type: BpmnNodeType): number => {
+    switch (type) {
+      case NODE_TYPES.group:
+        return 0;
+      case NODE_TYPES.lane:
+        return 1;
+      case NODE_TYPES.subProcess:
+        return 2;
+      default:
+        return 3;
+    }
+  };
+
+  const sortedNodes = [...nodes].sort((a, b) => {
+    const depthDiff = getDepth(a.id) - getDepth(b.id);
+    if (depthDiff !== 0) return depthDiff;
+    return typePriority(a.type!) - typePriority(b.type!);
+  });
 
   const finalNodes = newNodeProjection ? [...sortedNodes, newNodeProjection] : sortedNodes;
 

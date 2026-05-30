@@ -48,6 +48,8 @@ export function addEdge({
   __readonly_targetNode,
   __readonly_edge,
   __readonly_keepWaypoints,
+  __readonly_parentFlowElements,
+  __readonly_parentArtifacts,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
   __readonly_sourceNode: {
@@ -71,6 +73,8 @@ export function addEdge({
     autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
   };
   __readonly_keepWaypoints: boolean;
+  __readonly_parentFlowElements?: Normalized<BPMN20__tProcess>["flowElement"];
+  __readonly_parentArtifacts?: Normalized<BPMN20__tProcess>["artifact"];
 }) {
   if (
     !_checkIsValidConnection(BPMN_GRAPH_STRUCTURE, __readonly_sourceNode, __readonly_targetNode, __readonly_edge.type)
@@ -88,7 +92,10 @@ export function addEdge({
 
   // Associations (incl. Compensation Associations)
   if (__readonly_edge.type === EDGE_TYPES.association || __readonly_edge.type === EDGE_TYPES.compensationAssociation) {
-    process.artifact ??= [];
+    const targetArtifacts = __readonly_parentArtifacts ?? process.artifact ?? [];
+    if (!process.artifact) {
+      process.artifact = targetArtifacts;
+    }
 
     const newAssociation: Normalized<BPMN20__tAssociation> = {
       "@_id": newEdgeId,
@@ -99,13 +106,13 @@ export function addEdge({
 
     // Remove previously existing association
     const removed = removeFirstMatchIfPresent(
-      process.artifact,
+      targetArtifacts,
       (a) => a.__$$element === "association" && areEdgesEquivalent(a, newAssociation)
     );
     existingEdgeId = removed?.["@_id"];
 
     // Replace with the new one.
-    process.artifact?.push({
+    targetArtifacts.push({
       __$$element: "association",
       ...newAssociation,
       "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
@@ -114,7 +121,10 @@ export function addEdge({
 
   // Sequence Flows
   else {
-    process.flowElement ??= [];
+    const targetFlowElements = __readonly_parentFlowElements ?? process.flowElement ?? [];
+    if (!process.flowElement) {
+      process.flowElement = targetFlowElements;
+    }
 
     const newSequenceFlow: Normalized<BPMN20__tSequenceFlow> = {
       "@_id": newEdgeId,
@@ -126,14 +136,14 @@ export function addEdge({
 
     // Remove previously existing association
     const removed = removeFirstMatchIfPresent(
-      process.flowElement,
+      targetFlowElements,
       (a) => a.__$$element === "sequenceFlow" && areEdgesEquivalent(a, newSequenceFlow)
     );
     existingEdgeId = removed?.["@_id"];
     newEdgeId = tryKeepingEdgeId(existingEdgeId, newEdgeId);
 
     // Replace with the new one.
-    process.flowElement?.push({
+    targetFlowElements.push({
       __$$element: "sequenceFlow",
       ...newSequenceFlow,
       "@_id": newEdgeId,

@@ -294,6 +294,7 @@ export const BPMN_CONTAINMENT_MAP: ContainmentMap<BpmnNodeType> = new Map<
           NODE_TYPES.intermediateCatchEvent,
           NODE_TYPES.intermediateThrowEvent,
           NODE_TYPES.gateway,
+          NODE_TYPES.subProcess,
           NODE_TYPES.endEvent,
           NODE_TYPES.textAnnotation,
           NODE_TYPES.group,
