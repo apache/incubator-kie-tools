@@ -21,6 +21,7 @@ import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bp
 import { Normalized } from "../normalization/normalize";
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "./addOrGetMessages";
 
 export function deleteMessage({
   definitions,
@@ -40,6 +41,29 @@ export function deleteMessage({
 
   // Delete from root element
   definitions.rootElement?.splice(existingMessageIndex, 1);
+
+  const remainingMessages = definitions.rootElement?.filter((s) => s.__$$element === "message") ?? [];
+
+  const hasMessagesUsingReservedItemDef = remainingMessages.some(
+    (msg) => msg.__$$element === "message" && msg["@_itemRef"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+  );
+  if (!hasMessagesUsingReservedItemDef) {
+    const itemDefinitionIndex = definitions.rootElement?.findIndex(
+      (s) => s.__$$element === "itemDefinition" && s["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+    );
+    if (itemDefinitionIndex !== undefined && itemDefinitionIndex >= 0) {
+      definitions.rootElement?.splice(itemDefinitionIndex, 1);
+    }
+  }
+
+  definitions.rootElement
+    ?.filter((e) => e.__$$element === "correlationProperty")
+    .forEach((property) => {
+      if (property.__$$element === "correlationProperty") {
+        property.correlationPropertyRetrievalExpression =
+          property.correlationPropertyRetrievalExpression?.filter((cpre) => cpre["@_messageRef"] !== messageId) ?? [];
+      }
+    });
 
   const { process } = addOrGetProcessAndDiagramElements({ definitions });
 

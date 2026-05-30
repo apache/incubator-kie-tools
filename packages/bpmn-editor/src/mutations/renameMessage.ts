@@ -51,7 +51,6 @@ export function renameMessage({
     "message"
   >;
   message["@_name"] = newMessageName;
-  message["@_itemRef"] = `${newMessageName}Type`;
 
   const { process } = addOrGetProcessAndDiagramElements({ definitions });
 

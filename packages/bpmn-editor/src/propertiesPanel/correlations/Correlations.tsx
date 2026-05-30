@@ -60,6 +60,8 @@ import {
 } from "../itemDefinitionRefSelector/ItemDefinitionRefSelector";
 import { MessageSelector } from "../messageSelector/MessageSelector";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { deleteUnusedItemDefinitions } from "../../mutations/deleteItemDefinition";
+import { deleteOrphanedCorrelationSubscriptions } from "../../mutations/deleteOrphanedCorrelationSubscriptions";
 import "./Correlations.css";
 import { useBpmnEditorI18n } from "../../i18n";
 
@@ -183,6 +185,24 @@ export function Correlations() {
 
         if (property) {
           property["@_type"] = newItemDefinitionRef;
+          property.correlationPropertyRetrievalExpression.forEach((cpre) => {
+            if (cpre.messagePath) {
+              cpre.messagePath["@_evaluatesToTypeRef"] = newItemDefinitionRef;
+            }
+          });
+
+          const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
+          process.correlationSubscription?.forEach((subscription) => {
+            subscription.correlationPropertyBinding
+              ?.filter((binding) => binding["@_correlationPropertyRef"] === selectedPropertyId)
+              .forEach((binding) => {
+                if (binding.dataPath) {
+                  binding.dataPath["@_evaluatesToTypeRef"] = newItemDefinitionRef;
+                }
+              });
+          });
+
+          deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
         }
       });
     },
@@ -210,6 +230,25 @@ export function Correlations() {
         s.bpmn.model.definitions.rootElement = s.bpmn.model.definitions.rootElement?.filter(
           (e) => e["@_id"] !== propertyId
         );
+
+        s.bpmn.model.definitions.rootElement
+          ?.filter((e) => e.__$$element === "collaboration")
+          .forEach((collaboration) => {
+            if (collaboration.__$$element === "collaboration") {
+              collaboration.correlationKey?.forEach((key) => {
+                if (key.correlationPropertyRef) {
+                  key.correlationPropertyRef = key.correlationPropertyRef.filter(
+                    (propRef) => propRef.__$$text !== propertyId
+                  );
+                }
+              });
+              collaboration.correlationKey = collaboration.correlationKey?.filter(
+                (key) => key.correlationPropertyRef && key.correlationPropertyRef.length > 0
+              );
+            }
+          });
+        deleteOrphanedCorrelationSubscriptions({ definitions: s.bpmn.model.definitions });
+        deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
       });
     },
     [bpmnEditorStoreApi]
@@ -253,15 +292,13 @@ export function Correlations() {
   );
 
   const onChangeMessageBindingMessage = useCallback(
-    (i: number) => (newMessaage: string) => {
+    (i: number) => (newMessageRef: string) => {
       bpmnEditorStoreApi.setState((s) => {
         const property = s.bpmn.model.definitions.rootElement
           ?.filter((p) => p.__$$element === "correlationProperty")
           .find((p) => p["@_id"] === selectedPropertyId);
-
         if (property) {
-          property.correlationPropertyRetrievalExpression ??= [];
-          property.correlationPropertyRetrievalExpression[i]["@_messageRef"] = newMessaage;
+          property.correlationPropertyRetrievalExpression[i]["@_messageRef"] = newMessageRef || "";
         }
       });
     },
@@ -276,8 +313,8 @@ export function Correlations() {
           .find((p) => p["@_id"] === selectedPropertyId);
 
         if (property) {
-          property.correlationPropertyRetrievalExpression ??= [];
           property.correlationPropertyRetrievalExpression.splice(i, 1);
+          deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
         }
       });
     },
@@ -306,6 +343,7 @@ export function Correlations() {
         if (collaboration) {
           collaboration.correlationKey = collaboration.correlationKey?.filter((k) => k["@_id"] !== keyId);
         }
+        deleteOrphanedCorrelationSubscriptions({ definitions: s.bpmn.model.definitions });
       });
     },
     [bpmnEditorStoreApi]
@@ -353,17 +391,29 @@ export function Correlations() {
     bpmnEditorStoreApi.setState((s) => {
       const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
       process.correlationSubscription ??= [];
+      const propertiesById = new Map(
+        (s.bpmn.model.definitions.rootElement ?? [])
+          .filter((e) => e.__$$element === "correlationProperty")
+          .map((p) => [p["@_id"], p])
+      );
       process.correlationSubscription?.push({
         "@_id": generateUuid(),
         "@_correlationKeyRef": selectedKeyId,
-        correlationPropertyBinding: (selectedKey!.correlationPropertyRef ?? []).map((propRef) => ({
-          "@_id": generateUuid(),
-          "@_correlationPropertyRef": propRef.__$$text,
-          dataPath: {
+        correlationPropertyBinding: (selectedKey!.correlationPropertyRef ?? []).map((propRef) => {
+          const property = propertiesById.get(propRef.__$$text);
+          const propertyType =
+            property && property.__$$element === "correlationProperty" ? property["@_type"] : undefined;
+          return {
             "@_id": generateUuid(),
-            __$$text: "",
-          },
-        })),
+            "@_correlationPropertyRef": propRef.__$$text,
+            dataPath: {
+              "@_id": generateUuid(),
+              "@_language": "java",
+              "@_evaluatesToTypeRef": propertyType,
+              __$$text: "",
+            },
+          };
+        }),
       });
     });
   }, [bpmnEditorStoreApi, selectedKey, selectedKeyId]);
@@ -385,9 +435,11 @@ export function Correlations() {
     (propertyIndex: number) => {
       return (e: React.FormEvent) => {
         bpmnEditorStoreApi.setState((s) => {
-          const key = s.bpmn.model.definitions.rootElement
-            ?.find((e) => e.__$$element === "collaboration")
-            ?.correlationKey?.find((k) => k["@_id"] === selectedKeyId);
+          const collaboration = s.bpmn.model.definitions.rootElement?.find((e) => e.__$$element === "collaboration");
+          const key =
+            collaboration && collaboration.__$$element === "collaboration"
+              ? collaboration.correlationKey?.find((k) => k["@_id"] === selectedKeyId)
+              : undefined;
 
           if (key) {
             key.correlationPropertyRef ??= [];
@@ -395,13 +447,19 @@ export function Correlations() {
             key.correlationPropertyRef.splice(propertyIndex, 1);
 
             const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-            for (const subs of process.correlationSubscription ?? []) {
-              if (subs["@_correlationKeyRef"] === selectedKeyId) {
-                subs.correlationPropertyBinding ??= [];
-                subs.correlationPropertyBinding = subs.correlationPropertyBinding.filter(
+            process.correlationSubscription
+              ?.filter((subs) => subs["@_correlationKeyRef"] === selectedKeyId)
+              .forEach((subs) => {
+                subs.correlationPropertyBinding = subs.correlationPropertyBinding?.filter(
                   (b) => b["@_correlationPropertyRef"] !== removedCorrelationPropertyRef.__$$text
                 );
-              }
+              });
+            if (
+              key.correlationPropertyRef.length === 0 &&
+              collaboration &&
+              collaboration.__$$element === "collaboration"
+            ) {
+              collaboration.correlationKey = collaboration.correlationKey?.filter((k) => k["@_id"] !== selectedKeyId);
             }
           }
         });

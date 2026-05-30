@@ -229,7 +229,8 @@ export function setInputDataMapping(
   itemDefinitionIdByDataTypes: Map<string, string>,
   inputDataMapping: DataMapping[],
   elementWithData: WithInputDataMapping | NonNullable<WithDataMapping["ioSpecification"]>,
-  elementWithAssociation: WithInputDataMapping | WithDataMapping
+  elementWithAssociation: WithInputDataMapping | WithDataMapping,
+  definitions?: Normalized<BPMN20__tDefinitions>
 ) {
   elementWithData.dataInput = [];
   elementWithAssociation.dataInputAssociation = [];
@@ -275,7 +276,8 @@ export function setOutputDataMapping(
   itemDefinitionIdByDataTypes: Map<string, string>,
   outputDataMapping: DataMapping[],
   elementWithData: WithOutputDataMapping | NonNullable<WithDataMapping["ioSpecification"]>,
-  elementWithAssociation: WithOutputDataMapping | WithDataMapping
+  elementWithAssociation: WithOutputDataMapping | WithDataMapping,
+  definitions?: Normalized<BPMN20__tDefinitions>
 ) {
   elementWithData.dataOutput = [];
   elementWithAssociation.dataOutputAssociation = [];
@@ -391,13 +393,13 @@ export function setDataMappingForElement({
       ) {
         setInputAndOutputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, outputDataMapping, e);
       } else if (e.__$$element === "endEvent" || e.__$$element === "intermediateThrowEvent") {
-        setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e, e);
+        setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e, e, definitions);
       } else if (
         e.__$$element === "startEvent" ||
         e.__$$element === "intermediateCatchEvent" ||
         e.__$$element === "boundaryEvent"
       ) {
-        setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e, e);
+        setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e, e, definitions);
       }
 
       return false; // Will stop visiting.

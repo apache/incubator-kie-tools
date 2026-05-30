@@ -81,11 +81,7 @@ export function addOrGetOperations({
   }
 
   if (!operation) {
-    const { messageRef: inMessageId } = addOrGetMessages({
-      definitions,
-      messageName: "",
-    });
-    const { messageRef: outMessageId } = addOrGetMessages({
+    const { messageRef: messageId } = addOrGetMessages({
       definitions,
       messageName: "",
     });
@@ -93,8 +89,8 @@ export function addOrGetOperations({
     operation = {
       "@_id": generateUuid(),
       "@_name": operationName,
-      inMessageRef: { __$$text: inMessageId },
-      outMessageRef: { __$$text: outMessageId },
+      inMessageRef: { __$$text: messageId },
+      outMessageRef: { __$$text: messageId },
     };
     serviceTaskInterface.operation.push(operation);
   } else if (operation["@_name"] !== operationName) {

@@ -58,12 +58,41 @@ export function EventDefinitionProperties({ event }: { event: Event }) {
         const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
         visitFlowElementsAndArtifacts(process, ({ element: e }) => {
           if (e["@_id"] === event?.["@_id"] && e.__$$element === event.__$$element) {
+            const { messageRef: actualMessageRef } = addOrGetMessages({
+              definitions: s.bpmn.model.definitions,
+              messageName: newMessage,
+            });
+
             const messageEventDefinition = e.eventDefinition?.find(
               (event) => event.__$$element === "messageEventDefinition"
             );
             if (messageEventDefinition) {
               messageEventDefinition["@_drools:msgref"] = newMessage;
-              messageEventDefinition["@_messageRef"] = newMessageRef;
+              messageEventDefinition["@_messageRef"] = actualMessageRef;
+            }
+
+            const message = s.bpmn.model.definitions.rootElement?.find(
+              (el) => el.__$$element === "message" && el["@_id"] === actualMessageRef
+            );
+
+            if (message && message.__$$element === "message" && message["@_itemRef"]) {
+              const itemDef = s.bpmn.model.definitions.rootElement?.find(
+                (el) => el.__$$element === "itemDefinition" && el["@_id"] === message["@_itemRef"]
+              );
+              const messageDataType =
+                itemDef && itemDef.__$$element === "itemDefinition" ? itemDef["@_structureRef"] || "" : "";
+
+              if ("dataInput" in e && e.dataInput) {
+                e.dataInput.forEach((dataInput) => {
+                  dataInput["@_drools:dtype"] = messageDataType;
+                });
+              }
+
+              if ("dataOutput" in e && e.dataOutput) {
+                e.dataOutput.forEach((dataOutput) => {
+                  dataOutput["@_drools:dtype"] = messageDataType;
+                });
+              }
             }
           }
         });

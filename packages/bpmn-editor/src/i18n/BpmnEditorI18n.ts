@@ -112,6 +112,7 @@ interface BpmnEditorDictionary
       noDataMappings: (entryTitle: string) => string;
       noDataMappingsYet: (entryTitle: string) => string;
       addDataMapping: (entryTitle: string) => string;
+      messageInfoIconHelperText: string;
     };
     eventDefinitionProperties: {
       message: string;

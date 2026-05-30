@@ -116,6 +116,8 @@ export const en: BpmnEditorI18n = {
     noDataMappings: (entryTitle: string): string => `No ${entryTitle} data mappings`,
     noDataMappingsYet: (entryTitle: string): string => `No ${entryTitle} data mappings yet`,
     addDataMapping: (entryTitle: string): string => `Add ${entryTitle} data mapping`,
+    messageInfoIconHelperText:
+      "For message events, the data type is determined by the messages type. To change it, update the message type in the Properties Manager(Messages tab).",
   },
   eventDefinitionProperties: {
     message: "Message",

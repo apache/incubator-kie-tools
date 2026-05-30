@@ -22,28 +22,64 @@ import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
+import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "./addOrGetItemDefinitions";
+
+// Reserved ID for the shared ItemDefinition used by all messages and linked by the message @_itemRef.
+export const RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES = "__messageItemDefinition";
 
 export function addOrGetMessages({
   definitions,
   messageName,
+  dataType,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
   messageName: string;
+  dataType?: string;
 }): {
   messageRef: string;
 } {
   definitions.rootElement ??= [];
   const messages = definitions.rootElement.filter((s) => s.__$$element === "message");
-  const existingMessage = messages.find((s) => s["@_id"] === messageName);
 
-  if (existingMessage) {
-    return { messageRef: existingMessage["@_id"] };
+  let itemDefinitionId: string;
+
+  if (dataType) {
+    const { itemDefinition } = addOrGetItemDefinitions({
+      definitions: definitions,
+      dataType: dataType,
+    });
+    itemDefinitionId = itemDefinition["@_id"];
+  } else {
+    const itemDefinitions = definitions.rootElement.filter((s) => s.__$$element === "itemDefinition");
+    const itemDefinitionForMessages = itemDefinitions.find(
+      (s) => s["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+    );
+
+    if (!itemDefinitionForMessages) {
+      const newItemDefinition: ElementFilter<
+        Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>,
+        "itemDefinition"
+      > = {
+        __$$element: "itemDefinition",
+        "@_id": RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
+        "@_structureRef": "",
+      };
+      definitions.rootElement.push(newItemDefinition);
+    }
+    itemDefinitionId = RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES;
+  }
+
+  if (messageName) {
+    const existingMessage = messages.find((s) => s["@_name"] === messageName);
+    if (existingMessage) {
+      return { messageRef: existingMessage["@_id"] };
+    }
   }
 
   const newMessage: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "message"> = {
     __$$element: "message",
     "@_id": generateUuid(),
-    "@_itemRef": `${messageName}Type`, // broken reference to a placeholder type that has no meaning to the jBPM Workflow Engine
+    "@_itemRef": itemDefinitionId,
     "@_name": messageName,
   };
 

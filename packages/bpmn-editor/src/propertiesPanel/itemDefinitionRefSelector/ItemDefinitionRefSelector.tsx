@@ -42,9 +42,11 @@ export type OnChangeItemDefinitionRefSelector = (
 export function ItemDefinitionRefSelector({
   value,
   onChange,
+  isDisabled,
 }: {
   value: string | undefined;
   onChange: OnChangeItemDefinitionRefSelector;
+  isDisabled?: boolean;
 }) {
   const { i18n } = useBpmnEditorI18n();
   const isReadOnly = useBpmnEditorStore((s) => s.settings.isReadOnly);
@@ -132,15 +134,25 @@ export function ItemDefinitionRefSelector({
   const v = selectedDataType ? itemDefinitionsByDataType.get(selectedDataType)?.itemDefinitionRef : undefined;
 
   return (
-    <TypeaheadSelect
-      isMultiple={false}
-      isDisabled={isReadOnly}
-      id={`kie-bpmn-editor--item-definition-ref-selector--${id}`}
-      selected={v}
-      setSelected={_onChange}
-      options={options}
-      onCreateNewOption={(newOptionLabel) => addOrGetItemDefinitionId({ newDataType: newOptionLabel })}
-      createNewOptionLabel={i18n.propertiesPanel.createDataType as string}
-    />
+    <div
+      style={{
+        ...(isDisabled && {
+          backgroundColor: "var(--pf-global--disabled-color--300)",
+          borderRadius: "3px",
+          opacity: 0.6,
+        }),
+      }}
+    >
+      <TypeaheadSelect
+        isMultiple={false}
+        isDisabled={isDisabled ?? isReadOnly}
+        id={`kie-bpmn-editor--item-definition-ref-selector--${id}`}
+        selected={v}
+        setSelected={_onChange}
+        options={options}
+        onCreateNewOption={(newOptionLabel) => addOrGetItemDefinitionId({ newDataType: newOptionLabel })}
+        createNewOptionLabel={i18n.propertiesPanel.createDataType as string}
+      />
+    </div>
   );
 }
