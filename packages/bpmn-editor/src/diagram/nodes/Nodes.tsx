@@ -56,6 +56,7 @@ import { OutgoingStuffNodePanel } from "@kie-tools/xyflow-react-kie-diagram/dist
 import { PositionalNodeHandles } from "@kie-tools/xyflow-react-kie-diagram/dist/nodes/PositionalNodeHandles";
 import { useIsHovered } from "@kie-tools/xyflow-react-kie-diagram/dist/reactExt/useIsHovered";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useHoverPosition } from "../../hover/useHoverPosition";
 import { updateFlowElement, updateLane, updateTextAnnotation } from "../../mutations/renameNode";
 import { Normalized } from "../../normalization/normalize";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
@@ -929,12 +930,36 @@ export const SubProcessNode = React.memo(
       (s) => (isHovered || isResizing) && s.xyFlowReactKieDiagram.draggingNodes.length === 0
     );
 
+    // useIsHovered(ref) doesn't work here for two reasons:
+    // 1. Child nodes (e.g. Tasks inside this Sub-Process) are separate DOM elements rendered at the
+    //    same level as this node but with a higher z-index, so they sit on top and block mouseenter.
+    // 2. InfoNodePanel and OutgoingStuffNodePanel float outside this node's bounding box but are
+    //    still DOM descendants — when they unmount because isTargeted changed, the browser fires a
+    //    fake mouseleave with the cursor at a position outside getBoundingClientRect(), which
+    //    would incorrectly clear the hover state and cause a toggle loop.
+    // Tracking the cursor position on every mousemove is immune to both problems.
+    const isConnectionBeingMade = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== id);
+    const [isHoveredByBounds, setIsHoveredByBounds] = useState(false);
+    const checkBounds = useCallback((x: number, y: number) => {
+      const r = ref.current?.parentElement?.getBoundingClientRect();
+      setIsHoveredByBounds(!!r && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
+    }, []);
+    useHoverPosition(isConnectionBeingMade, checkBounds);
+    useEffect(() => {
+      if (!isConnectionBeingMade) {
+        setIsHoveredByBounds(false);
+      }
+    }, [isConnectionBeingMade]);
+
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const bpmnEditorStoreApi = useBpmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(
+      id,
+      shouldActLikeHovered || isHoveredByBounds
+    );
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES);
     const nodeDimensions = useNodeDimensions({ shape, nodeType: type as BpmnNodeType, MIN_NODE_SIZES });
 
