@@ -84,20 +84,17 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
     } else {
       console.debug(`Stop resizing (different): ${resizingStopWidth}`);
-      // Use flushSync to ensure state updates are applied immediately in React 18
-      flushSync(() => {
-        for (const resizerRef of getResizerRefs()) {
-          if (resizerRef.resizingWidth?.value !== resizerRef.width) {
-            resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
-          } else {
-            // Ignoring. Nothing to do.
-          }
+      for (const resizerRef of getResizerRefs()) {
+        if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+          resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+        } else {
+          // Ignoring. Nothing to do.
         }
+      }
 
-        if (resizingStopWidth !== width) {
-          setWidth?.(resizingStopWidth);
-        }
-      });
+      if (resizingStopWidth !== width) {
+        setWidth?.(resizingStopWidth);
+      }
     }
 
     setResizing?.(false);
