@@ -1012,7 +1012,7 @@ export const SIMPLE = `<?xml version="1.0" encoding="UTF-8" ?>
       <requiredInput href="#_926B9E31-3CEA-4A0E-8A66-97F875EFB428" />
     </informationRequirement>
     <literalExpression id="_1E199E0A-2CC3-4EEE-AA8C-B4F5320EE1DE">
-      <text>Input &gt; 18<text>
+      <text>Input &gt; 18</text>
     </literalExpression>
   </decision>
   <dmndi:DMNDI>
