@@ -49,7 +49,6 @@ test.describe("New file", () => {
     });
 
     test("should create a new PMML file", async ({ page, kieSandbox, browserName }) => {
-      test.skip(browserName === "webkit", "React 18: Temporary skip");
       await page.getByRole("button", { name: "New Scorecard" }).click();
       await expect(page.getByRole("button", { name: "Scorecard Untitled" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Scorecard Untitled" })).toContainText("Untitled");

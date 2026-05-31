@@ -21,7 +21,6 @@ import { test, expect } from "../__fixtures__/base";
 
 test.describe("Check are they old enough test case", () => {
   test("should render are they old enough test correctly", async ({ useCases, testScenarioTable, resizing, table }) => {
-    test.skip(true, "React 18: Temporary Fix");
     await useCases.openAreTheyOldEnoughTest();
     await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
     await expect(testScenarioTable.get()).toHaveScreenshot("are-they-old-enough-test.png");
