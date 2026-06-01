@@ -20,6 +20,16 @@ on:
         type: string
         required: true
         default: 0.0.0
+      KOGITO_VERSION:
+        type: string
+        description: "Specify the version for Kogito Runtime"
+        required: false
+        default: "111-SNAPSHOT"
+      USE_REMOTE_ARTIFACTS:
+        type: string
+        description: "Use productized artifacts from Red Hat Maven repository"
+        required: false
+        default: "false"
 
 concurrency:
   group: kubesmarts-custom-build-publish-${{ github.event.inputs.environment }}
