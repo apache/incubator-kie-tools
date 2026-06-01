@@ -89,6 +89,7 @@ export function useFillingResizingWidth(
     (newWidth: number) => {
       if (isFlexbileColumn(column)) {
         updateColumnResizingWidths(new Map([[columnIndex, { isPivoting: false, value: newWidth }]]));
+        column.setWidth?.(newWidth);
       }
 
       if (isParentColumn(column)) {
@@ -98,8 +99,22 @@ export function useFillingResizingWidth(
           reactTableInstance,
           column,
         });
-
         updateColumnResizingWidths(newColumnResizingWidths);
+
+        if (column.setWidth) {
+          column.setWidth(newWidth);
+        } else {
+          const subColumns = getFlatListOfSubColumns(column);
+          for (const subColumn of subColumns) {
+            if (subColumn.setWidth) {
+              const subColumnIndex = findIndexOfColumn(subColumn, reactTableInstance);
+              const subColumnWidth = newColumnResizingWidths.get(subColumnIndex);
+              if (subColumnWidth) {
+                subColumn.setWidth(subColumnWidth.value);
+              }
+            }
+          }
+        }
       }
     },
     [column, columnIndex, reactTableInstance, updateColumnResizingWidths]

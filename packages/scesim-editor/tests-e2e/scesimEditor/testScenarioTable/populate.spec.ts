@@ -22,7 +22,7 @@ import { AssetType } from "../../__fixtures__/editor";
 import { AddRowPosition } from "../../__fixtures__/table";
 
 test.describe("Populate decision test scenario table", () => {
-  test("Test Scenario Table - should correctly populate decision-based a test scenario table", async ({
+  test("should correctly populate decision-based a test scenario table", async ({
     editor,
     resizing,
     table,
@@ -41,6 +41,7 @@ test.describe("Populate decision test scenario table", () => {
       columnNumber: 2,
     });
 
+    await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
     await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
     await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
     await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
@@ -97,7 +98,6 @@ test.describe("Populate decision test scenario table", () => {
       columnNumber: 2,
     });
 
-    await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
     await resizing.reset(table.getColumnHeader({ name: "EXPECT" }));
     await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-decision.png");
   });
@@ -105,7 +105,7 @@ test.describe("Populate decision test scenario table", () => {
 
 test.describe("Populate rule test scenario table", () => {
   test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1847");
-  test("Test Scenario Table - should correctly populate a rule-based test scenario table", async ({
+  test("should correctly populate a rule-based test scenario table", async ({
     editor,
     resizing,
     table,
@@ -125,6 +125,7 @@ test.describe("Populate rule test scenario table", () => {
       columnNumber: 2,
     });
 
+    await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
     await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
     await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
     await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
@@ -181,7 +182,6 @@ test.describe("Populate rule test scenario table", () => {
       columnNumber: 2,
     });
 
-    await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
     await resizing.reset(table.getColumnHeader({ name: "EXPECT" }));
     await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-rule.png");
   });
