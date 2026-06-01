@@ -63,58 +63,42 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
   const { getResizerRefs, setResizing: _setResizing } = useResizingWidthsDispatch();
 
-  const [resizingStop__data, setResizingStop__data] = useState({ width: 0 });
   const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
-  const onResizeStop = useCallback((e: React.MouseEvent, data: ResizeWidthData) => {
-    if (e.detail === 2) {
-      console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
-      return;
-    }
+  const onResizeStop = useCallback(
+    (e: React.MouseEvent, data: ResizeWidthData) => {
+      if (e.detail === 2) {
+        console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
+        return;
+      }
 
-    setResizingStop__data({ width: data.size.width });
-  }, []);
+      const resizingStopWidth = Math.floor(data.size.width);
+      if (!resizingStopWidth) {
+        return;
+      }
 
-  useEffect(() => {
-    const resizingStopWidth = Math.floor(resizingStop__data.width);
-    if (!resizingStopWidth) {
-      return;
-    }
+      if (resizingStopWidth === startResizingWidth.width) {
+        console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
+      } else {
+        console.debug(`Stop resizing (different): ${resizingStopWidth}`);
+        for (const resizerRef of getResizerRefs()) {
+          if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+            resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+          } else {
+            // Ignoring. Nothing to do.
+          }
+        }
 
-    if (resizingStopWidth === startResizingWidth.width) {
-      console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
-    } else {
-      console.debug(`Stop resizing (different): ${resizingStopWidth}`);
-      for (const resizerRef of getResizerRefs()) {
-        if (resizerRef.resizingWidth?.value !== resizerRef.width) {
-          resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
-        } else {
-          // Ignoring. Nothing to do.
+        if (resizingStopWidth !== width) {
+          setWidth?.(resizingStopWidth);
         }
       }
 
-      if (resizingStopWidth !== width) {
-        setWidth?.(resizingStopWidth);
-      }
-    }
-
-    setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
-    setResizingWidth({ value: resizingStopWidth, isPivoting: false });
-    setResizing?.(false);
-    _setResizing(false);
-  }, [
-    _setResizing,
-    getResizerRefs,
-    setResizing,
-    setResizingWidth,
-    setWidth,
-    resizingStop__data.width,
-    startResizingWidth.width,
-    width,
-  ]);
-
-  //
-  // onResizeStop batching strategy (end)
-  //
+      setResizingWidth({ value: resizingStopWidth, isPivoting: false });
+      setResizing?.(false);
+      _setResizing(false);
+    },
+    [_setResizing, getResizerRefs, setResizing, setResizingWidth, setWidth, startResizingWidth.width, width]
+  );
 
   const minConstraints = useMemo<[number, number]>(() => {
     return [minWidth ?? DEFAULT_MIN_WIDTH, 0];
@@ -159,11 +143,47 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       setTimeout(() => {
         flushSync(() => {
           setStartResizingWidth({ width: 0 });
-          setResizingStop__data({ width: newWidth });
+          const resizingStopWidth = Math.floor(newWidth);
+          if (!resizingStopWidth) {
+            return;
+          }
+
+          if (resizingStopWidth === startResizingWidth.width) {
+            console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
+          } else {
+            console.debug(`Stop resizing (different): ${resizingStopWidth}`);
+            for (const resizerRef of getResizerRefs()) {
+              if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+                resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+              } else {
+                // Ignoring. Nothing to do.
+              }
+            }
+
+            if (resizingStopWidth !== width) {
+              setWidth?.(resizingStopWidth);
+            }
+          }
+
+          // setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
+          setResizingWidth({ value: resizingStopWidth, isPivoting: false });
+          setResizing?.(false);
+          _setResizing(false);
         });
       }, 10); // React 18: Increasing the timeout to ensure useEffect will run when all references are updated.
     },
-    [getWidthToFitData, minWidth, onResizeStart]
+    [
+      _setResizing,
+      getResizerRefs,
+      getWidthToFitData,
+      minWidth,
+      onResizeStart,
+      setResizing,
+      setResizingWidth,
+      setWidth,
+      startResizingWidth.width,
+      width,
+    ]
   );
 
   const style = useMemo(() => {
