@@ -436,7 +436,7 @@ test.describe("Resizing", () => {
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 240);
     });
 
-    test("should resize annotation column and reset", async ({ page, resizing, browserName }) => {
+    test("should resize annotation column and reset", async ({ page, resizing }) => {
       const inputHeader = page.getByRole("columnheader", { name: "input-1 (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
@@ -446,7 +446,7 @@ test.describe("Resizing", () => {
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 290);
 
-      await resizing.resetManually(page, annotationsHeader);
+      await resizing.reset(annotationsHeader);
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 100);
@@ -1253,12 +1253,14 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Conditional expression", async () => {
-    test("should resize a Conditional", async ({ page, bee, resizing, stories }) => {
+    test("should resize a Conditional", async ({ bee, resizing, stories }) => {
       await stories.openBoxedConditional();
 
-      await resizing.resizeCellManually(page, bee.expression.asConditional().expressionHeaderCell.content, {
-        to: { x: 566, y: 0 },
-      });
+      await resizing.resizeCell(
+        bee.expression.asConditional().expressionHeaderCell.content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
 
       await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-root.png");
     });

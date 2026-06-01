@@ -26,6 +26,7 @@ test.describe("Populate Boxed Function", () => {
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Affordability calculation");
+
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "boolean" }).click();
     await page.keyboard.press("Enter");
@@ -98,6 +99,13 @@ test.describe("Populate Boxed Function", () => {
       .expression.asDecisionTable()
       .addRowAtBottomOfIndex(1);
 
+    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
+    await monaco.fill({
+      monacoParentLocator: page.getByTestId("kie-tools--bee--expression-popover-menu"),
+      content: "Risk category",
+      submit: true,
+    });
+
     await bee.expression.asDecisionTable().fill({
       startAtCell: 1,
       tableData: [
@@ -114,17 +122,11 @@ then true
 else false`,
     });
 
-    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
-    await monaco.fill({
-      monacoParentLocator: page.getByTestId("kie-tools--bee--expression-popover-menu"),
-      content: "Risk category",
-      submit: true,
-    });
-
-    await resizing.resizeCellManually(
-      page,
+    // React 18: Temporary fix
+    await resizing.resizeCell(
       page.getByRole("columnheader", { name: "Affordability calculation (boolean)" }),
-      { to: { x: 1095, y: 0 } }
+      { x: 0, y: 0 },
+      { x: 320, y: 0 }
     );
 
     test.info().annotations.push({
