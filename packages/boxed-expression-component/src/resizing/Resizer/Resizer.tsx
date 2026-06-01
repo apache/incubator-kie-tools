@@ -153,6 +153,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       }
 
       const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
+      console.debug(`Double-click reset to width: ${newWidth}`);
       setStartResizingWidth({ width: width ?? 0 });
       flushSync(() => {
         setResizingWidth({ value: newWidth, isPivoting: true });

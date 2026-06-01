@@ -19,7 +19,6 @@
 
 import * as React from "react";
 import { useContext, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import { BeeGwtService, BoxedExpression, DmnDataType, ExpressionChangedArgs, Normalized, PmmlDocument } from "./api";
 import { BoxedExpressionEditorProps, OnRequestFeelIdentifiers } from "./BoxedExpressionEditor";
 import "./BoxedExpressionEditorContext.css";
