@@ -86,7 +86,11 @@ export class Nodes {
         ? await this.getPositionalNodeHandleCoordinates({ node: to, position: args.position })
         : undefined;
 
-    return from.getByTitle(this.getAddEdgeTitle(args.type)).dragTo(to, { targetPosition });
+    return await from.getByTitle(this.getAddEdgeTitle(args.type)).dragTo(to, {
+      targetPosition,
+      force: true,
+      noWaitAfter: true,
+    });
   }
 
   public async dragNewConnectedNode(args: {
