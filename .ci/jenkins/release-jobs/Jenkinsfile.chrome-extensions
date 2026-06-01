@@ -154,14 +154,6 @@ pipeline {
             }
         }
 
-        stage('Upload Chrome Extension for Kogito KIE Editors') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-            }
-        }
-
         stage('Deploy Chrome Extension for KIE Editors to GitHub Pages (kogito-online)') {
             when {
                 expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
@@ -181,8 +173,6 @@ pipeline {
                         echo "Copy Chrome Extension resources"
                         rm -rf ${CHROME_EXTENSION_DIR}
                         mkdir -p ${CHROME_EXTENSION_DIR}
-                        ln -s ../../${EDITORS_DIR}/dmn ${CHROME_EXTENSION_DIR}/dmn
-                        ln -s ../../${EDITORS_DIR}/scesim ${CHROME_EXTENSION_DIR}/scesim
 
                         echo "Commit changes and push"
                         git add .

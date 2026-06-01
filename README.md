@@ -66,9 +66,6 @@ Installs the necessary 3rd party dependencies and links packages of this reposit
 
 - `pnpm bootstrap` --> Will bootstrap all packages
 - `pnpm bootstrap [pnpm-filter]` --> Will bootstrap packages filtered by [`pnpm`-filter](https://pnpm.io/filtering)
-- > E.g.,
-  >
-  > `pnpm bootstrap -F dmn-editor...` bootstraps the `dmn-editor` package and its dependencies.
 
 #### Step 2: Build
 
@@ -78,9 +75,6 @@ Installs the necessary 3rd party dependencies and links packages of this reposit
     - Will build all packages for development. Skipping linters, tests, minifiers etc.
   - `pnpm [pnpm-filter] build:dev`
     - Will build packages filtered by [`pnpm`-filter](https://pnpm.io/filtering)
-  - > E.g.,
-    >
-    > `pnpm -F dmn-editor... build:dev` builds the `dmn-editor` package and its dependencies.
 
 - Prod
 
@@ -88,27 +82,12 @@ Installs the necessary 3rd party dependencies and links packages of this reposit
     - Will build all packages for production. Optimizers will run, binaries will be produced for multiple architectures etc.
   - `pnpm [pnpm-filter] build:prod`
     - Will build packages filtered by [`pnpm`-filter](https://pnpm.io/filtering)
-  - > E.g.,
-    >
-    > `pnpm -F dmn-editor... build:prod` builds the `dmn-editor` package and its dependencies.
 
 - Local changes
   - `pnpm run on-affected [cmd]` (_alias for `pnpm -F '...[HEAD]'`_); or
   - `pnpm run on-affected-only [cmd]` (_alias for `pnpm -F '...^[HEAD]'`_); or
   - `pnpm run on-changed [cmd]` (_alias for `pnpm -F '[HEAD]'`_); or
   - `pnpm run on-changed-deps-only [cmd]` (_alias for `pnpm -F '[HEAD]^...'`_);
-  - > E.g.,
-    >
-    > If you have local changes (staged or unstaged) done to the `dmn-editor` package:
-    >
-    > - `pnpm run on-affected build:dev`
-    >   - builds the `dmn-editor` package and all packages that depend on it.
-    > - `pnpm run on-affected-only build:dev`
-    >   - doesn't build the `dmn-editor` package, but builds all packages that depend on it.
-    > - `pnpm run on-changed build:dev`
-    >   - builds the `dmn-editor` package and nothing else.
-    > - `pnpm run on-changed-deps-only build:dev`
-    >   - doesn't build the `dmn-editor` package, but builds all packages that it depends on.
 
 > **ℹ️ NOTE**
 >
@@ -224,12 +203,6 @@ This repository contains several applications. To develop each one of them indiv
 3. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
 4. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
 5. (Optional) To try the "Runtime Tools" functionalities, run the SonataFlow Dev App by running `pnpm start` at `packages/sonataflow-dev-app`, then open `https://localhost:9020/#/settings/runtime-tools` and set `http://localhost:4000/graphql` in the "Data Index URL" field
-
-#### Standalone Editors (DMN)
-
-1. After you've successfully built the project following the instructions above, go to `packages/dmn-editor-standalone`.
-2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Standalone Editors test page.
-3. From now on you can use the Standalone DMN Editor by accessing `http://localhost:9903`.
 
 #### Standalone Editors (BPMN)
 

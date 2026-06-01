@@ -42,7 +42,6 @@ pipeline {
         booleanParam(name: 'cors_proxy_image', description: 'Build cors proxy image', defaultValue: false)
         booleanParam(name: 'dashbuilder_viewer_image', description: 'Build dashbuilder viewer image', defaultValue: false)
         booleanParam(name: 'dev_deployment_base_image', description: 'Build dev deployment base image', defaultValue: false)
-        booleanParam(name: 'dev_deployment_dmn_form_webapp_image', description: 'Build dev deployment dmn form webapp image', defaultValue: false)
         booleanParam(name: 'dev_deployment_quakus_blank_app_image', description: 'Build dev deployment quakus blank app image', defaultValue: false)
         booleanParam(name: 'dev_deployment_upload_service', description: 'Build dev deployment upload service', defaultValue: false)
         booleanParam(name: 'extended_services', description: 'Build extended services', defaultValue: false)
@@ -81,7 +80,6 @@ pipeline {
                         cors_proxy_image: params.cors_proxy_image,
                         dashbuilder_viewer_image: params.dashbuilder_viewer_image,
                         dev_deployment_base_image: params.dev_deployment_base_image,
-                        dev_deployment_dmn_form_webapp_image: params.dev_deployment_dmn_form_webapp_image,
                         dev_deployment_quakus_blank_app_image: params.dev_deployment_quakus_blank_app_image,
                         dev_deployment_upload_service: params.dev_deployment_upload_service,
                         extended_services: params.extended_services,

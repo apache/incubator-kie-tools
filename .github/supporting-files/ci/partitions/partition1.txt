@@ -7,6 +7,5 @@
 @kie-tools/dashbuilder-swf-monitoring-dashboard
 @kie-tools/dashbuilder-viewer-image
 chrome-extension-serverless-workflow-editor
-vscode-extension-dashbuilder-editor
 yard-vscode-extension
 swf-vscode-extension

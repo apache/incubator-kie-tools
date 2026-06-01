@@ -19,6 +19,8 @@
 ## ci
 !/.ci
 
+packages/dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/.errai/
+
 ## node
 **/node_modules/
 **/dist/
@@ -234,7 +236,6 @@ fabric.properties
 # xml-parser-ts-codegen on some packages
 packages/bpmn-marshaller/**/ts-gen
 packages/dmn-marshaller/**/ts-gen
-packages/scesim-marshaller/**/ts-gen
 
 # kogito-sf-{builder|devmode}-image: excluding module build folders
 !packages/sonataflow-image-common/resources/**/build
