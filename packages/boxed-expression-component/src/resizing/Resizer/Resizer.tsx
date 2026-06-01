@@ -97,10 +97,10 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       }
     }
 
+    setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
+    setResizingWidth({ value: resizingStopWidth, isPivoting: false });
     setResizing?.(false);
     _setResizing(false);
-    setResizingWidth({ value: resizingStopWidth, isPivoting: false });
-    setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
   }, [
     _setResizing,
     getResizerRefs,
@@ -143,7 +143,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      e.preventDefault();
 
       let widthToFitData;
       try {
@@ -153,14 +152,18 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       }
 
       const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
-      console.debug(`Double-click reset to width: ${newWidth}`);
-      setStartResizingWidth({ width: width ?? 0 });
       flushSync(() => {
-        setResizingWidth({ value: newWidth, isPivoting: true });
-        setResizingStop__data({ width: newWidth });
+        onResizeStart(undefined, { size: { width: newWidth } });
       });
+
+      setTimeout(() => {
+        flushSync(() => {
+          setStartResizingWidth({ width: 0 });
+          setResizingStop__data({ width: newWidth });
+        });
+      }, 10); // React 18: Increasing the timeout to ensure useEffect will run when all references are updated.
     },
-    [getWidthToFitData, minWidth, setResizingWidth, width]
+    [getWidthToFitData, minWidth, onResizeStart]
   );
 
   const style = useMemo(() => {
