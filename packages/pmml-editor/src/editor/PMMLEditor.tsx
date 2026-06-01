@@ -44,6 +44,7 @@ import { toNotifications, ValidationContext, ValidationRegistry } from "./valida
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Builder } from "./paths";
+import { flushSync } from "react-dom";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -121,7 +122,10 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public componentDidMount(): void {
-    this.props.ready();
+    // Use flushSync to ensure the editor is fully mounted before signaling ready
+    flushSync(() => {
+      this.props.ready();
+    });
   }
 
   public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
