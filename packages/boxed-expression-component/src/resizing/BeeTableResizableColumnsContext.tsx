@@ -157,7 +157,6 @@ export function useBeeTableResizableCell(
 
   const _updateResizingWidth = useCallback(
     (newResizingWidth: ResizingWidth) => {
-      console.log("setResizingWidth", columnIndex, newResizingWidth);
       updateColumnResizingWidths(new Map([[columnIndex, newResizingWidth]]));
     },
     [columnIndex, updateColumnResizingWidths]

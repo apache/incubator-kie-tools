@@ -98,6 +98,7 @@ export function useFillingResizingWidth(
           reactTableInstance,
           column,
         });
+
         updateColumnResizingWidths(newColumnResizingWidths);
       }
     },
