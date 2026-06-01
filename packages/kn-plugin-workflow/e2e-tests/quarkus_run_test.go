@@ -94,7 +94,6 @@ func RunQuarkusRunTest(t *testing.T, cfgTestInputPrepareQuarkusCreateRun CfgTest
 
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
-	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	cmd := exec.Command(KnExecutable)
 

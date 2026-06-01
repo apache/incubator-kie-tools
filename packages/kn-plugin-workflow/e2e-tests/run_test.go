@@ -91,7 +91,6 @@ func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test
 
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
-	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	cmd := exec.Command(KnExecutable)
 

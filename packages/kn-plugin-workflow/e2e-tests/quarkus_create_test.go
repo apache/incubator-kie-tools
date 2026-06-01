@@ -112,7 +112,6 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
-	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	// Check if the project directory was created
 	require.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
