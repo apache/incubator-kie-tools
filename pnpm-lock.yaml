@@ -2440,6 +2440,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.1
         version: 18.3.7(@types/react@18.3.30)
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.107.1)

@@ -41,6 +41,7 @@ declare global {
     PatternFlyReact: any;
     PatternflyReactIcons: any;
     PatternFly: any;
+    reactDomCreateRoot: any;
   }
 }
 
@@ -59,6 +60,7 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
       try {
         window.React = React;
         window.ReactDOM = ReactDOM;
+        window.reactDomCreateRoot = createRoot;
 
         window.PatternFlyReact = PatternflyReact;
         window.PatternflyReactIcons = PatternflyReactIcons;
@@ -84,7 +86,7 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
         ${trimmedSource}
         const target = document.getElementById("${containerId}");
         const element = window.React.createElement(${formName}, {});
-        window.createRoot(target).render(element);
+        window.reactDomCreateRoot(target).render(element);
         `;
 
         const reactCode = transform(content.trim(), {
