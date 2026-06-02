@@ -27,7 +27,7 @@ test.describe("Populate Boxed Invocation", () => {
     bee,
     resizing,
     monaco,
-  }, testInfo) => {
+  }, { project }) => {
     await stories.openBoxedInvocation();
 
     await bee.expression.asInvocation().expressionHeaderCell.open();
@@ -69,7 +69,10 @@ test.describe("Populate Boxed Invocation", () => {
     await resizing.reset(page.getByRole("cell", { name: "Required monthly installment" }));
 
     await bee.expression.asInvocation().invokedFunctionNameCell.click();
-
+    if (project.name === "Google Chrome") {
+      // React 18: Temporary fix. Google Chrome is a bit slow to focus on the input after clicking on it.
+      await page.waitForTimeout(100);
+    }
     await page.keyboard.type("Affordability calculation");
     await page.keyboard.press("Enter");
 
