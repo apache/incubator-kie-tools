@@ -85,6 +85,7 @@ export const BeeTableResizableColumnsContextProvider = ({
             ref.setResizingWidth?.(newResizingWidth);
           }
         }
+
         onColumnResizingWidthChange(newColumnResizingWidths);
         onChange?.(newColumnResizingWidths);
       },

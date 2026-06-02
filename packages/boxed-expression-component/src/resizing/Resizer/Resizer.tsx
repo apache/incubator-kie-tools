@@ -50,17 +50,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   setResizing,
   getWidthToFitData,
 }) => {
-  //
-  // onResizeStop batching strategy (begin)
-  //
-  // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setWidth`.
-  // Every call to `setWidth` mutates the expression, so batching is essential for performance reasons.
-  // This effect runs once when resizingStop__data is truthy. Then, after running, it sets resizingStop__data to a falsy value, which short-circuits it.
-  //
-  // TODO: This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers and hooks.
-  //
-  // This whole thing is responsible for allowing any cell to shrink the entire table when resized.
-
   const { getResizerRefs, setResizing: _setResizing } = useResizingWidthsDispatch();
 
   const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
@@ -136,13 +125,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       }
 
       const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
+      // React 18: Ensure all states are update before going to the next stage
       flushSync(() => {
         onResizeStart(undefined, { size: { width: newWidth } });
       });
 
       setTimeout(() => {
+        // React 18: Ensure all states are update synchronously avoiding batching
         flushSync(() => {
-          setStartResizingWidth({ width: 0 });
           const resizingStopWidth = Math.floor(newWidth);
           if (!resizingStopWidth) {
             return;
@@ -165,12 +155,12 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
             }
           }
 
-          // setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
+          setStartResizingWidth({ width: 0 });
           setResizingWidth({ value: resizingStopWidth, isPivoting: false });
           setResizing?.(false);
           _setResizing(false);
         });
-      }, 10); // React 18: Increasing the timeout to ensure useEffect will run when all references are updated.
+      }, 10); // React 18: References are not being updated at the same time. Increasing the timeout ensure all cascade of events were resolved.
     },
     [
       _setResizing,

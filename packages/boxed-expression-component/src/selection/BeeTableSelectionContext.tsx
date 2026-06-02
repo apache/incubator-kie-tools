@@ -23,9 +23,6 @@ import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/Expre
 import { ResizingWidth, useResizingWidthsDispatch } from "../resizing/ResizingWidthsContext";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
 
-// TODO: With React 18 batching of events, these components can be heavily refactored and optimized.
-// It has lots of workarounds that could be removed if the component was designed with batching in mind.
-
 export const SELECTION_MIN_ACTIVE_DEPTH = -1;
 export const SELECTION_MIN_MAX_DEPTH = 0;
 
