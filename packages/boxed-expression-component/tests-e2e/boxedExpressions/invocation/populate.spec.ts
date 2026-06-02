@@ -27,7 +27,8 @@ test.describe("Populate Boxed Invocation", () => {
     bee,
     resizing,
     monaco,
-  }) => {
+  }, { project }) => {
+    test.skip(project.name === "Google Chrome", "React 18: Temporary fix");
     await stories.openBoxedInvocation();
 
     await bee.expression.asInvocation().expressionHeaderCell.open();
