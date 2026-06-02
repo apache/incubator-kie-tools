@@ -21,7 +21,7 @@ import { expect, test } from "../../__fixtures__/base";
 import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed Invocation", () => {
-  test.only("should correctly create pre-bureau-affordability boxed invocation", async ({
+  test("should correctly create pre-bureau-affordability boxed invocation", async ({
     stories,
     page,
     bee,
