@@ -21,14 +21,13 @@ import { expect, test } from "../../__fixtures__/base";
 import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed Invocation", () => {
-  test("should correctly create pre-bureau-affordability boxed invocation", async ({
+  test.only("should correctly create pre-bureau-affordability boxed invocation", async ({
     stories,
     page,
     bee,
     resizing,
     monaco,
-  }, { project }) => {
-    test.skip(project.name === "Google Chrome", "React 18: Temporary fix");
+  }, testInfo) => {
     await stories.openBoxedInvocation();
 
     await bee.expression.asInvocation().expressionHeaderCell.open();
@@ -70,6 +69,10 @@ test.describe("Populate Boxed Invocation", () => {
     await resizing.reset(page.getByRole("cell", { name: "Required monthly installment" }));
 
     await bee.expression.asInvocation().invokedFunctionNameCell.click();
+    if (testInfo.project.name === "Google Chrome") {
+      // React 18: Temporary fix. Google Chrome is a bit slow to focus on the input after clicking on it.
+      await page.waitForTimeout(100);
+    }
     await page.keyboard.type("Affordability calculation");
     await page.keyboard.press("Enter");
 
