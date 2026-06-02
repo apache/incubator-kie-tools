@@ -46,6 +46,8 @@ jobs:
       environment: ${{ github.event.inputs.environment }}
       tag: ${{ github.event.inputs.tag }}
       version: ${{ github.event.inputs.version }}
+      KOGITO_VERSION: ${{ github.event.inputs.KOGITO_VERSION }}
+      USE_REMOTE_ARTIFACTS: ${{ github.event.inputs.USE_REMOTE_ARTIFACTS }}
     secrets:
       KIE1_TOKEN: ${{ secrets.KIE1_TOKEN }}
       KIE1_EMAIL: ${{ secrets.KIE1_EMAIL }}

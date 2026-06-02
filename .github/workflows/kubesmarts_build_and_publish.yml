@@ -26,6 +26,11 @@ on:
         description: "Specify the version for Kogito Runtime"
         required: false
         default: "111-SNAPSHOT"
+      USE_REMOTE_ARTIFACTS:
+        type: string
+        description: "Use productized artifacts from Red Hat Maven repository"
+        required: false
+        default: "false"
     secrets:
       KIE1_TOKEN:
         required: true
@@ -92,6 +97,7 @@ jobs:
           DEPS_BRANCHNAME: ${{ inputs.tag }}
           PNPM_FILTER: "-F @kie-tools/serverless-logic-web-tools..."
           WORKING_DIR: kie-tools
+          USE_REMOTE_ARTIFACTS: ${{ inputs.USE_REMOTE_ARTIFACTS }}
 
       - name: "Parse `commit_sha`"
         id: commit_sha
