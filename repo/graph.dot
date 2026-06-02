@@ -229,7 +229,7 @@ digraph G {
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/dmn-uniforms-patternfly-form-wrapper" [ style = "solid", color = "black" ];
-  "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/quarkus-bom" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/quarkus-bom" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
