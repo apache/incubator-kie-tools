@@ -157,10 +157,8 @@ export function moveNodesOutOfSubProcess({
       findParentFlowElements(process.flowElement ?? [], __readonly_subProcessId ?? "") ?? process.flowElement ?? [];
   }
 
-  const flowElementsToMove: Normalized<Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>>[] = [];
-  const artifactsToMove: Normalized<
-    ElementExclusion<Unpacked<Normalized<BPMN20__tProcess>["artifact"]>, "association">
-  >[] = [];
+  const flowElementsToMove: Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>[] = [];
+  const artifactsToMove: ElementExclusion<Unpacked<Normalized<BPMN20__tProcess>["artifact"]>, "association">[] = [];
 
   const nodeIdsToMoveOut = new Set(__readonly_nodeIds);
 
@@ -230,8 +228,8 @@ export function moveNodesOutOfSubProcess({
   for (let i = 0; i < (subProcess.artifact ?? []).length; i++) {
     const artifact = (subProcess.artifact ?? [])[i];
     if (artifact.__$$element !== "association" && nodeIdsToMoveOut.has(artifact["@_id"])) {
-      const spliced = subProcess.artifact?.splice(i, 1) ?? [];
-      artifactsToMove.push(...spliced.filter((a) => a.__$$element !== "association"));
+      const removedArtifacts = subProcess.artifact?.splice(i, 1) ?? [];
+      artifactsToMove.push(...removedArtifacts.filter((a) => a.__$$element !== "association"));
       i--; // repeat one index because we just altered the array we're iterating over.
     }
   }
