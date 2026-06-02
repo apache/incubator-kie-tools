@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { DecisionTableInputHeaderPropertiesPanel } from "./bee/decisionTableInputHeaderPropertiesPanel";
 import { DecisionTableInputRulePropertiesPanel } from "./bee/decisionTableInputRulePropertiesPanel";
 import { DecisionTableOutputHeaderPropertiesPanel } from "./bee/decisionTableOutputHeaderPropertiesPanel";
@@ -49,5 +49,9 @@ export class BeePropertiesPanel {
 
   public async open() {
     await this.page.getByTitle("Properties panel").click();
+    // Waits for the Properties Panel to be fully inside the viewport (ratio: 1 means it should be 100% inside the viewport).
+    await expect(this.page.getByTestId("kie-tools--dmn-editor--bee-properties-panel-container")).toBeInViewport({
+      ratio: 1,
+    });
   }
 }

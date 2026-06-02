@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { Diagram } from "../diagram";
 
 export abstract class PropertiesPanelBase {
@@ -32,5 +32,9 @@ export abstract class PropertiesPanelBase {
 
   public async open() {
     await this.page.getByTitle("Properties panel").click();
+    // Waits for the Properties Panel to be fully inside the viewport (ratio: 1 means it should be 100% inside the viewport).
+    await expect(this.page.getByTestId("kie-tools--dmn-editor--properties-panel-container")).toBeInViewport({
+      ratio: 1,
+    });
   }
 }
