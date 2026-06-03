@@ -27,6 +27,28 @@ import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "./addOrGetItemDefin
 // Reserved ID for the shared ItemDefinition used by all messages and linked by the message @_itemRef.
 export const RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES = "__messageItemDefinition";
 
+export function createReservedItemDefinitionForMessages({
+  definitions,
+}: {
+  definitions: Normalized<BPMN20__tDefinitions>;
+}): void {
+  definitions.rootElement ??= [];
+  const itemDefinitions = definitions.rootElement.filter((s) => s.__$$element === "itemDefinition");
+  const reservedExists = itemDefinitions.some((e) => e["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES);
+
+  if (!reservedExists) {
+    const newItemDefinition: ElementFilter<
+      Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>,
+      "itemDefinition"
+    > = {
+      __$$element: "itemDefinition",
+      "@_id": RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
+      "@_structureRef": "",
+    };
+    definitions.rootElement.push(newItemDefinition);
+  }
+}
+
 export function addOrGetMessages({
   definitions,
   messageName,
@@ -50,22 +72,7 @@ export function addOrGetMessages({
     });
     itemDefinitionId = itemDefinition["@_id"];
   } else {
-    const itemDefinitions = definitions.rootElement.filter((s) => s.__$$element === "itemDefinition");
-    const itemDefinitionForMessages = itemDefinitions.find(
-      (s) => s["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
-    );
-
-    if (!itemDefinitionForMessages) {
-      const newItemDefinition: ElementFilter<
-        Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>,
-        "itemDefinition"
-      > = {
-        __$$element: "itemDefinition",
-        "@_id": RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
-        "@_structureRef": "",
-      };
-      definitions.rootElement.push(newItemDefinition);
-    }
+    createReservedItemDefinitionForMessages({ definitions });
     itemDefinitionId = RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES;
   }
 

@@ -231,4 +231,35 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
 
     expect(await startEventPropertiesPanel.getEscalationName()).toBe("StartEscalation");
   });
+
+  test.describe("Message Event - ItemDefinition Validation", () => {
+    test("should create itemDefinition when message start event is configured", async ({
+      palette,
+      nodes,
+      startEventPropertiesPanel,
+      jsonModel,
+    }) => {
+      await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
+      await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
+
+      const messageName = "TestMessage";
+      await startEventPropertiesPanel.setMessageDefinition({
+        messageName,
+        startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
+      });
+
+      const definitions = await jsonModel.getDefinitions();
+      const rootElements = definitions?.rootElement || [];
+
+      const message = rootElements.find((el: any) => el.__$$element === "message" && el["@_name"] === messageName);
+      expect(message).toBeDefined();
+      expect(message?.["@_itemRef"]).toBeDefined();
+
+      const itemDefinitionId = message?.["@_itemRef"];
+      const itemDefinition = rootElements.find(
+        (el: any) => el.__$$element === "itemDefinition" && el["@_id"] === itemDefinitionId
+      );
+      expect(itemDefinition).toBeDefined();
+    });
+  });
 });

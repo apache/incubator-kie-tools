@@ -46,6 +46,7 @@ import * as React from "react";
 import { useState } from "react";
 import { addOrGetProcessAndDiagramElements } from "../mutations/addOrGetProcessAndDiagramElements";
 import { regenerateTargetNamespace, setTargetNamespace } from "../mutations/setTargetNamespace";
+import { updateProcessId } from "../mutations/renameGlobalProperties";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../store/StoreContext";
 import { isProcessIdValid, getProcessIdErrorMessage } from "../validation/processIdValidation";
 import { Imports } from "./imports/Imports";
@@ -256,22 +257,10 @@ export function GlobalProperties() {
                     validated={!isProcessIdValid(process?.["@_id"]) ? "error" : "default"}
                     onChange={(e, newId) => {
                       bpmnEditorStoreApi.setState((state) => {
-                        const { process } = addOrGetProcessAndDiagramElements({
+                        updateProcessId({
                           definitions: state.bpmn.model.definitions,
+                          newId,
                         });
-                        const oldProcessId = process["@_id"];
-                        process["@_id"] = newId;
-                        const collaboration = state.bpmn.model.definitions.rootElement?.find(
-                          (e) => e.__$$element === "collaboration"
-                        );
-                        if (collaboration && collaboration.__$$element === "collaboration") {
-                          const participant = collaboration.participant?.find(
-                            (p) => p["@_processRef"] === oldProcessId
-                          );
-                          if (participant) {
-                            participant["@_processRef"] = newId;
-                          }
-                        }
                       });
                     }}
                     aria-describedby="process-id-helper"

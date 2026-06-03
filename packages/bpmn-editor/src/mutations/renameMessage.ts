@@ -23,6 +23,7 @@ import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { Normalized } from "../normalization/normalize";
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { createReservedItemDefinitionForMessages, RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "./addOrGetMessages";
 
 export function renameMessage({
   definitions,
@@ -79,4 +80,66 @@ export function renameMessage({
   });
 
   return { message };
+}
+
+export function updateMessageItemDefinition({
+  definitions,
+  messageId,
+  newItemDefinitionRef,
+}: {
+  definitions: Normalized<BPMN20__tDefinitions>;
+  messageId: string;
+  newItemDefinitionRef: string | undefined;
+}) {
+  const message = definitions.rootElement?.find((e) => e.__$$element === "message" && e["@_id"] === messageId);
+
+  if (!message || message.__$$element !== "message") {
+    return;
+  }
+
+  if (!newItemDefinitionRef) {
+    createReservedItemDefinitionForMessages({ definitions });
+  }
+
+  message["@_itemRef"] = newItemDefinitionRef || RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES;
+
+  const newItemDef = newItemDefinitionRef
+    ? definitions.rootElement?.find((e) => e.__$$element === "itemDefinition" && e["@_id"] === newItemDefinitionRef)
+    : undefined;
+  const newDataType =
+    newItemDef && newItemDef.__$$element === "itemDefinition" ? newItemDef["@_structureRef"] || "" : "";
+
+  const process = definitions.rootElement?.find((e) => e.__$$element === "process");
+  if (process && process.__$$element === "process") {
+    process.flowElement?.forEach((flowElement) => {
+      if ("eventDefinition" in flowElement) {
+        const messageEventDef = flowElement.eventDefinition?.find(
+          (ed) => ed.__$$element === "messageEventDefinition" && ed["@_messageRef"] === messageId
+        );
+
+        if (messageEventDef) {
+          if ("dataInput" in flowElement && flowElement.dataInput) {
+            flowElement.dataInput.forEach((dataInput: any) => {
+              dataInput["@_drools:dtype"] = newDataType;
+            });
+          }
+
+          if ("dataOutput" in flowElement && flowElement.dataOutput) {
+            flowElement.dataOutput.forEach((dataOutput: any) => {
+              dataOutput["@_drools:dtype"] = newDataType;
+            });
+          }
+        }
+      }
+    });
+  }
+
+  const hasMessagesUsingReservedItemDef = definitions.rootElement?.some(
+    (e) => e.__$$element === "message" && e["@_itemRef"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
+  );
+  if (!hasMessagesUsingReservedItemDef) {
+    definitions.rootElement = definitions.rootElement?.filter(
+      (e) => !(e.__$$element === "itemDefinition" && e["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES)
+    );
+  }
 }

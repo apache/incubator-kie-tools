@@ -134,15 +134,7 @@ export function ItemDefinitionRefSelector({
   const v = selectedDataType ? itemDefinitionsByDataType.get(selectedDataType)?.itemDefinitionRef : undefined;
 
   return (
-    <div
-      style={{
-        ...(isDisabled && {
-          backgroundColor: "var(--pf-global--disabled-color--300)",
-          borderRadius: "3px",
-          opacity: 0.6,
-        }),
-      }}
-    >
+    <div className="kie-bpmn-editor--item-definition-ref-selector" data-disabled={isDisabled}>
       <TypeaheadSelect
         isMultiple={false}
         isDisabled={isDisabled ?? isReadOnly}
