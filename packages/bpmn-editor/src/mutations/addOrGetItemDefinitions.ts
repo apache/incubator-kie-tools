@@ -35,11 +35,9 @@ export const DEFAULT_DATA_TYPES = {
 export function addOrGetItemDefinitions({
   definitions,
   dataType,
-  id,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
   dataType: string;
-  id?: string;
 }): {
   itemDefinition: ElementFilter<Unpacked<Normalized<BPMN20__tDefinitions["rootElement"]>>, "itemDefinition">;
 } {
@@ -58,7 +56,7 @@ export function addOrGetItemDefinitions({
     "itemDefinition"
   > = {
     __$$element: "itemDefinition",
-    "@_id": id ?? generateUuid(),
+    "@_id": generateUuid(),
     "@_structureRef": dataType,
   };
 

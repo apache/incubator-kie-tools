@@ -52,7 +52,6 @@ import { PeopleCarryIcon } from "@patternfly/react-icons/dist/js/icons/people-ca
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MessageEventSymbolSvg } from "../../diagram/nodes/NodeSvgs";
-import { addOrGetProcessAndDiagramElements } from "../../mutations/addOrGetProcessAndDiagramElements";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
 import {
   ItemDefinitionRefSelector,
@@ -60,10 +59,30 @@ import {
 } from "../itemDefinitionRefSelector/ItemDefinitionRefSelector";
 import { MessageSelector } from "../messageSelector/MessageSelector";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { deleteUnusedItemDefinitions } from "../../mutations/deleteItemDefinition";
-import { deleteOrphanedCorrelationSubscriptions } from "../../mutations/deleteOrphanedCorrelationSubscriptions";
 import "./Correlations.css";
 import { useBpmnEditorI18n } from "../../i18n";
+import {
+  addCorrelationProperty,
+  addCorrelationKey,
+  addMessageBindingToProperty,
+  addPropertyToCorrelationKey,
+  addSubscription,
+} from "../../mutations/addOrGetCorrelations";
+import {
+  updateCorrelationPropertyName,
+  updateCorrelationPropertyType,
+  updateCorrelationKeyName,
+  updateMessageBindingExpression,
+  updateMessageBindingMessage,
+  updateSubscriptionValue,
+} from "../../mutations/renameCorrelations";
+import {
+  deleteCorrelationProperty,
+  deleteCorrelationKey,
+  deletePropertyBinding,
+  deletePropertyFromKey,
+  deleteSubscription,
+} from "../../mutations/deleteCorrelations";
 
 export function Correlations() {
   const { i18n } = useBpmnEditorI18n();
@@ -76,13 +95,11 @@ export function Correlations() {
 
     bpmnEditorStoreApi.setState((s) => {
       s.focus.consumableId = newPropertyId;
-      s.bpmn.model.definitions.rootElement ??= [];
-      s.bpmn.model.definitions.rootElement.push({
-        __$$element: "correlationProperty",
-        "@_id": newPropertyId,
-        "@_name": "New Property",
-        "@_type": undefined,
-        correlationPropertyRetrievalExpression: [],
+      addCorrelationProperty({
+        definitions: s.bpmn.model.definitions,
+        propertyId: newPropertyId,
+        propertyName: "New Property",
+        propertyType: undefined,
       });
     });
 
@@ -93,30 +110,10 @@ export function Correlations() {
     const newKeyId = generateUuid();
     bpmnEditorStoreApi.setState((s) => {
       s.focus.consumableId = newKeyId;
-
-      const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-
-      s.bpmn.model.definitions.rootElement ??= [];
-      let collaboration = s.bpmn.model.definitions.rootElement.find((e) => e.__$$element === "collaboration");
-      if (!collaboration) {
-        collaboration = {
-          "@_id": generateUuid(),
-          __$$element: "collaboration",
-          participant: [
-            {
-              "@_id": generateUuid(),
-              "@_name": "Pool Participant",
-              "@_processRef": process["@_id"],
-            },
-          ],
-        };
-        s.bpmn.model.definitions.rootElement.push(collaboration);
-      }
-
-      collaboration.correlationKey ??= [];
-      collaboration.correlationKey.push({
-        "@_id": newKeyId,
-        "@_name": "New Key",
+      addCorrelationKey({
+        definitions: s.bpmn.model.definitions,
+        keyId: newKeyId,
+        keyName: "New Key",
       });
     });
 
@@ -179,45 +176,24 @@ export function Correlations() {
   const changeSelectedPropertyType = useCallback<OnChangeItemDefinitionRefSelector>(
     (newItemDefinitionRef) => {
       bpmnEditorStoreApi.setState((s) => {
-        const property = s.bpmn.model.definitions.rootElement
-          ?.filter((e) => e.__$$element === "correlationProperty")
-          .find((p) => p["@_id"] === selectedPropertyId);
-
-        if (property) {
-          property["@_type"] = newItemDefinitionRef;
-          property.correlationPropertyRetrievalExpression.forEach((cpre) => {
-            if (cpre.messagePath) {
-              cpre.messagePath["@_evaluatesToTypeRef"] = newItemDefinitionRef;
-            }
-          });
-
-          const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-          process.correlationSubscription?.forEach((subscription) => {
-            subscription.correlationPropertyBinding
-              ?.filter((binding) => binding["@_correlationPropertyRef"] === selectedPropertyId)
-              .forEach((binding) => {
-                if (binding.dataPath) {
-                  binding.dataPath["@_evaluatesToTypeRef"] = newItemDefinitionRef;
-                }
-              });
-          });
-
-          deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
-        }
+        updateCorrelationPropertyType({
+          definitions: s.bpmn.model.definitions,
+          propertyId: selectedPropertyId!,
+          newItemDefinitionRef,
+        });
       });
     },
     [bpmnEditorStoreApi, selectedPropertyId]
   );
   const changePropertyName = useCallback(
-    (propetyId: string) => (newName: string) => {
+    (propetyId: string) => (newName: string | undefined) => {
+      if (newName === undefined) return;
       bpmnEditorStoreApi.setState((s) => {
-        const property = s.bpmn.model.definitions.rootElement
-          ?.filter((e) => e.__$$element === "correlationProperty")
-          .find((p) => p["@_id"] === propetyId);
-
-        if (property) {
-          property["@_name"] = newName;
-        }
+        updateCorrelationPropertyName({
+          definitions: s.bpmn.model.definitions,
+          propertyId: propetyId,
+          newName,
+        });
       });
     },
     [bpmnEditorStoreApi]
@@ -226,66 +202,24 @@ export function Correlations() {
   const onRemoveProperty = useCallback(
     (propertyId: string) => {
       bpmnEditorStoreApi.setState((s) => {
-        s.bpmn.model.definitions.rootElement ??= [];
-        s.bpmn.model.definitions.rootElement = s.bpmn.model.definitions.rootElement?.filter(
-          (e) => e["@_id"] !== propertyId
-        );
-
-        s.bpmn.model.definitions.rootElement
-          ?.filter((e) => e.__$$element === "collaboration")
-          .forEach((collaboration) => {
-            if (collaboration.__$$element === "collaboration") {
-              collaboration.correlationKey?.forEach((key) => {
-                if (key.correlationPropertyRef) {
-                  key.correlationPropertyRef = key.correlationPropertyRef.filter(
-                    (propRef) => propRef.__$$text !== propertyId
-                  );
-                }
-              });
-              collaboration.correlationKey = collaboration.correlationKey?.filter(
-                (key) => key.correlationPropertyRef && key.correlationPropertyRef.length > 0
-              );
-            }
-          });
-        deleteOrphanedCorrelationSubscriptions({ definitions: s.bpmn.model.definitions });
-        deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
+        deleteCorrelationProperty({
+          definitions: s.bpmn.model.definitions,
+          propertyId,
+        });
       });
     },
     [bpmnEditorStoreApi]
   );
 
-  const addMessageBindingToProperty = useCallback(() => {
-    bpmnEditorStoreApi.setState((s) => {
-      const property = s.bpmn.model.definitions.rootElement
-        ?.filter((e) => e.__$$element === "correlationProperty")
-        .find((p) => p["@_id"] === selectedPropertyId);
-
-      if (property) {
-        property.correlationPropertyRetrievalExpression ??= [];
-        property.correlationPropertyRetrievalExpression.push({
-          "@_id": generateUuid(),
-          "@_messageRef": undefined as any, // SPEC DISCREPANCY!,
-          messagePath: {
-            "@_id": generateUuid(),
-            "@_evaluatesToTypeRef": property["@_type"],
-            __$$text: "",
-          },
-        });
-      }
-    });
-  }, [bpmnEditorStoreApi, selectedPropertyId]);
-
   const onChangeMessageBindingExpression = useCallback(
     (i: number) => (e: React.FormEvent, newExpression: string) => {
       bpmnEditorStoreApi.setState((s) => {
-        const property = s.bpmn.model.definitions.rootElement
-          ?.filter((p) => p.__$$element === "correlationProperty")
-          .find((p) => p["@_id"] === selectedPropertyId);
-
-        if (property) {
-          property.correlationPropertyRetrievalExpression ??= [];
-          property.correlationPropertyRetrievalExpression[i].messagePath.__$$text = newExpression;
-        }
+        updateMessageBindingExpression({
+          definitions: s.bpmn.model.definitions,
+          propertyId: selectedPropertyId!,
+          bindingIndex: i,
+          newExpression,
+        });
       });
     },
     [bpmnEditorStoreApi, selectedPropertyId]
@@ -294,12 +228,12 @@ export function Correlations() {
   const onChangeMessageBindingMessage = useCallback(
     (i: number) => (newMessageRef: string) => {
       bpmnEditorStoreApi.setState((s) => {
-        const property = s.bpmn.model.definitions.rootElement
-          ?.filter((p) => p.__$$element === "correlationProperty")
-          .find((p) => p["@_id"] === selectedPropertyId);
-        if (property) {
-          property.correlationPropertyRetrievalExpression[i]["@_messageRef"] = newMessageRef || "";
-        }
+        updateMessageBindingMessage({
+          definitions: s.bpmn.model.definitions,
+          propertyId: selectedPropertyId!,
+          bindingIndex: i,
+          newMessageRef,
+        });
       });
     },
     [bpmnEditorStoreApi, selectedPropertyId]
@@ -308,29 +242,25 @@ export function Correlations() {
   const removePropertyBinding = useCallback(
     (i: number) => (e: React.FormEvent) => {
       bpmnEditorStoreApi.setState((s) => {
-        const property = s.bpmn.model.definitions.rootElement
-          ?.filter((p) => p.__$$element === "correlationProperty")
-          .find((p) => p["@_id"] === selectedPropertyId);
-
-        if (property) {
-          property.correlationPropertyRetrievalExpression.splice(i, 1);
-          deleteUnusedItemDefinitions({ definitions: s.bpmn.model.definitions });
-        }
+        deletePropertyBinding({
+          definitions: s.bpmn.model.definitions,
+          propertyId: selectedPropertyId!,
+          bindingIndex: i,
+        });
       });
     },
     [bpmnEditorStoreApi, selectedPropertyId]
   );
 
   const changeKeyName = useCallback(
-    (keyId: string) => (newName: string) => {
+    (keyId: string) => (newName: string | undefined) => {
+      if (newName === undefined) return;
       bpmnEditorStoreApi.setState((s) => {
-        const key = s.bpmn.model.definitions.rootElement
-          ?.find((e) => e.__$$element === "collaboration")
-          ?.correlationKey?.find((k) => k["@_id"] === keyId);
-
-        if (key) {
-          key["@_name"] = newName;
-        }
+        updateCorrelationKeyName({
+          definitions: s.bpmn.model.definitions,
+          keyId,
+          newName,
+        });
       });
     },
     [bpmnEditorStoreApi]
@@ -339,45 +269,13 @@ export function Correlations() {
   const onRemoveKey = useCallback(
     (keyId: string) => {
       bpmnEditorStoreApi.setState((s) => {
-        const collaboration = s.bpmn.model.definitions.rootElement?.find((e) => e.__$$element === "collaboration");
-        if (collaboration) {
-          collaboration.correlationKey = collaboration.correlationKey?.filter((k) => k["@_id"] !== keyId);
-        }
-        deleteOrphanedCorrelationSubscriptions({ definitions: s.bpmn.model.definitions });
+        deleteCorrelationKey({
+          definitions: s.bpmn.model.definitions,
+          keyId,
+        });
       });
     },
     [bpmnEditorStoreApi]
-  );
-
-  const addPropertyToCorrelationKey = useCallback(
-    (e: React.FormEvent, propertyId: string) => {
-      bpmnEditorStoreApi.setState((s) => {
-        const key = s.bpmn.model.definitions.rootElement
-          ?.find((e) => e.__$$element === "collaboration")
-          ?.correlationKey?.find((k) => k["@_id"] === selectedKeyId);
-
-        if (key) {
-          key.correlationPropertyRef ??= [];
-          key.correlationPropertyRef.push({ __$$text: propertyId });
-
-          const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-          for (const subs of process.correlationSubscription ?? []) {
-            if (subs["@_correlationKeyRef"] === selectedKeyId) {
-              subs.correlationPropertyBinding ??= [];
-              subs.correlationPropertyBinding?.push({
-                "@_id": generateUuid(),
-                "@_correlationPropertyRef": propertyId,
-                dataPath: {
-                  "@_id": generateUuid(),
-                  __$$text: "",
-                },
-              });
-            }
-          }
-        }
-      });
-    },
-    [bpmnEditorStoreApi, selectedKeyId]
   );
 
   const subscriptions = useBpmnEditorStore(
@@ -387,45 +285,15 @@ export function Correlations() {
         ?.correlationSubscription?.filter((s) => s["@_correlationKeyRef"] === selectedKeyId) ?? []
   );
 
-  const addSubscription = useCallback(() => {
-    bpmnEditorStoreApi.setState((s) => {
-      const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-      process.correlationSubscription ??= [];
-      const propertiesById = new Map(
-        (s.bpmn.model.definitions.rootElement ?? [])
-          .filter((e) => e.__$$element === "correlationProperty")
-          .map((p) => [p["@_id"], p])
-      );
-      process.correlationSubscription?.push({
-        "@_id": generateUuid(),
-        "@_correlationKeyRef": selectedKeyId,
-        correlationPropertyBinding: (selectedKey!.correlationPropertyRef ?? []).map((propRef) => {
-          const property = propertiesById.get(propRef.__$$text);
-          const propertyType =
-            property && property.__$$element === "correlationProperty" ? property["@_type"] : undefined;
-          return {
-            "@_id": generateUuid(),
-            "@_correlationPropertyRef": propRef.__$$text,
-            dataPath: {
-              "@_id": generateUuid(),
-              "@_language": "java",
-              "@_evaluatesToTypeRef": propertyType,
-              __$$text: "",
-            },
-          };
-        }),
-      });
-    });
-  }, [bpmnEditorStoreApi, selectedKey, selectedKeyId]);
-
   const changeValueOfSubscription = useCallback(
     (subscriptionId: string, propertyBindingIndex: number) => (e: React.FormEvent, newValue: string) => {
       bpmnEditorStoreApi.setState((s) => {
-        const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-        process.correlationSubscription ??= [];
-        process.correlationSubscription.find((subs) => subs["@_id"] === subscriptionId)!.correlationPropertyBinding![
-          propertyBindingIndex
-        ].dataPath.__$$text = newValue;
+        updateSubscriptionValue({
+          definitions: s.bpmn.model.definitions,
+          subscriptionId,
+          propertyBindingIndex,
+          newValue,
+        });
       });
     },
     [bpmnEditorStoreApi]
@@ -435,33 +303,11 @@ export function Correlations() {
     (propertyIndex: number) => {
       return (e: React.FormEvent) => {
         bpmnEditorStoreApi.setState((s) => {
-          const collaboration = s.bpmn.model.definitions.rootElement?.find((e) => e.__$$element === "collaboration");
-          const key =
-            collaboration && collaboration.__$$element === "collaboration"
-              ? collaboration.correlationKey?.find((k) => k["@_id"] === selectedKeyId)
-              : undefined;
-
-          if (key) {
-            key.correlationPropertyRef ??= [];
-            const removedCorrelationPropertyRef = key.correlationPropertyRef[propertyIndex];
-            key.correlationPropertyRef.splice(propertyIndex, 1);
-
-            const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-            process.correlationSubscription
-              ?.filter((subs) => subs["@_correlationKeyRef"] === selectedKeyId)
-              .forEach((subs) => {
-                subs.correlationPropertyBinding = subs.correlationPropertyBinding?.filter(
-                  (b) => b["@_correlationPropertyRef"] !== removedCorrelationPropertyRef.__$$text
-                );
-              });
-            if (
-              key.correlationPropertyRef.length === 0 &&
-              collaboration &&
-              collaboration.__$$element === "collaboration"
-            ) {
-              collaboration.correlationKey = collaboration.correlationKey?.filter((k) => k["@_id"] !== selectedKeyId);
-            }
-          }
+          deletePropertyFromKey({
+            definitions: s.bpmn.model.definitions,
+            keyId: selectedKeyId!,
+            propertyIndex,
+          });
         });
       };
     },
@@ -471,11 +317,10 @@ export function Correlations() {
   const removeSubscription = useCallback(
     (subscriptionId: string) => (e: React.FormEvent) => {
       bpmnEditorStoreApi.setState((s) => {
-        const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
-        process.correlationSubscription ??= [];
-        process.correlationSubscription = process.correlationSubscription.filter(
-          (subs) => subs["@_id"] !== subscriptionId
-        );
+        deleteSubscription({
+          definitions: s.bpmn.model.definitions,
+          subscriptionId,
+        });
       });
     },
     [bpmnEditorStoreApi]
@@ -623,7 +468,14 @@ export function Correlations() {
                               }
                               size={"lg"}
                               style={{ width: "100%", lineHeight: "1" }}
-                              onClick={addMessageBindingToProperty}
+                              onClick={() => {
+                                bpmnEditorStoreApi.setState((s) => {
+                                  addMessageBindingToProperty({
+                                    definitions: s.bpmn.model.definitions,
+                                    propertyId: selectedPropertyId!,
+                                  });
+                                });
+                              }}
                             >
                               <svg width={30} height={30}>
                                 <MessageEventSymbolSvg
@@ -727,7 +579,15 @@ export function Correlations() {
                                   <FormSelect
                                     id={`correlation-key-properties-selector-${generateUuid()}`}
                                     className={!hasAtLeastOneKeyWithProperties ? "primary" : ""}
-                                    onChange={addPropertyToCorrelationKey}
+                                    onChange={(e, propertyId) => {
+                                      bpmnEditorStoreApi.setState((s) => {
+                                        addPropertyToCorrelationKey({
+                                          definitions: s.bpmn.model.definitions,
+                                          keyId: selectedKeyId!,
+                                          propertyId,
+                                        });
+                                      });
+                                    }}
                                     isDisabled={availablePropertiesToAddToKey.length <= 0}
                                   >
                                     <FormSelectOption
@@ -811,7 +671,15 @@ export function Correlations() {
                                     icon={<PlusCircleIcon />}
                                     size={"lg"}
                                     style={{ width: "100%" }}
-                                    onClick={addSubscription}
+                                    onClick={() => {
+                                      bpmnEditorStoreApi.setState((s) => {
+                                        addSubscription({
+                                          definitions: s.bpmn.model.definitions,
+                                          keyId: selectedKeyId!,
+                                          selectedKey: selectedKey!,
+                                        });
+                                      });
+                                    }}
                                   >
                                     <br />
                                     Add Subscription

@@ -50,8 +50,12 @@ import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "../../mutations/add
 import { deleteItemDefinition } from "../../mutations/deleteItemDefinition";
 import { renameItemDefinition } from "../../mutations/renameItemDefinition";
 import { deduplicateItemDefinitions } from "../../normalization/normalize";
-import { addOrGetMessages, RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES } from "../../mutations/addOrGetMessages";
-import { renameMessage } from "../../mutations/renameMessage";
+import {
+  addOrGetMessages,
+  createReservedItemDefinitionForMessages,
+  RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES,
+} from "../../mutations/addOrGetMessages";
+import { renameMessage, updateMessageItemDefinition } from "../../mutations/renameMessage";
 import { deleteMessage } from "../../mutations/deleteMessage";
 import { ItemDefinitionRefSelector } from "../itemDefinitionRefSelector/ItemDefinitionRefSelector";
 import { addOrGetSignals } from "../../mutations/addOrGetSignals";
@@ -316,64 +320,11 @@ export function PropertiesManager({ p }: { p: undefined | WithVariables }) {
                         value={entry["@_itemRef"]}
                         onChange={(newItemDefinitionRef) => {
                           bpmnEditorStoreApi.setState((s) => {
-                            const message = s.bpmn.model.definitions.rootElement?.find(
-                              (e) => e.__$$element === "message" && e["@_id"] === entry["@_id"]
-                            );
-
-                            if (message && message.__$$element === "message" && newItemDefinitionRef) {
-                              message["@_itemRef"] = newItemDefinitionRef;
-
-                              const newItemDef = s.bpmn.model.definitions.rootElement?.find(
-                                (e) => e.__$$element === "itemDefinition" && e["@_id"] === newItemDefinitionRef
-                              );
-                              const newDataType =
-                                newItemDef && newItemDef.__$$element === "itemDefinition"
-                                  ? newItemDef["@_structureRef"] || ""
-                                  : "";
-
-                              const process = s.bpmn.model.definitions.rootElement?.find(
-                                (e) => e.__$$element === "process"
-                              );
-                              if (process && process.__$$element === "process") {
-                                process.flowElement?.forEach((flowElement) => {
-                                  if ("eventDefinition" in flowElement) {
-                                    const messageEventDef = flowElement.eventDefinition?.find(
-                                      (ed) =>
-                                        ed.__$$element === "messageEventDefinition" &&
-                                        ed["@_messageRef"] === entry["@_id"]
-                                    );
-
-                                    if (messageEventDef) {
-                                      if ("dataInput" in flowElement && flowElement.dataInput) {
-                                        flowElement.dataInput.forEach((dataInput: any) => {
-                                          dataInput["@_drools:dtype"] = newDataType;
-                                        });
-                                      }
-
-                                      if ("dataOutput" in flowElement && flowElement.dataOutput) {
-                                        flowElement.dataOutput.forEach((dataOutput: any) => {
-                                          dataOutput["@_drools:dtype"] = newDataType;
-                                        });
-                                      }
-                                    }
-                                  }
-                                });
-                              }
-                              const hasMessagesUsingReservedItemDef = s.bpmn.model.definitions.rootElement?.some(
-                                (e) =>
-                                  e.__$$element === "message" &&
-                                  e["@_itemRef"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
-                              );
-                              if (!hasMessagesUsingReservedItemDef) {
-                                s.bpmn.model.definitions.rootElement = s.bpmn.model.definitions.rootElement?.filter(
-                                  (e) =>
-                                    !(
-                                      e.__$$element === "itemDefinition" &&
-                                      e["@_id"] === RESERVED_ITEM_DEFINITION_ID_FOR_MESSAGES
-                                    )
-                                );
-                              }
-                            }
+                            updateMessageItemDefinition({
+                              definitions: s.bpmn.model.definitions,
+                              messageId: entry["@_id"],
+                              newItemDefinitionRef,
+                            });
                           });
                         }}
                       />

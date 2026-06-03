@@ -16,3 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+.kie-bpmn-editor--item-definition-ref-selector[data-disabled="true"] {
+  background-color: var(--pf-global--disabled-color--300);
+  border-radius: 3px;
+  opacity: 0.6;
+}
