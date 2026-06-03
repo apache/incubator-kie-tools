@@ -162,7 +162,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   };
 
   const onDeleteAttribute = useCallback(
-    (attributeIndex) => {
+    (attributeIndex: number) => {
       //See https://issues.redhat.com/browse/FAI-443
       //if (window.confirm(`Delete Attribute?`)) {
       dispatch({
@@ -179,7 +179,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   );
 
   const onUpdateAttribute = useCallback(
-    (attributeIndex, partial) => {
+    (attributeIndex: number, partial: Partial<Attribute>) => {
       const attribute = attributes[attributeIndex];
       const existingPartial: Partial<Attribute> = {};
       Object.keys(partial).forEach((key) => set(existingPartial, key, get(attribute, key)));

@@ -100,7 +100,7 @@ export function ConstraintsEnum({
   }, []);
 
   const onChangeItem = useCallback(
-    (newValue, index) => {
+    (newValue: string, index: number) => {
       const newValues = [...enumValues];
       newValues[index] = typeHelper.transform(newValue);
       onSave(newValues.join(`${ENUM_SEPARATOR} `));
@@ -109,7 +109,7 @@ export function ConstraintsEnum({
   );
 
   const draggableItem = useCallback(
-    (value, index) => {
+    (value: string, index: number) => {
       return (
         <Draggable
           key={valuesUuid[index]}

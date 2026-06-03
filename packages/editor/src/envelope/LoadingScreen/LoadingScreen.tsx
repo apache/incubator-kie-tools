@@ -23,6 +23,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { useEditorEnvelopeI18nContext } from "../../i18n";
+import { flushSync } from "react-dom";
 
 export function LoadingScreen(props: { loading: boolean; styleTag?: string }) {
   const [mustRender, setMustRender] = useState(true);
@@ -31,7 +32,10 @@ export function LoadingScreen(props: { loading: boolean; styleTag?: string }) {
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setMustRender(false);
+    // Ensure state updates immediately to unmount cleanly
+    flushSync(() => {
+      setMustRender(false);
+    });
   }, []);
 
   const loadingScreenClassName = useMemo(() => {

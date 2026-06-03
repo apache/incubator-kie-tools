@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { Envelope, EnvelopeDivConfig } from "@kie-tools-core/envelope";
 import { TaskFormChannelApi, TaskFormEnvelopeApi } from "../api";
@@ -57,13 +57,13 @@ export function init(args: {
    * Returns a Promise<() => TaskFormEnvelopeViewApi> that can be used in TaskFormEnvelopeApiImpl.
    */
   const envelopeViewDelegate = async () => {
-    const ref = React.createRef<TaskFormEnvelopeViewApi>();
     return new Promise<() => TaskFormEnvelopeViewApi>((res) => {
+      const setRef = (ref: TaskFormEnvelopeViewApi | null) => {
+        if (ref) res(() => ref);
+      };
       args.container.className = "kogito-task-form-container";
-      ReactDOM.render(
-        <TaskFormEnvelopeView ref={ref} channelApi={envelope.channelApi} targetOrigin={args.targetOrigin} />,
-        args.container,
-        () => res(() => ref.current!)
+      createRoot(args.container).render(
+        <TaskFormEnvelopeView ref={setRef} channelApi={envelope.channelApi} targetOrigin={args.targetOrigin} />
       );
     });
   };

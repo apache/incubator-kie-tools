@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import * as React from "react";
 import { LandingPage } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/templates";
 import { Provider } from "react-redux";
@@ -78,7 +78,7 @@ describe("LandingPage", () => {
     );
   });
 
-  test("render::With Supported Model::Filter", () => {
+  test("render::With Supported Model::Filter", async () => {
     const pmml: PMML = {
       version: "1.0",
       DataDictionary: { DataField: [] },
@@ -94,7 +94,7 @@ describe("LandingPage", () => {
     };
     const store: Store = createStore((state, action) => state, pmml);
 
-    const { getByTestId, getAllByTestId } = render(
+    const { getByTestId, getAllByTestId, findByTestId } = render(
       <Provider store={store}>
         <BrowserRouter>
           <LandingPage path={PATH} />
@@ -114,7 +114,7 @@ describe("LandingPage", () => {
     fireEvent.change(input, { target: { value: "spam" } });
     submit.click();
 
-    expect(getByTestId("empty-state-no-models")).not.toBeUndefined();
+    expect(await findByTestId("empty-state-no-models")).toBeInTheDocument();
   });
 
   test("render::With Unsupported Model::Filter", () => {

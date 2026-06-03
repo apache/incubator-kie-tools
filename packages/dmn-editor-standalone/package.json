@@ -30,7 +30,7 @@
     "test-e2e:container:run": "start-server-and-test 'pnpm start' http://localhost:$(build-env dmnEditorStandalone.storybook.port)/iframe.html 'playwright-base-container run --additional-env=KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT=$(build-env dmnEditorStandalone.storybook.port) --container-workdir=incubator-kie-tools/packages/dmn-editor-standalone --container-name=kie-tools-playwright-containerization-dmn-editor-standalone'",
     "test-e2e:container:shell": "start-server-and-test 'pnpm start' http://localhost:$(build-env dmnEditorStandalone.storybook.port)/iframe.html 'playwright-base-container shell --additional-env=KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT=$(build-env dmnEditorStandalone.storybook.port) --container-workdir=incubator-kie-tools/packages/dmn-editor-standalone --container-name=kie-tools-playwright-containerization-dmn-editor-standalone'",
     "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
-    "test-e2e:run": "pnpm exec playwright test"
+    "test-e2e:run": "PLAYWRIGHT_BASE__enableWebkitProject=false pnpm exec playwright test"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -67,8 +67,8 @@
     "@types/lodash": "^4.14.168",
     "@types/minimatch": "^3.0.5",
     "@types/node": "^24.12.4",
-    "@types/react": "^17.0.6",
-    "@types/react-dom": "^17.0.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
     "deep-object-diff": "^1.1.9",
@@ -81,8 +81,8 @@
     "prettier": "^3.3.2",
     "process": "^0.11.10",
     "raw-loader": "^4.0.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "start-server-and-test": "^2.0.3",

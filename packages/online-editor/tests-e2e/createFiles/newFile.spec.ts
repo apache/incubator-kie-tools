@@ -48,7 +48,7 @@ test.describe("New file", () => {
       await expect(page).toHaveScreenshot("new-file-dmn.png");
     });
 
-    test("should create a new PMML file", async ({ page, kieSandbox }) => {
+    test("should create a new PMML file", async ({ page, kieSandbox, browserName }) => {
       await page.getByRole("button", { name: "New Scorecard" }).click();
       await expect(page.getByRole("button", { name: "Scorecard Untitled" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Scorecard Untitled" })).toContainText("Untitled");

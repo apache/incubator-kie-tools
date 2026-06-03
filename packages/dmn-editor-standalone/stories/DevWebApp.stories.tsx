@@ -143,6 +143,7 @@ function DevWebApp(props?: Partial<DevWebAppProps>) {
   const onDownloadSvg = useCallback(() => {
     if (editorRef.current) {
       editorRef.current.getPreview().then((svgContent) => {
+        console.log(svgContent);
         if (downloadRef.current && svgContent) {
           downloadRef.current.href = "data:text/plain;charset=utf-8," + encodeURIComponent(svgContent);
           downloadRef.current.download = "model.svg";

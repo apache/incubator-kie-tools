@@ -24,20 +24,11 @@ import { AddColumnPosition, AddRowPosition } from "../../__fixtures__/table";
 test.describe("Use Selector Panel on Test Scenario table based on are they old enough use case", () => {
   test.beforeEach(async ({ useCases, table, contextMenu, selectorPanel }) => {
     await useCases.openAreTheyOldEnoughTest();
-    await table.addInstanceColumn({
-      targetCellName: "Applicant",
-      position: AddColumnPosition.LEFT,
-    });
-    await table.addInstanceColumn({
-      targetCellName: "LoanApplication",
-      position: AddColumnPosition.LEFT,
-      columnNumber: 1,
-    });
     await table.addRow({
       targetCellName: "2",
       position: AddRowPosition.BELOW,
     });
-
+    await selectorPanel.open();
     await contextMenu.openOnColumnHeader({ name: "Applicant" });
     await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_INSTANCE });
 
@@ -54,10 +45,12 @@ test.describe("Use Selector Panel on Test Scenario table based on are they old e
     await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
     await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 0 });
     await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
-    await selectorPanel.open();
   });
 
-  test("should correctly remove property from selector panel once assigned", async ({ table, selectorPanel }) => {
+  test("Test Scenario Table - should correctly remove property from selector panel once assigned", async ({
+    table,
+    selectorPanel,
+  }) => {
     await table.selectColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 });
     await selectorPanel.expandAttribute({ name: "IncomeSource", dataType: "mortgages.mortgages.IncomeSource" });
     await selectorPanel.assign({ name: "amount" });
@@ -71,14 +64,17 @@ test.describe("Use Selector Panel on Test Scenario table based on are they old e
     await expect(selectorPanel.getAttribute({ name: "amount" })).not.toBeAttached();
   });
 
-  test("should correctly populate an instance by assigning a property", async ({ table, selectorPanel }) => {
+  test("Test Scenario Table - should correctly populate an instance by assigning a property", async ({
+    table,
+    selectorPanel,
+  }) => {
     await table.selectColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 });
     await selectorPanel.expandAttribute({ name: "IncomeSource", dataType: "mortgages.mortgages.IncomeSource" });
     await selectorPanel.assign({ name: "amount" });
     await expect(table.getColumnHeader({ name: "IncomeSource" })).toBeAttached();
   });
 
-  test("deleting an instance should correctly delete all its properties", async ({
+  test("Test Scenario Table - deleting an instance should correctly delete all its properties", async ({
     table,
     selectorPanel,
     contextMenu,

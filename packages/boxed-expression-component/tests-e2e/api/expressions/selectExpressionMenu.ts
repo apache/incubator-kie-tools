@@ -20,7 +20,7 @@
 import { Locator, Page } from "@playwright/test";
 
 export class SelectExpressionMenu {
-  constructor(public element: Locator) {
+  constructor(public element: Locator | Page) {
     this.element = element;
   }
 

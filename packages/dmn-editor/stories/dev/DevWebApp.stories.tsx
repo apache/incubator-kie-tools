@@ -147,7 +147,7 @@ function DevWebApp(args: DmnEditorProps) {
   }, []);
 
   const onSelectModel = useCallback(
-    (newModel) => {
+    (newModel: string) => {
       onModelChange(normalize(getMarshaller(newModel, { upgradeTo: "latest" }).parser.parse()));
     },
     [onModelChange]

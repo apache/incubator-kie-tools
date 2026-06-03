@@ -31,7 +31,7 @@ import {
   EmptyStateNoCharacteristics,
   EmptyStateNoMatchingCharacteristics,
 } from "../molecules";
-import { Characteristic } from "@kie-tools/pmml-editor-marshaller";
+import { Attribute, Characteristic } from "@kie-tools/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";
@@ -102,7 +102,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   };
 
   const validateCharacteristicName = useCallback(
-    (editIndex: number | undefined, name: string): boolean => {
+    (editIndex: number | undefined, name: string | undefined): boolean => {
       if (name === undefined || name.trim() === "") {
         return false;
       }
@@ -211,7 +211,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   };
 
   const onUpdateAttribute = useCallback(
-    (_index, _content) => {
+    (_index: number | undefined, _content: Partial<Attribute>) => {
       if (_index === undefined) {
         dispatch({
           type: Actions.Scorecard_AddAttribute,

@@ -139,12 +139,12 @@ export function BusinessRuleTaskProperties({
             {businessRuleTask["@_implementation"] === BUSINESS_RULE_TASK_IMPLEMENTATIONS.dmn && (
               <FlexItem grow={{ default: "grow" }}>
                 <Select
-                  toggle={(toggleRef) => (
+                  toggle={(toggleRef: React.Ref<any>) => (
                     <MenuToggle
                       style={{ width: "100%" }}
                       ref={toggleRef}
-                      onClick={(e) => {
-                        setDmnFilesSelectOpen((isOpen) => {
+                      onClick={(_e: React.MouseEvent) => {
+                        setDmnFilesSelectOpen((isOpen: boolean | undefined) => {
                           if (!(isOpen ?? false)) {
                             setAvailableExternalModelsNormalizedPosixPathRelativeToTheOpenFile([]);
                             onRequestExternalModelsAvailableToInclude?.()
@@ -165,7 +165,7 @@ export function BusinessRuleTaskProperties({
                   id={"select-dmn-model-file"}
                   selected={undefined}
                   isOpen={isDmnFilesSelectOpen}
-                  onSelect={(e, value) => {
+                  onSelect={(_e: React.MouseEvent | undefined, value: string | number | undefined) => {
                     setDmnFilesSelectOpen(false);
                     if (!value) {
                       bpmnEditorStoreApi.setState((s) => {

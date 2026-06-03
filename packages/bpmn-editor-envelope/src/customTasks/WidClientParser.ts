@@ -18,7 +18,7 @@
  */
 
 // TypeScript equivalent of WorkItemDefinitionClientParser
-import { MvelDataType } from "./WidDataTypes.js";
+import { MvelDataType } from "./WidDataTypes";
 
 export class IconDefinition {
   private uri: string = "";

@@ -26,7 +26,10 @@ test.describe("Test Scenario table misc", () => {
     await editor.createTestScenario(AssetType.DECISION);
   });
 
-  test("should render add column plus symbols on Instance headers", async ({ table, testScenarioTable }) => {
+  test("Test Scenario Table - should render add column plus symbols on Instance headers", async ({
+    table,
+    testScenarioTable,
+  }) => {
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1354");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
@@ -39,24 +42,36 @@ test.describe("Test Scenario table misc", () => {
     await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
   });
 
-  test("should render add column plus symbols on Property headers", async ({ table, testScenarioTable }) => {
+  test("Test Scenario Table - should render add column plus symbols on Property headers", async ({
+    table,
+    testScenarioTable,
+  }) => {
     await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
     await table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 }).hover();
     await testScenarioTable.clickPlusIcon();
     await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
   });
 
-  test("should not render add column plus symbol on Given header", async ({ table, testScenarioTable }) => {
+  test("Test Scenario Table - should not render add column plus symbol on Given header", async ({
+    table,
+    testScenarioTable,
+  }) => {
     await table.getColumnHeader({ name: "GIVEN" }).hover();
     await expect(testScenarioTable.getPlusIcon()).not.toBeAttached();
   });
 
-  test("should not render add column plus symbol on Expect header", async ({ table, testScenarioTable }) => {
+  test("Test Scenario Table - should not render add column plus symbol on Expect header", async ({
+    table,
+    testScenarioTable,
+  }) => {
     await table.getColumnHeader({ name: "EXPECT" }).hover();
     await expect(testScenarioTable.getPlusIcon()).not.toBeAttached();
   });
 
-  test("should render add column plus symbol on table cell", async ({ table, testScenarioTable }) => {
+  test("Test Scenario Table - should render add column plus symbol on table cell", async ({
+    table,
+    testScenarioTable,
+  }) => {
     await table.getNumberedCell({ name: "1" }).hover();
     await expect(testScenarioTable.getPlusIcon()).toBeAttached();
   });

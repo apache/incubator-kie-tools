@@ -822,6 +822,27 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     }
   }, [activeDepth, containerCellCoordinates, depth, dispatch, isSelectionHere, parentActiveCell, selection]);
 
+  // Synchronously mark the active cell so its useLayoutEffect for focus fires in the same commit,
+  // before flushSync returns. Without this, focus is driven by the paint useEffect below (async),
+  // creating a window where browser key events can arrive before the cell is focused.
+  useLayoutEffect(() => {
+    if (!selection.active) {
+      return;
+    }
+
+    const { active } = selection;
+    refs.current
+      ?.get(active.rowIndex)
+      ?.get(active.columnIndex)
+      ?.forEach((ref) => {
+        ref.setStatus?.({
+          isActive: true,
+          isEditing: active.isEditing ?? false,
+          isSelected: !coincides(selection.selectionStart, selection.selectionEnd),
+        });
+      });
+  }, [selection]);
+
   // Paint the selection
   useEffect(() => {
     if (!selection.active || !selection.selectionStart || !selection.selectionEnd) {
@@ -869,7 +890,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         r.setStatus?.({
           isActive: true,
           isEditing: active?.isEditing ?? false,
-          isSelected: !coincides(selectionRef.current?.selectionStart, selectionRef.current?.selectionEnd),
+          isSelected: !coincides(selection.selectionStart, selection.selectionEnd),
         })
       );
 
@@ -897,7 +918,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         ?.get(active.columnIndex)
         ?.forEach((r) => r.setStatus?.(NEUTRAL_CELL_STATUS));
     };
-  }, [selection, selectionRef.current?.selectionStart, selectionRef.current?.selectionEnd]);
+  }, [selection]);
 
   return (
     <BeeTableSelectionContext.Provider value={value}>
@@ -1108,6 +1129,20 @@ export function useBeeTableSelectableCell(
       const cellElement = cellRef.current;
       if (!cellElement) {
         return;
+      }
+
+      // In React 18, all state updates are batched, causing child and parent layout effects
+      // to run in the same commit (children first). If a child layout effect (e.g.
+      // BeeTableEditableCellContent) already focused an element inside this <td> at the
+      // same table level, don't steal focus back. However, if focus is inside a nested
+      // table within this cell (e.g. after Escape moves selection up from a nested
+      // decision table), we must take focus so keyboard events reach the outer table.
+      if (cellElement !== document.activeElement && cellElement.contains(document.activeElement)) {
+        const activeTc = document.activeElement?.closest(".table-component");
+        const thisTc = cellElement.closest(".table-component");
+        if (activeTc === thisTc) {
+          return;
+        }
       }
 
       // Find the boxed-expression-provider container (top-level container for this component)

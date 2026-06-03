@@ -67,7 +67,7 @@ export type EmbeddedEditorRef = EditorApi & {
   onKeyDown: (ke: React.KeyboardEvent) => void;
 };
 
-const containerStyles: CSS.Properties = {
+const containerStyles: CSS.Properties<string | number> = {
   display: "flex",
   flex: 1,
   flexDirection: "column",

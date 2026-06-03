@@ -19,7 +19,7 @@
 
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { TodoListViewPage } from "./TodoListViewPage";
 
-ReactDOM.render(<TodoListViewPage />, document.getElementById("app"));
+createRoot(document.getElementById("app")!).render(<TodoListViewPage />);

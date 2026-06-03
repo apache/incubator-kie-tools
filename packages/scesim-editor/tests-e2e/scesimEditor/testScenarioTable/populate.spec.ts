@@ -22,7 +22,7 @@ import { AssetType } from "../../__fixtures__/editor";
 import { AddRowPosition } from "../../__fixtures__/table";
 
 test.describe("Populate decision test scenario table", () => {
-  test("should correctly populate decision-based a test scenario table", async ({
+  test("Test Scenario Table - should correctly populate decision-based a test scenario table", async ({
     editor,
     resizing,
     table,
@@ -105,7 +105,7 @@ test.describe("Populate decision test scenario table", () => {
 
 test.describe("Populate rule test scenario table", () => {
   test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1847");
-  test("should correctly populate a rule-based test scenario table", async ({
+  test("Test Scenario Table - should correctly populate a rule-based test scenario table", async ({
     editor,
     resizing,
     table,

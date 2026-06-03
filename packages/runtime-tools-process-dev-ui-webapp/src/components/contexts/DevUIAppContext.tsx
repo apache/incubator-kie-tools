@@ -58,6 +58,7 @@ export type DevUIAppContextArgs = {
   customLabels?: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
+  children?: React.ReactNode;
 };
 
 export class DevUIAppContextImpl implements DevUIAppContext {

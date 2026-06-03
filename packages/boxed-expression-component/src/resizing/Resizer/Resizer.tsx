@@ -18,11 +18,18 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Resizable } from "react-resizable";
-import { ResizerStopBehavior, ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
+import { ResizingWidth, useResizingWidthsDispatch } from "../../resizing/ResizingWidthsContext";
 import { DEFAULT_MIN_WIDTH } from "../WidthConstants";
 import "./Resizer.css";
+
+type ResizeWidthData = {
+  size: {
+    width: number;
+  };
+};
 
 export interface ResizerProps {
   minWidth: number | undefined;
@@ -43,85 +50,58 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   setResizing,
   getWidthToFitData,
 }) => {
-  //
-  // onResizeStop batching strategy (begin)
-  //
-  // This is a hack to make React batch the multiple state updates we're doing here with the calls to `setWidth`.
-  // Every call to `setWidth` mutates the expression, so batching is essential for performance reasons.
-  // This effect runs once when resizingStop__data is truthy. Then, after running, it sets resizingStop__data to a falsy value, which short-circuits it.
-  //
-  // This can be refactored to be simpler when upgrading to React 18, as batching is automatic, even outside event handlers and hooks.
-  //
-  // This whole thing is responsible for allowing any cell to shrink the entire table when resized.
-
   const { getResizerRefs, setResizing: _setResizing } = useResizingWidthsDispatch();
 
-  const [resizingStop__data, setResizingStop__data] = useState({ width: 0 });
   const [startResizingWidth, setStartResizingWidth] = useState({ width: 0 });
-  const onResizeStop = useCallback((e, data) => {
-    if (e.detail === 2) {
-      console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
-      return;
-    }
+  const onResizeStop = useCallback(
+    (e: React.MouseEvent, data: ResizeWidthData) => {
+      if (e.detail === 2) {
+        console.debug("Skipping resizeStop onMouseUp because onDoubleClick will handle it.");
+        return;
+      }
 
-    setResizingStop__data({ width: data.size.width });
-  }, []);
+      const resizingStopWidth = Math.floor(data.size.width);
+      if (!resizingStopWidth) {
+        return;
+      }
 
-  useEffect(() => {
-    const resizingStopWidth = Math.floor(resizingStop__data.width);
-    if (!resizingStopWidth) {
-      return;
-    }
+      if (resizingStopWidth === startResizingWidth.width) {
+        console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
+      } else {
+        console.debug(`Stop resizing (different): ${resizingStopWidth}`);
+        for (const resizerRef of getResizerRefs()) {
+          if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+            resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+          } else {
+            // Ignoring. Nothing to do.
+          }
+        }
 
-    if (resizingStopWidth === startResizingWidth.width) {
-      console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
-    } else {
-      console.debug(`Stop resizing (different): ${resizingStopWidth}`);
-      for (const resizerRef of getResizerRefs()) {
-        if (resizerRef.resizingWidth?.value !== resizerRef.width) {
-          resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
-        } else {
-          // Ignoring. Nothing to do.
+        if (resizingStopWidth !== width) {
+          setWidth?.(resizingStopWidth);
         }
       }
 
-      if (resizingStopWidth !== width) {
-        setWidth?.(resizingStopWidth);
-      }
-    }
-
-    setResizing?.(false);
-    _setResizing(false);
-    setResizingWidth?.({ value: resizingStopWidth, isPivoting: false });
-    setResizingStop__data({ width: 0 }); // Prevent this effect from running after it just ran. Let onResizeStop trigger it.
-  }, [
-    _setResizing,
-    getResizerRefs,
-    setResizing,
-    setResizingWidth,
-    setWidth,
-    resizingStop__data.width,
-    startResizingWidth.width,
-    width,
-  ]);
-
-  //
-  // onResizeStop batching strategy (end)
-  //
+      setResizingWidth({ value: resizingStopWidth, isPivoting: false });
+      setResizing?.(false);
+      _setResizing(false);
+    },
+    [_setResizing, getResizerRefs, setResizing, setResizingWidth, setWidth, startResizingWidth.width, width]
+  );
 
   const minConstraints = useMemo<[number, number]>(() => {
     return [minWidth ?? DEFAULT_MIN_WIDTH, 0];
   }, [minWidth]);
 
   const onResize = useCallback(
-    (_, data) => {
+    (_: React.MouseEvent, data: ResizeWidthData) => {
       setResizingWidth?.({ value: Math.floor(data.size.width), isPivoting: true });
     },
     [setResizingWidth]
   );
 
   const onResizeStart = useCallback(
-    (_, data) => {
+    (_e: any, data: ResizeWidthData) => {
       const startResizingWidth = Math.floor(data.size.width);
 
       console.debug(`Start resizing: ${startResizingWidth}`);
@@ -145,18 +125,55 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       }
 
       const newWidth = Math.max(widthToFitData ?? minWidth ?? DEFAULT_MIN_WIDTH, minWidth ?? DEFAULT_MIN_WIDTH);
+      // React 18: Ensure all states are update before going to the next stage
+      flushSync(() => {
+        onResizeStart(undefined, { size: { width: newWidth } });
+      });
 
-      // This starts the resizing process again with the correct width.
-      onResizeStart(undefined, { size: { width: newWidth } });
-
-      // Wait for an event loop iteration, leaving time for the resizeStart to propagate.
-      // Then, pretend that the startResizingWidth is different from the one we're going to stop with.
       setTimeout(() => {
-        setStartResizingWidth({ width: 0 });
-        setResizingStop__data({ width: newWidth });
-      }, 0);
+        // React 18: Ensure all states are update synchronously avoiding batching
+        flushSync(() => {
+          const resizingStopWidth = Math.floor(newWidth);
+          if (!resizingStopWidth) {
+            return;
+          }
+
+          if (resizingStopWidth === startResizingWidth.width) {
+            console.debug(`Stop resizing (equal): ${resizingStopWidth}`);
+          } else {
+            console.debug(`Stop resizing (different): ${resizingStopWidth}`);
+            for (const resizerRef of getResizerRefs()) {
+              if (resizerRef.resizingWidth?.value !== resizerRef.width) {
+                resizerRef.setWidth?.((prev) => resizerRef.resizingWidth?.value ?? prev ?? 0);
+              } else {
+                // Ignoring. Nothing to do.
+              }
+            }
+
+            if (resizingStopWidth !== width) {
+              setWidth?.(resizingStopWidth);
+            }
+          }
+
+          setStartResizingWidth({ width: 0 });
+          setResizingWidth({ value: resizingStopWidth, isPivoting: false });
+          setResizing?.(false);
+          _setResizing(false);
+        });
+      }, 10); // React 18: References are not being updated at the same time. Increasing the timeout ensure all cascade of events were resolved.
     },
-    [getWidthToFitData, minWidth, onResizeStart]
+    [
+      _setResizing,
+      getResizerRefs,
+      getWidthToFitData,
+      minWidth,
+      onResizeStart,
+      setResizing,
+      setResizingWidth,
+      setWidth,
+      startResizingWidth.width,
+      width,
+    ]
   );
 
   const style = useMemo(() => {
@@ -196,10 +213,16 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           onResizeStop={onResizeStop}
           onResizeStart={onResizeStart}
           minConstraints={minConstraints}
+          maxConstraints={[Infinity, Infinity]}
+          handleSize={[20, 20]}
+          lockAspectRatio={false}
+          resizeHandles={["e"]}
+          transformScale={1}
           className={"resizable-div"}
           axis={"x"}
-          handle={
+          handle={(_resizeHandleAxis, resizableRef: React.RefObject<HTMLDivElement>) => (
             <div
+              ref={resizableRef}
               className="pf-v5-c-drawer"
               onDoubleClick={onDoubleClick}
               data-testid={"kie-tools--bee--resizer-handle"}
@@ -208,7 +231,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
                 <div className={`pf-v5-c-drawer__splitter-handle`} />
               </div>
             </div>
-          }
+          )}
         >
           <div style={style} />
         </Resizable>

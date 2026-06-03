@@ -20,7 +20,8 @@
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import "./BeeTableEditableCellContent.css";
@@ -33,6 +34,7 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
   fixedOverflowWidgets: true,
   lineNumbers: "off",
   fontSize: 13,
+  lineHeight: CELL_LINE_HEIGHT,
   renderLineHighlight: "none",
   lineDecorationsWidth: 1,
   automaticLayout: true,
@@ -120,9 +122,11 @@ export function BeeTableEditableCellContent({
         if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing.
         } else {
-          updateValue(newValue);
-          setEditing(false);
-          onFeelTabKeyDown?.({ isShiftPressed: e.shiftKey });
+          flushSync(() => {
+            updateValue(newValue);
+            setEditing(false);
+            onFeelTabKeyDown?.({ isShiftPressed: e.shiftKey });
+          });
           e.preventDefault();
         }
       }
@@ -140,6 +144,7 @@ export function BeeTableEditableCellContent({
 
           setEditing(false);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
+          e.preventDefault();
         }
       }
 
@@ -172,7 +177,7 @@ export function BeeTableEditableCellContent({
   );
 
   const editableCellRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isActive && !isEditing) {
       const cellElement = editableCellRef.current;
       if (!cellElement) {
@@ -198,7 +203,7 @@ export function BeeTableEditableCellContent({
   }, [mode]);
 
   const onKeyDown = useCallback(
-    (e) => {
+    (e: React.KeyboardEvent<Element>) => {
       // When inside FEEL Input, all keyboard events should be kept inside it.
       // Exceptions to this strategy are handled on `onFeelKeyDown`.
       // NOTE: In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
@@ -208,9 +213,15 @@ export function BeeTableEditableCellContent({
       }
 
       // This is used to start editing a cell without being in edit mode.
+      // flushSync forces a synchronous React render so the Monaco editor mounts and
+      // receives focus before the browser processes the next key event (React 18
+      // schedules renders asynchronously, which would otherwise cause typed characters
+      // to be lost before Monaco is ready).
       if (!isReadOnly && isActive && !isEditing && isEditModeTriggeringKey(e)) {
-        setEditingValue("");
-        setEditing(true);
+        flushSync(() => {
+          setEditingValue("");
+          setEditing(true);
+        });
       }
     },
     [isActive, isEditing, isReadOnly, setEditing]

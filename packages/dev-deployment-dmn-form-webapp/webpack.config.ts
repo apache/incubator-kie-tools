@@ -25,48 +25,79 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import { ProvidePlugin } from "webpack";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import { defaultEnvJson } from "./build/defaultEnvJson";
+import path from "path";
 
-export default async (webpackEnv: any, webpackArgv: any) => {
-  return merge(common(webpackEnv), {
-    entry: {
-      index: "./src/index.tsx",
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./static/index.html",
-        inject: false,
-        minify: false,
-      }),
-      new CopyPlugin({
-        patterns: [
-          { from: "./static/resources", to: "./resources" },
-          { from: "./static/images", to: "./images" },
-          { from: "./static/favicon.svg", to: "./favicon.svg" },
-          {
-            from: "./static/env.json",
-            to: "./env.json",
-            transform: () => JSON.stringify(defaultEnvJson, null, 2),
-          },
-        ],
-      }),
-      new ProvidePlugin({
-        process: require.resolve("process/browser.js"),
-        Buffer: ["buffer", "Buffer"],
-      }),
-      new NodePolyfillPlugin(),
-    ],
-    ignoreWarnings: [
-      {
-        // The @apidevtools sub-packages source maps are not published, so we need to ignore their warnings for now.
-        module: /@apidevtools/,
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { env } from "./env";
+const buildEnv: any = env; // build-env is not typed
+
+export default async (webpackEnv: any) => {
+  // Detect if webpack-dev-server is running (not just dev mode)
+  // WEBPACK_SERVE is set by webpack-dev-server, not by regular webpack builds
+  const isDevServer = process.env.WEBPACK_SERVE === "true";
+
+  return {
+    ...merge(common(webpackEnv), {
+      entry: {
+        index: "./src/index.tsx",
       },
-      {
-        // The @jsdevtools sub-packages source maps are not published, so we need to ignore their warnings for now.
-        module: /@jsdevtools/,
+      plugins: [
+        new HtmlWebpackPlugin({
+          template: "./static/index.html",
+          inject: false,
+          minify: false,
+        }),
+        new CopyPlugin({
+          patterns: [
+            { from: "./static/resources", to: "./resources" },
+            { from: "./static/images", to: "./images" },
+            { from: "./static/favicon.svg", to: "./favicon.svg" },
+            ...(isDevServer
+              ? []
+              : [
+                  {
+                    from: "./static/env.json",
+                    to: "./env.json",
+                    transform: () => JSON.stringify(defaultEnvJson, null, 2),
+                  },
+                ]),
+          ],
+        }),
+        new ProvidePlugin({
+          process: require.resolve("process/browser.js"),
+          Buffer: ["buffer", "Buffer"],
+        }),
+        new NodePolyfillPlugin(),
+      ],
+      ignoreWarnings: [
+        {
+          // The @apidevtools sub-packages source maps are not published, so we need to ignore their warnings for now.
+          module: /@apidevtools/,
+        },
+        {
+          // The @jsdevtools sub-packages source maps are not published, so we need to ignore their warnings for now.
+          module: /@jsdevtools/,
+        },
+      ],
+      module: {
+        rules: [...patternflyBase.webpackModuleRules],
       },
-    ],
-    module: {
-      rules: [...patternflyBase.webpackModuleRules],
+      watchOptions: {
+        poll: 1000,
+      },
+    }),
+    devServer: {
+      server: "http",
+      host: "localhost",
+      port: buildEnv.devDeploymentDmnFormWebapp.dev.webpackPort,
+      historyApiFallback: false,
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
+      compress: true,
+      client: {
+        overlay: false,
+      },
+      allowedHosts: "all",
     },
-  });
+  };
 };

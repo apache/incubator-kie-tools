@@ -66,8 +66,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   public async setMessageDefinition(args: { messageName: string }) {
     await this.selectEventDefinition({ eventType: EventNodeType.MESSAGE });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.messageName);
+    await this.fillCombobox(args.messageName);
 
     const createOption = this.page.getByText(`Create Message "${args.messageName}"`, { exact: true });
     const optionCount = await createOption.count();
@@ -85,8 +84,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   }) {
     await this.selectEventDefinition({ eventType: EventNodeType.SIGNAL });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.signalName);
+    await this.fillCombobox(args.signalName);
 
     const createOption = this.page.getByText(`Create Signal "${args.signalName}"`, { exact: true });
     const optionCount = await createOption.count();
@@ -138,8 +136,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   public async setErrorDefinition(args: { errorName: string; errorCode?: string }) {
     await this.selectEventDefinition({ eventType: EventNodeType.ERROR });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.errorName);
+    await this.fillCombobox(args.errorName);
 
     const createOption = this.page.getByText(`Create Error "${args.errorName}"`, { exact: true });
     const optionCount = await createOption.count();
@@ -165,8 +162,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
   public async setEscalationDefinition(args: { escalationName: string; escalationCode?: string }) {
     await this.selectEventDefinition({ eventType: EventNodeType.ESCALATION });
 
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.escalationName);
+    await this.fillCombobox(args.escalationName);
 
     const createOption = this.page.getByText(`Create Escalation "${args.escalationName}"`, { exact: true });
     const optionCount = await createOption.count();
@@ -193,8 +189,7 @@ export class IntermediateEventPropertiesPanel extends PropertiesPanelBase {
     await this.selectEventDefinition({ eventType: EventNodeType.COMPENSATION });
 
     if (args.activityRef) {
-      await this.panel().getByRole("combobox").first().click();
-      await this.page.keyboard.type(args.activityRef);
+      await this.fillCombobox(args.activityRef);
 
       const option = this.page.getByRole("option", { name: args.activityRef, exact: true });
       const optionCount = await option.count();

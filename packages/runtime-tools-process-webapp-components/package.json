@@ -38,13 +38,13 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@testing-library/react": "^12.1.5",
+    "@testing-library/react": "^14.0.0",
     "@types/lodash": "^4.14.168",
-    "@types/react": "^17.0.6",
+    "@types/react": "^18.3.12",
     "rimraf": "^3.0.2",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "react": ">=17.0.2 <19.0.0"
+    "react": ">=18.3.1 <19.0.0"
   }
 }

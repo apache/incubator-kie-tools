@@ -422,11 +422,13 @@ export class Nodes {
     await this.page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
 
     const morphingToggle = args.node.getByRole("button", { name: /morph/i });
-    await morphingToggle.click({ force: true });
+    await expect(morphingToggle).toBeVisible();
+    await morphingToggle.click();
 
     const morphingPanel = this.page.getByTestId("kie-tools--bpmn-editor--morphing-panel");
+    await expect(morphingPanel).toBeVisible();
     const morphingOption = morphingPanel.getByTitle(args.to, { exact: true });
-    await morphingOption.click({ force: true });
+    await morphingOption.click();
   }
 
   public async openMorphingPanel(args: { nodeLocator: Locator }): Promise<void> {

@@ -69,7 +69,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   const [ref, setRef] = useState<HTMLFormElement | null>(null);
 
   const onFormSubmit = useCallback(
-    (formInputs) => {
+    (formInputs: Input) => {
       onSubmit?.(formInputs);
     },
     [onSubmit]
@@ -77,7 +77,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
 
   // Validation occurs on every change and submit.
   const onFormValidate = useCallback(
-    (formInputs, error: any) => {
+    (formInputs: Input, error: any) => {
       onValidate?.(formInputs, error);
       setFormInputs((previousInputs) => {
         if (Object.keys(diff(formInputs, previousInputs ?? {})).length > 0) {
@@ -115,13 +115,13 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
       );
       // Update formInputs with the current change.
       changes.forEach(([formFieldPath, fieldValue]) => {
-        formFieldPath?.split(".")?.reduce((deeper, field, index, array) => {
+        formFieldPath?.split(".")?.reduce((deeper: any, field, index, array) => {
           if (index === array.length - 1) {
             deeper[field] = fieldValue;
           } else {
             return deeper[field];
           }
-        }, formInputs);
+        }, formInputs as any);
       });
       return { details };
     },

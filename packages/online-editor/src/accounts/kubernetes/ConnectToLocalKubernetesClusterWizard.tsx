@@ -232,7 +232,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   }, [props]); */
 
   const onStepChanged = useCallback(
-    async ({ id }) => {
+    async ({ id }: { id?: string | number }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(

@@ -36,11 +36,11 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^6.4.6",
-    "@testing-library/react": "^12.1.5",
+    "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.12",
     "@types/jest-when": "^3.5.5",
-    "@types/react": "^17.0.6",
-    "@types/react-dom": "^17.0.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",
     "file-loader": "^6.2.0",
@@ -59,7 +59,7 @@
     "webpack-merge": "^5.9.0"
   },
   "peerDependencies": {
-    "react": ">=17.0.2 <19.0.0",
-    "react-dom": ">=17.0.2 <19.0.0"
+    "react": ">=18.3.1 <19.0.0",
+    "react-dom": ">=18.3.1 <19.0.0"
   }
 }

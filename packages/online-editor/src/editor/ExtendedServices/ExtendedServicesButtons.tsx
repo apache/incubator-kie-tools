@@ -79,7 +79,7 @@ export function ExtendedServicesButtons(props: Props) {
   }, [setDmnRunnerContextProviderState, extendedServices, mode, onTogglePanel]);
 
   const toggleDevDeploymentsDropdown = useCallback(
-    (_event, isOpen: boolean) => {
+    (_event: any, isOpen: boolean) => {
       devDeployments.setDeployDropdownOpen(isOpen);
     },
     [devDeployments]
@@ -146,7 +146,7 @@ export function ExtendedServicesButtons(props: Props) {
                     </DropdownToggleAction>,
                   ]}
                   splitButtonVariant="action"
-                  onToggle={(_event, isOpen) => {
+                  onToggle={(_event, isOpen: boolean) => {
                     setRunModeOpen(isOpen);
                   }}
                 />
@@ -249,8 +249,8 @@ export function ExtendedServicesButtons(props: Props) {
             style={{ display: "none" }}
             onChange={handleDmnRunnerInputsUpload}
             accept={".json"}
-            onClick={(event: any) => {
-              event.target.value = null;
+            onClick={(event: React.MouseEvent<HTMLInputElement>) => {
+              event.currentTarget.value = "";
             }}
           />
         </>

@@ -112,8 +112,8 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
     [hasChanged]
   );
 
-  const onSelectTab = useCallback((event, tabName) => {
-    setActiveTab(tabName);
+  const onSelectTab = useCallback((event: React.MouseEvent<HTMLElement>, tabName: string | number) => {
+    setActiveTab(tabName as string);
   }, []);
 
   useEffect(() => {

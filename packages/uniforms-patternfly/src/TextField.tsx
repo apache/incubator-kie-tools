@@ -124,7 +124,7 @@ function TextField({ onChange, helperText, ...props }: TextFieldProps) {
   }, [props.field?.format, props.type]);
 
   const onTextInputChange = useCallback(
-    (event, value) => {
+    (event: React.FormEvent<HTMLInputElement>, value: string) => {
       if (fieldType !== "time" || value === "") {
         onChange((event.target as any)?.value);
         return;

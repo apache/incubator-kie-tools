@@ -22,6 +22,7 @@ import { KogitoAppContext, AppContextImpl } from "./KogitoAppContext";
 
 interface IOwnProps {
   userContext: UserContext;
+  children?: React.ReactNode;
 }
 
 export const KogitoAppContextProvider: React.FC<IOwnProps> = ({ userContext, children }) => {

@@ -66,7 +66,7 @@ export function getGitHubApiBaseUrl(baseUrl: string) {
 
 let octokitInstance: Octokit;
 
-export const GitHubContextProvider: React.FC<{}> = (props) => {
+export const GitHubContextProvider: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const globals = useGlobals();
   const [ready, setReady] = useState(false);
   const [token, setToken] = useState(getCookie(globals.githubAuthTokenCookieName));

@@ -38,8 +38,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           path: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP__quarkusAppPath),
         },
         dev: {
-          webpackPort: 9008,
-          quarkusPort: 9009,
+          webpackPort: "9008",
+          quarkusPort: "9009",
         },
         version: require("../package.json").version,
       },

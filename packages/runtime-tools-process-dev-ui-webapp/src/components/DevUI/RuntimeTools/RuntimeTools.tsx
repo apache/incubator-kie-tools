@@ -28,6 +28,7 @@ import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
 import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
+import { createRoot } from "react-dom/client";
 
 interface IOwnProps {
   isProcessEnabled: boolean;
@@ -68,8 +69,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
 
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
-      // eslint-disable-next-line react/no-render-return-value
-      return ReactDOM.render(
+      return createRoot(document.getElementById("envelope-app")!).render(
         <DevUILayout
           apolloClient={client}
           users={users}
@@ -85,8 +85,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           diagramPreviewSize={diagramPreviewSize}
         >
           <ServerUnavailablePage displayName={"Runtime Dev UI"} reload={() => window.location.reload()} />
-        </DevUILayout>,
-        document.getElementById("envelope-app")
+        </DevUILayout>
       );
     }
   });

@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import * as React from "react";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { EditorTheme } from "./EditorTheme";
 
@@ -28,7 +29,7 @@ export interface Editor extends EditorApi {
   af_componentId: string;
   af_componentTitle: string;
 
-  af_componentRoot(): React.ReactPortal | React.ReactElement | HTMLElement | string;
+  af_componentRoot(): React.ReactNode;
   af_onStartup?(): void;
   af_onOpen?(): void;
 }

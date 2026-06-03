@@ -39,9 +39,18 @@ export class Table {
 
   public async addRow(args: { targetCellName: string; position: AddRowPosition }) {
     await this.page.getByRole("cell", { name: args.targetCellName, exact: true }).click({ button: "right" });
-    args.position === AddRowPosition.BELOW
-      ? await this.page.getByRole("menuitem", { name: "Insert Below" }).click()
-      : await this.page.getByRole("menuitem", { name: "Insert Above" }).click();
+    const menuItem =
+      args.position === AddRowPosition.BELOW
+        ? this.page.getByRole("menuitem", { name: "Insert Below" })
+        : this.page.getByRole("menuitem", { name: "Insert Above" });
+
+    // Get menu item bounding box and click directly at its position
+    const menuBox = await menuItem.boundingBox();
+    if (menuBox) {
+      await this.page.mouse.click(menuBox.x + menuBox.width / 2, menuBox.y + menuBox.height / 2);
+    } else {
+      await menuItem.click();
+    }
   }
 
   public async addPropertyColumn(args: { targetCellName: string; position: AddColumnPosition; columnNumber: number }) {
@@ -85,7 +94,7 @@ export class Table {
   }
 
   public getNumberedCell(args: { name: string }) {
-    return this.page.getByRole("cell", { name: args.name });
+    return this.page.getByRole("cell", { name: args.name }).nth(0);
   }
 
   public getColumnHeader(args: { name: string; columnNumber?: number }) {

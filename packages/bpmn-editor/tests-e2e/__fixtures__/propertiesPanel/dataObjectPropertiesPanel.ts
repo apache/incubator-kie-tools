@@ -30,8 +30,7 @@ export class DataObjectPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setItemSubjectRef(args: { itemSubjectRef: string }) {
-    await this.panel().getByRole("combobox").first().click();
-    await this.page.keyboard.type(args.itemSubjectRef);
+    await this.fillCombobox(args.itemSubjectRef);
 
     const createOption = this.page.getByText(`Create Data Type "${args.itemSubjectRef}"`, { exact: true });
     const optionCount = await createOption.count();

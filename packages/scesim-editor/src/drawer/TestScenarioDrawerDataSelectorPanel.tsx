@@ -422,7 +422,7 @@ function TestScenarioDataSelectorPanel() {
     return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAssignMessage, enabled: true };
   }, [filterOutAlreadyAssignedDataObjectsAndChildren, i18n, selectedColumnMetadata, treeViewStatus]);
 
-  const onAllExpandedToggle = useCallback((_event) => {
+  const onAllExpandedToggle = useCallback((_event: React.MouseEvent) => {
     setAllExpanded((prev) => !prev);
   }, []);
 
@@ -478,7 +478,7 @@ function TestScenarioDataSelectorPanel() {
     });
   }, [dataObjects, selectedColumnMetadata, testScenarioEditorStoreApi, treeViewStatus.activeItems]);
 
-  const onClearSelectionClicked = useCallback((_event) => {
+  const onClearSelectionClicked = useCallback((_event: React.MouseEvent) => {
     setTreeViewStatus((prev) => {
       return {
         ...prev,
@@ -488,17 +488,17 @@ function TestScenarioDataSelectorPanel() {
   }, []);
 
   const onSearchTreeView = useCallback(
-    (event) =>
+    (event: React.FormEvent<HTMLInputElement>) =>
       setTreeViewStatus((prev) => {
         return {
           ...prev,
-          searchKey: event.target.value,
+          searchKey: event.currentTarget.value,
         };
       }),
     []
   );
 
-  const onSelectTreeViewItem = useCallback((_event, treeViewItem: TestScenarioTreeViewDataItem) => {
+  const onSelectTreeViewItem = useCallback((_event: React.MouseEvent, treeViewItem: TestScenarioTreeViewDataItem) => {
     setTreeViewStatus((prev) => {
       return {
         ...prev,

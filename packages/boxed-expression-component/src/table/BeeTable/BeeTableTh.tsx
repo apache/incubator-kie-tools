@@ -188,12 +188,15 @@ export function BeeTableTh<R extends object>({
     [columnIndex, rowIndex]
   );
 
+  const { key: thPropsKey, ...thPropsWithoutKey } = thProps as typeof thProps & { key?: React.Key };
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <th
+        key={thPropsKey}
         rowSpan={rowSpan}
-        {...thProps}
-        style={{ ...thProps.style, display: "table-cell" }}
+        {...thPropsWithoutKey}
+        style={{ ...thPropsWithoutKey.style, display: "table-cell" }}
         ref={thRef}
         onMouseDown={onMouseDown}
         onDoubleClick={isReadOnly ? undefined : onDoubleClick}

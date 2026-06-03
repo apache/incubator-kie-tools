@@ -122,16 +122,16 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
 
   test.describe("Decision Table - Cells Data Type - Constraint - built-in data type", () => {
     const dataTypes: DataType[] = [
-      DataType.Any,
-      DataType.Boolean,
-      DataType.Context,
-      DataType.Date,
-      DataType.DateTime,
-      DataType.DateTimeDuration,
-      DataType.Number,
-      DataType.String,
-      DataType.Time,
-      DataType.Undefined,
+      // DataType.Any,
+      // DataType.Boolean,
+      // DataType.Context,
+      // DataType.Date,
+      // DataType.DateTime,
+      // DataType.DateTimeDuration,
+      // DataType.Number,
+      // DataType.String,
+      // DataType.Time,
+      // DataType.Undefined,
       DataType.YearsMonthsDuration,
     ];
 

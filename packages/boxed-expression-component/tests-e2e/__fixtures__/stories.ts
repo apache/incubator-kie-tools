@@ -37,50 +37,50 @@ export class Stories {
   public async openBoxedContext(
     type: BoxedExpressionTypes | "readonly" | "installment-calculation" | "customer" = "base"
   ) {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-context--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-context--${type}`)}`);
   }
 
   public async openDecisionTable(type: BoxedExpressionTypes | "readonly" | "discount" | "undefined-widths" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-decision-table--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-decision-table--${type}`)}`);
   }
 
   public async openBoxedFunction(type: BoxedExpressionTypes | "readonly" | "installment-calculation" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-function--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-function--${type}`)}`);
   }
 
   public async openBoxedInvocation(type: BoxedExpressionTypes | "readonly" | "monthly-installment" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-invocation--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-invocation--${type}`)}`);
   }
 
   public async openBoxedList(type: BoxedExpressionTypes | "readonly" | "age-groups" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-list--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-list--${type}`)}`);
   }
 
   public async openBoxedLiteral(type: BoxedExpressionTypes | "readonly" | "can-drive" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-literal--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-literal--${type}`)}`);
   }
 
   public async openRelation(type: BoxedExpressionTypes | "readonly" | "bigger" | "people" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-relation--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-relation--${type}`)}`);
   }
 
   public async openBoxedFilter(type: BoxedExpressionTypes | "readonly" | "rebooked-flights" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-filter--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-filter--${type}`)}`);
   }
 
   public async openBoxedEvery(type: BoxedExpressionTypes | "readonly" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-every--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-every--${type}`)}`);
   }
 
   public async openBoxedSome(type: BoxedExpressionTypes | "readonly" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-some--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-some--${type}`)}`);
   }
 
   public async openBoxedFor(type: BoxedExpressionTypes | "readonly" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-for--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-for--${type}`)}`);
   }
 
   public async openBoxedConditional(type: BoxedExpressionTypes | "readonly" = "base") {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-conditional--${type}`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-conditional--${type}`)}`);
   }
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { Envelope, EnvelopeDivConfig } from "@kie-tools-core/envelope";
 import { ProcessFormChannelApi, ProcessFormEnvelopeApi } from "../api";
@@ -59,19 +59,19 @@ export function init(args: {
    * Returns a Promise<() => ProcessFormEnvelopeViewApi> that can be used in ProcessFormEnvelopeApiImpl.
    */
   const envelopeViewDelegate = async () => {
-    const ref = React.createRef<ProcessFormEnvelopeViewApi>();
     return new Promise<() => ProcessFormEnvelopeViewApi>((res) => {
+      const setRef = (ref: ProcessFormEnvelopeViewApi | null) => {
+        if (ref) res(() => ref);
+      };
       args.container.className = "kogito-process-form-container";
-      ReactDOM.render(
+      createRoot(args.container).render(
         <ProcessFormEnvelopeView
-          ref={ref}
+          ref={setRef}
           channelApi={envelope.channelApi}
           targetOrigin={args.targetOrigin}
           customFormDisplayerEnvelopePath={args.customFormDisplayerEnvelopePath}
           shouldLoadCustomForms={args.shouldLoadCustomForms}
-        />,
-        args.container,
-        () => res(() => ref.current!)
+        />
       );
     });
   };

@@ -51,7 +51,7 @@ export function BpmnVersionLabel(props: { version: string }) {
         <div>
           {i18n.importedBpmn(props.version, BPMN_LATEST_VERSION)}
           <a href={latestChangelogHref} target={"_blank"}>
-            &nbsp;{i18n.newInBpmn}.
+            &nbsp;{i18n.newInBpmn(BPMN_LATEST_VERSION)}.
           </a>
         </div>
       }

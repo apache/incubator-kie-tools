@@ -148,7 +148,7 @@ export function BpmnDiagramSvg({
               y={node.position!.y}
               showFoldedPage={true}
               // Doesn't need to be painted by the Kogito SVG Add-on
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.task && (
@@ -163,7 +163,7 @@ export function BpmnDiagramSvg({
               strokeWidth={node?.data?.bpmnElement?.__$$element === "callActivity" ? 5 : undefined}
               exportedSvgId={node.id}
               customTasks={customTasks}
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.group && (
@@ -174,7 +174,7 @@ export function BpmnDiagramSvg({
               y={node.position!.y}
               strokeWidth={3}
               // Doesn't need to be painted by the Kogito SVG Add-on
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.textAnnotation && (
@@ -184,7 +184,7 @@ export function BpmnDiagramSvg({
               x={node.position!.x}
               y={node.position!.y}
               // Doesn't need to be painted by the Kogito SVG Add-on
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.startEvent && (
@@ -204,7 +204,7 @@ export function BpmnDiagramSvg({
                   : START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE
               }
               exportedSvgId={node.id}
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.intermediateCatchEvent && (
@@ -223,7 +223,7 @@ export function BpmnDiagramSvg({
                   : true
               }
               exportedSvgId={node.id}
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.intermediateThrowEvent && (
@@ -237,7 +237,7 @@ export function BpmnDiagramSvg({
                 node?.data?.bpmnElement
               )}
               exportedSvgId={node.id}
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.gateway && (
@@ -248,7 +248,7 @@ export function BpmnDiagramSvg({
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.gateway>(NODE_TYPES.gateway, node?.data?.bpmnElement)}
               exportedSvgId={node.id}
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.endEvent && (
@@ -260,7 +260,7 @@ export function BpmnDiagramSvg({
               variant={getBpmnNodeVariant<typeof NODE_TYPES.endEvent>(NODE_TYPES.endEvent, node?.data?.bpmnElement)}
               strokeWidth={6}
               exportedSvgId={node.id}
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.subProcess && (
@@ -274,7 +274,7 @@ export function BpmnDiagramSvg({
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.subProcess>(NODE_TYPES.subProcess, node?.data?.bpmnElement)}
               exportedSvgId={node.id}
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.lane && (
@@ -284,7 +284,7 @@ export function BpmnDiagramSvg({
               x={node.position!.x}
               y={node.position!.y}
               // Doesn't need to be painted by the Kogito SVG Add-on
-              {...style}
+              {...(style as any)}
             />
           )}
           {node.type === NODE_TYPES.unknown && (
@@ -294,7 +294,7 @@ export function BpmnDiagramSvg({
               x={node.position!.x}
               y={node.position!.y}
               // Doesn't need to be painted by the Kogito SVG Add-on
-              {...style}
+              {...(style as any)}
             />
           )}
           {label.trim() && (

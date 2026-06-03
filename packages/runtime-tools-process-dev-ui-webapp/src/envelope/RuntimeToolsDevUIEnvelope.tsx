@@ -26,6 +26,7 @@ import {
 } from "./RuntimeToolsDevUIEnvelopeContext";
 import ReactDOM from "react-dom";
 import React from "react";
+import { createRoot } from "react-dom/client";
 
 export class RuntimeToolsDevUIEnvelope {
   constructor(
@@ -51,22 +52,22 @@ export class RuntimeToolsDevUIEnvelope {
   }
 
   private renderView(container: HTMLElement) {
-    const runtimeToolsDevUIEnvelopeViewRef = React.createRef<RuntimeToolsDevUIEnvelopeViewApi>();
-
-    const app = () => {
-      return (
-        <RuntimeToolsDevUIEnvelopeContext.Provider value={this.context}>
-          <RuntimeToolsDevUIEnvelopeView ref={runtimeToolsDevUIEnvelopeViewRef} />
-        </RuntimeToolsDevUIEnvelopeContext.Provider>
-      );
-    };
-
     return new Promise<() => RuntimeToolsDevUIEnvelopeViewApi>((res) => {
-      setTimeout(() => {
-        ReactDOM.render(app(), container, () => {
-          res(() => runtimeToolsDevUIEnvelopeViewRef.current!);
-        });
-      }, 0);
+      const runtimeToolsDevUIEnvelopeViewRef = (ref: RuntimeToolsDevUIEnvelopeViewApi | null) => {
+        if (ref) {
+          res(() => ref);
+        }
+      };
+
+      const app = () => {
+        return (
+          <RuntimeToolsDevUIEnvelopeContext.Provider value={this.context}>
+            <RuntimeToolsDevUIEnvelopeView ref={runtimeToolsDevUIEnvelopeViewRef} />
+          </RuntimeToolsDevUIEnvelopeContext.Provider>
+        );
+      };
+
+      createRoot(container).render(app());
     });
   }
 }
