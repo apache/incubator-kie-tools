@@ -21,9 +21,9 @@
 //JAVA 17
 //REPOS droolsAndKogito=file://${droolsAndKogitoLocalM2Repo},mavencentral
 //DEPS org.kie:drools-build-parent:${kogito-runtime.version}@pom
-//DEPS ch.qos.logback:logback-classic:1.2.13
-//DEPS info.picocli:picocli:4.7.5
-//DEPS org.slf4j:slf4j-simple:2.0.12
+//DEPS ch.qos.logback:logback-classic:1.5.34
+//DEPS info.picocli:picocli:4.7.7
+//DEPS org.slf4j:slf4j-simple:2.0.17
 //DEPS org.kie:kie-api:${kogito-runtime.version}
 //DEPS org.kie:kie-internal:${kogito-runtime.version}
 //DEPS org.kie:kie-dmn-api:${kogito-runtime.version}
