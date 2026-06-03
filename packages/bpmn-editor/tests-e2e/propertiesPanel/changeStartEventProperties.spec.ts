@@ -242,24 +242,26 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
       await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
 
-      const messageName = "TestMessage";
       await startEventPropertiesPanel.setMessageDefinition({
-        messageName,
+        messageName: "TestMessage",
         startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
       });
 
       const definitions = await jsonModel.getDefinitions();
-      const rootElements = definitions?.rootElement || [];
 
-      const message = rootElements.find((el: any) => el.__$$element === "message" && el["@_name"] === messageName);
-      expect(message).toBeDefined();
-      expect(message?.["@_itemRef"]).toBeDefined();
-
-      const itemDefinitionId = message?.["@_itemRef"];
-      const itemDefinition = rootElements.find(
-        (el: any) => el.__$$element === "itemDefinition" && el["@_id"] === itemDefinitionId
+      expect(definitions?.rootElement).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            __$$element: "message",
+            "@_name": "TestMessage",
+            "@_itemRef": "__messageItemDefinition",
+          }),
+          expect.objectContaining({
+            __$$element: "itemDefinition",
+            "@_id": "__messageItemDefinition",
+          }),
+        ])
       );
-      expect(itemDefinition).toBeDefined();
     });
   });
 });
