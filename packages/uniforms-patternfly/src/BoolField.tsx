@@ -37,7 +37,17 @@ export type BoolFieldProps = FieldProps<
   }
 >;
 
-function BoolField({ appearance, disabled, id, inputRef, label, name, onChange, value, ...props }: BoolFieldProps) {
+function BoolField({
+  appearance = ComponentType.checkbox,
+  disabled,
+  id,
+  inputRef,
+  label,
+  name,
+  onChange,
+  value,
+  ...props
+}: BoolFieldProps) {
   const Component = appearance === ComponentType.switch ? Switch : Checkbox;
   return wrapField(
     { id, ...props },
@@ -53,7 +63,5 @@ function BoolField({ appearance, disabled, id, inputRef, label, name, onChange, 
     />
   );
 }
-
-BoolField.defaultProps = { appearance: ComponentType.checkbox };
 
 export default connectField(BoolField);

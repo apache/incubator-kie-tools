@@ -29,22 +29,24 @@ export type ErrorFieldProps = Override<
   }
 >;
 
-function ErrorField({ children, error, errorMessage, ...props }: ErrorFieldProps) {
-  return !error ? null : (
-    <div data-testid={"error-field"} {...filterDOMProps(props)}>
-      {children ? children : <div style={{ margin: "3px" }}>{errorMessage}</div>}
-    </div>
-  );
-}
-
-ErrorField.defaultProps = {
-  style: {
+function ErrorField({
+  children,
+  error,
+  errorMessage,
+  style = {
     backgroundColor: "rgba(255, 85, 0, 0.2)",
     border: "1px solid rgb(255, 85, 0)",
     borderRadius: "7px",
     margin: "20px 0px",
     padding: "10px",
   },
-};
+  ...props
+}: ErrorFieldProps) {
+  return !error ? null : (
+    <div data-testid={"error-field"} {...filterDOMProps(props)} style={style}>
+      {children ? children : <div style={{ margin: "3px" }}>{errorMessage}</div>}
+    </div>
+  );
+}
 
 export default connectField<ErrorFieldProps>(ErrorField, { initialValue: false });

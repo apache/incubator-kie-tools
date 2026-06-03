@@ -82,6 +82,7 @@ export default function wrapField(
   }: WrapperProps,
   children: React.ReactNode
 ) {
+  const { key, ...propsWithoutKey } = filterDOMProps(props);
   return (
     <FormGroup
       data-testid={"wrapper-field"}
@@ -105,7 +106,8 @@ export default function wrapField(
       }
       isRequired={required}
       type={type}
-      {...filterDOMProps(props)}
+      key={key}
+      {...propsWithoutKey}
     >
       {children}
       {error ? (
