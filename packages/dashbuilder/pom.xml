@@ -65,7 +65,7 @@
 
     <!-- Resolved artifacts -->
     <version.org.junit>4.13.2</version.org.junit>
-    <version.org.assertj>3.14.0</version.org.assertj>
+    <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.mockito>3.6.0</version.org.mockito>
     <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
