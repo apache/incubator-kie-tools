@@ -29,3 +29,7 @@ overrides:
   # CVE-2026-41907: Fix security vulnerability in uuid
   # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
   "uuid": "^11.1.1"
+  # CVE-2026-40181 (High): react-router open redirect via protocol-relative "//" URLs in redirect().
+  # Patched in 6.30.4.
+  "react-router": "6.30.4"
+  "react-router-dom": "6.30.4"
