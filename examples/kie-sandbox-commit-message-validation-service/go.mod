@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/examples/kie-sandbox-commit-message-validation-service
 
-go 1.26.3
+go 1.26.0
 
 require (
 	github.com/gin-contrib/cors v1.6.0
