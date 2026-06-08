@@ -23,11 +23,21 @@ import { useForm, filterDOMProps } from "uniforms";
 
 export type ErrorsFieldProps = HTMLProps<HTMLDivElement>;
 
-function ErrorsField({ children, ...props }: ErrorsFieldProps) {
+function ErrorsField({
+  children,
+  style = {
+    backgroundColor: "rgba(255, 85, 0, 0.2)",
+    border: "1px solid rgb(255, 85, 0)",
+    borderRadius: "7px",
+    margin: "20px 0px",
+    padding: "10px",
+  },
+  ...props
+}: ErrorsFieldProps) {
   const { error, schema } = useForm();
 
   return !error && !children ? null : (
-    <div data-testid={"errors-field"} {...filterDOMProps(props)}>
+    <div data-testid={"errors-field"} {...filterDOMProps(props)} style={style}>
       {children}
       <ul>
         {schema.getErrorMessages(error).map((message, index) => (
@@ -39,15 +49,5 @@ function ErrorsField({ children, ...props }: ErrorsFieldProps) {
     </div>
   );
 }
-
-ErrorsField.defaultProps = {
-  style: {
-    backgroundColor: "rgba(255, 85, 0, 0.2)",
-    border: "1px solid rgb(255, 85, 0)",
-    borderRadius: "7px",
-    margin: "20px 0px",
-    padding: "10px",
-  },
-};
 
 export default ErrorsField;

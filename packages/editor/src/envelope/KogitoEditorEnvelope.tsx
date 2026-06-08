@@ -26,6 +26,7 @@ import {
 } from "../api";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { createRoot } from "react-dom/client";
+import { flushSync } from "react-dom";
 import * as React from "react";
 import { Envelope, EnvelopeApiFactory } from "@kie-tools-core/envelope";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
@@ -72,35 +73,38 @@ export class KogitoEditorEnvelope<
   }
 
   private renderView(container: HTMLElement) {
+    const editorEnvelopeViewRef = React.createRef<EditorEnvelopeViewApi<E>>();
+
+    const app = (
+      <KogitoEditorEnvelopeContext.Provider value={this.context}>
+        <I18nDictionariesProvider
+          defaults={editorEnvelopeI18nDefaults}
+          dictionaries={editorEnvelopeI18nDictionaries}
+          ctx={EditorEnvelopeI18nContext}
+          initialLocale={navigator.language}
+        >
+          <EditorEnvelopeI18nContext.Consumer>
+            {({ setLocale }) => (
+              <EditorEnvelopeView
+                ref={editorEnvelopeViewRef}
+                setLocale={setLocale}
+                showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
+              />
+            )}
+          </EditorEnvelopeI18nContext.Consumer>
+        </I18nDictionariesProvider>
+      </KogitoEditorEnvelopeContext.Provider>
+    );
+
     return new Promise<() => EditorEnvelopeViewApi<E>>((res) => {
-      const editorEnvelopeViewRef = (ref: EditorEnvelopeViewApi<E> | null) => {
-        if (ref) {
-          res(() => ref);
-        }
-      };
-
-      const app = (
-        <KogitoEditorEnvelopeContext.Provider value={this.context}>
-          <I18nDictionariesProvider
-            defaults={editorEnvelopeI18nDefaults}
-            dictionaries={editorEnvelopeI18nDictionaries}
-            ctx={EditorEnvelopeI18nContext}
-            initialLocale={navigator.language}
-          >
-            <EditorEnvelopeI18nContext.Consumer>
-              {({ setLocale }) => (
-                <EditorEnvelopeView
-                  ref={editorEnvelopeViewRef}
-                  setLocale={setLocale}
-                  showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
-                />
-              )}
-            </EditorEnvelopeI18nContext.Consumer>
-          </I18nDictionariesProvider>
-        </KogitoEditorEnvelopeContext.Provider>
-      );
-
-      createRoot(container).render(app);
+      setTimeout(() => {
+        const root = createRoot(container);
+        // Force `render` to be synchronous to avoid race conditions with the `envelopeServer` initialization.
+        flushSync(() => {
+          root.render(app);
+        });
+        res(() => editorEnvelopeViewRef.current!);
+      }, 0);
     });
   }
 }
