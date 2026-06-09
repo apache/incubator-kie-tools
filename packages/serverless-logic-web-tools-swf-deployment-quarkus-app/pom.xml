@@ -49,7 +49,7 @@
     <com.github.erosb.everit-json-schema.version>1.14.2</com.github.erosb.everit-json-schema.version>
     <surefire-plugin.version>3.5.0</surefire-plugin.version>
     <version.org.kie.kogito>${project.version}</version.org.kie.kogito>
-    <version.quarkus>3.27.3</version.quarkus>
+    <version.quarkus>3.27.4</version.quarkus>
   </properties>
 
   <dependencyManagement>

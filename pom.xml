@@ -61,7 +61,7 @@
     <version.npm>11.6.2</version.npm>
     <version.pnpm>10.28.2</version.pnpm>
 
-    <version.quarkus>3.27.3</version.quarkus>
+    <version.quarkus>3.27.4</version.quarkus>
     <version.org.kie.kogito>${project.version}</version.org.kie.kogito>
     <skip.maven.deploy.in.pnpm.wrapped.artifacts>true</skip.maven.deploy.in.pnpm.wrapped.artifacts>
   </properties>
