@@ -196,6 +196,19 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     };
   }, [props.isReady, isReady, stateControl, envelopeServer, onKeyDown]);
 
+  const editorIframeProps = useMemo(() => {
+    if (!envelopeMapping) {
+      return undefined;
+    }
+    const props = getEditorIframeProps(envelopeMapping);
+    return {
+      key: undefined,
+      src: undefined,
+      srcDoc: undefined,
+      ...props,
+    };
+  }, [envelopeMapping]);
+
   return (
     <>
       {!envelopeMapping && (
@@ -203,7 +216,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
           <span>{i18n.editorNotAvailable(props.file.fileExtension)}</span>
         </>
       )}
-      {envelopeMapping && (
+      {envelopeMapping && editorIframeProps && (
         <iframe
           ref={iframeRef}
           id={"kogito-iframe"}
@@ -211,7 +224,9 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
           title={i18n.kogitoEditor}
           style={containerStyles}
           data-envelope-channel={props.channelType}
-          {...getEditorIframeProps(envelopeMapping)}
+          key={editorIframeProps.key}
+          src={editorIframeProps.src}
+          srcDoc={editorIframeProps.srcDoc}
         />
       )}
     </>
