@@ -31,5 +31,5 @@ overrides:
   # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
   "uuid": "^11.1.1"
   # CVE-2026-33671 (High) / CVE-2026-33672 (Medium): picomatch POSIX bracket method injection and ReDoS.
-  # Transitive dep of @angular-devkit/build-angular still uses vulnerable 4.0.3
+  "picomatch@3": "3.0.2"
   "picomatch@4": "4.0.4"
