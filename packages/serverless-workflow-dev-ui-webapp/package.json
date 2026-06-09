@@ -95,7 +95,7 @@
     "url-loader": "^4.1.1",
     "webpack": "^5.104.1",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.2",
+    "webpack-dev-server": "^5.2.4",
     "webpack-merge": "^5.9.0"
   }
 }

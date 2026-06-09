@@ -208,4 +208,34 @@
       </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>github</id>
+      <name>GitHub Repository</name>
+      <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
+    </repository>
+    <repository>
+      <id>jboss</id>
+      <name>JBoss Public Repo</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>github</id>
+      <name>GitHub Repository</name>
+      <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
