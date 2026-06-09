@@ -57,8 +57,7 @@ module.exports = async (webpackEnv) =>
           context: (pathname, req) => {
             // redirect all POST request to test the local cluster environment
             return (
-              req.method === "POST" ||
-              ["/svg", "/forms", "/customDashboard", "/q/openapi.json"].some((path) => pathname.startsWith(path))
+              req.method === "POST" || ["/svg", "/forms", "/q/openapi.json"].some((path) => pathname.startsWith(path))
             );
           },
           target: "http://localhost:4000",
@@ -104,20 +103,6 @@ module.exports = async (webpackEnv) =>
           { from: "./src/static", to: "./static" },
           { from: "./src/components/styles.css", to: "./components/styles.css" },
           {
-            from: path.join(
-              path.dirname(require.resolve("@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/package.json")),
-              "/dist"
-            ),
-            to: "./monitoring-webapp",
-          },
-          {
-            from: path.join(
-              path.dirname(require.resolve("@kie-tools/runtime-tools-swf-enveloped-components/package.json")),
-              "/dist/customDashboardView"
-            ),
-            to: "./custom-dashboard-view",
-          },
-          {
             from: swEditor.swEditorPath(),
             to: "./diagram",
             globOptions: { ignore: ["**/WEB-INF/**/*"] },
@@ -132,14 +117,6 @@ module.exports = async (webpackEnv) =>
               { source: "./dist/*.js", destination: "./dist/resources/webapp/" },
               { source: "./dist/*.map", destination: "./dist/resources/webapp/" },
               { source: "./dist/fonts", destination: "./dist/resources/webapp/fonts" },
-              {
-                source: "./dist/monitoring-webapp",
-                destination: "./dist/resources/webapp/monitoring-webapp",
-              },
-              {
-                source: "./dist/custom-dashboard-view",
-                destination: "./dist/resources/webapp/custom-dashboard-view",
-              },
             ],
           },
         },

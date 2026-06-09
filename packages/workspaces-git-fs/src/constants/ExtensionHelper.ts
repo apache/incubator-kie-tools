@@ -19,12 +19,11 @@
 
 const REGEX = {
   supportedSingleExtensions: /(\.bpmn|bpmn2|\.pmml)$/i,
-  supportedDoubleExtensions: /(\.sw\.(json|yml|yaml)|\.yard\.(json|yml|yaml)|\.dash\.(yml|yaml))$/i,
+  supportedDoubleExtensions: /(\.sw\.(json|yml|yaml)|\.yard\.(json|yml|yaml))$/i,
   sw: /^.*\.sw\.(json|yml|yaml)$/i,
   swJson: /^.*\.sw\.json$/i,
   swYaml: /^.*\.sw\.yaml$/i,
   yard: /^.*\.yard\.(yml|yaml)$/i,
-  dash: /^.*\.dash\.(yml|yaml)$/i,
   bpmn: /^.*\.(bpmn|bpmn2)$/i,
   scesim: /^.*\.scesim$/i,
   pmml: /^.*\.pmml$/i,
@@ -40,8 +39,6 @@ export enum FileTypes {
   YARD_JSON = "yard.json",
   YARD_YML = "yard.yml",
   YARD_YAML = "yard.yaml",
-  DASH_YAML = "dash.yaml",
-  DASH_YML = "dash.yml",
   BPMN = "bpmn",
   BPMN2 = "bpmn2",
   SCESIM = "scesim",

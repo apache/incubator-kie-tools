@@ -27,7 +27,6 @@ const PMML_EXTENSIONS = ".pmml";
 
 const SERVERLESS_WORKFLOW_JSON_EXTENSION = `.sw(${JSON_EXTENSIONS})`;
 const SERVERLESS_WORKFLOW_EXTENSIONS = `.sw(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
-const DASHBUILDER_EXTENSIONS = `.dash(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
 const YARD_EXTENSIONS = `.yard(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
 
 /**
@@ -45,16 +44,7 @@ export function getSingleViewExtensionsRegExp(): RegExp {
  * @returns regular expression with supported extensions.
  */
 export function getDualViewExtensionsRegExp(): RegExp {
-  return new RegExp(`${SERVERLESS_WORKFLOW_EXTENSIONS}|${DASHBUILDER_EXTENSIONS}|${YARD_EXTENSIONS}$`);
-}
-
-/**
- * Gets dashbuilder file extensions.
- *
- * @returns regular expression for dashbuilder extensions.
- */
-export function getDashbuilderExtensionsRegExp(): RegExp {
-  return new RegExp(`${DASHBUILDER_EXTENSIONS}$`);
+  return new RegExp(`${SERVERLESS_WORKFLOW_EXTENSIONS}|${YARD_EXTENSIONS}$`);
 }
 
 /**
@@ -75,16 +65,6 @@ export function isKieEditorWithSingleView(fileName: string): boolean {
  */
 export function isKieEditorWithDualView(fileName: string): boolean {
   return getDualViewExtensionsRegExp().test(fileName);
-}
-
-/**
- * Checks if the file is dashbuilder editor.
- *
- * @param fileName a name of the file to be checked.
- * @returns true or false.
- */
-export function isDashbuilderEditor(fileName: string): boolean {
-  return getDashbuilderExtensionsRegExp().test(fileName);
 }
 
 /**

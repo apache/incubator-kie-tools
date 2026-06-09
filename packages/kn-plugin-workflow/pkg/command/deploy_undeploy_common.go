@@ -44,13 +44,11 @@ type DeployUndeployCmdConfig struct {
 	SpecsDir                         string
 	SchemasDir                       string
 	CustomManifestsFileDir           string
-	DefaultDashboardsFolder          string
 	Profile                          string
 	Image                            string
 	SchemasFilesPath                 []string
 	SpecsFilesPath                   map[string]string
 	SubFlowsFilesPath                []string
-	DashboardsPath                   []string
 	Minify                           bool
 	Wait					   		 bool
 }
@@ -160,19 +158,6 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		fmt.Printf(" - ✅ Schemas file found: %s\n", file)
 	}
 
-	fmt.Println("🔍 Looking for your dashboard files...")
-
-	dashboardExtensions := []string{metadata.YAMLExtension, metadata.YMLExtension}
-
-	files, err = common.FindFilesWithExtensions(cfg.DefaultDashboardsFolder, dashboardExtensions)
-	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to get dashboards directory: %w", err)
-	}
-	cfg.DashboardsPath = files
-	for _, file := range cfg.DashboardsPath {
-		fmt.Printf(" - ✅ Dashboard found: %s\n", file)
-	}
-
 	fmt.Println("🚚️ Generating your Kubernetes manifest files...")
 
 	swfFile, err := common.MustGetFile(cfg.SonataFlowFile)
@@ -219,14 +204,6 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 			return err
 		}
 		handler.AddResourceAt(filepath.Base(supportFile), filepath.Base(cfg.SpecsDir), specIO)
-	}
-
-	for _, dashboardFile := range cfg.DashboardsPath {
-		specIO, err := common.MustGetFile(dashboardFile)
-		if err != nil {
-			return err
-		}
-		handler.AddResourceAt(filepath.Base(dashboardFile), metadata.DashboardsDefaultDirName, specIO)
 	}
 
 	if len(cfg.Profile) > 0 {

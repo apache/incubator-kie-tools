@@ -30,7 +30,6 @@ import { useAppI18n } from "../../i18n";
 import { CompletedDeployOperation } from "../../openshift/deploy/types";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { SwfDeployOptions } from "./ConfirmOptions/SwfDeployOptions";
-import { DashDeployOptions } from "./ConfirmOptions/DashDeployOptions";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 
 interface ConfirmDeployModalProps {
@@ -51,23 +50,11 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
   const [deployOptions, deployOptionsRef] = useController<ConfirmDeployOptionsRef>();
 
   const optionsComponent = useMemo(() => {
-    let DeployOptionsComponent = null;
-
-    if (isOfKind("sw", props.workspaceFile.name)) {
-      DeployOptionsComponent = SwfDeployOptions;
-    } else if (isOfKind("dash", props.workspaceFile.name)) {
-      DeployOptionsComponent = DashDeployOptions;
+    if (!isOfKind("sw", props.workspaceFile.name)) {
+      return null;
     }
 
-    return (
-      DeployOptionsComponent && (
-        <DeployOptionsComponent
-          workspace={props.workspace}
-          workspaceFile={props.workspaceFile}
-          ref={deployOptionsRef}
-        />
-      )
-    );
+    return <SwfDeployOptions workspace={props.workspace} workspaceFile={props.workspaceFile} ref={deployOptionsRef} />;
   }, [deployOptionsRef, props.workspace, props.workspaceFile]);
 
   const deployStartedErrorAlert = useGlobalAlert(

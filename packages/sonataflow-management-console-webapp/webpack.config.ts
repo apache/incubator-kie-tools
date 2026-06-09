@@ -69,14 +69,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
                 to: "./serverless-workflow-text-editor-envelope.html",
               },
               {
-                from: path.join(path.dirname(require.resolve("@kie-tools/dashbuilder-client/package.json")), "/dist"),
-                to: "./monitoring-webapp",
-              },
-              {
-                from: "./resources/monitoring-webapp",
-                to: "./monitoring-webapp",
-              },
-              {
                 from: "./src/static/env.json",
                 to: "./env.json",
                 transform: () => JSON.stringify(defaultEnvJson, null, 2),
@@ -102,10 +94,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
                   { source: "./dist/*.js", destination: "./dist/resources/webapp/" },
                   { source: "./dist/*.map", destination: "./dist/resources/webapp/" },
                   { source: "./dist/fonts", destination: "./dist/resources/webapp/fonts" },
-                  {
-                    source: "./dist/monitoring-webapp",
-                    destination: "./dist/resources/webapp/monitoring-webapp",
-                  },
                 ],
               },
             },

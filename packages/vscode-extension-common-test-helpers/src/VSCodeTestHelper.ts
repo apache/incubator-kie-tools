@@ -48,7 +48,7 @@ import {
   inputBox,
   explorerFolder,
 } from "./CommonLocators";
-import { isKieEditorWithDualView, isKieEditorWithSingleView, isDashbuilderEditor } from "./KieFileExtensions";
+import { isKieEditorWithDualView, isKieEditorWithSingleView } from "./KieFileExtensions";
 
 /**
  * Common test helper class for VSCode extension testing.
@@ -160,10 +160,6 @@ export class VSCodeTestHelper {
 
     const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
 
-    if (isDashbuilderEditor(fileName)) {
-      this.forceOpeningDashbuilderEditor(webviewLeft);
-    }
-
     const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
     await this.waitUntilKogitoEditorIsLoaded(webviewRight);
 
@@ -202,12 +198,6 @@ export class VSCodeTestHelper {
 
     return await this.workbench.getEditorView().getEditorGroups();
   };
-
-  private async forceOpeningDashbuilderEditor(textEditorWebView: WebView): Promise<void> {
-    const webDriver = textEditorWebView.getDriver();
-    const consoleHelper = await webDriver.findElement(webViewReady());
-    await consoleHelper.sendKeys(Key.ENTER);
-  }
 
   /**
    * Waits until folder structure in explorer is loaded and expanded.

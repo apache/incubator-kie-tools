@@ -19,6 +19,7 @@
 import * as React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Link } from "react-router-dom";
+import "../../../components/styles.css";
 import { ouiaAttribute } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { routes } from "../../../navigation/Routes";
 
@@ -40,11 +41,6 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
             {...ouiaAttribute("data-ouia-navigation-name", "workflow-instances")}
           >
             Workflow Instances
-          </Link>
-        </NavItem>
-        <NavItem key={"monitoring-nav"} isActive={pathname === routes.monitoring.path({})} ouiaId="monitoring">
-          <Link to={routes.monitoring.path({})} {...ouiaAttribute("data-ouia-navigation-name", "monitoring")}>
-            Monitoring
           </Link>
         </NavItem>
       </NavList>

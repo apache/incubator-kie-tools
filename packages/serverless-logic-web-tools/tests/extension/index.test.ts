@@ -44,7 +44,7 @@ describe("extension", () => {
     it("should split files into 2 editable and 0 readonly files ", () => {
       const files = [
         createWorkspaceFileMock({ relativePath: "some/path/model.sw.json" }),
-        createWorkspaceFileMock({ relativePath: "some/path/model.dash.yaml" }),
+        createWorkspaceFileMock({ relativePath: "some/path/model.sw.yaml" }),
       ];
       const { editableFiles, readonlyFiles } = splitFiles(files);
       expect(editableFiles).toHaveLength(2);
@@ -134,26 +134,6 @@ describe("extension", () => {
         [true, "yard yml file in a folder", "bar/foo.yard.yml"],
       ])("should be %s when path is %s", (result, _desc, path) => {
         const matcher = new Minimatch(GLOB_PATTERN.yard, { dot: true });
-        expect(matcher.match(path)).toBe(result);
-      });
-    });
-
-    describe("dash", () => {
-      it.each([
-        [false, "not a dashboard file in the root", "foo.txt"],
-        [false, "not a dashboard file in the root", "foo.dash"],
-        [false, "json file in the root", "foo.json"],
-        [false, "yaml file in the root", "foo.yaml"],
-        [false, "yml file in the root", "foo.yml"],
-        [false, "json file in the root", "foo.json"],
-        [false, "dash json file in the root", "foo.dash.json"],
-        [false, "dash json file in a folder", "bar/foo.dash.json"],
-        [true, "dash yaml file in the root", "foo.dash.yaml"],
-        [true, "dash yml file in the root", "foo.dash.yml"],
-        [true, "dash yaml file in a folder", "bar/foo.dash.yaml"],
-        [true, "dash yml file in a folder", "bar/foo.dash.yml"],
-      ])("should be %s when path is %s", (result, _desc, path) => {
-        const matcher = new Minimatch(GLOB_PATTERN.dash, { dot: true });
         expect(matcher.match(path)).toBe(result);
       });
     });

@@ -298,12 +298,6 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 		}
 	}
 
-	dir, err := os.Getwd()
-	cfg.DefaultDashboardsFolder = dir + "/" + metadata.DashboardsDefaultDirName
-	if err != nil {
-		return cfg, fmt.Errorf("❌ ERROR: failed to get default dashboards files folder: %w", err)
-	}
-
 	// check if sonataflow operator and knative CRDs are installed
 	if err := CheckCRDs(metadata.SonataflowCRDs, "SonataFlow Operator"); err != nil {
 		return cfg, err

@@ -216,7 +216,6 @@ pipeline {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
                         releaseUtils.signArtifact("${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")

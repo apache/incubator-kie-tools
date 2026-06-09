@@ -98,8 +98,6 @@ app.get("/q/openapi.json", (req, res) => res.json(swaggerApiDoc));
 app.use("/docs", swaggerUi.serveFiles(null, swaggerOptions), swaggerUi.setup(null, swaggerOptions));
 
 app.get("/forms/list", controller.getForms);
-app.get("/customDashboard/list", controller.getCustomDashboards);
-app.get("/customDashboard/:name", controller.getCustomDashboardContent);
 app.get("/forms/:formName", controller.getFormContent);
 app.post("/forms/:formName", controller.saveFormContent);
 

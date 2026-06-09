@@ -17,7 +17,6 @@
  * under the License.
  */
 
-.Dev-ui__card-size,
-.Dev-ui__custom-dashboard-viewer > div {
+.Dev-ui__card-size {
   height: 100%;
 }

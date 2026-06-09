@@ -6160,9 +6160,6 @@ importers:
       '@kie-tools-core/patternfly-base':
         specifier: workspace:*
         version: link:../patternfly-base
-      '@kie-tools/dashbuilder-client':
-        specifier: workspace:*
-        version: link:../dashbuilder-client
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
@@ -6520,12 +6517,6 @@ importers:
       '@kie-tools/cors-proxy':
         specifier: workspace:*
         version: link:../cors-proxy
-      '@kie-tools/dashbuilder-editor':
-        specifier: workspace:*
-        version: link:../dashbuilder-editor
-      '@kie-tools/dashbuilder-language-service':
-        specifier: workspace:*
-        version: link:../dashbuilder-language-service
       '@kie-tools/emscripten-fs':
         specifier: ^0.0.2
         version: 0.0.2
@@ -6695,12 +6686,6 @@ importers:
       '@kie-tools-core/webpack-base':
         specifier: workspace:*
         version: link:../webpack-base
-      '@kie-tools/dashbuilder-client':
-        specifier: workspace:*
-        version: link:../dashbuilder-client
-      '@kie-tools/dashbuilder-viewer-image-env':
-        specifier: workspace:*
-        version: link:../dashbuilder-viewer-image-env
       '@kie-tools/eslint':
         specifier: workspace:*
         version: link:../eslint
@@ -7148,9 +7133,6 @@ importers:
       '@kie-tools/serverless-workflow-combined-editor':
         specifier: workspace:*
         version: link:../serverless-workflow-combined-editor
-      '@kie-tools/serverless-workflow-dev-ui-monitoring-webapp':
-        specifier: workspace:*
-        version: link:../serverless-workflow-dev-ui-monitoring-webapp
       '@kie-tools/serverless-workflow-diagram-editor-assets':
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor-assets
@@ -8660,9 +8642,6 @@ importers:
       '@kie-tools-core/react-hooks':
         specifier: workspace:*
         version: link:../react-hooks
-      '@kie-tools/dashbuilder-client':
-        specifier: workspace:*
-        version: link:../dashbuilder-client
       '@kie-tools/runtime-tools-components':
         specifier: workspace:*
         version: link:../runtime-tools-components

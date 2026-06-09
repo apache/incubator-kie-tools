@@ -189,7 +189,7 @@ export function EditorToolbar(props: Props) {
   }, [isSaved]);
 
   const canBeDeployed = useMemo(
-    () => isOfKind("sw", props.workspaceFile.relativePath) || isOfKind("dash", props.workspaceFile.relativePath),
+    () => isOfKind("sw", props.workspaceFile.relativePath),
     [props.workspaceFile.relativePath]
   );
 

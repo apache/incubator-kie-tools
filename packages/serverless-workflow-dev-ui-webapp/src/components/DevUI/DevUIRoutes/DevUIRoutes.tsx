@@ -21,11 +21,8 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { WorkflowsPage } from "../../pages";
 import CloudEventFormPage from "../../pages/CloudEventFormPage/CloudEventFormPage";
-import CustomDashboardListPage from "../../pages/CustomDashboardListPage/CustomDashboardListPage";
-import CustomDashboardViewPage from "../../pages/CustomDashboardViewPage/CustomDashboardViewPage";
 import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
 import FormsListPage from "../../pages/FormsListPage/FormsListPage";
-import MonitoringPage from "../../pages/MonitoringPage/MonitoringPage";
 import WorkflowFormPage from "../../pages/WorkflowFormPage/WorkflowFormPage";
 import WorkflowDetailsPage from "../../pages/WorkflowDetailsPage/WorkflowDetailsPage";
 
@@ -43,9 +40,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
       <Route path="/Forms" element={<FormsListPage />} />,
       <Route path="/Forms/:formName" element={<FormDetailPage />} />,
       <Route path="/WorkflowDefinition/Form/:workflowName" element={<WorkflowFormPage />} />,
-      <Route path="/CustomDashboard" element={<CustomDashboardListPage />} />,
-      <Route path="/CustomDashboard/:customDashboardName" element={<CustomDashboardViewPage />} />,
-      <Route path="/Monitoring" element={<MonitoringPage dataIndexUrl={dataIndexUrl} />} />
       <Route path="/Workflows/CloudEvent/:instanceId" element={<CloudEventFormPage />} />,
       <Route path="/WorkflowDefinitions/CloudEvent" element={<CloudEventFormPage />} />,
     </Routes>

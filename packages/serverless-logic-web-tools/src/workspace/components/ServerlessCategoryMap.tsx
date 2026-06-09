@@ -17,10 +17,10 @@
  * under the License.
  */
 import { LabelProps } from "@patternfly/react-core/dist/js/components/Label";
-import { FileIcon, FolderIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
+import { FileIcon, FolderIcon } from "@patternfly/react-icons/dist/js/icons";
 import * as React from "react";
 
-export type ServerlessCategory = "serverless-workflow" | "serverless-decision" | "dashbuilder";
+export type ServerlessCategory = "serverless-workflow" | "serverless-decision";
 
 export const ServerlessCategoryMap: Record<
   ServerlessCategory,
@@ -35,10 +35,5 @@ export const ServerlessCategoryMap: Record<
     label: "Serverless Decision",
     icon: FolderIcon,
     color: "blue",
-  },
-  ["dashbuilder"]: {
-    label: "Dashboard",
-    icon: MonitoringIcon,
-    color: "purple",
   },
 };

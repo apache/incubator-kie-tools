@@ -19,7 +19,6 @@
 const path = require("path");
 const fs = require("fs");
 const formData = require("../MockData/forms/formData");
-const customDashboardData = require("../MockData/customDashboard/data");
 const { v4: uuidv4 } = require("uuid");
 
 const formsUnableToSave = ["html_hiring_ITInterview", "react_hiring_ITInterview"];
@@ -39,35 +38,6 @@ function validateFormName(formName) {
 }
 
 module.exports = controller = {
-  getCustomDashboards: (req, res) => {
-    const filterNames = req.query.names.split(";");
-    if (filterNames[0].length === 0) {
-      res.send(customDashboardData);
-    } else {
-      const filteredCustomDashboards = [];
-      filterNames.forEach((name) => {
-        customDashboardData.forEach((customDashboard) => {
-          if (customDashboard.name === name) {
-            filteredCustomDashboards.push(customDashboard);
-          }
-        });
-      });
-      res.send(filteredCustomDashboards);
-    }
-  },
-
-  getCustomDashboardContent: (req, res) => {
-    const dashboardName = req.params.name;
-    let content = "";
-    if (dashboardName === "age.dash.yaml") {
-      content = fs.readFileSync(__dirname + "/customDashboard/age.dash.yaml", "utf-8");
-    }
-    if (dashboardName === "products.dash.yaml") {
-      content = fs.readFileSync(__dirname + "/customDashboard/products.dash.yaml", "utf-8");
-    }
-    res.send(content);
-  },
-
   getForms: (req, res) => {
     const formFilterNames = req.query.names.split(";");
     if (formFilterNames[0].length === 0) {

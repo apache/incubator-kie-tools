@@ -25,7 +25,6 @@ export const GLOB_PATTERN = {
   allExceptDockerfiles: "**/!(Dockerfile|.dockerignore)",
   sw: "**/*.sw.+(json|yml|yaml)",
   yard: "**/*.yard.+(yml|yaml)",
-  dash: "**/*.dash.+(yml|yaml)",
   spec: "**/+(*.spec?(s)|spec?(s)).+(yml|yaml|json)",
   sw_spec: "**/+(*.sw|*.spec?(s)|spec?(s)).+(yml|yaml|json)",
 };
@@ -36,12 +35,10 @@ export const supportedFileExtensionArray = [
   FileTypes.SW_YAML,
   FileTypes.YARD_YML,
   FileTypes.YARD_YAML,
-  FileTypes.DASH_YAML,
-  FileTypes.DASH_YML,
 ];
 
 export function isModel(path: string): boolean {
-  return isOfKind("sw", path) || isOfKind("yard", path) || isOfKind("dash", path);
+  return isOfKind("sw", path) || isOfKind("yard", path);
 }
 
 export function isEditable(path: string): boolean {

@@ -33,7 +33,6 @@ describe("WorkspaceFileRelativePathParser :: extractExtension", () => {
     ["bar.sw.yml", "sw.yml"],
     ["bar.yard.json", "yard.json"],
     ["bar.yard.yaml.yard.yaml", "yard.yaml"],
-    ["bar.dash.yaml", "dash.yaml"],
     ["a/b/c/foo.json", "json"],
     ["a/b/c/.gitignore", "gitignore"],
     ["a/b/c/noExtension", ""],
@@ -138,16 +137,6 @@ describe("WorkspaceFileRelativePathParser :: parseWorkspaceFileRelativePath", ()
         extension: "yard.yaml",
         nameWithoutExtension: "bar.yard.yaml",
         name: "bar.yard.yaml.yard.yaml",
-      },
-    ],
-    [
-      "bar.dash.yml",
-      {
-        relativePathWithoutExtension: "bar",
-        relativeDirPath: "",
-        extension: "dash.yml",
-        nameWithoutExtension: "bar",
-        name: "bar.dash.yml",
       },
     ],
     [

@@ -85,12 +85,6 @@ pipeline {
         OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
         DEPLOY_TAG = "${params.BRANCH_NAME}"
 
-        DASHBUILDER__viewerImageRegistry = 'docker.io'
-        DASHBUILDER__viewerImageAccount = 'apache'
-        DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
-        DASHBUILDER__viewerImageBuildTag = "${params.BRANCH_NAME}"
-
-        SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.BRANCH_NAME}"
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-kie-serverless-logic-web-tools-swf-builder'
@@ -424,21 +418,6 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        stage('Push dashbuilder-viewer-image to Docker Hub') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.DASHBUILDER__viewerImageRegistry}",
-                        "${env.DASHBUILDER__viewerImageAccount}",
-                        "${env.DASHBUILDER__viewerImageName}",
-                        "${env.DASHBUILDER__viewerImageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

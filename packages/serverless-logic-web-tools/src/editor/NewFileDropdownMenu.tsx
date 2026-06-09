@@ -302,15 +302,6 @@ export function NewFileDropdownMenu(props: {
               <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.YARD_YAML} />
             </b>
           </MenuItem>
-          <MenuItem
-            itemId={"newDashboardItemId"}
-            onClick={() => addEmptyFile(FileTypes.DASH_YAML)}
-            description="Define data visualization from data extracted from applications."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.DASH_YAML} />
-            </b>
-          </MenuItem>
           <Divider />
           <MenuItem
             itemId={"importFromUrlItemId"}

@@ -29,9 +29,6 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
 
     cy.ouia({ ouiaId: "Decision-card" }).find("button").should("have.length", 1);
     cy.ouia({ ouiaId: "new-yard.yaml-button" }).should("have.text", "YAML");
-
-    cy.ouia({ ouiaId: "Dashboard-card" }).find("button").should("have.length", 1);
-    cy.ouia({ ouiaId: "new-dash.yaml-button" }).should("have.text", "YAML");
   });
 
   it("should create a new JSON serverless workflow", () => {
@@ -109,34 +106,6 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
     });
 
     // check there are no problems in YAML file
-    cy.get("#total-notifications").should("have.text", 0);
-  });
-
-  it("should create a new Dashbuilder file", () => {
-    cy.ouia({ ouiaId: "new-dash.yaml-button" }).click();
-    cy.loadEditor();
-
-    // check header labels
-    cy.ouia({ ouiaId: "file-name-input" }).should("have.value", "Untitled");
-    cy.ouia({ ouiaId: "file-type-label" }).should("have.text", "Dashboard");
-
-    // insert text and check dashbuilder editor and diagram
-    cy.getEditor().within(() => {
-      cy.get(".monaco-editor textarea")
-        .forceType("pages:\n")
-        .forceType("- components:\n")
-        .forceType('    - html: <b data-ouia-component-id="hello-text">Hello</b> Dashbuilder!')
-        .should("contain.value", "pages:")
-        .should("contain.value", "- components")
-        .should("contain.value", '- html: <b data-ouia-component-id="hello-text">Hello</b> Dashbuilder!');
-
-      cy.iframe("iframe[src='dashbuilder-client/index.html']").within(() => {
-        cy.get("#mainContainer").should("have.text", "Hello Dashbuilder!");
-        cy.ouia({ ouiaId: "hello-text" }).should("have.text", "Hello");
-      });
-    });
-
-    // check there are no problems in dashbuilder file
     cy.get("#total-notifications").should("have.text", 0);
   });
 

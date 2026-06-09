@@ -25,7 +25,6 @@ import (
 	"path/filepath"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -173,12 +172,6 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 		if err != nil {
 			return cfg, fmt.Errorf("❌ ERROR: failed to get default support schemas files folder: %w", err)
 		}
-	}
-
-	dir, err := os.Getwd()
-	cfg.DefaultDashboardsFolder = dir + "/" + metadata.DashboardsDefaultDirName
-	if err != nil {
-		return cfg, fmt.Errorf("❌ ERROR: failed to get default dashboards files folder: %w", err)
 	}
 
 	//setup manifest path

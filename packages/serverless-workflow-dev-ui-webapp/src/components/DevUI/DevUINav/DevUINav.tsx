@@ -46,20 +46,6 @@ const DevUINav: React.FC = () => {
                 </Link>
               </NavItem>
             )}
-            {(!availablePages || availablePages.includes("Monitoring")) && (
-              <NavItem key={"monitoring-nav"} isActive={location.pathname.startsWith("/Monitoring")}>
-                <Link to="/Monitoring" {...ouiaAttribute("data-ouia-navigation-name", "monitoring-nav")}>
-                  Monitoring
-                </Link>
-              </NavItem>
-            )}
-            {(!availablePages || availablePages.includes("CustomDashboard")) && (
-              <NavItem key={"customDashboard-nav"} isActive={location.pathname.startsWith("/CustomDashboard")}>
-                <Link to="/CustomDashboard" {...ouiaAttribute("data-ouia-navigation-name", "customDashboard-nav")}>
-                  Dashboards
-                </Link>
-              </NavItem>
-            )}
           </>
         )}
       </NavList>

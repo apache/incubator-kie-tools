@@ -1,3 +1,0 @@
-pages:
-  - components:
-      - html: <b data-ouia-component-id="hello-text">Hello</b> Dashbuilder!

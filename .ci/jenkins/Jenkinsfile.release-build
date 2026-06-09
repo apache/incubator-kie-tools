@@ -52,7 +52,6 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE_JOB_RESULT = 'SKIPPED'
         SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = 'SKIPPED'
         SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = 'SKIPPED'
-        DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = 'SKIPPED'
         KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = 'SKIPPED'
         KOGITO_SWF_BUILDER_JOB_RESULT = 'SKIPPED'
         KOGITO_SWF_DEVMODE_JOB_RESULT = 'SKIPPED'
@@ -287,17 +286,6 @@ pipeline {
                             }
                         }
 
-                        stage('Dashbuilder Viewer Image') {
-                            when {
-                                expression { env.DASHBUILDER_VIEWER_IMAGE == 'true' }
-                            }
-                            steps {
-                                script {
-                                    dashbuilderViewerImageBuildJob()
-                                }
-                            }
-                        }
-
                         stage('Serverless Logic Web Tools') {
                             when {
                                 expression { env.SERVERLESS_LOGIC_WEB_TOOLS == 'true' }
@@ -485,7 +473,6 @@ def setRunners() {
     
     env.CHROME_EXTENSIONS = runners.chrome_extensions
     env.CORS_PROXY_IMAGE = runners.cors_proxy_image
-    env.DASHBUILDER_VIEWER_IMAGE = runners.dashbuilder_viewer_image
     env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
     env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_quakus_blank_app_image
     env.DEV_DEPLOYMENT_UPLOAD_SERVICE = runners.dev_deployment_upload_service    
@@ -527,7 +514,6 @@ def printRunners() {
     sh """
     echo "chrome_extensions: ${env.CHROME_EXTENSIONS}"
     echo "cors_proxy_image: ${env.CORS_PROXY_IMAGE}"
-    echo "dashbuilder_viewer_image: ${env.DASHBUILDER_VIEWER_IMAGE}"
     echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
     echo "dev_deployment_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE}"
     echo "dev_deployment_upload_service: ${env.DEV_DEPLOYMENT_UPLOAD_SERVICE}"
@@ -742,19 +728,6 @@ def serverlessLogicWebToolsSwfDevModeImageBuildJob() {
 def serverlessLogicWebToolsBaseBuilderImageBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = build(
         job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/serverless-logic-web-tools-base-builder-image",
-        parameters: [
-            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
-            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
-        ]
-    ).result
-}
-
-def dashbuilderViewerImageBuildJob() {
-    env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = build(
-        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/dashbuilder-viewer-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),

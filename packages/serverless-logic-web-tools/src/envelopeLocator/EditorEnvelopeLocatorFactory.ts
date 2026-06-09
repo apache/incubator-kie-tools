@@ -36,12 +36,6 @@ export class EditorEnvelopeLocatorFactory {
         envelopeContent: { type: EnvelopeContentType.PATH, path: "yard-editor-envelope.html" },
       }),
       new EnvelopeMapping({
-        type: "dash",
-        filePathGlob: GLOB_PATTERN.dash,
-        resourcesPathPrefix: "",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "dashbuilder-editor-envelope.html" },
-      }),
-      new EnvelopeMapping({
         type: "text",
         filePathGlob: GLOB_PATTERN.all,
         resourcesPathPrefix: "",

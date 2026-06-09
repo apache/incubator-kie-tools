@@ -19,9 +19,9 @@
 
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 
-export type SampleCategory = "serverless-workflow" | "serverless-decision" | "dashbuilder";
+export type SampleCategory = "serverless-workflow" | "serverless-decision";
 
-export const SampleCategories: SampleCategory[] = ["serverless-workflow", "serverless-decision", "dashbuilder"];
+export const SampleCategories: SampleCategory[] = ["serverless-workflow", "serverless-decision"];
 
 export type SampleStatus = "ok" | "out of date" | "deprecated";
 

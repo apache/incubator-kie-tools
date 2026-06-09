@@ -74,59 +74,6 @@
         }
       }
     },
-    "/customDashboard/count": {
-      "get": {
-        "tags": ["Custom Dashboard Service"],
-        "operationId": "getCustomDashboardFilesCount",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/customDashboard/list": {
-      "get": {
-        "tags": ["Custom Dashboard Service"],
-        "operationId": "getCustomDashboardFiles",
-        "parameters": [
-          {
-            "name": "names",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/CustomDashboardFilter"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/customDashboard/{name}": {
-      "get": {
-        "tags": ["Custom Dashboard Service"],
-        "operationId": "getCustomDashboardFileContent",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "pattern": "\\S+",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/graphql": {
       "get": {
         "operationId": "reactiveGraphQLHandlerGet",
@@ -2156,17 +2103,6 @@
           "timeZone": {
             "description": "Time zone for the cron programming, for example \"Europe/Madrid\". For more information <a href=\"https://en.wikipedia.org/wiki/List_of_tz_database_time_zones\" target=\"_blank\">see</a>.",
             "type": "string"
-          }
-        }
-      },
-      "CustomDashboardFilter": {
-        "type": "object",
-        "properties": {
-          "names": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         }
       },

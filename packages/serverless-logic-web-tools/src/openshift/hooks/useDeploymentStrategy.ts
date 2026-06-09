@@ -20,8 +20,6 @@
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useCallback } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { DashboardSingleModelDeployment } from "../deploy/strategies/DashboardSingleModelDeployment";
-import { DashboardWorkspaceDeployment } from "../deploy/strategies/DashboardWorkspaceDeployment";
 import { KogitoProjectDeployment } from "../deploy/strategies/KogitoProjectDeployment";
 import { KogitoSwfModelDeployment } from "../deploy/strategies/KogitoSwfModelDeployment";
 import { DeploymentStrategyKind, InitDeployArgs } from "../deploy/types";
@@ -54,28 +52,6 @@ export function useDeploymentStrategy() {
           workspace,
           namespace: settings.openshift.config.namespace,
           openShiftConnection: settings.openshift.config,
-          targetFile: args.targetFile,
-          getFiles: workspaces.getFiles,
-          openShiftService: settingsDispatch.openshift.service,
-        });
-      }
-
-      if (args.factoryArgs.kind === DeploymentStrategyKind.DASHBOARD_SINGLE_MODEL) {
-        return new DashboardSingleModelDeployment({
-          resourceName,
-          workspace,
-          namespace: settings.openshift.config.namespace,
-          targetFile: args.targetFile,
-          getFiles: workspaces.getFiles,
-          openShiftService: settingsDispatch.openshift.service,
-        });
-      }
-
-      if (args.factoryArgs.kind === DeploymentStrategyKind.DASHBOARD_WORKSPACE) {
-        return new DashboardWorkspaceDeployment({
-          resourceName,
-          workspace,
-          namespace: settings.openshift.config.namespace,
           targetFile: args.targetFile,
           getFiles: workspaces.getFiles,
           openShiftService: settingsDispatch.openshift.service,

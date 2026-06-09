@@ -22,32 +22,6 @@ describe("Serverless Logic Web Tools - Upload files test", () => {
     cy.visit("/");
   });
 
-  it("should upload dashbuider file and check rendered content", () => {
-    // upload dashbuilder file
-    cy.get("#upload-field").attachFile("uploadFile/helloDashbuilder.dash.yaml", { subjectType: "drag-n-drop" });
-    cy.loadEditor();
-
-    // check header labels
-    cy.ouia({ ouiaId: "file-name-input" }).should("have.value", "helloDashbuilder");
-    cy.ouia({ ouiaId: "file-type-label" }).should("have.text", "Dashboard");
-
-    // check dashbuilder editor and diagram
-    cy.getEditor().within(() => {
-      cy.get(".monaco-editor textarea")
-        .should("contain.value", "pages:")
-        .should("contain.value", "- components:")
-        .should("contain.value", '- html: <b data-ouia-component-id="hello-text">Hello</b> Dashbuilder!');
-
-      cy.iframe("iframe[src='dashbuilder-client/index.html']").within(() => {
-        cy.get("#mainContainer").should("have.text", "Hello Dashbuilder!");
-        cy.ouia({ ouiaId: "hello-text" }).should("have.text", "Hello");
-      });
-    });
-
-    // check there are no problems in dashbuilder file
-    cy.get("#total-notifications").should("have.text", 0);
-  });
-
   it("should upload 2 files (JSON and YAML) and check editors and diagrams content", () => {
     // upload JSON and YAML files
     cy.get("#upload-field").attachFile(

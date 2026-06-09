@@ -40,7 +40,6 @@ pipeline {
 
         booleanParam(name: 'chrome_extensions', description: 'Build chrome extensions', defaultValue: false)
         booleanParam(name: 'cors_proxy_image', description: 'Build cors proxy image', defaultValue: false)
-        booleanParam(name: 'dashbuilder_viewer_image', description: 'Build dashbuilder viewer image', defaultValue: false)
         booleanParam(name: 'dev_deployment_base_image', description: 'Build dev deployment base image', defaultValue: false)
         booleanParam(name: 'dev_deployment_quakus_blank_app_image', description: 'Build dev deployment quakus blank app image', defaultValue: false)
         booleanParam(name: 'dev_deployment_upload_service', description: 'Build dev deployment upload service', defaultValue: false)
@@ -78,7 +77,6 @@ pipeline {
                     def runnersMap = [
                         chrome_extensions: params.chrome_extensions,
                         cors_proxy_image: params.cors_proxy_image,
-                        dashbuilder_viewer_image: params.dashbuilder_viewer_image,
                         dev_deployment_base_image: params.dev_deployment_base_image,
                         dev_deployment_quakus_blank_app_image: params.dev_deployment_quakus_blank_app_image,
                         dev_deployment_upload_service: params.dev_deployment_upload_service,

@@ -30,8 +30,6 @@ export const labelColors: Record<string, LabelColorType> = {
   [FileTypes.SW_YAML]: ServerlessCategoryMap["serverless-workflow"],
   [FileTypes.YARD_YML]: ServerlessCategoryMap["serverless-decision"],
   [FileTypes.YARD_YAML]: ServerlessCategoryMap["serverless-decision"],
-  [FileTypes.DASH_YAML]: ServerlessCategoryMap["dashbuilder"],
-  [FileTypes.DASH_YML]: ServerlessCategoryMap["dashbuilder"],
 };
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string; labelProps?: LabelProps }) {

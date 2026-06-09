@@ -47,15 +47,11 @@ export type CompletedDeployOperation = string | undefined;
 export enum DeploymentStrategyKind {
   KOGITO_SWF_MODEL,
   KOGITO_PROJECT,
-  DASHBOARD_SINGLE_MODEL,
-  DASHBOARD_WORKSPACE,
 }
 
 export type DeploymentStrategyFactoryArgs =
   | { kind: DeploymentStrategyKind.KOGITO_SWF_MODEL }
-  | { kind: DeploymentStrategyKind.KOGITO_PROJECT }
-  | { kind: DeploymentStrategyKind.DASHBOARD_SINGLE_MODEL }
-  | { kind: DeploymentStrategyKind.DASHBOARD_WORKSPACE };
+  | { kind: DeploymentStrategyKind.KOGITO_PROJECT };
 
 export interface InitDeployArgs {
   factoryArgs: DeploymentStrategyFactoryArgs;

@@ -97,6 +97,4 @@ const (
 	// VolumeBindPath The :z is to let docker know that the volume content can be shared between containers(SELinux)
 	VolumeBindPathSELinux = "/home/kogito/serverless-workflow-project/src/main/resources:z"
 	VolumeBindPath        = "/home/kogito/serverless-workflow-project/src/main/resources"
-
-	DashboardsDefaultDirName = "dashboards"
 )

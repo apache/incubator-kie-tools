@@ -30,8 +30,6 @@ import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetails
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
 import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
-import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
-import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
 import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 
@@ -79,28 +77,24 @@ const DevUILayout: React.FC<IOwnProps> = ({
           <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
             <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
               <FormsListContextProvider>
-                <CustomDashboardListContextProvider>
-                  <CustomDashboardViewContextProvider>
-                    <FormDetailsContextProvider>
-                      <WorkflowFormContextProvider>
-                        <CloudEventFormContextProvider>
-                          <MemoryRouter>
-                            <Routes>
-                              <Route
-                                path="*"
-                                element={
-                                  <PageLayout pageNavOpen={true} PageNav={<DevUINav />}>
-                                    {children}
-                                  </PageLayout>
-                                }
-                              />
-                            </Routes>
-                          </MemoryRouter>
-                        </CloudEventFormContextProvider>
-                      </WorkflowFormContextProvider>
-                    </FormDetailsContextProvider>
-                  </CustomDashboardViewContextProvider>
-                </CustomDashboardListContextProvider>
+                <FormDetailsContextProvider>
+                  <WorkflowFormContextProvider>
+                    <CloudEventFormContextProvider>
+                      <MemoryRouter>
+                        <Routes>
+                          <Route
+                            path="*"
+                            element={
+                              <PageLayout pageNavOpen={true} PageNav={<DevUINav />}>
+                                {children}
+                              </PageLayout>
+                            }
+                          />
+                        </Routes>
+                      </MemoryRouter>
+                    </CloudEventFormContextProvider>
+                  </WorkflowFormContextProvider>
+                </FormDetailsContextProvider>
               </FormsListContextProvider>
             </WorkflowDefinitionListContextProviderWithApolloClient>
           </WorkflowDetailsContextProviderWithApolloClient>

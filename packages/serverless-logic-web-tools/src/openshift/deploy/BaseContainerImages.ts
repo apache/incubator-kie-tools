@@ -36,13 +36,6 @@ export const BaseBuilder = {
   KUBECTL_PATH: "/home/kogito/kubectl",
 };
 
-// Refers to `dashbuilder-viewer-image`
-export const DashbuilderViewer = {
-  CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__dashbuilderViewerImageFullUrl!,
-  HTTPD_OUT: "/var/www/html",
-  APP_DATA_FILE: "dashbuilder-viewer-deployment-webapp-data.json",
-};
-
 // Refers to `serverless-logic-web-tools-swf-dev-mode-image`
 export const SwfDevMode = {
   CONTAINER_IMAGE: process.env.WEBPACK_REPLACE__devModeImageFullUrl!,

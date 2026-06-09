@@ -93,12 +93,6 @@ export enum OperationType {
 export const KOGITO_PROCESS_REFERENCE_ID = "kogitoprocrefid";
 export const KOGITO_BUSINESS_KEY = "kogitobusinesskey";
 
-export interface CustomDashboardInfo {
-  name: string;
-  path: string;
-  lastModified: Date;
-}
-
 export interface FormResources {
   scripts: {
     [key: string]: string;

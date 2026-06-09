@@ -48,13 +48,11 @@ type SearchParams = { searchValue: string; category?: SampleCategory };
 const PAGE_TITLE = "Samples Catalog";
 const SAMPLE_PRIORITY: Record<SampleCategory, number> = {
   ["serverless-workflow"]: 1,
-  ["dashbuilder"]: 2,
-  ["serverless-decision"]: 3,
+  ["serverless-decision"]: 2,
 };
 
 const LABEL_MAP: Record<SampleCategory, JSX.Element> = {
   ["serverless-workflow"]: <FileLabel extension="sw.yaml" labelProps={{ isCompact: true }} />,
-  ["dashbuilder"]: <FileLabel extension="dash.yaml" labelProps={{ isCompact: true }} />,
   ["serverless-decision"]: <FileLabel extension="yard.yaml" labelProps={{ isCompact: true }} />,
 };
 

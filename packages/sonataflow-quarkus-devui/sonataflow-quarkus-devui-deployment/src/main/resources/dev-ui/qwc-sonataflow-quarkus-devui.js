@@ -60,7 +60,7 @@ export class QwcSonataflowQuarkusDevui extends LitElement {
       devUIUrl: `${devUIUrl ?? window.location.origin}`,
       openApiBaseUrl: `${devUIUrl ?? window.location.origin}`,
       openApiPath: `${openapiPath ?? "q/openapi.json"}`,
-      availablePages: ["Workflows", "Monitoring", "CustomDashboard"],
+      availablePages: ["Workflows"],
       isLocalCluster: isLocalCluster ?? false,
     });
   }

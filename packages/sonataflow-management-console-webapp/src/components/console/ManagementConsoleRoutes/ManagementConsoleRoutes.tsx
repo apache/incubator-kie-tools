@@ -19,7 +19,6 @@
 import * as React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { routes } from "../../../navigation/Routes";
-import MonitoringPage from "../../pages/MonitoringPage/MonitoringPage";
 import { WorkflowInstancesPage } from "../../pages/WorkflowInstancesPage/WorkflowInstancesPage";
 import { WorkflowDetailsPage } from "../../pages/WorkflowDetailsPage/WorkflowDetailsPage";
 
@@ -34,10 +33,6 @@ const ManagementConsoleRoutes: React.FC = () => {
       <Route
         path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}
         element={<WorkflowDetailsPage />}
-      />
-      <Route
-        path={routes.monitoring.path({})}
-        element={<MonitoringPage dataIndexUrl={(window as any)["DATA_INDEX_ENDPOINT"]} />}
       />
     </Routes>
   );

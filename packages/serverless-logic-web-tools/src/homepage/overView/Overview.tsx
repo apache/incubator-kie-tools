@@ -58,13 +58,13 @@ export function Overview(props: { isNavOpen: boolean }) {
           </Title>
           <StackItem>
             <Text className="appsrv-marketing--banner__tagline pf-v5-u-color-200">
-              Add-on service to create and synchronize your Serverless Workflow, Decision files, and Dashbuilder files
+              Add-on service to create and synchronize your Serverless Workflow and Decision files
             </Text>
             <Text component={TextVariants.p}>
               The Serverless Logic Web Tools is a web application that enables you to create and synchronize your
-              Serverless Workflow, Serverless Decision, and Dashbuilder files in a single interface. Also, the
-              Serverless Logic Web Tools application provides the integrations that are needed to deploy and test the
-              Serverless Workflow models in development mode.
+              Serverless Workflow and Serverless Decision files in a single interface. Also, the Serverless Logic Web
+              Tools application provides the integrations that are needed to deploy and test the Serverless Workflow
+              models in development mode.
             </Text>
           </StackItem>
           <StackItem>
@@ -107,7 +107,7 @@ export function Overview(props: { isNavOpen: boolean }) {
             <TextContent>
               <Text className="pf-v5-u-color-200 pf-v5-u-ml-md">In this video, you will learn how to:</Text>
               <List className="app-services-ui--icon-list">
-                <ListItem>Create a Serverless Workflow, a Dashboard or a Serverless Decision.</ListItem>
+                <ListItem>Create a Serverless Workflow or a Serverless Decision.</ListItem>
                 <ListItem>Utilize Code Completions to complete the code.</ListItem>
                 <ListItem>Validate the code and utilize the Validation Panel to correct the errors.</ListItem>
                 <ListItem>

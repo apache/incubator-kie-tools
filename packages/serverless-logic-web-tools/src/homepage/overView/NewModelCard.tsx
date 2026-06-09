@@ -42,7 +42,7 @@ export function NewModelCard(props: {
   }
 
   return (
-    <GridItem sm={12} md={4}>
+    <GridItem sm={12} md={6}>
       <Card isFullHeight={true} isPlain={true} isCompact={true} ouiaId={`${props.title}-card`}>
         <CardTitle>
           <FileLabel style={{ fontSize: "0.6em" }} extension={(jsonExtension || yamlExtension)!} />

@@ -42,12 +42,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
     getBaseBuilderImageArgs();
   const [swfDevModeImageRegistry, swfDevModeImageAccount, swfDevModeImageName, swfDevModeImageTag] =
     getSwfDevModeImageArgs();
-  const [
-    dashbuilderViewerImageRegistry,
-    dashbuilderViewerImageAccount,
-    dashbuilderViewerImageName,
-    dashbuilderViewerImageTag,
-  ] = getDashbuilderViewerImageArgs();
 
   return [
     merge(common(webpackEnv), {
@@ -78,7 +72,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
         entry: {
           index: "./src/index.tsx",
           "yard-editor-envelope": "./src/envelope/YardEditorEnvelopeApp.ts",
-          "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
           "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
           "serverless-workflow-combined-editor-envelope":
             "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
@@ -97,7 +90,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
             WEBPACK_REPLACE__swfBuilderImageFullUrl: `${swfBuilderImageRegistry}/${swfBuilderImageAccount}/${swfBuilderImageName}:${swfBuilderImageTag}`,
             WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
             WEBPACK_REPLACE__devModeImageFullUrl: `${swfDevModeImageRegistry}/${swfDevModeImageAccount}/${swfDevModeImageName}:${swfDevModeImageTag}`,
-            WEBPACK_REPLACE__dashbuilderViewerImageFullUrl: `${dashbuilderViewerImageRegistry}/${dashbuilderViewerImageAccount}/${dashbuilderViewerImageName}:${dashbuilderViewerImageTag}`,
             WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
             WEBPACK_REPLACE__samplesRepositoryOrg: buildEnv.serverlessLogicWebTools.samplesRepositoryOrg,
             WEBPACK_REPLACE__samplesRepositoryName: buildEnv.serverlessLogicWebTools.samplesRepositoryName,
@@ -126,7 +118,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
                 to: "./serverless-workflow-text-editor-envelope.html",
               },
               { from: "./static/envelope/yard-editor-envelope.html", to: "./yard-editor-envelope.html" },
-              { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
               { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
               // These below are used for development only.
@@ -140,11 +131,6 @@ export default async (webpackEnv: any, webpackArgv: any) => {
                 from: "fontawesome-webfont.*",
                 to: "./fonts",
                 force: true,
-              },
-              {
-                from: "../dashbuilder-editor/dist/dashbuilder-client/",
-                to: "./dashbuilder-client",
-                globOptions: { ignore: ["**/WEB-INF/**/*"] }, // "**/*.html" omitted because dashbuilder-client/index.html is needed
               },
               {
                 from: path.resolve(__dirname, "node_modules/@kie-tools/yard-validator/dist/yard-validator-worker.js"),
@@ -249,25 +235,6 @@ function getBaseBuilderImageArgs() {
   console.info("Serverless Logic Web Tools :: Base Builder Image Tag: " + baseBuilderImageTag);
 
   return [baseBuilderImageRegistry, baseBuilderImageAccount, baseBuilderImageName, baseBuilderImageTag];
-}
-
-function getDashbuilderViewerImageArgs() {
-  const dashbuilderViewerImageRegistry = buildEnv.dashbuilderViewerImageEnv.registry;
-  const dashbuilderViewerImageAccount = buildEnv.dashbuilderViewerImageEnv.account;
-  const dashbuilderViewerImageName = buildEnv.dashbuilderViewerImageEnv.name;
-  const dashbuilderViewerImageTag = buildEnv.serverlessLogicWebTools.dashbuilderViewerImage.tag;
-
-  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Registry: " + dashbuilderViewerImageRegistry);
-  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Account: " + dashbuilderViewerImageAccount);
-  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Name: " + dashbuilderViewerImageName);
-  console.info("Serverless Logic Web Tools :: Dashbuilder Viewer Image Tag: " + dashbuilderViewerImageTag);
-
-  return [
-    dashbuilderViewerImageRegistry,
-    dashbuilderViewerImageAccount,
-    dashbuilderViewerImageName,
-    dashbuilderViewerImageTag,
-  ];
 }
 
 function getBuildInfo() {

@@ -39,9 +39,6 @@ on:
       KIE1_EMAIL:
         required: true
 env:
-  DASHBUILDER__viewerImageAccount: "kubesmarts"
-  DASHBUILDER__viewerImageName: "incubator-kie-dashbuilder-viewer"
-  DASHBUILDER__viewerImageRegistry: "quay.io"
   GITHUB_TOKEN: ${{ secrets.KIE1_TOKEN }}
   KIE_TOOLS_BUILD__buildContainerImages: "false"
   KIE_TOOLS_BUILD__runEndToEndTests: "false"
@@ -55,7 +52,6 @@ env:
   SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag: "${{ inputs.tag }}"
   SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: ""
   SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl: ${{(inputs.environment == 'dev' && vars.SERVERLESS_LOGIC_CORS_PROXY_DEV_DEPLOYMENT) || (inputs.environment == 'staging' && vars.SERVERLESS_LOGIC_CORS_PROXY_STAGING_DEPLOYMENT) || vars.SERVERLESS_LOGIC_CORS_PROXY_PROD_DEPLOYMENT}}
-  SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: "${{ inputs.tag }}"
   SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryName: "sandbox-catalog"
   SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryOrg: "kubesmarts"
   SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: ${{ (inputs.environment == 'dev' && 'main') || inputs.version }}
