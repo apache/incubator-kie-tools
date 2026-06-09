@@ -30,8 +30,6 @@ overrides:
   # CVE-2026-41907: Fix security vulnerability in uuid
   # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
   "uuid": "^11.1.1"
-  # CVE-2026-33671 (High) / CVE-2026-33672 (Medium): picomatch POSIX bracket method injection.
-  # Transitive dep of vite, @angular/build, @parcel/watcher, fdir, tinyglobby (4.x) and pretty-quick (3.x).
-  # The 2.x line already resolves to the patched 2.3.2.
-  "picomatch@3": "3.0.2"
+  # CVE-2026-33671 (High) / CVE-2026-33672 (Medium): picomatch POSIX bracket method injection and ReDoS.
+  # Transitive dep of @angular-devkit/build-angular still uses vulnerable 4.0.3
   "picomatch@4": "4.0.4"
