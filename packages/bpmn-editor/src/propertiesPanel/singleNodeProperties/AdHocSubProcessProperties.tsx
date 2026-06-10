@@ -44,6 +44,7 @@ import { SlaDueDateInput } from "../slaDueDate/SlaDueDateInput";
 import { AsyncCheckbox } from "../asyncCheckbox/AsyncCheckbox";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { useBpmnEditorI18n } from "../../i18n";
+import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 
 export function AdHocSubProcessProperties({
   adHocSubProcess,
@@ -77,28 +78,46 @@ export function AdHocSubProcessProperties({
         <Divider inset={{ default: "insetXs" }} />
 
         <FormGroup label={i18n.singleNodeProperties.adhocOrdering}>
-          <FormSelect
-            id={"ad-hoc-subprocess-ordering-selector" + generateUuid()}
-            type={"text"}
-            isDisabled={isReadOnly}
-            value={adHocSubProcess?.["@_ordering"] ?? i18n.singleNodeProperties.parallel}
-            onChange={(e, newOrderingValue) => {
-              bpmnEditorStoreApi.setState((s) => {
-                const { process } = addOrGetProcessAndDiagramElements({
-                  definitions: s.bpmn.model.definitions,
+          <ToggleGroup aria-label="Ad-hoc ordering">
+            <ToggleGroupItem
+              text={i18n.propertiesPanel.parallel}
+              isDisabled={isReadOnly}
+              isSelected={
+                adHocSubProcess?.__$$element === "adHocSubProcess"
+                  ? adHocSubProcess["@_ordering"] === "Parallel" || adHocSubProcess["@_ordering"] === undefined
+                  : false
+              }
+              onChange={() => {
+                bpmnEditorStoreApi.setState((s) => {
+                  const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
+                  visitFlowElementsAndArtifacts(process, ({ element: e }) => {
+                    if (e["@_id"] === adHocSubProcess["@_id"] && e.__$$element === adHocSubProcess.__$$element) {
+                      e["@_ordering"] = "Parallel";
+                    }
+                  });
                 });
-                visitFlowElementsAndArtifacts(process, ({ element: e }) => {
-                  if (e["@_id"] === adHocSubProcess["@_id"] && e.__$$element === adHocSubProcess.__$$element) {
-                    e["@_ordering"] = newOrderingValue as BPMN20__tAdHocOrdering;
-                  }
+              }}
+            />
+            <ToggleGroupItem
+              text={i18n.propertiesPanel.sequential}
+              isDisabled={isReadOnly}
+              isSelected={
+                adHocSubProcess?.__$$element === "adHocSubProcess"
+                  ? adHocSubProcess["@_ordering"] === "Sequential"
+                  : false
+              }
+              onChange={() => {
+                bpmnEditorStoreApi.setState((s) => {
+                  const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
+                  visitFlowElementsAndArtifacts(process, ({ element: e }) => {
+                    if (e["@_id"] === adHocSubProcess["@_id"] && e.__$$element === adHocSubProcess.__$$element) {
+                      e["@_ordering"] = "Sequential";
+                    }
+                  });
                 });
-              });
-            }}
-          >
-            {orderingOptions.map((option) => (
-              <FormSelectOption key={option.label} label={option.label} value={option.value} />
-            ))}
-          </FormSelect>
+              }}
+            />
+          </ToggleGroup>
         </FormGroup>
 
         <AdhocAutostartCheckbox element={adHocSubProcess} />

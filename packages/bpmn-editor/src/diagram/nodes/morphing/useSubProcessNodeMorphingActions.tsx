@@ -42,7 +42,8 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
     (subProcessElement: SubProcess["__$$element"] | "eventSubProcess" | "multiInstanceSubProcess") => {
       // 1 - Sub process
       // 2 - Event sub process
-      // 3 - Ad-hoc sub-process
+      // 3 - Multi-instance sub-process
+      // 4 - Ad-hoc sub-process
       bpmnEditorStoreApi.setState((s) => {
         const { process } = addOrGetProcessAndDiagramElements({
           definitions: s.bpmn.model.definitions,
@@ -102,6 +103,10 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
               array[index].__$$element = subProcessElement;
               array[index]["@_triggeredByEvent"] = false;
               array[index].loopCharacteristics = undefined;
+
+              if (array[index].__$$element === "adHocSubProcess") {
+                array[index]["@_ordering"] = "Parallel";
+              }
 
               // BPMN 2.0 Spec: When converting from Event Sub-Process to regular Embedded Sub-Process,
               // Start Events must be converted to "None" (strip event definitions)

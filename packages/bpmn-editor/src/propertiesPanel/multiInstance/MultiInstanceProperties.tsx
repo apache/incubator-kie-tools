@@ -93,7 +93,7 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
       <FormGroup label={i18n.propertiesPanel.executionMode}>
         <ToggleGroup aria-label="Execution mode">
           <ToggleGroupItem
-            text="Parallel"
+            text={i18n.propertiesPanel.parallel}
             isDisabled={isReadOnly}
             isSelected={
               element?.loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics"

@@ -147,6 +147,7 @@ export const en: BpmnEditorI18n = {
     namePlaceholder: "Name...",
     valuePlaceholder: "Value...",
     executionMode: "Execution mode",
+    parallel: "Parallel",
     sequential: "Sequential",
     completionCondition: "Completion condition",
     collectionInput: "Collection input",
