@@ -105,6 +105,16 @@ export function addStandaloneNode({
                   "@_id": newBpmnElementId,
                   __$$element: "callActivity",
                   "@_name": getNewNodeDefaultName({ type: __readonly_newNode.type, element: __readonly_element }),
+                  "@_drools:independent": false,
+                  "@_drools:waitForCompletion": true,
+                  extensionElements: {
+                    "drools:metaData": [
+                      {
+                        "@_name": "customAbortParent",
+                        "drools:metaValue": { __$$text: "true" },
+                      },
+                    ],
+                  },
                 }
               : {
                   ...__readonly_newNode.data?.bpmnElement,

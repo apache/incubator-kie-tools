@@ -138,6 +138,21 @@ export function useTaskNodeMorphingActions(task: Task) {
           });
 
           array[index].__$$element = newTaskElement;
+
+          // Add default properties when morphing to callActivity
+          if (newTaskElement === "callActivity") {
+            (array[index] as any)["@_drools:independent"] = false;
+            (array[index] as any)["@_drools:waitForCompletion"] = true;
+            (array[index] as any).extensionElements = {
+              "drools:metaData": [
+                {
+                  "@_name": "customAbortParent",
+                  "drools:metaValue": { __$$text: "true" },
+                },
+              ],
+            };
+          }
+
           return false; // Will stop visiting.
         }
       });

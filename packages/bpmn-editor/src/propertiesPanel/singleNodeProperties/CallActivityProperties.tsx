@@ -71,7 +71,7 @@ export function CallActivityProperties({
             id="kie-bpmn-editor--properties-panel--call-activity--independent"
             name="is-independent"
             aria-label="Independent"
-            isChecked={callActivity["@_drools:independent"] ?? false}
+            isChecked={callActivity["@_drools:independent"] ?? true}
             onChange={(e, checked) => {
               bpmnEditorStoreApi.setState((s) => {
                 const { process } = addOrGetProcessAndDiagramElements({
