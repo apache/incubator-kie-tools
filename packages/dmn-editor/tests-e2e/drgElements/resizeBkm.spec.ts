@@ -147,8 +147,13 @@ test.describe("Resize node - BKM", () => {
       await diagram.resetFocus();
     });
 
-    test("should resize BKM on top of Decision node", async ({ nodes, diagram }) => {
+    test("should resize BKM on top of Decision node", async ({ nodes, diagram, browserName }) => {
       await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 200, yOffset: 0 });
+
+      if (browserName === "webkit") {
+        // React 18: Temporary fix. Webkit loses hover state after resize, so we explicitly re-hover.
+        await nodes.get({ name: DefaultNodeName.BKM }).hover();
+      }
 
       await expect(diagram.get()).toHaveScreenshot("resize-bkm-on-top-of-decision.png");
     });
