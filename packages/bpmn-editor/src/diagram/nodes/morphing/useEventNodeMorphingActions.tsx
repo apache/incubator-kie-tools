@@ -80,6 +80,18 @@ export function useEventNodeMorphingActions(event: Event) {
               return true; // Will continue visiting.
             }
 
+            // Remove customScope when morphing away from signalEventDefinition
+            if (eventDefinitionElement !== "signalEventDefinition" && element.extensionElements?.["drools:metaData"]) {
+              const updatedExtensionElements = element.extensionElements["drools:metaData"].filter(
+                (m) => m["@_name"] !== "customScope"
+              );
+              if (updatedExtensionElements === undefined || updatedExtensionElements.length === 0) {
+                element.extensionElements = undefined;
+              } else {
+                element.extensionElements["drools:metaData"] = updatedExtensionElements;
+              }
+            }
+
             element.eventDefinition ??= [];
             switch (eventDefinitionElement) {
               case "compensateEventDefinition":
@@ -127,6 +139,21 @@ export function useEventNodeMorphingActions(event: Event) {
                   "@_id": generateUuid(),
                   __$$element: "signalEventDefinition",
                 };
+                // Add default extensionElements for intermediateThrowEvent and endEvent
+                if (element.__$$element === "intermediateThrowEvent" || element.__$$element === "endEvent") {
+                  element.extensionElements ??= { "drools:metaData": [] };
+                  element.extensionElements["drools:metaData"] ??= [];
+                  // Only add if customScope doesn't already exist
+                  const hasCustomScope = element.extensionElements["drools:metaData"].some(
+                    (m) => m["@_name"] === "customScope"
+                  );
+                  if (!hasCustomScope) {
+                    element.extensionElements["drools:metaData"].push({
+                      "@_name": "customScope",
+                      "drools:metaValue": { __$$text: "default" },
+                    });
+                  }
+                }
                 break;
               case "terminateEventDefinition":
                 element.eventDefinition[0] = {
