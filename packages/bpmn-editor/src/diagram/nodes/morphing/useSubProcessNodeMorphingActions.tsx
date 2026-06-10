@@ -52,11 +52,14 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
           if (element["@_id"] === subProcess["@_id"] && array[index].__$$element === subProcess.__$$element) {
             // Remove customAsyncStart if present
             if (element.__$$element === "adHocSubProcess") {
-              const customAsyncStartIndex = element.extensionElements?.["drools:metaData"]?.findIndex(
-                (e) => e["@_name"] === "customAutoStart"
+              const updatedExtensionElements = element.extensionElements?.["drools:metaData"]?.filter(
+                (m) => m["@_name"] !== "customAutoStart"
               );
-              if (customAsyncStartIndex !== undefined && customAsyncStartIndex !== -1) {
-                element.extensionElements?.["drools:metaData"]?.splice(customAsyncStartIndex, 1);
+              if (updatedExtensionElements === undefined || updatedExtensionElements.length === 0) {
+                element.extensionElements = undefined;
+              } else {
+                element.extensionElements ??= { "drools:metaData": [] };
+                element.extensionElements["drools:metaData"] = updatedExtensionElements;
               }
             }
 
@@ -117,10 +120,15 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
               if (array[index].__$$element === "adHocSubProcess") {
                 array[index]["@_ordering"] = "Parallel";
                 array[index].extensionElements ??= { "drools:metaData": [] };
-                array[index].extensionElements["drools:metaData"]?.push({
-                  "@_name": "customAutoStart",
-                  "drools:metaValue": { __$$text: "false" },
-                });
+                const customAsyncIndex = array[index].extensionElements["drools:metaData"]?.findIndex(
+                  (meta) => meta["@_name"] === "customAutoStart"
+                );
+                if (customAsyncIndex === undefined || customAsyncIndex === -1) {
+                  array[index].extensionElements["drools:metaData"]?.push({
+                    "@_name": "customAutoStart",
+                    "drools:metaValue": { __$$text: "false" },
+                  });
+                }
               }
 
               // BPMN 2.0 Spec: When converting from Event Sub-Process to regular Embedded Sub-Process,

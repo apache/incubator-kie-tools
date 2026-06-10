@@ -120,9 +120,9 @@ export function useTaskNodeMorphingActions(task: Task) {
 
             // Remove customAbortParent from extensionElements
             if (array[index].extensionElements?.["drools:metaData"]) {
-              const metaDataArray = array[index].extensionElements["drools:metaData"];
-              const filteredMetaData = metaDataArray.filter((meta) => meta["@_name"] !== "customAbortParent");
-
+              const filteredMetaData = array[index].extensionElements["drools:metaData"].filter(
+                (meta) => meta["@_name"] !== "customAbortParent"
+              );
               // If no metadata left, remove extensionElements entirely
               if (filteredMetaData.length === 0) {
                 array[index].extensionElements = undefined;
