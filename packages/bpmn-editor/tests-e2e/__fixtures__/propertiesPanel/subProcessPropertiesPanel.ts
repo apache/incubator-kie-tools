@@ -55,12 +55,7 @@ export class SubProcessPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setAdHocOrdering(args: { ordering: "Parallel" | "Sequential" }) {
-    const orderingSelect = this.panel()
-      .getByRole("group")
-      .filter({ hasText: "Ad-hoc ordering" })
-      .getByRole("combobox")
-      .first();
-    await orderingSelect.selectOption(args.ordering);
+    this.panel().getByRole("button", { name: args.ordering }).click();
   }
 
   public async setAdHocCompletionCondition(args: { condition: string }) {
