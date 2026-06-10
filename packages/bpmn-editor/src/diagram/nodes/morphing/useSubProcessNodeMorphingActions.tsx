@@ -50,6 +50,16 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
         });
         visitFlowElementsAndArtifacts(process, ({ array, index, owner, element }) => {
           if (element["@_id"] === subProcess["@_id"] && array[index].__$$element === subProcess.__$$element) {
+            // Remove customAsyncStart if present
+            if (element.__$$element === "adHocSubProcess") {
+              const customAsyncStartIndex = element.extensionElements?.["drools:metaData"]?.findIndex(
+                (e) => e["@_name"] === "customAutoStart"
+              );
+              if (customAsyncStartIndex !== undefined && customAsyncStartIndex !== -1) {
+                element.extensionElements?.["drools:metaData"]?.splice(customAsyncStartIndex, 1);
+              }
+            }
+
             if (subProcessElement === "eventSubProcess") {
               keepIntersection({
                 fromElement: element.__$$element,
@@ -106,6 +116,11 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
 
               if (array[index].__$$element === "adHocSubProcess") {
                 array[index]["@_ordering"] = "Parallel";
+                array[index].extensionElements ??= { "drools:metaData": [] };
+                array[index].extensionElements["drools:metaData"]?.push({
+                  "@_name": "customAutoStart",
+                  "drools:metaValue": { __$$text: "false" },
+                });
               }
 
               // BPMN 2.0 Spec: When converting from Event Sub-Process to regular Embedded Sub-Process,

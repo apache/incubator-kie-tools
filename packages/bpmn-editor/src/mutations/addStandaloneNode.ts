@@ -204,6 +204,14 @@ export function addStandaloneNode({
             "@_id": newBpmnElementId,
             "@_name": getNewNodeDefaultName({ type: __readonly_newNode.type, element: __readonly_element }),
             __$$element: "subProcess",
+            extensionElements: {
+              "drools:metaData": [
+                {
+                  "@_name": "customAsync",
+                  "drools:metaValue": { __$$text: "false" },
+                },
+              ],
+            },
           }
     );
   } else if (nature === NodeNature.LANE) {
