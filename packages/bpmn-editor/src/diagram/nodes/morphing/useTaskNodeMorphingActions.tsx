@@ -35,8 +35,6 @@ import { CustomTask } from "../../../BpmnEditor";
 import { WritableDraft } from "immer";
 import { State } from "../../../store/Store";
 import { deleteInterfaceAndOperation } from "../../../mutations/deleteInterfaceAndOperation";
-import { BPMN20__tCallActivity } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
-import { Normalized } from "../../../normalization/normalize";
 
 function getTaskDataMappings(
   process: ReturnType<typeof addOrGetProcessAndDiagramElements>["process"],
