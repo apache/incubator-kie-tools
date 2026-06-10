@@ -38,6 +38,7 @@ export function addOrGetProcessAndDiagramElements({ definitions }: { definitions
       __$$element: "process",
       "@_id": "", // Empty ID - must be set by user through Empty State
       "@_isExecutable": true,
+      "@_drools:adHoc": false,
     };
     definitions.rootElement?.push(process);
   }
