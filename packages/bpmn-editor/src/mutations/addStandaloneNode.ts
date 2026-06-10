@@ -113,6 +113,14 @@ export function addStandaloneNode({
                         "@_name": "customAbortParent",
                         "drools:metaValue": { __$$text: "true" },
                       },
+                      {
+                        "@_name": "customAsync",
+                        "drools:metaValue": { __$$text: "false" },
+                      },
+                      {
+                        "@_name": "customAutoStart",
+                        "drools:metaValue": { __$$text: "false" },
+                      },
                     ],
                   },
                 }

@@ -80,6 +80,20 @@ export function CallActivityProperties({
                 visitFlowElementsAndArtifacts(process, ({ element }) => {
                   if (element["@_id"] === callActivity["@_id"] && element.__$$element === callActivity.__$$element) {
                     element["@_drools:independent"] = checked;
+                    if (checked === false && element.extensionElements) {
+                      const customAbortParentIndex = element.extensionElements["drools:metaData"]?.findIndex(
+                        (e) => e["@_name"] === "customAbortParent"
+                      );
+                      if (customAbortParentIndex !== undefined && customAbortParentIndex !== -1) {
+                        element.extensionElements["drools:metaData"]?.splice(customAbortParentIndex, 1);
+                      }
+                    } else if (checked === true) {
+                      element.extensionElements ??= { "drools:metaData": [] };
+                      element.extensionElements["drools:metaData"]?.push({
+                        "@_name": "customAbortParent",
+                        "drools:metaValue": { __$$text: "true" },
+                      });
+                    }
                   }
                 });
               });

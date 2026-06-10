@@ -35,6 +35,8 @@ import { CustomTask } from "../../../BpmnEditor";
 import { WritableDraft } from "immer";
 import { State } from "../../../store/Store";
 import { deleteInterfaceAndOperation } from "../../../mutations/deleteInterfaceAndOperation";
+import { BPMN20__tCallActivity } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
+import { Normalized } from "../../../normalization/normalize";
 
 function getTaskDataMappings(
   process: ReturnType<typeof addOrGetProcessAndDiagramElements>["process"],
@@ -111,6 +113,25 @@ export function useTaskNodeMorphingActions(task: Task) {
             array[index]["@_implementation"] = undefined;
           }
 
+          // Remove CallActivity-specific properties when morphing away from callActivity
+          if (array[index].__$$element === "callActivity") {
+            array[index]["@_drools:independent"] = undefined;
+            array[index]["@_drools:waitForCompletion"] = undefined;
+
+            // Remove customAbortParent from extensionElements
+            if (array[index].extensionElements?.["drools:metaData"]) {
+              const metaDataArray = array[index].extensionElements["drools:metaData"];
+              const filteredMetaData = metaDataArray.filter((meta) => meta["@_name"] !== "customAbortParent");
+
+              // If no metadata left, remove extensionElements entirely
+              if (filteredMetaData.length === 0) {
+                array[index].extensionElements = undefined;
+              } else {
+                array[index].extensionElements["drools:metaData"] = filteredMetaData;
+              }
+            }
+          }
+
           if (array[index].__$$element === "task") {
             // cleanup custom task modifiers
             array[index]["@_drools:taskName"] = undefined;
@@ -139,18 +160,53 @@ export function useTaskNodeMorphingActions(task: Task) {
 
           array[index].__$$element = newTaskElement;
 
-          // Add default properties when morphing to callActivity
-          if (newTaskElement === "callActivity") {
-            (array[index] as any)["@_drools:independent"] = false;
-            (array[index] as any)["@_drools:waitForCompletion"] = true;
-            (array[index] as any).extensionElements = {
-              "drools:metaData": [
-                {
-                  "@_name": "customAbortParent",
-                  "drools:metaValue": { __$$text: "true" },
-                },
-              ],
-            };
+          if (array[index].__$$element === "task") {
+            array[index].extensionElements = undefined;
+            array[index].loopCharacteristics = undefined;
+            array[index].ioSpecification = undefined;
+          }
+
+          if (
+            array[index].__$$element === "businessRuleTask" ||
+            array[index].__$$element === "userTask" ||
+            array[index].__$$element === "serviceTask" ||
+            array[index].__$$element === "callActivity" ||
+            array[index].__$$element === "scriptTask"
+          ) {
+            if (array[index].__$$element === "callActivity") {
+              // Add default properties when morphing to callActivity
+              array[index]["@_drools:independent"] = false;
+              array[index]["@_drools:waitForCompletion"] = true;
+              array[index].extensionElements ??= { "drools:metaData": [] };
+              array[index].extensionElements["drools:metaData"]?.push({
+                "@_name": "customAbortParent",
+                "drools:metaValue": { __$$text: "true" },
+              });
+            } else if (array[index].__$$element === "scriptTask") {
+              array[index].loopCharacteristics = undefined;
+              array[index].ioSpecification = undefined;
+            }
+
+            // add default customAsync and customAutoStart if not present
+            array[index].extensionElements ??= { "drools:metaData": [] };
+            const customAsyncIndex = array[index].extensionElements["drools:metaData"]?.findIndex(
+              (meta) => meta["@_name"] === "customAsync"
+            );
+            if (customAsyncIndex === undefined || customAsyncIndex === -1) {
+              array[index].extensionElements["drools:metaData"]?.push({
+                "@_name": "customAsync",
+                "drools:metaValue": { __$$text: "false" },
+              });
+            }
+            const customAutoStartIndex = array[index].extensionElements["drools:metaData"]?.findIndex(
+              (meta) => meta["@_name"] === "customAutoStart"
+            );
+            if (customAutoStartIndex === undefined || customAutoStartIndex === -1) {
+              array[index].extensionElements["drools:metaData"]?.push({
+                "@_name": "customAutoStart",
+                "drools:metaValue": { __$$text: "false" },
+              });
+            }
           }
 
           return false; // Will stop visiting.
