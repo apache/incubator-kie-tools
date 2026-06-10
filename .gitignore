@@ -138,6 +138,8 @@ packages/sonataflow-operator/e2e-test-report.xml
 
 /.idea
 
+.bob
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml

@@ -22,3 +22,4 @@ overrides:
   "minimatch@^10": "10.2.1"
   "minimatch@^5": "5.1.9"
   "minimatch@^4": "5.1.9"
+  "fast-xml-parser@^5": "5.8.0"

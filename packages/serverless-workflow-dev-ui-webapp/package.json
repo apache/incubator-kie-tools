@@ -81,7 +81,7 @@
     "jest-junit": "^16.0.0",
     "jest-when": "^3.6.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
-    "node-polyfill-webpack-plugin": "^2.0.1",
+    "node-polyfill-webpack-plugin": "^4.1.0",
     "raw-loader": "^4.0.2",
     "rimraf": "^3.0.2",
     "sass-loader": "^13.3.0",

@@ -67,7 +67,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-junit": "^16.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
-    "node-polyfill-webpack-plugin": "^2.0.1",
+    "node-polyfill-webpack-plugin": "^4.1.0",
     "rimraf": "^3.0.2",
     "stream-http": "^3.2.0",
     "terser-webpack-plugin": "^5.3.9",

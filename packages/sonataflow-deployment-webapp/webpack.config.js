@@ -84,7 +84,7 @@ module.exports = async (webpackEnv) =>
         languages: ["json"],
       }),
       new NodePolyfillPlugin({
-        includeAliases: ["https", "process", "Buffer"],
+        additionalAliases: ["https", "process", "Buffer"],
       }),
     ],
     module: {
