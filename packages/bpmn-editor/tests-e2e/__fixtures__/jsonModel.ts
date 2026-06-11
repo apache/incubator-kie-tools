@@ -18,52 +18,57 @@
  */
 
 import { Page } from "@playwright/test";
-
+import { BpmnLatestModel } from "@kie-tools/bpmn-marshaller";
+import { Normalized } from "@kie-tools/bpmn-editor/dist/normalization/normalize";
 export class JsonModel {
   constructor(
     public page: Page,
     public baseURL?: string
   ) {}
 
-  public async getModel(): Promise<any> {
+  public async getModel(): Promise<Normalized<BpmnLatestModel>> {
     const modelElement = this.page.getByTestId("storybook--bpmn-editor-model");
     const modelText = await modelElement.textContent();
-    return modelText ? JSON.parse(modelText) : undefined;
+    try {
+      if (modelText === null) {
+        throw new Error("BPMN Editor - jsonModel - couldn't get modelText");
+      }
+      return JSON.parse(modelText);
+    } catch (error: any) {
+      // Just throw the error
+      throw new Error(error);
+    }
   }
 
-  public async getDefinitions(): Promise<any> {
-    const model = await this.getModel();
-    return model?.definitions;
+  public async getDefinitions() {
+    return (await this.getModel()).definitions;
   }
 
-  public async getProcess(processIndex: number = 0): Promise<any> {
-    const definitions = await this.getDefinitions();
-    const processes = definitions?.rootElement || definitions?.process;
-    return Array.isArray(processes) ? processes[processIndex] : processes;
+  public async getProcess() {
+    return (await this.getDefinitions()).rootElement?.find((e) => e.__$$element === "process");
   }
 
-  public async getFlowElement(args: { processIndex?: number; elementIndex: number }): Promise<any> {
-    const process = await this.getProcess(args.processIndex ?? 0);
-    return process?.flowElement?.[args.elementIndex];
+  public async getFlowElement(args: { elementIndex: number }) {
+    return (await this.getProcess())?.flowElement?.[args.elementIndex];
   }
 
-  public async getDiagram(diagramIndex: number = 0): Promise<any> {
-    const definitions = await this.getDefinitions();
-    return definitions?.["bpmndi:BPMNDiagram"]?.[diagramIndex];
+  public async getDiagram(diagramIndex: number = 0) {
+    return (await this.getDefinitions())["bpmndi:BPMNDiagram"]?.[diagramIndex];
   }
 
-  public async getPlane(diagramIndex: number = 0): Promise<any> {
-    const diagram = await this.getDiagram(diagramIndex);
-    return diagram?.["bpmndi:BPMNPlane"];
+  public async getPlane(diagramIndex: number = 0) {
+    return (await this.getDiagram(diagramIndex))?.["bpmndi:BPMNPlane"];
   }
 
-  public async getShape(args: { diagramIndex?: number; shapeIndex: number }): Promise<any> {
-    const plane = await this.getPlane(args.diagramIndex ?? 0);
-    return plane?.["di:DiagramElement"]?.[args.shapeIndex];
+  public async getShape(args: { diagramIndex?: number; shapeIndex: number }) {
+    return (await this.getPlane(args.diagramIndex ?? 0))?.["di:DiagramElement"]?.[args.shapeIndex];
   }
 
-  public async getBounds(args: { diagramIndex?: number; shapeIndex: number }): Promise<any> {
+  public async getBounds(args: { diagramIndex?: number; shapeIndex: number }) {
     const shape = await this.getShape(args);
-    return shape?.["dc:Bounds"];
+    if (shape?.__$$element === "bpmndi:BPMNShape") {
+      return shape?.["dc:Bounds"];
+    }
+    return undefined;
   }
 }

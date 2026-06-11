@@ -224,7 +224,7 @@ test.describe("Add node - Sub-process", () => {
       await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move sub-process to new position", async ({ palette, diagram, nodes }) => {
@@ -254,8 +254,40 @@ test.describe("Add node - Sub-process", () => {
       await expect(nodes.get({ name: "Order Processing" })).toBeAttached();
 
       const subProcess = await jsonModel.getFlowElement({ elementIndex: 0 });
+      expect(subProcess?.__$$element).toBe("subProcess");
+      expect(subProcess?.["@_name"]).toBe("Order Processing");
+    });
+  });
+
+  test.describe("Sub-process default properties", () => {
+    test(`should check sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
+      await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
+
+      const subProcess = await jsonModel.getFlowElement({ elementIndex: 0 });
       expect(subProcess.__$$element).toBe("subProcess");
       expect(subProcess["@_name"]).toBe("Order Processing");
+    });
+
+    test(`should check event sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.EVENT });
+      await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
+    });
+
+    test(`should check multi instance sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
+      await nodes.morph({
+        node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }),
+        to: SubProcessNodeType.MULTI_INSTANCE,
+      });
+      await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
+    });
+
+    test(`should check ad-hoc sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.AD_HOC });
+      await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
     });
   });
 });
