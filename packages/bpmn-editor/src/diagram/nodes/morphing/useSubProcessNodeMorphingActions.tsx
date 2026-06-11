@@ -50,7 +50,7 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
         });
         visitFlowElementsAndArtifacts(process, ({ array, index, owner, element }) => {
           if (element["@_id"] === subProcess["@_id"] && array[index].__$$element === subProcess.__$$element) {
-            // Remove customAsyncStart if present
+            // Remove Ad-hoc sub-process-specific properties when morphing away from adHocSubProcess
             if (element.__$$element === "adHocSubProcess") {
               const updatedExtensionElements = element.extensionElements?.["drools:metaData"]?.filter(
                 (m) => m["@_name"] !== "customAutoStart"

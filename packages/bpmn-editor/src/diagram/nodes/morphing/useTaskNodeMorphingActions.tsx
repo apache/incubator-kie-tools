@@ -116,12 +116,10 @@ export function useTaskNodeMorphingActions(task: Task) {
             array[index]["@_drools:independent"] = undefined;
             array[index]["@_drools:waitForCompletion"] = undefined;
 
-            // Remove customAbortParent from extensionElements
             if (array[index].extensionElements?.["drools:metaData"]) {
               const filteredMetaData = array[index].extensionElements["drools:metaData"].filter(
                 (meta) => meta["@_name"] !== "customAbortParent"
               );
-              // If no metadata left, remove extensionElements entirely
               if (filteredMetaData.length === 0) {
                 array[index].extensionElements = undefined;
               } else {
@@ -158,6 +156,7 @@ export function useTaskNodeMorphingActions(task: Task) {
 
           array[index].__$$element = newTaskElement;
 
+          // Remove properties when morphing to task
           if (array[index].__$$element === "task") {
             array[index].extensionElements = undefined;
             array[index].loopCharacteristics = undefined;
@@ -181,11 +180,12 @@ export function useTaskNodeMorphingActions(task: Task) {
                 "drools:metaValue": { __$$text: "true" },
               });
             } else if (array[index].__$$element === "scriptTask") {
+              // Remove properties when morphing to scriptTask
               array[index].loopCharacteristics = undefined;
               array[index].ioSpecification = undefined;
             }
 
-            // add default customAsync and customAutoStart if not present
+            // Add default customAsync and customAutoStart if not present
             array[index].extensionElements ??= { "drools:metaData": [] };
             const customAsyncIndex = array[index].extensionElements["drools:metaData"]?.findIndex(
               (meta) => meta["@_name"] === "customAsync"
