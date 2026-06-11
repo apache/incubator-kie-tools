@@ -62,10 +62,9 @@ test.describe("Add Custom Tasks", () => {
         targetPosition: { x: 300, y: 300 },
         thenRenameTo: "Rest API call Task New",
       });
-
       await expect(nodes.get({ name: "Rest API call Task New" })).toBeAttached();
 
-      const task = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const task = (await jsonModel.getTasks())[0];
       expect(task.__$$element).toBe("task");
       expect(task["@_name"]).toBe("Rest API call Task New");
       expect(task["@_drools:taskName"]).toBe("rest-api-call-task");
@@ -98,13 +97,12 @@ test.describe("Add Custom Tasks", () => {
         targetPosition: { x: 300, y: 300 },
         thenRenameTo: "gRPC API call Task New",
       });
-
       await expect(nodes.get({ name: "gRPC API call Task New" })).toBeAttached();
 
-      const task = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const task = (await jsonModel.getTasks())[0];
       expect(task.__$$element).toBe("task");
       expect(task["@_name"]).toBe("gRPC API call Task New");
-      expect(task["@_drools:taskName"]).toBe("grpc-api-call-task");
+      expect((task as any)["@_drools:taskName"]).toBe("grpc-api-call-task");
     });
 
     test("should add two gRPC API call Tasks from palette", async ({ customTasks, nodes, diagram }) => {

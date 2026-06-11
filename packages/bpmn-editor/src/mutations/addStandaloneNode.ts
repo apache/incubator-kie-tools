@@ -203,6 +203,7 @@ export function addStandaloneNode({
         : {
             "@_id": newBpmnElementId,
             "@_name": getNewNodeDefaultName({ type: __readonly_newNode.type, element: __readonly_element }),
+            "@_triggeredByEvent": false,
             __$$element: "subProcess",
             extensionElements: {
               "drools:metaData": [

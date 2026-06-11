@@ -28,7 +28,7 @@ test.describe("Add node - Gateway", () => {
     test("should add Gateway node from palette", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
-      const gateway = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const gateway = (await jsonModel.getExclusiveGateways())[0];
       expect(gateway.__$$element).toBe("exclusiveGateway");
 
       await expect(nodes.getByType(NodeType.GATEWAY)).toBeAttached();
@@ -55,54 +55,57 @@ test.describe("Add node - Gateway", () => {
   // Exclusive (default), Parallel, Inclusive, Event-Based, Complex
 
   test.describe("Gateway type morphing", () => {
-    const morphTestCases = [
-      { morphType: GatewayNodeType.PARALLEL, expectedElement: "parallelGateway" },
-      { morphType: GatewayNodeType.INCLUSIVE, expectedElement: "inclusiveGateway" },
-      { morphType: GatewayNodeType.EVENT_BASED, expectedElement: "eventBasedGateway" },
-      { morphType: GatewayNodeType.COMPLEX, expectedElement: "complexGateway" },
-    ];
+    test(`should morph Exclusive Gateway to Parallel Gateway`, async ({ jsonModel, palette, diagram, nodes }) => {
+      await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+      await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.PARALLEL });
+      await expect(diagram.get()).toHaveScreenshot(`morph-gateway-to-${GatewayNodeType.PARALLEL.toLowerCase()}.png`);
 
-    for (const { morphType, expectedElement } of morphTestCases) {
-      test(`should morph Exclusive Gateway to ${morphType} Gateway`, async ({ jsonModel, palette, diagram, nodes }) => {
-        await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
+      const parallelGateway = (await jsonModel.getParallelGateways())[0];
+      expect(parallelGateway?.__$$element).toBe("parallelGateway");
+    });
 
-        const gateway = nodes.getByType(NodeType.GATEWAY);
-        await expect(gateway).toBeVisible();
+    test(`should morph Exclusive Gateway to Inclusive Gateway`, async ({ jsonModel, palette, diagram, nodes }) => {
+      await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+      await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.INCLUSIVE });
+      await expect(diagram.get()).toHaveScreenshot(`morph-gateway-to-${GatewayNodeType.INCLUSIVE.toLowerCase()}.png`);
 
-        await nodes.morph({ node: gateway, to: morphType });
+      const inclusiveGateway = (await jsonModel.getInclusiveGateways())[0];
+      expect(inclusiveGateway?.__$$element).toBe("inclusiveGateway");
+    });
 
-        await expect
-          .poll(async () => {
-            return await jsonModel.getFlowElement({ elementIndex: 0 });
-          })
-          .toMatchObject({ __$$element: expectedElement });
+    test(`should morph Exclusive Gateway to Event Based Gateway`, async ({ jsonModel, palette, diagram, nodes }) => {
+      await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+      await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.EVENT_BASED });
+      await expect(diagram.get()).toHaveScreenshot(`morph-gateway-to-${GatewayNodeType.EVENT_BASED.toLowerCase()}.png`);
 
-        await expect(diagram.get()).toHaveScreenshot(`morph-gateway-to-${morphType.toLowerCase()}.png`);
-      });
-    }
+      const eventBasedGateway = (await jsonModel.getEventBasedGateways())[0];
+      expect(eventBasedGateway?.__$$element).toBe("eventBasedGateway");
+    });
+
+    test(`should morph Exclusive Gateway to Complex Gateway`, async ({ jsonModel, palette, diagram, nodes }) => {
+      await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+      await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.COMPLEX });
+      await expect(diagram.get()).toHaveScreenshot(`morph-gateway-to-${GatewayNodeType.COMPLEX.toLowerCase()}.png`);
+
+      const complexGateway = (await jsonModel.getComplexGateways())[0];
+      expect(complexGateway?.__$$element).toBe("complexGateway");
+    });
 
     test("should morph Parallel Gateway back to Exclusive Gateway", async ({ jsonModel, palette, diagram, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
-
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
-
       await nodes.morph({ node: gateway, to: GatewayNodeType.PARALLEL });
-
-      const parallelGateway = await jsonModel.getFlowElement({ elementIndex: 0 });
-      expect(parallelGateway.__$$element).toBe("parallelGateway");
-
       await nodes.hideNodeHandles();
-
       await nodes.morph({ node: gateway, to: GatewayNodeType.EXCLUSIVE });
-
-      await expect
-        .poll(async () => {
-          return await jsonModel.getFlowElement({ elementIndex: 0 });
-        })
-        .toMatchObject({ __$$element: "exclusiveGateway" });
-
       await expect(diagram.get()).toHaveScreenshot("morph-gateway-parallel-to-exclusive.png");
+
+      const exclusiveGateway = (await jsonModel.getExclusiveGateways())[0];
+      expect(exclusiveGateway.__$$element).toBe("exclusiveGateway");
     });
   });
 
@@ -243,16 +246,14 @@ test.describe("Add node - Gateway", () => {
   test.describe("Gateway operations", () => {
     test("should delete gateway", async ({ palette, jsonModel, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 300, y: 300 } });
-
       const gateway = nodes.getByType(NodeType.GATEWAY);
       await expect(gateway).toBeVisible();
       await gateway.click();
       await page.keyboard.press("Delete");
-
       await expect(gateway).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move gateway to new position", async ({ palette, diagram, nodes }) => {

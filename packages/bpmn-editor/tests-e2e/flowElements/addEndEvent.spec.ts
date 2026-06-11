@@ -28,12 +28,10 @@ test.describe("Add node - End Event", () => {
   test.describe("Add from palette", () => {
     test("should add End Event node from palette", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 100, y: 100 } });
+      await expect(nodes.getByType(NodeType.END_EVENT)).toBeAttached();
 
-      const endEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const endEvent = (await jsonModel.getEndEvents())[0];
       expect(endEvent.__$$element).toBe("endEvent");
-
-      const endEventNode = nodes.getByType(NodeType.END_EVENT);
-      await expect(endEventNode).toBeAttached();
     });
 
     test("should add two End Event nodes from palette in a row", async ({ palette, diagram, nodes }) => {
@@ -65,22 +63,14 @@ test.describe("Add node - End Event", () => {
     for (const { morphType, eventDefinition } of morphTestCases) {
       test(`should morph None End Event to ${morphType} End Event`, async ({ jsonModel, palette, diagram, nodes }) => {
         await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 300 } });
+        await expect(nodes.getByType(NodeType.END_EVENT)).toBeVisible();
 
-        const endEvent = nodes.getByType(NodeType.END_EVENT);
-        await expect(endEvent).toBeVisible();
-
-        await nodes.morph({ node: endEvent, to: morphType });
-
-        await expect
-          .poll(async () => {
-            return await jsonModel.getFlowElement({ elementIndex: 0 });
-          })
-          .toMatchObject({
-            __$$element: "endEvent",
-            eventDefinition: [{ __$$element: eventDefinition }],
-          });
-
+        await nodes.morph({ node: nodes.getByType(NodeType.END_EVENT), to: morphType });
         await expect(diagram.get()).toHaveScreenshot(`morph-end-event-to-${morphType.toLowerCase()}.png`);
+
+        const endEvent = (await jsonModel.getEndEvents())[0];
+        expect(endEvent.__$$element).toBe("endEvent");
+        expect(endEvent.eventDefinition).toEqual([{ __$$element: eventDefinition }]);
       });
     }
   });
@@ -144,16 +134,15 @@ test.describe("Add node - End Event", () => {
   test.describe("End Event operations", () => {
     test("should delete end event", async ({ palette, jsonModel, nodes, page }) => {
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 300 } });
-
       const endEvent = nodes.getByType(NodeType.END_EVENT);
       await expect(endEvent).toBeVisible();
+
       await endEvent.click();
       await page.keyboard.press("Delete");
-
       await expect(endEvent).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move end event to new position", async ({ palette, diagram, nodes }) => {

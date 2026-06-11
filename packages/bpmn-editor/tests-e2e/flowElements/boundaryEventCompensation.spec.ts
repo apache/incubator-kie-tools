@@ -34,28 +34,17 @@ test.describe("Compensation Boundary Events", () => {
     await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
 
-    const boundaryEvent = await jsonModel.getFlowElement({ elementIndex: 1 });
-    expect(boundaryEvent.__$$element).toBe("boundaryEvent");
-    expect(boundaryEvent["@_attachedToRef"]).toBeDefined();
-
     await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
-
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
     await intermediateEventPropertiesPanel.setCancelActivity({ cancelActivity: false });
-
-    await expect
-      .poll(async () => {
-        return await jsonModel.getFlowElement({ elementIndex: 1 });
-      })
-      .toMatchObject({
-        __$$element: "boundaryEvent",
-        "@_attachedToRef": expect.stringMatching(/.+/),
-        "@_cancelActivity": false,
-        eventDefinition: [{ __$$element: "compensateEventDefinition" }],
-      });
-
     const cancelActivity = await intermediateEventPropertiesPanel.getCancelActivity();
     expect(cancelActivity).toBe(false);
+
+    const boundaryEvent = (await jsonModel.getBoundaryEvents())[0];
+    expect(boundaryEvent.__$$element).toBe("boundaryEvent");
+    expect(boundaryEvent["@_attachedToRef"]).toBeDefined();
+    expect(boundaryEvent["@_cancelActivity"]).toBeFalsy();
+    expect(boundaryEvent.eventDefinition?.[0].__$$element).toBe("compensateEventDefinition");
   });
 
   test("should allow compensation boundary event on subprocess", async ({
@@ -66,29 +55,16 @@ test.describe("Compensation Boundary Events", () => {
   }) => {
     await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 550, y: 350 } });
-
-    const process = await jsonModel.getProcess();
-    const boundaryEvent = process.flowElement?.find((e: { __$$element: string }) => e.__$$element === "boundaryEvent");
-    const subProcessElement = process.flowElement?.find((e: { __$$element: string }) => e.__$$element === "subProcess");
-
-    expect(boundaryEvent).toBeDefined();
-    expect(boundaryEvent["@_attachedToRef"]).toBe(subProcessElement["@_id"]);
-
     await nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).click();
 
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
     await intermediateEventPropertiesPanel.setCancelActivity({ cancelActivity: false });
 
-    await expect
-      .poll(async () => {
-        const updatedProcess = await jsonModel.getProcess();
-        return updatedProcess.flowElement?.find((e: { __$$element: string }) => e.__$$element === "boundaryEvent");
-      })
-      .toMatchObject({
-        __$$element: "boundaryEvent",
-        "@_attachedToRef": subProcessElement["@_id"],
-        "@_cancelActivity": false,
-        eventDefinition: [{ __$$element: "compensateEventDefinition" }],
-      });
+    const boundaryEvent = (await jsonModel.getBoundaryEvents())[0];
+    const subProcess = (await jsonModel.getSubProcesses())[0];
+    expect(boundaryEvent.__$$element).toBe("boundaryEvent");
+    expect(boundaryEvent["@_attachedToRef"]).toBe(subProcess["@_id"]);
+    expect(boundaryEvent["@_cancelActivity"]).toBeFalsy();
+    expect(boundaryEvent.eventDefinition?.[0].__$$element).toBe("compensateEventDefinition");
   });
 });

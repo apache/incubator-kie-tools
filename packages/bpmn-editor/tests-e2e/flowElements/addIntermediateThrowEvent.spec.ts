@@ -27,11 +27,10 @@ test.describe("Add node - Intermediate Throw Event", () => {
   test.describe("Add from palette", () => {
     test("should add Intermediate Throw Event node from palette", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 100, y: 100 } });
-
-      const throwEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
-      expect(throwEvent.__$$element).toBe("intermediateThrowEvent");
-
       await expect(nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT)).toBeAttached();
+
+      const throwEvent = (await jsonModel.getIntermediateThrowEvents())[0];
+      expect(throwEvent.__$$element).toBe("intermediateThrowEvent");
     });
 
     test("should add two Intermediate Throw Event nodes from palette in a row", async ({ palette, diagram, nodes }) => {
@@ -67,24 +66,16 @@ test.describe("Add node - Intermediate Throw Event", () => {
     for (const { morphType, eventDefinition } of morphTestCases) {
       test(`should morph Intermediate Throw Event to ${morphType}`, async ({ jsonModel, palette, diagram, nodes }) => {
         await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 300, y: 300 } });
+        await expect(nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT)).toBeVisible();
 
-        const throwEvent = nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
-        await expect(throwEvent).toBeVisible();
-
-        await nodes.morph({ node: throwEvent, to: morphType });
-
-        await expect
-          .poll(async () => {
-            return await jsonModel.getFlowElement({ elementIndex: 0 });
-          })
-          .toMatchObject({
-            __$$element: "intermediateThrowEvent",
-            eventDefinition: [{ __$$element: eventDefinition }],
-          });
-
+        await nodes.morph({ node: nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT), to: morphType });
         await expect(diagram.get()).toHaveScreenshot(
           `morph-intermediate-throw-event-to-${morphType.toLowerCase()}.png`
         );
+
+        const morphedEvent = (await jsonModel.getIntermediateThrowEvents())[0];
+        expect(morphedEvent.__$$element).toBe("intermediateThrowEvent");
+        expect(morphedEvent.eventDefinition?.[0].__$$element).toBe(eventDefinition);
       });
     }
   });
@@ -193,16 +184,15 @@ test.describe("Add node - Intermediate Throw Event", () => {
   test.describe("Intermediate Throw Event operations", () => {
     test("should delete intermediate throw event", async ({ palette, jsonModel, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 300, y: 300 } });
-
       const throwEvent = nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT);
       await expect(throwEvent).toBeVisible();
+
       await throwEvent.click();
       await page.keyboard.press("Delete");
-
       await expect(throwEvent).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move intermediate throw event to new position", async ({ palette, diagram, nodes }) => {

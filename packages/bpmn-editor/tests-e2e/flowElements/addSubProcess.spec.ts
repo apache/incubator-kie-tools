@@ -32,7 +32,7 @@ test.describe("Add node - Sub-process", () => {
 
       await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-      const subProcess = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const subProcess = (await jsonModel.getSubProcesses())[0];
       expect(subProcess.__$$element).toBe("subProcess");
     });
 
@@ -253,7 +253,7 @@ test.describe("Add node - Sub-process", () => {
 
       await expect(nodes.get({ name: "Order Processing" })).toBeAttached();
 
-      const subProcess = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const subProcess = (await jsonModel.getSubProcesses())[0];
       expect(subProcess?.__$$element).toBe("subProcess");
       expect(subProcess?.["@_name"]).toBe("Order Processing");
     });
@@ -264,15 +264,25 @@ test.describe("Add node - Sub-process", () => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
       await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
 
-      const subProcess = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const subProcess = (await jsonModel.getSubProcesses())[0];
       expect(subProcess.__$$element).toBe("subProcess");
-      expect(subProcess["@_name"]).toBe("Order Processing");
+      expect(subProcess["@_name"]).toBe(DefaultNodeName.SUB_PROCESS);
+      expect(subProcess["@_triggeredByEvent"]).toBe(false);
+      expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(1);
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
     });
 
     test(`should check event sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
       await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.EVENT });
       await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
+
+      const subProcess = (await jsonModel.getSubProcesses())[0];
+      expect(subProcess.__$$element).toBe("subProcess");
+      expect(subProcess["@_name"]).toBe(DefaultNodeName.SUB_PROCESS);
+      expect(subProcess["@_triggeredByEvent"]).toBe(true);
+      expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(1);
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
     });
 
     test(`should check multi instance sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
@@ -282,12 +292,29 @@ test.describe("Add node - Sub-process", () => {
         to: SubProcessNodeType.MULTI_INSTANCE,
       });
       await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
+
+      const subProcess = (await jsonModel.getSubProcesses())[0];
+      expect(subProcess.__$$element).toBe("subProcess");
+      expect(subProcess["@_name"]).toBe(DefaultNodeName.SUB_PROCESS);
+      expect(subProcess["@_triggeredByEvent"]).toBe(false);
+      expect(subProcess.loopCharacteristics?.["__$$element"]).toBe("multiInstanceLoopCharacteristics");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(1);
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
     });
 
     test(`should check ad-hoc sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
       await nodes.morph({ node: nodes.get({ name: DefaultNodeName.SUB_PROCESS }), to: SubProcessNodeType.AD_HOC });
       await expect(nodes.get({ name: DefaultNodeName.SUB_PROCESS })).toBeAttached();
+
+      const subProcess = (await jsonModel.getAdHocSubProcesses())[0];
+      expect(subProcess.__$$element).toBe("adHocSubProcess");
+      expect(subProcess["@_name"]).toBe(DefaultNodeName.SUB_PROCESS);
+      expect(subProcess["@_triggeredByEvent"]).toBe(false);
+      expect(subProcess["@_ordering"]).toBe("Parallel");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(2);
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[1]["@_name"]).toBe("customAutoStart");
     });
   });
 });

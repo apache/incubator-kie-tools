@@ -30,7 +30,7 @@ test.describe("Add Data Object", () => {
 
     await expect(nodes.get({ name: DefaultNodeName.DATA_OBJECT })).toBeAttached();
 
-    const dataObject = await jsonModel.getFlowElement({ elementIndex: 0 });
+    const dataObject = (await jsonModel.getDataObjects())[0];
     expect(dataObject.__$$element).toBe("dataObject");
     expect(dataObject["@_name"]).toBe(DefaultNodeName.DATA_OBJECT);
   });
@@ -41,18 +41,17 @@ test.describe("Add Data Object", () => {
 
     await expect(nodes.get({ name: "Customer Data" })).toBeAttached();
 
-    const dataObject = await jsonModel.getFlowElement({ elementIndex: 0 });
+    const dataObject = (await jsonModel.getDataObjects())[0];
     expect(dataObject["@_name"]).toBe("Customer Data");
   });
 
   test("should delete data object", async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.DATA_OBJECT, targetPosition: { x: 300, y: 300 } });
     await nodes.delete({ name: DefaultNodeName.DATA_OBJECT });
-
     await expect(nodes.get({ name: DefaultNodeName.DATA_OBJECT })).not.toBeAttached();
 
-    const flowElements = await jsonModel.getProcess();
-    expect(flowElements.flowElement?.length || 0).toBe(0);
+    const process = await jsonModel.getProcess();
+    expect(process?.flowElement?.length).toBe(0);
   });
 
   test("should move data object to new position", async ({ palette, nodes, diagram, page }) => {

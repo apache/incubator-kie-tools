@@ -102,8 +102,8 @@ test.describe("Change Properties - End Event", () => {
       endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
-    const flowElement = await jsonModel.getFlowElement({ elementIndex: 0 });
-    expect(flowElement.__$$element).toBe("endEvent");
-    expect(flowElement.eventDefinition[0].__$$element).toBe("compensateEventDefinition");
+    const endEvent = (await jsonModel.getEndEvents())[0];
+    expect(endEvent.__$$element).toBe("endEvent");
+    expect(endEvent.eventDefinition?.[0].__$$element).toBe("compensateEventDefinition");
   });
 });

@@ -31,8 +31,8 @@ test.describe("Add node - Text Annotation", () => {
 
       await expect(nodes.getByType(NodeType.TEXT_ANNOTATION)).toBeAttached();
 
-      const process = await jsonModel.getProcess();
-      expect(process.artifact?.length).toBeGreaterThan(0);
+      const textAnnotations = await jsonModel.getTextAnnotations();
+      expect(textAnnotations.length).toBeGreaterThan(1);
     });
 
     test("should add two Text Annotation nodes from palette in a row", async ({
@@ -55,8 +55,8 @@ test.describe("Add node - Text Annotation", () => {
       await expect(nodes.getByType(NodeType.TEXT_ANNOTATION).first()).toBeAttached();
       await expect(nodes.getByType(NodeType.TEXT_ANNOTATION).nth(1)).toBeAttached();
 
-      const process = await jsonModel.getProcess();
-      expect(process.artifact?.length).toBe(2);
+      const textAnnotations = await jsonModel.getTextAnnotations();
+      expect(textAnnotations.length).toBe(2);
     });
   });
 
@@ -66,8 +66,8 @@ test.describe("Add node - Text Annotation", () => {
 
       await nodes.deleteByType({ type: NodeType.TEXT_ANNOTATION });
 
-      const process = await jsonModel.getProcess();
-      expect(process.artifact?.length || 0).toBe(0);
+      const textAnnotations = await jsonModel.getTextAnnotations();
+      expect(textAnnotations.length).toBe(0);
     });
 
     test("should move text annotation to new position", async ({ palette, diagram, nodes }) => {

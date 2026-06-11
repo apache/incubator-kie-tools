@@ -32,7 +32,7 @@ test.describe("Add node - Call Activity", () => {
 
       await expect(nodes.get({ name: DefaultNodeName.CALL_ACTIVITY })).toBeAttached();
 
-      const callActivity = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const callActivity = (await jsonModel.getCallActivities())[0];
       expect(callActivity.__$$element).toBe("callActivity");
       expect(callActivity["@_name"]).toBe(DefaultNodeName.CALL_ACTIVITY);
     });
@@ -254,53 +254,40 @@ test.describe("Add node - Call Activity", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
 
-      // Connect Start Event -> Prepare Data
       const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
       await nodes.createSequenceFlow({
         from: startEventId,
         to: "Prepare Data",
       });
-
-      // Connect Prepare Data -> Execute Subprocess
       await nodes.createSequenceFlow({
         from: "Prepare Data",
         to: "Execute Subprocess",
       });
-
-      // Connect Execute Subprocess -> Process Results
       await nodes.createSequenceFlow({
         from: "Execute Subprocess",
         to: "Process Results",
       });
-
-      // Connect Process Results -> End Event
       const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
       await nodes.createSequenceFlow({
         from: "Process Results",
         to: endEventId,
       });
-
-      const process = await jsonModel.getProcess();
-      const callActivityElement = process.flowElement?.find(
-        (el: { __$$element: string; "@_name"?: string }) => el["@_name"] === "Execute Subprocess"
-      );
-      expect(callActivityElement.__$$element).toBe("callActivity");
-      expect(callActivityElement["@_name"]).toBe("Execute Subprocess");
-
       await expect(diagram.get()).toHaveScreenshot("complete-process-with-call-activity.png");
+
+      const callActivityElement = (await jsonModel.getCallActivities())[0];
+      expect(callActivityElement?.__$$element).toBe("callActivity");
+      expect(callActivityElement?.["@_name"]).toBe("Execute Subprocess");
     });
   });
 
   test.describe("Call Activity operations", () => {
     test("should delete call activity", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 300, y: 300 } });
-
       await nodes.delete({ name: DefaultNodeName.CALL_ACTIVITY });
-
       await expect(nodes.get({ name: DefaultNodeName.CALL_ACTIVITY })).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move call activity to new position", async ({ palette, diagram, nodes }) => {
@@ -325,12 +312,10 @@ test.describe("Add node - Call Activity", () => {
 
     test("should rename call activity", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 300, y: 300 } });
-
       await nodes.rename({ current: DefaultNodeName.CALL_ACTIVITY, new: "Invoke Subprocess" });
-
       await expect(nodes.get({ name: "Invoke Subprocess" })).toBeAttached();
 
-      const callActivity = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const callActivity = (await jsonModel.getCallActivities())[0];
       expect(callActivity.__$$element).toBe("callActivity");
       expect(callActivity["@_name"]).toBe("Invoke Subprocess");
     });

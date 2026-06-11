@@ -157,8 +157,8 @@ test.describe("Change Properties - Intermediate Throw Event", () => {
   test("should configure Compensation definition", async ({ intermediateEventPropertiesPanel, jsonModel }) => {
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
 
-    const flowElement = await jsonModel.getFlowElement({ elementIndex: 0 });
-    expect(flowElement.__$$element).toBe("intermediateThrowEvent");
-    expect(flowElement.eventDefinition[0].__$$element).toBe("compensateEventDefinition");
+    const intermediateCatchEvent = (await jsonModel.getIntermediateCatchEvents())[0];
+    expect(intermediateCatchEvent.__$$element).toBe("intermediateThrowEvent");
+    expect(intermediateCatchEvent.eventDefinition?.[0].__$$element).toBe("compensateEventDefinition");
   });
 });
