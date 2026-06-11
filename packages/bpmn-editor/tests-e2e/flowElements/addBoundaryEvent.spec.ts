@@ -79,8 +79,11 @@ test.describe("Add Boundary Event", () => {
       await expect(diagram.get()).toHaveScreenshot("detach-boundary-event-from-task.png");
 
       const detachedEvent = (await jsonModel.getBoundaryEvents())[0];
-      expect(detachedEvent.__$$element).toBe("intermediateCatchEvent");
-      expect(detachedEvent["@_attachedToRef"]).toBeUndefined();
+      expect(detachedEvent?.__$$element).toBe(undefined);
+      expect(detachedEvent?.["@_attachedToRef"]).toBeUndefined();
+
+      const intermediateCatchEvent = (await jsonModel.getIntermediateCatchEvents())[0];
+      expect(intermediateCatchEvent?.__$$element).toBe("intermediateCatchEvent");
     });
   });
 

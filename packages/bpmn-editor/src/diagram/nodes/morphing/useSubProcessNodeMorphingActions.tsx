@@ -30,6 +30,7 @@ import { SubProcessIcon } from "../NodeIcons";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { AdHocSubProcessIconSvg, MultiInstanceParallelIconSvg } from "../NodeSvgs";
 import { keepIntersection } from "./keepIntersection";
+import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 
 export type SubProcess = Normalized<
   ElementFilter<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>, "adHocSubProcess" | "subProcess">
@@ -119,16 +120,7 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
 
               if (array[index].__$$element === "adHocSubProcess") {
                 array[index]["@_ordering"] = "Parallel";
-                array[index].extensionElements ??= { "drools:metaData": [] };
-                const customAsyncIndex = array[index].extensionElements["drools:metaData"]?.findIndex(
-                  (meta) => meta["@_name"] === "customAutoStart"
-                );
-                if (customAsyncIndex === undefined || customAsyncIndex === -1) {
-                  array[index].extensionElements["drools:metaData"]?.push({
-                    "@_name": "customAutoStart",
-                    "drools:metaValue": { __$$text: "false" },
-                  });
-                }
+                setBpmn20Drools10MetaData(array[index], "customAutoStart", "false");
               }
 
               // BPMN 2.0 Spec: When converting from Event Sub-Process to regular Embedded Sub-Process,

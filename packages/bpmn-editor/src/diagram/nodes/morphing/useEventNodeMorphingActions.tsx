@@ -30,6 +30,7 @@ import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { NODE_COLORS } from "../NodeSvgs";
 import { deleteEdge } from "../../../mutations/deleteEdge";
+import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 
 export type Event = Normalized<
   ElementFilter<
@@ -142,18 +143,7 @@ export function useEventNodeMorphingActions(event: Event) {
                 };
                 // Add default extensionElements for intermediateThrowEvent and endEvent
                 if (element.__$$element === "intermediateThrowEvent" || element.__$$element === "endEvent") {
-                  element.extensionElements ??= { "drools:metaData": [] };
-                  element.extensionElements["drools:metaData"] ??= [];
-                  // Only add if customScope doesn't already exist
-                  const hasCustomScope = element.extensionElements["drools:metaData"].some(
-                    (m) => m["@_name"] === "customScope"
-                  );
-                  if (!hasCustomScope) {
-                    element.extensionElements["drools:metaData"].push({
-                      "@_name": "customScope",
-                      "drools:metaValue": { __$$text: "default" },
-                    });
-                  }
+                  setBpmn20Drools10MetaData(element, "customScope", "default");
                 }
                 break;
               case "terminateEventDefinition":

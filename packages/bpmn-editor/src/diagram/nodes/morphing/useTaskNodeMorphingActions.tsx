@@ -35,6 +35,7 @@ import { CustomTask } from "../../../BpmnEditor";
 import { WritableDraft } from "immer";
 import { State } from "../../../store/Store";
 import { deleteInterfaceAndOperation } from "../../../mutations/deleteInterfaceAndOperation";
+import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 
 function getTaskDataMappings(
   process: ReturnType<typeof addOrGetProcessAndDiagramElements>["process"],
@@ -174,11 +175,7 @@ export function useTaskNodeMorphingActions(task: Task) {
               // Add default properties when morphing to callActivity
               array[index]["@_drools:independent"] = false;
               array[index]["@_drools:waitForCompletion"] = true;
-              array[index].extensionElements ??= { "drools:metaData": [] };
-              array[index].extensionElements["drools:metaData"]?.push({
-                "@_name": "customAbortParent",
-                "drools:metaValue": { __$$text: "true" },
-              });
+              setBpmn20Drools10MetaData(array[index], "customAbortParent", "true");
             } else if (array[index].__$$element === "scriptTask") {
               // Remove properties when morphing to scriptTask
               array[index].loopCharacteristics = undefined;
@@ -186,25 +183,8 @@ export function useTaskNodeMorphingActions(task: Task) {
             }
 
             // Add default customAsync and customAutoStart if not present
-            array[index].extensionElements ??= { "drools:metaData": [] };
-            const customAsyncIndex = array[index].extensionElements["drools:metaData"]?.findIndex(
-              (meta) => meta["@_name"] === "customAsync"
-            );
-            if (customAsyncIndex === undefined || customAsyncIndex === -1) {
-              array[index].extensionElements["drools:metaData"]?.push({
-                "@_name": "customAsync",
-                "drools:metaValue": { __$$text: "false" },
-              });
-            }
-            const customAutoStartIndex = array[index].extensionElements["drools:metaData"]?.findIndex(
-              (meta) => meta["@_name"] === "customAutoStart"
-            );
-            if (customAutoStartIndex === undefined || customAutoStartIndex === -1) {
-              array[index].extensionElements["drools:metaData"]?.push({
-                "@_name": "customAutoStart",
-                "drools:metaValue": { __$$text: "false" },
-              });
-            }
+            setBpmn20Drools10MetaData(array[index], "customAsync", "false");
+            setBpmn20Drools10MetaData(array[index], "customAutoStart", "false");
           }
 
           return false; // Will stop visiting.

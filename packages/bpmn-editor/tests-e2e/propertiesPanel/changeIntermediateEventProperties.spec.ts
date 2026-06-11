@@ -102,9 +102,7 @@ test.describe("Change Properties - Intermediate Catch Event", () => {
 test.describe("Change Properties - Intermediate Throw Event", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 100, y: 100 } });
-
     await expect(nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT)).toBeVisible();
-
     await nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT).click();
   });
 
@@ -158,7 +156,7 @@ test.describe("Change Properties - Intermediate Throw Event", () => {
   test("should configure Compensation definition", async ({ intermediateEventPropertiesPanel, jsonModel }) => {
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
 
-    const intermediateCatchEvent = (await jsonModel.getIntermediateCatchEvents())[0];
+    const intermediateCatchEvent = (await jsonModel.getIntermediateThrowEvents())[0];
     expect(intermediateCatchEvent.__$$element).toBe("intermediateThrowEvent");
     expect(intermediateCatchEvent.eventDefinition?.[0].__$$element).toBe("compensateEventDefinition");
   });

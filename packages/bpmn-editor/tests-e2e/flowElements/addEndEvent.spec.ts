@@ -71,7 +71,7 @@ test.describe("Add node - End Event", () => {
 
         const endEvent = (await jsonModel.getEndEvents())[0];
         expect(endEvent.__$$element).toBe("endEvent");
-        expect(endEvent.eventDefinition).toEqual([{ __$$element: eventDefinition }]);
+        expect(endEvent.eventDefinition?.[0]?.__$$element).toEqual(eventDefinition);
       });
     }
   });

@@ -33,7 +33,7 @@ test.describe("Add node - Text Annotation", () => {
       await expect(nodes.getByType(NodeType.TEXT_ANNOTATION)).toBeAttached();
 
       const textAnnotations = await jsonModel.getTextAnnotations();
-      expect(textAnnotations.length).toBeGreaterThan(1);
+      expect(textAnnotations.length).toBe(1);
     });
 
     test("should add two Text Annotation nodes from palette in a row", async ({
