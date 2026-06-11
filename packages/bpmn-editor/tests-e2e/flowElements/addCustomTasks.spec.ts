@@ -102,7 +102,7 @@ test.describe("Add Custom Tasks", () => {
       const task = (await jsonModel.getTasks())[0];
       expect(task.__$$element).toBe("task");
       expect(task["@_name"]).toBe("gRPC API call Task New");
-      expect((task as any)["@_drools:taskName"]).toBe("grpc-api-call-task");
+      expect(task["@_drools:taskName"]).toBe("grpc-api-call-task");
     });
 
     test("should add two gRPC API call Tasks from palette", async ({ customTasks, nodes, diagram }) => {
