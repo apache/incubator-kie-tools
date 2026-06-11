@@ -77,6 +77,7 @@ export function useEventNodeMorphingActions(event: Event) {
           if (element["@_id"] === event["@_id"] && element.__$$element === event.__$$element) {
             if (eventDefinitionElement === undefined) {
               element.eventDefinition = undefined;
+              element.extensionElements = undefined;
               return true; // Will continue visiting.
             }
 

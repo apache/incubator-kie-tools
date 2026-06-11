@@ -155,6 +155,14 @@ export function addStandaloneNode({
                 __$$element: "signalEventDefinition",
               },
             ],
+            extensionElements: {
+              "drools:metaData": [
+                {
+                  "@_name": "customScope",
+                  "drools:metaValue": { __$$text: "default" },
+                },
+              ],
+            },
           },
           [NODE_TYPES.endEvent]: {
             "@_id": newBpmnElementId,

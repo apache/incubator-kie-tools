@@ -216,4 +216,29 @@ test.describe("Add node - Intermediate Throw Event", () => {
       expect(boxAfter.y).not.toBe(throwEventBox.y);
     });
   });
+
+  test.describe("Default values", () => {
+    test("should have default values - signal", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 300, y: 300 } });
+
+      const signalThrowEvent = (await jsonModel.getIntermediateThrowEvents())[0];
+      expect(signalThrowEvent.__$$element).toBe("intermediateThrowEvent");
+      expect(signalThrowEvent.eventDefinition?.[0].__$$element).toBe("signalEventDefinition");
+      expect(signalThrowEvent.extensionElements?.["drools:metaData"]?.length).toBe(1);
+      expect(signalThrowEvent.extensionElements?.["drools:metaData"]?.[0]?.["@_name"]).toBe("customScope");
+      expect(signalThrowEvent.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe(
+        "default"
+      );
+    });
+
+    test("should remove default values after morphing away - signal", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 300, y: 300 } });
+      await nodes.morph({ node: nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT), to: EventNodeType.MESSAGE });
+
+      const messageThrowEvent = (await jsonModel.getIntermediateThrowEvents())[0];
+      expect(messageThrowEvent.__$$element).toBe("intermediateThrowEvent");
+      expect(messageThrowEvent.eventDefinition?.[0].__$$element).toBe("messageEventDefinition");
+      expect(messageThrowEvent.extensionElements?.["drools:metaData"]?.length).toBe(undefined);
+    });
+  });
 });

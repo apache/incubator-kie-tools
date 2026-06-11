@@ -166,4 +166,30 @@ test.describe("Add node - End Event", () => {
       expect(boxAfter.y).not.toBe(endEventBox.y);
     });
   });
+
+  test.describe("Default values", () => {
+    test("should have default values - signal", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 300 } });
+      await nodes.morph({ node: nodes.getByType(NodeType.END_EVENT), to: EventNodeType.SIGNAL });
+
+      const endEvent = (await jsonModel.getEndEvents())[0];
+      expect(endEvent.__$$element).toBe("endEvent");
+      expect(endEvent.eventDefinition?.[0]?.__$$element).toEqual("signalEventDefinition");
+      expect(endEvent.extensionElements?.["drools:metaData"]?.length).toBe(1);
+      expect(endEvent.extensionElements?.["drools:metaData"]?.[0]?.["@_name"]).toBe("customScope");
+      expect(endEvent.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("default");
+    });
+
+    test("should remove default values after morphing away - signal", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 300 } });
+      await nodes.morph({ node: nodes.getByType(NodeType.END_EVENT), to: EventNodeType.SIGNAL });
+      await nodes.hideNodeHandles();
+      await nodes.morph({ node: nodes.getByType(NodeType.END_EVENT), to: EventNodeType.NONE });
+
+      const endEvent = (await jsonModel.getEndEvents())[0];
+      expect(endEvent.__$$element).toBe("endEvent");
+      expect(endEvent.eventDefinition).toBe(undefined);
+      expect(endEvent.extensionElements).toBe(undefined);
+    });
+  });
 });
