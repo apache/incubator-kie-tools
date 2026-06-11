@@ -22,6 +22,7 @@ import { DefaultNodeName, NodeType, SubProcessNodeType, EventNodeType, NodePosit
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Start Event", () => {

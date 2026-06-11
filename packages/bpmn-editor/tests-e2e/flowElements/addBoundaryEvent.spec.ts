@@ -22,6 +22,7 @@ import { NodeType, DefaultNodeName, TaskNodeType, NodePosition } from "../__fixt
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add Boundary Event", () => {

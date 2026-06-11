@@ -23,6 +23,7 @@ import { DefaultNodeName, NodeType, TaskNodeType, NodePosition, EventNodeType } 
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Call Activity", () => {
@@ -230,6 +231,7 @@ test.describe("Add node - Call Activity", () => {
     test.beforeEach(async ({ editor, page }) => {
       await page.setViewportSize({ width: 1920, height: 1080 });
       await editor.open();
+      await editor.setInitialProcessId();
     });
 
     test("should create a complete process with Call Activity", async ({ jsonModel, palette, nodes, diagram }) => {

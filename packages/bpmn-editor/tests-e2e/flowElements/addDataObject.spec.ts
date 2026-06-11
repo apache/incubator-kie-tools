@@ -23,6 +23,7 @@ import { NodeType, DefaultNodeName, NodePosition } from "../__fixtures__/nodes";
 test.describe("Add Data Object", () => {
   test.beforeEach(async ({ editor }) => {
     await editor.open();
+    await editor.setInitialProcessId();
   });
 
   test("should add data object from palette", async ({ palette, nodes, jsonModel }) => {

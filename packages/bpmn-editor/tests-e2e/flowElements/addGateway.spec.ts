@@ -21,6 +21,7 @@ import { NodeType, GatewayNodeType, NodePosition, DefaultNodeName } from "../__f
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Gateway", () => {

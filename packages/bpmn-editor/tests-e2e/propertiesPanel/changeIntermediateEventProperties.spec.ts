@@ -23,6 +23,7 @@ import { NodeType, EventNodeType } from "../__fixtures__/nodes";
 test.beforeEach(async ({ editor, page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Change Properties - Intermediate Catch Event", () => {

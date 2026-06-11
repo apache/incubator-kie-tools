@@ -22,6 +22,7 @@ import { NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, page }) => {
   await editor.open();
+  await editor.setInitialProcessId();
   await page.setViewportSize({ width: 1920, height: 1080 });
 });
 

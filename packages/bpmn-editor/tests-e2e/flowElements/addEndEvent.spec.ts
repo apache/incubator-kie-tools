@@ -22,6 +22,7 @@ import { EdgeType } from "../__fixtures__/edges";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - End Event", () => {

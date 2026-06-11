@@ -22,6 +22,7 @@ import { NodeType, EventNodeType, DefaultNodeName } from "../__fixtures__/nodes"
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Intermediate Catch Event", () => {

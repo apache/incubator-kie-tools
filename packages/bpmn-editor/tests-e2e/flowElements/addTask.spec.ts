@@ -23,6 +23,7 @@ import { DefaultNodeName, NodeType, NodePosition, TaskNodeType } from "../__fixt
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Task", () => {

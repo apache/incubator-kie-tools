@@ -23,6 +23,7 @@ import { NodeType, DefaultNodeName, NodePosition } from "../__fixtures__/nodes";
 test.describe("Add Lane", () => {
   test.beforeEach(async ({ editor }) => {
     await editor.open();
+    await editor.setInitialProcessId();
   });
 
   test("should add lane from palette", async ({ palette, nodes, jsonModel }) => {

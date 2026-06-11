@@ -28,15 +28,9 @@ export class Editor {
 
   public async open() {
     await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-empty--empty&viewMode=story`, {});
-    await this.initializeEditor();
   }
 
-  public async openWithLocale(locale: string) {
-    await this.page.goto(`${this.baseURL}/iframe.html?args=locale:${locale}&id=misc-empty--empty&viewMode=story`, {});
-    await this.initializeEditor();
-  }
-
-  private async initializeEditor() {
+  public async setInitialProcessId() {
     await expect(this.page.getByTestId("kie-bpmn-editor--diagram-container")).toBeVisible();
 
     const processIdInput = this.page.getByPlaceholder("e.g., hiring");

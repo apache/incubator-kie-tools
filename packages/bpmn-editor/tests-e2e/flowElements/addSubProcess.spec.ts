@@ -23,6 +23,7 @@ import { DefaultNodeName, NodeType, SubProcessNodeType, NodePosition } from "../
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Sub-process", () => {
