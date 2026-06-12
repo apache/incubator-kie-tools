@@ -271,6 +271,7 @@ test.describe("Add node - Sub-process", () => {
       expect(subProcess["@_triggeredByEvent"]).toBe(false);
       expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(1);
       expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
     });
 
     test(`should check event sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
@@ -284,6 +285,7 @@ test.describe("Add node - Sub-process", () => {
       expect(subProcess["@_triggeredByEvent"]).toBe(true);
       expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(1);
       expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
     });
 
     test(`should check multi instance sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
@@ -301,6 +303,7 @@ test.describe("Add node - Sub-process", () => {
       expect(subProcess.loopCharacteristics?.["__$$element"]).toBe("multiInstanceLoopCharacteristics");
       expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(1);
       expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
     });
 
     test(`should check ad-hoc sub-process default properties`, async ({ palette, nodes, jsonModel }) => {
@@ -315,7 +318,9 @@ test.describe("Add node - Sub-process", () => {
       expect(subProcess["@_ordering"]).toBe("Parallel");
       expect(subProcess.extensionElements?.["drools:metaData"]?.length).toBe(2);
       expect(subProcess.extensionElements?.["drools:metaData"]?.[0]["@_name"]).toBe("customAsync");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
       expect(subProcess.extensionElements?.["drools:metaData"]?.[1]["@_name"]).toBe("customAutoStart");
+      expect(subProcess.extensionElements?.["drools:metaData"]?.[1]?.["drools:metaValue"].__$$text).toBe("false");
     });
   });
 });

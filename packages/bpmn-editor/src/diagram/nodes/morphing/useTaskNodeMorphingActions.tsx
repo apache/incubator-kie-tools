@@ -162,6 +162,7 @@ export function useTaskNodeMorphingActions(task: Task) {
             array[index].extensionElements = undefined;
             array[index].loopCharacteristics = undefined;
             array[index].ioSpecification = undefined;
+            array[index].resourceRole = array[index].resourceRole?.filter((e) => e.__$$element !== "potentialOwner");
           }
 
           if (
@@ -180,6 +181,11 @@ export function useTaskNodeMorphingActions(task: Task) {
               // Remove properties when morphing to scriptTask
               array[index].loopCharacteristics = undefined;
               array[index].ioSpecification = undefined;
+              array[index].extensionElements ??= { "drools:metaData": [] };
+              array[index].extensionElements["drools:metaData"] = array[index].extensionElements?.[
+                "drools:metaData"
+              ]?.filter((e) => e["@_name"] !== "customSLADueDate");
+              array[index].resourceRole = array[index].resourceRole?.filter((e) => e.__$$element !== "potentialOwner");
             }
 
             // Add default customAsync and customAutoStart if not present

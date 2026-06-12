@@ -54,7 +54,7 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
             // Remove Ad-hoc sub-process-specific properties when morphing away from adHocSubProcess
             if (element.__$$element === "adHocSubProcess") {
               const updatedExtensionElements = element.extensionElements?.["drools:metaData"]?.filter(
-                (m) => m["@_name"] !== "customAutoStart"
+                (m) => m["@_name"] !== "customAutoStart" && m["@_name"] !== "customActivationCondition"
               );
               if (updatedExtensionElements === undefined || updatedExtensionElements.length === 0) {
                 element.extensionElements = undefined;
