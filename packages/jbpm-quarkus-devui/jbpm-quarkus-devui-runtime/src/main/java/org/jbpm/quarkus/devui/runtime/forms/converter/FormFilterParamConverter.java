@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
-import org.jbpm.quarkus.devui.runtime.forms.model.FormFilter;
+import org.jbpm.devconsole.commons.forms.model.FormFilter;
 
 import jakarta.ws.rs.ext.ParamConverter;
 import jakarta.ws.rs.ext.Provider;

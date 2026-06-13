@@ -41,6 +41,8 @@ digraph G {
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/process-compact-architecture" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-examples/process-compact-architecture-springboot" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/jbpm-addons-springboot-dev-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/process-event-driven" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/process-security" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/process-user-tasks-subsystem" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -109,6 +111,8 @@ digraph G {
   "@kie-tools/jbpm-form-code-generator-themes" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/jbpm-dev-console-commons" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/spring-boot-bom" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "kie-editors-dev-vscode-extension" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -137,7 +141,6 @@ digraph G {
   "@kie-tools/runtime-tools-process-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/spring-boot-bom" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -183,6 +186,7 @@ digraph G {
   "@kie-tools-examples/process-accelerator" -> "@kie-tools/quarkus-bom" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-business-calendar" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/process-compact-architecture-springboot" -> "@kie-tools/jbpm-addons-springboot-dev-console" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-event-driven" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-security" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "orange" ];
@@ -301,8 +305,13 @@ digraph G {
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/monaco-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/patternfly-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/jbpm-addons-springboot-dev-console" -> "@kie-tools/jbpm-dev-console-commons" [ style = "solid", color = "black" ];
+  "@kie-tools/jbpm-addons-springboot-dev-console" -> "@kie-tools/spring-boot-bom" [ style = "solid", color = "black" ];
+  "@kie-tools/jbpm-addons-springboot-dev-console" -> "@kie-tools/runtime-tools-process-dev-ui-webapp" [ style = "dashed", color = "black" ];
+  "@kie-tools/jbpm-dev-console-commons" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/jbpm-form-code-generator-themes" -> "@kie-tools/form-code-generator-bootstrap4-theme" [ style = "solid", color = "blue" ];
   "@kie-tools/jbpm-form-code-generator-themes" -> "@kie-tools/form-code-generator-patternfly-theme" [ style = "solid", color = "blue" ];
+  "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/jbpm-dev-console-commons" [ style = "solid", color = "black" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/quarkus-bom" [ style = "solid", color = "black" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/runtime-tools-process-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/jest-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];

@@ -31,6 +31,10 @@ examples/process-compact-architecture/process-compact-architecture.iml
 examples/process-compact-architecture/src/main/resources/META-INF/processSVG/hiring.svg
 examples/process-compact-architecture/src/main/resources/NewHiringOffer.dmn
 examples/process-compact-architecture/src/main/resources/hiring.bpmn
+examples/process-compact-architecture-springboot/docker-compose/pgadmin/pgpass
+examples/process-compact-architecture-springboot/src/main/resources/META-INF/processSVG/hiring.svg
+examples/process-compact-architecture-springboot/src/main/resources/NewHiringOffer.dmn
+examples/process-compact-architecture-springboot/src/main/resources/hiring.bpmn
 examples/process-event-driven/.gitignore
 examples/process-event-driven/docker-compose/pgadmin/pgpass
 examples/process-event-driven/hotels/src/main/resources/hotel.bpmn
@@ -185,6 +189,14 @@ packages/image-builder/README.md
 packages/image-env-to-json/go.mod
 packages/image-env-to-json/go.sum
 packages/import-java-classes-component/tests/ImportJavaClasses/__snapshots__/ImportJavaClasses.test.tsx.snap
+packages/jbpm-addons-springboot-dev-console/dev/src/main/resources/META-INF/processSVG/hiring.svg
+packages/jbpm-addons-springboot-dev-console/dev/src/main/resources/custom-forms-dev/hiring.config
+packages/jbpm-addons-springboot-dev-console/dev/src/main/resources/custom-forms-dev/hiring.tsx
+packages/jbpm-addons-springboot-dev-console/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.config
+packages/jbpm-addons-springboot-dev-console/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.html
+packages/jbpm-addons-springboot-dev-console/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.tsx
+packages/jbpm-dev-console-commons/src/test/resources/custom-forms-dev/hiring_HRInterview.config
+packages/jbpm-dev-console-commons/src/test/resources/custom-forms-dev/hiring_ITInterview.config
 packages/jbpm-quarkus-devui/dev/src/main/resources/META-INF/processSVG/hiring.svg
 packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring.config
 packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring.tsx
@@ -192,8 +204,6 @@ packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring_ITInt
 packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.html
 packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.tsx
 packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml
-packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/custom-forms-dev/hiring_HRInterview.config
-packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/custom-forms-dev/hiring_ITInterview.config
 packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_HRInterview.config
 packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_ITInterview.config
 packages/json-yaml-language-service/tests/__snapshots__/EditorJsonLanguageService.test.ts.snap

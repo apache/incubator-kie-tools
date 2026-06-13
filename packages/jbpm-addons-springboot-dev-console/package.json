@@ -1,0 +1,45 @@
+{
+  "private": true,
+  "name": "@kie-tools/jbpm-addons-springboot-dev-console",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "run-script-os",
+    "build:dev:darwin:linux": "mvn clean install -DskipTests",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests\"",
+    "build:prod": "pnpm lint && run-script-os",
+    "build:prod:darwin:linux": "mvn clean deploy -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dmaven.deploy.skip=$(build-env maven.deploy.skip) -Dreproducible",
+    "build:prod:win32": "pnpm powershell \"mvn clean deploy `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dmaven.deploy.skip=$(build-env maven.deploy.skip) `-Dreproducible\"",
+    "install": "node install.js",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "start": "run-script-os",
+    "start:darwin:linux": "pnpm build:dev && mvn -f ./dev/pom.xml clean spring-boot:run",
+    "start:win32": "pnpm build:dev && mvn -f ./dev/pom.xml clean spring-boot:run -Dkogito.service.url=http://127.0.0.1:8080 -Dkogito.jobs-service.url=http://127.0.0.1:8080 -Dkogito.data-index.url=http://127.0.0.1:8080"
+  },
+  "dependencies": {
+    "@kie-tools/jbpm-dev-console-commons": "workspace:*",
+    "@kie-tools/maven-base": "workspace:*",
+    "@kie-tools/spring-boot-bom": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/runtime-tools-process-dev-ui-webapp": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}
