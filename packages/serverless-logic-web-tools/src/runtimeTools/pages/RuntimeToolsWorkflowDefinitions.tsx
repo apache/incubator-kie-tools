@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionListContainer";
 import { Card } from "@patternfly/react-core/dist/esm/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -26,11 +26,16 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { CloudEventPageSource } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
+import { useSettings } from "../../settings/SettingsContext";
+import { changeUrlOrigin } from "../../url";
 
 const PAGE_TITLE = "Workflow Definitions";
 
 export function RuntimeToolsWorkflowDefinitions() {
   const navigate = useNavigate();
+  const settings = useSettings();
+
+  const dataIndexUrlOrigin = useMemo(() => new URL(settings.runtimeTools.config.dataIndexUrl).origin, [settings]);
 
   const onOpenWorkflowForm = useCallback(
     (workflowDefinition: WorkflowDefinition) => {
@@ -42,14 +47,14 @@ export function RuntimeToolsWorkflowDefinitions() {
           state: {
             workflowDefinition: {
               workflowName: workflowDefinition.workflowName,
-              endpoint: workflowDefinition.endpoint,
-              serviceUrl: workflowDefinition.serviceUrl,
+              endpoint: changeUrlOrigin(workflowDefinition.endpoint, dataIndexUrlOrigin),
+              serviceUrl: changeUrlOrigin(workflowDefinition.serviceUrl, dataIndexUrlOrigin),
             },
           },
         }
       );
     },
-    [navigate]
+    [navigate, dataIndexUrlOrigin]
   );
 
   const onOpenTriggerCloudEventForWorkflow = useCallback(
@@ -64,15 +69,15 @@ export function RuntimeToolsWorkflowDefinitions() {
           state: {
             workflowDefinition: {
               workflowName: workflowDefinition.workflowName,
-              endpoint: workflowDefinition.endpoint,
-              serviceUrl: workflowDefinition.serviceUrl,
+              endpoint: changeUrlOrigin(workflowDefinition.endpoint, dataIndexUrlOrigin),
+              serviceUrl: changeUrlOrigin(workflowDefinition.serviceUrl, dataIndexUrlOrigin),
             },
             source: CloudEventPageSource.DEFINITIONS,
           },
         }
       );
     },
-    [navigate]
+    [navigate, dataIndexUrlOrigin]
   );
 
   return (

@@ -35,3 +35,21 @@ export function isDataIndexUrlValid(url: string): boolean {
     return false;
   }
 }
+
+/**
+ * Changes the origin (protocol, hostname, and port) of a URL while preserving the path.
+ *
+ * @param url - The URL with the origin to be changed
+ * @param newOrigin - The origin to be applied to the URL. If a full URL is passed, only the origin will be used.
+ * @returns The URL with the changed origin (e.g., "https://my-app.openshift.com/hello_world")
+ */
+export function changeUrlOrigin(url: string, newOrigin: string): string {
+  const newOriginUrl = new URL(newOrigin);
+  const urlObj = new URL(url);
+
+  urlObj.protocol = newOriginUrl.protocol;
+  urlObj.hostname = newOriginUrl.hostname;
+  urlObj.port = newOriginUrl.port;
+
+  return urlObj.toString();
+}
