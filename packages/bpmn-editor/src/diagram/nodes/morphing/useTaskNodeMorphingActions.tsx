@@ -185,6 +185,10 @@ export function useTaskNodeMorphingActions(task: Task) {
               array[index].extensionElements["drools:metaData"] = array[index].extensionElements?.[
                 "drools:metaData"
               ]?.filter((e) => e["@_name"] !== "customSLADueDate");
+            }
+
+            // Remove userTask specific properties
+            if (array[index].__$$element !== "userTask") {
               array[index].resourceRole = array[index].resourceRole?.filter((e) => e.__$$element !== "potentialOwner");
             }
 
