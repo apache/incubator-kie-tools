@@ -22,18 +22,17 @@ import { NodeType, EventNodeType, DefaultNodeName } from "../__fixtures__/nodes"
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Intermediate Catch Event", () => {
   test.describe("Add from palette", () => {
     test("should add Intermediate Catch Event node from palette", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
+      await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeAttached();
 
-      const catchEvent = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const catchEvent = (await jsonModel.getIntermediateCatchEvents())[0];
       expect(catchEvent.__$$element).toBe("intermediateCatchEvent");
-
-      const catchEventNode = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-      await expect(catchEventNode).toBeAttached();
     });
 
     test("should add two Intermediate Catch Event nodes from palette in a row", async ({ palette, diagram, nodes }) => {
@@ -72,24 +71,16 @@ test.describe("Add node - Intermediate Catch Event", () => {
     for (const { morphType, eventDefinition } of morphTestCases) {
       test(`should morph Intermediate Catch Event to ${morphType}`, async ({ jsonModel, palette, diagram, nodes }) => {
         await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 300 } });
+        await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT)).toBeVisible();
 
-        const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
-        await expect(catchEvent).toBeVisible();
-
-        await nodes.morph({ node: catchEvent, to: morphType });
-
-        await expect
-          .poll(async () => {
-            return await jsonModel.getFlowElement({ elementIndex: 0 });
-          })
-          .toMatchObject({
-            __$$element: "intermediateCatchEvent",
-            eventDefinition: [{ __$$element: eventDefinition }],
-          });
-
+        await nodes.morph({ node: nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT), to: morphType });
         await expect(diagram.get()).toHaveScreenshot(
           `morph-intermediate-catch-event-to-${morphType.toLowerCase()}.png`
         );
+
+        const morphedEvent = (await jsonModel.getIntermediateCatchEvents())[0];
+        expect(morphedEvent.__$$element).toBe("intermediateCatchEvent");
+        expect(morphedEvent.eventDefinition?.[0].__$$element).toBe(eventDefinition);
       });
     }
   });
@@ -198,16 +189,15 @@ test.describe("Add node - Intermediate Catch Event", () => {
   test.describe("Intermediate Catch Event operations", () => {
     test("should delete intermediate catch event", async ({ palette, jsonModel, page, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 300 } });
-
       const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await expect(catchEvent).toBeVisible();
+
       await catchEvent.click();
       await page.keyboard.press("Delete");
-
       await expect(catchEvent).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move intermediate catch event to new position", async ({ palette, diagram, nodes }) => {

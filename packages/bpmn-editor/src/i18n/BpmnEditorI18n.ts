@@ -142,6 +142,7 @@ interface BpmnEditorDictionary
       namePlaceholder: string;
       valuePlaceholder: string;
       executionMode: string;
+      parallel: string;
       sequential: string;
       completionCondition: string;
       collectionInput: string;

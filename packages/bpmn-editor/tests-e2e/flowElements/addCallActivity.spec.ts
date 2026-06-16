@@ -19,10 +19,11 @@
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType, TaskNodeType, NodePosition } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType, TaskNodeType, NodePosition, EventNodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Call Activity", () => {
@@ -32,7 +33,7 @@ test.describe("Add node - Call Activity", () => {
 
       await expect(nodes.get({ name: DefaultNodeName.CALL_ACTIVITY })).toBeAttached();
 
-      const callActivity = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const callActivity = (await jsonModel.getCallActivities())[0];
       expect(callActivity.__$$element).toBe("callActivity");
       expect(callActivity["@_name"]).toBe(DefaultNodeName.CALL_ACTIVITY);
     });
@@ -230,6 +231,7 @@ test.describe("Add node - Call Activity", () => {
     test.beforeEach(async ({ editor, page }) => {
       await page.setViewportSize({ width: 1920, height: 1080 });
       await editor.open();
+      await editor.setInitialProcessId();
     });
 
     test("should create a complete process with Call Activity", async ({ jsonModel, palette, nodes, diagram }) => {
@@ -254,53 +256,40 @@ test.describe("Add node - Call Activity", () => {
       const startEvent = nodes.getByType(NodeType.START_EVENT);
       await expect(startEvent).toBeAttached();
 
-      // Connect Start Event -> Prepare Data
       const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
       await nodes.createSequenceFlow({
         from: startEventId,
         to: "Prepare Data",
       });
-
-      // Connect Prepare Data -> Execute Subprocess
       await nodes.createSequenceFlow({
         from: "Prepare Data",
         to: "Execute Subprocess",
       });
-
-      // Connect Execute Subprocess -> Process Results
       await nodes.createSequenceFlow({
         from: "Execute Subprocess",
         to: "Process Results",
       });
-
-      // Connect Process Results -> End Event
       const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
       await nodes.createSequenceFlow({
         from: "Process Results",
         to: endEventId,
       });
-
-      const process = await jsonModel.getProcess();
-      const callActivityElement = process.flowElement?.find(
-        (el: { __$$element: string; "@_name"?: string }) => el["@_name"] === "Execute Subprocess"
-      );
-      expect(callActivityElement.__$$element).toBe("callActivity");
-      expect(callActivityElement["@_name"]).toBe("Execute Subprocess");
-
       await expect(diagram.get()).toHaveScreenshot("complete-process-with-call-activity.png");
+
+      const callActivityElement = (await jsonModel.getCallActivities())[0];
+      expect(callActivityElement?.__$$element).toBe("callActivity");
+      expect(callActivityElement?.["@_name"]).toBe("Execute Subprocess");
     });
   });
 
   test.describe("Call Activity operations", () => {
     test("should delete call activity", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 300, y: 300 } });
-
       await nodes.delete({ name: DefaultNodeName.CALL_ACTIVITY });
-
       await expect(nodes.get({ name: DefaultNodeName.CALL_ACTIVITY })).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move call activity to new position", async ({ palette, diagram, nodes }) => {
@@ -325,14 +314,44 @@ test.describe("Add node - Call Activity", () => {
 
     test("should rename call activity", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 300, y: 300 } });
-
       await nodes.rename({ current: DefaultNodeName.CALL_ACTIVITY, new: "Invoke Subprocess" });
-
       await expect(nodes.get({ name: "Invoke Subprocess" })).toBeAttached();
 
-      const callActivity = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const callActivity = (await jsonModel.getCallActivities())[0];
       expect(callActivity.__$$element).toBe("callActivity");
       expect(callActivity["@_name"]).toBe("Invoke Subprocess");
+    });
+  });
+
+  test.describe("Call Activity default values", () => {
+    test("should have default values", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 300, y: 300 } });
+
+      const callActivity = (await jsonModel.getCallActivities())[0];
+      expect(callActivity.__$$element).toBe("callActivity");
+      expect(callActivity["@_name"]).toBe(DefaultNodeName.CALL_ACTIVITY);
+      expect(callActivity["@_drools:independent"]).toBe(false);
+      expect(callActivity["@_drools:waitForCompletion"]).toBe(true);
+      expect(callActivity.extensionElements?.["drools:metaData"]?.length).toBe(3);
+      expect(callActivity.extensionElements?.["drools:metaData"]?.[0]?.["@_name"]).toBe("customAbortParent");
+      expect(callActivity.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("true");
+      expect(callActivity.extensionElements?.["drools:metaData"]?.[1]?.["@_name"]).toBe("customAsync");
+      expect(callActivity.extensionElements?.["drools:metaData"]?.[1]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(callActivity.extensionElements?.["drools:metaData"]?.[2]?.["@_name"]).toBe("customAutoStart");
+      expect(callActivity.extensionElements?.["drools:metaData"]?.[2]?.["drools:metaValue"].__$$text).toBe("false");
+    });
+
+    test("morphing away should remove default values", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 300, y: 300 } });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.CALL_ACTIVITY }), to: TaskNodeType.TASK });
+
+      const task = (await jsonModel.getTasks())[0];
+      expect(task.__$$element).toBe("task");
+      expect(task["@_name"]).toBe(DefaultNodeName.CALL_ACTIVITY);
+      // as any is required to check for undefined
+      expect((task as any)["@_drools:independent"]).toBe(undefined);
+      expect((task as any)["@_drools:waitForCompletion"]).toBe(undefined);
+      expect(task.extensionElements?.["drools:metaData"]?.length).toBe(undefined);
     });
   });
 });

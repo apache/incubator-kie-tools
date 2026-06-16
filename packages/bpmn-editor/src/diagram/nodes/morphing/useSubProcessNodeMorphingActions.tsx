@@ -30,6 +30,7 @@ import { SubProcessIcon } from "../NodeIcons";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { AdHocSubProcessIconSvg, MultiInstanceParallelIconSvg } from "../NodeSvgs";
 import { keepIntersection } from "./keepIntersection";
+import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 
 export type SubProcess = Normalized<
   ElementFilter<Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>, "adHocSubProcess" | "subProcess">
@@ -42,13 +43,27 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
     (subProcessElement: SubProcess["__$$element"] | "eventSubProcess" | "multiInstanceSubProcess") => {
       // 1 - Sub process
       // 2 - Event sub process
-      // 3 - Ad-hoc sub-process
+      // 3 - Multi-instance sub-process
+      // 4 - Ad-hoc sub-process
       bpmnEditorStoreApi.setState((s) => {
         const { process } = addOrGetProcessAndDiagramElements({
           definitions: s.bpmn.model.definitions,
         });
         visitFlowElementsAndArtifacts(process, ({ array, index, owner, element }) => {
           if (element["@_id"] === subProcess["@_id"] && array[index].__$$element === subProcess.__$$element) {
+            // Remove Ad-hoc sub-process-specific properties when morphing away from adHocSubProcess
+            if (element.__$$element === "adHocSubProcess") {
+              const updatedExtensionElements = element.extensionElements?.["drools:metaData"]?.filter(
+                (m) => m["@_name"] !== "customAutoStart" && m["@_name"] !== "customActivationCondition"
+              );
+              if (updatedExtensionElements === undefined || updatedExtensionElements.length === 0) {
+                element.extensionElements = undefined;
+              } else {
+                element.extensionElements ??= { "drools:metaData": [] };
+                element.extensionElements["drools:metaData"] = updatedExtensionElements;
+              }
+            }
+
             if (subProcessElement === "eventSubProcess") {
               keepIntersection({
                 fromElement: element.__$$element,
@@ -102,6 +117,11 @@ export function useSubProcessNodeMorphingActions(subProcess: SubProcess) {
               array[index].__$$element = subProcessElement;
               array[index]["@_triggeredByEvent"] = false;
               array[index].loopCharacteristics = undefined;
+
+              if (array[index].__$$element === "adHocSubProcess") {
+                array[index]["@_ordering"] = "Parallel";
+                setBpmn20Drools10MetaData(array[index], "customAutoStart", "false");
+              }
 
               // BPMN 2.0 Spec: When converting from Event Sub-Process to regular Embedded Sub-Process,
               // Start Events must be converted to "None" (strip event definitions)

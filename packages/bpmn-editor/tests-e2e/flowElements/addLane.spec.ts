@@ -23,40 +23,34 @@ import { NodeType, DefaultNodeName, NodePosition } from "../__fixtures__/nodes";
 test.describe("Add Lane", () => {
   test.beforeEach(async ({ editor }) => {
     await editor.open();
+    await editor.setInitialProcessId();
   });
 
   test("should add lane from palette", async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.LANE, targetPosition: { x: 300, y: 300 } });
-
     await expect(nodes.get({ name: DefaultNodeName.LANE })).toBeAttached();
 
-    const process = await jsonModel.getProcess();
-    const laneSet = Array.isArray(process.laneSet) ? process.laneSet[0] : process.laneSet;
-    expect(laneSet?.lane?.length).toBeGreaterThan(0);
+    const laneSet = await jsonModel.getLaneSet();
+    expect(laneSet?.[0]?.lane?.length).toBe(1);
   });
 
   test.describe("Lane operations", () => {
     test("should delete lane", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.LANE, targetPosition: { x: 300, y: 300 } });
       await nodes.delete({ name: DefaultNodeName.LANE });
-
       await expect(nodes.get({ name: DefaultNodeName.LANE })).not.toBeAttached();
 
-      const process = await jsonModel.getProcess();
-      const laneSet = Array.isArray(process.laneSet) ? process.laneSet[0] : process.laneSet;
-      expect(laneSet?.lane?.length || 0).toBe(0);
+      const laneSet = await jsonModel.getLaneSet();
+      expect(laneSet?.[0]?.lane?.length).toBe(0);
     });
 
     test("should move lane to new position", async ({ palette, nodes, diagram, page }) => {
       await palette.dragNewNode({ type: NodeType.LANE, targetPosition: { x: 300, y: 300 } });
-
       const lane = nodes.get({ name: DefaultNodeName.LANE });
       await expect(lane).toBeAttached();
 
       await lane.scrollIntoViewIfNeeded();
-
       const laneBox = await nodes.getNodeBounds({ name: DefaultNodeName.LANE });
-
       await nodes.dragNodeToPosition({
         name: DefaultNodeName.LANE,
         fromPosition: NodePosition.LEFT,
@@ -68,18 +62,14 @@ test.describe("Add Lane", () => {
       expect(boxAfter.y).not.toBe(laneBox.y);
     });
 
-    test("should rename lane", async ({ palette, nodes, jsonModel, page }) => {
+    test("should rename lane", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.LANE, targetPosition: { x: 300, y: 300 } });
-
       await nodes.select({ name: DefaultNodeName.LANE, position: NodePosition.LEFT });
-
       await nodes.rename({ current: DefaultNodeName.LANE, new: "Customer Service Lane" });
-
       await expect(nodes.get({ name: "Customer Service Lane" })).toBeAttached();
 
-      const process = await jsonModel.getProcess();
-      const lane = process.laneSet?.[0]?.lane?.[0];
-      expect(lane?.["@_name"]).toBe("Customer Service Lane");
+      const laneSet = await jsonModel.getLaneSet();
+      expect(laneSet?.[0]?.lane?.[0]?.["@_name"]).toBe("Customer Service Lane");
     });
   });
 });

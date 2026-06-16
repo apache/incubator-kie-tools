@@ -105,6 +105,24 @@ export function addStandaloneNode({
                   "@_id": newBpmnElementId,
                   __$$element: "callActivity",
                   "@_name": getNewNodeDefaultName({ type: __readonly_newNode.type, element: __readonly_element }),
+                  "@_drools:independent": false,
+                  "@_drools:waitForCompletion": true,
+                  extensionElements: {
+                    "drools:metaData": [
+                      {
+                        "@_name": "customAbortParent",
+                        "drools:metaValue": { __$$text: "true" },
+                      },
+                      {
+                        "@_name": "customAsync",
+                        "drools:metaValue": { __$$text: "false" },
+                      },
+                      {
+                        "@_name": "customAutoStart",
+                        "drools:metaValue": { __$$text: "false" },
+                      },
+                    ],
+                  },
                 }
               : {
                   ...__readonly_newNode.data?.bpmnElement,
@@ -137,6 +155,14 @@ export function addStandaloneNode({
                 __$$element: "signalEventDefinition",
               },
             ],
+            extensionElements: {
+              "drools:metaData": [
+                {
+                  "@_name": "customScope",
+                  "drools:metaValue": { __$$text: "default" },
+                },
+              ],
+            },
           },
           [NODE_TYPES.endEvent]: {
             "@_id": newBpmnElementId,
@@ -185,7 +211,16 @@ export function addStandaloneNode({
         : {
             "@_id": newBpmnElementId,
             "@_name": getNewNodeDefaultName({ type: __readonly_newNode.type, element: __readonly_element }),
+            "@_triggeredByEvent": false,
             __$$element: "subProcess",
+            extensionElements: {
+              "drools:metaData": [
+                {
+                  "@_name": "customAsync",
+                  "drools:metaValue": { __$$text: "false" },
+                },
+              ],
+            },
           }
     );
   } else if (nature === NodeNature.LANE) {

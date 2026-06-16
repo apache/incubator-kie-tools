@@ -23,6 +23,7 @@ import { NodeType, EventNodeType } from "../__fixtures__/nodes";
 test.beforeEach(async ({ editor, page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Change Properties - Intermediate Catch Event", () => {
@@ -101,9 +102,7 @@ test.describe("Change Properties - Intermediate Catch Event", () => {
 test.describe("Change Properties - Intermediate Throw Event", () => {
   test.beforeEach(async ({ palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.INTERMEDIATE_THROW_EVENT, targetPosition: { x: 100, y: 100 } });
-
     await expect(nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT)).toBeVisible();
-
     await nodes.getByType(NodeType.INTERMEDIATE_THROW_EVENT).click();
   });
 
@@ -157,8 +156,8 @@ test.describe("Change Properties - Intermediate Throw Event", () => {
   test("should configure Compensation definition", async ({ intermediateEventPropertiesPanel, jsonModel }) => {
     await intermediateEventPropertiesPanel.setCompensationDefinition({});
 
-    const flowElement = await jsonModel.getFlowElement({ elementIndex: 0 });
-    expect(flowElement.__$$element).toBe("intermediateThrowEvent");
-    expect(flowElement.eventDefinition[0].__$$element).toBe("compensateEventDefinition");
+    const intermediateCatchEvent = (await jsonModel.getIntermediateThrowEvents())[0];
+    expect(intermediateCatchEvent.__$$element).toBe("intermediateThrowEvent");
+    expect(intermediateCatchEvent.eventDefinition?.[0].__$$element).toBe("compensateEventDefinition");
   });
 });
