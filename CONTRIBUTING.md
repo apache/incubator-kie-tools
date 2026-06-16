@@ -141,6 +141,23 @@ CI is the authoritative validation for all PRs. It checks:
 
 ---
 
+## Dependency Management
+
+When updating dependencies in this monorepo:
+
+- **Follow the dependency management guide**: See [repo/DEPENDENCY_MANAGEMENT.md](repo/DEPENDENCY_MANAGEMENT.md) for detailed instructions on:
+
+  - Adding or updating dependencies
+  - Resolving `pnpm-lock.yaml` merge conflicts
+  - Handling security vulnerabilities (CVEs) in transitive dependencies
+  - Best practices for working with the monorepo structure
+
+- **Never manually edit `pnpm-lock.yaml`**: Always use pnpm commands to update dependencies
+- **Commit lockfile changes with package.json**: Keep dependency changes atomic
+- **Test after dependency updates**: Ensure compatibility by running relevant tests
+
+---
+
 ## Getting Help
 
 - **Repository Manual**: [repo/MANUAL.md](repo/MANUAL.md) - comprehensive monorepo documentation
