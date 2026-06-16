@@ -71,7 +71,7 @@ export function CallActivityProperties({
             id="kie-bpmn-editor--properties-panel--call-activity--independent"
             name="is-independent"
             aria-label="Independent"
-            isChecked={callActivity["@_drools:independent"] ?? false}
+            isChecked={callActivity["@_drools:independent"] ?? true}
             onChange={(e, checked) => {
               bpmnEditorStoreApi.setState((s) => {
                 const { process } = addOrGetProcessAndDiagramElements({
@@ -80,6 +80,11 @@ export function CallActivityProperties({
                 visitFlowElementsAndArtifacts(process, ({ element }) => {
                   if (element["@_id"] === callActivity["@_id"] && element.__$$element === callActivity.__$$element) {
                     element["@_drools:independent"] = checked;
+                    if (checked === false && element.extensionElements) {
+                      setBpmn20Drools10MetaData(element, "customAbortParent", `${true}`);
+                    } else if (checked === true) {
+                      setBpmn20Drools10MetaData(element, "customAbortParent", `${false}`);
+                    }
                   }
                 });
               });
@@ -87,32 +92,37 @@ export function CallActivityProperties({
           />
         </FormGroup>
 
-        {!(callActivity["@_drools:independent"] === true) && (
-          <FormGroup
-            fieldId="kie-bpmn-editor--properties-panel--call-activity--abort-parent"
-            // helperText={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."} // FIXME: Tiago -> Description
-          >
-            <Checkbox
-              label={i18n.singleNodeProperties.abortParent}
-              id="kie-bpmn-editor--properties-panel--call-activity--abort-parent"
-              name="should-abort-parent"
-              aria-label="Abort parent"
-              isChecked={(parseBpmn20Drools10MetaData(callActivity).get("customAbortParent") ?? "true") === "true"}
-              onChange={(e, checked) => {
-                bpmnEditorStoreApi.setState((s) => {
-                  const { process } = addOrGetProcessAndDiagramElements({
-                    definitions: s.bpmn.model.definitions,
-                  });
-                  visitFlowElementsAndArtifacts(process, ({ element: e }) => {
-                    if (e["@_id"] === callActivity["@_id"] && e.__$$element === callActivity.__$$element) {
-                      setBpmn20Drools10MetaData(e, "customAbortParent", `${checked}`);
-                    }
-                  });
+        <FormGroup
+          fieldId="kie-bpmn-editor--properties-panel--call-activity--abort-parent"
+          // helperText={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."} // FIXME: Tiago -> Description
+        >
+          <Checkbox
+            label={i18n.singleNodeProperties.abortParent}
+            id="kie-bpmn-editor--properties-panel--call-activity--abort-parent"
+            name="should-abort-parent"
+            aria-label="Abort parent"
+            isDisabled={
+              callActivity["@_drools:independent"] === true || callActivity["@_drools:independent"] === undefined
+            }
+            isChecked={
+              parseBpmn20Drools10MetaData(callActivity).get("customAbortParent") === "true" ||
+              (callActivity["@_drools:independent"] === false &&
+                parseBpmn20Drools10MetaData(callActivity).get("customAbortParent") === undefined)
+            }
+            onChange={(e, checked) => {
+              bpmnEditorStoreApi.setState((s) => {
+                const { process } = addOrGetProcessAndDiagramElements({
+                  definitions: s.bpmn.model.definitions,
                 });
-              }}
-            />
-          </FormGroup>
-        )}
+                visitFlowElementsAndArtifacts(process, ({ element: e }) => {
+                  if (e["@_id"] === callActivity["@_id"] && e.__$$element === callActivity.__$$element) {
+                    setBpmn20Drools10MetaData(e, "customAbortParent", `${checked}`);
+                  }
+                });
+              });
+            }}
+          />
+        </FormGroup>
 
         <FormGroup
           fieldId="kie-bpmn-editor--properties-panel--call-activity--wait-for-completion"

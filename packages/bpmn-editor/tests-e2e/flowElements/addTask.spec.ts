@@ -23,16 +23,16 @@ import { DefaultNodeName, NodeType, NodePosition, TaskNodeType } from "../__fixt
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Task", () => {
   test.describe("Add from palette", () => {
     test("should add Task node from palette", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
-
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
 
-      const task = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const task = (await jsonModel.getTasks())[0];
       expect(task.__$$element).toBe("task");
     });
 
@@ -64,56 +64,174 @@ test.describe("Add node - Task", () => {
     for (const { morphType, expectedElement, screenshot } of singleMorphCases) {
       test(`should morph Task to ${morphType}`, async ({ jsonModel, palette, nodes, diagram, page }) => {
         await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
-
         await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
-
-        const task = await nodes.get({ name: DefaultNodeName.TASK });
-        await nodes.morph({ node: task, to: morphType });
-
-        const result = await jsonModel.getFlowElement({ elementIndex: 0 });
-        expect(result.__$$element).toBe(expectedElement);
-        expect(result["@_name"]).toBe(DefaultNodeName.TASK);
-
+        await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: morphType });
         await expect(diagram.get()).toHaveScreenshot(screenshot);
+
+        const process = await jsonModel.getProcess();
+        const result = process?.flowElement?.[0];
+        expect(result?.__$$element).toBe(expectedElement);
+        expect(result?.["@_name"]).toBe(DefaultNodeName.TASK);
       });
     }
 
     test("should morph User Task to Service Task", async ({ jsonModel, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
-
       await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
-
-      const task = await nodes.get({ name: DefaultNodeName.TASK });
-      await nodes.morph({ node: task, to: TaskNodeType.USER });
-
-      expect((await jsonModel.getFlowElement({ elementIndex: 0 })).__$$element).toBe("userTask");
-
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
       await nodes.hideNodeHandles();
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SERVICE });
 
-      await nodes.morph({ node: task, to: TaskNodeType.SERVICE });
-
-      const taskElement = await jsonModel.getFlowElement({ elementIndex: 0 });
-      expect(taskElement.__$$element).toBe("serviceTask");
-      expect(taskElement["@_name"]).toBe(DefaultNodeName.TASK);
+      const serviceTask = (await jsonModel.getServiceTasks())[0];
+      expect(serviceTask.__$$element).toBe("serviceTask");
+      expect(serviceTask["@_name"]).toBe(DefaultNodeName.TASK);
     });
 
     test("should morph Script Task back to generic Task", async ({ jsonModel, palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SCRIPT });
+      await nodes.hideNodeHandles();
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.TASK });
 
+      const genericTask = (await jsonModel.getTasks())[0];
+      expect(genericTask.__$$element).toBe("task");
+      expect(genericTask["@_name"]).toBe(DefaultNodeName.TASK);
+    });
+
+    test("should have default values - task", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
 
-      const task = await nodes.get({ name: DefaultNodeName.TASK });
-      await nodes.morph({ node: task, to: TaskNodeType.SCRIPT });
+      const task = (await jsonModel.getTasks())[0];
+      expect(task.__$$element).toBe("task");
+      expect(task["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(task.extensionElements?.["drools:metaData"]?.length).toBe(undefined);
+      expect(task.ioSpecification).toBe(undefined);
+    });
 
-      expect((await jsonModel.getFlowElement({ elementIndex: 0 })).__$$element).toBe("scriptTask");
+    test("should have default values - userTask", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
 
+      const userTask = (await jsonModel.getUserTasks())[0];
+      expect(userTask.__$$element).toBe("userTask");
+      expect(userTask["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(userTask.extensionElements?.["drools:metaData"]?.length).toBe(2);
+      expect(userTask.extensionElements?.["drools:metaData"]?.[0]?.["@_name"]).toBe("customAsync");
+      expect(userTask.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(userTask.extensionElements?.["drools:metaData"]?.[1]?.["@_name"]).toBe("customAutoStart");
+      expect(userTask.extensionElements?.["drools:metaData"]?.[1]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(userTask.ioSpecification).toBeDefined();
+    });
+
+    test("should have default values - serviceTask", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SERVICE });
+
+      const serviceTask = (await jsonModel.getServiceTasks())[0];
+      expect(serviceTask.__$$element).toBe("serviceTask");
+      expect(serviceTask["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(serviceTask.extensionElements?.["drools:metaData"]?.length).toBe(2);
+      expect(serviceTask.extensionElements?.["drools:metaData"]?.[0]?.["@_name"]).toBe("customAsync");
+      expect(serviceTask.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(serviceTask.extensionElements?.["drools:metaData"]?.[1]?.["@_name"]).toBe("customAutoStart");
+      expect(serviceTask.extensionElements?.["drools:metaData"]?.[1]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(serviceTask.ioSpecification).toBeDefined();
+    });
+
+    test("should have default values - scriptTask", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SCRIPT });
+
+      const scriptTask = (await jsonModel.getScriptTasks())[0];
+      expect(scriptTask.__$$element).toBe("scriptTask");
+      expect(scriptTask["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(scriptTask.extensionElements?.["drools:metaData"]?.length).toBe(2);
+      expect(scriptTask.extensionElements?.["drools:metaData"]?.[0]?.["@_name"]).toBe("customAsync");
+      expect(scriptTask.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(scriptTask.extensionElements?.["drools:metaData"]?.[1]?.["@_name"]).toBe("customAutoStart");
+      expect(scriptTask.extensionElements?.["drools:metaData"]?.[1]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(scriptTask.ioSpecification).toBe(undefined);
+    });
+
+    test("should have default values - businessRuleTask", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.BUSINESS_RULE });
+
+      const businessRuleTask = (await jsonModel.getBusinessRuleTasks())[0];
+      expect(businessRuleTask.__$$element).toBe("businessRuleTask");
+      expect(businessRuleTask["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(businessRuleTask.extensionElements?.["drools:metaData"]?.length).toBe(2);
+      expect(businessRuleTask.extensionElements?.["drools:metaData"]?.[0]?.["@_name"]).toBe("customAsync");
+      expect(businessRuleTask.extensionElements?.["drools:metaData"]?.[0]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(businessRuleTask.extensionElements?.["drools:metaData"]?.[1]?.["@_name"]).toBe("customAutoStart");
+      expect(businessRuleTask.extensionElements?.["drools:metaData"]?.[1]?.["drools:metaValue"].__$$text).toBe("false");
+      expect(businessRuleTask.ioSpecification).toBeDefined();
+    });
+
+    test("should remove default values after morphing away - userTask", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
       await nodes.hideNodeHandles();
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.TASK });
 
-      await nodes.morph({ node: task, to: TaskNodeType.TASK });
+      const task = (await jsonModel.getTasks())[0];
+      expect(task.__$$element).toBe("task");
+      expect(task["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(task.extensionElements?.["drools:metaData"]?.length).toBe(undefined);
+      expect(task.ioSpecification).toBe(undefined);
+    });
 
-      const taskElement = await jsonModel.getFlowElement({ elementIndex: 0 });
-      expect(taskElement.__$$element).toBe("task");
-      expect(taskElement["@_name"]).toBe(DefaultNodeName.TASK);
+    test("should remove default values after morphing away - serviceTask", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SERVICE });
+      await nodes.hideNodeHandles();
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.TASK });
+
+      const task = (await jsonModel.getTasks())[0];
+      expect(task.__$$element).toBe("task");
+      expect(task["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(task.extensionElements?.["drools:metaData"]?.length).toBe(undefined);
+      expect(task.ioSpecification).toBe(undefined);
+    });
+
+    test("should remove default values after morphing away - scriptTask", async ({ palette, nodes, jsonModel }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SCRIPT });
+      await nodes.hideNodeHandles();
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.TASK });
+
+      const task = (await jsonModel.getTasks())[0];
+      expect(task.__$$element).toBe("task");
+      expect(task["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(task.extensionElements?.["drools:metaData"]?.length).toBe(undefined);
+      expect(task.ioSpecification).toBe(undefined);
+    });
+
+    test("should remove default values after morphing away - businessRuleTask", async ({
+      palette,
+      nodes,
+      jsonModel,
+    }) => {
+      await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
+      await nodes.select({ name: DefaultNodeName.TASK, position: NodePosition.CENTER });
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.BUSINESS_RULE });
+      await nodes.hideNodeHandles();
+      await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.TASK });
+
+      const task = (await jsonModel.getTasks())[0];
+      expect(task.__$$element).toBe("task");
+      expect(task["@_name"]).toBe(DefaultNodeName.TASK);
+      expect(task.extensionElements?.["drools:metaData"]?.length).toBe(undefined);
+      expect(task.ioSpecification).toBe(undefined);
     });
   });
 
@@ -214,11 +332,10 @@ test.describe("Add node - Task", () => {
     test("should delete task", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await nodes.delete({ name: DefaultNodeName.TASK });
-
       await expect(nodes.get({ name: DefaultNodeName.TASK })).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.flowElement?.length).toBe(0);
+      expect(process?.flowElement?.length).toBe(0);
     });
 
     test("should move task to new position", async ({ palette, diagram, nodes }) => {
@@ -244,10 +361,9 @@ test.describe("Add node - Task", () => {
     test("should rename task", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
       await nodes.rename({ current: DefaultNodeName.TASK, new: "Process Order" });
-
       await expect(nodes.get({ name: "Process Order" })).toBeAttached();
 
-      const task = await jsonModel.getFlowElement({ elementIndex: 0 });
+      const task = (await jsonModel.getTasks())[0];
       expect(task.__$$element).toBe("task");
       expect(task["@_name"]).toBe("Process Order");
     });

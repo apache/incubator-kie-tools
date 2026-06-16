@@ -22,6 +22,7 @@ import { DefaultNodeName, NodeType, SubProcessNodeType } from "../__fixtures__/n
 
 test.beforeEach(async ({ editor, page }) => {
   await editor.open();
+  await editor.setInitialProcessId();
   await page.setViewportSize({ width: 1920, height: 1080 });
 });
 

@@ -35,6 +35,7 @@ import { CustomTask } from "../../../BpmnEditor";
 import { WritableDraft } from "immer";
 import { State } from "../../../store/Store";
 import { deleteInterfaceAndOperation } from "../../../mutations/deleteInterfaceAndOperation";
+import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 
 function getTaskDataMappings(
   process: ReturnType<typeof addOrGetProcessAndDiagramElements>["process"],
@@ -111,6 +112,23 @@ export function useTaskNodeMorphingActions(task: Task) {
             array[index]["@_implementation"] = undefined;
           }
 
+          // Remove CallActivity-specific properties when morphing away from callActivity
+          if (array[index].__$$element === "callActivity") {
+            array[index]["@_drools:independent"] = undefined;
+            array[index]["@_drools:waitForCompletion"] = undefined;
+
+            if (array[index].extensionElements?.["drools:metaData"]) {
+              const filteredMetaData = array[index].extensionElements["drools:metaData"].filter(
+                (meta) => meta["@_name"] !== "customAbortParent"
+              );
+              if (filteredMetaData.length === 0) {
+                array[index].extensionElements = undefined;
+              } else {
+                array[index].extensionElements["drools:metaData"] = filteredMetaData;
+              }
+            }
+          }
+
           if (array[index].__$$element === "task") {
             // cleanup custom task modifiers
             array[index]["@_drools:taskName"] = undefined;
@@ -138,6 +156,47 @@ export function useTaskNodeMorphingActions(task: Task) {
           });
 
           array[index].__$$element = newTaskElement;
+
+          // Remove properties when morphing to task
+          if (array[index].__$$element === "task") {
+            array[index].extensionElements = undefined;
+            array[index].loopCharacteristics = undefined;
+            array[index].ioSpecification = undefined;
+            array[index].resourceRole = array[index].resourceRole?.filter((e) => e.__$$element !== "potentialOwner");
+          }
+
+          if (
+            array[index].__$$element === "businessRuleTask" ||
+            array[index].__$$element === "userTask" ||
+            array[index].__$$element === "serviceTask" ||
+            array[index].__$$element === "callActivity" ||
+            array[index].__$$element === "scriptTask"
+          ) {
+            if (array[index].__$$element === "callActivity") {
+              // Add default properties when morphing to callActivity
+              array[index]["@_drools:independent"] = false;
+              array[index]["@_drools:waitForCompletion"] = true;
+              setBpmn20Drools10MetaData(array[index], "customAbortParent", "true");
+            } else if (array[index].__$$element === "scriptTask") {
+              // Remove properties when morphing to scriptTask
+              array[index].loopCharacteristics = undefined;
+              array[index].ioSpecification = undefined;
+              array[index].extensionElements ??= { "drools:metaData": [] };
+              array[index].extensionElements["drools:metaData"] = array[index].extensionElements?.[
+                "drools:metaData"
+              ]?.filter((e) => e["@_name"] !== "customSLADueDate");
+            }
+
+            // Remove userTask specific properties
+            if (array[index].__$$element !== "userTask") {
+              array[index].resourceRole = array[index].resourceRole?.filter((e) => e.__$$element !== "potentialOwner");
+            }
+
+            // Add default customAsync and customAutoStart if not present
+            setBpmn20Drools10MetaData(array[index], "customAsync", "false");
+            setBpmn20Drools10MetaData(array[index], "customAutoStart", "false");
+          }
+
           return false; // Will stop visiting.
         }
       });

@@ -30,6 +30,7 @@ import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { NODE_COLORS } from "../NodeSvgs";
 import { deleteEdge } from "../../../mutations/deleteEdge";
+import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 
 export type Event = Normalized<
   ElementFilter<
@@ -77,7 +78,20 @@ export function useEventNodeMorphingActions(event: Event) {
           if (element["@_id"] === event["@_id"] && element.__$$element === event.__$$element) {
             if (eventDefinitionElement === undefined) {
               element.eventDefinition = undefined;
+              element.extensionElements = undefined;
               return true; // Will continue visiting.
+            }
+
+            // Remove customScope when morphing away from signalEventDefinition
+            if (eventDefinitionElement !== "signalEventDefinition" && element.extensionElements?.["drools:metaData"]) {
+              const updatedExtensionElements = element.extensionElements["drools:metaData"].filter(
+                (m) => m["@_name"] !== "customScope"
+              );
+              if (updatedExtensionElements === undefined || updatedExtensionElements.length === 0) {
+                element.extensionElements = undefined;
+              } else {
+                element.extensionElements["drools:metaData"] = updatedExtensionElements;
+              }
             }
 
             element.eventDefinition ??= [];
@@ -127,6 +141,10 @@ export function useEventNodeMorphingActions(event: Event) {
                   "@_id": generateUuid(),
                   __$$element: "signalEventDefinition",
                 };
+                // Add default extensionElements for intermediateThrowEvent and endEvent
+                if (element.__$$element === "intermediateThrowEvent" || element.__$$element === "endEvent") {
+                  setBpmn20Drools10MetaData(element, "customScope", "default");
+                }
                 break;
               case "terminateEventDefinition":
                 element.eventDefinition[0] = {

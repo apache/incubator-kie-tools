@@ -22,17 +22,17 @@ import { NodeType, NodePosition } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
+  await editor.setInitialProcessId();
 });
 
 test.describe("Add node - Group", () => {
   test.describe("Add from palette", () => {
     test("should add Group node from palette", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
-
       await expect(nodes.getByType(NodeType.GROUP)).toBeAttached();
 
-      const process = await jsonModel.getProcess();
-      expect(process.artifact?.length).toBeGreaterThan(0);
+      const groups = await jsonModel.getGroups();
+      expect(groups.length).toBe(1);
     });
 
     test("should add two Group nodes from palette in a row", async ({ palette, diagram, nodes, jsonModel }) => {
@@ -46,38 +46,32 @@ test.describe("Add node - Group", () => {
       });
 
       await diagram.resetFocus();
-
       await expect(nodes.getByType(NodeType.GROUP).first()).toBeAttached();
       await expect(nodes.getByType(NodeType.GROUP).nth(1)).toBeAttached();
 
-      const process = await jsonModel.getProcess();
-      expect(process.artifact?.length).toBe(2);
+      const groups = await jsonModel.getGroups();
+      expect(groups.length).toBe(2);
     });
   });
 
   test.describe("Group operations", () => {
     test("should delete group", async ({ palette, jsonModel, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
-
       const groupId = await nodes.getIdByType(NodeType.GROUP);
       await nodes.delete({ name: groupId });
-
       await expect(nodes.getByType(NodeType.GROUP)).not.toBeAttached();
 
       const process = await jsonModel.getProcess();
-      expect(process.artifact?.length || 0).toBe(0);
+      expect(process?.artifact?.length).toBe(0);
     });
 
-    test("should move group to new position", async ({ palette, diagram, nodes }) => {
+    test("should move group to new position", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
-
       await expect(nodes.getByType(NodeType.GROUP)).toBeAttached();
 
       await nodes.getByType(NodeType.GROUP).scrollIntoViewIfNeeded();
-
       const groupId = await nodes.getIdByType(NodeType.GROUP);
       const groupBox = await nodes.getNodeBounds({ id: groupId });
-
       await nodes.dragNodeToPosition({
         id: groupId,
         fromPosition: NodePosition.LEFT,
