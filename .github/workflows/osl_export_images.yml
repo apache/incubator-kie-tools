@@ -103,6 +103,21 @@ jobs:
           done
         shell: bash
 
+      - name: Strip relatedImages from ClusterServiceVersion manifests
+        run: |
+          set -euo pipefail
+
+          # OSBS pin_operator_digest plugin auto-generates relatedImages from
+          # RELATED_IMAGE_* env vars. Having both causes it to fail, so remove
+          # the manually-authored relatedImages section from all CSV files.
+          find target-repo -name '*.clusterserviceversion.yaml' -print0 | while IFS= read -r -d '' csv; do
+            if yq e '.spec.relatedImages' "$csv" | grep -qv '^null$'; then
+              echo "Removing relatedImages from $csv"
+              yq e -i 'del(.spec.relatedImages)' "$csv"
+            fi
+          done
+        shell: bash
+
       - name: Commit and Push to Target Repo
         if: ${{ !inputs.dry_run }}
         run: |
