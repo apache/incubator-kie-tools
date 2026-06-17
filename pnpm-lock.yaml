@@ -2413,8 +2413,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
       js-yaml:
-        specifier: ^4.1.1
-        version: 4.1.1
+        specifier: ^4.2.0
+        version: 4.2.0
       jsonpath-rfc9535:
         specifier: ^1.3.0
         version: 1.3.0
@@ -6497,8 +6497,8 @@ importers:
         specifier: ^4.0.5
         version: 4.0.5
       js-yaml:
-        specifier: ^4.1.1
-        version: 4.1.1
+        specifier: ^4.2.0
+        version: 4.2.0
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -8756,8 +8756,8 @@ importers:
         specifier: ^3.0.11
         version: 3.0.11
       js-yaml:
-        specifier: ^4.1.1
-        version: 4.1.1
+        specifier: ^4.2.0
+        version: 4.2.0
       json-schema:
         specifier: ^0.4.0
         version: 0.4.0
@@ -18792,6 +18792,10 @@ packages:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
+  js-yaml@4.2.0:
+    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
+    hasBin: true
+
   jsbn@0.1.1:
     resolution: {integrity: sha512-UVU9dibq2JcFWxQPA6KCqj5O42VOmAY3zQUfEKxU0KpTGXwNoCjkX1e13eHNvw/xPynt6pU0rZ1htjWTNTSXsg==}
 
@@ -26250,7 +26254,7 @@ snapshots:
       globals: 13.20.0
       ignore: 5.3.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       minimatch: 3.1.5
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -26650,7 +26654,7 @@ snapshots:
       http-proxy-agent: 6.1.1
       https-proxy-agent: 6.2.1
       jose: 4.14.6
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       json-stable-stringify: 1.0.2
       lodash: 4.18.1
       scuid: 1.1.0
@@ -29102,12 +29106,12 @@ snapshots:
     dependencies:
       ajv: 8.18.0
       ajv-formats: 3.0.1(ajv@8.18.0)
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
 
   '@severlessworkflow/sdk-typescript@3.0.3':
     dependencies:
       ajv: 8.18.0
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
 
   '@sideway/address@4.1.4':
     dependencies:
@@ -30031,7 +30035,7 @@ snapshots:
       '@textlint/types': 15.5.1
       chalk: 4.1.2
       debug: 4.4.3
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       lodash: 4.18.1
       pluralize: 2.0.0
       string-width: 4.2.3
@@ -33131,7 +33135,7 @@ snapshots:
   cosmiconfig@8.0.0:
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       parse-json: 5.2.0
       path-type: 4.0.0
 
@@ -33139,7 +33143,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.3
@@ -36829,6 +36833,10 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
+  js-yaml@4.2.0:
+    dependencies:
+      argparse: 2.0.1
+
   jsbn@0.1.1: {}
 
   jsdoc-type-pratt-parser@4.8.0: {}
@@ -37914,7 +37922,7 @@ snapshots:
       find-up: 5.0.0
       glob: 8.1.0
       he: 1.2.0
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       log-symbols: 4.1.0
       minimatch: 5.1.9
       ms: 2.1.3
@@ -39396,7 +39404,7 @@ snapshots:
   rc-config-loader@4.1.3:
     dependencies:
       debug: 4.4.3
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       json5: 2.2.3
       require-from-string: 2.0.2
     transitivePeerDependencies:
@@ -39749,7 +39757,7 @@ snapshots:
 
   read-yaml-file@2.1.0:
     dependencies:
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       strip-bom: 4.0.0
 
   read@1.0.7:
@@ -42059,7 +42067,7 @@ snapshots:
       glob: 11.0.1
       got: 14.4.5
       hpagent: 1.2.0
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       mocha: 10.6.0
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.27.0
@@ -42738,7 +42746,7 @@ snapshots:
 
   write-yaml-file@4.2.0:
     dependencies:
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       write-file-atomic: 3.0.3
 
   ws@6.2.2:
