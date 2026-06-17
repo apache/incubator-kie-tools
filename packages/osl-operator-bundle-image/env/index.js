@@ -40,11 +40,6 @@ module.exports = composeEnv([rootEnv, redHatEnv, sonataflowOperatorEnv], {
       default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
-    OSL_OPERATOR_BUNDLE__proxyImage: {
-      default:
-        "registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:4564ca3dc5bac80d6faddaf94c817fbbc270698a9399d8a21ee1005d85ceda56",
-      description: "Internal proxy image for the Operator Manager Proxy Pod. Must come from a valid Red Hat registry.",
-    },
     OSL_OPERATOR_BUNDLE__namespace: {
       default: "logic-operator-system",
       description: "Namespace name for the installation bundle",
@@ -62,7 +57,6 @@ module.exports = composeEnv([rootEnv, redHatEnv, sonataflowOperatorEnv], {
         name: getOrDefault(this.vars.OSL_OPERATOR_BUNDLE_IMAGE__name),
         buildTag: getOrDefault(this.vars.OSL_OPERATOR_BUNDLE_IMAGE__buildTag),
         version: rootEnv.env.root.version,
-        proxyImage: getOrDefault(this.vars.OSL_OPERATOR_BUNDLE__proxyImage),
         namespace: getOrDefault(this.vars.OSL_OPERATOR_BUNDLE__namespace),
         namePrefix: getOrDefault(this.vars.OSL_OPERATOR_BUNDLE__namePrefix),
       },
