@@ -51,7 +51,7 @@ For package-specific workflows and monorepo conventions, see [README.md](README.
 
 ### Before Submitting
 
-**Required checklist:**
+**Checklist:**
 
 - [ ] Link your PR to an existing GitHub issue
 - [ ] Run `pnpm bootstrap` to ensure code formatting and that the pnpm lockfile is updated
@@ -59,7 +59,6 @@ For package-specific workflows and monorepo conventions, see [README.md](README.
 - [ ] Ensure all tests pass (unit and E2E where applicable)
 - [ ] Add Apache License 2.0 headers to new source files
 - [ ] Update package README or documentation if behavior changes
-- [ ] Verify no unintended files are modified (`git diff`)
 
 ### PR Scope and Expectations
 
@@ -67,7 +66,6 @@ For package-specific workflows and monorepo conventions, see [README.md](README.
 - **Respect package boundaries** - understand dependencies before making changes
 - **Include relevant tests** - add or update tests for new features and bug fixes
 - **Document breaking changes** - clearly describe any breaking changes in the PR description
-- **Respond to review feedback promptly**
 
 ### Pull Request Titles
 
@@ -94,10 +92,7 @@ Use a consistent title format to help maintainers and contributors quickly under
 
 ### Formatting and Linting
 
-- **Prettier** handles code formatting automatically via pre-commit hook
-- **ESLint** validates TypeScript/JavaScript code during `build:prod` (or manually by running `pnpm lint`)
-- Run `pnpm format:check` in the root of the repository to check formatting manually
-- See [package.json](package.json) for available root-level scripts
+In practice, you don’t need to worry about this, as a pre-commit hook will format the changed files when you do `git commit`.
 
 ### License Headers
 
@@ -105,9 +100,8 @@ All new source files **must** include Apache License 2.0 headers. CI validates t
 
 ### Testing
 
-- **Unit tests**: Run as part of `build:prod` using Jest
-- **E2E tests**: Use Playwright, located in `tests-e2e/` directories
-- **Test policy**: Add tests for new features and bug fixes; maintain or improve coverage
+- Run as part of `build:prod`
+- Located in `tests-e2e/` and `test/` directories inside of each package
 
 For E2E test setup, environment variables, and containerized testing, see:
 
@@ -121,12 +115,13 @@ For E2E test setup, environment variables, and containerized testing, see:
 
 CI is the authoritative validation for all PRs. It checks:
 
-- Code formatting (Prettier)
-- License headers (Apache RAT)
-- Linting (ESLint)
-- Unit tests (Jest)
-- E2E tests (Playwright, Linux containers)
-- Cross-platform builds (Ubuntu, macOS, Windows)
+- Code formatting
+- License headers
+- Linting
+- Unit tests
+- E2E tests
+- Cross-platform builds (when applicable)
+- Hanging uncommitted files
 
 **If CI fails:** Reproduce the failure locally using the documented scripts before pushing fixes. The build is parameterized by environment variables - see the `pnpm bootstrap` output for the complete list.
 
@@ -165,7 +160,9 @@ When updating dependencies in this monorepo:
 - **Apache KIE Website**: [kie.apache.org](http://kie.apache.org)
 - **Apache KIE Zulip chat**: [kie.zulipchat.com](https://kie.zulipchat.com)
 
-When reporting issues:
+---
+
+## Reporting issues
 
 1. Search existing issues first
 2. Provide clear reproduction steps
