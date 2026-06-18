@@ -64,7 +64,7 @@ For package-specific workflows and monorepo conventions, see [README.md](README.
 ### PR Scope and Expectations
 
 - **Keep PRs focused and atomic** - one concern or feature per PR
-- **Respect package boundaries** - understand workspace dependencies before making changes
+- **Respect package boundaries** - understand dependencies before making changes
 - **Include relevant tests** - add or update tests for new features and bug fixes
 - **Document breaking changes** - clearly describe any breaking changes in the PR description
 - **Respond to review feedback promptly**
