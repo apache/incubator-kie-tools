@@ -29,7 +29,7 @@
     "uniforms-bridge-json-schema": "^3.10.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
