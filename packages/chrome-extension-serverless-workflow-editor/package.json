@@ -62,7 +62,7 @@
     "vscode-languageserver-types": "^3.16.0",
     "webpack": "^5.104.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.2.4",
+    "webpack-dev-server": "^5.2.5",
     "webpack-merge": "^5.9.0",
     "zip-webpack-plugin": "^4.0.1"
   }
