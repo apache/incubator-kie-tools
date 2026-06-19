@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/packages/sonataflow-operator
 
-go 1.25.0
+go 1.26.0
 
 // Internal dependencies
 replace (
