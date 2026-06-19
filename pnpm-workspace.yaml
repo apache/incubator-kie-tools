@@ -23,3 +23,4 @@ overrides:
   "minimatch@^5": "5.1.9"
   "minimatch@^4": "5.1.9"
   "fast-xml-parser@^5": "5.8.0"
+minimumReleaseAge: 4320
