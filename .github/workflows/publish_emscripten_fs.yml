@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout kie-tools"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Build and publish"
         working-directory: ./.github/supporting-files/publish_emscripten_fs

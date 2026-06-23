@@ -4,10 +4,6 @@ on:
   schedule:
     - cron: "0 4 * * *" # 4am UTC everyday
   workflow_dispatch:
-  pull_request:
-    paths:
-      - ".github/workflows/kubesmarts_daily_dev_publish.yml"
-      - ".github/workflows/kubesmarts_build_and_publish.yml"
 
 permissions:
   contents: write

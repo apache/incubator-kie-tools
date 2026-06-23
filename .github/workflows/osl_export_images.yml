@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout Source Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.KIE1_TOKEN }}
           ref: main
@@ -49,7 +49,7 @@ jobs:
         shell: bash
 
       - name: Checkout Target Repo (osl-images)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: kubesmarts/osl-images
           token: ${{ secrets.KIE1_TOKEN }}
