@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.Optional;
 
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.jbpm.quarkus.devui.runtime.forms.FormsStorage;
+import org.jbpm.devconsole.commons.forms.FormsStorage;
 import org.jbpm.quarkus.devui.runtime.rpc.events.JBPMDevUIEventPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

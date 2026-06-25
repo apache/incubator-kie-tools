@@ -1,0 +1,64 @@
+<!doctype html>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jBPM Dev Console</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      #envelope-app {
+        height: 100%;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>Enabling JavaScript is required to run this app.</noscript>
+    <div id="envelope-app"></div>
+    <script src="resources/webapp/standalone.js"></script>
+    <script th:inline="javascript">
+      const users = /*[[${users}]]*/ [];
+      const appOrigin = /*[[${appOrigin}]]*/ "http://localhost:8080";
+      const appRootPath = /*[[${appRootPath}]]*/ "";
+      const dataIndexUrl = /*[[${dataIndexUrl}]]*/ "http://localhost:8080/graphql";
+
+      RuntimeToolsDevUI.open({
+        container: document.getElementById("envelope-app"),
+        isDataIndexAvailable: true,
+        users: users,
+        dataIndexUrl: dataIndexUrl,
+        quarkusAppOrigin: appOrigin,
+        quarkusAppRootPath: appRootPath,
+        shouldReplaceQuarkusAppOriginWithWebappOrigin: true,
+        page: "Processes",
+        devUIUrl: window.location.origin,
+        devUIOrigin: window.location.origin,
+        availablePages: ["Processes", "Jobs", "Tasks", "Forms"],
+      });
+    </script>
+  </body>
+</html>

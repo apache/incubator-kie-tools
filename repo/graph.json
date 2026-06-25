@@ -49,12 +49,16 @@
       { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools-examples/process-business-calendar" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
+      { "id": "@kie-tools/jbpm-dev-console-commons" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools-examples/process-compact-architecture" },
       { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
+      { "id": "@kie-tools-examples/process-compact-architecture-springboot" },
+      { "id": "@kie-tools/jbpm-addons-springboot-dev-console" },
+      { "id": "@kie-tools/spring-boot-bom" },
       { "id": "@kie-tools-examples/process-event-driven" },
       { "id": "@kie-tools-examples/process-security" },
       { "id": "@kie-tools-examples/process-user-tasks-subsystem" },
@@ -138,7 +142,6 @@
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/scesim-marshaller" },
-      { "id": "@kie-tools/spring-boot-bom" },
       { "id": "@kie-tools/text-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" }
@@ -349,12 +352,14 @@
         "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
+      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/jbpm-dev-console-commons", "weight": 1 },
       { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/quarkus-bom", "weight": 1 },
       {
         "source": "@kie-tools/jbpm-quarkus-devui",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "weight": 1
       },
+      { "source": "@kie-tools/jbpm-dev-console-commons", "target": "@kie-tools/maven-base", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "target": "@kie-tools/runtime-tools-process-webapp-components",
@@ -389,6 +394,27 @@
         "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture-springboot",
+        "target": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "target": "@kie-tools/jbpm-dev-console-commons",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "target": "@kie-tools/spring-boot-bom",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      { "source": "@kie-tools/spring-boot-bom", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools-examples/process-event-driven", "target": "@kie-tools/jbpm-quarkus-devui", "weight": 1 },
       {
         "source": "@kie-tools-examples/process-security",
@@ -834,7 +860,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/scesim-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
-      { "source": "@kie-tools/spring-boot-bom", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -901,6 +926,7 @@
     ["@kie-tools-examples/process-accelerator", "examples/process-accelerator"],
     ["@kie-tools-examples/process-business-calendar", "examples/process-business-calendar"],
     ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
+    ["@kie-tools-examples/process-compact-architecture-springboot", "examples/process-compact-architecture-springboot"],
     ["@kie-tools-examples/process-event-driven", "examples/process-event-driven"],
     ["@kie-tools-examples/process-security", "examples/process-security"],
     ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-user-tasks-subsystem"],
@@ -953,6 +979,8 @@
     ["@kie-tools/image-builder", "packages/image-builder"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools/jbpm-addons-springboot-dev-console", "packages/jbpm-addons-springboot-dev-console"],
+    ["@kie-tools/jbpm-dev-console-commons", "packages/jbpm-dev-console-commons"],
     ["@kie-tools/jbpm-form-code-generator-themes", "packages/jbpm-form-code-generator-themes"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/jest-base", "packages/jest-base"],

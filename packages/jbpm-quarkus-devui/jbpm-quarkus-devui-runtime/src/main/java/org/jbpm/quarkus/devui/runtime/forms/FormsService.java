@@ -20,8 +20,9 @@ package org.jbpm.quarkus.devui.runtime.forms;
 
 import java.io.FileNotFoundException;
 
-import org.jbpm.quarkus.devui.runtime.forms.model.FormContent;
-import org.jbpm.quarkus.devui.runtime.forms.model.FormFilter;
+import org.jbpm.devconsole.commons.forms.FormsStorage;
+import org.jbpm.devconsole.commons.forms.model.FormContent;
+import org.jbpm.devconsole.commons.forms.model.FormFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
