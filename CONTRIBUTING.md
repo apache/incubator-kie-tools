@@ -1,0 +1,180 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+# Contributing to Apache KIE Tools
+
+Thank you for your interest in contributing to Apache KIE Tools! This guide outlines expectations for contributors opening pull requests to this monorepo.
+
+## Quick Start
+
+For detailed setup, build, and testing instructions, see:
+
+- **[README.md](README.md)** - Build from source, bootstrap, and application-specific development
+- **[repo/NIX_DEV_ENV.md](repo/NIX_DEV_ENV.md)** - Nix-based development environment (recommended)
+- **[repo/MANUAL.md](repo/MANUAL.md)** - Monorepo structure, package conventions, and advanced topics
+
+### Prerequisites
+
+This is a **pnpm monorepo** requiring Node.js, pnpm, and additional tools depending on your contribution scope (Maven, Java, Go, Helm). See [README.md](README.md#step-0-install-the-necessary-tools) for the complete list and installation links.
+
+**Recommended:** Use the provided [Nix Devbox configuration](repo/NIX_DEV_ENV.md) to automatically set up all required tools.
+
+### Basic Workflow
+
+1. **Fork and clone** the repository
+2. **Set up your development environment** with `devbox shell`
+3. **Bootstrap**: `pnpm bootstrap` (or `pnpm bootstrap -F <package>...` for specific packages)
+4. **Build for development**: `pnpm -r build:dev` (or `pnpm -F <package>... build:dev`)
+5. **Make your changes** following the guidelines below
+6. **Build for production**: `pnpm -F <package>... build:prod` before submitting
+7. **Submit a pull request** linked to a GitHub issue
+
+For package-specific workflows and monorepo conventions, see [README.md](README.md#build-from-source) and [repo/MANUAL.md](repo/MANUAL.md).
+
+---
+
+## Pull Request Guidelines
+
+### Before Submitting
+
+**Checklist:**
+
+- [ ] Link your PR to an existing GitHub issue
+- [ ] Run `pnpm bootstrap` to ensure code formatting and that the pnpm lockfile is updated
+- [ ] Run `KIE_TOOLS_BUILD__buildContainerImages=true KIE_TOOLS_BUILD__runEndToEndTests=true pnpm -F <affected_package_1>... -F <affected_package_2>... build:prod` to verify your changes
+- [ ] Ensure all tests pass (unit and E2E where applicable)
+- [ ] Add Apache License 2.0 headers to new source files
+- [ ] Update package README or documentation if behavior changes
+
+### PR Scope and Expectations
+
+- **Keep PRs focused and atomic** - one concern or feature per PR
+- **Respect package boundaries** - understand dependencies before making changes
+- **Include relevant tests** - add or update tests for new features and bug fixes
+- **Document breaking changes** - clearly describe any breaking changes in the PR description
+
+### Pull Request Titles
+
+Use a consistent title format to help maintainers and contributors quickly understand the scope and purpose of your PR:
+
+**Pattern:** `<issue-reference>: [<component>] <descriptive action>`
+
+- **Issue reference:**
+  - `kie-issues#xxxx:` for changes linked to a GitHub issue
+  - `NO-ISSUE:` for maintenance, infrastructure, or minor changes without an associated issue
+  - Security fixes should be discrete. Include the names of the dependencies that are being updated, but don't link or mention CVEs. Follow the the [Apache Security guidelines](https://www.apache.org/security/committers.html)
+- **Component scope (optional):** Add a component identifier after the issue reference (e.g., `[BPMN Editor]`, `[DMN Editor]`, `[Extended Services]`)
+- **Descriptive action:** Use imperative/descriptive wording, be specific about the affected area or outcome, keep it concise, and avoid trailing punctuation.
+
+**Examples:**
+
+- `kie-issues#1234: [BPMN Editor] Fix node alignment in process diagrams`
+- `kie-issues#5678: Add support for DMN 1.4 specification`
+- `NO-ISSUE: Update CI workflow to use Node.js 25`
+
+---
+
+## Code Quality Standards
+
+### Formatting and Linting
+
+In practice, you don’t need to worry about this, as a pre-commit hook will format the changed files when you do `git commit`.
+
+### License Headers
+
+All new source files **must** include Apache License 2.0 headers. CI validates this using Apache RAT. See existing files for the correct header format.
+
+### Testing
+
+- Run as part of `build:prod`
+- Located in `tests-e2e/` and `test/` directories inside of each package
+
+For E2E test setup, environment variables, and containerized testing, see:
+
+- [README.md](README.md#build-from-source) - E2E environment variables
+- [packages/playwright-base/README.md](packages/playwright-base/README.md) - Playwright configuration and containerized testing
+- Individual package READMEs for package-specific test instructions
+
+---
+
+## CI Validation
+
+CI is the authoritative validation for all PRs. It checks:
+
+- Code formatting
+- License headers
+- Linting
+- Unit tests
+- E2E tests
+- Cross-platform builds (when applicable)
+- Hanging uncommitted files
+
+**If CI fails:** Reproduce the failure locally using the documented scripts before pushing fixes. The build is parameterized by environment variables - see the `pnpm bootstrap` output for the complete list.
+
+---
+
+## Documentation and Changelog
+
+- **Update package READMEs** when adding features or changing behavior
+- **Include usage examples** for new APIs
+- **Document breaking changes** clearly in both PR description and relevant documentation
+- **Consider changelog updates** for user-facing changes (breaking changes, new features, significant bug fixes)
+
+---
+
+## Dependency Management
+
+When updating dependencies in this monorepo:
+
+- **Follow the dependency management guide**: See [repo/DEPENDENCY_MANAGEMENT.md](repo/DEPENDENCY_MANAGEMENT.md) for detailed instructions on:
+
+  - Adding or updating dependencies
+  - Resolving `pnpm-lock.yaml` merge conflicts
+  - Handling security vulnerabilities (CVEs) in transitive dependencies
+  - Best practices for working with the monorepo structure
+
+- **Never manually edit `pnpm-lock.yaml`**: Always use pnpm commands to update dependencies
+- **Commit lockfile changes with package.json**: Keep dependency changes atomic
+- **Test after dependency updates**: Ensure compatibility by running relevant tests
+
+---
+
+## Getting Help
+
+- **Repository Manual**: [repo/MANUAL.md](repo/MANUAL.md) - comprehensive monorepo documentation
+- **GitHub Issues**: [apache/incubator-kie-issues/issues](https://github.com/apache/incubator-kie-issues/issues)
+- **Apache KIE Website**: [kie.apache.org](http://kie.apache.org)
+- **Apache KIE Zulip chat**: [kie.zulipchat.com](https://kie.zulipchat.com)
+
+---
+
+## Reporting issues
+
+1. Search existing issues first
+2. Provide clear reproduction steps
+3. Include environment details (OS, Node version, etc.)
+4. Share relevant error messages and logs
+
+---
+
+## License
+
+By contributing to Apache KIE Tools, you agree that your contributions will be licensed under the [Apache License 2.0](./LICENSE).
+
+---
+
+Thank you for contributing to Apache KIE Tools! 🎉
