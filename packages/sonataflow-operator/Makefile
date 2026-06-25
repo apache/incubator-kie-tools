@@ -142,13 +142,13 @@ test: manifests generate test-api ## Run tests.
 	@$(MAKE) vet
 	@$(MAKE) fmt
 	@echo "🔍 Running controller tests..."
-	go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
+	GOTOOLCHAIN=go1.25.0+auto go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
 	@echo "✅  Tests completed successfully. Coverage report generated: cover.out."
 
 .PHONY: test-api
 test-api:
 	@echo "🔄 Running API tests..."
-	@cd api && make test > /dev/null 2>&1
+	@cd api && make test
 	@echo "✅  API tests completed successfully."
 
 

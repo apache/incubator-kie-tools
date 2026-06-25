@@ -17,12 +17,26 @@
  * under the License.
  */
 
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-
 /**
- * Methods provided by the Channel that can be consumed by the Envelope.
+ * Type declarations for react-docgen-typescript
+ * This adds the __docgenInfo property that Storybook uses for component documentation
  */
-export interface TodoListChannelApi {
-  todoList__itemRemoved(item: string): void;
-  todoList__potentialNewItem(): SharedValueProvider<string>;
+
+import "react";
+
+declare module "react" {
+  interface FunctionComponent<P = {}> {
+    __docgenInfo?: any;
+  }
+  interface VFC<P = {}> {
+    __docgenInfo?: any;
+  }
+  interface ForwardRefExoticComponent<P> {
+    __docgenInfo?: any;
+  }
+  interface MemoExoticComponent<T extends ComponentType<any>> {
+    __docgenInfo?: any;
+  }
 }
+
+// Made with Bob

@@ -19,14 +19,23 @@
 
 import { baseConfig } from "@kie-tools/storybook-base/dist/config/baseConfig";
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
+import type { StorybookConfig } from "@storybook/react-webpack5";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../env";
 const buildEnv: any = env; // build-env is not typed
 
-const config = {
+const config: StorybookConfig = {
   ...baseConfig(buildEnv.webpack.dev, common(buildEnv.webpack)),
+  typescript: {
+    check: false, // Disable type checking to avoid __docgenInfo errors
+    reactDocgen: "react-docgen-typescript",
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
+    },
+  },
 };
 
 export default config;

@@ -254,7 +254,7 @@ var _ = Describe("Workflow Persistence Use Cases :: ", Label("flows-persistence"
 		logs := string(output)
 		if withPersistence {
 			By("Validate that the workflow persistence was properly initialized")
-			Expect(logs).Should(ContainSubstring("Flyway Community Edition"))
+			Expect(logs).Should(ContainSubstring("org.kie.flyway.initializer.db.KieFlywayDataBaseHelper|Reading DataBase Product"))
 			Expect(logs).Should(ContainSubstring("Database: jdbc:postgresql://postgres.%s:5432", ns))
 			result := verifySchemaMigration(logs, prebuiltWorkflows.CallBackPersistence.Name)
 			GinkgoWriter.Println(fmt.Sprintf("verifySchemaMigration: %v", result))
@@ -262,7 +262,7 @@ var _ = Describe("Workflow Persistence Use Cases :: ", Label("flows-persistence"
 			Expect(logs).Should(ContainSubstring("Profile prod activated"))
 		} else {
 			By("Validate that the workflow has no persistence")
-			Expect(logs).ShouldNot(ContainSubstring("Flyway Community Edition"))
+			Expect(logs).ShouldNot(ContainSubstring("org.kie.flyway.initializer.db.KieFlywayDataBaseHelper|Reading DataBase Product"))
 			Expect(logs).ShouldNot(ContainSubstring(fmt.Sprintf(`Creating schema "%s"`, prebuiltWorkflows.CallBack.Name)))
 			Expect(logs).Should(ContainSubstring("Profile prod activated"))
 		}

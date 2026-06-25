@@ -196,8 +196,14 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				dataIndexPod := string(output)
 
+				// Determine the correct workflow ID based on persistence type and profile
+				workflowID := "callbackstatetimeouts"
+				if persistenceType == postgreSQL && profile == metadata.GitOpsProfile {
+					workflowID = "callbackstatetimeouts-persistence"
+				}
+
 				EventuallyWithOffset(1, func() bool {
-					return verifyWorkflowDefinitionIsInStatus(dataIndexPod, "data-index-service", targetNamespace, "sonataflow-platform-data-index-service", "callbackstatetimeouts", "available")
+					return verifyWorkflowDefinitionIsInStatus(dataIndexPod, "data-index-service", targetNamespace, "sonataflow-platform-data-index-service", workflowID, "available")
 				}, 10*time.Minute, 5*time.Second).Should(BeTrue())
 
 				By("Undeploy the SonataFlow CR")
@@ -208,7 +214,7 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 
 				By("Verify that the workflow definition is unavailable")
 				EventuallyWithOffset(1, func() bool {
-					return verifyWorkflowDefinitionIsInStatus(dataIndexPod, "data-index-service", targetNamespace, "sonataflow-platform-data-index-service", "callbackstatetimeouts", "unavailable")
+					return verifyWorkflowDefinitionIsInStatus(dataIndexPod, "data-index-service", targetNamespace, "sonataflow-platform-data-index-service", workflowID, "unavailable")
 				}, 10*time.Minute, 5*time.Second).Should(BeTrue())
 			}
 		},

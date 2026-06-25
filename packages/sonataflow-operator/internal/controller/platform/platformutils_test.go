@@ -44,16 +44,23 @@ func TestSonataFlowBuildController(t *testing.T) {
 		assert.Fail(t, "Unable to read base Dockerfile")
 	}
 	dockerfile := string(dockerfileBytes)
+
 	// 1 - Let's verify that the default image is used
+	// The default image comes from either the environment variable RELATED_IMAGE_BASE_BUILDER or test.CommonImageTag
+	expectedDefaultImage := test.CommonImageTag
+	if envImage := os.Getenv("RELATED_IMAGE_BASE_BUILDER"); envImage != "" {
+		expectedDefaultImage = envImage
+	}
+
 	resDefault := GetCustomizedBuilderDockerfile(dockerfile, *platform)
-	foundDefault, err := regexp.MatchString(fmt.Sprintf("FROM %s AS builder", test.CommonImageTag), resDefault)
+	foundDefault, err := regexp.MatchString(fmt.Sprintf("FROM %s AS builder", regexp.QuoteMeta(expectedDefaultImage)), resDefault)
 	assert.NoError(t, err)
-	assert.True(t, foundDefault)
+	assert.True(t, foundDefault, "Expected to find '%s' in dockerfile, got: %s", expectedDefaultImage, resDefault)
 
 	// 2 - Let's try to override using the productized image
 	platform.Spec.Build.Config.BaseImage = "host2.org/namespace2/builder2:main"
 	resProductized := GetCustomizedBuilderDockerfile(dockerfile, *platform)
-	foundProductized, err := regexp.MatchString(fmt.Sprintf("FROM %s AS builder", platform.Spec.Build.Config.BaseImage), resProductized)
+	foundProductized, err := regexp.MatchString(fmt.Sprintf("FROM %s AS builder", regexp.QuoteMeta(platform.Spec.Build.Config.BaseImage)), resProductized)
 	assert.NoError(t, err)
 	assert.True(t, foundProductized)
 }
@@ -66,7 +73,16 @@ func TestGetCustomizedBuilderDockerfile_NoBaseImageCustomization(t *testing.T) {
 		Status:     v1alpha08.SonataFlowPlatformStatus{},
 	}
 	customizedDockerfile := GetCustomizedBuilderDockerfile(dockerFile, sfp)
-	assert.Equal(t, dockerFile, customizedDockerfile)
+
+	// If RELATED_IMAGE_BASE_BUILDER is set, the dockerfile will be customized with that image
+	// Otherwise, it should remain unchanged
+	expectedDockerfile := dockerFile
+	if envImage := os.Getenv("RELATED_IMAGE_BASE_BUILDER"); envImage != "" {
+		// When env var is set, the dockerfile should be customized with that image
+		expectedDockerfile = fmt.Sprintf("FROM %s AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC", envImage)
+	}
+
+	assert.Equal(t, expectedDockerfile, customizedDockerfile)
 }
 
 func TestGetCustomizedBuilderDockerfile_BaseImageCustomizationFromPlatform(t *testing.T) {

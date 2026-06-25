@@ -29,6 +29,14 @@ spec:
     container:
       image: replaceme
       env:
+        # enable flyway
+        - name: QUARKUS_FLYWAY_ENABLED
+          value: "true"
+        - name: KIE_FLYWAY_ENABLED
+          value: "true"
+        - name: QUARKUS_FLYWAY_BASELINE_ON_MIGRATE
+          value: "true"
+        # set the flyway initialization in the WF container env
         - name: QUARKUS_FLYWAY_MIGRATE_AT_START
           value: "true"
   flow:

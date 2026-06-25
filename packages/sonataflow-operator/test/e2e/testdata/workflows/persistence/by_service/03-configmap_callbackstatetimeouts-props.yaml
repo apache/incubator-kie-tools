@@ -18,8 +18,14 @@
 apiVersion: v1
 data:
   application.properties: |
+    # enable flyway
+    quarkus.flyway.enabled=true
+    kie.flyway.enabled=true
+    quarkus.flyway.baseline-on-migrate=true
     # set the flyway initialization in the WF ConfigMap
     quarkus.flyway.migrate-at-start=true
+    # ensure flyway logs are visible
+    quarkus.log.category."org.flywaydb".level=INFO
 kind: ConfigMap
 metadata:
   labels:

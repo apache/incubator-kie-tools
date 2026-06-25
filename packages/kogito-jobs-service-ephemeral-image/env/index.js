@@ -25,15 +25,15 @@ const sonataflowImageCommonEnv = require("@kie-tools/sonataflow-image-common/env
 module.exports = composeEnv([rootEnv, sonataflowImageCommonEnv], {
   vars: varsWithName({
     KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE__registry: {
-      default: "docker.io",
+      default: "registry.redhat.io",
       description: "The image registry.",
     },
     KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE__account: {
-      default: "apache",
+      default: "openshift-serverless-1",
       description: "The image registry account.",
     },
     KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE__name: {
-      default: "incubator-kie-kogito-jobs-service-ephemeral",
+      default: "logic-jobs-service-ephemeral-rhel9",
       description: "The image name.",
     },
     KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE__buildTag: {

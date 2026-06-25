@@ -25,15 +25,15 @@ const sonataflowImageCommonEnv = require("@kie-tools/sonataflow-image-common/env
 module.exports = composeEnv([rootEnv, sonataflowImageCommonEnv], {
   vars: varsWithName({
     KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry: {
-      default: "docker.io",
+      default: "registry.redhat.io",
       description: "The image registry.",
     },
     KOGITO_DB_MIGRATOR_TOOL_IMAGE__account: {
-      default: "apache",
+      default: "openshift-serverless-1",
       description: "The image registry account.",
     },
     KOGITO_DB_MIGRATOR_TOOL_IMAGE__name: {
-      default: "kie-kogito-db-migrator-tool",
+      default: "logic-db-migrator-tool-rhel9",
       description: "The image name.",
     },
     KOGITO_DB_MIGRATOR_TOOL_IMAGE__buildTag: {

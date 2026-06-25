@@ -28,14 +28,18 @@ services:
     stdin_open: true
     tty: true
     network_mode: host
-    user: "1000:1000"
+    user: "${UID}:${GID}"
+    shm_size: "2gb"
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
       - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
+      - BREAKPAD_DUMP_LOCATION=/tmp/chrome-crashes # Set crash dump location for Chrome
     volumes:
       - type: bind
         source: ./../../../../
         target: /home/node/kie-tools-playwright/incubator-kie-tools
+      - type: tmpfs
+        target: /tmp/chrome-crashes
 
   # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   reverse-proxy:

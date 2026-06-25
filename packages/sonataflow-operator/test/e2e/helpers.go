@@ -651,7 +651,7 @@ func getWorkflowDefinitionStatus(podName string, containerName string, namespace
 	// WF found query result example: {"data":{"ProcessDefinitions":[{"metadata":{"status":"available","Variable":"workflowdata","Description":"YAML based greeting workflow"}}]}}
 
 	query := fmt.Sprintf("{\"query\" : \"{ ProcessDefinitions (where:{id: {equal: \\\"%s\\\"}} ) { metadata } }\"  }", workflowId)
-	curlCmd := fmt.Sprintf("curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST --data '%s' http://%s/graphql", query, dataIndexServiceName)
+	curlCmd := fmt.Sprintf("curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST --data '%s' http://%s/graphql", query, "localhost:8080")
 	fmt.Printf("querying workflow definition metadata for workflowId: %s, curl: %s\n", workflowId, curlCmd)
 
 	// execute with bash command to ensure the json response is not clipped from the terminal output

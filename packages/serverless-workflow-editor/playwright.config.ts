@@ -17,12 +17,18 @@
  * under the License.
  */
 
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
 import merge from "lodash/merge";
+import * as fs from "fs";
+import * as path from "path";
+import * as os from "os";
 
 import { env } from "./env";
 const buildEnv: any = env; // build-env is not typed
+
+// Create a temporary directory for Chrome crash reports to avoid crashpad handler errors
+const crashDumpDir = fs.mkdtempSync(path.join(os.tmpdir(), "chrome-crash-"));
 
 const customConfig = defineConfig({
   use: {
@@ -36,6 +42,26 @@ const customConfig = defineConfig({
     stdout: "pipe",
     timeout: 180000,
   },
+  projects: playwirghtBaseConfig.projects?.map((project) => {
+    // Apply Chrome-specific launch options only to Chromium and Google Chrome
+    if (project.name === "chromium" || project.name === "Google Chrome") {
+      return {
+        ...project,
+        use: {
+          ...project.use,
+          launchOptions: {
+            args: [
+              "--disable-dev-shm-usage",
+              "--disable-setuid-sandbox",
+              "--no-sandbox",
+              `--crash-dumps-dir=${crashDumpDir}`,
+            ],
+          },
+        },
+      };
+    }
+    return project;
+  }),
 });
 
 export default defineConfig(merge(playwirghtBaseConfig, customConfig));

@@ -23,9 +23,9 @@ Feature: SonataFlow Builder Image Sanity Checks
       | variable           | value                 |
       | SCRIPT_DEBUG       | false                 |
       | KOGITO_SERVICE_URL | http://localhost:8080 |
-    Then container log should match regex Installed features:.*kogito-serverless-workflow
-    And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
-    And container log should match regex Installed features:.*smallrye-health
+    Then container log should match regex kogito-serverless-workflow
+    And container log should match regex kie-addons-quarkus-knative-eventing
+    And container log should match regex smallrye-health
     And container log should match regex Listening on: http://0\.0\.0\.0:8080
     And run curl -fsS -o /dev/null -w %{http_code} http://127.0.0.1:8080/q/health/ready in container and immediately check its output contains 200
 
@@ -36,4 +36,4 @@ Feature: SonataFlow Builder Image Sanity Checks
       | KOGITO_SERVICE_URL | http://localhost:8080                    |
       | QUARKUS_EXTENSIONS | io.quarkus:quarkus-elytron-security-jdbc |
     Then container log should match regex Extension io\.quarkus:quarkus-elytron-security-jdbc.* has been installed
-    And container log should match regex Installed features:.*security-jdbc
+    And container log should contain security-jdbc

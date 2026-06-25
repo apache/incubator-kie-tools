@@ -24,6 +24,14 @@ metadata:
     sonataflow.org/version: 0.0.1
     sonataflow.org/profile: gitops
 spec:
+  persistence:
+    postgresql:
+      jdbcUrl: jdbc:postgresql://postgres:5432/sonataflow
+      secretRef:
+        name: postgres-secrets
+        userKey: POSTGRES_USER
+        passwordKey: POSTGRES_PASSWORD
+
   podTemplate:
     replicas: 0
     container:

@@ -17,13 +17,15 @@
  * under the License.
  */
 
-const { config, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
+const { config, babelTransform, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   ...config,
   testEnvironment: "node",
   transform: {
+    ...babelTransform,
     ...typescriptTransform,
   },
+  transformIgnorePatterns: ["node_modules/(?!.pnpm|uuid)"],
 };

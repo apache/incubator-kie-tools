@@ -1,0 +1,205 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: "CI :: Build - Full"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["**"]
+    types: [opened, reopened, ready_for_review, synchronize]
+
+env:
+  TMPDIR: "/tmp"
+  BUILD_ENV__accessErrorsLogFileAbsolutePath: "/tmp/build-env-access-errors.log"
+  KOGITO_RUNTIME_version: "111-SNAPSHOT"
+
+permissions:
+  packages: read
+
+jobs:
+  run:
+    if: github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: "Support longpaths"
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
+
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: "Setup pnpm"
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.29.2
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.13.0
+
+      - name: "Setup CI patterns"
+        id: ci_patterns
+        uses: ./.github/actions/setup-ci-patterns
+
+      - name: "Setup environment"
+        if: steps.setup_build_mode.outputs.mode != 'none'
+        uses: ./.github/actions/setup-env
+
+      - name: Setup local maven cache for PR
+        id: setup_maven_cache_pr
+        if: "github.event_name == 'pull_request'"
+        uses: ./.github/actions/setup-maven-cache
+        with:
+          DEPS_BRANCHNAME: ${{ github.head_ref }}
+          DROOLS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/drools"
+          KOGITO_RUNTIMES_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-runtimes"
+          KOGITO_APPS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-apps"
+
+      - name: Setup local maven cache for non-pull request runs
+        id: setup_maven_cache_non_pr
+        if: "github.event_name != 'pull_request'"
+        uses: ./.github/actions/setup-maven-cache
+        with:
+          DEPS_BRANCHNAME: main
+
+      - name: Update version.org.kie.kogito in maven-base/pom.xml (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sed -i "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${KOGITO_RUNTIME_version}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
+
+      - name: Update version.org.kie.kogito in maven-base/pom.xml (MacOS)
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          sed -i '' "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${KOGITO_RUNTIME_version}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
+
+      - name: "Install parent POMs"
+        shell: bash
+        run: |
+          mvn -f pom.xml install -N
+          mvn -f packages/pom.xml install -N
+
+      - name: Run pnpm bootstrap - first time
+        run: |
+          echo "::group::Run pnpm bootstrap - first time"
+          pnpm bootstrap -F '@osl/redhat-env...' --no-frozen-lockfile
+          echo "::endgroup::"
+        env:
+          DROOLS_AND_KOGITO__skip: true
+        shell: bash
+
+      - name: Setup Environment Variables
+        run: bash ./.github/supporting-files/ci/osl/export_vars.sh
+        shell: bash
+
+      - name: "Bootstrap"
+        env:
+          DROOLS_AND_KOGITO__skip: true
+          MAVEN_ARGS: "-B"
+          MAVEN_OPTS: "-Xmx3g"
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: ""
+
+      - name: Replace pre-build step in kogito-db-migrator-tool (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sed -i "s/pnpm pre-build && //g" ./packages/kogito-db-migrator-tool/package.json
+
+      - name: Replace pre-build step in kogito-db-migrator-tool (MacOS)
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          sed -i '' "s/pnpm pre-build && //g" ./packages/kogito-db-migrator-tool/package.json
+
+      - name: Modify pom.xml of sonataflow-quarkus-devui
+        run: python .github/supporting-files/ci/osl/pom-manipulation/inject-fmp-executions.py
+
+      - name: "FULL → Build:Prod with all tests & images"
+        shell: bash
+        env:
+          WEBPACK__minimize: "false"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          KIE_TOOLS_BUILD__runLinters: "true"
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
+          KIE_TOOLS_BUILD__containerizedEndToEndTests: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
+          KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
+          KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: ${{ !github.event.pull_request }}
+          PLAYWRIGHT_BASE__enableChromiumProject: "true"
+          PLAYWRIGHT_BASE__enableGoogleChromeProject: "true"
+          PLAYWRIGHT_BASE__enableWebkitProject: "true"
+          PLAYWRIGHT_BASE__projectTimeout: "90000"
+          PLAYWRIGHT_BASE__expectTimeout: "30000"
+          PLAYWRIGHT_BASE__retries: "3"
+          PLAYWRIGHT_BASE__workers: "2"
+          DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
+          NODE_OPTIONS: "--max_old_space_size=6144"
+          MAVEN_ARGS: "-B"
+          MAVEN_OPTS: "-Xmx2g"
+        run: >-
+          eval "pnpm -r --workspace-concurrency=1 build:prod"
+
+      - name: "Check tests result (`main` only)"
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
+        uses: actions/github-script@v9
+        env:
+          KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
+            ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
+            ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns }}
+        with:
+          result-encoding: string
+          script: |
+            const patterns = process.env["KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS"]
+                                .split("\n")
+                                .map(p => p.trim())
+                                .filter(p => p);
+
+            const script = require("./scripts/check-junit-report-results/src/index.js");
+            await script({ core, glob, patterns });
+
+      - name: "Check build-env access errors log"
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
+        shell: bash
+        run: |
+          touch "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          [ "0" == "$(cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath" | wc -l | tr -d ' ')" ]
+
+      - name: "Upload reports and artifacts"
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
+        uses: ./.github/actions/upload-ci-reports-and-artifacts
+        with:
+          partition_index: ${{ matrix.partition }}
+
+      - name: "Print storage usage (after build)"
+        if: always() && !cancelled()
+        shell: bash
+        run: |
+          df -h .

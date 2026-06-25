@@ -79,9 +79,9 @@
           </snapshots>
         </repository>
         <repository>
-          <id>apache.snapshots</id>
-          <name>Apache Snapshot Repository</name>
-          <url>https://repository.apache.org/snapshots</url>
+          <id>github</id>
+          <name>GitHub Repository</name>
+          <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
           <releases>
             <enabled>false</enabled>
           </releases>
@@ -112,20 +112,6 @@
             <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>
-        <repository>
-          <id>jboss-public-repository-group</id>
-          <name>JBOSS Public Repository Group</name>
-          <url>https://repo.maven.apache.org/maven2</url>
-          <layout>default</layout>
-          <releases>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-          </snapshots>
-        </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
@@ -141,9 +127,9 @@
           </snapshots>
         </pluginRepository>
         <pluginRepository>
-          <id>apache-public-repository-group</id>
-          <name>Apache Public Repository Group</name>
-          <url>https://repository.apache.org/content/groups/public/</url>
+          <id>github</id>
+          <name>GitHub Repository</name>
+          <url>https://maven.pkg.github.com/kubesmarts/logic-maven-repository</url>
           <layout>default</layout>
           <releases>
             <enabled>false</enabled>

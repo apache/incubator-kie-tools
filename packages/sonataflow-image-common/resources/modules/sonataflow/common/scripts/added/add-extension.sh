@@ -31,4 +31,4 @@ ignore_jvm_settings=${2:-false}
 
 source "${KOGITO_HOME}"/launch/quarkus-mvn-plugin.sh
 
-run_quarkus_mvn_add_extension "$extensions", "$ignore_jvm_settings"
+run_quarkus_mvn_add_extension "$extensions" "$ignore_jvm_settings"

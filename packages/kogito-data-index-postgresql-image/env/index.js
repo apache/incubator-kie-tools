@@ -25,15 +25,15 @@ const sonataflowImageCommonEnv = require("@kie-tools/sonataflow-image-common/env
 module.exports = composeEnv([rootEnv, sonataflowImageCommonEnv], {
   vars: varsWithName({
     KOGITO_DATA_INDEX_POSTGRESQL_IMAGE__registry: {
-      default: "docker.io",
+      default: "registry.redhat.io",
       description: "The image registry.",
     },
     KOGITO_DATA_INDEX_POSTGRESQL_IMAGE__account: {
-      default: "apache",
+      default: "openshift-serverless-1",
       description: "The image registry account.",
     },
     KOGITO_DATA_INDEX_POSTGRESQL_IMAGE__name: {
-      default: "incubator-kie-kogito-data-index-postgresql",
+      default: "logic-data-index-postgresql-rhel9",
       description: "The image name.",
     },
     KOGITO_DATA_INDEX_POSTGRESQL_IMAGE__buildTag: {

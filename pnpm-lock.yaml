@@ -1094,6 +1094,9 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.104.1)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@25.9.3)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@25.9.3)(typescript@5.9.3))
