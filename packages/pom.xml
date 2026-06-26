@@ -23,4 +23,30 @@
     <module>kogito-data-index-webapp</module>
     <module>kogito-jobs-service-webapp</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>build-all-maven-artifacts</id>
+      <properties>
+        <!-- This should make sure that if this profile is used in a mvn deploy execution,
+             the Maven builds triggered by pnpm automation (frontend-maven-plugin) will not do any deployment.
+             The only deployment that should happen should be from this profile's reactor,
+             when it is used with mvn deploy. -->
+        <skip.maven.deploy.in.pnpm.wrapped.artifacts>true</skip.maven.deploy.in.pnpm.wrapped.artifacts>
+      </properties>
+      <modules>
+        <module>maven-base</module>
+        <module>serverless-workflow-diagram-editor</module>
+        <module>dev-deployment-base-image</module>
+        <module>jbpm-quarkus-devui</module>
+        <module>vscode-java-code-completion-extension-plugin</module>
+        <module>serverless-logic-web-tools-swf-deployment-quarkus-app</module>
+        <module>sonataflow-quarkus-devui</module>
+        <module>sonataflow-management-console-webapp</module>
+        <module>kogito-db-migrator-tool</module>
+        <module>kogito-data-index-webapp</module>
+        <module>kogito-jobs-service-webapp</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

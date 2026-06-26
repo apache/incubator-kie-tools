@@ -99,6 +99,8 @@
               <environmentVariables>
                 <KIE_TOOLS_BUILD__runTests>false</KIE_TOOLS_BUILD__runTests>
                 <KIE_TOOLS_BUILD__runIntegrationTests>false</KIE_TOOLS_BUILD__runIntegrationTests>
+                <KIE_TOOLS_BUILD__mavenDeploySkip
+                >${skip.maven.deploy.in.pnpm.wrapped.artifacts}</KIE_TOOLS_BUILD__mavenDeploySkip>
               </environmentVariables>
             </configuration>
           </execution>
