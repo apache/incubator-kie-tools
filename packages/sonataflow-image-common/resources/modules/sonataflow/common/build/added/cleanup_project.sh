@@ -37,5 +37,9 @@ find "${KOGITO_HOME}"/.m2/repository -name '_*.repositories' -type f -delete
 find "${KOGITO_HOME}"/.m2/repository -name '*.lastUpdated' -type f -delete
 
 # Remove files that include build timestamps to have reproducible images
-find "${KOGITO_HOME}"/.m2/ -name resolver-status.properties -delete 
+find "${KOGITO_HOME}"/.m2/ -name resolver-status.properties -delete
+
+# Remove maven-core from local repo.
+# Plugins declare it with provided scope; the Maven runtime supplies it.
+rm -rf "${KOGITO_HOME}"/.m2/repository/org/apache/maven/maven-core
 
