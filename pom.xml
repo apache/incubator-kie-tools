@@ -56,10 +56,10 @@
     <version.resources.plugin>3.2.0</version.resources.plugin>
     <version.jacoco.maven.plugin>0.8.12</version.jacoco.maven.plugin>
 
-    <version.frontend.plugin>1.15.0</version.frontend.plugin>
-    <version.node>v24.13.0</version.node>
-    <version.npm>11.6.2</version.npm>
-    <version.pnpm>10.28.2</version.pnpm>
+    <version.frontend.plugin>1.15.4</version.frontend.plugin>
+    <version.node>v24.18.0</version.node>
+    <version.npm>11.17.0</version.npm>
+    <version.pnpm>10.34.4</version.pnpm>
 
     <version.quarkus>3.27.4</version.quarkus>
     <version.org.kie.kogito>${project.version}</version.org.kie.kogito>
