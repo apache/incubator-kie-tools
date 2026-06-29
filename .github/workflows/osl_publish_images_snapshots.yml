@@ -31,6 +31,10 @@ on:
         required: false
         default: true
 
+env:
+  MAVEN_ARGS: "-B -s ${{ github.workspace }}/.github/supporting-files/ci/midstream-mvn-config/settings.xml"
+  MAVEN_REPO_TOKEN: ${{ secrets.LOGIC_MAVEN_REPOSITORY_ACCESS_TOKEN }}
+
 permissions:
   contents: read
 

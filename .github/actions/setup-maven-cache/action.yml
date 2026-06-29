@@ -103,7 +103,7 @@ runs:
       if: steps.m2_cache.outputs.cache-hit != 'true'
       shell: bash
       env:
-        MAVEN_OPTIONS: -B -Dquickly
+        ADDITIONAL_MAVEN_OPTIONS: -Dquickly
       run: |
         echo "KOGITO_RUNTIME_version is $KOGITO_RUNTIME_version: Cloning and building extra repositories."
         cd ..
@@ -122,7 +122,7 @@ runs:
         echo "git clone --depth 1 --branch $DROOLS_BRANCH $DROOLS_REPO_URL"
         git clone --depth 1 --branch $DROOLS_BRANCH $DROOLS_REPO_URL
         cd drools
-        mvn clean install $MAVEN_OPTIONS
+        mvn clean install $ADDITIONAL_MAVEN_OPTIONS
         cd ..
         rm -rf drools
         echo "::endgroup::"
@@ -141,7 +141,7 @@ runs:
         echo "git clone --depth 1 --branch $RUNTIMES_BRANCH $RUNTIMES_REPO_URL"
         git clone --depth 1 --branch $RUNTIMES_BRANCH $RUNTIMES_REPO_URL
         cd kogito-runtimes
-        mvn clean install $MAVEN_OPTIONS
+        mvn clean install $ADDITIONAL_MAVEN_OPTIONS
         cd ..
         rm -rf kogito-runtimes
         echo "::endgroup::"
@@ -160,7 +160,7 @@ runs:
         echo "git clone --depth 1 --branch $APPS_BRANCH $APPS_REPO_URL"
         git clone --depth 1 --branch $APPS_BRANCH $APPS_REPO_URL
         cd kogito-apps
-        mvn clean install $MAVEN_OPTIONS
+        mvn clean install $ADDITIONAL_MAVEN_OPTIONS
         cd ..
         rm -rf kogito-apps
         echo "::endgroup::"

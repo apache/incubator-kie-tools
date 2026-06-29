@@ -30,6 +30,8 @@ permissions:
 
 env:
   KOGITO_RUNTIME_version: "111-SNAPSHOT"
+  MAVEN_ARGS: "-B -s ${{ github.workspace }}/.github/supporting-files/ci/midstream-mvn-config/settings.xml"
+  MAVEN_REPO_TOKEN: ${{ secrets.LOGIC_MAVEN_REPOSITORY_ACCESS_TOKEN }}
 
 jobs:
   build:
@@ -77,10 +79,7 @@ jobs:
         env:
           DROOLS_AND_KOGITO__skip: true
           KIE_TOOLS_BUILD__mavenDeploySkip: true
-          DROOLS_AND_KOGITO__droolsRepoGitRef: "${{ steps.setup_maven_cache.outputs.droolsRepoGitRef }}"
-          DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: "${{ steps.setup_maven_cache.outputs.kogitoRuntimesRepoGitRef }}"
-          DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: "${{ steps.setup_maven_cache.outputs.kogitoAppsRepoGitRef }}"
-        run: mvn -B clean install
+        run: mvn clean install
 
       # This step works well but can consume midstream storage
       # - name: Upload JAR artifacts

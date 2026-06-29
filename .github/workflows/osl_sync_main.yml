@@ -9,6 +9,11 @@ permissions:
   contents: write
   pull-requests: write
   actions: write
+  packages: read
+
+env:
+  MAVEN_ARGS: "-B -s ${{ github.workspace }}/.github/supporting-files/ci/midstream-mvn-config/settings.xml"
+  MAVEN_REPO_TOKEN: ${{ secrets.LOGIC_MAVEN_REPOSITORY_ACCESS_TOKEN }}
 
 concurrency:
   group: sync-main
@@ -34,7 +39,6 @@ jobs:
 
       - name: "Bootstrap"
         env:
-          MAVEN_ARGS: "-B"
           MAVEN_OPTS: "-Xmx3g"
         uses: ./.github/actions/bootstrap
         with:

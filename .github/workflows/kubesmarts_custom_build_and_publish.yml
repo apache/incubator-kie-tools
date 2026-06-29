@@ -37,6 +37,7 @@ concurrency:
 
 permissions:
   contents: write
+  packages: read
 
 jobs:
   build_and_publish:

@@ -30,9 +30,11 @@ env:
   TMPDIR: "/tmp"
   BUILD_ENV__accessErrorsLogFileAbsolutePath: "/tmp/build-env-access-errors.log"
   KOGITO_RUNTIME_version: "111-SNAPSHOT"
+  MAVEN_ARGS: "-B -s ${{ github.workspace }}/.github/supporting-files/ci/midstream-mvn-config/settings.xml"
+  MAVEN_REPO_TOKEN: ${{ secrets.LOGIC_MAVEN_REPOSITORY_ACCESS_TOKEN }}
 
 permissions:
-  packages: read
+  contents: read
 
 jobs:
   run:
@@ -70,70 +72,12 @@ jobs:
         if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
 
-      - name: Setup local maven cache for PR
-        id: setup_maven_cache_pr
-        if: "github.event_name == 'pull_request'"
-        uses: ./.github/actions/setup-maven-cache
+      - name: "Setup kie-tools"
+        uses: ./.github/actions/setup-kie-tools
         with:
-          DEPS_BRANCHNAME: ${{ github.head_ref }}
-          DROOLS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/drools"
-          KOGITO_RUNTIMES_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-runtimes"
-          KOGITO_APPS_REPO_URL: "https://github.com/${{ github.event.pull_request.head.repo.owner.login }}/kogito-apps"
-
-      - name: Setup local maven cache for non-pull request runs
-        id: setup_maven_cache_non_pr
-        if: "github.event_name != 'pull_request'"
-        uses: ./.github/actions/setup-maven-cache
-        with:
-          DEPS_BRANCHNAME: main
-
-      - name: Update version.org.kie.kogito in maven-base/pom.xml (Linux)
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          sed -i "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${KOGITO_RUNTIME_version}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
-
-      - name: Update version.org.kie.kogito in maven-base/pom.xml (MacOS)
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          sed -i '' "s|<version.org.kie.kogito>.*</version.org.kie.kogito>|<version.org.kie.kogito>${KOGITO_RUNTIME_version}</version.org.kie.kogito>|g" ./packages/maven-base/pom.xml
-
-      - name: "Install parent POMs"
-        shell: bash
-        run: |
-          mvn -f pom.xml install -N
-          mvn -f packages/pom.xml install -N
-
-      - name: Run pnpm bootstrap - first time
-        run: |
-          echo "::group::Run pnpm bootstrap - first time"
-          pnpm bootstrap -F '@osl/redhat-env...' --no-frozen-lockfile
-          echo "::endgroup::"
-        env:
-          DROOLS_AND_KOGITO__skip: true
-        shell: bash
-
-      - name: Setup Environment Variables
-        run: bash ./.github/supporting-files/ci/osl/export_vars.sh
-        shell: bash
-
-      - name: "Bootstrap"
-        env:
-          DROOLS_AND_KOGITO__skip: true
-          MAVEN_ARGS: "-B"
-          MAVEN_OPTS: "-Xmx3g"
-        uses: ./.github/actions/bootstrap
-        with:
-          pnpm_filter_string: ""
-
-      - name: Replace pre-build step in kogito-db-migrator-tool (Linux)
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          sed -i "s/pnpm pre-build && //g" ./packages/kogito-db-migrator-tool/package.json
-
-      - name: Replace pre-build step in kogito-db-migrator-tool (MacOS)
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          sed -i '' "s/pnpm pre-build && //g" ./packages/kogito-db-migrator-tool/package.json
+          KOGITO_VERSION: ${{ env.KOGITO_RUNTIME_version }}
+          DEPS_BRANCHNAME: ${{ github.head_ref || 'main' }}
+          PNPM_FILTER: ""
 
       - name: Modify pom.xml of sonataflow-quarkus-devui
         run: python .github/supporting-files/ci/osl/pom-manipulation/inject-fmp-executions.py
@@ -161,7 +105,6 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=6144"
-          MAVEN_ARGS: "-B"
           MAVEN_OPTS: "-Xmx2g"
         run: >-
           eval "pnpm -r --workspace-concurrency=1 build:prod"

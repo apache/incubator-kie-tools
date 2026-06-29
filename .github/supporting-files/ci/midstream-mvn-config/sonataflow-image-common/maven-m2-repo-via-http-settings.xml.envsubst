@@ -57,51 +57,11 @@
           </snapshots>
         </repository>
         <repository>
-          <id>apache.snapshots</id>
-          <name>Apache Snapshot Repository</name>
-          <url>https://repository.apache.org/snapshots</url>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-          </snapshots>
-        </repository>
-        <repository>
           <id>central</id>
           <name>Central Repository</name>
           <url>https://repo.maven.apache.org/maven2</url>
           <snapshots>
             <enabled>false</enabled>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>apache-public-repository-group</id>
-          <name>Apache Public Repository Group</name>
-          <url>https://repo.maven.apache.org/maven2</url>
-          <layout>default</layout>
-          <releases>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>jboss-public-repository-group</id>
-          <name>JBOSS Public Repository Group</name>
-          <url>https://repo.maven.apache.org/maven2</url>
-          <layout>default</layout>
-          <releases>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>
       </repositories>
@@ -133,20 +93,6 @@
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
             <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
-          </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-          <id>apache-public-repository-group</id>
-          <name>Apache Public Repository Group</name>
-          <url>https://repository.apache.org/content/groups/public/</url>
-          <layout>default</layout>
-          <releases>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-            <updatePolicy>never</updatePolicy>
           </snapshots>
         </pluginRepository>
       </pluginRepositories>

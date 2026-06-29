@@ -47,32 +47,24 @@ runs:
     - name: Setup local maven cache
       if: inputs.USE_REMOTE_ARTIFACTS == 'false'
       id: setup_maven_cache
-      uses: kubesmarts/kie-tools/.github/actions/setup-maven-cache@main
+      uses: ./.github/actions/setup-maven-cache
       with:
         DEPS_BRANCHNAME: ${{ inputs.DEPS_BRANCHNAME }}
         WORKING_DIR: ${{ inputs.WORKING_DIR }}
 
     - name: Apply midstream settings.xml files
-      if: inputs.USE_REMOTE_ARTIFACTS == 'true'
       shell: bash
       run: |
         cd ${{ inputs.WORKING_DIR }}
-        cp -f .github/supporting-files/ci/midstream-mvn-config/settings.xml settings.xml
-        cp -f .github/supporting-files/ci/midstream-mvn-config/settings.xml packages/maven-base/settings.xml
         cp -f .github/supporting-files/ci/midstream-mvn-config/maven-m2-repo-via-http-image/settings.xml.envsubst packages/maven-m2-repo-via-http-image/settings.xml.envsubst
         cp -f .github/supporting-files/ci/midstream-mvn-config/sonataflow-image-common/maven-m2-repo-via-http-settings.xml.envsubst packages/sonataflow-image-common/resources/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml.envsubst
 
     - name: "Install parent POMs"
       shell: bash
       run: |
-        if [ "${{ inputs.USE_REMOTE_ARTIFACTS }}" == "true" ]; then
-          SETTINGS_ARG="-s settings.xml"
-        else
-          SETTINGS_ARG=""
-        fi
         cd ${{ inputs.WORKING_DIR }}
-        mvn -f pom.xml $SETTINGS_ARG -Dversion.org.kie.kogito=${{ inputs.KOGITO_VERSION }} install -N
-        mvn -f packages/pom.xml $SETTINGS_ARG -Dversion.org.kie.kogito=${{ inputs.KOGITO_VERSION }} install -N
+        mvn -f pom.xml -Dversion.org.kie.kogito=${{ inputs.KOGITO_VERSION }} install -N
+        mvn -f packages/pom.xml -Dversion.org.kie.kogito=${{ inputs.KOGITO_VERSION }} install -N
 
     - name: Run pnpm bootstrap - first time
       run: |
@@ -125,12 +117,22 @@ runs:
         DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: "${{ steps.setup_maven_cache.outputs.kogitoAppsRepoGitRef }}"
       shell: bash
 
-    - name: Replace pre-build step in kogito-db-migrator-tool
+    - name: Replace pre-build step in kogito-db-migrator-tool (Linux)
+      if: runner.os == 'Linux'
       shell: bash
       run: |
-        echo "::group::Replace pre-build step in kogito-db-migrator-tool"
+        echo "::group::Replace pre-build step in kogito-db-migrator-tool (Linux)"
         cd ${{ inputs.WORKING_DIR }}
         sed -i "s/pnpm pre-build && //g" ./packages/kogito-db-migrator-tool/package.json
+        echo "::endgroup::"
+
+    - name: Replace pre-build step in kogito-db-migrator-tool (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        echo "::group::Replace pre-build step in kogito-db-migrator-tool (macOS)"
+        cd ${{ inputs.WORKING_DIR }}
+        sed -i '' "s/pnpm pre-build && //g" ./packages/kogito-db-migrator-tool/package.json
         echo "::endgroup::"
 
     - name: Verify maven-base version.org.kie.kogito
