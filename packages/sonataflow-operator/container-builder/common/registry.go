@@ -24,7 +24,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/docker/docker/client"
+	"github.com/moby/moby/client"
 )
 
 const (

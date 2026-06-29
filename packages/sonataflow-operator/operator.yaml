@@ -28495,8 +28495,8 @@ spec:
             - --v=0
           env:
             - name: RELATED_IMAGE_KUBE_RBAC_PROXY
-              value: quay.io/brancz/kube-rbac-proxy:v0.13.1
-          image: quay.io/brancz/kube-rbac-proxy:v0.13.1
+              value: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:09dd98dddb689e0ec546d52c360ced5b2e2592211880761b454e98ab503e3eef
+          image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:09dd98dddb689e0ec546d52c360ced5b2e2592211880761b454e98ab503e3eef
           name: kube-rbac-proxy
           ports:
             - containerPort: 8443

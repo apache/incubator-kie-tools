@@ -22,7 +22,6 @@ package common
 import (
 	"context"
 	"fmt"
-	"github.com/docker/docker/api/types/container"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -31,7 +30,7 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
-	"github.com/docker/docker/client"
+	"github.com/moby/moby/client"
 )
 
 func CheckJavaDependencies() error {
@@ -94,12 +93,12 @@ func checkMaven() error {
 
 func CheckDocker() error {
 	fmt.Println("✅ Checking if Docker is available...")
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := client.New(client.FromEnv)
 	if err != nil {
 		fmt.Println("Error creating docker client")
 		return err
 	}
-	_, err = cli.ContainerList(context.Background(), container.ListOptions{})
+	_, err = cli.ContainerList(context.Background(), client.ContainerListOptions{})
 	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")

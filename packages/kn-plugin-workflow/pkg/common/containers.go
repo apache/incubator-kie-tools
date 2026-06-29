@@ -26,9 +26,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/distribution/reference"
-	"github.com/docker/docker/api/types/image"
 	"io"
+	"net/netip"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -38,10 +37,12 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
-	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/docker/go-connections/nat"
+	"github.com/distribution/reference"
+	"github.com/containerd/errdefs"
+	"github.com/moby/moby/api/types/container"
+	"github.com/moby/moby/api/types/network"
+	"github.com/moby/moby/api/pkg/stdcopy"
+	"github.com/moby/moby/client"
 )
 
 const (
@@ -55,11 +56,11 @@ type DockerLogMessage struct {
 }
 
 type DockerClient interface {
-	ImageList(ctx context.Context, options image.ListOptions) ([]image.Summary, error)
+	ImageList(ctx context.Context, options client.ImageListOptions) (client.ImageListResult, error)
 }
 
 func getDockerClient() (*client.Client, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := client.New(client.FromEnv)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Docker client: %s", err)
 	}
@@ -102,12 +103,12 @@ func getDockerContainerID() (string, error) {
 		return "", err
 	}
 
-	containers, err := cli.ContainerList(context.Background(), container.ListOptions{})
+	result, err := cli.ContainerList(context.Background(), client.ContainerListOptions{})
 	if err != nil {
 		return "", err
 	}
 
-	for _, c := range containers {
+	for _, c := range result.Items {
 		// Check if the container has the expected image name or other identifying information
 		if strings.Contains(c.Image, metadata.DevModeImage) {
 			return c.ID, nil
@@ -130,7 +131,8 @@ func StopContainer(containerTool string, containerID string) error {
 			fmt.Printf("unable to create client for docker")
 			return err
 		}
-		if err := cli.ContainerStop(context.Background(), containerID, container.StopOptions{}); err != nil {
+		_, err = cli.ContainerStop(context.Background(), containerID, client.ContainerStopOptions{})
+		if err != nil {
 			fmt.Printf("Unable to stop container %s: %s", containerID, err)
 			return err
 		}
@@ -257,12 +259,12 @@ func CheckImageExists(cli DockerClient, ctx context.Context, imageName string) (
 	} else {
 		imageName = fmt.Sprintf("%s:%s", reference.Path(named), "latest")
 	}
-	images, err := cli.ImageList(ctx, image.ListOptions{All: true})
+	result, err := cli.ImageList(ctx, client.ImageListOptions{All: true})
 	if err != nil {
 		return false, fmt.Errorf("error listing images: %s", err)
 	}
 
-	for _, i := range images {
+	for _, i := range result.Items {
 		for _, tag := range i.RepoTags {
 			if strings.HasSuffix(tag, imageName) {
 				return true, nil
@@ -297,37 +299,43 @@ func waitToImageBeReady(reader io.ReadCloser) error {
 	return nil
 }
 
-func createDockerContainer(cli *client.Client, ctx context.Context, portMapping string, path string) (container.CreateResponse, error) {
-	containerConfig := &container.Config{
-		Image: metadata.DevModeImage,
-	}
-	hostConfig := &container.HostConfig{
-		AutoRemove: true,
-		PortBindings: nat.PortMap{
-			metadata.DockerInternalPort: []nat.PortBinding{
-				{
-					HostIP:   "0.0.0.0",
-					HostPort: portMapping,
+func createDockerContainer(cli *client.Client, ctx context.Context, portMapping string, path string) (client.ContainerCreateResult, error) {
+	port := network.MustParsePort(string(metadata.DockerInternalPort))
+	hostIP := netip.MustParseAddr("0.0.0.0")
+	createOpts := client.ContainerCreateOptions{
+		Config: &container.Config{
+			Image:        metadata.DevModeImage,
+			ExposedPorts: network.PortSet{port: struct{}{}},
+		},
+		HostConfig: &container.HostConfig{
+			AutoRemove: true,
+			PortBindings: network.PortMap{
+				port: []network.PortBinding{
+					{
+						HostIP:   hostIP,
+						HostPort: portMapping,
+					},
 				},
 			},
-		},
-		Binds: []string{
-			fmt.Sprintf("%s:%s", path, metadata.VolumeBindPath),
+			Binds: []string{
+				fmt.Sprintf("%s:%s", path, metadata.VolumeBindPath),
+			},
 		},
 	}
 
-	resp, err := cli.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, "")
+	resp, err := cli.ContainerCreate(ctx, createOpts)
 	if err != nil {
 		return resp, fmt.Errorf("\nUnable to create container %s: %s", metadata.DevModeImage, err)
 	}
 	return resp, nil
 }
 
-func startDockerContainer(cli *client.Client, ctx context.Context, resp container.CreateResponse) error {
+func startDockerContainer(cli *client.Client, ctx context.Context, resp client.ContainerCreateResult) error {
 	fmt.Printf("\nCreated container with ID %s", resp.ID)
 	fmt.Println("\n⏳ Starting your container and SonataFlow project...")
 
-	if err := cli.ContainerStart(ctx, resp.ID, container.StartOptions{}); err != nil {
+	_, err := cli.ContainerStart(ctx, resp.ID, client.ContainerStartOptions{})
+	if err != nil {
 		return fmt.Errorf("\nUnable to start container %s", resp.ID)
 	}
 
@@ -362,28 +370,30 @@ func runDockerContainer(portMapping string, path string) error {
 
 	return nil
 }
-func processOutputDuringContainerExecution(cli *client.Client, ctx context.Context, resp container.CreateResponse) error {
-	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+func processOutputDuringContainerExecution(cli *client.Client, ctx context.Context, resp client.ContainerCreateResult) error {
+	waitResult := cli.ContainerWait(ctx, resp.ID, client.ContainerWaitOptions{
+		Condition: container.WaitConditionNotRunning,
+	})
 
 	//Print all container logs
-	out, err := cli.ContainerLogs(ctx, resp.ID, container.LogsOptions{ShowStdout: false, ShowStderr: true, Follow: true})
+	logsResult, err := cli.ContainerLogs(ctx, resp.ID, client.ContainerLogsOptions{ShowStdout: false, ShowStderr: true, Follow: true})
 	if err != nil {
 		return fmt.Errorf("\nError getting container logs: %s", err)
 	}
 
 	go func() {
-		_, err := stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+		_, err := stdcopy.StdCopy(os.Stdout, os.Stderr, logsResult)
 		if err != nil {
 			fmt.Errorf("\nError copying container logs to stdout: %s", err)
 		}
 	}()
 
 	select {
-	case err := <-errCh:
+	case err := <-waitResult.Error:
 		if err != nil {
 			return fmt.Errorf("\nError starting the container %s: %s", resp.ID, err)
 		}
-	case <-statusCh:
+	case <-waitResult.Result:
 		//state of the container matches the condition, in our case WaitConditionNotRunning
 	}
 
@@ -412,14 +422,14 @@ func IsContainerRunning(containerID string) (bool, error) {
 		if err != nil {
 			return false, fmt.Errorf("unable to create docker client: %w", err)
 		}
-		containerJSON, err := cli.ContainerInspect(context.Background(), containerID)
+		result, err := cli.ContainerInspect(context.Background(), containerID, client.ContainerInspectOptions{})
 		if err != nil {
-			if client.IsErrNotFound(err) {
+			if errdefs.IsNotFound(err) {
 				return false, nil
 			}
 			return false, fmt.Errorf("unable to inspect container %s with docker: %w", containerID, err)
 		}
-		return containerJSON.State.Running, nil
+		return result.Container.State.Running, nil
 
 	} else if errPodman := CheckPodman(); errPodman == nil {
 		cmd := exec.Command("podman", "inspect", containerID, "--format", "{{.State.Running}}")

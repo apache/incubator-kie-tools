@@ -20,23 +20,23 @@
 package common
 
 import (
+	"context"
 	"fmt"
+	"net/netip"
 	"strings"
 	"time"
 
 	"k8s.io/klog/v2"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
-	"github.com/docker/go-connections/nat"
-	"golang.org/x/net/context"
+	"github.com/moby/moby/api/types/container"
+	"github.com/moby/moby/api/types/network"
+	"github.com/moby/moby/client"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/util/log"
 )
 
 func GetDockerConnection() (*client.Client, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := client.New(client.FromEnv)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -71,8 +71,13 @@ func (d DockerLocalRegistry) StartRegistry() string {
 
 	if !d.IsRegistryImagePresent() {
 		klog.V(log.I).InfoS("Registry Image Pull")
-		_, err := d.Connection.ImagePull(ctx, RegistryImg, types.ImagePullOptions{})
+		result, err := d.Connection.ImagePull(ctx, registryImgFullTag, client.ImagePullOptions{})
 		if err != nil {
+			fmt.Println(err)
+			return ""
+		}
+		defer result.Close()
+		if err := result.Wait(ctx); err != nil {
 			fmt.Println(err)
 			return ""
 		}
@@ -81,23 +86,43 @@ func (d DockerLocalRegistry) StartRegistry() string {
 	time.Sleep(2 * time.Second) // needed on CI
 
 	klog.V(log.I).InfoS("Registry Container Create")
-	resp, err := d.Connection.ContainerCreate(ctx, &container.Config{
-		Image:        RegistryImg,
-		ExposedPorts: nat.PortSet{"5000": struct{}{}},
-	},
-		&container.HostConfig{
-			PortBindings: map[nat.Port][]nat.PortBinding{nat.Port("5000"): {{HostIP: "127.0.0.1", HostPort: "5000"}}},
+
+	// Setup port mappings using network types
+	port := network.MustParsePort("5000/tcp")
+	hostIP := netip.MustParseAddr("127.0.0.1")
+	portBindings := network.PortMap{
+		port: []network.PortBinding{
+			{
+				HostIP:   hostIP,
+				HostPort: "5000",
+			},
 		},
-		nil,
-		nil,
-		RegistryImg)
+	}
+
+	exposedPorts := network.PortSet{
+		port: struct{}{},
+	}
+
+	createOpts := client.ContainerCreateOptions{
+		Name:  RegistryImg,
+		Config: &container.Config{
+			Image:        registryImgFullTag,
+			ExposedPorts: exposedPorts,
+		},
+		HostConfig: &container.HostConfig{
+			PortBindings: portBindings,
+		},
+	}
+
+	resp, err := d.Connection.ContainerCreate(ctx, createOpts)
 
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Registry Container Create")
+		return ""
 	}
 
 	klog.V(log.I).InfoS("Starting Registry Container")
-	if err := d.Connection.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	if _, err := d.Connection.ContainerStart(ctx, resp.ID, client.ContainerStartOptions{}); err != nil {
 		klog.V(log.E).ErrorS(err, "error during Start Registry Container")
 		return ""
 	}
@@ -113,9 +138,10 @@ func (d DockerLocalRegistry) StopRegistry() bool {
 	if len(registryID) > 0 {
 		klog.V(log.I).InfoS("StopRegistry Kill Container", "ID", registryID)
 		ctx := context.Background()
-		_ = d.Connection.ContainerKill(ctx, registryID, "SIGKILL")
+		killOpts := client.ContainerKillOptions{Signal: "SIGKILL"}
+		_, _ = d.Connection.ContainerKill(ctx, registryID, killOpts)
 		klog.V(log.I).InfoS("StopRegistry Removing Container", "ID", registryID)
-		err := d.Connection.ContainerRemove(ctx, registryID, types.ContainerRemoveOptions{})
+		_, err := d.Connection.ContainerRemove(ctx, registryID, client.ContainerRemoveOptions{})
 		if err != nil {
 			klog.V(log.E).ErrorS(err, "error during Stop Registry")
 			return false
@@ -128,9 +154,10 @@ func (d DockerLocalRegistry) StopAndRemoveContainer(containerID string) bool {
 	if len(containerID) > 0 {
 		ctx := context.Background()
 		klog.V(log.I).InfoS("Docker StopAndRemoveContainer Kill registry container", "ID", containerID)
-		_ = d.Connection.ContainerKill(ctx, containerID, "SIGKILL")
+		killOpts := client.ContainerKillOptions{Signal: "SIGKILL"}
+		_, _ = d.Connection.ContainerKill(ctx, containerID, killOpts)
 		klog.V(log.I).InfoS("Docker StopAndRemoveContainer Removing container", "ID", containerID)
-		err := d.Connection.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{})
+		_, err := d.Connection.ContainerRemove(ctx, containerID, client.ContainerRemoveOptions{})
 		return err == nil
 	}
 	fmt.Println("Docker StopAndRemoveContainer Invalid ID " + containerID)
@@ -138,15 +165,20 @@ func (d DockerLocalRegistry) StopAndRemoveContainer(containerID string) bool {
 }
 
 func (d DockerLocalRegistry) GetRegistryRunningID() string {
-	containers, err := d.Connection.ContainerList(context.Background(), types.ContainerListOptions{})
+	result, err := d.Connection.ContainerList(context.Background(), client.ContainerListOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return ""
 	}
 
-	for _, container := range containers {
-		if container.Image == RegistryImg {
-			return container.ID
+	for _, ctr := range result.Items {
+		// Check if the container image matches any registry image variant
+		if ctr.Image == RegistryImg ||
+			ctr.Image == "registry:latest" ||
+			ctr.Image == registryImgFullTag ||
+			strings.HasPrefix(ctr.Image, "registry:") ||
+			strings.HasPrefix(ctr.Image, "docker.io/library/registry:") {
+			return ctr.ID
 		}
 	}
 	return ""
@@ -154,12 +186,19 @@ func (d DockerLocalRegistry) GetRegistryRunningID() string {
 
 func (d DockerLocalRegistry) IsRegistryImagePresent() bool {
 
-	imageList, err := d.Connection.ImageList(context.Background(), types.ImageListOptions{})
+	result, err := d.Connection.ImageList(context.Background(), client.ImageListOptions{})
 	if err != nil {
 		return false
 	}
-	for _, imagex := range imageList {
-		if (len(imagex.RepoTags) > 0 && imagex.RepoTags[0] == RegistryImg) || (len(imagex.RepoDigests) > 0 && strings.HasPrefix(imagex.RepoDigests[0], RegistryImg)) {
+	for _, img := range result.Items {
+		// Check for any of the registry image tag variants
+		for _, tag := range img.RepoTags {
+			if tag == RegistryImg || tag == registryImgFullTag || strings.HasPrefix(tag, "registry:") || strings.HasPrefix(tag, "docker.io/library/registry:") {
+				return true
+			}
+		}
+		// Also check digests
+		if len(img.RepoDigests) > 0 && strings.HasPrefix(img.RepoDigests[0], "registry@") {
 			return true
 		}
 	}
@@ -168,15 +207,15 @@ func (d DockerLocalRegistry) IsRegistryImagePresent() bool {
 
 func (d DockerLocalRegistry) IsImagePresent(name string) bool {
 
-	imageList, err := d.Connection.ImageList(context.Background(), types.ImageListOptions{})
+	result, err := d.Connection.ImageList(context.Background(), client.ImageListOptions{})
 	if err != nil {
 		return false
 	}
-	for _, imagex := range imageList {
-		if len(imagex.RepoTags) == 0 || len(imagex.RepoDigests) == 0 {
+	for _, img := range result.Items {
+		if len(img.RepoTags) == 0 || len(img.RepoDigests) == 0 {
 			continue
 		}
-		if imagex.RepoTags[0] == name || (imagex.RepoDigests != nil && strings.HasPrefix(imagex.RepoDigests[0], name)) {
+		if img.RepoTags[0] == name || (img.RepoDigests != nil && strings.HasPrefix(img.RepoDigests[0], name)) {
 			return true
 		}
 	}

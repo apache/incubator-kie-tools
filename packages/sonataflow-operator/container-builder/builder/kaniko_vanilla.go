@@ -25,10 +25,9 @@ import (
 
 	"k8s.io/klog/v2"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
-	"github.com/docker/docker/pkg/stdcopy"
+	"github.com/moby/moby/api/pkg/stdcopy"
+	"github.com/moby/moby/api/types/container"
+	"github.com/moby/moby/client"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/util/log"
 )
@@ -47,50 +46,57 @@ const executorImage = "gcr.io/kaniko-project/executor:latest"
 
 func KanikoBuild(connection *client.Client, config KanikoVanillaConfig) (string, error) {
 
-	hostConfig := &container.HostConfig{
-		NetworkMode: "host",
-		Binds: []string{
-			config.DockerFilePath + ":/workspace",
+	ctx := context.Background()
+
+	createOpts := client.ContainerCreateOptions{
+		Name: config.ContainerName,
+		Config: &container.Config{
+			Image: config.KanikoExecutorImage,
+			Cmd: []string{
+				"-f", config.DockerFileName,
+				"-d", config.RegistryFinalImageName,
+				"-c", "/workspace",
+				"--force",
+				"--verbosity", config.VerbosityLevel,
+			},
+			Tty:     false,
+			Volumes: map[string]struct{}{},
+		},
+		HostConfig: &container.HostConfig{
+			NetworkMode: "host",
+			Binds: []string{
+				config.DockerFilePath + ":/workspace",
+			},
 		},
 	}
 
-	ctx := context.Background()
-	resp, err := connection.ContainerCreate(ctx, &container.Config{
-		Image: config.KanikoExecutorImage,
-		Cmd: []string{
-			"-f", config.DockerFileName,
-			"-d", config.RegistryFinalImageName,
-			"-c", "/workspace",
-			"--force",
-			"--verbosity", config.VerbosityLevel,
-		},
-		Tty:     false,
-		Volumes: map[string]struct{}{},
-	}, hostConfig, nil, nil, config.ContainerName)
-
+	resp, err := connection.ContainerCreate(ctx, createOpts)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerCreate")
 	}
 
-	if err := connection.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	if _, err := connection.ContainerStart(ctx, resp.ID, client.ContainerStartOptions{}); err != nil {
 		klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerStart")
 	}
 
-	statusCh, errCh := connection.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+	waitResult := connection.ContainerWait(ctx, resp.ID, client.ContainerWaitOptions{
+		Condition: container.WaitConditionNotRunning,
+	})
+
 	select {
-	case err := <-errCh:
+	case err := <-waitResult.Error:
 		if err != nil {
 			klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerWait")
 		}
-	case <-statusCh:
+	case <-waitResult.Result:
 	}
 
-	out, err := connection.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
+	logsResult, err := connection.ContainerLogs(ctx, resp.ID, client.ContainerLogsOptions{ShowStdout: true})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerLogs")
 	}
 	if config.ReadBuildOutput {
-		stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+		stdcopy.StdCopy(os.Stdout, os.Stderr, logsResult)
 	}
 	return resp.ID, err
 }

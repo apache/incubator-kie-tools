@@ -21,20 +21,21 @@ package common
 
 import (
 	"context"
-	"github.com/docker/docker/api/types/image"
+	"testing"
+
+	"github.com/moby/moby/api/types/image"
+	"github.com/moby/moby/client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-
-	"testing"
 )
 
 type MockDockerClient struct {
 	mock.Mock
 }
 
-func (m *MockDockerClient) ImageList(ctx context.Context, options image.ListOptions) ([]image.Summary, error) {
+func (m *MockDockerClient) ImageList(ctx context.Context, options client.ImageListOptions) (client.ImageListResult, error) {
 	args := m.Called(ctx, options)
-	return args.Get(0).([]image.Summary), args.Error(1)
+	return args.Get(0).(client.ImageListResult), args.Error(1)
 }
 
 func TestCheckImageExists(t *testing.T) {
@@ -62,9 +63,11 @@ func TestCheckImageExists(t *testing.T) {
 		ctx := context.Background()
 		mockClient := new(MockDockerClient)
 
-		mockClient.On("ImageList", ctx, mock.Anything).Return([]image.Summary{
-			{
-				RepoTags: test.images,
+		mockClient.On("ImageList", ctx, mock.Anything).Return(client.ImageListResult{
+			Items: []image.Summary{
+				{
+					RepoTags: test.images,
+				},
 			},
 		}, nil)
 

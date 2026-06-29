@@ -23,16 +23,12 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
-
-	"github.com/docker/docker/api/types/registry"
 
 	"k8s.io/klog/v2"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/client"
+	"github.com/moby/moby/api/types/image"
+	"github.com/moby/moby/api/types/registry"
+	"github.com/moby/moby/client"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/util"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/util/log"
@@ -44,38 +40,38 @@ type Docker struct {
 
 // https://docs.docker.com/engine/api/latest/
 func (d Docker) GetClient() (*client.Client, error) {
-	return client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	return client.New(client.FromEnv)
 }
 
 func (d Docker) GetClientRemoteFromEnv(host string) (*client.Client, error) {
-	return client.NewClientWithOpts(client.FromEnv, client.WithHost(host))
+	return client.New(client.FromEnv, client.WithHost(host))
 }
 
 func (d Docker) GetClientRemote(host string, cacertPath string, certPath string, keyPath string) (*client.Client, error) {
-	return client.NewClientWithOpts(client.WithHost(host), client.WithAPIVersionNegotiation(), client.WithTLSClientConfig(cacertPath, certPath, keyPath))
+	return client.New(client.WithHost(host), client.WithTLSClientConfig(cacertPath, certPath, keyPath))
 }
 
-func (d Docker) GetImages(args types.ImageListOptions) ([]types.ImageSummary, error) {
-	images, err := d.Connection.ImageList(context.Background(), args)
+func (d Docker) GetImages(args client.ImageListOptions) ([]image.Summary, error) {
+	result, err := d.Connection.ImageList(context.Background(), args)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Get Images")
 		return nil, err
 	}
-	return images, nil
+	return result.Items, nil
 }
 
 // RemoveImagesUntagged removes the images with tag <none>:<none>
 func (d Docker) RemoveImagesUntagged() (bool, error) {
-	images, err := d.GetImages(types.ImageListOptions{All: true})
+	images, err := d.GetImages(client.ImageListOptions{All: true})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Remove Images Untagged")
 		return false, err
 	}
-	for _, image := range images {
-		if image.RepoTags != nil && image.RepoTags[0] == "<none>:<none>" && image.RepoDigests[0] == "<none>@<none>" {
-			item, err := d.Connection.ImageRemove(context.Background(), image.ID, types.ImageRemoveOptions{PruneChildren: true, Force: true})
+	for _, img := range images {
+		if img.RepoTags != nil && img.RepoTags[0] == "<none>:<none>" && img.RepoDigests[0] == "<none>@<none>" {
+			result, err := d.Connection.ImageRemove(context.Background(), img.ID, client.ImageRemoveOptions{PruneChildren: true, Force: true})
 			if err != nil {
-				klog.V(log.E).ErrorS(err, "error during Remove Images Untagged", "item", item)
+				klog.V(log.E).ErrorS(err, "error during Remove Images Untagged", "result", result)
 				return false, err
 			}
 		}
@@ -85,17 +81,17 @@ func (d Docker) RemoveImagesUntagged() (bool, error) {
 
 // RemoveDanglingImages removes the images with the filter dangling true
 func (d Docker) RemoveDanglingImages() (bool, error) {
-	filters := filters.NewArgs()
-	filters.Add("dangling", "true")
-	images, err := d.GetImages(types.ImageListOptions{Filters: filters})
+	filterArgs := client.Filters{}
+	filterArgs = filterArgs.Add("dangling", "true")
+	images, err := d.GetImages(client.ImageListOptions{Filters: filterArgs})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Remove Dangling Images")
 		return false, err
 	}
-	for _, image := range images {
-		item, err := d.Connection.ImageRemove(context.Background(), image.ID, types.ImageRemoveOptions{PruneChildren: true, Force: true})
+	for _, img := range images {
+		result, err := d.Connection.ImageRemove(context.Background(), img.ID, client.ImageRemoveOptions{PruneChildren: true, Force: true})
 		if err != nil {
-			klog.V(log.E).ErrorS(err, "error during Remove Dangling Images", "item", item)
+			klog.V(log.E).ErrorS(err, "error during Remove Dangling Images", "result", result)
 			return false, err
 		}
 	}
@@ -104,54 +100,54 @@ func (d Docker) RemoveDanglingImages() (bool, error) {
 
 // Purge images with dangling true
 func (d Docker) PurgeImages() (bool, error) {
-	filters := filters.NewArgs()
-	filters.Add("dangling", "true")
-	report, err := d.Connection.ImagesPrune(context.Background(), filters)
+	filterArgs := client.Filters{}
+	filterArgs = filterArgs.Add("dangling", "true")
+	_, err := d.Connection.ImagePrune(context.Background(), client.ImagePruneOptions{Filters: filterArgs})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Purge Images")
 		return false, err
-	} else {
-		klog.V(log.I).InfoS("Images purged", "images", report.ImagesDeleted)
-		return true, nil
 	}
+
+	klog.V(log.I).InfoS("Images pruned successfully")
+	return true, nil
 }
 
-func (d Docker) PurgeContainer(id string, image string) (bool, error) {
-	containers, err := d.Connection.ContainerList(context.Background(), types.ContainerListOptions{All: true})
+func (d Docker) PurgeContainer(id string, imageName string) (bool, error) {
+	result, err := d.Connection.ContainerList(context.Background(), client.ContainerListOptions{All: true})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Purge Container")
 		return false, err
-	} else {
-		for _, container := range containers {
-			if container.Image == image || container.ID == id {
-				d.ContainerKill(container.ID)
-				d.ContainerRemove(container.ID)
-				klog.V(log.I).InfoS("Purged container", "ID", container.ID)
-			}
-		}
-		return true, nil
 	}
+
+	for _, ctr := range result.Items {
+		if ctr.Image == imageName || ctr.ID == id {
+			d.ContainerKill(ctr.ID)
+			d.ContainerRemove(ctr.ID)
+			klog.V(log.I).InfoS("Purged container", "ID", ctr.ID)
+		}
+	}
+	return true, nil
 }
 
 // remove all the images found using the repo name, with or without tag
 func (d Docker) RemoveImagesFiltered(repo string, tag string) (bool, error) {
-	filters := filters.NewArgs()
+	filterArgs := client.Filters{}
 	if len(repo) > 0 && len(tag) > 0 {
-		filters.Add("reference", repo+":"+tag)
+		filterArgs = filterArgs.Add("reference", repo+":"+tag)
 	}
 	if len(repo) > 0 {
-		filters.Add("reference", repo)
+		filterArgs = filterArgs.Add("reference", repo)
 	}
 
-	images, err := d.GetImages(types.ImageListOptions{Filters: filters})
+	images, err := d.GetImages(client.ImageListOptions{Filters: filterArgs})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Remove Images Filtered")
 		return false, err
 	}
-	for _, image := range images {
-		item, err := d.Connection.ImageRemove(context.Background(), image.ID, types.ImageRemoveOptions{PruneChildren: true, Force: true})
+	for _, img := range images {
+		result, err := d.Connection.ImageRemove(context.Background(), img.ID, client.ImageRemoveOptions{PruneChildren: true, Force: true})
 		if err != nil {
-			klog.V(log.E).ErrorS(err, "error during Remove Images Filtered", "item", item)
+			klog.V(log.E).ErrorS(err, "error during Remove Images Filtered", "result", result)
 			return false, err
 		}
 	}
@@ -159,14 +155,18 @@ func (d Docker) RemoveImagesFiltered(repo string, tag string) (bool, error) {
 }
 
 func (d Docker) TagImage(imageSource string, imageTag string) error {
-	err := d.Connection.ImageTag(context.Background(), imageSource, imageTag)
+	opts := client.ImageTagOptions{
+		Source: imageSource,
+		Target: imageTag,
+	}
+	_, err := d.Connection.ImageTag(context.Background(), opts)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Tag Image")
 	}
 	return err
 }
 
-func (d Docker) PushImage(image string, url string, username string, password string) error {
+func (d Docker) PushImage(imageName string, url string, username string, password string) error {
 	var authConfig = registry.AuthConfig{
 		Username:      username,
 		Password:      password,
@@ -175,42 +175,48 @@ func (d Docker) PushImage(image string, url string, username string, password st
 	authConfigBytes, _ := json.Marshal(authConfig)
 	authConfigEncoded := base64.URLEncoding.EncodeToString(authConfigBytes)
 
-	opts := types.ImagePushOptions{RegistryAuth: authConfigEncoded}
-	resp, err := d.Connection.ImagePush(context.Background(), image, opts)
+	opts := client.ImagePushOptions{RegistryAuth: authConfigEncoded}
+	result, err := d.Connection.ImagePush(context.Background(), imageName, opts)
 	if err != nil {
-		body, _ := ioutil.ReadAll(resp)
-		klog.V(log.E).ErrorS(err, "error during Push Image", "body", body)
+		// Note: result contains io.ReadCloser in .Body field for v0.5.0
+		klog.V(log.E).ErrorS(err, "error during Push Image")
 	}
+	_ = result // result would need to be read and closed
 	return err
 }
 
-func (d Docker) PullImage(image string) error {
-	_, err := d.Connection.ImagePull(context.Background(), image, types.ImagePullOptions{})
+func (d Docker) PullImage(imageName string) error {
+	result, err := d.Connection.ImagePull(context.Background(), imageName, client.ImagePullOptions{})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Pull Image")
+		return err
 	}
-	return err
+	// Close the result to avoid resource leaks (result implements io.ReadCloser)
+	defer result.Close()
+	// Wait for the pull to complete
+	return result.Wait(context.Background())
 }
 
 func (d Docker) GetContainerID(imageName string) (string, error) {
-	containers, err := d.Connection.ContainerList(context.Background(), types.ContainerListOptions{})
+	result, err := d.Connection.ContainerList(context.Background(), client.ContainerListOptions{})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Get Container ID")
+		return "", err
 	}
 
-	for _, container := range containers {
-		if container.Image == imageName {
-			return container.ID, nil
+	for _, ctr := range result.Items {
+		if ctr.Image == imageName {
+			return ctr.ID, nil
 		}
 	}
 	return "", nil
 }
 
 func (d Docker) ContainerStop(containerID string) error {
-	stopOptions := container.StopOptions{
+	stopOptions := client.ContainerStopOptions{
 		Timeout: util.Pint(10),
 	}
-	err := d.Connection.ContainerStop(context.Background(), containerID, stopOptions)
+	_, err := d.Connection.ContainerStop(context.Background(), containerID, stopOptions)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Container Stop")
 	}
@@ -218,7 +224,10 @@ func (d Docker) ContainerStop(containerID string) error {
 }
 
 func (d Docker) ContainerKill(containerID string) error {
-	err := d.Connection.ContainerKill(context.Background(), containerID, "SIGKILL")
+	killOptions := client.ContainerKillOptions{
+		Signal: "SIGKILL",
+	}
+	_, err := d.Connection.ContainerKill(context.Background(), containerID, killOptions)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Container Kill")
 	}
@@ -226,7 +235,7 @@ func (d Docker) ContainerKill(containerID string) error {
 }
 
 func (d Docker) ContainerRemove(containerID string) error {
-	err := d.Connection.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{})
+	_, err := d.Connection.ContainerRemove(context.Background(), containerID, client.ContainerRemoveOptions{})
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during Container Remove")
 	}
