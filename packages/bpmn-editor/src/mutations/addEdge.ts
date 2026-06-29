@@ -42,6 +42,28 @@ import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 
+type ElementOwner = Normalized<
+  | ElementFilter<Unpacked<NonNullable<BPMN20__tDefinitions["rootElement"]>>, "process">
+  | ElementFilter<
+      Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
+      "subProcess" | "adHocSubProcess" | "transaction"
+    >
+>;
+
+function findNodeContainer(definitions: Normalized<BPMN20__tDefinitions>, nodeId: string): ElementOwner {
+  const { process } = addOrGetProcessAndDiagramElements({ definitions });
+  let container: ElementOwner = process;
+
+  visitFlowElementsAndArtifacts(process, ({ element, owner }) => {
+    if (element["@_id"] === nodeId) {
+      container = owner;
+      return false; // Stop visiting
+    }
+  });
+
+  return container;
+}
+
 export function addEdge({
   definitions,
   __readonly_sourceNode,
@@ -87,14 +109,17 @@ export function addEdge({
   let newEdgeId = generateUuid();
 
   const { process, diagramElements } = addOrGetProcessAndDiagramElements({ definitions });
+  const parentContainer = findNodeContainer(definitions, __readonly_sourceNode.href);
 
   let existingEdgeId: string | undefined = undefined;
 
   // Associations (incl. Compensation Associations)
   if (__readonly_edge.type === EDGE_TYPES.association || __readonly_edge.type === EDGE_TYPES.compensationAssociation) {
-    const targetArtifacts = __readonly_parentArtifacts ?? process.artifact ?? [];
-    if (!process.artifact) {
-      process.artifact = targetArtifacts;
+    parentContainer.artifact ??= [];
+
+    const targetArtifacts = __readonly_parentArtifacts ?? parentContainer.artifact ?? [];
+    if (!parentContainer.artifact) {
+      parentContainer.artifact = targetArtifacts;
     }
 
     const newAssociation: Normalized<BPMN20__tAssociation> = {
@@ -121,9 +146,11 @@ export function addEdge({
 
   // Sequence Flows
   else {
-    const targetFlowElements = __readonly_parentFlowElements ?? process.flowElement ?? [];
-    if (!process.flowElement) {
-      process.flowElement = targetFlowElements;
+    parentContainer.flowElement ??= [];
+
+    const targetFlowElements = __readonly_parentFlowElements ?? parentContainer.flowElement ?? [];
+    if (!parentContainer.flowElement) {
+      parentContainer.flowElement = targetFlowElements;
     }
 
     const newSequenceFlow: Normalized<BPMN20__tSequenceFlow> = {
@@ -151,7 +178,7 @@ export function addEdge({
   }
 
   // <incoming> and <outgoing> elements of Flow Elements
-  visitFlowElementsAndArtifacts(process, ({ element }) => {
+  visitFlowElementsAndArtifacts(parentContainer, ({ element }) => {
     if (
       element.__$$element !== "association" &&
       element.__$$element !== "group" &&
