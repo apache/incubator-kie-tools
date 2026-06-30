@@ -10,7 +10,7 @@ on:
 env:
   MAVEN_ARGS: "-B -s ${{ github.workspace }}/.github/supporting-files/ci/midstream-mvn-config/settings.xml"
   GITHUB_TOKEN: ${{ secrets.KIE1_TOKEN }}
-  MAVEN_REPO_TOKEN: ${{ secrets.LOGIC_MAVEN_REPOSITORY_ACCESS_TOKEN }}
+  MAVEN_REPO_TOKEN: ${{ github.token }}
   PNPM_FILTER: ${{ vars.OSL_IMAGES_PNPM_FILTER }}
   OSL_PACKAGES: ${{ vars.OSL_IMAGES_PACKAGES }}
 

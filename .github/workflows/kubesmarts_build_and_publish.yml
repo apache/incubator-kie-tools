@@ -41,7 +41,7 @@ on:
 env:
   MAVEN_ARGS: "-B -s ${{ github.workspace }}/kie-tools/.github/supporting-files/ci/midstream-mvn-config/settings.xml"
   GITHUB_TOKEN: ${{ secrets.KIE1_TOKEN }}
-  MAVEN_REPO_TOKEN: ${{ secrets.LOGIC_MAVEN_REPOSITORY_ACCESS_TOKEN }}
+  MAVEN_REPO_TOKEN: ${{ github.token }}
   KIE_TOOLS_BUILD__buildContainerImages: "false"
   KIE_TOOLS_BUILD__runEndToEndTests: "false"
   KIE_TOOLS_BUILD__runLinters: "false"
