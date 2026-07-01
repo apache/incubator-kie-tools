@@ -59,12 +59,12 @@
     <jacoco.destFile>${project.build.directory}/jacoco.exec</jacoco.destFile>
     <sonar.jacoco.reportPath>${jacoco.destFile}</sonar.jacoco.reportPath>
   </properties>
-
+  <!--TODO : Added workaround for jdtls 1.43.0 and it needs to be modified once eclipse fixes the issue -->
   <repositories>
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/milestones/1.43.0/repository</url>
+      <url>https://kubesmarts.github.io/jdtls-repository-custom/1.43.0</url>
     </repository>
   </repositories>
 
