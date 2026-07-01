@@ -203,6 +203,8 @@ interface BpmnEditorDictionary
       priorityPlaceholder: string;
       slaDuedate: string;
       datePlaceholder: string;
+      processDuration: string;
+      processDurationPlaceholder: string;
       timerOptions: string;
       fireOnceAfterDuration: string;
       durationPlaceholder: string;

@@ -208,6 +208,8 @@ export const en: BpmnEditorI18n = {
     priorityPlaceholder: "Enter priority...",
     slaDuedate: "SLA Due Date",
     datePlaceholder: "Enter a date...",
+    processDuration: "Process Duration",
+    processDurationPlaceholder: "E.g., PT1M (1 minute), PT1H (1 hour), P1D (1 day)",
     timerOptions: "Timer options",
     fireOnceAfterDuration: "Fire once after duration",
     durationPlaceholder: "Enter duration or expression #{expression}",
