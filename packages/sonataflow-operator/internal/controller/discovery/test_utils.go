@@ -67,10 +67,6 @@ const (
 
 func mockService(namespace string, name string, labels *map[string]string, selectorLabels *map[string]string) *corev1.Service {
 	service := &corev1.Service{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Service",
-			APIVersion: "v1",
-		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace,
 			Name:      name,
@@ -101,10 +97,6 @@ func mockServicePort(name string, protocol string, port int32) corev1.ServicePor
 
 func mockPod(namespace string, name string, labels *map[string]string) *corev1.Pod {
 	pod := &corev1.Pod{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Pod",
-			APIVersion: "v1",
-		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace,
 			Name:      name,
@@ -140,10 +132,6 @@ func mockContainerPort(name string, protocol string, port int32) corev1.Containe
 
 func mockReplicaSet(namespace string, name string, ownerReferenceUID string) *appsv1.ReplicaSet {
 	replicaSet := &appsv1.ReplicaSet{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "ReplicaSet",
-			APIVersion: "apps/v1",
-		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace:       namespace,
 			Name:            name,
@@ -156,10 +144,6 @@ func mockReplicaSet(namespace string, name string, ownerReferenceUID string) *ap
 
 func mockDeployment(namespace string, name string, labels *map[string]string, selector *map[string]string) *appsv1.Deployment {
 	deployment := &appsv1.Deployment{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Deployment",
-			APIVersion: "apps/v1",
-		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace,
 			Name:      name,
@@ -177,10 +161,6 @@ func mockDeployment(namespace string, name string, labels *map[string]string, se
 
 func mockStatefulSet(namespace string, name string, labels *map[string]string, selector *map[string]string) *appsv1.StatefulSet {
 	statefulSet := &appsv1.StatefulSet{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "StatefulSet",
-			APIVersion: "apps/v1",
-		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace,
 			Name:      name,
@@ -198,10 +178,6 @@ func mockStatefulSet(namespace string, name string, labels *map[string]string, s
 
 func mockIngress(namespace string, name string) *networkingV1.Ingress {
 	ingress := &networkingV1.Ingress{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Ingress",
-			APIVersion: "networking.k8s.io/v1",
-		},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace,
 			Name:      name,

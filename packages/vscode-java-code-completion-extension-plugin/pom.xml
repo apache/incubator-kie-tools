@@ -68,7 +68,7 @@
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/milestones/1.43.0/repository</url>
+      <url>https://kubesmarts.github.io/jdtls-repository-custom/1.43.0</url>
     </repository>
   </repositories>
 
