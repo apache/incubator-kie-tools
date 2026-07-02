@@ -18,6 +18,7 @@
  */
 
 import { QuickStart } from "@patternfly/quickstarts";
+import { KIE_APACHE_DOCS_VERSION } from "../AppConstants";
 
 export const ApplicationServicesIntegrationQuickStart: QuickStart = {
   metadata: {
@@ -156,7 +157,7 @@ If you find an issue or any misleading information, please feel free to report i
               <li>
                 <p>You have created a service account.</p>
                 <div class="paragraph">
-                  <p>For information about creating a service account, see <a href="https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-redhat-application-services-integration.html#proc-create-service-account-serverless-logic-web-tools">Creating a service account in Red Hat OpenShift application and Data Services</a>. </p>
+                  <p>For information about creating a service account, see <a href="https://kie.apache.org/docs/${KIE_APACHE_DOCS_VERSION}/sonataflow/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-redhat-application-services-integration.html#proc-create-service-account-serverless-logic-web-tools">Creating a service account in Red Hat OpenShift application and Data Services</a>. </p>
                 </div>
               </li>
             </ul>

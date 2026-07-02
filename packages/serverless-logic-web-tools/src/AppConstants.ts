@@ -18,9 +18,9 @@
  */
 
 export const APP_NAME = "Serverless Logic Web Tools";
-export const SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL =
-  "https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-overview.html";
+export const SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL = `https://docs.redhat.com/en/documentation/red_hat_openshift_serverless/latest/html-single/serverless_logic/index`;
 export const APP_GIT_USER = {
   name: APP_NAME,
   email: "",
 };
+export const KIE_APACHE_DOCS_VERSION = "10.2.x";

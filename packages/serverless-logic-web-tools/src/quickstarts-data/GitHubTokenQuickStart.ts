@@ -18,6 +18,7 @@
  */
 
 import { QuickStart } from "@patternfly/quickstarts";
+import { KIE_APACHE_DOCS_VERSION } from "../AppConstants";
 
 export const GitHubTokenQuickStart: QuickStart = {
   metadata: {
@@ -112,7 +113,7 @@ If you find an issue or any misleading information, please feel free to report i
               <li>
                 <p>Your GitHub token is configured in the Serverless Logic Web Tools.</p>
                 <div class="paragraph">
-                  <p>For more information, see <a href="https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
+                  <p>For more information, see <a href="https://kie.apache.org/docs/${KIE_APACHE_DOCS_VERSION}/sonataflow/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
                 </div>
               </li>
             </ul>
@@ -192,7 +193,7 @@ If you find an issue or any misleading information, please feel free to report i
               <li>
                 <p>Your GitHub token is configured in the Serverless Logic Web Tools.</p>
                 <div class="paragraph">
-                  <p>For more information, see <a href="https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
+                  <p>For more information, see <a href="https://kie.apache.org/docs/${KIE_APACHE_DOCS_VERSION}/sonataflow/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
                 </div>
               </li>
               <li>
