@@ -47,7 +47,7 @@ runs:
     - name: Setup local maven cache
       if: inputs.USE_REMOTE_ARTIFACTS == 'false'
       id: setup_maven_cache
-      uses: ./.github/actions/setup-maven-cache
+      uses: kubesmarts/kie-tools/.github/actions/setup-maven-cache@main
       with:
         DEPS_BRANCHNAME: ${{ inputs.DEPS_BRANCHNAME }}
         WORKING_DIR: ${{ inputs.WORKING_DIR }}
