@@ -84,6 +84,10 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       description:
         "Which tool to pin related images when generating the operator bundle. If empty, no SHA is generated from the images. Possible values are docker|podman|skopeo.",
     },
+    SONATAFLOW_OPERATOR__runE2ETests: {
+      default: "false",
+      description: "Whether to run E2E tests during the operator build.",
+    },
   }),
   get env() {
     return {
@@ -102,6 +106,7 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
         kogitoDataIndexPostgresqlImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoDataIndexPostgresqlImage),
         kogitoDBMigratorToolImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoDBMigratorToolImage),
         pinImageSHABundleTool: getOrDefault(this.vars.SONATAFLOW_OPERATOR_pinImageSHABundleTool),
+        runE2ETests: getOrDefault(this.vars.SONATAFLOW_OPERATOR__runE2ETests),
       },
     };
   },
