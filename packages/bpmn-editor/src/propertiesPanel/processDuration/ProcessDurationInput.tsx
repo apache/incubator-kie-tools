@@ -65,44 +65,42 @@ export function ProcessDurationInput({ element }: { element: WithProcessDuration
   const isReadOnly = useBpmnEditorStore((s) => s.settings.isReadOnly);
 
   return (
-    <>
-      <FormGroup label={i18n.propertiesPanel.processDuration}>
-        <TextInput
-          aria-label={"Process Duration"}
-          type={"text"}
-          isDisabled={isReadOnly}
-          placeholder={i18n.propertiesPanel.processDurationPlaceholder}
-          value={parseBpmn20Drools10MetaData(element).get("processDuration") || ""}
-          onChange={(_e, newProcessDuration) =>
-            bpmnEditorStoreApi.setState((s) => {
-              const { process } = addOrGetProcessAndDiagramElements({
-                definitions: s.bpmn.model.definitions,
-              });
-              if (!element || element["@_id"] === process["@_id"]) {
-                if (newProcessDuration) {
-                  setBpmn20Drools10MetaData(process, "processDuration", newProcessDuration);
-                } else {
-                  deleteBpmn20Drools10MetaDataEntry(process, "processDuration");
-                }
+    <FormGroup label={i18n.propertiesPanel.processDuration}>
+      <TextInput
+        aria-label={"Process Duration"}
+        type={"text"}
+        isDisabled={isReadOnly}
+        placeholder={i18n.propertiesPanel.processDurationPlaceholder}
+        value={parseBpmn20Drools10MetaData(element).get("processDuration") || ""}
+        onChange={(_e, newProcessDuration) =>
+          bpmnEditorStoreApi.setState((s) => {
+            const { process } = addOrGetProcessAndDiagramElements({
+              definitions: s.bpmn.model.definitions,
+            });
+            if (!element || element["@_id"] === process["@_id"]) {
+              if (newProcessDuration) {
+                setBpmn20Drools10MetaData(process, "processDuration", newProcessDuration);
               } else {
-                visitFlowElementsAndArtifacts(process, ({ element: e }) => {
-                  if (e["@_id"] === element["@_id"]) {
-                    if (newProcessDuration) {
-                      setBpmn20Drools10MetaData(
-                        e as { extensionElements?: WithMetaData },
-                        "processDuration",
-                        newProcessDuration
-                      );
-                    } else {
-                      deleteBpmn20Drools10MetaDataEntry(e as { extensionElements?: WithMetaData }, "processDuration");
-                    }
-                  }
-                });
+                deleteBpmn20Drools10MetaDataEntry(process, "processDuration");
               }
-            })
-          }
-        />
-      </FormGroup>
-    </>
+            } else {
+              visitFlowElementsAndArtifacts(process, ({ element: e }) => {
+                if (e["@_id"] === element["@_id"]) {
+                  if (newProcessDuration) {
+                    setBpmn20Drools10MetaData(
+                      e as { extensionElements?: WithMetaData },
+                      "processDuration",
+                      newProcessDuration
+                    );
+                  } else {
+                    deleteBpmn20Drools10MetaDataEntry(e as { extensionElements?: WithMetaData }, "processDuration");
+                  }
+                }
+              });
+            }
+          })
+        }
+      />
+    </FormGroup>
   );
 }
