@@ -37,7 +37,7 @@
   <description>Bill of Materials for KIE Tools Quarkus-based projects</description>
 
   <properties>
-    <version.quarkus>3.27.4</version.quarkus>
+    <version.quarkus>3.27.4.1</version.quarkus>
   </properties>
 
   <dependencyManagement>
