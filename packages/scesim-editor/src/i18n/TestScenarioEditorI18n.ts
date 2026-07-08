@@ -34,6 +34,7 @@ interface TestScenarioEditorDictionary
         noChoice: string;
         rule: string;
       };
+      ruleNotSupported: string;
       autoFillTable: string;
       autoFillTableTooltip: string;
       createButton: string;
