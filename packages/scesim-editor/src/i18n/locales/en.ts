@@ -37,6 +37,7 @@ export const en: TestScenarioEditorI18n = {
       noChoice: "Select a type",
       rule: "Rule (DRL)",
     },
+    ruleNotSupported: "Rule based Test Scenario is not supported yet.",
     autoFillTable: "Autofill DMN Data",
     autoFillTableTooltip:
       "If checked, the Test Scenario table will be automatically populated based on the provided DMN data (Input nodes assigned as GIVEN columns and Output nodes assigned as EXPECT colums)",
