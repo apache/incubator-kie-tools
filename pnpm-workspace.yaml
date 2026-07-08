@@ -9,9 +9,8 @@ overrides:
   "d3-color": "3.1.0"
   "graphql": "14.3.1"
   "json-refs>js-yaml": "^3.14.2"
-  # CVE-2025-29018: Fix security vulnerability in brace-expansion (ReDOS)
-  # Upgrading brace-expansion via minimatch transitive paths to 5.0.7 (patched)
-  "minimatch@^3>brace-expansion": "^5.0.7"
+  # CVE-2026-13149: Fix security vulnerability in brace-expansion (ReDOS)
+  # minimatch@3 requires the legacy CommonJS API from brace-expansion@1.x; only override minimatch@^5.
   "minimatch@^5>brace-expansion": "^5.0.7"
   "openapi-types": "7.2.3"
   # CVE-2026-8723: Fix TypeError in qs.stringify (comma arrayFormat + encodeValuesOnly with null/undefined)
