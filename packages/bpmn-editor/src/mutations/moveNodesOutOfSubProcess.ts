@@ -197,17 +197,31 @@ export function moveNodesOutOfSubProcess({
     }
   }
 
-  // BPMN 2.0 Spec: When moving Start Events from Event Sub-Process to top level,
-  // only convert event types that are NOT supported at top level
+  // BPMN 2.0 Spec: When moving Start Events out of an Event Sub-Process,
+  // only convert event types that are NOT supported by the target container.
+  // Event Sub-Processes allow: Message, Timer, Error, Escalation, Compensation, Conditional, Signal
   // Top-level allows: None, Message, Timer, Conditional, Signal
-  // Top-level does NOT allow: Error, Escalation, Compensation, Link, Terminate
+  // Regular embedded Sub-Processes allow: None only
   if (isEventSubProcess) {
+    const isTargetEventSubProcess =
+      targetSubProcess?.__$$element === "subProcess" && (targetSubProcess["@_triggeredByEvent"] ?? false);
+    const isMovingToTopLevel = __readonly_targetSubProcessId === null;
+
     for (const flowElement of flowElementsToMove) {
       if (
         flowElement.__$$element === "startEvent" &&
         flowElement.eventDefinition &&
         flowElement.eventDefinition.length > 0
       ) {
+        if (!isMovingToTopLevel && isTargetEventSubProcess) {
+          continue;
+        }
+
+        if (!isMovingToTopLevel && __readonly_targetSubProcessId && !isTargetEventSubProcess) {
+          flowElement.eventDefinition = undefined;
+          continue;
+        }
+
         const eventDefType = flowElement.eventDefinition[0].__$$element;
         const unsupportedAtTopLevel =
           eventDefType === "errorEventDefinition" ||
@@ -220,7 +234,6 @@ export function moveNodesOutOfSubProcess({
           // Convert to "None" Start Event because this event type is not allowed at top level
           flowElement.eventDefinition = undefined;
         }
-        // Otherwise keep the event definition (Message, Timer, Conditional, Signal are valid at top level)
       }
     }
   }
