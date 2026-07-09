@@ -26,9 +26,9 @@ overrides:
   "minimatch@^10": "10.2.1"
   "minimatch@^5": "5.1.9"
   "minimatch@^4": "5.1.9"
-  # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203: Fix security vulnerability in undici
+  # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203, CVE-2026-12151, CVE-2026-9679, CVE-2026-11525, CVE-2026-6733: Fix security vulnerability in undici
   # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version
-  "undici": "^6.24.0"
+  "undici": "^6.27.0"
   # CVE-2026-41907: Fix security vulnerability in uuid
   # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
   "uuid": "^11.1.1"

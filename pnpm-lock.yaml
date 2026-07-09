@@ -24,7 +24,7 @@ overrides:
   minimatch@^10: 10.2.1
   minimatch@^5: 5.1.9
   minimatch@^4: 5.1.9
-  undici: ^6.24.0
+  undici: ^6.27.0
   uuid: ^11.1.1
   picomatch@3: 3.0.2
   picomatch@4: 4.0.4
@@ -22831,8 +22831,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@6.24.0:
-    resolution: {integrity: sha512-lVLNosgqo5EkGqh5XUDhGfsMSoO8K0BAN0TyJLvwNRSl4xWGZlCVYsAIpa/OpA3TvmnM01GWcoKmc3ZWo5wKKA==}
+  undici@6.27.0:
+    resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
@@ -39327,7 +39327,7 @@ snapshots:
       mime: 3.0.0
       prettier: 2.8.8
       tiny-glob: 0.2.9
-      undici: 6.24.0
+      undici: 6.27.0
       yargs-parser: 21.1.1
 
   opener@1.5.2: {}
@@ -42595,7 +42595,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@6.24.0: {}
+  undici@6.27.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
