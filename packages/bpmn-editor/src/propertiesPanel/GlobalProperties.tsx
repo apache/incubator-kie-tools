@@ -52,6 +52,7 @@ import { isProcessIdValid, getProcessIdErrorMessage } from "../validation/proces
 import { Imports } from "./imports/Imports";
 import { Metadata } from "./metadata/Metadata";
 import { SlaDueDateInput } from "./slaDueDate/SlaDueDateInput";
+import { ProcessDurationInput } from "./processDuration/ProcessDurationInput";
 import { useBpmnEditorI18n } from "../i18n";
 
 export function GlobalProperties() {
@@ -185,6 +186,8 @@ export function GlobalProperties() {
                 </FormGroup>
 
                 <SlaDueDateInput element={process} />
+
+                <ProcessDurationInput element={process} />
               </FormSection>
             </>
           )}
