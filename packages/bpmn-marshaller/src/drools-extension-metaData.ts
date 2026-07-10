@@ -25,6 +25,7 @@ export type Bpmn20KnownMetaDataKey =
   | "customTags" // Used for Process Variables.
   | "customDescription" // Used for "Process Instance Description" as a global property.
   | "customSLADueDate" // Used for "SLA Due date" as a global property.
+  | "processDuration" // Used for "Process Duration" as a global property.
   | "customAbortParent" // Used for "Abort parent" flag on Call Activities.
   | "customAsync" // Used for "Async" flag on Call Activities.
   | "customActivationCondition" // Used for "Activation condition" expression on Ad-hoc sub-processes.

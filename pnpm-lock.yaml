@@ -5,12 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@apidevtools/json-schema-ref-parser>js-yaml': ^3.14.2
-  '@istanbuljs/load-nyc-config>js-yaml': ^3.14.2
+  '@apidevtools/json-schema-ref-parser>js-yaml': ^3.15.0
+  '@istanbuljs/load-nyc-config>js-yaml': ^3.15.0
   cross-spawn: ^7.0.6
   d3-color: 3.1.0
   graphql: 14.3.1
-  json-refs>js-yaml: ^3.14.2
+  json-refs>js-yaml: ^3.15.0
   minimatch@^3>brace-expansion: 1.1.16
   minimatch@^5>brace-expansion: 2.1.2
   openapi-types: 7.2.3
@@ -18,13 +18,14 @@ overrides:
   path-to-regexp@^0: 0.1.13
   react-dropzone: ^11.4.2
   superagent: 10.2.2
-  xmlbuilder2>js-yaml: ^3.14.2
+  xmlbuilder2>js-yaml: ^3.15.0
+  js-yaml@^4: ^4.2.0
   minimatch@^3: 3.1.5
   minimatch@^9: 9.0.8
   minimatch@^10: 10.2.1
   minimatch@^5: 5.1.9
   minimatch@^4: 5.1.9
-  undici: ^6.24.0
+  undici: ^6.27.0
   uuid: ^11.1.1
   picomatch@3: 3.0.2
   picomatch@4: 4.0.4
@@ -4852,8 +4853,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
       js-yaml:
-        specifier: ^4.1.1
-        version: 4.1.1
+        specifier: ^4.2.0
+        version: 4.3.0
       jsonpath-rfc9535:
         specifier: ^1.3.0
         version: 1.3.0
@@ -5685,8 +5686,8 @@ importers:
         specifier: ^1.30.1
         version: 1.30.1
       js-yaml:
-        specifier: ^4.1.1
-        version: 4.1.1
+        specifier: ^4.2.0
+        version: 4.3.0
       json-refs:
         specifier: ^3.0.15
         version: 3.0.15
@@ -18687,12 +18688,12 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@3.14.2:
-    resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
+  js-yaml@3.15.0:
+    resolution: {integrity: sha512-ttBQIIQPDeLjpPOohtUdXuXUVoA2uIB6fEH9HyJ7234s5mBJ5wTx20njxplLZQgLaOfpmPQA7X2t5AX6tIPbog==}
     hasBin: true
 
-  js-yaml@4.1.1:
-    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
+  js-yaml@4.3.0:
+    resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
   jsbn@0.1.1:
@@ -22831,8 +22832,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@6.24.0:
-    resolution: {integrity: sha512-lVLNosgqo5EkGqh5XUDhGfsMSoO8K0BAN0TyJLvwNRSl4xWGZlCVYsAIpa/OpA3TvmnM01GWcoKmc3ZWo5wKKA==}
+  undici@6.27.0:
+    resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
@@ -24169,13 +24170,13 @@ snapshots:
   '@apidevtools/json-schema-ref-parser@13.0.5':
     dependencies:
       '@types/json-schema': 7.0.15
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
 
   '@apidevtools/json-schema-ref-parser@9.0.6':
     dependencies:
       '@jsdevtools/ono': 7.1.3
       call-me-maybe: 1.0.2
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
 
   '@apidevtools/openapi-schemas@2.1.0': {}
 
@@ -26181,7 +26182,7 @@ snapshots:
       globals: 13.20.0
       ignore: 5.3.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       minimatch: 3.1.5
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -26600,7 +26601,7 @@ snapshots:
       http-proxy-agent: 6.1.1
       https-proxy-agent: 6.2.1
       jose: 4.14.6
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       json-stable-stringify: 1.0.2
       lodash: 4.18.1
       scuid: 1.1.0
@@ -26865,7 +26866,7 @@ snapshots:
     dependencies:
       camelcase: 5.3.1
       find-up: 4.1.0
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       resolve-from: 5.0.0
 
   '@istanbuljs/schema@0.1.3': {}
@@ -29099,7 +29100,7 @@ snapshots:
       '@jsdevtools/ono': 7.1.3
       '@types/json-schema': 7.0.15
       call-me-maybe: 1.0.2
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
 
   '@readme/openapi-parser@2.5.0(openapi-types@7.2.3)':
     dependencies:
@@ -31013,7 +31014,7 @@ snapshots:
       '@textlint/types': 15.5.1
       chalk: 4.1.2
       debug: 4.4.3
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       lodash: 4.18.1
       pluralize: 2.0.0
       string-width: 4.2.3
@@ -32166,12 +32167,12 @@ snapshots:
 
   '@yarnpkg/parsers@2.5.1':
     dependencies:
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       tslib: 1.14.1
 
   '@yarnpkg/parsers@3.0.3':
     dependencies:
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       tslib: 2.8.1
 
   '@yarnpkg/pnp@2.3.2':
@@ -34043,7 +34044,7 @@ snapshots:
   cosmiconfig@8.0.0:
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       parse-json: 5.2.0
       path-type: 4.0.0
 
@@ -34051,7 +34052,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.3
@@ -35322,7 +35323,7 @@ snapshots:
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       is-path-inside: 3.0.3
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       json-stable-stringify-without-jsonify: 1.0.1
       levn: 0.4.1
       lodash.merge: 4.6.2
@@ -37520,12 +37521,12 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@3.14.2:
+  js-yaml@3.15.0:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
 
-  js-yaml@4.1.1:
+  js-yaml@4.3.0:
     dependencies:
       argparse: 2.0.1
 
@@ -37641,7 +37642,7 @@ snapshots:
     dependencies:
       commander: 4.1.1
       graphlib: 2.1.8
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       lodash: 4.18.1
       native-promise-only: 0.8.1
       path-loader: 1.0.12
@@ -38625,7 +38626,7 @@ snapshots:
       find-up: 5.0.0
       glob: 8.1.0
       he: 1.2.0
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       log-symbols: 4.1.0
       minimatch: 5.1.9
       ms: 2.1.3
@@ -39180,11 +39181,11 @@ snapshots:
 
   openapi-typescript@5.4.2:
     dependencies:
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       mime: 3.0.0
       prettier: 2.8.8
       tiny-glob: 0.2.9
-      undici: 6.24.0
+      undici: 6.27.0
       yargs-parser: 21.1.1
 
   opener@1.5.2: {}
@@ -40114,7 +40115,7 @@ snapshots:
   rc-config-loader@4.1.3:
     dependencies:
       debug: 4.4.3
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       json5: 2.2.3
       require-from-string: 2.0.2
     transitivePeerDependencies:
@@ -40567,7 +40568,7 @@ snapshots:
 
   read-yaml-file@2.1.0:
     dependencies:
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       strip-bom: 4.0.0
 
   read@1.0.7:
@@ -42410,7 +42411,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@6.24.0: {}
+  undici@6.27.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
@@ -42888,7 +42889,7 @@ snapshots:
       glob: 11.0.1
       got: 14.4.5
       hpagent: 1.2.0
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       mocha: 10.6.0
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.27.0
@@ -43779,7 +43780,7 @@ snapshots:
 
   write-yaml-file@4.2.0:
     dependencies:
-      js-yaml: 4.1.1
+      js-yaml: 4.3.0
       write-file-atomic: 3.0.3
 
   ws@6.2.2:
@@ -43819,7 +43820,7 @@ snapshots:
       '@oozcitak/infra': 1.0.8
       '@oozcitak/util': 8.3.8
       '@types/node': 24.12.4
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
 
   xmlbuilder@11.0.1: {}
 
