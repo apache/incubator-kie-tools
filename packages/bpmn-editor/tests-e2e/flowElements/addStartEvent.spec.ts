@@ -151,6 +151,27 @@ test.describe("Add node - Start Event", () => {
         expect(subProcessStartEvent?.__$$element).toBe("startEvent");
         expect(subProcessStartEvent?.eventDefinition).toMatchObject([{ __$$element: eventDefinition }]);
       });
+
+      test(`should keep ${morphType} Start Event when moved within the same Event Sub-Process`, async ({
+        jsonModel,
+        nodes,
+      }) => {
+        const startEvent = nodes.getByType(NodeType.START_EVENT);
+        await nodes.morph({ node: startEvent, to: morphType });
+
+        const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
+        await nodes.dragNodeToPosition({
+          id: startEventId,
+          fromPosition: NodePosition.CENTER,
+          toPosition: { x: 200, y: 320 },
+        });
+
+        const subProcesses = await jsonModel.getSubProcesses();
+        expect(subProcesses.length).toBe(1);
+        const subProcessStartEvent = (await jsonModel.getStartEvents(subProcesses[0].flowElement))[0];
+        expect(subProcessStartEvent?.__$$element).toBe("startEvent");
+        expect(subProcessStartEvent?.eventDefinition).toMatchObject([{ __$$element: eventDefinition }]);
+      });
     }
   });
 

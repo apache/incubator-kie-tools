@@ -30,6 +30,10 @@ import { BPMN20__tProcess } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2
 import { ElementFilter } from "@kie-tools/xml-parser-ts/dist/elementFilter";
 import { NODE_COLORS } from "../NodeSvgs";
 import { deleteEdge } from "../../../mutations/deleteEdge";
+import { addOrGetErrors } from "../../../mutations/addOrGetErrors";
+import { addOrGetSignals } from "../../../mutations/addOrGetSignals";
+import { addOrGetMessages } from "../../../mutations/addOrGetMessages";
+import { addOrGetEscalations } from "../../../mutations/addOrGetEscalations";
 import { setBpmn20Drools10MetaData } from "@kie-tools/bpmn-marshaller/dist/drools-extension-metaData";
 
 export type Event = Normalized<
@@ -112,15 +116,25 @@ export function useEventNodeMorphingActions(event: Event) {
                 };
                 break;
               case "errorEventDefinition":
+                const { errorRef } = addOrGetErrors({
+                  definitions: s.bpmn.model.definitions,
+                  errorName: "Error_" + generateUuid().substring(0, 8),
+                });
                 element.eventDefinition[0] = {
                   "@_id": generateUuid(),
                   __$$element: "errorEventDefinition",
+                  "@_errorRef": errorRef,
                 };
                 break;
               case "escalationEventDefinition":
+                const { escalationRef } = addOrGetEscalations({
+                  definitions: s.bpmn.model.definitions,
+                  escalationName: "Escalation_" + generateUuid().substring(0, 8),
+                });
                 element.eventDefinition[0] = {
                   "@_id": generateUuid(),
                   __$$element: "escalationEventDefinition",
+                  "@_escalationRef": escalationRef,
                 };
                 break;
               case "linkEventDefinition":
@@ -131,15 +145,25 @@ export function useEventNodeMorphingActions(event: Event) {
                 };
                 break;
               case "messageEventDefinition":
+                const { messageRef } = addOrGetMessages({
+                  definitions: s.bpmn.model.definitions,
+                  messageName: "Message_" + generateUuid().substring(0, 8),
+                });
                 element.eventDefinition[0] = {
                   "@_id": generateUuid(),
                   __$$element: "messageEventDefinition",
+                  "@_messageRef": messageRef,
                 };
                 break;
               case "signalEventDefinition":
+                const { signalRef } = addOrGetSignals({
+                  definitions: s.bpmn.model.definitions,
+                  signalName: "Signal_" + generateUuid().substring(0, 8),
+                });
                 element.eventDefinition[0] = {
                   "@_id": generateUuid(),
                   __$$element: "signalEventDefinition",
+                  "@_signalRef": signalRef,
                 };
                 // Add default extensionElements for intermediateThrowEvent and endEvent
                 if (element.__$$element === "intermediateThrowEvent" || element.__$$element === "endEvent") {
@@ -159,11 +183,8 @@ export function useEventNodeMorphingActions(event: Event) {
                 };
                 break;
             }
-            element.eventDefinition[0] = {
-              "@_id": generateUuid(),
-              __$$element: eventDefinitionElement as any,
-            };
-            return true; // Will continue visiting.
+
+            return false; // Will stop visiting.
           }
         });
 
