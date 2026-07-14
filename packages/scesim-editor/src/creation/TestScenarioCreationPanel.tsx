@@ -327,7 +327,7 @@ function TestScenarioCreationPanel() {
           <Alert
             className="kie-scesim-editor-creation-panel--rule-scesim-alert"
             variant="danger"
-            title="Rule based Test Scenario is not supported yet."
+            title={i18n.creationPanel.ruleNotSupported}
           />
         )}
       </EmptyStateBody>
