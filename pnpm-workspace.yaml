@@ -12,8 +12,8 @@ overrides:
   "json-refs>js-yaml": "^3.15.0"
   # CVE-2026-33750: Fix security vulnerability in brace-expansion
   # Overriding transitive dependency until minimatch updates to patched brace-expansion version
-  "minimatch@^3>brace-expansion": "1.1.13"
-  "minimatch@^5>brace-expansion": "^2.0.3"
+  "minimatch@^3>brace-expansion": "1.1.16"
+  "minimatch@^5>brace-expansion": "2.1.2"
   "openapi-types": "7.2.3"
   # CVE-2026-8723: Fix TypeError in qs.stringify (comma arrayFormat + encodeValuesOnly with null/undefined)
   # Overriding transitive dependency until @cypress/request updates to patched qs version
