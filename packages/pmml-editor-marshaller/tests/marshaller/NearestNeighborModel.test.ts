@@ -21,8 +21,8 @@ import { DataDictionary, Model, NearestNeighborModel, PMML, XML2PMML } from "@ki
 import { NEAREST_NEIGHBOUR_MODEL_1 } from "./TestData_NearestNeighborModel";
 
 describe("NearestNeighborModel tests", () => {
-  test("NearestNeighborModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(NEAREST_NEIGHBOUR_MODEL_1);
+  test("NearestNeighborModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(NEAREST_NEIGHBOUR_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

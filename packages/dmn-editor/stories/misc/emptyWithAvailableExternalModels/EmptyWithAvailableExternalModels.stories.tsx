@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
@@ -27,6 +27,7 @@ import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16
 import {
   DmnEditor,
   DmnEditorProps,
+  ExternalModel,
   ExternalModelsIndex,
   OnRequestExternalModelByPath,
   OnRequestExternalModelsAvailableToInclude,
@@ -36,7 +37,7 @@ import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalizat
 
 import { DmnEditorWrapper } from "../../dmnEditorStoriesWrapper";
 
-import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
+import { availableModelsByPathPromise, modelsByNamespacePromise } from "./availableModelsToInclude";
 
 export const generateEmptyDmn16 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
@@ -63,6 +64,14 @@ function EmptyStoryWithIncludedModels(args: DmnEditorProps) {
     };
   });
 
+  const [availableModelsByPath, setAvailableModelsByPath] = useState<Record<string, ExternalModel>>({});
+  const [modelsByNamespace, setModelsByNamespace] = useState<ExternalModelsIndex>({} as ExternalModelsIndex);
+
+  useEffect(() => {
+    availableModelsByPathPromise.then(setAvailableModelsByPath);
+    modelsByNamespacePromise.then(setModelsByNamespace);
+  }, []);
+
   const currentModel = state.stack[state.pointer];
 
   const externalModelsByNamespace = useMemo<ExternalModelsIndex>(() => {
@@ -70,15 +79,18 @@ function EmptyStoryWithIncludedModels(args: DmnEditorProps) {
       acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
       return acc;
     }, {} as ExternalModelsIndex);
-  }, [currentModel.definitions.import]);
+  }, [currentModel.definitions.import, modelsByNamespace]);
 
-  const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(async (path) => {
-    return availableModelsByPath[path] ?? null;
-  }, []);
+  const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(
+    async (path) => {
+      return availableModelsByPath[path] ?? null;
+    },
+    [availableModelsByPath]
+  );
 
   const onRequestExternalModelsAvailableToInclude = useCallback<OnRequestExternalModelsAvailableToInclude>(async () => {
     return Object.keys(availableModelsByPath);
-  }, []);
+  }, [availableModelsByPath]);
 
   const onModelChange = useCallback<OnDmnModelChange>((model) => {
     setState((prev) => {

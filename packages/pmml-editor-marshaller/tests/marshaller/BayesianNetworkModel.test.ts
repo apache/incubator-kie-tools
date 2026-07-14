@@ -21,8 +21,8 @@ import { BayesianNetworkModel, DataDictionary, Model, PMML, XML2PMML } from "@ki
 import { BAYESIAN_NETWORK_MODEL_1 } from "./TestData_BayesianNetworkModel";
 
 describe("BayesianNetworkModel tests", () => {
-  test("BayesianNetworkModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(BAYESIAN_NETWORK_MODEL_1);
+  test("BayesianNetworkModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(BAYESIAN_NETWORK_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

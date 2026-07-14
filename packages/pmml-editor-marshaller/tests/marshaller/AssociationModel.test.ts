@@ -21,8 +21,8 @@ import { AssociationModel, DataDictionary, Model, PMML, XML2PMML } from "@kie-to
 import { ASSOCIATION_MODEL_1 } from "./TestData_AssociationModel";
 
 describe("AssociationModel tests", () => {
-  test("AssociationModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(ASSOCIATION_MODEL_1);
+  test("AssociationModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(ASSOCIATION_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

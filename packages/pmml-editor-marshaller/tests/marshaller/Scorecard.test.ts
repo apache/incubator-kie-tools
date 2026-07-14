@@ -50,8 +50,8 @@ import {
 describe("Scorecard tests", () => {
   type PredicateAssertion = (predicate: Predicate) => void;
 
-  test("Scorecard::DataDictionary", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
+  test("Scorecard::DataDictionary", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
 
     expect(pmml).not.toBeNull();
 
@@ -70,8 +70,8 @@ describe("Scorecard tests", () => {
     expect(dataDictionary.DataField[2].optype).toBe("continuous");
   });
 
-  test("Scorecard::Models", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
+  test("Scorecard::Models", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
 
     expect(pmml).not.toBeNull();
 
@@ -92,13 +92,13 @@ describe("Scorecard tests", () => {
     expect(scorecard.baselineScore).toBe(6);
   });
 
-  test("Scorecard::Models::No modelName", () => {
+  test("Scorecard::Models::No modelName", async () => {
     const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
       <Header/>
       <DataDictionary/>
       <Scorecard/>
     </PMML>`;
-    const pmml: PMML = XML2PMML(xml);
+    const pmml: PMML = await XML2PMML(xml);
 
     expect(pmml).not.toBeNull();
 
@@ -112,8 +112,8 @@ describe("Scorecard tests", () => {
     expect(scorecard.modelName).toBeUndefined();
   });
 
-  test("Scorecard::MiningSchema", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
+  test("Scorecard::MiningSchema", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
 
@@ -132,8 +132,8 @@ describe("Scorecard tests", () => {
     expect(miningFields[2].invalidValueTreatment).toBeUndefined();
   });
 
-  test("Scorecard::Output", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
+  test("Scorecard::Output", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
 
@@ -157,8 +157,8 @@ describe("Scorecard tests", () => {
     expect(outputFields[2].optype).toBe("categorical");
   });
 
-  test("Scorecard::Characteristics", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
+  test("Scorecard::Characteristics", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
 
@@ -174,8 +174,8 @@ describe("Scorecard tests", () => {
     expect(characteristics[1].reasonCode).toBe("Input2ReasonCode");
   });
 
-  test("Scorecard::Characteristics:Attributes", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
+  test("Scorecard::Characteristics:Attributes", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
     const characteristics: Characteristic[] = scorecard.Characteristics?.Characteristic as Characteristic[];
@@ -189,8 +189,8 @@ describe("Scorecard tests", () => {
     expect(characteristics[1].Attribute[1].partialScore).toBe(32);
   });
 
-  test("Scorecard::Characteristics:Attributes::SimplePredicate", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
+  test("Scorecard::Characteristics:Attributes::SimplePredicate", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
     const characteristics: Characteristic[] = scorecard.Characteristics?.Characteristic as Characteristic[];
@@ -219,8 +219,8 @@ describe("Scorecard tests", () => {
     });
   });
 
-  test("Scorecard::Characteristics:Attributes::SimplePredicate::Single", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE_SINGLE);
+  test("Scorecard::Characteristics:Attributes::SimplePredicate::Single", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_SIMPLE_PREDICATE_SINGLE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
     const characteristics: Characteristic[] = scorecard.Characteristics?.Characteristic as Characteristic[];
@@ -233,15 +233,15 @@ describe("Scorecard tests", () => {
     });
 
     //Check round-trip
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
     expect(xml).not.toBeNull();
 
-    const pmml2: PMML = XML2PMML(xml);
+    const pmml2: PMML = await XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
   });
 
-  test("Scorecard::Characteristics:Attributes::CompoundPredicate", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_COMPOUND_PREDICATE);
+  test("Scorecard::Characteristics:Attributes::CompoundPredicate", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_COMPOUND_PREDICATE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
 
@@ -376,8 +376,8 @@ describe("Scorecard tests", () => {
     ]);
   });
 
-  test("Scorecard::Characteristics:Attributes::NestedCompoundPredicate", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_NESTED_COMPOUND_PREDICATE);
+  test("Scorecard::Characteristics:Attributes::NestedCompoundPredicate", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_NESTED_COMPOUND_PREDICATE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
 
@@ -501,8 +501,8 @@ describe("Scorecard tests", () => {
     ]);
   });
 
-  test("Scorecard::BasicComplexPartialScore", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_BASIC_COMPLEX_PARTIAL_SCORE);
+  test("Scorecard::BasicComplexPartialScore", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_BASIC_COMPLEX_PARTIAL_SCORE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
 
@@ -547,15 +547,15 @@ describe("Scorecard tests", () => {
     expect(c1a0cps).toBe(`<Apply function="*"><FieldRef field="input1"/><FieldRef field="input2"/></Apply>`);
 
     //Check round-trip
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
     expect(xml).not.toBeNull();
 
-    const pmml2: PMML = XML2PMML(xml);
+    const pmml2: PMML = await XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
   });
 
-  test("Scorecard::NestedComplexPartialScore", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_NESTED_COMPLEX_PARTIAL_SCORE);
+  test("Scorecard::NestedComplexPartialScore", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_NESTED_COMPLEX_PARTIAL_SCORE);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
 
@@ -604,15 +604,15 @@ describe("Scorecard tests", () => {
     );
 
     //Check round-trip
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
     expect(xml).not.toBeNull();
 
-    const pmml2: PMML = XML2PMML(xml);
+    const pmml2: PMML = await XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
   });
 
-  test("Scorecard::prototype::preservation", () => {
-    const pmml: PMML = XML2PMML(SCORE_CARD_PROTOTYPES);
+  test("Scorecard::prototype::preservation", async () => {
+    const pmml: PMML = await XML2PMML(SCORE_CARD_PROTOTYPES);
     const models: Model[] = pmml.models ?? [];
     const scorecard: Scorecard = models[0] as Scorecard;
     const miningSchema = scorecard.MiningSchema;
@@ -643,23 +643,23 @@ describe("Scorecard tests", () => {
     expect(Object.getPrototypeOf(characteristicFields[1])).toBe(Object.prototype);
   });
 
-  test("Scorecard::Models::isScorable::true", () => {
-    const scorecard: Scorecard = makeScorecardWithIsScorable(true);
+  test("Scorecard::Models::isScorable::true", async () => {
+    const scorecard: Scorecard = await makeScorecardWithIsScorable(true);
     expect(scorecard.isScorable).toBeTruthy();
   });
 
-  test("Scorecard::Models::isScorable::false", () => {
-    const scorecard: Scorecard = makeScorecardWithIsScorable(false);
+  test("Scorecard::Models::isScorable::false", async () => {
+    const scorecard: Scorecard = await makeScorecardWithIsScorable(false);
     expect(scorecard.isScorable).toBeFalsy();
   });
 
-  function makeScorecardWithIsScorable(isScorable: boolean): Scorecard {
+  async function makeScorecardWithIsScorable(isScorable: boolean): Promise<Scorecard> {
     const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
       <Header/>
       <DataDictionary/>
       <Scorecard isScorable="${isScorable}"/>
     </PMML>`;
-    const pmml: PMML = XML2PMML(xml);
+    const pmml: PMML = await XML2PMML(xml);
 
     expect(pmml).not.toBeNull();
 
@@ -672,23 +672,23 @@ describe("Scorecard tests", () => {
     return model as Scorecard;
   }
 
-  test("Scorecard::Models::useReasonCodes::true", () => {
-    const scorecard: Scorecard = makeScorecardWithUseReasonCodes(true);
+  test("Scorecard::Models::useReasonCodes::true", async () => {
+    const scorecard: Scorecard = await makeScorecardWithUseReasonCodes(true);
     expect(scorecard.useReasonCodes).toBeTruthy();
   });
 
-  test("Scorecard::Models::useReasonCodes::false", () => {
-    const scorecard: Scorecard = makeScorecardWithUseReasonCodes(false);
+  test("Scorecard::Models::useReasonCodes::false", async () => {
+    const scorecard: Scorecard = await makeScorecardWithUseReasonCodes(false);
     expect(scorecard.useReasonCodes).toBeFalsy();
   });
 
-  function makeScorecardWithUseReasonCodes(useReasonCodes: boolean): Scorecard {
+  async function makeScorecardWithUseReasonCodes(useReasonCodes: boolean): Promise<Scorecard> {
     const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
       <Header/>
       <DataDictionary/>
       <Scorecard useReasonCodes="${useReasonCodes}"/>
     </PMML>`;
-    const pmml: PMML = XML2PMML(xml);
+    const pmml: PMML = await XML2PMML(xml);
 
     expect(pmml).not.toBeNull();
 

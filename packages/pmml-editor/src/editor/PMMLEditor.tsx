@@ -128,24 +128,23 @@ export class PMMLEditor extends React.Component<Props, State> {
     });
   }
 
-  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+  public async setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
     try {
-      this.doSetContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
+      await this.doSetContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
       this.props.setNotifications(this.state.path, this.validate());
-      return Promise.resolve();
     } catch (e) {
       console.error(e);
-      return Promise.reject();
+      throw e;
     }
   }
 
-  private doSetContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): void {
+  private async doSetContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
     let pmml: PMML;
     let _content: string = content;
 
     if (content === "") {
       _content = EMPTY_PMML;
-      pmml = XML2PMML(_content);
+      pmml = await XML2PMML(_content);
 
       //If there is only one supported type of model then create a default entry
       const supportedEditorTypes: Array<PMMLModelMapping<any>> = PMMLModels.filter(
@@ -158,7 +157,7 @@ export class PMMLEditor extends React.Component<Props, State> {
         }
       }
     } else {
-      pmml = XML2PMML(_content);
+      pmml = await XML2PMML(_content);
     }
 
     //Create and validate store before setting state to ensure Validation is complete before the UI renders
@@ -177,12 +176,12 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public getContent(): Promise<string> {
-    return Promise.resolve(this.doGetContent());
+    return this.doGetContent();
   }
 
-  private doGetContent(): string {
+  private async doGetContent(): Promise<string> {
     const pmml: PMML | undefined = this.store?.getState();
-    return pmml ? PMML2XML(pmml) : "";
+    return pmml ? await PMML2XML(pmml) : "";
   }
 
   public async undo(): Promise<void> {

@@ -21,8 +21,8 @@ import { BaselineModel, DataDictionary, Model, PMML, XML2PMML } from "@kie-tools
 import { BASELINE_MODEL_1 } from "./TestData_BaselineModel";
 
 describe("BaselineModel tests", () => {
-  test("BaselineModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(BASELINE_MODEL_1);
+  test("BaselineModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(BASELINE_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

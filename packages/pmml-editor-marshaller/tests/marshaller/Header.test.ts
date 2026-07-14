@@ -20,8 +20,8 @@
 import { Annotation, Header, PMML, PMML2XML, Timestamp, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 
 describe("Header tests", () => {
-  test("Attributes", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Attributes", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header copyright="copyright" description="description" modelVersion="modelVersion"/>
       </PMML>
@@ -43,15 +43,15 @@ describe("Header tests", () => {
     pmml.Header.description = "description-changed";
     pmml.Header.modelVersion = "modelVersion-changed";
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(
       `<Header copyright="copyright-changed" description="description-changed" modelVersion="modelVersion-changed"/>`
     );
   });
 
-  test("Application", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Application", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header>
           <Application name="name" version="version"/>
@@ -75,13 +75,13 @@ describe("Header tests", () => {
       header.Application.version = "version-changed";
     }
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Application name="name-changed" version="version-changed"/>`);
   });
 
-  test("Annotation", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Annotation", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header>
           <Annotation>annotation1</Annotation>
@@ -111,14 +111,14 @@ describe("Header tests", () => {
     expect(annotations.length).toBe(2);
     expect(annotations[1]).not.toBeUndefined();
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Annotation>annotation1</Annotation>`);
     expect(xml).toContain(`<Annotation>annotation2</Annotation>`);
   });
 
-  test("Timestamp", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Timestamp", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header>
           <Timestamp>timestamp</Timestamp>
@@ -138,7 +138,7 @@ describe("Header tests", () => {
     expect((timestamp[0] as any)["text"]).toBe("timestamp");
 
     (timestamp[0] as any)["text"] = "timestamp-changed";
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
     expect(xml).toContain(`<Timestamp>timestamp-changed</Timestamp>`);
   });
 });

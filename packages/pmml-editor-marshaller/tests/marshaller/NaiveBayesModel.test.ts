@@ -21,8 +21,8 @@ import { DataDictionary, Model, NaiveBayesModel, PMML, XML2PMML } from "@kie-too
 import { NAIVE_BAYES_MODEL_1 } from "./TestData_NaiveBayesModel";
 
 describe("NaiveBayesModel tests", () => {
-  test("NaiveBayesModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(NAIVE_BAYES_MODEL_1);
+  test("NaiveBayesModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(NAIVE_BAYES_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

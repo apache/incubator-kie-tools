@@ -43,7 +43,7 @@ import { treeModelFactory } from "./jsonata/json2ui/TreeModel";
 import { UI2JSON_TRANSFORMATION as ui2json } from "./jsonata/UI2JSON";
 import { CompoundPredicate, False, PMML, SimplePredicate, True } from "./model/pmml4_4";
 
-export function XML2PMML(xml: string): PMML {
+export async function XML2PMML(xml: string): Promise<PMML> {
   const doc: XMLJS.Element = XMLJS.xml2js(xml) as XMLJS.Element;
   const expression: Expression = JSONata(json2ui);
   expression.registerFunction("merge", merge);
@@ -74,7 +74,7 @@ export function XML2PMML(xml: string): PMML {
   expression.registerFunction("json2uiTruePredicateFactory", json2uiTruePredicateFactory);
   expression.registerFunction("json2uiFalsePredicateFactory", json2uiFalsePredicateFactory);
 
-  const pmml: PMML = expression.evaluate(doc);
+  const pmml: PMML = await expression.evaluate(doc);
 
   return pmml;
 }
@@ -151,13 +151,13 @@ function json2uiFalsePredicateFactory(): False {
   return new False({});
 }
 
-export function PMML2XML(pmml: PMML): string {
+export async function PMML2XML(pmml: PMML): Promise<string> {
   const expression: Expression = JSONata(ui2json);
   expression.registerFunction("singletonArray", singletonArray);
 
   //See the note on clone(..) above: JSONata (since 1.8.8) returns objects built with Object.create(null),
   //which xml-js can't serialize (it calls hasOwnProperty(..) on them). Normalize to plain objects first.
-  const json: any = clone(expression.evaluate(pmml));
+  const json: any = clone(await expression.evaluate(pmml));
   const xml: string = XMLJS.js2xml(json, { spaces: 2 });
 
   return xml;

@@ -21,8 +21,8 @@ import { DataDictionary, Model, PMML, TimeSeriesModel, XML2PMML } from "@kie-too
 import { TIME_SERIES_MODEL_1 } from "./TestData_TimeSeriesModel";
 
 describe("TimeSeriesModel tests", () => {
-  test("TimeSeriesModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(TIME_SERIES_MODEL_1);
+  test("TimeSeriesModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(TIME_SERIES_MODEL_1);
 
     expect(pmml).not.toBeNull();
 
