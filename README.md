@@ -49,7 +49,7 @@ To build and test all packages on this repository, you're going to need:
 - pnpm `10.34.4` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
 - Maven `3.9.11`
 - Java `17`
-- Go `1.26.3` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.26.4` _(To install, follow these instructions: https://go.dev/doc/install)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 - Make
 - bash `5.x` _(On Linux or Nix you should be fine. On macOS, follow these instructions to use zsh: https://support.apple.com/102360)_
