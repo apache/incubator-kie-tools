@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "name": "@kie-tools/drools-lsp",
+  "version": "0.0.0",
+  "description": "DRL Language Server Protocol implementation",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "types": "index.d.ts",
+  "main": "index.js",
+  "files": [
+    "**/target/*.jar",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "build:dev": "mvn clean install -DskipTests",
+    "build:prod": "pnpm lint && run-script-os",
+    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dreproducible",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dreproducible\"",
+    "install": "node install.js",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

@@ -110,7 +110,12 @@ packages/dmn-marshaller/src/schemas/kie-1_0/KIE.xsd
 packages/dmn-testing-models/dmn-testing-models.iml
 packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmn.test.tsx.snap
 packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
+packages/drl-vscode-extension/.vscodeignore
 packages/drools-and-kogito/.gitignore
+packages/drools-lsp/drools-lsp-server/.gitignore
+packages/drools-lsp/drools-parser/.gitignore
+packages/drools-lsp/drools-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaLexer.g4
+packages/drools-lsp/drools-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaParser.g4
 packages/editor/tests/embedded/embedded/__snapshots__/EmbeddedEditor.test.tsx.snap
 packages/editor/tests/embedded/embedded/__snapshots__/EmbeddedViewer.test.tsx.snap
 packages/editor/tests/envelope/KeyBindingHelpOverlay/__snapshots__/KeyBindingsHelpOverlay.test.tsx.snap
