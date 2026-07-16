@@ -126,6 +126,7 @@
     <!-- 3rd party dependencies -->
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.org.apache.mime4j>0.8.12</version.org.apache.mime4j>
+    <version.com.fasterxml.jackson>2.22.0</version.com.fasterxml.jackson>
   </properties>
 
   <dependencyManagement>
@@ -155,6 +156,16 @@
         <groupId>org.apache.james</groupId>
         <artifactId>apache-mime4j-core</artifactId>
         <version>${version.org.apache.mime4j}</version>
+      </dependency>
+      <dependency>
+        <!--
+          Transitively imported via quarkus-resteasy-jackson -> quarkus-jackson -> jackson-databind
+          and jitexecutor-bpmn -> quarkus-resteasy-jackson -> quarkus-jackson -> jackson-databind
+          Overriding it to fix CVE in jackson-databind 2.21.1
+        -->
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
