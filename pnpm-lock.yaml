@@ -6151,8 +6151,8 @@ importers:
   packages/pmml-editor-marshaller:
     dependencies:
       jsonata:
-        specifier: ^1.8.7
-        version: 1.8.7
+        specifier: 2.2.1
+        version: 2.2.1
       xml-js:
         specifier: ^1.6.11
         version: 1.6.11
@@ -18788,8 +18788,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  jsonata@1.8.7:
-    resolution: {integrity: sha512-tOW2/hZ+nR2bcQZs+0T62LVe5CHaNa3laFFWb/262r39utN6whJGBF7IR2Wq1QXrDbhftolk5gggW8uUJYlBTQ==}
+  jsonata@2.2.1:
+    resolution: {integrity: sha512-xd1uwUrKeIcJbsWhaoS3qAX4Ea8m0Mw0G5nlnAQvPT7TbZ5qaPdzBVTQia9KfyuyQm+nenfyjvzUDTRYHsC2sw==}
     engines: {node: '>= 8'}
 
   jsonc-parser@3.3.1:
@@ -37683,7 +37683,7 @@ snapshots:
 
   json5@2.2.3: {}
 
-  jsonata@1.8.7: {}
+  jsonata@2.2.1: {}
 
   jsonc-parser@3.3.1: {}
 
