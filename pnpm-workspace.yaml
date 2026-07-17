@@ -16,8 +16,9 @@ overrides:
   "minimatch@^5>brace-expansion": "2.1.2"
   "openapi-types": "7.2.3"
   # CVE-2026-8723: Fix TypeError in qs.stringify (comma arrayFormat + encodeValuesOnly with null/undefined)
-  # Overriding transitive dependency until @cypress/request updates to patched qs version
-  "@cypress/request@3>qs": "6.15.2"
+  # Vulnerable qs (<6.15.2) is reachable through multiple transitive paths (e.g. express@4.22.1 and
+  # @cypress/request@3), so force every transitive qs to the patched 6.15.2 instead of a scoped override.
+  "qs": "6.15.2"
   "path-to-regexp@^0": "0.1.13"
   "react-dropzone": "^11.4.2"
   "superagent": "10.2.2"

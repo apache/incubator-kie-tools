@@ -14,7 +14,7 @@ overrides:
   minimatch@^3>brace-expansion: 1.1.16
   minimatch@^5>brace-expansion: 2.1.2
   openapi-types: 7.2.3
-  '@cypress/request@3>qs': 6.15.2
+  qs: 6.15.2
   path-to-regexp@^0: 0.1.13
   react-dropzone: ^11.4.2
   superagent: 10.2.2
