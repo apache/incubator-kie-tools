@@ -155,7 +155,7 @@ export const en: BpmnEditorI18n = {
     dataInputPlaceholder: "Enter a Data input...",
     dataType: "Data Type",
     collectionOutput: "Collection output",
-    dataOutput: "Collection output",
+    dataOutput: "Data output",
     dataOutputPlaceholder: "Enter a Data output...",
     multiInstance: "Multi-instance",
     enterNamePlaceholder: "Enter a name...",
