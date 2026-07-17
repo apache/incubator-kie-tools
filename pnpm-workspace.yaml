@@ -39,3 +39,7 @@ overrides:
   # CVE-2026-33671 (High) / CVE-2026-33672 (Medium): picomatch POSIX bracket method injection and ReDoS.
   "picomatch@3": "3.0.2"
   "picomatch@4": "4.0.4"
+  # CVE fix: form-data <4.0.6 — @cypress/request pins ~4.0.4 (tilde), which caps at 4.0.5.
+  # All other dependents (axios, superagent, @vscode/vsce, jsdom, @types/node-fetch) use ^4.x
+  # which naturally resolves to 4.0.6, so only @cypress/request needs a targeted override.
+  "@cypress/request>form-data": "4.0.6"
