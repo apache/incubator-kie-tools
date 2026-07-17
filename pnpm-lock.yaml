@@ -3661,13 +3661,13 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/mocha':
-        specifier: ^10.0.10
+        specifier: ^10.0.7
         version: 10.0.10
       '@types/vscode':
-        specifier: 1.103.0
-        version: 1.103.0
+        specifier: 1.67.0
+        version: 1.67.0
       '@vscode/test-electron':
-        specifier: ^2.5.2
+        specifier: ^2.3.6
         version: 2.5.2
       '@vscode/vsce':
         specifier: ^3.7.1
@@ -3676,11 +3676,11 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.107.1)
       glob:
-        specifier: ^11.0.0
-        version: 11.0.1
+        specifier: ^10.2.7
+        version: 10.4.5
       mocha:
-        specifier: ^11.0.0
-        version: 11.7.6
+        specifier: ^10.6.0
+        version: 10.6.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -14213,9 +14213,6 @@ packages:
   '@types/uuid@8.3.0':
     resolution: {integrity: sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==}
 
-  '@types/vscode@1.103.0':
-    resolution: {integrity: sha512-o4hanZAQdNfsKecexq9L3eHICd0AAvdbLk6hA60UzGXbGH/q8b/9xv2RgR7vV3ZcHuyKVq7b37IGd/+gM4Tu+Q==}
-
   '@types/vscode@1.67.0':
     resolution: {integrity: sha512-GH8BDf8cw9AC9080uneJfulhSa7KHSMI2s/CyKePXoGNos9J486w2V4YKoeNUqIEkW4hKoEAWp6/cXTwyGj47g==}
 
@@ -16649,10 +16646,6 @@ packages:
 
   diff@5.2.2:
     resolution: {integrity: sha512-vtcDfH3TOjP8UekytvnHH1o1P4FcUdt4eQ1Y+Abap1tk/OB2MWQvcwS2ClCd1zuIhc3JKOx6p3kod8Vfys3E+A==}
-    engines: {node: '>=0.3.1'}
-
-  diff@7.0.0:
-    resolution: {integrity: sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==}
     engines: {node: '>=0.3.1'}
 
   diffie-hellman@5.0.3:
@@ -19708,11 +19701,6 @@ packages:
   mocha@10.6.0:
     resolution: {integrity: sha512-hxjt4+EEB0SA0ZDygSS015t65lJw/I2yRCS3Ae+SJ5FrbzrXgfYwJr96f0OvIXdj7h4lv/vLCrH3rkiuizFSvw==}
     engines: {node: '>= 14.0.0'}
-    hasBin: true
-
-  mocha@11.7.6:
-    resolution: {integrity: sha512-nS9xOGbw2I3cjCpxwZAEJ9xK9lmJ08vEkQvLtz4du9ZrF9UrjRpeJGiIgl2Z+Qs++pmB4ecDe48Fwsh+j+j7xA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
 
   moment@2.29.4:
@@ -23652,9 +23640,6 @@ packages:
 
   workerpool@6.5.1:
     resolution: {integrity: sha512-Fs4dNYcsdpYSAfVxhnl1L5zTksjvOJxtC5hzMNl+1t9B8hTJTdKDyZ5ju7ztgPy+ft9tBFXoOlDNiOT9WUXZlA==}
-
-  workerpool@9.3.4:
-    resolution: {integrity: sha512-TmPRQYYSAnnDiEB0P/Ytip7bFGvqnSU6I2BcuSw7Hx+JSg/DsUi5ebYfc8GYaSdpuvOcEs6dXxPurOYpe9QFwg==}
 
   wrap-ansi@6.2.0:
     resolution: {integrity: sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==}
@@ -31738,8 +31723,6 @@ snapshots:
 
   '@types/uuid@8.3.0': {}
 
-  '@types/vscode@1.103.0': {}
-
   '@types/vscode@1.67.0': {}
 
   '@types/webidl-conversions@7.0.3': {}
@@ -34890,8 +34873,6 @@ snapshots:
   diff@4.0.1: {}
 
   diff@5.2.2: {}
-
-  diff@7.0.0: {}
 
   diffie-hellman@5.0.3:
     dependencies:
@@ -38777,30 +38758,6 @@ snapshots:
       workerpool: 6.5.1
       yargs: 16.2.0
       yargs-parser: 20.2.9
-      yargs-unparser: 2.0.0
-
-  mocha@11.7.6:
-    dependencies:
-      browser-stdout: 1.3.1
-      chokidar: 4.0.3
-      debug: 4.4.3(supports-color@8.1.1)
-      diff: 7.0.0
-      escape-string-regexp: 4.0.0
-      find-up: 5.0.0
-      glob: 10.4.5
-      he: 1.2.0
-      is-path-inside: 3.0.3
-      js-yaml: 4.3.0
-      log-symbols: 4.1.0
-      minimatch: 9.0.8
-      ms: 2.1.3
-      picocolors: 1.1.1
-      serialize-javascript: 6.0.2
-      strip-json-comments: 3.1.1
-      supports-color: 8.1.1
-      workerpool: 9.3.4
-      yargs: 17.7.2
-      yargs-parser: 21.1.1
       yargs-unparser: 2.0.0
 
   moment@2.29.4: {}
@@ -43913,8 +43870,6 @@ snapshots:
   wordwrap@1.0.0: {}
 
   workerpool@6.5.1: {}
-
-  workerpool@9.3.4: {}
 
   wrap-ansi@6.2.0:
     dependencies:
