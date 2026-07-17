@@ -45,24 +45,20 @@
     <dependency>
       <groupId>org.eclipse.lsp4j</groupId>
       <artifactId>org.eclipse.lsp4j</artifactId>
-      <version>${version.org.eclipse.lsp4j}</version>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>${version.org.assertj}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>${version.org.junit}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>${version.org.junit}</version>
       <scope>test</scope>
     </dependency>
 

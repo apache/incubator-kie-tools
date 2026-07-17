@@ -39,12 +39,10 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <version>${version.org.antlr4}</version>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4</artifactId>
-      <version>${version.org.antlr4}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -58,25 +56,21 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>${version.org.assertj}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>${version.org.junit}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>${version.org.junit}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>${version.ch.qos.logback}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -86,7 +80,6 @@
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
-        <version>${version.org.antlr4}</version>
         <executions>
           <execution>
             <goals>
