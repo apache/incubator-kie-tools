@@ -31,22 +31,6 @@ module.exports = composeEnv([rootEnv], {
       default: "3b5010c99441ac642f93b1d97dcfd2b2952dd29a",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
-    DROOLS_AND_KOGITO__optaplannerRepoUrl: {
-      default: "https://github.com/apache/incubator-kie-optaplanner",
-      description: "Git repository URL for OptaPlanner",
-    },
-    DROOLS_AND_KOGITO__optaplannerRepoGitRef: {
-      default: "d8c7e2f773ad1629eff4e4ae745a521bffa178c8",
-      description: "Git ref for the OptaPlanner repository (SHA, branch, or tag)",
-    },
-    DROOLS_AND_KOGITO__kogitoRuntimesRepoUrl: {
-      default: "https://github.com/apache/incubator-kie-kogito-runtimes",
-      description: "Git repository URL for Kogito Runtimes",
-    },
-    DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: {
-      default: "32f4515f1cacb85dc12988aaae64e276efdb59ec",
-      description: "Git ref for the Kogito Runtimes repository (SHA, branch, or tag)",
-    },
     DROOLS_AND_KOGITO__kogitoAppsRepoUrl: {
       default: "https://github.com/apache/incubator-kie-kogito-apps",
       description: "Git repository URL for Kogito Apps",
@@ -79,14 +63,6 @@ module.exports = composeEnv([rootEnv], {
           drools: {
             url: getOrDefault(this.vars.DROOLS_AND_KOGITO__droolsRepoUrl),
             gitRef: getOrDefault(this.vars.DROOLS_AND_KOGITO__droolsRepoGitRef),
-          },
-          optaplanner: {
-            url: getOrDefault(this.vars.DROOLS_AND_KOGITO__optaplannerRepoUrl),
-            gitRef: getOrDefault(this.vars.DROOLS_AND_KOGITO__optaplannerRepoGitRef),
-          },
-          kogitoRuntimes: {
-            url: getOrDefault(this.vars.DROOLS_AND_KOGITO__kogitoRuntimesRepoUrl),
-            gitRef: getOrDefault(this.vars.DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef),
           },
           kogitoApps: {
             url: getOrDefault(this.vars.DROOLS_AND_KOGITO__kogitoAppsRepoUrl),

@@ -51,8 +51,6 @@ console.log(JSON.stringify(buildInfo, null, 2));
 const buildInfoMatches =
   buildInfo?.kogitoVersion === buildEnv.versions.kogito &&
   buildInfo?.droolsRepoGitRef === buildEnv.droolsAndKogito.repos.drools.gitRef &&
-  buildInfo?.optaplannerRepoGitRef === buildEnv.droolsAndKogito.repos.optaplanner.gitRef &&
-  buildInfo?.kogitoRuntimesRepoGitRef === buildEnv.droolsAndKogito.repos.kogitoRuntimes.gitRef &&
   buildInfo?.kogitoAppsRepoGitRef === buildEnv.droolsAndKogito.repos.kogitoApps.gitRef;
 
 const localM2DirExists = fs.existsSync("./dist/1st-party-m2/repository");
@@ -83,8 +81,6 @@ fs.mkdirSync("./dist-tmp", { recursive: true });
 // cloning
 
 const droolsRepoDir = path.join("dist-tmp", "drools");
-const optaplannerRepoDir = path.join("dist-tmp", "optaplanner");
-const kogitoRuntimesRepoDir = path.join("dist-tmp", "kogito-runtimes");
 const kogitoAppsRepoDir = path.join("dist-tmp", "kogito-apps");
 
 console.log(`[drools-and-kogito] Cloning Drools...`);
@@ -93,23 +89,6 @@ execSync(`git clone --depth 1 ${buildEnv.droolsAndKogito.repos.drools.url} "${dr
 execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.drools.gitRef} && git checkout FETCH_HEAD`, {
   ...execOpts,
   cwd: droolsRepoDir,
-});
-
-console.log(`[drools-and-kogito] Cloning OptaPlanner...`);
-execSync(`git clone --depth 1 ${buildEnv.droolsAndKogito.repos.optaplanner.url} "${optaplannerRepoDir}"`, execOpts);
-execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.optaplanner.gitRef} && git checkout FETCH_HEAD`, {
-  ...execOpts,
-  cwd: optaplannerRepoDir,
-});
-
-console.log(`[drools-and-kogito] Cloning Kogito Runtimes...`);
-execSync(
-  `git clone --depth 1 ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.url} "${kogitoRuntimesRepoDir}"`,
-  execOpts
-);
-execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.gitRef} && git checkout FETCH_HEAD`, {
-  ...execOpts,
-  cwd: kogitoRuntimesRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning Kogito Apps...`);
@@ -173,24 +152,6 @@ try {
   );
 }
 
-console.log(`[drools-and-kogito] Building OptaPlanner...`);
-execSync(
-  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
-  {
-    ...execOpts,
-    cwd: optaplannerRepoDir,
-  }
-);
-
-console.log(`[drools-and-kogito] Building Kogito Runtimes...`);
-execSync(
-  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
-  {
-    ...execOpts,
-    cwd: kogitoRuntimesRepoDir,
-  }
-);
-
 console.log(`[drools-and-kogito] Building Kogito Apps...`);
 execSync(
   `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
@@ -211,8 +172,6 @@ fs.writeFileSync(
   JSON.stringify({
     kogitoVersion: buildEnv.versions.kogito,
     droolsRepoGitRef: buildEnv.droolsAndKogito.repos.drools.gitRef,
-    optaplannerRepoGitRef: buildEnv.droolsAndKogito.repos.optaplanner.gitRef,
-    kogitoRuntimesRepoGitRef: buildEnv.droolsAndKogito.repos.kogitoRuntimes.gitRef,
     kogitoAppsRepoGitRef: buildEnv.droolsAndKogito.repos.kogitoApps.gitRef,
   }),
   "utf-8"
