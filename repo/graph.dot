@@ -97,6 +97,8 @@ digraph G {
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-patternfly-form-wrapper" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "drl-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/drools-lsp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -265,8 +267,12 @@ digraph G {
   "dmn-vscode-extension" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/scesim-editor-envelope" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "dashed", color = "blue" ];
+  "drl-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "drl-vscode-extension" -> "@kie-tools/drools-lsp" [ style = "dashed", color = "blue" ];
+  "drl-vscode-extension" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/drools-and-kogito" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/drools-and-kogito" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/drools-lsp" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/envelope" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];

@@ -93,6 +93,9 @@ packages/kie-sandbox-fs/coverage
 packages/kie-sandbox-fs/junit
 packages/kie-sandbox-fs/*-0.0.0-development.tgz
 
+#drl-vscode-extension
+packages/drl-vscode-extension/out-test/
+
 #angular
 **/.angular
 

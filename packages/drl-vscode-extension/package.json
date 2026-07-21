@@ -1,0 +1,196 @@
+{
+  "name": "drl-vscode-extension",
+  "version": "0.0.0",
+  "description": "Edit DRL (Drools Rule Language) files",
+  "license": "Apache-2.0",
+  "publisher": "kie-group",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "main": "dist/extension/extension.js",
+  "scripts": {
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "compile": "webpack",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/drl_vscode_extension_$npm_package_version.vsix",
+    "pretest": "pnpm build:dev && mvn -f src/testFixture/pom.xml -ntp compile && tsc -p tsconfig.test.json",
+    "test": "node ./out-test/test/runTest.js",
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools-scripts/build-env": "workspace:*",
+    "@kie-tools/drools-lsp": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/mocha": "^10.0.7",
+    "@types/vscode": "1.67.0",
+    "@vscode/test-electron": "^2.3.6",
+    "@vscode/vsce": "^3.7.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "glob": "^10.2.7",
+    "mocha": "^10.6.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "typescript": "^5.9.3",
+    "webpack": "^5.107.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.5",
+    "webpack-merge": "^5.9.0"
+  },
+  "engines": {
+    "vscode": "^1.103.0"
+  },
+  "displayName": "DRL Editor",
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "drools.lsp.inlayHints.enabled": {
+          "default": true,
+          "markdownDescription": "Show inline type hints for DRL rule bindings (e.g. `$count : count()` → `: Long`). VSCode's global `#editor.inlayHints.enabled#` still governs whether inlay hints are displayed at all.",
+          "type": "boolean"
+        },
+        "drools.lsp.lint.missingEnd": {
+          "default": "warning",
+          "description": "Severity for the missing 'end' keyword lint check.",
+          "enum": [
+            "off",
+            "hint",
+            "info",
+            "warning",
+            "error"
+          ],
+          "type": "string"
+        },
+        "drools.lsp.lint.missingSemicolon": {
+          "default": "warning",
+          "description": "Severity for the missing semicolon in consequence lint check.",
+          "enum": [
+            "off",
+            "hint",
+            "info",
+            "warning",
+            "error"
+          ],
+          "type": "string"
+        },
+        "drools.lsp.lint.missingSeparator": {
+          "default": "warning",
+          "description": "Severity for the missing constraint separator lint check (missing comma between constraints).",
+          "enum": [
+            "off",
+            "hint",
+            "info",
+            "warning",
+            "error"
+          ],
+          "type": "string"
+        },
+        "drools.lsp.lint.mvelPropertyAccess": {
+          "default": "off",
+          "description": "Severity for the MVEL property-access style hint (prefer 'name' over 'getName()' in LHS constraints).",
+          "enum": [
+            "off",
+            "hint",
+            "info",
+            "warning",
+            "error"
+          ],
+          "type": "string"
+        },
+        "drools.lsp.lint.unbalancedParens": {
+          "default": "warning",
+          "description": "Severity for the unbalanced parentheses lint check.",
+          "enum": [
+            "off",
+            "hint",
+            "info",
+            "warning",
+            "error"
+          ],
+          "type": "string"
+        },
+        "drools.lsp.lint.unknownTypes": {
+          "default": "warning",
+          "description": "Severity for unrecognized type references in patterns, 'new T(...)' and qualified names, with a 'Did you mean?' quick-fix for likely typos.",
+          "enum": [
+            "off",
+            "hint",
+            "info",
+            "warning",
+            "error"
+          ],
+          "type": "string"
+        },
+        "drools.lsp.logLevel": {
+          "default": "INFO",
+          "description": "Server-side log level (java.util.logging). Use FINE or FINER to surface diagnostics when debugging.",
+          "enum": [
+            "SEVERE",
+            "WARNING",
+            "INFO",
+            "FINE",
+            "FINER",
+            "FINEST"
+          ],
+          "type": "string"
+        },
+        "drools.lsp.maven.pomPath": {
+          "default": "",
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Maven POM(s) used for dependency classpath resolution — a single path or a list of paths, each absolute or workspace-relative. Each project's classpath is resolved and the results are merged. Leave empty to use `pom.xml` at the workspace root.",
+          "type": [
+            "string",
+            "array"
+          ]
+        }
+      },
+      "title": "DRL Language Server"
+    },
+    "grammars": [
+      {
+        "language": "drools",
+        "path": "./syntaxes/drl.tmLanguage",
+        "scopeName": "source.drools"
+      }
+    ],
+    "javaExtensions": [
+      "./dist/server/drools-lsp-server-jar-with-dependencies.jar"
+    ],
+    "languages": [
+      {
+        "aliases": [
+          "Drools Rule Language",
+          "DRL"
+        ],
+        "configuration": "./language-configuration.json",
+        "extensions": [
+          ".drl"
+        ],
+        "id": "drools"
+      }
+    ]
+  },
+  "icon": "images/drools-icon.png",
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java"
+    ]
+  }
+}

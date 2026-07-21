@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>fileTypes</key>
+	<array>
+		<string>.drl</string>
+	</array>
+	<key>name</key>
+	<string>Drools</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>comment</key>
+			<string>Mathmatical operators</string>
+			<key>match</key>
+			<string>[&lt;|&gt;|==|&lt;=|&gt;=|.|!=]</string>
+			<key>name</key>
+			<string>keyword.operator.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Drools RHS functions</string>
+			<key>match</key>
+			<string>\b(insert|insertLogical|delete|modify)\b</string>
+			<key>name</key>
+			<string>entity.name.function.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Drools hard keywords</string>
+			<key>match</key>
+			<string>\b(true|false|null)\b</string>
+			<key>name</key>
+			<string>constant.language.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Drools soft keywords</string>
+			<key>match</key>
+			<string>\b(lock-on-active|date-effective|date-expires|no-loop|auto-focus|activation-group|agenda-group|ruleflow-group|entry-point|duration|package|import|dialect|salience|enabled|attributes|rule|extends|when|then|template|query|declare|function|global|eval|not|in|or|and|exists|forall|accumulate|collect|from|end|over|calendars|init|action|reverse|result|new)\b</string>
+			<key>name</key>
+			<string>keyword.control.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Bound variables like $person, $myList</string>
+			<key>match</key>
+			<string>\$([A-Za-z][A-Za-z0-9_]+)</string>
+			<key>name</key>
+			<string>variable.parameter.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Java classes</string>
+			<key>match</key>
+			<string>\b([A-Z][A-Za-z0-9_]+)\b</string>
+			<key>name</key>
+			<string>support.type.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Single line comment</string>
+			<key>match</key>
+			<string>(\/)(\/).*</string>
+			<key>name</key>
+			<string>comment.line.double-slash.source.drools</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>/\*</string>
+			<key>comment</key>
+			<string>Multi line comment</string>
+			<key>end</key>
+			<string>\*/</string>
+			<key>name</key>
+			<string>comment.line.double-slash.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Double quote strings</string>
+			<key>match</key>
+			<string>("([^"]|"")*")</string>
+			<key>name</key>
+			<string>string.quoted.double.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Numbers</string>
+			<key>match</key>
+			<string>([0-9]+(\.)?[0-9]*)</string>
+			<key>name</key>
+			<string>constant.numeric.source.drools</string>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>source.drools</string>
+	<key>uuid</key>
+	<string>a98fc7cc-15d1-401e-bb85-e72714276cdb</string>
+</dict>
+</plist>
