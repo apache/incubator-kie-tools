@@ -95,7 +95,7 @@ export default class Element {
 
   public async getAttribute(attributeName: string): Promise<string> {
     return await ErrorProcessor.run(
-      async () => await this.webElement.getAttribute(attributeName),
+      async () => (await this.webElement.getAttribute(attributeName)) ?? "",
       "Error while getting attribute: " + attributeName
     );
   }

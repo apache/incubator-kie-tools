@@ -100,7 +100,7 @@ export default class LocatorWaitAction {
   private async value(): Promise<string> {
     const webElement = await this.driver.findElement(this.by);
     await this.driver.wait(async () => (await webElement.getAttribute("value")) !== "", this.timeout);
-    return await webElement.getAttribute("value");
+    return (await webElement.getAttribute("value")) ?? "";
   }
 
   public async untilHasValue(): Promise<string> {
