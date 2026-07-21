@@ -17,13 +17,58 @@
 
 ## DRL Editor
 
-Edit DRL (Drools Rule Language) files with language support provided by the [DRL Language Server](../drools-lsp).
-
-## Features
-
-- Syntax highlighting for `.drl` files.
-- LSP features backed by a local JVM running the DRL Language Server: completion, diagnostics, hover, go-to-definition, references, document symbols, code lenses, folding ranges, inlay hints, and rename.
+Language support for [DRL (Drools Rule Language)](https://kie.apache.org/docs/10.2.x/drools/drools/language-reference-traditional/index.html) files in Visual Studio Code, powered by a dedicated [Language Server](https://microsoft.github.io/language-server-protocol/).
 
 ## Requirements
 
-- Java 17+ available on the machine running the extension. The extension discovers Java through the `java.home` setting, or the `GHA_JAVA_HOME`/`JAVA_HOME` environment variables, falling back to `java` on the `PATH`.
+- Java 17 or later (`JAVA_HOME` must be set or `java` must be on your `PATH`)
+- Maven (for classpath resolution of Java types used in rules)
+
+## Features
+
+### Code Editing
+
+- Syntax highlighting
+- Code completion for grammar keywords, Java class names, fields/properties, and DRL `declare` types
+- Inlay hints for bound variables
+- Live class index refresh on recompile (no server restart required)
+
+### Navigation
+
+- Go-to definition for DRL and Java types
+- Find references for DRL types and bound variables
+- Rename for DRL declared types and bound variables
+- Document symbols (outline view)
+- Type hierarchy for DRL types
+- Folding ranges for DRL blocks and comments
+
+### Diagnostics
+
+- Syntax error reporting
+- Lint diagnostics (missing `end`, missing separators, unbalanced parentheses, etc.)
+- Unknown-type lint with typo quick-fix for DRL-declared types
+
+### Information
+
+- Hover tooltips for DRL/Java types with doc-comment rendering
+- Reference-count code lens for DRL declared types
+
+## Extension Settings
+
+| Setting                              | Default   | Description                                                   |
+| ------------------------------------ | --------- | ------------------------------------------------------------- |
+| `drools.lsp.logLevel`                | `INFO`    | Server-side log level                                         |
+| `drools.lsp.lint.missingEnd`         | `warning` | Severity for missing `end` keyword                            |
+| `drools.lsp.lint.missingSeparator`   | `warning` | Severity for missing constraint separator                     |
+| `drools.lsp.lint.missingSemicolon`   | `warning` | Severity for missing semicolon in consequence                 |
+| `drools.lsp.lint.unbalancedParens`   | `warning` | Severity for unbalanced parentheses                           |
+| `drools.lsp.lint.unknownTypes`       | `warning` | Severity for unrecognized type references                     |
+| `drools.lsp.lint.mvelPropertyAccess` | `off`     | Hint to prefer property-access style over getter calls in LHS |
+| `drools.lsp.inlayHints.enabled`      | `true`    | Show inline type hints for bound variables                    |
+| `drools.lsp.maven.pomPath`           | `""`      | Maven POM path(s) for classpath resolution                    |
+
+All lint settings accept: `off`, `hint`, `info`, `warning`, `error`.
+
+## Known Issues
+
+If you find any issues, please report them in [GitHub Issues](https://github.com/apache/incubator-kie-issues/issues).
