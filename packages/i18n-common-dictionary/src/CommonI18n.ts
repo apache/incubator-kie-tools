@@ -120,8 +120,7 @@ export type CommonDictionary = {
   };
 };
 
-export interface CommonI18n
-  extends ReferenceDictionary<{
-    names: typeof names;
-    terms: CommonDictionary;
-  }> {}
+export interface CommonI18n extends ReferenceDictionary<{
+  names: typeof names;
+  terms: CommonDictionary;
+}> {}

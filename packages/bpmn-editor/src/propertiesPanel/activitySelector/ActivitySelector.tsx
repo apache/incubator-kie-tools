@@ -79,7 +79,7 @@ export function ActivitySelector({ element }: { element: WithActivity }) {
 
   const value =
     element?.eventDefinition?.[0].__$$element === "compensateEventDefinition"
-      ? element.eventDefinition[0]["@_activityRef"] ?? ""
+      ? (element.eventDefinition[0]["@_activityRef"] ?? "")
       : undefined;
 
   return (

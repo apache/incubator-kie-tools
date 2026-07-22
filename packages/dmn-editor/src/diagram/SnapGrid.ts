@@ -77,5 +77,5 @@ export function snap(
 ) {
   return grid.isEnabled //
     ? Math[method]((value ?? 0) / grid[coord]) * grid[coord]
-    : value ?? 0;
+    : (value ?? 0);
 }

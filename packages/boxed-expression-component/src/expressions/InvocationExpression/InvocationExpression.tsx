@@ -194,7 +194,7 @@ export function InvocationExpression({
             accessor: invocationId as keyof ROWTYPE,
             label:
               invocationExpression.expression?.__$$element === "literalExpression"
-                ? invocationExpression.expression.text?.__$$text ?? i18n.functionName
+                ? (invocationExpression.expression.text?.__$$text ?? i18n.functionName)
                 : i18n.functionName,
             isRowIndexColumn: false,
             isInlineEditable: true,

@@ -74,7 +74,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
         : pointsToPath([...kieEdgePath.points.slice(0, -1), { "@_x": toX, "@_y": toY }]) // Last point is being dragged
       : `M${fromX},${fromY} L${toX},${toY}`;
 
-  const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : edgeBeingUpdated?.type ?? fromHandle?.id;
+  const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : (edgeBeingUpdated?.type ?? fromHandle?.id);
 
   // Edges
   if (handleId === EDGE_TYPES.informationRequirement) {

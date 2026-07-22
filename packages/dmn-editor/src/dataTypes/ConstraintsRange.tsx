@@ -112,9 +112,9 @@ export function ConstraintsRange({
       }
 
       onSave(
-        `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
+        `${(args?.includeStart ?? includeStart) ? "[" : "("}${typeHelper.transform(
           internalStart
-        )}..${typeHelper.transform(internalEnd)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
+        )}..${typeHelper.transform(internalEnd)}${(args?.includeEnd ?? includeEnd) ? "]" : ")"}`
       );
     },
     [end, includeEnd, includeStart, onSave, start, typeHelper]

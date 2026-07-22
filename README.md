@@ -56,7 +56,7 @@ To build and test all packages on this repository, you're going to need:
 
 > **ℹ️ NOTE**
 >
-> If you plan on building container images, make sure you have a working Docker setup. Setting `KIE_TOOLS_BUILD__buildContainerImages=true` will also be necessary.
+> If you plan on building container images, make sure you have a working Docker or Podman setup. Setting `KIE_TOOLS_BUILD__buildContainerImages=true` will also be necessary. If using Podman, see ["Specifics # Container Images"](./repo/MANUAL.md#specifics--container-images) in the manual.
 
 #### Step 1: Bootstrap
 

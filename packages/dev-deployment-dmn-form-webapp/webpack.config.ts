@@ -22,10 +22,16 @@ import patternflyBase from "@kie-tools-core/patternfly-base";
 import { merge } from "webpack-merge";
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import { ProvidePlugin } from "webpack";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import { defaultEnvJson } from "./build/defaultEnvJson";
 import path from "path";
+// Resolved through webpack-cli's own module scope so plugins built here come from the exact same
+// webpack instance the CLI uses to run the Compiler. pnpm can install more than one physical copy
+// of the same webpack version split by peer-dependency signature, and webpack's
+// internal `instanceof` checks throw when the plugin and the Compiler differ.
+const { ProvidePlugin } = require(
+  require.resolve("webpack", { paths: [path.dirname(require.resolve("webpack-cli/package.json"))] })
+);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

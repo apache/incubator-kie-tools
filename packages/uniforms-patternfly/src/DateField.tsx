@@ -115,7 +115,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
         onChange={(_event, value) => {
           props.disabled || dateParse(value, onChange);
         }}
-        value={isInvalid ? "" : dateFormat(props.value, props.type) ?? ""}
+        value={isInvalid ? "" : (dateFormat(props.value, props.type) ?? "")}
       />
       {isInvalid && (
         <div

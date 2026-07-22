@@ -272,6 +272,23 @@ This is important for the Release jobs to correctly deploy it. Of course, deploy
 If your Maven package depends on other Maven packages, you need to declare those in the `dependencies` section, not on `devDependencies`.
 This ensures the release scripts know what other Maven packages need to be published alongside yours, and makes it easier to configure `-Dmaven.repo.local.tail` via `buildTailFromPackageJsonDependencies()`
 
+### Specifics # Container Images
+
+Packages that build container images (e.g., `kie-sandbox-webapp-image`, `kogito-management-console`, `cors-proxy-image`, `dev-deployment-*-image`) all go through the shared [`@kie-tools/image-builder`](../packages/image-builder/README.md) CLI.
+
+#### Building with Podman
+
+If you're building images with Podman, run this once beforehand:
+
+```sh
+docker buildx create --name kie-net-host \
+  --driver docker-container \
+  --allow-insecure-entitlement network.host --allow-insecure-entitlement security.insecure \
+  --use --bootstrap
+
+export BUILDX_BUILDER=kie-net-host
+```
+
 ### Development
 
 This section contains relevant topics about developing packages hosted on KIE Tools.

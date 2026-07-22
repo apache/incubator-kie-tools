@@ -35,9 +35,11 @@ export type VsCodeNewDmnEditorEnvelopeContext = KogitoEditorEnvelopeContextType<
   VsCodeNewDmnEditorChannelApi
 >;
 
-export class VsCodeNewDmnEditorFactory
-  implements EditorFactory<Editor, KogitoEditorEnvelopeApi, VsCodeNewDmnEditorChannelApi>
-{
+export class VsCodeNewDmnEditorFactory implements EditorFactory<
+  Editor,
+  KogitoEditorEnvelopeApi,
+  VsCodeNewDmnEditorChannelApi
+> {
   public createEditor(envelopeContext: VsCodeNewDmnEditorEnvelopeContext, initArgs: EditorInitArgs): Promise<Editor> {
     return Promise.resolve(new DmnEditorInterface(envelopeContext, initArgs));
   }

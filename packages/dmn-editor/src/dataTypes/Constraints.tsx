@@ -568,7 +568,7 @@ export function ConstraintsFromTypeConstraintAttribute({
   const typeConstraint = useMemo(
     () =>
       defaultsToAllowedValues
-        ? itemDefinition?.typeConstraint ?? itemDefinition?.allowedValues
+        ? (itemDefinition?.typeConstraint ?? itemDefinition?.allowedValues)
         : itemDefinition?.typeConstraint,
     [defaultsToAllowedValues, itemDefinition?.allowedValues, itemDefinition?.typeConstraint]
   );

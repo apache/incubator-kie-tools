@@ -87,7 +87,6 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    |                   `KIE_SANDBOX_APP_NAME`                    |                                   Allows KIE Sandbox to be referred by a different name.                                    | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
 
    ### Examples
-
    1. Using a different Extended Services deployment.
 
       ```bash

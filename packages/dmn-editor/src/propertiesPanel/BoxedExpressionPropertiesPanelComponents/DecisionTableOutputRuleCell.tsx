@@ -85,9 +85,9 @@ export function DecisionTableOutputRuleCell(props: {
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
             cellMustHaveSameTypeAsRoot
-              ? (root?.cell as Normalized<DMN_LATEST__tDecisionTable> | undefined)?.["@_typeRef"] ?? ""
-              : (root?.cell as Normalized<DMN_LATEST__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ??
-                  ""
+              ? ((root?.cell as Normalized<DMN_LATEST__tDecisionTable> | undefined)?.["@_typeRef"] ?? "")
+              : ((root?.cell as Normalized<DMN_LATEST__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ??
+                  "")
           ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
@@ -121,7 +121,7 @@ export function DecisionTableOutputRuleCell(props: {
             typeRef={
               cellMustHaveSameTypeAsRoot
                 ? (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"]
-                : headerType.itemDefinition?.["@_name"] ?? headerType.typeRef
+                : (headerType.itemDefinition?.["@_name"] ?? headerType.typeRef)
             }
           />
         </>

@@ -99,20 +99,20 @@ export function DmnDiagramSvg({
 
       const isCollection =
         node.data?.dmnObject?.__$$element === "inputData"
-          ? allDataTypesById.get(
+          ? (allDataTypesById.get(
               allTopLevelItemDefinitionUniqueNames.get(node.data.dmnObject.variable?.["@_typeRef"] ?? "") ?? ""
-            )?.itemDefinition?.["@_isCollection"] ?? false
+            )?.itemDefinition?.["@_isCollection"] ?? false)
           : node.data?.dmnObject?.__$$element === "decision"
-            ? allDataTypesById.get(
+            ? (allDataTypesById.get(
                 allTopLevelItemDefinitionUniqueNames.get(node.data.dmnObject.variable?.["@_typeRef"] ?? "") ?? ""
-              )?.itemDefinition?.["@_isCollection"] ?? false
+              )?.itemDefinition?.["@_isCollection"] ?? false)
             : false;
 
       const label =
         node.data?.dmnObject?.__$$element === "group"
-          ? node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.["@_name"] ?? "<Empty>"
+          ? (node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.["@_name"] ?? "<Empty>")
           : node.data?.dmnObject?.__$$element === "textAnnotation"
-            ? node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.text?.__$$text ?? "<Empty>"
+            ? (node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.text?.__$$text ?? "<Empty>")
             : buildFeelQNameFromXmlQName({
                 namedElement: node.data!.dmnObject!,
                 importsByNamespace,

@@ -21,7 +21,13 @@ import * as path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 import { merge } from "webpack-merge";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import { ProvidePlugin, EnvironmentPlugin } from "webpack";
+// Resolved through webpack-cli's own module scope so plugins built here come from the exact same
+// webpack instance the CLI uses to run the Compiler. pnpm can install more than one physical copy
+// of the same webpack version split by peer-dependency signature, and webpack's
+// internal `instanceof` checks throw when the plugin and the Compiler differ.
+const { ProvidePlugin, EnvironmentPlugin } = require(
+  require.resolve("webpack", { paths: [path.dirname(require.resolve("webpack-cli/package.json"))] })
+);
 import { defaultEnvJson } from "./build/defaultEnvJson";
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
 import patternflyBase from "@kie-tools-core/patternfly-base";
@@ -135,6 +141,10 @@ export default async (webpackEnv: any, webpackArgv: any) => {
           {
             // The jsonpath-rfc9535 package source maps are not published, so we ignore their warnings.
             module: /jsonpath-rfc9535/,
+          },
+          {
+            // The smtp-address-parser package source maps are not published, so we ignore their warnings.
+            module: /smtp-address-parser/,
           },
         ],
       }),

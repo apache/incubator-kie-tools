@@ -20,12 +20,11 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface ScesimEditorEnvelopeDictionary
-  extends ReferenceDictionary<{
-    testScenarioEditor: string;
-    i: string;
-    misc: string;
-    openCloseDockPanel: string;
-  }> {}
+interface ScesimEditorEnvelopeDictionary extends ReferenceDictionary<{
+  testScenarioEditor: string;
+  i: string;
+  misc: string;
+  openCloseDockPanel: string;
+}> {}
 
 export interface ScesimEditorEnvelopeI18n extends ScesimEditorEnvelopeDictionary, CommonI18n {}

@@ -416,7 +416,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
 
           const newRowIndex =
             (prevCoords.rowIndex ?? 0) < 0
-              ? prevCoords.rowIndex ?? 0 // Don't move away from header cells
+              ? (prevCoords.rowIndex ?? 0) // Don't move away from header cells
               : Math.min(boundaries.rows.max, Math.max(boundaries.rows.min, (prevCoords.rowIndex ?? 0) + deltaRows));
 
           const newColumnIndex =

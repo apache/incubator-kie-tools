@@ -68,7 +68,7 @@ export function InlineFeelNameInput({
 
   const previouslyFocusedElement = useRef<Element | undefined>();
 
-  useFocusableElement(inputRef, enableAutoFocusing ?? true ? id : undefined);
+  useFocusableElement(inputRef, (enableAutoFocusing ?? true) ? id : undefined);
 
   const restoreFocus = useCallback(() => {
     // We only restore the focus to the previously focused element if we're still holding focus. If focus has changed, we let it be.
