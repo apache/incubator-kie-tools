@@ -24,15 +24,13 @@ const execSync = require("child_process").execSync;
 const newMavenVersion = process.argv[3];
 if (!newMavenVersion) {
   console.error(
-    "Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref} --optaplannerGitRef {ref} --kogitoRuntimesGitRef {ref} --kogitoAppsGitRef {ref}]"
+    "Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref} --kogitoAppsGitRef {ref}]"
   );
   return 1;
 }
 
 const newDroolsGitRef = process.argv[5] ?? "drools--n/a";
-const newOptaPlannerGitRef = process.argv[7] ?? "optaplanner--n/a";
-const newKogitoRuntimesGitRef = process.argv[9] ?? "kogito-runtimes--n/a";
-const newKogitoAppsGitRef = process.argv[11] ?? "kogito-apps--n/a";
+const newKogitoAppsGitRef = process.argv[7] ?? "kogito-apps--n/a";
 
 console.log(`[update-kogito-version] process.argv:`);
 console.log(process.argv);
@@ -40,14 +38,12 @@ console.log(process.argv);
 if (
   process.argv[2] !== "--maven" ||
   (process.argv[4] && process.argv[4] !== "--droolsGitRef") ||
-  (process.argv[6] && process.argv[6] !== "--optaplannerGitRef") ||
-  (process.argv[8] && process.argv[8] !== "--kogitoRuntimesGitRef") ||
-  (process.argv[10] && process.argv[10] !== "--kogitoAppsGitRef")
+  (process.argv[6] && process.argv[6] !== "--kogitoAppsGitRef")
 ) {
   console.error("Arguments need to be passed in the correct order.");
   console.error(`Argv: ${process.argv.join(", ")}`);
   console.error(
-    "Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref} --optaplannerGitRef {ref} --kogitoRuntimesGitRef {ref} --kogitoAppsGitRef {ref}]"
+    "Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref} --kogitoAppsGitRef {ref}]"
   );
   process.exit(1);
 }
@@ -75,24 +71,6 @@ try {
       .replace(
         /DROOLS_AND_KOGITO__droolsRepoGitRef:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
         `DROOLS_AND_KOGITO__droolsRepoGitRef: {\n      default: "${newDroolsGitRef}"`
-      )
-  );
-  fs.writeFileSync(
-    droolsAndKogitoEnvPath,
-    fs
-      .readFileSync(droolsAndKogitoEnvPath, "utf-8")
-      .replace(
-        /DROOLS_AND_KOGITO__optaplannerRepoGitRef:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `DROOLS_AND_KOGITO__optaplannerRepoGitRef: {\n      default: "${newOptaPlannerGitRef}"`
-      )
-  );
-  fs.writeFileSync(
-    droolsAndKogitoEnvPath,
-    fs
-      .readFileSync(droolsAndKogitoEnvPath, "utf-8")
-      .replace(
-        /DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: {\n      default: "${newKogitoRuntimesGitRef}"`
       )
   );
   fs.writeFileSync(
