@@ -19,6 +19,7 @@
 
 export enum OpenshiftApiVersions {
   BUILD = "build.openshift.io/v1",
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values -- Build and BuildConfig both live in this apiVersion; not a duplicate.
   BUILD_CONFIG = "build.openshift.io/v1",
   IMAGE_STREAM = "image.openshift.io/v1",
   PROJECT = "project.openshift.io/v1",

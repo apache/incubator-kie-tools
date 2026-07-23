@@ -53,8 +53,8 @@
     "run-script-os": "^1.1.6",
     "ts-jest": "^29.1.5",
     "typescript": "^5.9.3",
-    "webpack": "^5.107.1",
-    "webpack-cli": "^5.1.4",
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1",
     "webpack-merge": "^5.9.0"
   }
 }

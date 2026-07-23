@@ -29,6 +29,7 @@ import path from "path";
 // webpack instance the CLI uses to run the Compiler. pnpm can install more than one physical copy
 // of the same webpack version split by peer-dependency signature, and webpack's
 // internal `instanceof` checks throw when the plugin and the Compiler differ.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { ProvidePlugin } = require(
   require.resolve("webpack", { paths: [path.dirname(require.resolve("webpack-cli/package.json"))] })
 );
