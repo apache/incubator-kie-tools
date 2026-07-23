@@ -18,7 +18,6 @@
  */
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
-const buildDeps = require("../../../repo/build-dependencies-versions.json");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
@@ -43,7 +42,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       },
       mvnw: {
         version: "3.3.0",
-        mavenVersion: buildDeps.maven,
+        mavenVersion: "3.9.11",
       },
       maven: {
         deploy: {
