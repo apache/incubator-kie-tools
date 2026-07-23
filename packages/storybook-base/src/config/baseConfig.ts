@@ -35,6 +35,12 @@ export const baseConfig: (
     },
     core: {
       disableTelemetry: true,
+      // The containerized e2e tests reach this dev server through an nginx reverse-proxy
+      // (see tests-e2e/__containerization__), which forwards requests with a `Host` header
+      // that doesn't match the dev server's default `allowedHosts` check, causing Storybook
+      // to reject them with "Invalid host". This is a local-only dev/test server, never
+      // exposed publicly, so disabling the check is safe.
+      allowedHosts: true,
     },
     stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
     framework: {

@@ -283,7 +283,7 @@ If you're building images with Podman, run this once beforehand:
 ```sh
 docker buildx create --name kie-net-host \
   --driver docker-container \
-  --allow-insecure-entitlement network.host --allow-insecure-entitlement security.insecure \
+  --buildkitd-flags '--allow-insecure-entitlement network.host --allow-insecure-entitlement security.insecure' \
   --use --bootstrap
 
 export BUILDX_BUILDER=kie-net-host
