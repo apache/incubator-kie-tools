@@ -77,7 +77,7 @@
     "@types/react-dom": "^18.3.1",
     "@types/uuid": "^8.3.0",
     "apollo-server-express": "^3.13.0",
-    "body-parser": "^1.20.3",
+    "body-parser": "^1.20.6",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^11.0.0",
     "core-js": "3.6.5",
