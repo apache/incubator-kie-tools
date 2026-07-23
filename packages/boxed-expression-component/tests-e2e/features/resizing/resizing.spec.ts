@@ -38,6 +38,7 @@ test.describe("Resizing", () => {
 
     test("should change literal decision name and resize to fit", async ({ page, resizing, browserName }) => {
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very very very big decision literal name");
       await page.keyboard.press("Enter");
 
@@ -117,6 +118,7 @@ test.describe("Resizing", () => {
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very very very very very very big decision name");
       await page.keyboard.press("Enter");
 
@@ -184,6 +186,7 @@ test.describe("Resizing", () => {
       });
 
       await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A context entry name");
       await page.keyboard.press("Enter");
 
@@ -341,6 +344,7 @@ test.describe("Resizing", () => {
 
     test("should change decision name and reset to fit", async ({ page, resizing }) => {
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("Installment Calculation");
       await page.keyboard.press("Enter");
 
@@ -366,6 +370,7 @@ test.describe("Resizing", () => {
       await outputHeader.locator("svg").click();
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very very very very very big decision name");
       await page.keyboard.press("Enter");
       const header = page.getByRole("columnheader", {
@@ -398,6 +403,7 @@ test.describe("Resizing", () => {
       await outputHeader.locator("svg").click();
 
       await page.getByRole("columnheader", { name: "output-1 (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("Installment Calculation");
       await page.keyboard.press("Enter");
       const output1 = page.getByRole("columnheader", { name: "Installment Calculation (<Undefined>)" });
@@ -514,6 +520,7 @@ test.describe("Resizing", () => {
       resizing,
     }) => {
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very very very big decision name");
       await page.keyboard.press("Enter");
 
@@ -536,6 +543,7 @@ test.describe("Resizing", () => {
 
     test("should change column name and reset size", async ({ page, resizing }) => {
       await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("Installment Calculation");
       await page.keyboard.press("Enter");
 
@@ -638,6 +646,7 @@ test.describe("Resizing", () => {
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very very very big boxed function");
       await page.keyboard.press("Enter");
 
@@ -765,6 +774,7 @@ test.describe("Resizing", () => {
       });
 
       await page.getByRole("columnheader", { name: "Expression Name" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very very very big boxed invocation decision name");
       await page.keyboard.press("Enter");
 
@@ -829,6 +839,7 @@ test.describe("Resizing", () => {
       });
 
       await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very big parameter");
       await page.keyboard.press("Enter");
 
@@ -917,6 +928,7 @@ test.describe("Resizing", () => {
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+      await expect(page.getByPlaceholder("Expression Name")).toBeFocused();
       await page.getByPlaceholder("Expression Name").fill("A very very very big decision list name");
       await page.keyboard.press("Enter");
 
