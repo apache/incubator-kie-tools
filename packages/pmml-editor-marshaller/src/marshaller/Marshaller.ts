@@ -83,7 +83,7 @@ export function XML2PMML(xml: string): PMML {
 //JSONata's $merge([...]) function merges data but not prototype definitions. This specialised version
 //merges data into a clone of the first object passed in the argument array.
 function merge(arg: any[]): any {
-  if (typeof arg === undefined) {
+  if (typeof arg === "undefined") {
     return undefined;
   }
 

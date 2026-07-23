@@ -636,25 +636,27 @@ function TestScenarioTable({
           isInstance || selectedColumnFactMapping.factIdentifier.className?.__$$text === "java.lang.Void";
 
         for (let columnIndex = 0; columnIndex < args.columnsCount; columnIndex++) {
-          isNewInstance
-            ? addColumnWithEmptyInstanceAndProperty({
-                expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
-                factMappings: factMappings,
-                factMappingValuesTypes: factMappingValues,
-                targetColumnIndex: targetColumnIndex + columnIndex,
-              })
-            : addColumnWithEmptyProperty({
-                expressionElementsSteps: [
-                  selectedColumnFactMapping.expressionElements!.ExpressionElement![0].step.__$$text,
-                ],
-                expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
-                factAlias: selectedColumnFactMapping.factAlias.__$$text,
-                factIdentifierClassName: selectedColumnFactMapping.factIdentifier.className!.__$$text,
-                factIdentifierName: selectedColumnFactMapping.factIdentifier.name!.__$$text,
-                factMappings: factMappings,
-                factMappingValuesTypes: factMappingValues,
-                targetColumnIndex: targetColumnIndex + columnIndex,
-              });
+          if (isNewInstance) {
+            addColumnWithEmptyInstanceAndProperty({
+              expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
+              factMappings: factMappings,
+              factMappingValuesTypes: factMappingValues,
+              targetColumnIndex: targetColumnIndex + columnIndex,
+            });
+          } else {
+            addColumnWithEmptyProperty({
+              expressionElementsSteps: [
+                selectedColumnFactMapping.expressionElements!.ExpressionElement![0].step.__$$text,
+              ],
+              expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
+              factAlias: selectedColumnFactMapping.factAlias.__$$text,
+              factIdentifierClassName: selectedColumnFactMapping.factIdentifier.className!.__$$text,
+              factIdentifierName: selectedColumnFactMapping.factIdentifier.name!.__$$text,
+              factMappings: factMappings,
+              factMappingValuesTypes: factMappingValues,
+              targetColumnIndex: targetColumnIndex + columnIndex,
+            });
+          }
         }
       });
     },

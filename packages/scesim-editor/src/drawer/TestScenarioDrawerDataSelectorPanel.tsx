@@ -368,12 +368,6 @@ function TestScenarioDataSelectorPanel() {
         : activeItem !== undefined
           ? i18n.drawer.dataSelector.emptyDataObjectsDescription
           : i18n.drawer.dataSelector.emptyDataObjectsMissingDescription;
-    {
-      testScenarioType === "DMN"
-        ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
-        : i18n.drawer.dataSelector.emptyDataObjectsTitleRule;
-    }
-
     return { description: description, icon: WarningTriangleIcon, title: title, visibility: treeViewVisibleStatus };
   }, [
     dataObjects.length,
