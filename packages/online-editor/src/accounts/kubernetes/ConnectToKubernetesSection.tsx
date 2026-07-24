@@ -48,6 +48,17 @@ export function ConnectToKubernetesSection() {
   const [isLoadingService, setIsLoadingService] = useState(false);
   const selectedKubernetesSession =
     accounts.section === AccountsSection.CONNECT_TO_KUBERNETES ? accounts.selectedAuthSession : undefined;
+  const selectedKubernetesAuthSession: KubernetesAuthSession | undefined =
+    selectedKubernetesSession?.type === "kubernetes" ? selectedKubernetesSession : undefined;
+  // CORS-proxy opt-in for this auth session. Default unchecked: local
+  // kind/minikube clusters are the most common case, are reachable
+  // directly from the browser, and the project's setup instructions
+  // for those already configure cluster-side CORS allowance. Users on
+  // a remote-cluster topology check the box. Legacy sessions without
+  // the field also default to unchecked via the read-side fallback in
+  // DevDeploymentsContextProvider, so existing setups keep working
+  // unchanged.
+  const [useCorsProxy, setUseCorsProxy] = useState<boolean>(selectedKubernetesAuthSession?.useCorsProxy ?? false);
 
   useCancelableEffect(
     useCallback(
@@ -142,6 +153,8 @@ export function ConnectToKubernetesSection() {
               setMode={setMode}
               connection={connection}
               setConnection={setConnection}
+              useCorsProxy={useCorsProxy}
+              setUseCorsProxy={setUseCorsProxy}
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
@@ -155,6 +168,8 @@ export function ConnectToKubernetesSection() {
               setMode={setMode}
               connection={connection}
               setConnection={setConnection}
+              useCorsProxy={useCorsProxy}
+              setUseCorsProxy={setUseCorsProxy}
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}

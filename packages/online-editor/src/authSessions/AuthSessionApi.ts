@@ -102,6 +102,13 @@ export type KubernetesAuthSession = BaseAuthSession & {
   host: string;
   insecurelyDisableTlsCertificateValidation: boolean;
   k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
+  /** When true, Dev Deployment runtime fetches and the Kubernetes API
+   *  calls go through the configured cors-proxy via the `target-url`
+   *  header convention. When false or undefined (legacy sessions), the
+   *  browser talks directly to the cluster, which only works when the
+   *  cluster is reachable from the browser without CORS restrictions
+   *  (e.g. a local kind/minikube cluster). */
+  useCorsProxy?: boolean;
 };
 
 export type CloudAuthSession = OpenShiftAuthSession | KubernetesAuthSession;
