@@ -23,28 +23,19 @@ const execSync = require("child_process").execSync;
 
 const newMavenVersion = process.argv[3];
 if (!newMavenVersion) {
-  console.error(
-    "Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref} --kogitoAppsGitRef {ref}]"
-  );
+  console.error("Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref}]");
   return 1;
 }
 
 const newDroolsGitRef = process.argv[5] ?? "drools--n/a";
-const newKogitoAppsGitRef = process.argv[7] ?? "kogito-apps--n/a";
 
 console.log(`[update-kogito-version] process.argv:`);
 console.log(process.argv);
 
-if (
-  process.argv[2] !== "--maven" ||
-  (process.argv[4] && process.argv[4] !== "--droolsGitRef") ||
-  (process.argv[6] && process.argv[6] !== "--kogitoAppsGitRef")
-) {
+if (process.argv[2] !== "--maven" || (process.argv[4] && process.argv[4] !== "--droolsGitRef")) {
   console.error("Arguments need to be passed in the correct order.");
   console.error(`Argv: ${process.argv.join(", ")}`);
-  console.error(
-    "Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref} --kogitoAppsGitRef {ref}]"
-  );
+  console.error("Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref}]");
   process.exit(1);
 }
 
@@ -73,16 +64,6 @@ try {
         `DROOLS_AND_KOGITO__droolsRepoGitRef: {\n      default: "${newDroolsGitRef}"`
       )
   );
-  fs.writeFileSync(
-    droolsAndKogitoEnvPath,
-    fs
-      .readFileSync(droolsAndKogitoEnvPath, "utf-8")
-      .replace(
-        /DROOLS_AND_KOGITO__kogitoAppsRepoGitRef:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: {\n      default: "${newKogitoAppsGitRef}"`
-      )
-  );
-
   console.info(`[update-kogito-version] Bootstrapping with updated Kogito version...`);
   execSync(`pnpm bootstrap`, execOpts);
 

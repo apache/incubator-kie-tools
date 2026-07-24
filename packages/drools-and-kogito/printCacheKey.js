@@ -21,6 +21,4 @@
 const { env } = require("./env");
 const repos = env.droolsAndKogito.repos;
 
-console.log(
-  `droolsRepoGitRef-${repos.drools.gitRef}-kogitoAppsRepoGitRef-${repos.kogitoApps.gitRef}-kogitoVersion-${env.versions.kogito}`
-);
+console.log(`droolsRepoGitRef-${repos.drools.gitRef}-kogitoVersion-${env.versions.kogito}`);
