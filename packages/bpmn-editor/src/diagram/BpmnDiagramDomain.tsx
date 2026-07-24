@@ -355,8 +355,10 @@ export const XY_FLOW_EDGE_TYPES: Record<BpmnEdgeType, React.ComponentType<any>> 
   [EDGE_TYPES.compensationAssociation]: AssociationEdge,
 };
 
-export interface BpmnDiagramNodeData<T extends BpmnNodeElement = BpmnNodeElement>
-  extends XyFlowReactKieDiagramNodeData<BpmnNodeType, BpmnDiagramNodeData> {
+export interface BpmnDiagramNodeData<T extends BpmnNodeElement = BpmnNodeElement> extends XyFlowReactKieDiagramNodeData<
+  BpmnNodeType,
+  BpmnDiagramNodeData
+> {
   bpmnElement: T;
   shape: Normalized<BPMNDI__BPMNShape>;
   shapeIndex: number;

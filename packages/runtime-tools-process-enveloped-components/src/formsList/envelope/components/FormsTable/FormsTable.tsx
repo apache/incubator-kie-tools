@@ -83,7 +83,7 @@ const FormsTable: React.FC<FormsTableProps> = ({ channelApi, formsData, setForms
     if (!_.isEmpty(formsData)) {
       onSort(2, "desc");
     }
-  }, [isLoading]);
+  }, [formsData, isLoading, onSort]);
 
   const formsLoadingComponent: JSX.Element = (
     <Bullseye>

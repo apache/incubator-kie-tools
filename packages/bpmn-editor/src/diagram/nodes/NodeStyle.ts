@@ -63,10 +63,10 @@ export function getBpmnFontStyle(args: {
   isEnabled?: boolean | undefined;
 }): BpmnFontStyle {
   return {
-    bold: args.isEnabled ? args.dcFont?.["@_isBold"] ?? false : false,
-    italic: args.isEnabled ? args.dcFont?.["@_isItalic"] ?? false : false,
-    underline: args.isEnabled ? args.dcFont?.["@_isUnderline"] ?? false : false,
-    strikeThrough: args.isEnabled ? args.dcFont?.["@_isStrikeThrough"] ?? false : false,
+    bold: args.isEnabled ? (args.dcFont?.["@_isBold"] ?? false) : false,
+    italic: args.isEnabled ? (args.dcFont?.["@_isItalic"] ?? false) : false,
+    underline: args.isEnabled ? (args.dcFont?.["@_isUnderline"] ?? false) : false,
+    strikeThrough: args.isEnabled ? (args.dcFont?.["@_isStrikeThrough"] ?? false) : false,
     family: args.isEnabled ? args.dcFont?.["@_name"] : undefined,
     size: args.isEnabled ? args.dcFont?.["@_size"] : undefined,
   };

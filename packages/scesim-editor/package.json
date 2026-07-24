@@ -7,7 +7,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
@@ -71,7 +71,7 @@
     "@storybook/react": "^7.3.2",
     "@storybook/react-webpack5": "^7.3.2",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^24.12.4",
+    "@types/node": "^24.13.3",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/react-table": "^7.0.25",
@@ -87,8 +87,8 @@
     "start-server-and-test": "^2.0.3",
     "storybook": "^7.3.2",
     "typescript": "^5.9.3",
-    "webpack": "^5.107.1",
-    "webpack-cli": "^5.1.4",
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1",
     "webpack-dev-server": "^5.2.5",
     "webpack-merge": "^5.9.0"
   },

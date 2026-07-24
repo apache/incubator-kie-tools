@@ -150,26 +150,28 @@ function TestScenarioCreationPanel() {
   const createTestScenario = useCallback(
     () =>
       testScenarioEditorStoreApi.setState((state) => {
-        assetType === "DMN"
-          ? createNewDmnTypeTestScenario({
-              dmnModel: selectedDmnModel!,
-              factMappingsModel:
-                state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
-              factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
-              isAutoFillTableEnabled,
-              isTestSkipped,
-              settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
-            })
-          : createNewRuleTypeTestScenario({
-              factMappingsModel:
-                state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
-              factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
-              isStatelessSessionRule,
-              isTestSkipped,
-              kieSessionRule,
-              ruleFlowGroup,
-              settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
-            });
+        if (assetType === "DMN") {
+          createNewDmnTypeTestScenario({
+            dmnModel: selectedDmnModel!,
+            factMappingsModel:
+              state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
+            factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
+            isAutoFillTableEnabled,
+            isTestSkipped,
+            settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
+          });
+        } else {
+          createNewRuleTypeTestScenario({
+            factMappingsModel:
+              state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
+            factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
+            isStatelessSessionRule,
+            isTestSkipped,
+            kieSessionRule,
+            ruleFlowGroup,
+            settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
+          });
+        }
       }),
     [
       assetType,

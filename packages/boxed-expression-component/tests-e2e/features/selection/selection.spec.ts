@@ -43,6 +43,7 @@ test.describe("Selection", () => {
       for (let i = 0; i < 4; i++) {
         await page.keyboard.type(`"test${i}"`);
         await page.keyboard.press("Space");
+        await expect(page.getByRole("cell", { name: `test${i}` })).toBeAttached();
         await page.keyboard.press("Tab");
       }
 
@@ -60,6 +61,7 @@ test.describe("Selection", () => {
       for (let i = 0; i < 9; i++) {
         await page.keyboard.type(`"test${i}"`);
         await page.keyboard.press("Space");
+        await expect(page.getByRole("cell", { name: `test${i}` })).toBeAttached();
         await page.keyboard.press("Tab");
       }
 

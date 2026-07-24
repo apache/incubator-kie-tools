@@ -40,8 +40,8 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
   const { beeGwtService } = useBoxedExpressionEditor();
 
   useEffect(() => {
-    if (isActive) {
-      expression ? beeGwtService?.selectObject(expression["@_id"]) : "";
+    if (isActive && expression) {
+      beeGwtService?.selectObject(expression["@_id"]);
     }
   }, [beeGwtService, columnIndex, expression, isActive]);
 

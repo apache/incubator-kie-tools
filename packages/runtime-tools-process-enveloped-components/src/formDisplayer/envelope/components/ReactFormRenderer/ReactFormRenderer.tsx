@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { transform } from "@babel/standalone";
 import ReactDOM from "react-dom";
@@ -46,15 +46,7 @@ declare global {
 }
 
 const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources, setIsExecuting }) => {
-  useEffect(() => {
-    /* istanbul ignore else */
-    if (source) {
-      renderform();
-    }
-  }, [source, resources]);
-
-  const renderform = () => {
-    /* istanbul ignore else */
+  const renderform = useCallback(() => {
     if (source) {
       setIsExecuting(true);
       try {
@@ -110,7 +102,13 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
         setIsExecuting(false);
       }
     }
-  };
+  }, [setIsExecuting, source]);
+
+  useEffect(() => {
+    if (source) {
+      renderform();
+    }
+  }, [source, resources, renderform]);
 
   return (
     <>

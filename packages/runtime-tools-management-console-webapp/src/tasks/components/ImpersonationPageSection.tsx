@@ -186,7 +186,7 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
                 tabIndex={2}
                 value={groups ?? ""}
                 onChange={(_event, val) => setGroups(val)}
-                placeholder={`None (currently ${currentAuthSession?.type === AuthSessionType.OPENID_CONNECT ? currentAuthSession.roles?.join(",") ?? "empty" : "empty"})`}
+                placeholder={`None (currently ${currentAuthSession?.type === AuthSessionType.OPENID_CONNECT ? (currentAuthSession.roles?.join(",") ?? "empty") : "empty"})`}
               />
               <FormHelperText>
                 <HelperText>

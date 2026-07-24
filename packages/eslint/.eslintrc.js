@@ -36,11 +36,17 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/ban-types": "off",
+        // Replaces the removed `ban-types` rule (typescript-eslint v8), preserving the same policy.
+        "@typescript-eslint/no-unsafe-function-type": "off",
+        "@typescript-eslint/no-wrapper-object-types": "off",
+        "@typescript-eslint/no-empty-object-type": "off",
         "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/no-empty-interface": ["error", { allowSingleExtends: true }],
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-unnecessary-type-constraint": "off",
+        // New in typescript-eslint v8's recommended set; this codebase's `condition && sideEffect()`
+        // idiom is exactly what `allowShortCircuit` permits.
+        "@typescript-eslint/no-unused-expressions": ["error", { allowShortCircuit: true }],
         "no-fallthrough": "off",
         "no-case-declarations": "off",
         "react/prop-types": "off",

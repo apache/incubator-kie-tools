@@ -7,7 +7,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"

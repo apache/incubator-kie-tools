@@ -59,7 +59,7 @@ export function DataTypeName({
   enableAutoFocusing?: boolean;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-    enableAutoFocusing ?? true ? itemDefinition["@_id"] : undefined
+    (enableAutoFocusing ?? true) ? itemDefinition["@_id"] : undefined
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -227,7 +227,9 @@ export function DataTypeName({
           />
           {!isEditingLabel && (
             <TypeRefLabel
-              typeRef={isStruct(itemDefinition) ? "" : itemDefinition.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined}
+              typeRef={
+                isStruct(itemDefinition) ? "" : (itemDefinition.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined)
+              }
               isCollection={itemDefinition["@_isCollection"]}
               relativeToNamespace={relativeToNamespace}
             />

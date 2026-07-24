@@ -32,9 +32,11 @@ import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { DmnEditorEnvelopeI18nContext, dmnEditorEnvelopeI18nDefaults, dmnEditorEnvelopeI18nDictionaries } from "./i18n";
 
-export class NewDmnEditorFactory
-  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
-{
+export class NewDmnEditorFactory implements EditorFactory<
+  NewDmnEditorInterface,
+  NewDmnEditorEnvelopeApi,
+  NewDmnEditorChannelApi
+> {
   public createEditor(
     envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>,
     initArgs: EditorInitArgs

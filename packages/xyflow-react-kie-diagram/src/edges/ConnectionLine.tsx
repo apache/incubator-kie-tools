@@ -68,7 +68,7 @@ export function ConnectionLine<N extends string, E extends string>({
     (k) => (PositionalNodeHandleId as any)[k] === fromHandle?.id
   );
 
-  const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : edgeBeingUpdated?.type ?? fromHandle?.id;
+  const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : (edgeBeingUpdated?.type ?? fromHandle?.id);
 
   const kieEdgePath = usePathForEdgeWithWaypoints(
     edgeBeingUpdated?.data,

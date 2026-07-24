@@ -1007,7 +1007,8 @@ th {
   background: linear-gradient(to top, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
 }
 .kie-dmn-editor--data-type-properties-table .first-nested-at-level.last-nested-at-level {
-  background: linear-gradient(to bottom, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%),
+  background:
+    linear-gradient(to bottom, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%),
     linear-gradient(to top, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
 }
 .kie-dmn-editor--data-type-properties-table .pf-m-typeahead {

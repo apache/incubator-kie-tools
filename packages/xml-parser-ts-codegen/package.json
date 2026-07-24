@@ -7,7 +7,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
@@ -33,7 +33,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^24.12.4",
+    "@types/node": "^24.13.3",
     "glob": "^10.2.7",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

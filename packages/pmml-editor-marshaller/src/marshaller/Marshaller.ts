@@ -83,7 +83,7 @@ export function XML2PMML(xml: string): PMML {
 //JSONata's $merge([...]) function merges data but not prototype definitions. This specialised version
 //merges data into a clone of the first object passed in the argument array.
 function merge(arg: any[]): any {
-  if (typeof arg === undefined) {
+  if (typeof arg === "undefined") {
     return undefined;
   }
 
@@ -95,18 +95,27 @@ function merge(arg: any[]): any {
 
   arg.forEach((obj: any) => {
     for (const prop in obj) {
-      result[prop] = obj[prop];
+      //Values coming from JSONata object literals (e.g. nested templates merged in here) are cloned too, so
+      //null-prototype objects/arrays built by JSONata (see the note on clone(..) above) don't leak into the
+      //result as-is.
+      result[prop] = clone(obj[prop]);
     }
   });
 
   return result;
 }
 
-function clone(obj: any) {
+function clone(obj: any): any {
   if (obj === null || typeof obj !== "object") {
     return obj;
   }
-  const temp: any = new obj.constructor(obj);
+  if (Array.isArray(obj)) {
+    return obj.map((item: any) => clone(item));
+  }
+  //JSONata (since 1.8.8, see https://github.com/jsonata-js/jsonata/security/advisories/GHSA-vfvv-vhqm-2f9m)
+  //builds object literals with Object.create(null) to prevent prototype pollution, so those objects have no
+  //constructor. Fall back to a plain object in that case; otherwise preserve the original behaviour.
+  const temp: any = obj.constructor ? new obj.constructor(obj) : {};
   for (const key in obj) {
     temp[key] = clone(obj[key]);
   }
@@ -146,7 +155,9 @@ export function PMML2XML(pmml: PMML): string {
   const expression: Expression = JSONata(ui2json);
   expression.registerFunction("singletonArray", singletonArray);
 
-  const json: any = expression.evaluate(pmml);
+  //See the note on clone(..) above: JSONata (since 1.8.8) returns objects built with Object.create(null),
+  //which xml-js can't serialize (it calls hasOwnProperty(..) on them). Normalize to plain objects first.
+  const json: any = clone(expression.evaluate(pmml));
   const xml: string = XMLJS.js2xml(json, { spaces: 2 });
 
   return xml;

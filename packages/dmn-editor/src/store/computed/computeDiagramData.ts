@@ -175,7 +175,7 @@ export function computeDiagramData(
     // If the QName is composite, we try and get the namespace from the XML namespace declarations. If it's not found, we use `UNKNOWN_DMN_NAMESPACE`
     // If the QName is simple, we simply say that the namespace is undefined, which is the same as the default namespace.
     const dmnObjectNamespace = dmnObjectQName.prefix
-      ? definitions[`@_xmlns:${dmnObjectQName.prefix}`] ?? KIE_DMN_UNKNOWN_NAMESPACE
+      ? (definitions[`@_xmlns:${dmnObjectQName.prefix}`] ?? KIE_DMN_UNKNOWN_NAMESPACE)
       : undefined;
 
     const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });

@@ -196,7 +196,7 @@ export const InputDataNode = React.memo(
             flexDirection: "column",
             outline: "none",
             "--selected-alternative-input-data-node-shape--height": `${
-              nodeDimensions.height + 20 + (isEditingLabel ? 20 : alternativeEditableNodeHeight ?? 0)
+              nodeDimensions.height + 20 + (isEditingLabel ? 20 : (alternativeEditableNodeHeight ?? 0))
             }px`,
           } as any)
         : undefined;

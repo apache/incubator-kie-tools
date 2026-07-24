@@ -49,9 +49,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.selectExpressionMenu.selectLiteral();
     await bee.expression.asLiteral().fill("ORIGINAL");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asLiteral().content).toContainText("ORIGINAL");
   });
 
@@ -76,9 +76,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.selectExpressionMenu.selectRelation();
     await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("ORIGINAL");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("ORIGINAL");
   });
 
@@ -101,9 +101,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asContext().entry(0).selectExpressionMenu.selectLiteral();
     await bee.expression.asContext().entry(0).expression.asLiteral().fill("ORIGINAL");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asContext().entry(0).expression.asLiteral().content).toContainText("ORIGINAL");
   });
 
@@ -179,9 +179,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asDecisionTable().cellAt({ row: 1, column: 7 }).fill("1-7");
     await bee.expression.asDecisionTable().cellAt({ row: 4, column: 7 }).fill("4-7");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 }).content).toContainText("1-1");
     await expect(bee.expression.asDecisionTable().cellAt({ row: 4, column: 1 }).content).toContainText("4-1");
     await expect(bee.expression.asDecisionTable().cellAt({ row: 1, column: 7 }).content).toContainText("1-7");
@@ -208,9 +208,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asList().row(0).expression.asLiteral().fill("ORIGINAL");
     await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("ORIGINAL");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("ORIGINAL");
   });
 
@@ -236,9 +236,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asInvocation().parameter(0).expression.asLiteral().fill("ORIGINAL");
     await expect(bee.expression.asInvocation().parameter(0).expression.asLiteral().content).toContainText("ORIGINAL");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asInvocation().parameter(0).expression.asLiteral().content).toContainText("ORIGINAL");
   });
 
@@ -273,9 +273,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asConditional().then.expression.asLiteral().fill("then ORIGINAL");
     await bee.expression.asConditional().else.expression.asLiteral().fill("else ORIGINAL");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asConditional().if.expression.asLiteral().content).toContainText("if ORIGINAL");
     await expect(bee.expression.asConditional().then.expression.asLiteral().content).toContainText("then ORIGINAL");
     await expect(bee.expression.asConditional().else.expression.asLiteral().content).toContainText("else ORIGINAL");
@@ -311,9 +311,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asFor().return.expression.asLiteral().fill("ORIGINAL2");
 
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
 
     await expect(bee.expression.asFor().in.expression.asLiteral().content).toContainText("ORIGINAL1");
     await expect(bee.expression.asFor().return.expression.asLiteral().content).toContainText("ORIGINAL2");
@@ -348,9 +348,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asEvery().in.expression.asLiteral().fill("ORIGINAL1");
     await bee.expression.asEvery().satisfies.expression.asLiteral().fill("ORIGINAL2");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asEvery().in.expression.asLiteral().content).toContainText("ORIGINAL1");
     await expect(bee.expression.asEvery().satisfies.expression.asLiteral().content).toContainText("ORIGINAL2");
     await expect(bee.expression.asEvery().variable.content).toContainText("my variable");
@@ -384,9 +384,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asSome().in.expression.asLiteral().fill("ORIGINAL1");
     await bee.expression.asSome().satisfies.expression.asLiteral().fill("ORIGINAL2");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asSome().in.expression.asLiteral().content).toContainText("ORIGINAL1");
     await expect(bee.expression.asSome().satisfies.expression.asLiteral().content).toContainText("ORIGINAL2");
     await expect(bee.expression.asSome().variable.content).toContainText("my variable");
@@ -419,9 +419,9 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await bee.expression.asFilter().in.expression.asLiteral().fill("ORIGINAL1");
     await bee.expression.asFilter().match.expression.asLiteral().fill("ORIGINAL2");
     await bee.expression.header.cut();
-    expect(await bee.expression.isEmpty()).toBeTruthy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
-    expect(await bee.expression.isEmpty()).toBeFalsy();
+    await expect.poll(() => bee.expression.isEmpty()).toBeFalsy();
     await expect(bee.expression.asFilter().in.expression.asLiteral().content).toContainText("ORIGINAL1");
     await expect(bee.expression.asFilter().match.expression.asLiteral().content).toContainText("ORIGINAL2");
   });

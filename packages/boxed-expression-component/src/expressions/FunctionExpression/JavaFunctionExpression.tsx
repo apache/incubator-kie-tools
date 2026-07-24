@@ -390,7 +390,7 @@ export function JavaFunctionExpression({
             },
             expressionChangedArgs: {
               action: Action.LiteralTextExpressionChanged,
-              from: clazz.expression.__$$element === "literalExpression" ? clazz.expression.text?.__$$text ?? "" : "",
+              from: clazz.expression.__$$element === "literalExpression" ? (clazz.expression.text?.__$$text ?? "") : "",
               to: u.value,
             },
           });
@@ -425,7 +425,8 @@ export function JavaFunctionExpression({
             },
             expressionChangedArgs: {
               action: Action.LiteralTextExpressionChanged,
-              from: method.expression.__$$element === "literalExpression" ? method.expression.text?.__$$text ?? "" : "",
+              from:
+                method.expression.__$$element === "literalExpression" ? (method.expression.text?.__$$text ?? "") : "",
               to: u.value,
             },
           });

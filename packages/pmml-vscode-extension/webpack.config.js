@@ -20,7 +20,13 @@
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const { ProvidePlugin } = require("webpack");
+// Resolved through webpack-cli's own module scope so plugins built here come from the exact same
+// webpack instance the CLI uses to run the Compiler. pnpm can install more than one physical copy
+// of the same webpack version split by peer-dependency signature, and webpack's
+// internal `instanceof` checks throw when the plugin and the Compiler differ.
+const { ProvidePlugin } = require(
+  require.resolve("webpack", { paths: [require("path").dirname(require.resolve("webpack-cli/package.json"))] })
+);
 
 const commonConfig = (webpackEnv) =>
   merge(common(webpackEnv), {

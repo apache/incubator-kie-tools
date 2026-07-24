@@ -163,10 +163,10 @@ export function getDmnFontStyle(args: {
       : `rgba(${red}, ${green}, ${blue}, 1)`;
 
   return {
-    bold: args.isEnabled ? args.dmnStyle?.["@_fontBold"] ?? false : false,
-    italic: args.isEnabled ? args.dmnStyle?.["@_fontItalic"] ?? false : false,
-    underline: args.isEnabled ? args.dmnStyle?.["@_fontUnderline"] ?? false : false,
-    strikeThrough: args.isEnabled ? args.dmnStyle?.["@_fontStrikeThrough"] ?? false : false,
+    bold: args.isEnabled ? (args.dmnStyle?.["@_fontBold"] ?? false) : false,
+    italic: args.isEnabled ? (args.dmnStyle?.["@_fontItalic"] ?? false) : false,
+    underline: args.isEnabled ? (args.dmnStyle?.["@_fontUnderline"] ?? false) : false,
+    strikeThrough: args.isEnabled ? (args.dmnStyle?.["@_fontStrikeThrough"] ?? false) : false,
     family: args.isEnabled ? args.dmnStyle?.["@_fontFamily"] : undefined,
     size: args.isEnabled ? args.dmnStyle?.["@_fontSize"] : undefined,
     color: fontColor,
