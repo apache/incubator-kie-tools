@@ -31,14 +31,6 @@ module.exports = composeEnv([rootEnv], {
       default: "9fa488684650e3fb163e34069b8ba9dc83ee89c1",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
-    DROOLS_AND_KOGITO__kogitoAppsRepoUrl: {
-      default: "https://github.com/apache/incubator-kie-kogito-apps",
-      description: "Git repository URL for Kogito Apps",
-    },
-    DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: {
-      default: "384193e269eb42f75d1c2652e82f403e2c454dc2",
-      description: "Git ref for the Kogito Apps repository (SHA, branch, or tag)",
-    },
     DROOLS_AND_KOGITO__skip: {
       default: `${false}`,
       description:
@@ -63,10 +55,6 @@ module.exports = composeEnv([rootEnv], {
           drools: {
             url: getOrDefault(this.vars.DROOLS_AND_KOGITO__droolsRepoUrl),
             gitRef: getOrDefault(this.vars.DROOLS_AND_KOGITO__droolsRepoGitRef),
-          },
-          kogitoApps: {
-            url: getOrDefault(this.vars.DROOLS_AND_KOGITO__kogitoAppsRepoUrl),
-            gitRef: getOrDefault(this.vars.DROOLS_AND_KOGITO__kogitoAppsRepoGitRef),
           },
         },
         cache: {
