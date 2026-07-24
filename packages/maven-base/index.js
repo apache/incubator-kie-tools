@@ -86,7 +86,7 @@ module.exports = {
     console.info(`[maven-base] Installing mvnw...`);
     console.time(`[maven-base] Installing mvnw...`);
 
-    const cmd = `mvn -e org.apache.maven.plugins:maven-wrapper-plugin:${env.mvnw.version}:wrapper ${BOOTSTRAP_CLI_ARGS}`;
+    const cmd = `mvn -e org.apache.maven.plugins:maven-wrapper-plugin:${env.mvnw.version}:wrapper -Dmaven=${env.mvnw.mavenVersion} ${BOOTSTRAP_CLI_ARGS}`;
 
     if (process.platform === "win32") {
       cp.execSync(cmd.replaceAll(" -", " `-"), { stdio: "inherit", shell: "powershell.exe" });
