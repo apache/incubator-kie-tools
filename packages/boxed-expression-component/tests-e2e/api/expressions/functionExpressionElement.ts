@@ -41,7 +41,9 @@ export class FunctionExpressionElement {
       await this.locator.page().getByPlaceholder("Parameter Name").last().fill(args.name);
 
       // WORKAROUND_DUE_TO "https://github.com/apache/incubator-kie-issues/issues/540",
-      await this.locator.page().keyboard.press("Tab");
+      // Blur instead of pressing Tab: the name commits on blur either way, but Tab here triggers an
+      // app bug that locks the page in an infinite re-render loop of FeelFunctionExpression.
+      await this.locator.page().getByPlaceholder("Parameter Name").last().blur();
     }
     if (args.dataType) {
       await this.locator.page().getByLabel("<Undefined>").last().click();

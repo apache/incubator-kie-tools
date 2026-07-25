@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { Diagram } from "../diagram";
 import { NameProperties } from "./parts/nameProperties";
 import { DocumentationProperties } from "./parts/documentationProperties";
@@ -67,6 +67,11 @@ export abstract class PropertiesPanelBase {
     const combobox =
       index === 0 ? this.panel().getByRole("combobox").first() : this.panel().getByRole("combobox").nth(index);
     await combobox.click();
-    await combobox.fill(value);
+    // TypeaheadSelect re-syncs its input state from `options`/`selected` shortly after the menu
+    // opens, discarding a `fill()` that lands during that window. Retry until the value sticks.
+    await expect(async () => {
+      await combobox.fill(value);
+      await expect(combobox).toHaveValue(value);
+    }).toPass({ timeout: 10000 });
   }
 }
