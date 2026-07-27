@@ -86,9 +86,10 @@ export class Nodes {
         ? await this.getPositionalNodeHandleCoordinates({ node: to, position: args.position })
         : undefined;
 
+    // The panel holding this handle is only rendered while the node is hovered, and it takes a moment to show up
+    // after the click above. Not forcing the action makes Playwright wait for it to actually be visible.
     return await from.getByTitle(this.getAddEdgeTitle(args.type)).dragTo(to, {
       targetPosition,
-      force: true,
       noWaitAfter: true,
     });
   }
@@ -236,6 +237,14 @@ export class Nodes {
       (nodeName) => (document.activeElement as HTMLInputElement)?.value === nodeName,
       args.name
     );
+  }
+
+  // The editor puts a newly created node's name into edit mode from a 100ms timer (see `EditableNodeLabel`'s
+  // `useFocusableElement` call). A re-render inside that window leaves a second timer pending, so the label pops
+  // back into edit mode *after* a test has already clicked the node, which then shows up as a spurious
+  // text-selection highlight in screenshots. Waiting the timer out keeps node creation deterministic.
+  public async waitForNewNodeEditingToSettle() {
+    await this.page.waitForTimeout(200);
   }
 
   private getNewConnectedNodeProperties(type: NodeType) {

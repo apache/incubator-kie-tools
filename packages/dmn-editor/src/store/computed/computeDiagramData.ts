@@ -200,6 +200,12 @@ export function computeDiagramData(
       parentRfNode: undefined,
     };
 
+    const dimensions = snapShapeDimensions(
+      diagram.snapGrid,
+      shape,
+      MIN_NODE_SIZES[type]({ snapGrid: diagram.snapGrid, isAlternativeInputDataShape })
+    );
+
     const newNode: RF.Node<DmnDiagramNodeData> = {
       id,
       type,
@@ -209,12 +215,15 @@ export function computeDiagramData(
       position: snapShapePosition(diagram.snapGrid, shape),
       data,
       zIndex: NODE_LAYERS.NODES,
+      // React Flow renders a node with `visibility: hidden` until it considers it "initialized", which means
+      // `node.width` and `node.height` are set. Up to reactflow 11.10.x those were carried over from the
+      // previously measured internals every time a new nodes array was given to it, but since 11.11.0 they are
+      // not, so nodes would blink out of existence on every store update until the ResizeObserver re-measured
+      // them. We always know the dimensions here, so we can simply provide them.
+      width: dimensions.width,
+      height: dimensions.height,
       style: {
-        ...snapShapeDimensions(
-          diagram.snapGrid,
-          shape,
-          MIN_NODE_SIZES[type]({ snapGrid: diagram.snapGrid, isAlternativeInputDataShape })
-        ),
+        ...dimensions,
       },
     };
 
@@ -234,6 +243,8 @@ export function computeDiagramData(
           ...newNode.style,
           ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
         };
+        newNode.width = DECISION_SERVICE_COLLAPSED_DIMENSIONS.width;
+        newNode.height = DECISION_SERVICE_COLLAPSED_DIMENSIONS.height;
       }
     }
 

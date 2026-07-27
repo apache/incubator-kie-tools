@@ -38,6 +38,7 @@ export class Palette {
     if (args.thenRenameTo) {
       await this.nodes.rename({ current: nodeName, new: args.thenRenameTo });
     }
+    await this.nodes.waitForNewNodeEditingToSettle();
   }
 
   public async dragExternalNode(args: {
