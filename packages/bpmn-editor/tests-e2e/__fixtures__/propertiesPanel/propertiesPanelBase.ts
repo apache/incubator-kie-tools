@@ -66,12 +66,16 @@ export abstract class PropertiesPanelBase {
   public async fillCombobox(value: string, index: number = 0): Promise<void> {
     const combobox =
       index === 0 ? this.panel().getByRole("combobox").first() : this.panel().getByRole("combobox").nth(index);
-    await combobox.click();
-    // TypeaheadSelect re-syncs its input state from `options`/`selected` shortly after the menu
-    // opens, discarding a `fill()` that lands during that window. Retry until the value sticks.
+    // A selected node keeps grabbing focus back whenever the pointer stops hovering it, and
+    // `click()` moves the pointer off the node and clicks in the same breath, so that focus grab
+    // lands a few dozen milliseconds later — while we're already typing. TypeaheadSelect reverts
+    // its input to the currently selected option on blur, so the typed value silently disappears.
+    // Type, give the focus grab time to land, and only then check that the value stuck.
     await expect(async () => {
+      await combobox.click();
       await combobox.fill(value);
-      await expect(combobox).toHaveValue(value);
-    }).toPass({ timeout: 10000 });
+      await this.page.waitForTimeout(250);
+      await expect(combobox).toHaveValue(value, { timeout: 1000 });
+    }).toPass({ timeout: 15000 });
   }
 }

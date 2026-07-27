@@ -1247,8 +1247,8 @@ importers:
         specifier: ^1.24.0
         version: 1.31.23(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@storybook/addon-links':
         specifier: ^7.3.2
         version: 7.6.24(react@18.3.1)
@@ -1464,8 +1464,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@storybook/addon-links':
         specifier: ^7.3.2
         version: 7.6.24(react@18.3.1)
@@ -1723,8 +1723,8 @@ importers:
         specifier: ^5.4.1
         version: 5.4.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@storybook/addon-links':
         specifier: ^7.3.2
         version: 7.6.24(react@18.3.1)
@@ -2748,8 +2748,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@storybook/addon-links':
         specifier: ^7.3.2
         version: 7.6.24(react@18.3.1)
@@ -3010,8 +3010,8 @@ importers:
         specifier: ^5.4.1
         version: 5.4.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@prettier/plugin-xml':
         specifier: ^3.4.2
         version: 3.4.2(prettier@3.8.5)
@@ -5831,8 +5831,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@testing-library/jest-dom':
         specifier: ^6.4.6
         version: 6.10.0(@testing-library/dom@9.3.4)
@@ -6000,8 +6000,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@types/yargs':
         specifier: ^17.0.35
         version: 17.0.35
@@ -7492,8 +7492,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@playwright/test':
-        specifier: ^1.45.2
-        version: 1.61.1
+        specifier: 1.62.0
+        version: 1.62.0
       '@storybook/addon-links':
         specifier: ^7.3.2
         version: 7.6.24(react@18.3.1)
@@ -11915,9 +11915,9 @@ packages:
     resolution: {integrity: sha512-t3/zE0i9gik5R/NpRs7G2Xo/6NPeABW6ReplGdtkeWeAkaV764CgFgoKjJo21D2xgjnvDvRYubqBUu4xl0VCqA==}
     engines: {node: '>=18'}
 
-  '@playwright/test@1.61.1':
-    resolution: {integrity: sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig==}
-    engines: {node: '>=18'}
+  '@playwright/test@1.62.0':
+    resolution: {integrity: sha512-9zOJ6ZQRAena31MpOH9VSzIz8Ou3YJ/wtY/eQm5T2uhfhG7/U3COrMS8xOtUrZrp9OgdmzEnIYODye3nY1VqzA==}
+    engines: {node: '>=20'}
     hasBin: true
 
   '@pmmmwh/react-refresh-webpack-plugin@0.5.17':
@@ -20387,9 +20387,14 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.61.1:
-    resolution: {integrity: sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ==}
-    engines: {node: '>=18'}
+  playwright-core@1.62.0:
+    resolution: {integrity: sha512-nsNRyq0r2zsG8AcRHWknc9QRA5XCueC7gWMrs+Gx2tlZn9hcl8zudfh00lhJPY1DE7NmZ6bDsT9g2yey8mXljA==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.62.0:
+    resolution: {integrity: sha512-Z14dG305dgaLu6foB1TXQagFiW8JfSUIUaUuPaKQ6NtBPKF1P/qXcqfh6c6K/icPqdy37JmjbiBXf6JNg6Sylw==}
+    engines: {node: '>=20'}
     hasBin: true
 
   pluralize@2.0.0:
@@ -27613,9 +27618,9 @@ snapshots:
     dependencies:
       playwright-core: 1.61.1
 
-  '@playwright/test@1.61.1':
+  '@playwright/test@1.62.0':
     dependencies:
-      playwright: 1.61.1
+      playwright: 1.62.0
 
   '@pmmmwh/react-refresh-webpack-plugin@0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-dev-server@5.2.6)(webpack-hot-middleware@2.26.1)(webpack@5.108.4)':
     dependencies:
@@ -31143,7 +31148,7 @@ snapshots:
       koa-mount: 4.2.0
       koa-static: 5.0.0
       minimist: 1.2.8
-      playwright: 1.61.1
+      playwright: 1.62.0
       tar-fs: 3.1.3
       vscode-uri: 3.1.0
     transitivePeerDependencies:
@@ -39089,9 +39094,11 @@ snapshots:
 
   playwright-core@1.61.1: {}
 
-  playwright@1.61.1:
+  playwright-core@1.62.0: {}
+
+  playwright@1.62.0:
     dependencies:
-      playwright-core: 1.61.1
+      playwright-core: 1.62.0
     optionalDependencies:
       fsevents: 2.3.2
 

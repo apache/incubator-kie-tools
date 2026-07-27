@@ -68,7 +68,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/storybook-base": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@playwright/test": "^1.45.2",
+    "@playwright/test": "1.62.0",
     "@storybook/addon-links": "^7.3.2",
     "@storybook/addon-webpack5-compiler-babel": "^3.0.5",
     "@storybook/blocks": "^7.3.2",

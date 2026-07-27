@@ -36,7 +36,7 @@
     "@kie-tools-scripts/run-script-if": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@playwright/test": "^1.45.2",
+    "@playwright/test": "1.62.0",
     "@types/yargs": "^17.0.35",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
