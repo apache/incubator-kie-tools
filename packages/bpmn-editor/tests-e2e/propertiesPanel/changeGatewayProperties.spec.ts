@@ -20,14 +20,14 @@
 import { test, expect } from "../__fixtures__/base";
 import { NodeType, GatewayNodeType } from "../__fixtures__/nodes";
 
-test.beforeEach(async ({ editor, page }) => {
+test.beforeEach(async ({ editor, page, jsonModel }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await editor.open();
   await editor.setInitialProcessId();
 });
 
 test.describe("Change Properties - Exclusive Gateway", () => {
-  test.beforeEach(async ({ palette, nodes }) => {
+  test.beforeEach(async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
     await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
@@ -35,13 +35,13 @@ test.describe("Change Properties - Exclusive Gateway", () => {
     await nodes.getByType(NodeType.GATEWAY).click();
   });
 
-  test("should change the Gateway name", async ({ gatewayPropertiesPanel }) => {
+  test("should change the Gateway name", async ({ gatewayPropertiesPanel, jsonModel }) => {
     await gatewayPropertiesPanel.nameProperties.setName({ newName: "Decision Point" });
 
     expect(await gatewayPropertiesPanel.nameProperties.getName()).toBe("Decision Point");
   });
 
-  test("should change the Gateway documentation", async ({ gatewayPropertiesPanel }) => {
+  test("should change the Gateway documentation", async ({ gatewayPropertiesPanel, jsonModel }) => {
     await gatewayPropertiesPanel.documentationProperties.setDocumentation({
       newDocumentation: "This gateway routes based on order amount",
     });
@@ -53,22 +53,25 @@ test.describe("Change Properties - Exclusive Gateway", () => {
 });
 
 test.describe("Change Properties - Exclusive Gateway with Default Flow", () => {
-  test.beforeEach(async ({ palette, nodes }) => {
+  test.beforeEach(async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
     await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
     await nodes.getByType(NodeType.GATEWAY).click();
   });
 
-  test("should configure Exclusive Gateway properties", async ({ gatewayPropertiesPanel, page }) => {
+  test("should configure Exclusive Gateway properties", async ({ gatewayPropertiesPanel, page, jsonModel }) => {
     await gatewayPropertiesPanel.nameProperties.setName({ newName: "Exclusive Decision" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("exclusive-gateway-configured.png");
+    expect(await gatewayPropertiesPanel.nameProperties.getName()).toBe("Exclusive Decision");
+
+    const exclusiveGateway = (await jsonModel.getExclusiveGateways())[0];
+    expect(exclusiveGateway["@_name"]).toBe("Exclusive Decision");
   });
 });
 
 test.describe("Change Properties - Parallel Gateway", () => {
-  test.beforeEach(async ({ palette, nodes }) => {
+  test.beforeEach(async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
     await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
@@ -77,15 +80,18 @@ test.describe("Change Properties - Parallel Gateway", () => {
     await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.PARALLEL });
   });
 
-  test("should configure Parallel Gateway properties", async ({ gatewayPropertiesPanel, page }) => {
+  test("should configure Parallel Gateway properties", async ({ gatewayPropertiesPanel, page, jsonModel }) => {
     await gatewayPropertiesPanel.nameProperties.setName({ newName: "Parallel Split" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("parallel-gateway-configured.png");
+    expect(await gatewayPropertiesPanel.nameProperties.getName()).toBe("Parallel Split");
+
+    const parallelGateway = (await jsonModel.getParallelGateways())[0];
+    expect(parallelGateway["@_name"]).toBe("Parallel Split");
   });
 });
 
 test.describe("Change Properties - Inclusive Gateway", () => {
-  test.beforeEach(async ({ palette, nodes }) => {
+  test.beforeEach(async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
     await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
@@ -94,7 +100,7 @@ test.describe("Change Properties - Inclusive Gateway", () => {
     await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.INCLUSIVE });
   });
 
-  test("should configure Inclusive Gateway properties", async ({ gatewayPropertiesPanel }) => {
+  test("should configure Inclusive Gateway properties", async ({ gatewayPropertiesPanel, jsonModel }) => {
     await gatewayPropertiesPanel.nameProperties.setName({ newName: "Inclusive Decision" });
 
     expect(await gatewayPropertiesPanel.nameProperties.getName()).toBe("Inclusive Decision");
@@ -102,7 +108,7 @@ test.describe("Change Properties - Inclusive Gateway", () => {
 });
 
 test.describe("Change Properties - Event-Based Gateway", () => {
-  test.beforeEach(async ({ palette, nodes }) => {
+  test.beforeEach(async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
     await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
@@ -111,7 +117,7 @@ test.describe("Change Properties - Event-Based Gateway", () => {
     await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.EVENT_BASED });
   });
 
-  test("should configure Event-Based Gateway name", async ({ gatewayPropertiesPanel }) => {
+  test("should configure Event-Based Gateway name", async ({ gatewayPropertiesPanel, jsonModel }) => {
     await gatewayPropertiesPanel.nameProperties.setName({ newName: "Event Gateway" });
 
     expect(await gatewayPropertiesPanel.nameProperties.getName()).toBe("Event Gateway");
@@ -119,7 +125,7 @@ test.describe("Change Properties - Event-Based Gateway", () => {
 });
 
 test.describe("Change Properties - Complex Gateway", () => {
-  test.beforeEach(async ({ palette, nodes }) => {
+  test.beforeEach(async ({ palette, nodes, jsonModel }) => {
     await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
 
     await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
@@ -128,7 +134,7 @@ test.describe("Change Properties - Complex Gateway", () => {
     await nodes.morph({ node: nodes.getByType(NodeType.GATEWAY), to: GatewayNodeType.COMPLEX });
   });
 
-  test("should configure Complex Gateway name", async ({ gatewayPropertiesPanel }) => {
+  test("should configure Complex Gateway name", async ({ gatewayPropertiesPanel, jsonModel }) => {
     await gatewayPropertiesPanel.nameProperties.setName({ newName: "Complex Decision" });
 
     expect(await gatewayPropertiesPanel.nameProperties.getName()).toBe("Complex Decision");

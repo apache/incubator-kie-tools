@@ -168,11 +168,10 @@ test.describe("Add Boundary Event", () => {
           description: "https://github.com/apache/incubator-kie-issues/issues/2318",
         },
       },
-      async ({ palette, nodes, jsonModel, diagram }) => {
+      async ({ palette, nodes, jsonModel }) => {
         await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 300, y: 300 } });
         await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 450, y: 300 } });
         await nodes.delete({ name: DefaultNodeName.TASK });
-        await expect(diagram.get()).toHaveScreenshot("delete-task-with-boundary-event.png");
 
         const process = await jsonModel.getProcess();
         expect(process?.flowElement?.length).toBe(0);

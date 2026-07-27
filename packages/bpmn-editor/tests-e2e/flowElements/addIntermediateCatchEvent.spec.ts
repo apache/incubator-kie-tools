@@ -86,7 +86,12 @@ test.describe("Add node - Intermediate Catch Event", () => {
   });
 
   test.describe("Add connected Intermediate Catch Event node", () => {
-    test("should add connected Task node from Intermediate Catch Event", async ({ diagram, palette, page, nodes }) => {
+    test("should add connected Task node from Intermediate Catch Event", async ({
+      palette,
+      nodes,
+      jsonModel,
+      edges,
+    }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
 
       const catchEvent = nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT);
@@ -99,14 +104,19 @@ test.describe("Add node - Intermediate Catch Event", () => {
         targetPosition: { x: 300, y: 100 },
       });
 
-      await expect(diagram.get()).toHaveScreenshot("add-task-node-from-intermediate-catch-event.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const targetRef = await nodes.getId({ name: DefaultNodeName.TASK });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(catchEventId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(targetRef);
+      await expect(edges.getByIds({ from: catchEventId, to: targetRef })).toBeVisible();
     });
 
     test("should add connected Gateway node from Intermediate Catch Event", async ({
-      diagram,
       palette,
-      page,
       nodes,
+      jsonModel,
+      edges,
     }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
 
@@ -120,14 +130,19 @@ test.describe("Add node - Intermediate Catch Event", () => {
         targetPosition: { x: 300, y: 100 },
       });
 
-      await expect(diagram.get()).toHaveScreenshot("add-gateway-node-from-intermediate-catch-event.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const targetRef = await nodes.getIdByType(NodeType.GATEWAY);
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(catchEventId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(targetRef);
+      await expect(edges.getByIds({ from: catchEventId, to: targetRef })).toBeVisible();
     });
 
     test("should create sequence flow from Intermediate Catch Event to End Event", async ({
-      diagram,
       palette,
-      page,
       nodes,
+      jsonModel,
+      edges,
     }) => {
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.END_EVENT, targetPosition: { x: 300, y: 100 } });
@@ -140,14 +155,18 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const endEventId = await nodes.getIdByType(NodeType.END_EVENT);
       await nodes.createSequenceFlow({ from: catchEventId, to: endEventId });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-intermediate-catch-event-to-end-event.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(catchEventId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(endEventId);
+      await expect(edges.getByIds({ from: catchEventId, to: endEventId })).toBeVisible();
     });
 
     test("should create sequence flow from Start Event to Intermediate Catch Event", async ({
-      diagram,
       palette,
-      page,
       nodes,
+      jsonModel,
+      edges,
     }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.INTERMEDIATE_CATCH_EVENT, targetPosition: { x: 300, y: 100 } });
@@ -162,14 +181,19 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await nodes.createSequenceFlow({ from: startEventId, to: catchEventId });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-start-event-to-intermediate-catch-event.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(startEventId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(catchEventId);
+      await expect(edges.getByIds({ from: startEventId, to: catchEventId })).toBeVisible();
     });
 
     test("should create sequence flow from Task to Intermediate Catch Event", async ({
       diagram,
       palette,
-      page,
       nodes,
+      jsonModel,
+      edges,
     }) => {
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: 100, y: 100 } });
       await diagram.resetFocus();
@@ -182,7 +206,12 @@ test.describe("Add node - Intermediate Catch Event", () => {
       const catchEventId = await nodes.getIdByType(NodeType.INTERMEDIATE_CATCH_EVENT);
       await nodes.createSequenceFlow({ from: DefaultNodeName.TASK, to: catchEventId });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-task-to-intermediate-catch-event.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const sourceRef = await nodes.getId({ name: DefaultNodeName.TASK });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(sourceRef);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(catchEventId);
+      await expect(edges.getByIds({ from: sourceRef, to: catchEventId })).toBeVisible();
     });
   });
 

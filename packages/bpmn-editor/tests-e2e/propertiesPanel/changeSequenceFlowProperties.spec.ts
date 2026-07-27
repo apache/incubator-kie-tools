@@ -100,8 +100,8 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
   test("should configure conditional flow from gateway", async ({
     edges,
     sequenceFlowPropertiesPanel,
-    diagram,
     nodes,
+    jsonModel,
   }) => {
     const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
     expect(gatewayId).not.toBe("");
@@ -111,14 +111,18 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
 
     await (await edges.get({ from: gatewayId, to: "High Amount" })).click();
 
-    await expect(diagram.get()).toHaveScreenshot("gateway-conditional-flow-high.png");
+    const highAmountId = await nodes.getId({ name: "High Amount" });
+    const sequenceFlows = await jsonModel.getSequenceFlows();
+    const highAmountFlow = sequenceFlows.find((flow) => flow["@_targetRef"] === highAmountId);
+    expect(highAmountFlow?.["@_name"]).toBe("High Amount Path");
+    expect(highAmountFlow?.conditionExpression?.__$$text).toBe("${amount > 5000}");
   });
 
   test("should configure multiple conditional flows", async ({
     edges,
     sequenceFlowPropertiesPanel,
-    diagram,
     nodes,
+    jsonModel,
   }) => {
     const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
     expect(gatewayId).not.toBe("");
@@ -130,7 +134,17 @@ test.describe("Change Properties - Conditional Sequence Flow from Gateway", () =
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "Low Amount" });
     await sequenceFlowPropertiesPanel.setConditionExpression({ expression: "${amount <= 5000}" });
 
-    await expect(diagram.get()).toHaveScreenshot("gateway-multiple-conditional-flows.png");
+    const highAmountId = await nodes.getId({ name: "High Amount" });
+    const lowAmountId = await nodes.getId({ name: "Low Amount" });
+    const sequenceFlows = await jsonModel.getSequenceFlows();
+
+    const highAmountFlow = sequenceFlows.find((flow) => flow["@_targetRef"] === highAmountId);
+    expect(highAmountFlow?.["@_name"]).toBe("High Amount");
+    expect(highAmountFlow?.conditionExpression?.__$$text).toBe("${amount > 5000}");
+
+    const lowAmountFlow = sequenceFlows.find((flow) => flow["@_targetRef"] === lowAmountId);
+    expect(lowAmountFlow?.["@_name"]).toBe("Low Amount");
+    expect(lowAmountFlow?.conditionExpression?.__$$text).toBe("${amount <= 5000}");
   });
 });
 
@@ -157,7 +171,7 @@ test.describe("Change Properties - Default Sequence Flow", () => {
     await nodes.createSequenceFlow({ from: gatewayId, to: "Default Path" });
   });
 
-  test("should configure default flow", async ({ edges, sequenceFlowPropertiesPanel, diagram, nodes }) => {
+  test("should configure default flow", async ({ edges, sequenceFlowPropertiesPanel, nodes, jsonModel }) => {
     const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
     expect(gatewayId).not.toBe("");
 
@@ -167,6 +181,14 @@ test.describe("Change Properties - Default Sequence Flow", () => {
     await (await edges.get({ from: gatewayId, to: "Default Path" })).click();
     await sequenceFlowPropertiesPanel.nameProperties.setName({ newName: "Default" });
 
-    await expect(diagram.get()).toHaveScreenshot("gateway-default-flow.png");
+    const conditionAId = await nodes.getId({ name: "Condition A" });
+    const defaultPathId = await nodes.getId({ name: "Default Path" });
+    const sequenceFlows = await jsonModel.getSequenceFlows();
+
+    const conditionAFlow = sequenceFlows.find((flow) => flow["@_targetRef"] === conditionAId);
+    expect(conditionAFlow?.conditionExpression?.__$$text).toBe("${approved == true}");
+
+    const defaultFlow = sequenceFlows.find((flow) => flow["@_targetRef"] === defaultPathId);
+    expect(defaultFlow?.["@_name"]).toBe("Default");
   });
 });

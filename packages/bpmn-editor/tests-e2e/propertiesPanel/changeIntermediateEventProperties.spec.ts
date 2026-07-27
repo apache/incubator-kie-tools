@@ -51,23 +51,53 @@ test.describe("Change Properties - Intermediate Catch Event", () => {
     );
   });
 
-  test("should configure Timer definition with duration", async ({ intermediateEventPropertiesPanel, page, nodes }) => {
+  test("should configure Timer definition with duration", async ({
+    intermediateEventPropertiesPanel,
+    nodes,
+    jsonModel,
+  }) => {
     await expect(nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).first()).toBeVisible();
 
     await nodes.morph({ node: nodes.getByType(NodeType.INTERMEDIATE_CATCH_EVENT).first(), to: EventNodeType.TIMER });
     await intermediateEventPropertiesPanel.setTimerDefinition({ type: "duration", value: "PT1H" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot(
-      "intermediate-catch-event-timer-duration.png"
-    );
+    await expect(
+      intermediateEventPropertiesPanel.panel().getByPlaceholder("Enter duration or expression #{expression}")
+    ).toHaveValue("PT1H");
+
+    const catchEvent = (await jsonModel.getIntermediateCatchEvents())[0];
+    const eventDefinition = catchEvent.eventDefinition?.[0];
+    expect(eventDefinition?.__$$element).toBe("timerEventDefinition");
+
+    // Narrow the eventDefinition union so the timerEventDefinition-only fields are reachable.
+    const timerEventDefinition = eventDefinition?.__$$element === "timerEventDefinition" ? eventDefinition : undefined;
+    expect(timerEventDefinition?.timeDuration?.__$$text).toBe("PT1H");
   });
 
-  test("should configure Message definition", async ({ intermediateEventPropertiesPanel, page }) => {
+  test("should configure Message definition", async ({ intermediateEventPropertiesPanel, jsonModel }) => {
     await intermediateEventPropertiesPanel.setMessageDefinition({ messageName: "ApprovalMessage" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot(
-      "intermediate-catch-event-message.png"
+    expect(await intermediateEventPropertiesPanel.panel().getByRole("combobox").first().inputValue()).toBe(
+      "ApprovalMessage"
     );
+
+    // The named message reaches the model a moment after an auto-named placeholder, so resolving
+    // the ref to its name has to be retried rather than read once.
+    await expect(async () => {
+      const catchEvent = (await jsonModel.getIntermediateCatchEvents())[0];
+      const eventDefinition = catchEvent.eventDefinition?.[0];
+      expect(eventDefinition?.__$$element).toBe("messageEventDefinition");
+
+      // Narrow the eventDefinition union so the messageEventDefinition-only fields are reachable.
+      const messageEventDefinition =
+        eventDefinition?.__$$element === "messageEventDefinition" ? eventDefinition : undefined;
+      const messages = (await jsonModel.getDefinitions())?.rootElement?.filter(
+        (rootElement) => rootElement.__$$element === "message"
+      );
+      expect(
+        messages?.find((message) => message["@_id"] === messageEventDefinition?.["@_messageRef"])?.["@_name"]
+      ).toBe("ApprovalMessage");
+    }).toPass();
   });
 
   test("should configure Conditional expression", async ({ intermediateEventPropertiesPanel, page }) => {
@@ -122,12 +152,30 @@ test.describe("Change Properties - Intermediate Throw Event", () => {
     );
   });
 
-  test("should configure Message definition", async ({ intermediateEventPropertiesPanel, page }) => {
+  test("should configure Message definition", async ({ intermediateEventPropertiesPanel, jsonModel }) => {
     await intermediateEventPropertiesPanel.setMessageDefinition({ messageName: "NotificationMessage" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot(
-      "intermediate-throw-event-message.png"
+    expect(await intermediateEventPropertiesPanel.panel().getByRole("combobox").first().inputValue()).toBe(
+      "NotificationMessage"
     );
+
+    // The named message reaches the model a moment after an auto-named placeholder, so resolving
+    // the ref to its name has to be retried rather than read once.
+    await expect(async () => {
+      const throwEvent = (await jsonModel.getIntermediateThrowEvents())[0];
+      const eventDefinition = throwEvent.eventDefinition?.[0];
+      expect(eventDefinition?.__$$element).toBe("messageEventDefinition");
+
+      // Narrow the eventDefinition union so the messageEventDefinition-only fields are reachable.
+      const messageEventDefinition =
+        eventDefinition?.__$$element === "messageEventDefinition" ? eventDefinition : undefined;
+      const messages = (await jsonModel.getDefinitions())?.rootElement?.filter(
+        (rootElement) => rootElement.__$$element === "message"
+      );
+      expect(
+        messages?.find((message) => message["@_id"] === messageEventDefinition?.["@_messageRef"])?.["@_name"]
+      ).toBe("NotificationMessage");
+    }).toPass();
   });
 
   test("should configure Signal definition", async ({ intermediateEventPropertiesPanel, page }) => {
