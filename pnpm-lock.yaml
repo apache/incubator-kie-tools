@@ -4731,8 +4731,8 @@ importers:
         specifier: ^5.4.1
         version: 5.4.2
       '@patternfly/quickstarts':
-        specifier: ^5.4.1
-        version: 5.4.1(@patternfly/react-core@5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(showdown@2.1.0)
+        specifier: ^5.4.5
+        version: 5.4.5(@patternfly/react-core@5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(marked@15.0.12)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -10808,13 +10808,13 @@ packages:
   '@patternfly/patternfly@5.4.2':
     resolution: {integrity: sha512-+BaokNR8/AmTYMESxby9UtQXPGACg449BXQd0KejAvW/uGxlgO6mY1X1205DeBEHoK3e/vXkYXjvZPpv/tcxSA==}
 
-  '@patternfly/quickstarts@5.4.1':
-    resolution: {integrity: sha512-KICofjKLFi2IO+RiiY7ec7zevA/VXdzxDLLIUGM4f/CLSQ2Yj14B4GCDhYAMMWKUhT24mQLJkT6XMVbA/r5Eig==}
+  '@patternfly/quickstarts@5.4.5':
+    resolution: {integrity: sha512-W7s8cVSUh1hx9M7gQv9iuAYZpX+DojI/Adt9IHvD2RsmSsk9R1UqonCs8SWMdZwT+gXilpqA2igCI211MPFFeA==}
     peerDependencies:
       '@patternfly/react-core': '>=5.0.0'
+      marked: ^15.0.6
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
-      showdown: '>=2.1.0'
 
   '@patternfly/react-catalog-view-extension@5.0.0':
     resolution: {integrity: sha512-Sg0iLAVhE7wAwBJERNdYp6peMO4THG7ez3xvMXEWh2biXghIv9XVj5BEy0TssihMxZa/pRMdROzcv3QZ9m24Yg==}
@@ -15169,8 +15169,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.2.2:
-    resolution: {integrity: sha512-YMM+erhdZ2nkZ4fTNRTSI94mb7VG7uVF5vj5Zde7tImgnhZE3R6YW/IACGIHb2ux+QkEXMhe591N+5jWOmL4Zw==}
+  dompurify@3.4.12:
+    resolution: {integrity: sha512-zQvGet8Z2sWbQhCmfFz/T5QWH2oBmjnqK3qvOjaqaNLrLEF912WamU+ohnTp0TCep/MFVHpdJuCZEdFOdTnEFg==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -17757,6 +17757,11 @@ packages:
 
   markdown-table@3.0.2:
     resolution: {integrity: sha512-y8j3a5/DkJCmS5x4dMCQL+OR0+2EAq3DOtio1COSHsmW2BGXnNCK3v12hJt1LrUz5iZH5g0LmuYOjDdI+czghA==}
+
+  marked@15.0.12:
+    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   math-expression-evaluator@1.4.0:
     resolution: {integrity: sha512-4vRUvPyxdO8cWULGTh9dZWL2tZK6LDBvj+OGHBER7poH9Qdt7kXEoj20wiz4lQUbUXQZFjPbe5mVDo9nutizCw==}
@@ -25045,15 +25050,15 @@ snapshots:
 
   '@patternfly/patternfly@5.4.2': {}
 
-  '@patternfly/quickstarts@5.4.1(@patternfly/react-core@5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(showdown@2.1.0)':
+  '@patternfly/quickstarts@5.4.5(@patternfly/react-core@5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(marked@15.0.12)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@patternfly/react-catalog-view-extension': 5.0.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-core': 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      dompurify: 3.2.2
+      dompurify: 3.4.12
       history: 5.3.0
+      marked: 15.0.12
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      showdown: 2.1.0
 
   '@patternfly/react-catalog-view-extension@5.0.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
@@ -31112,7 +31117,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.2.2:
+  dompurify@3.4.12:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -32636,7 +32641,7 @@ snapshots:
 
   history@5.3.0:
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.7
 
   hmac-drbg@1.0.1:
     dependencies:
@@ -34563,6 +34568,8 @@ snapshots:
       uc.micro: 2.1.0
 
   markdown-table@3.0.2: {}
+
+  marked@15.0.12: {}
 
   math-expression-evaluator@1.4.0: {}
 
