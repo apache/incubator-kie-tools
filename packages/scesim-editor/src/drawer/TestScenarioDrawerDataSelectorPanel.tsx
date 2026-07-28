@@ -541,7 +541,7 @@ function TestScenarioDataSelectorPanel() {
       <StackItem isFilled>
         <div className={"kie-scesim-editor-drawer-data-objects--selector"}>
           {(treeViewEmptyStatus.visibility === "visible" && (
-            <div aria-disabled={true}>
+            <div aria-disabled={dataSelectorStatus === TestScenarioDataSelectorState.DISABLED}>
               <TreeView
                 activeItems={treeViewStatus.activeItems}
                 allExpanded={allExpanded || treeViewStatus.isExpanded}
