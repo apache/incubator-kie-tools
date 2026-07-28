@@ -109,6 +109,7 @@ export class Nodes {
     if (args.thenRenameTo) {
       await this.rename({ current: nodeName, new: args.thenRenameTo });
     }
+    await this.waitForNewNodeEditingToSettle();
   }
 
   private getParentElement(args: { nodeName: string }) {
@@ -163,6 +164,17 @@ export class Nodes {
   public async rename(args: { current: string; new: string }) {
     await this.get({ name: args.current }).getByRole("textbox").nth(0).fill(args.new);
     await this.diagram.get().press("Enter");
+    // The `Enter` above is pressed on the diagram, which is also what re-triggers editing on the focused node,
+    // and the timer that puts a freshly created node into edit mode can still be pending on top of that. Either
+    // way the node ends up back in edit mode, and anything that drags it afterwards grabs the name input and
+    // selects text instead of moving the node. So wait for the timer and, if the input is back, commit again —
+    // this time on the input itself. It has to be `Enter`: `Escape` is swallowed by the diagram's own shortcut
+    // ("Esc pressed. Desselecting everything.") and never reaches the input.
+    await this.waitForNewNodeEditingToSettle();
+    const nameInput = this.get({ name: args.new }).getByRole("textbox").first();
+    if ((await nameInput.count()) > 0) {
+      await nameInput.press("Enter");
+    }
   }
 
   public async resize(args: { nodeName: string; position?: NodePosition; xOffset: number; yOffset: number }) {
