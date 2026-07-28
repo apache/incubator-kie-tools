@@ -23,6 +23,8 @@ import (
 	"github.com/serverlessworkflow/sdk-go/v2/model"
 	"k8s.io/apimachinery/pkg/labels"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
@@ -138,4 +140,19 @@ func IsScaledToZero(workflow *operatorapi.SonataFlow) bool {
 // than the given value. False in any other case.
 func ReplicasIsGreaterThan(workflow *operatorapi.SonataFlow, value int32) bool {
 	return workflow.Spec.PodTemplate.Replicas != nil && *workflow.Spec.PodTemplate.Replicas > value
+}
+
+// GetWorkflowId returns the workflow identifier. If the "sonataflow.org/id" annotation is present, its value is
+// returned; otherwise, the workflow name is used as the identifier.
+func GetWorkflowId(workflow *operatorapi.SonataFlow) string {
+	id := workflow.Name
+	if metadataId, ok := workflow.ObjectMeta.Annotations[metadata.Id]; ok {
+		id = metadataId
+	}
+	return id
+}
+
+// GetWorkflowVersion returns the workflow version, i.e., the value of the "sonataflow.org/version" annotation.
+func GetWorkflowVersion(workflow *operatorapi.SonataFlow) string {
+	return workflow.ObjectMeta.Annotations[metadata.Version]
 }

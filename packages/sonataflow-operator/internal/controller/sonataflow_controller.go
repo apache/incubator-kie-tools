@@ -41,7 +41,6 @@ import (
 
 	"k8s.io/client-go/util/retry"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/properties"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
 
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
@@ -259,7 +258,7 @@ func scheduleWorkflowDeletionNotification(cli client.Client, workflow *operatora
 func notifyWorkflowDeletion(cli client.Client, workflow *operatorapi.SonataFlow, eventTargetUrl string) error {
 	retryErr := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
 		var err error
-		evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, properties.GetWorkflowEndpointUrlWithNameAndNamespace(workflow.Name, workflow.Namespace), false)
+		evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, false)
 		ctx, cancel := context.WithTimeout(context.Background(), constants.EventDeliveryTimeout)
 		defer cancel()
 

@@ -21,6 +21,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
+
 	"github.com/magiconair/properties"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
@@ -111,11 +113,13 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 	return env
 }
 
-func ConfigureWorkflowPersistence(serviceContainer *corev1.Container, config *operatorapi.PersistenceOptionsSpec, defaultSchema, namespace string) *corev1.Container {
+func ConfigureWorkflowPersistence(serviceContainer *corev1.Container, config *operatorapi.PersistenceOptionsSpec, workflow *operatorapi.SonataFlow) *corev1.Container {
 	if config.PostgreSQL == nil {
 		return serviceContainer
 	}
 	c := serviceContainer.DeepCopy()
+	defaultSchema := workflowdef.GetWorkflowId(workflow)
+	namespace := workflow.Namespace
 	c.Env = append(c.Env, ConfigurePostgreSQLEnv(config.PostgreSQL, defaultSchema, namespace, false)...)
 	return c
 }

@@ -280,7 +280,7 @@ func (o *openshiftBuilderManager) pushNewOpenShiftBuildForWorkflow(build *operat
 		AsFile:  workflow.Name + workflowdef.KogitoWorkflowJSONFileExt,
 		Message: defaultBuildMessageTrigger,
 	}
-	workflowDef, err := workflowdef.GetJSONWorkflow(workflow, o.ctx)
+	workflowDef, err := workflowdef.GetJSONWorkflow(workflow, o.ctx, true)
 	if err != nil {
 		return nil, err
 	}

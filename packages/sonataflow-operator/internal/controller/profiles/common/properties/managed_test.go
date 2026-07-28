@@ -123,9 +123,10 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 14, len(generatedProps.Keys()))
+	assert.Equal(t, 15, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
+	assert.Equal(t, "0.0.1", generatedProps.GetString("kogito.validation.swf.greeting.versions", ""))
 	assert.Equal(t, "http://greeting.default", generatedProps.GetString("kogito.service.url", ""))
 	assert.Equal(t, "8080", generatedProps.GetString("quarkus.http.port", ""))
 	assert.Equal(t, "0.0.0.0", generatedProps.GetString("quarkus.http.host", ""))
@@ -161,7 +162,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 		Build())
 	generatedProps.DisableExpansion = true
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 28, len(generatedProps.Keys()))
+	assert.Equal(t, 29, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assertHasProperty(t, generatedProps, "service1", myService1Address)
@@ -183,6 +184,8 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 	assertHasProperty(t, generatedProps, "org.kie.kogito.addons.discovery.knative:brokers.v1.eventing.knative.dev/my-kn-broker2", myKnBroker2Address)
 
 	assertHasProperty(t, generatedProps, "kogito.service.url", fmt.Sprintf("http://greeting.%s", defaultNamespace))
+	assertHasProperty(t, generatedProps, "kogito.validation.swf.greeting.versions", "0.0.1")
+
 	assertHasProperty(t, generatedProps, "quarkus.http.port", "8080")
 	assertHasProperty(t, generatedProps, "quarkus.http.host", "0.0.0.0")
 	assertHasProperty(t, generatedProps, "quarkus.devservices.enabled", "false")
@@ -202,7 +205,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	userProperties := "property1=value1\nproperty2=value2\nquarkus.http.port=9090\nkogito.service.url=http://myUrl.override.com\nquarkus.http.port=9090"
 	ns := "default"
 	workflow := test.GetBaseSonataFlow(ns)
-	workflow.SetAnnotations(map[string]string{metadata.Profile: string(metadata.DevProfile)})
+	workflow.Annotations[metadata.Profile] = string(metadata.DevProfile)
 	enabled := true
 	platform := test.GetBasePlatform()
 	platform.Namespace = ns
@@ -233,6 +236,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 
 	//kogito.service.url is a default immutable property.
 	assert.Equal(t, "http://greeting.default", generatedProps.GetString("kogito.service.url", ""))
+
 	//quarkus.http.port remains with the default value since it's immutable.
 	assert.Equal(t, "8080", generatedProps.GetString("quarkus.http.port", ""))
 	assert.Equal(t, "0.0.0.0", generatedProps.GetString("quarkus.http.host", ""))
@@ -247,7 +251,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
 
 	// prod profile enables config of outgoing events url
-	workflow.SetAnnotations(map[string]string{metadata.Profile: string(metadata.PreviewProfile)})
+	workflow.Annotations[metadata.Profile] = string(metadata.PreviewProfile)
 	services.SetServiceUrlsInWorkflowStatus(platform, workflow)
 	assert.NotNil(t, workflow.Status.Services)
 	assert.NotNil(t, workflow.Status.Services.JobServiceRef)
@@ -256,9 +260,10 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 19, len(generatedProps.Keys()))
+	assert.Equal(t, 20, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
+	assert.Equal(t, "0.0.1", generatedProps.GetString("kogito.validation.swf.greeting.versions", ""))
 	assert.Equal(t, "http://"+platform.Name+"-"+constants.DataIndexServiceName+"."+platform.Namespace+"/definitions", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
 	assert.Equal(t, "true", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
 	assert.Equal(t, "true", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsErrorsEnabled, ""))
@@ -283,9 +288,10 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 14, len(generatedProps.Keys()))
+	assert.Equal(t, 15, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
+	assert.Equal(t, "0.0.1", generatedProps.GetString("kogito.validation.swf.greeting.versions", ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
@@ -303,9 +309,10 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 13, len(generatedProps.Keys()))
+	assert.Equal(t, 14, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
+	assert.Equal(t, "0.0.1", generatedProps.GetString("kogito.validation.swf.greeting.versions", ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
@@ -432,7 +439,7 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setJobServiceEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateJobServiceWorkflowDevProperties()),
 				Entry("has enabled field set to false and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 				Entry("has enabled field undefined and workflow with dev profile",
@@ -440,7 +447,7 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setJobServiceEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateJobServiceWorkflowDevProperties()),
 				Entry("has enabled field undefined and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 				Entry("has enabled field set to true and workflow with dev profile",
@@ -448,19 +455,19 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setJobServiceEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateJobServiceWorkflowDevProperties()),
 				Entry("has enabled field set to true and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateJobServiceWorkflowProductionProperties()),
 				Entry("has enabled field set to true and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateJobServiceWorkflowProductionProperties()),
 				Entry("has enabled field set to false and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 				Entry("has enabled field undefined and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 			)
@@ -480,7 +487,7 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setDataIndexEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowDevProperties()),
 				Entry("has enabled field set to false and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 				Entry("has enabled field undefined and workflow with dev profile",
@@ -488,7 +495,7 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setDataIndexEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowDevProperties()),
 				Entry("has enabled field undefined and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 				Entry("has enabled field set to true and workflow with dev profile",
@@ -496,19 +503,19 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setDataIndexEnabledValue(&enabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowDevProperties()),
 				Entry("has enabled field set to true and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&enabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowProductionProperties()),
 				Entry("has enabled field set to false and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 				Entry("has enabled field set to true and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&enabled), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowProductionProperties()),
 				Entry("has enabled field undefined and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 			)
@@ -527,7 +534,7 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexAndJobServiceWorkflowDevProperties()),
 				Entry("both are undefined and workflow in prod profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setPlatformNamespace("default"), setPlatformName("foo")),
 					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to true and workflow with dev profile",
@@ -535,7 +542,7 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setJobServiceEnabledValue(&enabled), setDataIndexEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateDataIndexAndJobServiceWorkflowDevProperties()),
 				Entry("both have enabled field set to true and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&enabled), setDataIndexEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateDataIndexAndJobServiceWorkflowProductionProperties()),
 				Entry("both have enabled field undefined and workflow with dev profile",
@@ -543,7 +550,7 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setJobServiceEnabledValue(nil), setDataIndexEnabledValue(nil), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateDataIndexAndJobServiceWorkflowDevProperties()),
 				Entry("both have enabled field undefined and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setDataIndexEnabledValue(nil), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
 					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to false and workflow with dev profile",
@@ -551,19 +558,19 @@ var _ = Describe("Platform properties", func() {
 					generatePlatform(setJobServiceEnabledValue(&disabled), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
 					generateDataIndexAndJobServiceWorkflowDevProperties()),
 				Entry("both have enabled field set to false and workflow with production profile",
-					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
 					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to false and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
 					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to true and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&enabled), setDataIndexEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
 					generateDataIndexAndJobServiceWorkflowProductionProperties()),
 				Entry("both have enabled field undefined and workflow with no profile",
-					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
+					generateFlow(setWorkflowName("foo"), setWorkflowVersion("1.0"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
 					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 			)
@@ -593,6 +600,7 @@ func generateJobServiceWorkflowDevProperties() *properties.Properties {
 func generateJobServiceWorkflowProductionWithJobServiceDisabled() *properties.Properties {
 	props := properties.NewProperties()
 	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.validation.swf.foo.versions", "1.0")
 	props.Set("quarkus.http.host", "0.0.0.0")
 	props.Set("quarkus.http.port", "8080")
 	props.Set("quarkus.devservices.enabled", "false")
@@ -612,6 +620,7 @@ func generateJobServiceWorkflowProductionWithJobServiceDisabled() *properties.Pr
 func generateJobServiceWorkflowProductionProperties() *properties.Properties {
 	props := properties.NewProperties()
 	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.validation.swf.foo.versions", "1.0")
 	props.Set("kogito.jobs-service.url", "http://foo-jobs-service.default")
 	props.Set("quarkus.http.host", "0.0.0.0")
 	props.Set("quarkus.http.port", "8080")
@@ -651,6 +660,7 @@ func generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled() *prope
 	props := properties.NewProperties()
 	props = properties.NewProperties()
 	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.validation.swf.foo.versions", "1.0")
 	props.Set("quarkus.http.host", "0.0.0.0")
 	props.Set("quarkus.http.port", "8080")
 	props.Set("quarkus.devservices.enabled", "false")
@@ -670,6 +680,7 @@ func generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled() *prope
 func generateDataIndexWorkflowProductionProperties() *properties.Properties {
 	props := properties.NewProperties()
 	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.validation.swf.foo.versions", "1.0")
 	props.Set("kogito.data-index.url", "http://foo-data-index-service.default")
 	props.Set("kogito.data-index.health-enabled", "true")
 	props.Set("quarkus.http.host", "0.0.0.0")
@@ -712,6 +723,7 @@ func generateDataIndexAndJobServiceWorkflowDevProperties() *properties.Propertie
 func generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled() *properties.Properties {
 	props := properties.NewProperties()
 	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.validation.swf.foo.versions", "1.0")
 	props.Set("quarkus.http.host", "0.0.0.0")
 	props.Set("quarkus.http.port", "8080")
 	props.Set("quarkus.kogito.devservices.enabled", "false")
@@ -731,6 +743,7 @@ func generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisa
 func generateDataIndexAndJobServiceWorkflowProductionProperties() *properties.Properties {
 	props := properties.NewProperties()
 	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.validation.swf.foo.versions", "1.0")
 	props.Set("kogito.data-index.url", "http://foo-data-index-service.default")
 	props.Set("kogito.data-index.health-enabled", "true")
 	props.Set("kogito.jobs-service.url", "http://foo-jobs-service.default")
@@ -776,6 +789,15 @@ func setProfileInFlow(p metadata.ProfileType) wfOptionFn {
 func setWorkflowName(n string) wfOptionFn {
 	return func(wf *operatorapi.SonataFlow) {
 		wf.Name = n
+	}
+}
+
+func setWorkflowVersion(n string) wfOptionFn {
+	return func(wf *operatorapi.SonataFlow) {
+		if wf.ObjectMeta.Annotations == nil {
+			wf.ObjectMeta.Annotations = make(map[string]string)
+		}
+		wf.ObjectMeta.Annotations[metadata.Version] = n
 	}
 }
 

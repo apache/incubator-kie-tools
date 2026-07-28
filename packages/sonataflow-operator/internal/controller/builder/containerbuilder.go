@@ -135,7 +135,7 @@ func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(build 
 	if err != nil {
 		return nil, err
 	}
-	workflowDef, err := workflowdef.GetJSONWorkflow(workflow, c.ctx)
+	workflowDef, err := workflowdef.GetJSONWorkflow(workflow, c.ctx, true)
 	if err != nil {
 		return nil, err
 	}

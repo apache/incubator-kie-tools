@@ -41,7 +41,7 @@ const KogitoWorkflowJSONFileExt = ".sw.json"
 // It does not persist the CM into the Kubernetes storage.
 // The name and namespace are the same of the given CR.
 func CreateNewConfigMap(workflow *operatorapi.SonataFlow) (*corev1.ConfigMap, error) {
-	workflowDef, err := GetJSONWorkflow(workflow, context.TODO())
+	workflowDef, err := GetJSONWorkflow(workflow, context.TODO(), false)
 	if err != nil {
 		return nil, err
 	}

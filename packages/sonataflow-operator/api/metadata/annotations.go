@@ -28,6 +28,7 @@ const (
 	KubernetesLabelManagedBy    = KubernetesDomain + "/managed-by"
 	KubernetesLabelComponent    = KubernetesDomain + "/component"
 	Domain                      = "sonataflow.org"
+	Id                          = Domain + "/id"
 	Key                         = Domain + "/key"
 	Name                        = Domain + "/name"
 	Description                 = Domain + "/description"

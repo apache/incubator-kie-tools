@@ -24,6 +24,8 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
@@ -120,24 +122,23 @@ func (a *managedPropertyHandler) withKogitoServiceUrl() ManagedPropertyHandler {
 	return a.addDefaultManagedProperty(constants.KogitoServiceURLProperty, GetKogitoServiceUrl(a.workflow))
 }
 
-func GetKogitoServiceUrl(workflow *operatorapi.SonataFlow) string {
-	return GetKogitoServiceUrlWithNameAndNamespace(workflow.Name, workflow.Namespace)
+func (a *managedPropertyHandler) withWorkflowVersionValidation() ManagedPropertyHandler {
+	id := workflowdef.GetWorkflowId(a.workflow)
+	version := workflowdef.GetWorkflowVersion(a.workflow)
+	return a.addDefaultManagedProperty(fmt.Sprintf(constants.KogitoWorkflowVersionValidationFmt, id), version)
 }
 
-func GetKogitoServiceUrlWithNameAndNamespace(name, namespace string) string {
+// GetKogitoServiceUrl returns the url of the k8s service created for the workflow.
+func GetKogitoServiceUrl(workflow *operatorapi.SonataFlow) string {
+	return getKogitoServiceUrlWithNameAndNamespace(workflow.Name, workflow.Namespace)
+}
+
+func getKogitoServiceUrlWithNameAndNamespace(name, namespace string) string {
 	if len(namespace) > 0 {
 		return fmt.Sprintf("%s://%s.%s", constants.DefaultHTTPProtocol, name, namespace)
 	} else {
 		return fmt.Sprintf("%s://%s", constants.DefaultHTTPProtocol, name)
 	}
-}
-
-func GetWorkflowEndpointUrl(workflow *operatorapi.SonataFlow) string {
-	return GetWorkflowEndpointUrlWithNameAndNamespace(workflow.Name, workflow.Namespace)
-}
-
-func GetWorkflowEndpointUrlWithNameAndNamespace(name, namespace string) string {
-	return GetKogitoServiceUrlWithNameAndNamespace(name, namespace) + "/" + name
 }
 
 // withKafkaHealthCheckDisabled adds the property kafkaSmallRyeHealthProperty to the application properties.
@@ -207,6 +208,9 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 	props.Sort()
 
 	handler.defaultManagedProperties = props
+	if !profiles.IsDevProfile(workflow) {
+		handler.withWorkflowVersionValidation()
+	}
 	return handler.withKogitoServiceUrl(), nil
 }
 

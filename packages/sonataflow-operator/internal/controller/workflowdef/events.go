@@ -27,25 +27,25 @@ import (
 
 const SonataFlowOperatorSource = "sonataflow.org/operator"
 
-func NewWorkflowDefinitionAvailabilityEvent(workflow *operatorapi.SonataFlow, eventSource string, serviceUrl string, available bool) *cloudevents.Event {
+func NewWorkflowDefinitionAvailabilityEvent(workflow *operatorapi.SonataFlow, eventSource string, available bool) *cloudevents.Event {
 	var status = "unavailable"
 	if available {
 		status = "available"
 	}
+	id := GetWorkflowId(workflow)
 	event := cloudevents.NewEvent(cloudevents.VersionV1)
 	event.SetType("ProcessDefinitionEvent")
 	event.SetSource(eventSource)
-	event.SetExtension("kogitoprocid", workflow.Name)
-	event.SetExtension("partitionkey", workflow.Name)
+	event.SetExtension("kogitoprocid", id)
+	event.SetExtension("partitionkey", id)
 	data := make(map[string]interface{})
-	data["id"] = workflow.Name
+	data["id"] = id
 	if name, ok := workflow.ObjectMeta.Annotations[metadata.Name]; ok {
 		data["name"] = name
 	}
-	version := workflow.ObjectMeta.Annotations[metadata.Version]
+	version := GetWorkflowVersion(workflow)
 	data["version"] = version
 	data["type"] = "SW"
-	data["endpoint"] = serviceUrl
 	data["metadata"] = map[string]interface{}{
 		"status": status,
 	}

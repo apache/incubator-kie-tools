@@ -30,10 +30,15 @@ import (
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 )
 
-// GetJSONWorkflow return a Kogito compliant JSON format workflow as bytearray give a specific workflow CR
-func GetJSONWorkflow(workflowCR *operatorapi.SonataFlow, ctx context.Context) ([]byte, error) {
+// GetJSONWorkflow return a Kogito compliant JSON format workflow as bytearray given a specific workflow CR.
+// If preferAnnotationId is true, the workflow ID is resolved from the "sonataflow.org/id" annotation when present;
+// otherwise, the workflow name is used. If preferAnnotationID is false, the workflow name is always used as the workflow ID.
+func GetJSONWorkflow(workflowCR *operatorapi.SonataFlow, ctx context.Context, preferAnnotationId bool) ([]byte, error) {
 	// apply workflow metadata
 	workflow, err := operatorapi.ToCNCFWorkflow(workflowCR, ctx)
+	if preferAnnotationId {
+		workflow.ID = GetWorkflowId(workflowCR)
+	}
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Failed converting SonataFlow into Workflow")
 		return nil, err

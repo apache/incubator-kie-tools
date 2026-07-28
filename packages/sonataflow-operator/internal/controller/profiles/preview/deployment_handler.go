@@ -33,8 +33,6 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/properties"
-
 	"k8s.io/klog/v2"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
@@ -262,7 +260,7 @@ func notifyWorkflowStatusChange(cli client.Client, wfName, wfNamespace string) e
 
 		ctx, cancel := context.WithTimeout(context.Background(), constants.EventDeliveryTimeout)
 		defer cancel()
-		evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, properties.GetWorkflowEndpointUrl(workflow), available)
+		evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, available)
 		if err = utils.SendCloudEventWithContext(evt, ctx, uri); err != nil {
 			return fmt.Errorf("failed to send workflow definition status update event: %v", err)
 			// Controller handle to program a new notification based on the LastTimeStatusNotified.
