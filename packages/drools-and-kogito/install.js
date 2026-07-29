@@ -126,7 +126,7 @@ removeMavenModule(`apps\\-integration\\-tests`);
 console.log(`[drools-and-kogito] Building Drools...`);
 try {
   execSync(
-    `mvn deploy -ntp -DskipTests -DskipITs -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+    `mvn deploy -ntp -DskipTests -DskipITs -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
     {
       ...execOpts,
       cwd: droolsRepoDir,
@@ -135,7 +135,7 @@ try {
 } catch (e) {
   // Try it again!
   execSync(
-    `mvn deploy -ntp -DskipTests -DskipITs -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+    `mvn deploy -ntp -DskipTests -DskipITs -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
     {
       ...execOpts,
       cwd: droolsRepoDir,
