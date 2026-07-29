@@ -21,7 +21,7 @@ Updates the default value of `KOGITO_RUNTIME_version` of `packages/root-env`, op
 
 ### Usage
 
-`pnpm update-kogito-version-to --maven {new-version} [--droolsGitRef {ref} --kogitoAppsGitRef {ref}]`
+`pnpm update-kogito-version-to --maven {new-version} [--droolsGitRef {ref}]`
 
 ---
 

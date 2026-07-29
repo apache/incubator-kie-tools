@@ -50,8 +50,7 @@ console.log(JSON.stringify(buildInfo, null, 2));
 
 const buildInfoMatches =
   buildInfo?.kogitoVersion === buildEnv.versions.kogito &&
-  buildInfo?.droolsRepoGitRef === buildEnv.droolsAndKogito.repos.drools.gitRef &&
-  buildInfo?.kogitoAppsRepoGitRef === buildEnv.droolsAndKogito.repos.kogitoApps.gitRef;
+  buildInfo?.droolsRepoGitRef === buildEnv.droolsAndKogito.repos.drools.gitRef;
 
 const localM2DirExists = fs.existsSync("./dist/1st-party-m2/repository");
 const forceBuild = buildEnv.droolsAndKogito.forceBuild;
@@ -81,7 +80,6 @@ fs.mkdirSync("./dist-tmp", { recursive: true });
 // cloning
 
 const droolsRepoDir = path.join("dist-tmp", "drools");
-const kogitoAppsRepoDir = path.join("dist-tmp", "kogito-apps");
 
 console.log(`[drools-and-kogito] Cloning Drools...`);
 
@@ -89,13 +87,6 @@ execSync(`git clone --depth 1 ${buildEnv.droolsAndKogito.repos.drools.url} "${dr
 execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.drools.gitRef} && git checkout FETCH_HEAD`, {
   ...execOpts,
   cwd: droolsRepoDir,
-});
-
-console.log(`[drools-and-kogito] Cloning Kogito Apps...`);
-execSync(`git clone --depth 1 ${buildEnv.droolsAndKogito.repos.kogitoApps.url} "${kogitoAppsRepoDir}"`, execOpts);
-execSync(`git fetch origin ${buildEnv.droolsAndKogito.repos.kogitoApps.gitRef} && git checkout FETCH_HEAD`, {
-  ...execOpts,
-  cwd: kogitoAppsRepoDir,
 });
 
 // update versions
@@ -135,7 +126,7 @@ removeMavenModule(`apps\\-integration\\-tests`);
 console.log(`[drools-and-kogito] Building Drools...`);
 try {
   execSync(
-    `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+    `mvn deploy -ntp -DskipTests -DskipITs -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
     {
       ...execOpts,
       cwd: droolsRepoDir,
@@ -144,22 +135,13 @@ try {
 } catch (e) {
   // Try it again!
   execSync(
-    `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+    `mvn deploy -ntp -DskipTests -DskipITs -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
     {
       ...execOpts,
       cwd: droolsRepoDir,
     }
   );
 }
-
-console.log(`[drools-and-kogito] Building Kogito Apps...`);
-execSync(
-  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${DIST_REPO} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
-  {
-    ...execOpts,
-    cwd: kogitoAppsRepoDir,
-  }
-);
 
 console.log("[drools-and-kogito] Removing source code directory to free up disk space... ");
 fs.rmSync("./dist-tmp", { recursive: true });
@@ -172,7 +154,6 @@ fs.writeFileSync(
   JSON.stringify({
     kogitoVersion: buildEnv.versions.kogito,
     droolsRepoGitRef: buildEnv.droolsAndKogito.repos.drools.gitRef,
-    kogitoAppsRepoGitRef: buildEnv.droolsAndKogito.repos.kogitoApps.gitRef,
   }),
   "utf-8"
 );
