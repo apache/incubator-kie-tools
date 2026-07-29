@@ -20,6 +20,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -58,6 +59,8 @@ export function ConnectToKubernetesSimple(props: {
   kieSandboxKubernetesService?: KieSandboxKubernetesService;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
+  useCorsProxy: boolean;
+  setUseCorsProxy: React.Dispatch<React.SetStateAction<boolean>>;
   status: KubernetesInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
@@ -96,6 +99,7 @@ export function ConnectToKubernetesSimple(props: {
         authProviderId: "kubernetes",
         createdAtDateISO: new Date().toISOString(),
         k8sApiServerEndpointsByResourceKind: props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind,
+        useCorsProxy: props.useCorsProxy,
       };
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
       if (props.selectedAuthSession) {
@@ -363,20 +367,19 @@ export function ConnectToKubernetesSimple(props: {
             </InputGroupText>
           </InputGroup>
         </FormGroup>
-        {/* 
-          TODO: uncomment when enabling kubernetes deployment to use cors-proxy
-        <FormGroup fieldId="disable-tls-validation">
+        <FormGroup fieldId="use-cors-proxy">
           <Checkbox
-            id="disable-tls-validation"
-            name="disable-tls-validation"
-            label={i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidation}
-            description={<I18nHtml>{i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>}
-            aria-label="Disable TLS Certificate Validation"
+            id="use-cors-proxy"
+            name="use-cors-proxy"
+            label={i18n.devDeployments.configModal.useCorsProxy}
+            description={i18n.devDeployments.configModal.useCorsProxyInfo}
+            aria-label="Use CORS Proxy"
             tabIndex={4}
-            isChecked={props.connection.insecurelyDisableTlsCertificateValidation}
-            onChange={onInsecurelyDisableTlsCertificateValidationChange}
+            isChecked={props.useCorsProxy}
+            onChange={(_e, checked) => props.setUseCorsProxy(checked)}
+            data-testid="use-cors-proxy-checkbox"
           />
-        </FormGroup> */}
+        </FormGroup>
         <ActionGroup>
           <Button
             id="dev-deployments-config-save-button"

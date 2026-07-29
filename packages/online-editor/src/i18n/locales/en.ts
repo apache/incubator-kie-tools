@@ -127,6 +127,9 @@ export const en: OnlineI18n = {
       insecurelyDisableTlsCertificateValidation: "Insecurely disable TLS certificate validation",
       insecurelyDisableTlsCertificateValidationInfo:
         "Checking this option will insecurely disable TLS certificate verification for this account. This is an alternative to not having to deal with the browser's restrictions when your cluster is behind an HTTPS endpoint with a self-signed certificate. Please be advised that the use of self-signed certificates is a weaker form of security, so consider contacting your cluster admins to use a trusted certificate. For more information, refer to <a href='https://cwe.mitre.org/data/definitions/295.html' target='_blank'>https://cwe.mitre.org/data/definitions/295.html</a>.",
+      useCorsProxy: "Use CORS Proxy",
+      useCorsProxyInfo:
+        "Route requests to this cluster through the configured CORS Proxy. Enable this when the cluster is not directly reachable from the browser due to CORS restrictions, which is the typical case for remote clusters. Leave unchecked when the cluster is reachable directly (e.g. a local kind/minikube cluster).",
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       missingPermissions:

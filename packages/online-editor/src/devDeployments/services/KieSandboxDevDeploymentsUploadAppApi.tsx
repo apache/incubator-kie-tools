@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
+
 export enum UploadStatus {
   NOT_READY = "NOT_READY",
   READY = "READY",
@@ -29,9 +31,18 @@ const UPLOAD_ENDPOINT = "/upload";
 const UPLOAD_STATUS_ENDPOINT = `/upload-status`;
 const DATA_PART_KEY = "myFile";
 
-export async function getUploadStatus(args: { baseUrl: string }): Promise<UploadStatus> {
+function proxiedFetch(targetUrl: string, init: RequestInit, proxyUrl: string | undefined): Promise<Response> {
+  if (!proxyUrl) {
+    return fetch(targetUrl, init);
+  }
+  const headers = new Headers(init.headers);
+  headers.set(CorsProxyHeaderKeys.TARGET_URL, targetUrl);
+  return fetch(proxyUrl, { ...init, headers });
+}
+
+export async function getUploadStatus(args: { baseUrl: string; proxyUrl?: string }): Promise<UploadStatus> {
   try {
-    const response = await fetch(`${args.baseUrl}${UPLOAD_STATUS_ENDPOINT}`);
+    const response = await proxiedFetch(`${args.baseUrl}${UPLOAD_STATUS_ENDPOINT}`, {}, args.proxyUrl);
 
     if (response.ok) {
       return (await response.text()) as UploadStatus;
@@ -42,11 +53,17 @@ export async function getUploadStatus(args: { baseUrl: string }): Promise<Upload
   return UploadStatus.NOT_READY;
 }
 
-export async function postUpload(args: { baseUrl: string; workspaceZipBlob: Blob; apiKey: string }): Promise<void> {
+export async function postUpload(args: {
+  baseUrl: string;
+  workspaceZipBlob: Blob;
+  apiKey: string;
+  proxyUrl?: string;
+}): Promise<void> {
   const formData = new FormData();
   formData.append(DATA_PART_KEY, args.workspaceZipBlob);
-  await fetch(`${args.baseUrl}${UPLOAD_ENDPOINT}?apiKey=${args.apiKey}`, {
-    method: "POST",
-    body: formData,
-  });
+  await proxiedFetch(
+    `${args.baseUrl}${UPLOAD_ENDPOINT}?apiKey=${args.apiKey}`,
+    { method: "POST", body: formData },
+    args.proxyUrl
+  );
 }

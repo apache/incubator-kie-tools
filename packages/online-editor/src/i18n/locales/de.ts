@@ -130,6 +130,9 @@ export const de: TranslatedDictionary<OnlineI18n> = {
       insecurelyDisableTlsCertificateValidation: "Unsichere Deaktivierung der TLS Zertifikat Validierung",
       insecurelyDisableTlsCertificateValidationInfo:
         "Bei Auswahl dieser Option wird die Verifizierung des TLS Zertifikates für dieses Konto deaktiviert. Dies ist eine Alternative dazu, sich nicht mit den Einschränkungen des Browsers auseinandersetzen zu müssen wenn sich Ihr Cluster hinter einem HTTPS-Endpunkt mit einem selbstsignierten Zertifikat befindet. Bitte beachten Sie, dass die Verwendung von selbstsignierten Zertifikaten eine abgeschwächte Form von Sicherheit darstellt. Wenden Sie sich an Ihren Cluster Administrator, um ein vertrauenswürdiges Zertifikat zu verwenden. Weitere Informationen finden Sie unter <a href='https://cwe.mitre.org/data/definitions/295.html' target='_blank'>https://cwe.mitre.org/data/definitions/295.html</a>.",
+      useCorsProxy: "CORS-Proxy verwenden",
+      useCorsProxyInfo:
+        "Anfragen an dieses Cluster über den konfigurierten CORS-Proxy leiten. Aktivieren Sie diese Option, wenn das Cluster aufgrund von CORS-Einschränkungen nicht direkt vom Browser erreichbar ist, was bei entfernten Clustern üblich ist. Lassen Sie sie deaktiviert, wenn das Cluster direkt erreichbar ist (z. B. ein lokales kind/minikube-Cluster).",
       validationError: "Sie müssen alle erforderlichen Felder ausfüllen, bevor Sie fortfahren können.",
       connectionError: "Verbindung abgelehnt. Bitte überprüfen Sie die angegebenen Details.",
       missingPermissions:

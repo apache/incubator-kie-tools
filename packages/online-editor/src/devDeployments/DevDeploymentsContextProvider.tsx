@@ -61,8 +61,14 @@ export function DevDeploymentsContextProvider(props: Props) {
           k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
         });
       } else if (authSession.type === "kubernetes") {
+        // Per-session opt-in for cors-proxy routing. Legacy sessions
+        // stored before this field was introduced default to undefined,
+        // which we treat as "off" - they keep talking directly to the
+        // cluster the way they did before, no regression.
+        const proxyUrl = authSession.useCorsProxy ? env.KIE_SANDBOX_CORS_PROXY_URL : undefined;
         return new KieSandboxKubernetesService({
           connection: authSession,
+          proxyUrl,
           k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
         });
       }
