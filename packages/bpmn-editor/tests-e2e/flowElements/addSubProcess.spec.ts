@@ -77,7 +77,12 @@ test.describe("Add node - Sub-process", () => {
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
 
-    test("should create sequence flow from Start Event to Sub-process", async ({ diagram, palette, nodes }) => {
+    test("should create sequence flow from Start Event to Sub-process", async ({
+      palette,
+      nodes,
+      jsonModel,
+      edges,
+    }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 100 } });
 
@@ -88,10 +93,15 @@ test.describe("Add node - Sub-process", () => {
       const startEventId = await nodes.getIdByType(NodeType.START_EVENT);
       await nodes.createSequenceFlow({ from: startEventId, to: DefaultNodeName.SUB_PROCESS });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-start-event-to-subprocess.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const targetRef = await nodes.getId({ name: DefaultNodeName.SUB_PROCESS });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(startEventId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(targetRef);
+      await expect(edges.getByIds({ from: startEventId, to: targetRef })).toBeVisible();
     });
 
-    test("should create sequence flow from Gateway to Sub-process", async ({ diagram, palette, nodes }) => {
+    test("should create sequence flow from Gateway to Sub-process", async ({ palette, nodes, jsonModel, edges }) => {
       await palette.dragNewNode({ type: NodeType.GATEWAY, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 200, y: 100 } });
 
@@ -102,7 +112,12 @@ test.describe("Add node - Sub-process", () => {
       const gatewayId = await nodes.getIdByType(NodeType.GATEWAY);
       await nodes.createSequenceFlow({ from: gatewayId, to: DefaultNodeName.SUB_PROCESS });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-gateway-to-subprocess.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const targetRef = await nodes.getId({ name: DefaultNodeName.SUB_PROCESS });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(gatewayId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(targetRef);
+      await expect(edges.getByIds({ from: gatewayId, to: targetRef })).toBeVisible();
     });
   });
 
@@ -128,7 +143,7 @@ test.describe("Add node - Sub-process", () => {
   });
 
   test.describe("Nested elements inside Sub-process", () => {
-    test("should add Start Event inside Sub-process", async ({ palette, nodes, diagram }) => {
+    test("should add Start Event inside Sub-process", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
 
       const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
@@ -141,10 +156,15 @@ test.describe("Add node - Sub-process", () => {
         targetPosition: { x: box.x + 50, y: box.y + box.height + 50 },
       });
 
-      await expect(diagram.get()).toHaveScreenshot("add-start-event-inside-subprocess.png");
+      await expect(nodes.getByType(NodeType.START_EVENT)).toBeVisible();
+
+      const subProcesses = await jsonModel.getSubProcesses();
+      expect(subProcesses.length).toBe(1);
+      expect(subProcesses[0].flowElement?.length).toBe(1);
+      expect(subProcesses[0].flowElement?.[0].__$$element).toBe("startEvent");
     });
 
-    test("should add Task inside Sub-process", async ({ palette, nodes, diagram }) => {
+    test("should add Task inside Sub-process", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
 
       const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
@@ -154,10 +174,17 @@ test.describe("Add node - Sub-process", () => {
 
       await palette.dragNewNode({ type: NodeType.TASK, targetPosition: { x: box.x + 50, y: box.y + 50 } });
 
-      await expect(diagram.get()).toHaveScreenshot("add-task-inside-subprocess.png");
+      // The element carrying the node's data-testid is a zero-height wrapper (the visual box is
+      // its child), so `toBeVisible()` never holds for task nodes — assert attachment instead.
+      await expect(nodes.getByType(NodeType.TASK)).toBeAttached();
+
+      const subProcesses = await jsonModel.getSubProcesses();
+      expect(subProcesses.length).toBe(1);
+      expect(subProcesses[0].flowElement?.length).toBe(1);
+      expect(subProcesses[0].flowElement?.[0].__$$element).toBe("task");
     });
 
-    test("should add Gateway inside Sub-process", async ({ palette, nodes, diagram }) => {
+    test("should add Gateway inside Sub-process", async ({ palette, nodes, jsonModel }) => {
       await palette.dragNewNode({ type: NodeType.SUB_PROCESS, targetPosition: { x: 100, y: 300 } });
 
       const subProcess = nodes.get({ name: DefaultNodeName.SUB_PROCESS });
@@ -170,7 +197,12 @@ test.describe("Add node - Sub-process", () => {
         targetPosition: { x: box.x + box.width / 4, y: box.y + 100 },
       });
 
-      await expect(diagram.get()).toHaveScreenshot("add-gateway-inside-subprocess.png");
+      await expect(nodes.getByType(NodeType.GATEWAY)).toBeVisible();
+
+      const subProcesses = await jsonModel.getSubProcesses();
+      expect(subProcesses.length).toBe(1);
+      expect(subProcesses[0].flowElement?.length).toBe(1);
+      expect(subProcesses[0].flowElement?.[0].__$$element).toBe("exclusiveGateway");
     });
 
     test("should create complete flow inside Sub-process: Start Event -> Task -> End Event", async ({

@@ -22,7 +22,7 @@ import { GIT_CONSTS, GIT_HTTP_METHODS, isGitOperation } from "../../src/proxy/gi
 const baseGitURL = "https://github.com/apache/incubator-kie-tools.git";
 
 describe("Git isGitOperation tests", () => {
-  it("Non valid Git Operations", () => {
+  (it("Non valid Git Operations", () => {
     expect(
       isGitOperation(
         "https://oc.test/apis/apps/v1/namespaces/dev/deployments?labelSelector=kogito.kie.org/created-by",
@@ -47,7 +47,7 @@ describe("Git isGitOperation tests", () => {
           GIT_HTTP_METHODS.OPTIONS
         )
       ).toBeTruthy();
-    });
+    }));
 
   it("isInfoRefs", () => {
     expect(

@@ -32,8 +32,8 @@
     "ts-loader": "^9.4.2",
     "typescript": "^5.9.3",
     "url-loader": "^4.1.1",
-    "webpack": "^5.107.1",
-    "webpack-cli": "^5.1.4",
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1",
     "webpack-dev-server": "^5.2.5",
     "webpack-merge": "^5.9.0"
   }

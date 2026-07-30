@@ -33,7 +33,7 @@ test.describe("Change Properties - Task Node", () => {
     await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
   });
 
-  test("should change the Task name", async ({ taskPropertiesPanel, page }) => {
+  test("should change the Task name", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.nameProperties.setName({ newName: "Process Order" });
 
     expect(await taskPropertiesPanel.nameProperties.getName()).toBe("Process Order");
@@ -78,15 +78,17 @@ test.describe("Change Properties - User Task", () => {
     expect(await taskPropertiesPanel.getTaskName()).toBe("ApproveOrder");
   });
 
-  test("should configure User Task with actors and groups", async ({ taskPropertiesPanel, page }) => {
+  test("should configure User Task with actors and groups", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.setActors({ actors: "john, mary" });
     await taskPropertiesPanel.setGroups({ groups: "managers" });
     await taskPropertiesPanel.setTaskName({ taskName: "ReviewDocument" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("user-task-full-configuration.png");
+    expect(await taskPropertiesPanel.getActors()).toBe("john,mary");
+    expect(await taskPropertiesPanel.getGroups()).toBe("managers");
+    expect(await taskPropertiesPanel.getTaskName()).toBe("ReviewDocument");
   });
 
-  test("should set async flag on User Task", async ({ taskPropertiesPanel, page }) => {
+  test("should set async flag on User Task", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.setAsync({ isAsync: true });
 
     const asyncCheckbox = page.getByRole("checkbox", { name: /async/i });
@@ -109,13 +111,16 @@ test.describe("Change Properties - Service Task", () => {
     expect(await taskPropertiesPanel.getImplementation()).toBe("Java");
   });
 
-  test("should configure Service Task interface and operation", async ({ taskPropertiesPanel, page }) => {
+  test("should configure Service Task interface and operation", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.setInterface({ interfaceName: "OrderService" });
     await taskPropertiesPanel.setOperation({ operationName: "processOrder" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot(
-      "service-task-interface-operation.png"
-    );
+    await expect(taskPropertiesPanel.panel().getByPlaceholder(/Enter an interface/i)).toHaveValue("OrderService");
+    await expect(taskPropertiesPanel.panel().getByPlaceholder(/Enter an operation/i)).toHaveValue("processOrder");
+
+    const serviceTask = (await jsonModel.getServiceTasks())[0];
+    expect(serviceTask["@_drools:serviceinterface"]).toBe("OrderService");
+    expect(serviceTask["@_drools:serviceoperation"]).toBe("processOrder");
   });
 });
 
@@ -128,7 +133,7 @@ test.describe("Change Properties - Script Task", () => {
     await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.SCRIPT });
   });
 
-  test("should configure Script Task script content", async ({ taskPropertiesPanel, page }) => {
+  test("should configure Script Task script content", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.setScript({
       script: 'System.out.println("Processing order: " + orderId);',
     });
@@ -147,21 +152,45 @@ test.describe("Change Properties - Business Rule Task", () => {
     await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.BUSINESS_RULE });
   });
 
-  test("should configure Business Rule Task with DRL rule flow group", async ({ taskPropertiesPanel, page }) => {
+  test("should configure Business Rule Task with DRL rule flow group", async ({
+    taskPropertiesPanel,
+    page,
+    jsonModel,
+  }) => {
     await taskPropertiesPanel.setRuleFlowGroup({ ruleFlowGroup: "order-validation-rules" });
 
     const ruleFlowInput = page.getByPlaceholder(/Enter a Rule flow group/i);
     await expect(ruleFlowInput).toHaveValue("order-validation-rules");
   });
 
-  test("should configure Business Rule Task with DMN model", async ({ taskPropertiesPanel, page }) => {
+  test("should configure Business Rule Task with DMN model", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.setDmnModel({
       relativePath: "models/decision.dmn",
       namespace: "https://example.com/dmn",
       modelName: "OrderDecision",
     });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("business-rule-task-dmn-model.png");
+    await expect(taskPropertiesPanel.panel().getByPlaceholder(/Enter a relative path/i)).toHaveValue(
+      "models/decision.dmn"
+    );
+    await expect(taskPropertiesPanel.panel().getByLabel("DMN model namespace")).toHaveValue("https://example.com/dmn");
+    await expect(taskPropertiesPanel.panel().getByLabel("DMN model name", { exact: true })).toHaveValue(
+      "OrderDecision"
+    );
+
+    const businessRuleTask = (await jsonModel.getBusinessRuleTasks())[0];
+    const dataInputs = businessRuleTask.ioSpecification?.dataInput ?? [];
+    // Each DMN field is a named dataInput whose value lives in the matching input association.
+    const dmnFieldValue = (name: string) => {
+      const dataInputId = dataInputs.find((dataInput) => dataInput["@_name"] === name)?.["@_id"];
+      return businessRuleTask.dataInputAssociation?.find(
+        (association) => association.targetRef?.__$$text === dataInputId
+      )?.assignment?.[0]?.from?.__$$text;
+    };
+
+    expect(dmnFieldValue("fileName")).toBe("models/decision.dmn");
+    expect(dmnFieldValue("namespace")).toBe("https://example.com/dmn");
+    expect(dmnFieldValue("model")).toBe("OrderDecision");
   });
 });
 
@@ -179,30 +208,64 @@ test.describe("Change Properties - Task Multi-Instance", () => {
     await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
   });
 
-  test("should configure parallel multi-instance", async ({ taskPropertiesPanel, page }) => {
+  test("should configure parallel multi-instance", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.setMultiInstance({ type: "parallel" });
     await taskPropertiesPanel.setCollectionExpression({ expression: "orderItems" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("task-multi-instance-parallel.png");
+    await expect(taskPropertiesPanel.panel().getByRole("checkbox", { name: /multi-instance/i })).toBeChecked();
+    await expect(
+      taskPropertiesPanel.panel().getByRole("button", { name: "Parallel", exact: true }).first()
+    ).toHaveAttribute("aria-pressed", "true");
+
+    const loopCharacteristics = (await jsonModel.getUserTasks())[0].loopCharacteristics;
+    expect(loopCharacteristics?.__$$element).toBe("multiInstanceLoopCharacteristics");
+
+    // Narrow the loopCharacteristics union so the multi-instance-only fields are reachable.
+    const multiInstanceLoop =
+      loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics" ? loopCharacteristics : undefined;
+    expect(multiInstanceLoop?.["@_isSequential"]).toBeFalsy();
+    expect(multiInstanceLoop?.loopDataInputRef?.__$$text).toBeDefined();
   });
 
-  test("should configure sequential multi-instance", async ({ taskPropertiesPanel, page }) => {
+  test("should configure sequential multi-instance", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.setMultiInstance({ type: "sequential" });
     await taskPropertiesPanel.setCollectionExpression({ expression: "approvers" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot(
-      "task-multi-instance-sequential.png"
-    );
+    await expect(taskPropertiesPanel.panel().getByRole("checkbox", { name: /multi-instance/i })).toBeChecked();
+    await expect(
+      taskPropertiesPanel.panel().getByRole("button", { name: "Sequential", exact: true }).first()
+    ).toHaveAttribute("aria-pressed", "true");
+
+    const loopCharacteristics = (await jsonModel.getUserTasks())[0].loopCharacteristics;
+    expect(loopCharacteristics?.__$$element).toBe("multiInstanceLoopCharacteristics");
+
+    // Narrow the loopCharacteristics union so the multi-instance-only fields are reachable.
+    const multiInstanceLoop =
+      loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics" ? loopCharacteristics : undefined;
+    expect(multiInstanceLoop?.["@_isSequential"]).toBe(true);
+    expect(multiInstanceLoop?.loopDataInputRef?.__$$text).toBeDefined();
   });
 
-  test("should configure multi-instance with completion condition", async ({ taskPropertiesPanel, page }) => {
+  test("should configure multi-instance with completion condition", async ({
+    taskPropertiesPanel,
+    page,
+    jsonModel,
+  }) => {
     await taskPropertiesPanel.setMultiInstance({ type: "parallel" });
     await taskPropertiesPanel.setCollectionExpression({ expression: "tasks" });
     await taskPropertiesPanel.setCompletionCondition({ condition: "${nrOfCompletedInstances >= 3}" });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot(
-      "task-multi-instance-completion-condition.png"
+    await expect(taskPropertiesPanel.panel().getByLabel("Completion condition")).toHaveValue(
+      "${nrOfCompletedInstances >= 3}"
     );
+
+    const loopCharacteristics = (await jsonModel.getUserTasks())[0].loopCharacteristics;
+    expect(loopCharacteristics?.__$$element).toBe("multiInstanceLoopCharacteristics");
+
+    // Narrow the loopCharacteristics union so the multi-instance-only fields are reachable.
+    const multiInstanceLoop =
+      loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics" ? loopCharacteristics : undefined;
+    expect(multiInstanceLoop?.completionCondition?.__$$text).toBe("${nrOfCompletedInstances >= 3}");
   });
 });
 
@@ -215,21 +278,21 @@ test.describe("Change Properties - Task Data I/O", () => {
     await nodes.morph({ node: nodes.get({ name: DefaultNodeName.TASK }), to: TaskNodeType.USER });
   });
 
-  test("should add data input to Task", async ({ taskPropertiesPanel, page }) => {
+  test("should add data input to Task", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.addDataInput({ name: "orderId" });
 
     const dataMappingSection = page.getByLabel(/⇆Data mapping/i);
     await expect(dataMappingSection).toBeVisible();
   });
 
-  test("should add data output to Task", async ({ taskPropertiesPanel, page }) => {
+  test("should add data output to Task", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.addDataOutput({ name: "result" });
 
     const dataMappingSection = page.getByLabel(/⇆Data mapping/i);
     await expect(dataMappingSection).toBeVisible();
   });
 
-  test("should add multiple data inputs and outputs", async ({ taskPropertiesPanel, page }) => {
+  test("should add multiple data inputs and outputs", async ({ taskPropertiesPanel, page, jsonModel }) => {
     await taskPropertiesPanel.openDataMappingModal();
 
     await taskPropertiesPanel.addDataInputInModal({ name: "orderId" });
@@ -240,6 +303,10 @@ test.describe("Change Properties - Task Data I/O", () => {
 
     await taskPropertiesPanel.closeDataMappingModal();
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("task-multiple-data-io.png");
+    await expect(taskPropertiesPanel.panel().getByLabel(/⇆Data mapping/i)).toBeVisible();
+
+    const ioSpecification = (await jsonModel.getUserTasks())[0].ioSpecification;
+    expect(ioSpecification?.dataInput?.map((dataInput) => dataInput["@_name"])).toEqual(["orderId", "customerId"]);
+    expect(ioSpecification?.dataOutput?.map((dataOutput) => dataOutput["@_name"])).toEqual(["approved", "message"]);
   });
 });

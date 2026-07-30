@@ -170,7 +170,6 @@ export function computeDiagramData(
           // ignore on purpose
         }
       } else {
-        bpmnElement.__$$element;
         // ignore on purpose
       }
     }, new Map<string, BpmnNodeElement>()) ?? new Map<string, BpmnNodeElement>();

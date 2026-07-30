@@ -449,65 +449,68 @@ export function BpmnDiagram({
 
   const onEdgeUpdated = useCallback<
     OnEdgeUpdated<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
-  >(({ state, edge, targetNode, sourceNode, targetHandle, sourceHandle, firstWaypoint, lastWaypoint }) => {
-    console.log("BPMN EDITOR DIAGRAM: onEdgeUpdated");
+  >(
+    ({ state, edge, targetNode, sourceNode, targetHandle, sourceHandle, firstWaypoint, lastWaypoint }) => {
+      console.log("BPMN EDITOR DIAGRAM: onEdgeUpdated");
 
-    const { parentFlowElements, parentArtifacts } = findCommonParentContainer(state, sourceNode.id, targetNode.id);
+      const { parentFlowElements, parentArtifacts } = findCommonParentContainer(state, sourceNode.id, targetNode.id);
 
-    const { newBpmnEdge } = addEdge({
-      definitions: state.bpmn.model.definitions,
-      __readonly_edge: {
-        autoPositionedEdgeMarker: undefined,
-        type: edge.type as BpmnEdgeType,
-        targetHandle: ((targetHandle as PositionalNodeHandleId) ??
-          getHandlePosition({ shapeBounds: targetNode.data.shape["dc:Bounds"], waypoint: lastWaypoint })
-            .handlePosition) as PositionalNodeHandleId,
-        sourceHandle: ((sourceHandle as PositionalNodeHandleId) ??
-          getHandlePosition({ shapeBounds: sourceNode.data.shape["dc:Bounds"], waypoint: firstWaypoint })
-            .handlePosition) as PositionalNodeHandleId,
-        name: edge.data?.bpmnElement.__$$element === "sequenceFlow" ? edge.data.bpmnElement["@_name"] : undefined,
-        documentation:
-          edge.data?.bpmnElement.__$$element === "sequenceFlow" ? edge.data.bpmnElement.documentation : undefined,
-      },
-      __readonly_sourceNode: {
-        type: sourceNode.type!,
-        href: sourceNode.id,
-        bounds: sourceNode.data.shape["dc:Bounds"],
-        shapeId: sourceNode.data.shape["@_id"],
-      },
-      __readonly_targetNode: {
-        type: targetNode.type!,
-        href: targetNode.id,
-        bounds: targetNode.data.shape["dc:Bounds"],
-        shapeId: targetNode.data.shape["@_id"],
-      },
-      __readonly_keepWaypoints: true,
-      __readonly_parentFlowElements: parentFlowElements,
-      __readonly_parentArtifacts: parentArtifacts,
-    });
-
-    // The BPMN Edge changed nodes, so we need to delete the old one, but keep the waypoints.
-    if (newBpmnEdge["@_bpmnElement"] !== edge.id) {
-      const { deletedBpmnEdge } = deleteEdge({
+      const { newBpmnEdge } = addEdge({
         definitions: state.bpmn.model.definitions,
-        __readonly_edgeId: edge.id,
+        __readonly_edge: {
+          autoPositionedEdgeMarker: undefined,
+          type: edge.type as BpmnEdgeType,
+          targetHandle: ((targetHandle as PositionalNodeHandleId) ??
+            getHandlePosition({ shapeBounds: targetNode.data.shape["dc:Bounds"], waypoint: lastWaypoint })
+              .handlePosition) as PositionalNodeHandleId,
+          sourceHandle: ((sourceHandle as PositionalNodeHandleId) ??
+            getHandlePosition({ shapeBounds: sourceNode.data.shape["dc:Bounds"], waypoint: firstWaypoint })
+              .handlePosition) as PositionalNodeHandleId,
+          name: edge.data?.bpmnElement.__$$element === "sequenceFlow" ? edge.data.bpmnElement["@_name"] : undefined,
+          documentation:
+            edge.data?.bpmnElement.__$$element === "sequenceFlow" ? edge.data.bpmnElement.documentation : undefined,
+        },
+        __readonly_sourceNode: {
+          type: sourceNode.type!,
+          href: sourceNode.id,
+          bounds: sourceNode.data.shape["dc:Bounds"],
+          shapeId: sourceNode.data.shape["@_id"],
+        },
+        __readonly_targetNode: {
+          type: targetNode.type!,
+          href: targetNode.id,
+          bounds: targetNode.data.shape["dc:Bounds"],
+          shapeId: targetNode.data.shape["@_id"],
+        },
+        __readonly_keepWaypoints: true,
+        __readonly_parentFlowElements: parentFlowElements,
+        __readonly_parentArtifacts: parentArtifacts,
       });
-      const deletedWaypoints = deletedBpmnEdge?.["di:waypoint"];
 
-      if (edge.source !== sourceNode.id && deletedWaypoints) {
-        newBpmnEdge["di:waypoint"] = [newBpmnEdge["di:waypoint"]![0], ...deletedWaypoints.slice(1)];
+      // The BPMN Edge changed nodes, so we need to delete the old one, but keep the waypoints.
+      if (newBpmnEdge["@_bpmnElement"] !== edge.id) {
+        const { deletedBpmnEdge } = deleteEdge({
+          definitions: state.bpmn.model.definitions,
+          __readonly_edgeId: edge.id,
+        });
+        const deletedWaypoints = deletedBpmnEdge?.["di:waypoint"];
+
+        if (edge.source !== sourceNode.id && deletedWaypoints) {
+          newBpmnEdge["di:waypoint"] = [newBpmnEdge["di:waypoint"]![0], ...deletedWaypoints.slice(1)];
+        }
+
+        if (edge.target !== targetNode.id && deletedWaypoints) {
+          newBpmnEdge["di:waypoint"] = [
+            ...deletedWaypoints.slice(0, deletedWaypoints.length - 1),
+            newBpmnEdge["di:waypoint"]![newBpmnEdge["di:waypoint"]!.length - 1],
+          ];
+        }
       }
 
-      if (edge.target !== targetNode.id && deletedWaypoints) {
-        newBpmnEdge["di:waypoint"] = [
-          ...deletedWaypoints.slice(0, deletedWaypoints.length - 1),
-          newBpmnEdge["di:waypoint"]![newBpmnEdge["di:waypoint"]!.length - 1],
-        ];
-      }
-    }
-
-    return { id: newBpmnEdge["@_bpmnElement"]! };
-  }, []);
+      return { id: newBpmnEdge["@_bpmnElement"]! };
+    },
+    [findCommonParentContainer]
+  );
 
   const onEdgeDeleted = useCallback<
     OnEdgeDeleted<State, BpmnNodeType, BpmnEdgeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>

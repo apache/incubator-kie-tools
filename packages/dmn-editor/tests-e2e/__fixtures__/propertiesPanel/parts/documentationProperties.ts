@@ -39,6 +39,11 @@ export class DocumentationProperties {
   }
 
   public async getDocumentationLinks() {
-    return await this.panel.getByTestId("kie-tools--dmn-editor--documentation-link--row-title").all();
+    const rows = this.panel.getByTestId("kie-tools--dmn-editor--documentation-link--row-title");
+    // `all()` resolves immediately and never retries, so it can run before the properties panel has re-rendered
+    // the links of the node that was just (re)selected, and return an empty array. Every caller expects at least
+    // one link, so waiting for the first row first makes this deterministic.
+    await rows.first().waitFor({ state: "attached" });
+    return await rows.all();
   }
 }

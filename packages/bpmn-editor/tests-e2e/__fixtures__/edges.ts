@@ -37,7 +37,11 @@ export class Edges {
     const from = await this.nodes.getId({ name: args.from });
     const to = await this.nodes.getId({ name: args.to });
 
-    return this.page.getByRole("button", { name: `Edge from ${from} to ${to}` });
+    return this.getByIds({ from, to });
+  }
+
+  public getByIds(args: { from: string; to: string }): Locator {
+    return this.page.getByRole("button", { name: `Edge from ${args.from} to ${args.to}` });
   }
 
   public async getType(args: { from: string; to: string }): Promise<EdgeType> {

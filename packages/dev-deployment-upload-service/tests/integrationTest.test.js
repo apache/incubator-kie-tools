@@ -32,7 +32,7 @@ const containersPorts = {
 
 const dockerInfo = JSON.parse(execSync(`docker info --format '{{ json . }}'`).toString().trim());
 const platform = dockerInfo["OSType"];
-const arch = dockerInfo["Architecture"] === "aarch64" ? "arm64" : "amd64";
+const arch = ["aarch64", "arm64"].includes(dockerInfo["Architecture"]) ? "arm64" : "amd64";
 
 describe("Test built images individually", () => {
   beforeAll(() => {

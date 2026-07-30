@@ -7,7 +7,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
@@ -99,7 +99,7 @@
     "@kie-tools/playwright-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@playwright/test": "^1.45.2",
+    "@playwright/test": "1.62.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.12",
@@ -126,8 +126,8 @@
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "webpack": "^5.107.1",
-    "webpack-cli": "^5.1.4",
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1",
     "webpack-dev-server": "^5.2.5",
     "webpack-merge": "^5.9.0"
   }

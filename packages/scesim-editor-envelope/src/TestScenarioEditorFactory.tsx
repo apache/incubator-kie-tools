@@ -40,9 +40,11 @@ import {
   useScesimEditorEnvelopeI18n,
 } from "./i18n";
 
-export class TestScenarioEditorFactory
-  implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
-{
+export class TestScenarioEditorFactory implements EditorFactory<
+  Editor,
+  KogitoEditorEnvelopeApi,
+  KogitoEditorChannelApi
+> {
   public createEditor(
     envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs

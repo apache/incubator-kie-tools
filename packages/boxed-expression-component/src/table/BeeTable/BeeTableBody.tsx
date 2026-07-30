@@ -84,7 +84,7 @@ export function BeeTableBody<R extends object>({
       reactTableInstance.prepareRow(row);
 
       const rowKey = getRowKey(row);
-      const rowEvaluationHitsCount = evaluationHitsCountById ? evaluationHitsCountById?.get(rowKey) ?? 0 : undefined;
+      const rowEvaluationHitsCount = evaluationHitsCountById ? (evaluationHitsCountById?.get(rowKey) ?? 0) : undefined;
       const canDisplayEvaluationHitsCountRowOverlay =
         rowEvaluationHitsCount !== undefined && (supportsEvaluationHitsCount?.(row) ?? false);
       const rowClassName = `${rowKey}${canDisplayEvaluationHitsCountRowOverlay && rowEvaluationHitsCount > 0 ? " evaluation-hits-count-row-overlay" : ""}`;

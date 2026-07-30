@@ -236,7 +236,7 @@ function toCustomTask(wid: WidClientParser.WorkItemDefinition): BpmnEditor.Custo
     wid.getIconDefinition().getIconData() ||
     (wid.getIconDefinition().getUri() === "defaultservicenodeicon.png"
       ? WidClientParser.getDefaultIconData()
-      : wid.getIconDefinition().getUri() ?? WidClientParser.getDefaultIconData());
+      : (wid.getIconDefinition().getUri() ?? WidClientParser.getDefaultIconData()));
 
   return {
     id: wid.getName(),

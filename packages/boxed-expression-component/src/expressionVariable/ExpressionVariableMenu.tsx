@@ -82,7 +82,7 @@ export function ExpressionVariableMenu({
   const { editorRef, beeGwtService } = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  nameField = nameField ?? isContentAFeelExpression ? i18n.expression : i18n.name;
+  nameField = (nameField ?? isContentAFeelExpression) ? i18n.expression : i18n.name;
   dataTypeField = dataTypeField ?? i18n.dataType;
   appendTo = appendTo ?? editorRef?.current ?? undefined;
 

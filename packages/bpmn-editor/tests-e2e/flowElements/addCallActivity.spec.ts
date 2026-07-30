@@ -81,7 +81,7 @@ test.describe("Add node - Call Activity", () => {
       await expect(nodes.get({ name: DefaultNodeName.TASK })).toBeAttached();
     });
 
-    test("should add connected Gateway node from Call Activity", async ({ diagram, palette, nodes }) => {
+    test("should add connected Gateway node from Call Activity", async ({ palette, nodes, jsonModel, edges }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
         targetPosition: { x: 100, y: 100 },
@@ -96,10 +96,22 @@ test.describe("Add node - Call Activity", () => {
         targetPosition: { x: 300, y: 100 },
       });
 
-      await expect(diagram.get()).toHaveScreenshot("add-gateway-node-from-call-activity.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const sourceRef = await nodes.getId({ name: DefaultNodeName.CALL_ACTIVITY });
+      const targetRef = await nodes.getIdByType(NodeType.GATEWAY);
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(sourceRef);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(targetRef);
+      await expect(edges.getByIds({ from: sourceRef, to: targetRef })).toBeVisible();
     });
 
-    test("should create sequence flow from Call Activity to End Event", async ({ diagram, palette, nodes }) => {
+    test("should create sequence flow from Call Activity to End Event", async ({
+      diagram,
+      palette,
+      nodes,
+      jsonModel,
+      edges,
+    }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
         targetPosition: { x: 100, y: 100 },
@@ -120,10 +132,15 @@ test.describe("Add node - Call Activity", () => {
         to: endEventId,
       });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-end-event.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const sourceRef = await nodes.getId({ name: DefaultNodeName.CALL_ACTIVITY });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(sourceRef);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(endEventId);
+      await expect(edges.getByIds({ from: sourceRef, to: endEventId })).toBeVisible();
     });
 
-    test("should add connected Call Activity from Start Event", async ({ diagram, palette, nodes }) => {
+    test("should add connected Call Activity from Start Event", async ({ palette, nodes, jsonModel, edges }) => {
       await palette.dragNewNode({
         type: NodeType.START_EVENT,
         targetPosition: { x: 100, y: 100 },
@@ -144,13 +161,24 @@ test.describe("Add node - Call Activity", () => {
 
       await nodes.morph({ node: task, to: TaskNodeType.CALL_ACTIVITY });
 
-      await expect(diagram.get()).toHaveScreenshot("add-call-activity-from-start-event.png");
+      const callActivity = (await jsonModel.getCallActivities())[0];
+      expect(callActivity.__$$element).toBe("callActivity");
+
+      const callActivityId = await nodes.getId({ name: DefaultNodeName.TASK });
+
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(startEventId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(callActivityId);
+      await expect(edges.getByIds({ from: startEventId, to: callActivityId })).toBeVisible();
     });
 
     test("should create sequence flow from Call Activity to another Call Activity", async ({
       diagram,
       palette,
       nodes,
+      jsonModel,
+      edges,
     }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
@@ -175,10 +203,16 @@ test.describe("Add node - Call Activity", () => {
         to: "Second Call Activity",
       });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-call-activity.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const sourceRef = await nodes.getId({ name: "First Call Activity" });
+      const targetRef = await nodes.getId({ name: "Second Call Activity" });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(sourceRef);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(targetRef);
+      await expect(edges.getByIds({ from: sourceRef, to: targetRef })).toBeVisible();
     });
 
-    test("should create sequence flow from Gateway to Call Activity", async ({ diagram, palette, nodes }) => {
+    test("should create sequence flow from Gateway to Call Activity", async ({ palette, nodes, jsonModel, edges }) => {
       await palette.dragNewNode({
         type: NodeType.GATEWAY,
         targetPosition: { x: 100, y: 100 },
@@ -199,10 +233,15 @@ test.describe("Add node - Call Activity", () => {
         to: DefaultNodeName.CALL_ACTIVITY,
       });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-gateway-to-call-activity.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const targetRef = await nodes.getId({ name: DefaultNodeName.CALL_ACTIVITY });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(gatewayId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(targetRef);
+      await expect(edges.getByIds({ from: gatewayId, to: targetRef })).toBeVisible();
     });
 
-    test("should create sequence flow from Call Activity to Gateway", async ({ diagram, palette, nodes }) => {
+    test("should create sequence flow from Call Activity to Gateway", async ({ palette, nodes, jsonModel, edges }) => {
       await palette.dragNewNode({
         type: NodeType.CALL_ACTIVITY,
         targetPosition: { x: 100, y: 100 },
@@ -223,7 +262,12 @@ test.describe("Add node - Call Activity", () => {
         to: gatewayId,
       });
 
-      await expect(diagram.get()).toHaveScreenshot("create-sequence-flow-call-activity-to-gateway.png");
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(1);
+      const sourceRef = await nodes.getId({ name: DefaultNodeName.CALL_ACTIVITY });
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(sourceRef);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(gatewayId);
+      await expect(edges.getByIds({ from: sourceRef, to: gatewayId })).toBeVisible();
     });
   });
 

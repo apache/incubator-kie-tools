@@ -32,13 +32,15 @@ export class DataObjectPropertiesPanel extends PropertiesPanelBase {
   public async setItemSubjectRef(args: { itemSubjectRef: string }) {
     await this.fillCombobox(args.itemSubjectRef);
 
-    const createOption = this.page.getByText(`Create Data Type "${args.itemSubjectRef}"`, { exact: true });
-    const optionCount = await createOption.count();
-    if (optionCount > 0 && (await createOption.isVisible())) {
-      await createOption.click();
-    } else {
-      await this.page.getByRole("option", { name: args.itemSubjectRef, exact: true }).click();
-    }
+    // The data type either already exists as an option or has to be created through the
+    // "Create Data Type" entry. `count()`/`isVisible()` don't auto-wait, so branching on them
+    // races the menu re-render; `or()` waits for whichever entry shows up.
+    const createOption = this.page.getByRole("option", {
+      name: `Create Data Type "${args.itemSubjectRef}"`,
+      exact: true,
+    });
+    const existingOption = this.page.getByRole("option", { name: args.itemSubjectRef, exact: true });
+    await createOption.or(existingOption).first().click();
     await this.panel().getByRole("combobox").first().blur();
   }
 

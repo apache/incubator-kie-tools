@@ -22,7 +22,13 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
-const { EnvironmentPlugin } = require("webpack");
+// Resolved through webpack-cli's own module scope so plugins built here come from the exact same
+// webpack instance the CLI uses to run the Compiler. pnpm can install more than one physical copy
+// of the same webpack version split by peer-dependency signature, and webpack's
+// internal `instanceof` checks throw when the plugin and the Compiler differ.
+const { EnvironmentPlugin } = require(
+  require.resolve("webpack", { paths: [path.dirname(require.resolve("webpack-cli/package.json"))] })
+);
 const { env } = require("../env");
 
 module.exports = (webpackEnv) =>

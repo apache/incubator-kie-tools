@@ -63,6 +63,7 @@ function getImageFullNames(args: ArgsType) {
   return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
 }
 
+// If building with Podman, see "Specifics # Container Images" in repo/MANUAL.md.
 function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean; useDefaultBuilder: boolean }) {
   if (args.useDefaultBuilder) {
     execSync("docker buildx use default", { stdio: "inherit" });

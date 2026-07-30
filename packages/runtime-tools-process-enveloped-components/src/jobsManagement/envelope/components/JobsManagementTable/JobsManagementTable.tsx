@@ -111,7 +111,9 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     setColumns((currentColumns) => {
       return [...currentColumns].map((column) => {
         column["props"] = { className: "pf-v5-u-text-align-center" };
-        checkNotEmpty() && column.title !== "Id" ? (column["transforms"] = [sortable]) : "";
+        if (checkNotEmpty() && column.title !== "Id") {
+          column["transforms"] = [sortable];
+        }
         return column;
       });
     });

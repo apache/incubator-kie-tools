@@ -377,12 +377,12 @@ export function DecisionTableExpression({
         id: outputClause["@_id"],
         label:
           decisionTableExpression.output?.length == 1
-            ? decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME
-            : outputClause["@_name"] ?? outputClause["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
+            ? (decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME)
+            : (outputClause["@_name"] ?? outputClause["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME),
         dataType:
           decisionTableExpression.output?.length == 1
-            ? decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined
-            : outputClause["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
+            ? (decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined)
+            : (outputClause["@_typeRef"] ?? DmnBuiltInDataType.Undefined),
         width: getOutputWidth(outputIndex, widths)?.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
         setWidth: setOutputColumnWidth(outputIndex),
         minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,

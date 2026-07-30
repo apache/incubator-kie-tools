@@ -286,7 +286,7 @@ export function parse(args: {
         // with it. We treat it as having no namespace, instead of
         // potentially using the default namespace mapped with `xmlns=`.
         const attrName = resolvedAttrQName.isQualified
-          ? resolvedAttrQName.subsedName ?? resolvedAttrQName.nsedName
+          ? (resolvedAttrQName.subsedName ?? resolvedAttrQName.nsedName)
           : attr.name;
 
         const attrPropType = elemMetaType?.[`@_${attrName}`];

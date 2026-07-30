@@ -71,8 +71,8 @@ export default defineConfig({
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     screenshot: "only-on-failure",
-    /* automatically record video on retry  */
-    video: "on-first-retry",
+    /* record video for every test, but keep it only for the ones that failed */
+    video: "retain-on-failure",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
     // Default locale;

@@ -133,8 +133,8 @@ export function BpmnDiagramSvg({
       const label =
         node.data.bpmnElement.__$$element !== "group"
           ? node.data.bpmnElement.__$$element === "textAnnotation"
-            ? node?.data?.bpmnElement?.text?.__$$text ?? ""
-            : node.data.bpmnElement["@_name"] ?? ""
+            ? (node?.data?.bpmnElement?.text?.__$$text ?? "")
+            : (node.data.bpmnElement["@_name"] ?? "")
           : "";
 
       return (
@@ -199,8 +199,8 @@ export function BpmnDiagramSvg({
                   node?.data?.bpmnElement,
                   node?.data?.bpmnElement as Normalized<BPMN20__tStartEvent> & { __$$element: "startEvent" }
                 )
-                  ? (node?.data?.bpmnElement as Normalized<BPMN20__tStartEvent>)["@_isInterrupting"] ??
-                    START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE
+                  ? ((node?.data?.bpmnElement as Normalized<BPMN20__tStartEvent>)["@_isInterrupting"] ??
+                    START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE)
                   : START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE
               }
               exportedSvgId={node.id}
@@ -219,7 +219,7 @@ export function BpmnDiagramSvg({
               )}
               isInterrupting={
                 node?.data?.bpmnElement.__$$element === "boundaryEvent"
-                  ? node?.data?.bpmnElement["@_cancelActivity"] ?? BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE
+                  ? (node?.data?.bpmnElement["@_cancelActivity"] ?? BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE)
                   : true
               }
               exportedSvgId={node.id}

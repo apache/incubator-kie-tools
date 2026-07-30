@@ -146,7 +146,7 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
         languages={["MVEL"]}
         value={
           element?.loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics"
-            ? element?.loopCharacteristics?.completionCondition?.__$$text ?? ""
+            ? (element?.loopCharacteristics?.completionCondition?.__$$text ?? "")
             : undefined
         }
         onChange={(e, newCompletionCondition) => {
@@ -232,7 +232,7 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
           placeholder={i18n.propertiesPanel.dataInputPlaceholder}
           value={
             element?.loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics"
-              ? element?.loopCharacteristics["inputDataItem"]?.["@_name"] ?? ""
+              ? (element?.loopCharacteristics["inputDataItem"]?.["@_name"] ?? "")
               : undefined
           }
           onChange={(e, newDataInput) =>
@@ -384,7 +384,7 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
           placeholder={i18n.propertiesPanel.dataOutputPlaceholder}
           value={
             element?.loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics"
-              ? element?.loopCharacteristics["outputDataItem"]?.["@_name"] ?? ""
+              ? (element?.loopCharacteristics["outputDataItem"]?.["@_name"] ?? "")
               : undefined
           }
           onChange={(e, newDataOutput) =>

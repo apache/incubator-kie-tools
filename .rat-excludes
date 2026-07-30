@@ -353,10 +353,8 @@ packages/xml-parser-ts/tests/schemas/my-schema-1.0/MySchema10.xsd
 packages/xml-parser-ts/tests/schemas/my-schema-1.0/ts-gen/meta.ts
 packages/xml-parser-ts/tests/schemas/my-schema-1.0/ts-gen/types.ts
 packages/yaml-language-server/tests/__snapshots__/YamlLanguageService.test.ts.snap
-patches/immer@10.0.3.patch
-patches/karma-firefox-launcher@2.1.2.patch
 patches/run-script-os@1.1.6.patch
-patches/zustand@4.4.2.patch
+patches/zustand@4.5.7.patch
 pnpm-lock.yaml
 pnpm-workspace.yaml
 repo/graph.dot

@@ -84,7 +84,7 @@ export function getMarshaller<V extends BpmnMarshallerVersions>(
 
   // `opts.upgradeTo` is optional. It defaults to not upgrading at all. "latest" is an alias to whatever the `BPMN_LATEST_VERSION` constante declares.
   const targetVersion: BpmnVersions =
-    opts?.upgradeTo === "latest" ? BPMN_LATEST_VERSION : opts?.upgradeTo ?? originalMarshaller.version;
+    opts?.upgradeTo === "latest" ? BPMN_LATEST_VERSION : (opts?.upgradeTo ?? originalMarshaller.version);
 
   // If the XML is already on the latest version, we don't do anything else and just return the marshaller.
   if (originalMarshaller.version === targetVersion) {

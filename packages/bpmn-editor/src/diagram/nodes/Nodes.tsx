@@ -214,8 +214,8 @@ export const StartEventNode = React.memo(
             variant={startEvent.eventDefinition?.[0]?.__$$element ?? "none"}
             isInterrupting={
               getShouldDisplayIsInterruptingFlag(parentXyFlowNode?.data.bpmnElement, startEvent)
-                ? startEvent["@_isInterrupting"] ??
-                  START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE
+                ? (startEvent["@_isInterrupting"] ??
+                  START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE)
                 : START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE
             }
           />
@@ -374,7 +374,7 @@ export const IntermediateCatchEventNode = React.memo(
             variant={intermediateCatchEvent.eventDefinition?.[0].__$$element ?? "none"}
             isInterrupting={
               intermediateCatchEvent.__$$element === "boundaryEvent"
-                ? intermediateCatchEvent["@_cancelActivity"] ?? BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE
+                ? (intermediateCatchEvent["@_cancelActivity"] ?? BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE)
                 : true
             }
           />
@@ -1317,7 +1317,7 @@ export const DataObjectNode = React.memo(
         display: "flex",
         flexDirection: "column",
         outline: "none",
-        "--selected-data-object-node-shape--height": `${nodeDimensions.height + 20 + 26 + (isEditingLabel ? 20 : nodeHeight ?? 0)}px`,
+        "--selected-data-object-node-shape--height": `${nodeDimensions.height + 20 + 26 + (isEditingLabel ? 20 : (nodeHeight ?? 0))}px`,
       }),
       [nodeDimensions, isEditingLabel, nodeHeight]
     );

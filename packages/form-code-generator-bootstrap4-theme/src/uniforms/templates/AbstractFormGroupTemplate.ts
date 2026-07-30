@@ -51,9 +51,9 @@ export interface FormElementTemplate<
   render: (props: Properties) => Element;
 }
 
-export abstract class AbstractFormGroupTemplate<Properties extends FormElementTemplateProps<any>>
-  implements FormElementTemplate<FormInput, Properties>
-{
+export abstract class AbstractFormGroupTemplate<
+  Properties extends FormElementTemplateProps<any>,
+> implements FormElementTemplate<FormInput, Properties> {
   protected constructor(
     readonly inputTemplate: CompiledTemplate,
     readonly setValueFromModelTemplate: CompiledTemplate,
