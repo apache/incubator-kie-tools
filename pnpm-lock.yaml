@@ -6226,8 +6226,8 @@ importers:
   packages/pmml-editor-marshaller:
     dependencies:
       jsonata:
-        specifier: ^1.8.7
-        version: 1.8.8
+        specifier: ^2.2.0
+        version: 2.2.0
       xml-js:
         specifier: ^1.6.11
         version: 1.6.11
@@ -6770,7 +6770,7 @@ importers:
         version: 1.0.5
       webpack:
         specifier: ^5.108.4
-        version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(postcss@8.5.22)(webpack-cli@7.2.1)
+        version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
         version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
@@ -7002,7 +7002,7 @@ importers:
         version: 4.1.1(file-loader@6.2.0(webpack@5.108.4))(webpack@5.108.4)
       webpack:
         specifier: ^5.108.4
-        version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
+        version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(postcss@8.5.22)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
         version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
@@ -18638,8 +18638,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  jsonata@1.8.8:
-    resolution: {integrity: sha512-nAGqrWc7M4T77AjEtnK1hhhR5M66zPeLXgLyfdwdD1nDAkzKcNWTus8cVaYRLTqEWK/jBDWBk7KD0zLYi4k/eg==}
+  jsonata@2.2.0:
+    resolution: {integrity: sha512-rAsmwxKHDKQIQ8qJBDErhd34BpNHses6QtiEOJVzJwJSY48LRx0S/tb7cJ9EtgfoIyiVx72Lzi88+HYxwnUybw==}
     engines: {node: '>= 8'}
 
   jsonc-parser@3.3.1:
@@ -35079,7 +35079,7 @@ snapshots:
       is-glob: 4.0.3
       normalize-path: 3.0.0
       schema-utils: 4.3.3
-      webpack: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
+      webpack: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(postcss@8.5.22)(webpack-cli@7.2.1)
 
   filename-reserved-regex@2.0.0: {}
 
@@ -37058,7 +37058,7 @@ snapshots:
 
   json5@2.2.3: {}
 
-  jsonata@1.8.8: {}
+  jsonata@2.2.0: {}
 
   jsonc-parser@3.3.1: {}
 
@@ -38116,7 +38116,7 @@ snapshots:
       loader-utils: 2.0.4
       monaco-editor: 0.39.0
       monaco-yaml: 4.0.4(monaco-editor@0.39.0)
-      webpack: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
+      webpack: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(postcss@8.5.22)(webpack-cli@7.2.1)
 
   monaco-editor@0.39.0: {}
 
