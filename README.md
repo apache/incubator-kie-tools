@@ -33,7 +33,7 @@ This repository contains tooling applications and libraries for Apache KIE proje
 
 ## Contribute
 
-- _Work in progress 🔨_
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Build from source
 
