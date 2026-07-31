@@ -27,12 +27,14 @@
   <artifactId>greeting-flow</artifactId>
   <version>111-SNAPSHOT</version>
   <properties>
+    <!-- Empty default so @{argLine} in surefire resolves when jacoco is not active -->
+    <argLine />
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-    <version.quarkus>3.27.4.1</version.quarkus>
+    <version.quarkus>3.33.3</version.quarkus>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.5.0</surefire-plugin.version>
   </properties>
@@ -74,7 +76,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
+      <artifactId>quarkus-junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -113,6 +115,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
         <configuration>
+          <argLine>@{argLine}</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>

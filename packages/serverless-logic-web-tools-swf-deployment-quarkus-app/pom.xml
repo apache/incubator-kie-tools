@@ -39,6 +39,8 @@
   <name>KIE Tools :: Serverless Logic Web Tools :: Deployment Quarkus app</name>
 
   <properties>
+    <!-- Empty default so @{argLine} in surefire resolves when jacoco is not active -->
+    <argLine />
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <failsafe.useModulePath>false</failsafe.useModulePath>
     <maven.compiler.release>17</maven.compiler.release>
@@ -49,7 +51,7 @@
     <com.github.erosb.everit-json-schema.version>1.14.2</com.github.erosb.everit-json-schema.version>
     <surefire-plugin.version>3.5.0</surefire-plugin.version>
     <version.org.kie.kogito>${project.version}</version.org.kie.kogito>
-    <version.quarkus>3.27.4.1</version.quarkus>
+    <version.quarkus>3.33.3</version.quarkus>
   </properties>
 
   <dependencyManagement>
@@ -137,7 +139,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
+      <artifactId>quarkus-junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -200,6 +202,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
         <configuration>
+          <argLine>@{argLine}</argLine>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>

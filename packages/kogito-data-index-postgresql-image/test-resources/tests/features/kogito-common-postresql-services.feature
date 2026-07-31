@@ -29,4 +29,4 @@ Feature: Kogito-data-index postgresql feature.
       | QUARKUS_DATASOURCE_USERNAME      | kogito                                    |
       | QUARKUS_DATASOURCE_PASSWORD      | s3cr3t                                    |
     Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "/home/kogito/bin/quarkus-app/quarkus-run.jar"
-     And container log should contain Datasource '<default>': Connection to localhost:5432 refused
+     And container log should contain Connection to localhost:5432 refused

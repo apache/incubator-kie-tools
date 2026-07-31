@@ -22,14 +22,14 @@
 //DEPS org.slf4j:slf4j-simple:2.0.9
 
 // Junit console to start the test engine:
-//DEPS org.junit.platform:junit-platform-console:1.10.1
+//DEPS org.junit.platform:junit-platform-console:6.0.3
 
-// engine to run the tests (tests are written with Junit5):
-//DEPS org.junit.jupiter:junit-jupiter-engine:5.10.1
+// engine to run the tests (tests are written with Junit6):
+//DEPS org.junit.jupiter:junit-jupiter-engine:6.0.3
 
 // testcontainers
-//DEPS org.testcontainers:testcontainers:1.21.4
-//DEPS org.testcontainers:testcontainers-junit-jupiter:1.21.4
+//DEPS org.testcontainers:testcontainers:2.0.4
+//DEPS org.testcontainers:testcontainers-junit-jupiter:2.0.4
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

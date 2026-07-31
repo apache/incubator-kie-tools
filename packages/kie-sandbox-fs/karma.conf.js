@@ -18,13 +18,12 @@
  */
 
 // Karma configuration
-process.env.CHROME_BIN = require("puppeteer").executablePath();
-
 const REPO = process.env.BUILD_REPOSITORY_NAME;
 const ISSUE = process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER || process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
 const COMMIT = process.env.BUILD_SOURCEVERSION;
 
-module.exports = function (config) {
+module.exports = async function (config) {
+  process.env.CHROME_BIN = await require("puppeteer").executablePath();
   const options = {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
