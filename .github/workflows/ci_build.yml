@@ -58,7 +58,7 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: "Setup pnpm"
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d  # v3
         with:
           version: 10.34.4
 
@@ -189,7 +189,7 @@ jobs:
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
-        uses: actions/github-script@v6
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410  # v6
         env:
           KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
             ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
