@@ -41,6 +41,7 @@ import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 import { GitServerRef } from "../worker/api/GitServerRef";
 import { FetchResult } from "isomorphic-git";
 import { UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
+import { SigningKeyConfig } from "../commitSigner/CommitSignerApi";
 
 export class WorkspaceFile {
   private readonly parsedRelativePath;
@@ -104,6 +105,8 @@ export interface WorkspacesContextType {
     localFiles: LocalFile[];
     preferredName?: string;
     gitAuthSessionId?: string;
+    gitConfig?: { email: string; name: string };
+    signingConfig?: SigningKeyConfig;
   }) => Promise<{
     workspace: WorkspaceDescriptor;
     suggestedFirstFile?: WorkspaceFile;
@@ -130,6 +133,7 @@ export interface WorkspacesContextType {
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   push(args: {
@@ -144,6 +148,8 @@ export interface WorkspacesContextType {
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    gitConfig?: { email: string; name: string };
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
@@ -184,6 +190,7 @@ export interface WorkspacesContextType {
       name: string;
     };
     commitMessage: string;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   createSavePoint(args: {
@@ -194,6 +201,7 @@ export interface WorkspacesContextType {
     };
     commitMessage?: string;
     forceHasChanges?: boolean;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   stageFile: (args: { workspaceId: string; relativePath: string }) => Promise<void>;

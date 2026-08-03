@@ -28,6 +28,9 @@ import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { FsSchema } from "../services/FsCache";
 import { FileModificationStatus, UnstagedModifiedFilesStatusEntryType } from "../services/GitService";
+import { SigningArgs } from "../commitSigner/SigningArgs";
+import { CommitHistorySigner } from "../commitSigner/CommitHistorySigner";
+import { CommitSigner, SigningKeyConfig } from "../commitSigner/CommitSignerApi";
 import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { StorageFile } from "../services/StorageService";
 import { GitServerRef } from "./api/GitServerRef";
@@ -71,8 +74,14 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       appName: string;
       fileFilter: FileFilter;
       services: WorkspaceServices;
+      commitSigner?: CommitSigner;
     }
   ) {}
+
+  private buildSigningArgs(config?: SigningKeyConfig): SigningArgs | undefined {
+    const signer = this.args.commitSigner;
+    return signer && config ? { signer, config } : undefined;
+  }
 
   public async kieSandboxWorkspacesGit_changeGitAuthSessionId(args: {
     workspaceId: string;
@@ -601,6 +610,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     gitConfig?: { email: string; name: string };
     commitMessage: string;
     targetBranch: string;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void> {
     const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
 
@@ -614,6 +624,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
           email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
         },
+        signing: this.buildSigningArgs(args.signingConfig),
       });
     });
   }
@@ -622,6 +633,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
     commitMessage?: string;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void> {
     const descriptor = await this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.get(fs, args.workspaceId);
@@ -665,6 +677,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
             name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
             email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
           },
+          signing: this.buildSigningArgs(args.signingConfig),
         });
 
         broadcaster.broadcast({
@@ -704,6 +717,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     gitConfig?: { email: string; name: string };
     gitInsecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    signingConfig?: SigningKeyConfig;
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
     return this.createWorkspace({
       preferredName: args.preferredName,
@@ -775,6 +789,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
             name: args.gitConfig?.name ?? this.GIT_DEFAULT_USER.name,
             email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
           },
+          signing: this.buildSigningArgs(args.signingConfig),
         });
 
         return this.args.services.workspaceService.getFilteredWorkspaceFileDescriptors(schema, workspace.workspaceId);
@@ -788,6 +803,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     authInfo?: { username: string; password: string };
     insecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void> {
     const workspace = await this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.get(fs, args.workspaceId);
@@ -807,6 +823,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           authInfo: args.authInfo,
           insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
           disableEncoding: args.disableEncoding,
+          signing: this.buildSigningArgs(args.signingConfig),
         });
 
         broadcaster.broadcast({
@@ -832,13 +849,31 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    gitConfig?: { email: string; name: string };
+    signingConfig?: SigningKeyConfig;
   }): Promise<void> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
       async ({ fs, broadcaster }) => {
+        const dir = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+
+        const signing = this.buildSigningArgs(args.signingConfig);
+        if (signing && args.gitConfig) {
+          const until = await this.args.services.gitService
+            .resolveRef({ fs, dir, ref: `refs/remotes/${args.remote}/${args.ref}` })
+            .catch(() => undefined);
+
+          await new CommitHistorySigner({ fs, dir }).signUnpushed({
+            ref: args.ref,
+            author: args.gitConfig,
+            signing,
+            until,
+          });
+        }
+
         return this.args.services.gitService.push({
           fs: fs,
-          dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          dir,
           ...args,
         });
       }
