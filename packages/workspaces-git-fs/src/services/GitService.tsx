@@ -21,6 +21,7 @@ import git, { FetchResult, STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { SigningArgs, buildSignOptions } from "../commitSigner/SigningArgs";
 import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 
 export interface CloneArgs {
@@ -49,6 +50,7 @@ export interface CommitArgs {
     name: string;
     email: string;
   };
+  signing?: SigningArgs;
 }
 
 export interface PushArgs {
@@ -243,6 +245,7 @@ export class GitService {
         email: args.author.email,
       },
       ref: args.targetBranch,
+      ...buildSignOptions(args.signing),
     });
 
     await git.writeRef({
@@ -268,6 +271,7 @@ export class GitService {
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    signing?: SigningArgs;
   }) {
     await git.pull({
       fs: args.fs,
@@ -279,6 +283,7 @@ export class GitService {
       singleBranch: true,
       author: args.author,
       onAuth: () => args.authInfo,
+      ...buildSignOptions(args.signing),
     });
   }
 
