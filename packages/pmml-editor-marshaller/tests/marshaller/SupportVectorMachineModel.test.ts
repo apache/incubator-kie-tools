@@ -21,8 +21,8 @@ import { DataDictionary, Model, PMML, SupportVectorMachineModel, XML2PMML } from
 import { SUPPORT_VECTOR_MACHINE_MODEL_1 } from "./TestData_SupportVectorMachineModel";
 
 describe("SupportVectorMachineModel tests", () => {
-  test("SupportVectorMachineModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(SUPPORT_VECTOR_MACHINE_MODEL_1);
+  test("SupportVectorMachineModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(SUPPORT_VECTOR_MACHINE_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

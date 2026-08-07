@@ -21,8 +21,8 @@ import { DataDictionary, GaussianProcessModel, Model, PMML, XML2PMML } from "@ki
 import { GAUSSIAN_PROCESS_MODEL_1 } from "./TestData_GaussianProcessModel";
 
 describe("GaussianProcessModel tests", () => {
-  test("GaussianProcessModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(GAUSSIAN_PROCESS_MODEL_1);
+  test("GaussianProcessModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(GAUSSIAN_PROCESS_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

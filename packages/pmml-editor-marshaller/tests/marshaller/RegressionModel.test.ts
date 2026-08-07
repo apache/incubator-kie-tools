@@ -36,8 +36,8 @@ import {
 } from "./TestData_LinearRegressions";
 
 describe("RegressionModel tests", () => {
-  test("RegressionModel::DataDictionary", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
+  test("RegressionModel::DataDictionary", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
 
     expect(pmml).not.toBeNull();
 
@@ -60,8 +60,8 @@ describe("RegressionModel tests", () => {
     expect(dataDictionary.DataField[3].optype).toBe("continuous");
   });
 
-  test("RegressionModel::Models", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
+  test("RegressionModel::Models", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
 
     expect(pmml).not.toBeNull();
 
@@ -81,8 +81,8 @@ describe("RegressionModel tests", () => {
     expect(regressionModel.isScorable).toBeUndefined();
   });
 
-  test("RegressionModel::MiningSchema", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
+  test("RegressionModel::MiningSchema", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
     const models: Model[] = pmml.models ?? [];
     const regressionModel: RegressionModel = models[0] as RegressionModel;
 
@@ -105,16 +105,16 @@ describe("RegressionModel tests", () => {
     expect(miningFields[3].invalidValueTreatment).toBeUndefined();
   });
 
-  test("RegressionModel::Output", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
+  test("RegressionModel::Output", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
     const models: Model[] = pmml.models ?? [];
     const regressionModel: RegressionModel = models[0] as RegressionModel;
 
     expect(regressionModel.Output?.OutputField.length).toBe(0);
   });
 
-  test("RegressionModel::RegressionTable", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
+  test("RegressionModel::RegressionTable", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
     const models: Model[] = pmml.models ?? [];
     const regressionModel: RegressionModel = models[0] as RegressionModel;
 
@@ -125,8 +125,8 @@ describe("RegressionModel tests", () => {
     expect(regressionTable.intercept).toBe(132.37);
   });
 
-  test("RegressionModel::RegressionTable::NumericPredictor", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
+  test("RegressionModel::RegressionTable::NumericPredictor", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
     const models: Model[] = pmml.models ?? [];
     const regressionModel: RegressionModel = models[0] as RegressionModel;
     const regressionTable: RegressionTable = regressionModel.RegressionTable[0];
@@ -143,8 +143,8 @@ describe("RegressionModel tests", () => {
     expect(numericPredictor.exponent).toBe(1);
   });
 
-  test("RegressionModel::RegressionTable::CategoricalPredictor", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
+  test("RegressionModel::RegressionTable::CategoricalPredictor", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
     const models: Model[] = pmml.models ?? [];
     const regressionModel: RegressionModel = models[0] as RegressionModel;
     const regressionTable: RegressionTable = regressionModel.RegressionTable[0];
@@ -171,30 +171,30 @@ describe("RegressionModel tests", () => {
     expect(categoricalPredicator2.value).toBe("garage");
   });
 
-  test("RegressionModel::RoundTrip1", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_1);
-    const xml: string = PMML2XML(pmml);
+  test("RegressionModel::RoundTrip1", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_1);
+    const xml: string = await PMML2XML(pmml);
     expect(xml).not.toBeNull();
 
-    const pmml2: PMML = XML2PMML(xml);
+    const pmml2: PMML = await XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
   });
 
-  test("RegressionModel::RoundTrip2", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_2);
-    const xml: string = PMML2XML(pmml);
+  test("RegressionModel::RoundTrip2", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_2);
+    const xml: string = await PMML2XML(pmml);
     expect(xml).not.toBeNull();
 
-    const pmml2: PMML = XML2PMML(xml);
+    const pmml2: PMML = await XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
   });
 
-  test("RegressionModel::RoundTrip3", () => {
-    const pmml: PMML = XML2PMML(LINEAR_REGRESSION_MODEL_3);
-    const xml: string = PMML2XML(pmml);
+  test("RegressionModel::RoundTrip3", async () => {
+    const pmml: PMML = await XML2PMML(LINEAR_REGRESSION_MODEL_3);
+    const xml: string = await PMML2XML(pmml);
     expect(xml).not.toBeNull();
 
-    const pmml2: PMML = XML2PMML(xml);
+    const pmml2: PMML = await XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
   });
 });

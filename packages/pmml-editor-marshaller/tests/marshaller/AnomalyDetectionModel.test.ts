@@ -21,8 +21,8 @@ import { AnomalyDetectionModel, DataDictionary, Model, PMML, XML2PMML } from "@k
 import { ANOMALY_DETECTION_MODEL_1 } from "./TestData_AnomalyDetectionModel";
 
 describe("AnomalyDetectionModel tests", () => {
-  test("AnomalyDetectionModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(ANOMALY_DETECTION_MODEL_1);
+  test("AnomalyDetectionModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(ANOMALY_DETECTION_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

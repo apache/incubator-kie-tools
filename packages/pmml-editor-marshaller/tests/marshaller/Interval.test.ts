@@ -20,8 +20,8 @@
 import { DataDictionary, DataField, Interval, PMML, PMML2XML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 
 describe("Interval tests", () => {
-  test("Empty collection on DataField", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Empty collection on DataField", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -36,13 +36,13 @@ describe("Interval tests", () => {
     expect(dataDictionary.DataField[0].Interval).not.toBeUndefined();
     expect(dataDictionary.DataField[0].Interval?.length).toBe(0);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
   });
 
-  test("Add Interval", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Add Interval", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -57,13 +57,13 @@ describe("Interval tests", () => {
 
     dataField.Interval?.push(interval);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Interval closure="openOpen" leftMargin="0" rightMargin="100"/>`);
   });
 
-  test("Add Interval::No leftMargin", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Add Interval::No leftMargin", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -78,13 +78,13 @@ describe("Interval tests", () => {
 
     dataField.Interval?.push(interval);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Interval closure="openOpen" rightMargin="100"/>`);
   });
 
-  test("Add Interval::No rightMargin", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Add Interval::No rightMargin", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -99,13 +99,13 @@ describe("Interval tests", () => {
 
     dataField.Interval?.push(interval);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Interval closure="openOpen" leftMargin="10"/>`);
   });
 
-  test("Update Interval", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Update Interval", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string">
@@ -131,13 +131,13 @@ describe("Interval tests", () => {
     interval.leftMargin = 25;
     interval.rightMargin = 500;
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Interval closure="closedClosed" leftMargin="25" rightMargin="500"/>`);
   });
 
-  test("Delete Interval", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Delete Interval", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string">
@@ -159,7 +159,7 @@ describe("Interval tests", () => {
 
     intervals.splice(0, 1);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
   });

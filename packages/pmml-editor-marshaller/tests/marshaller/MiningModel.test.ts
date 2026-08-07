@@ -21,8 +21,8 @@ import { DataDictionary, MiningModel, Model, PMML, XML2PMML } from "@kie-tools/p
 import { MINING_MODEL_1 } from "./TestData_MiningModel";
 
 describe("MiningModel tests", () => {
-  test("MiningModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(MINING_MODEL_1);
+  test("MiningModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(MINING_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

@@ -21,8 +21,8 @@ import { DataDictionary, Model, PMML, TextModel, XML2PMML } from "@kie-tools/pmm
 import { TEXT_MODEL_1 } from "./TestData_TextModel";
 
 describe("TextModel tests", () => {
-  test("TextModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(TEXT_MODEL_1);
+  test("TextModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(TEXT_MODEL_1);
 
     expect(pmml).not.toBeNull();
 
