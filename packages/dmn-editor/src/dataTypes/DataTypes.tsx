@@ -217,7 +217,6 @@ export function DataTypes() {
           <ImportJavaClassesDropdownItem
             javaCodeCompletionService={javaCodeCompletionService}
             onClick={handleImportJavaClassButtonClick}
-            className="pf-m-icon pf-v5-c-dropdown__menu-item"
           />
         </ImportJavaClassesI18nDictionariesProvider>
       );
