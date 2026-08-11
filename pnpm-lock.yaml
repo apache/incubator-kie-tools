@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@apidevtools/json-schema-ref-parser': ^15.3.6
+  '@apidevtools/swagger-parser>@apidevtools/json-schema-ref-parser': ^15.3.6
   '@istanbuljs/load-nyc-config>js-yaml': ^3.15.0
   cross-spawn: ^7.0.6
   d3-color: 3.1.0

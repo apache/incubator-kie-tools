@@ -4,8 +4,7 @@ packages:
   - "scripts/*"
 overrides:
   # CVE-2026-15195: Prototype pollution in Pointer.set. Fixed in 15.3.6.
-  # No version selector, so it also covers the 11.7.2 that swagger-parser requires exactly.
-  "@apidevtools/json-schema-ref-parser": "^15.3.6"
+  "@apidevtools/swagger-parser>@apidevtools/json-schema-ref-parser": "^15.3.6"
   # GHSA-h67p-54hq-rp68: js-yaml 3.x prototype-pollution/ReDoS — upgrade transitive consumers to patched 3.15.0
   "@istanbuljs/load-nyc-config>js-yaml": "^3.15.0"
   "cross-spawn": "^7.0.6"
