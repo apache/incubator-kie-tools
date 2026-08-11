@@ -26,13 +26,6 @@ import { BrowserRouter } from "react-router-dom";
 
 const PATH: string = "path";
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
-}));
-
 describe("LandingPage", () => {
   test("render::No Models", () => {
     const pmml: PMML = { version: "1.0", DataDictionary: { DataField: [] }, Header: {} };
