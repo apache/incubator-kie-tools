@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { LandingPage } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/templates";
 import { Provider } from "react-redux";
@@ -25,13 +25,6 @@ import { PMML, Scorecard, TreeModel } from "@kie-tools/pmml-editor-marshaller";
 import { BrowserRouter } from "react-router";
 
 const PATH: string = "path";
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
-}));
 
 describe("LandingPage", () => {
   test("render::No Models", () => {
