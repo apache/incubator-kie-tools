@@ -30,7 +30,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { AuthSessionStatus, getAuthSessionDisplayInfo } from "../AuthSessionApi";
 import { useRoutes } from "../../navigation/Hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export type AuthSessionSelectProps = {
   isPlain: boolean;

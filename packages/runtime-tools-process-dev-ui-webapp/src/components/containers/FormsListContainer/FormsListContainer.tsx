@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { EmbeddedFormsList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/formsList";

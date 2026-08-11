@@ -31,7 +31,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 export interface IOwnProps {

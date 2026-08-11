@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {

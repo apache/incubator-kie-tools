@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import ProcessListContainer from "../../containers/ProcessListContainer/ProcessListContainer";
 import "../../styles.css";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";

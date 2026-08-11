@@ -23,7 +23,7 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { EmptyState, EmptyStateBody, EmptyStateFooter } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useRoutes } from "./navigation/Hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyStateActions } from "@patternfly/react-core/dist/js/components/EmptyState";
 

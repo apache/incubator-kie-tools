@@ -26,7 +26,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useRoutes } from "../navigation/Hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";

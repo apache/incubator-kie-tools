@@ -35,7 +35,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { useEnv } from "../env/hooks/EnvContext";
 import { AuthSession, AuthSessionsList, isOpenIdConnectAuthSession } from "../authSessions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";

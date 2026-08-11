@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
 import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 
 interface LandingPageProps {

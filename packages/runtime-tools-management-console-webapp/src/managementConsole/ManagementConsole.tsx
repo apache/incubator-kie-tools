@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 import { AuthSessionsContextProvider } from "../authSessions/AuthSessionsContext";
 import { ManagementConsoleRoutes } from "./ManagementConsoleRoutes";
 import { EnvContextProvider } from "../env/hooks/EnvContextProvider";

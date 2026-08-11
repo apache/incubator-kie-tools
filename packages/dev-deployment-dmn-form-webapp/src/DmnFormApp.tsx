@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
-import { HashRouter, Navigate, Route, Routes, useParams } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes, useParams } from "react-router";
 import { AppContext, AppContextType } from "./AppContext";
 import { AppContextProvider } from "./AppContextProvider";
 import { DmnFormErrorPage } from "./DmnFormErrorPage";

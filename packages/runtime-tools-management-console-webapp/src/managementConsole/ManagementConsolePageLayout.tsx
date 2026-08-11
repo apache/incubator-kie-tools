@@ -22,7 +22,7 @@ import { Page, PageSection, PageSidebar, PageSidebarBody } from "@patternfly/rea
 import { PageHeader, PageHeaderTools } from "@patternfly/react-core/deprecated";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ManagementConsoleToolbar } from "./ManagementConsoleToolbar";
 import { AboutButton } from "../aboutModal/AboutButton";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";

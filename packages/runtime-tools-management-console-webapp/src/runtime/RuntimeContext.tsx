@@ -28,7 +28,7 @@ import {
   isUnauthenticatedAuthSession,
   OpenIDConnectAuthSession,
 } from "../authSessions/AuthSessionApi";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import ApolloClient from "apollo-client";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";

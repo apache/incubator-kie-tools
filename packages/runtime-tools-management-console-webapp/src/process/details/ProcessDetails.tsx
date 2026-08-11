@@ -37,7 +37,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 interface Props {
   processInstanceId: string;

@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { EmbeddedTaskList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 import {
@@ -29,7 +29,7 @@ import { TaskListState } from "@kie-tools/runtime-tools-process-enveloped-compon
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 
 interface Props {

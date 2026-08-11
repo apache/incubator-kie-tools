@@ -23,7 +23,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardFooter, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
