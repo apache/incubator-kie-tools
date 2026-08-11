@@ -19,8 +19,15 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { createHashRouter, createRoutesFromElements, Navigate, Outlet, Route, useParams } from "react-router";
-import { RouterProvider } from "react-router/dom";
+import {
+  createHashRouter,
+  RouterProvider,
+  createRoutesFromElements,
+  Navigate,
+  Outlet,
+  Route,
+  useParams,
+} from "react-router";
 import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
