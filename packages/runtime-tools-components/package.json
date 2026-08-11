@@ -24,7 +24,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^13.0.5",
+    "@apidevtools/json-schema-ref-parser": "^15.3.6",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",

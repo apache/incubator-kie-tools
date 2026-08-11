@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@apidevtools/json-schema-ref-parser>js-yaml': ^3.15.0
+  '@apidevtools/swagger-parser>@apidevtools/json-schema-ref-parser': ^15.3.6
   '@istanbuljs/load-nyc-config>js-yaml': ^3.15.0
   cross-spawn: ^7.0.6
   d3-color: 3.1.0
@@ -6397,8 +6397,8 @@ importers:
   packages/runtime-tools-components:
     dependencies:
       '@apidevtools/json-schema-ref-parser':
-        specifier: ^13.0.5
-        version: 13.0.5
+        specifier: ^15.3.6
+        version: 15.5.1(@types/json-schema@7.0.15)
       '@kie-tools-core/editor':
         specifier: workspace:*
         version: link:../editor
@@ -6785,7 +6785,7 @@ importers:
     dependencies:
       '@apidevtools/swagger-parser':
         specifier: ^10.1.0
-        version: 10.1.1(openapi-types@7.2.3)
+        version: 10.1.1(@types/json-schema@7.0.15)(openapi-types@7.2.3)
       '@babel/standalone':
         specifier: 7.15.3
         version: 7.15.3
@@ -7177,7 +7177,7 @@ importers:
     dependencies:
       '@apidevtools/swagger-parser':
         specifier: ^10.1.0
-        version: 10.1.1(openapi-types@7.2.3)
+        version: 10.1.1(@types/json-schema@7.0.15)(openapi-types@7.2.3)
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api
@@ -9324,13 +9324,11 @@ packages:
       '@angular/animations':
         optional: true
 
-  '@apidevtools/json-schema-ref-parser@11.7.2':
-    resolution: {integrity: sha512-4gY54eEGEstClvEkGnwVkTkrx0sqwemEFG5OSRRn3tD91XH0+Q8XIkYIfo7IwEWPpJZwILb9GUXeShtplRc/eA==}
-    engines: {node: '>= 16'}
-
-  '@apidevtools/json-schema-ref-parser@13.0.5':
-    resolution: {integrity: sha512-xfh4xVJD62gG6spIc7lwxoWT+l16nZu1ELyU8FkjaP/oD2yP09EvLAU6KhtudN9aML2Khhs9pY6Slr7KGTES3w==}
-    engines: {node: '>= 16'}
+  '@apidevtools/json-schema-ref-parser@15.5.1':
+    resolution: {integrity: sha512-69KDKWQvk5jfDQfSTzAUHkI731X7CaJLwQxlS87AXyFHoJzsd/Pufrqsz7PqXMgrtAA99D9Y6NujkEkzli6kVA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@types/json-schema': ^7.0.15
 
   '@apidevtools/openapi-schemas@2.1.0':
     resolution: {integrity: sha512-Zc1AlqrJlX3SlpupFGpiLi2EbteyP7fXmUOGup6/DnkRgjP9bgMM/ag+n91rsv0U1Gpz0H3VILA/o3bW7Ua6BQ==}
@@ -18557,6 +18555,10 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
+  js-yaml@5.2.3:
+    resolution: {integrity: sha512-n+mUVyUX5bVv7G/G2zyIHOhdxfuU1dY2NOFzTQUWiMUbFss8b57NFlgCCaggU78wSw5KVS9cllzeLyzyR+n5nw==}
+    hasBin: true
+
   jsbn@0.1.1:
     resolution: {integrity: sha512-UVU9dibq2JcFWxQPA6KCqj5O42VOmAY3zQUfEKxU0KpTGXwNoCjkX1e13eHNvw/xPynt6pU0rZ1htjWTNTSXsg==}
 
@@ -24216,24 +24218,19 @@ snapshots:
       '@angular/core': 20.3.27(@angular/compiler@20.3.27)(rxjs@7.8.2)(zone.js@0.14.10)
       tslib: 2.8.1
 
-  '@apidevtools/json-schema-ref-parser@11.7.2':
-    dependencies:
-      '@jsdevtools/ono': 7.1.3
-      '@types/json-schema': 7.0.15
-      js-yaml: 3.15.0
-
-  '@apidevtools/json-schema-ref-parser@13.0.5':
+  '@apidevtools/json-schema-ref-parser@15.5.1(@types/json-schema@7.0.15)':
     dependencies:
       '@types/json-schema': 7.0.15
-      js-yaml: 3.15.0
+      js-yaml: 5.2.3
+      undici: 6.28.0
 
   '@apidevtools/openapi-schemas@2.1.0': {}
 
   '@apidevtools/swagger-methods@3.0.2': {}
 
-  '@apidevtools/swagger-parser@10.1.1(openapi-types@7.2.3)':
+  '@apidevtools/swagger-parser@10.1.1(@types/json-schema@7.0.15)(openapi-types@7.2.3)':
     dependencies:
-      '@apidevtools/json-schema-ref-parser': 11.7.2
+      '@apidevtools/json-schema-ref-parser': 15.5.1(@types/json-schema@7.0.15)
       '@apidevtools/openapi-schemas': 2.1.0
       '@apidevtools/swagger-methods': 3.0.2
       '@jsdevtools/ono': 7.1.3
@@ -24241,6 +24238,8 @@ snapshots:
       ajv-draft-04: 1.0.0(ajv@8.20.0)
       call-me-maybe: 1.0.2
       openapi-types: 7.2.3
+    transitivePeerDependencies:
+      - '@types/json-schema'
 
   '@apollo/protobufjs@1.2.6':
     dependencies:
@@ -26591,7 +26590,7 @@ snapshots:
       camelcase: 5.3.1
       find-up: 4.1.0
       get-package-type: 0.1.0
-      js-yaml: 3.15.0
+      js-yaml: 3.15.1
       resolve-from: 5.0.0
 
   '@istanbuljs/schema@0.1.6': {}
@@ -36788,6 +36787,10 @@ snapshots:
       esprima: 4.0.1
 
   js-yaml@4.3.0:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@5.2.3:
     dependencies:
       argparse: 2.0.1
 
