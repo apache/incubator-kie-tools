@@ -20,7 +20,7 @@ import React, { useEffect } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Jobs } from "./Jobs";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";

@@ -31,7 +31,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import UserTagIcon from "@patternfly/react-icons/dist/esm/icons/user-tag-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { AuthSessionType, getAuthSessionDisplayInfo, useAuthSessions } from "../../authSessions";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParams } from "../../navigation/queryParams/QueryParamsContext";

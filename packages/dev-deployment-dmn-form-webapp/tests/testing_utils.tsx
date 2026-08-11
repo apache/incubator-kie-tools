@@ -21,7 +21,7 @@ import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-to
 import React from "react";
 import { AppContext, AppContextType } from "../src/AppContext";
 import { DmnFormI18n, DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "../src/i18n";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 
 export function usingTestingDmnFormI18nContext(
   children: React.ReactElement,

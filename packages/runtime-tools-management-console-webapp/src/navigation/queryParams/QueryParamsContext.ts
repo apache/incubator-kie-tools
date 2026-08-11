@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { useMemo } from "react";
 import { newQueryParamsImpl, QueryParamsImpl } from "../Routes";
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router";
 import { JobsManagementPage, ProcessesPage } from "../../pages";
 import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
 import TaskListPage from "../../pages/TaskListPage/TaskListPage";

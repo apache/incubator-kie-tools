@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useBlocker, Location } from "react-router-dom";
+import { useBlocker, Location } from "react-router";
 
 export type BlockerDelegate = (args: { location: Location }) => boolean;
 

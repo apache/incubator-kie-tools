@@ -26,7 +26,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { extname } from "path";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { matchPath } from "react-router-dom";
+import { matchPath } from "react-router";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession, AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";

@@ -20,7 +20,7 @@ import React, { useCallback, useEffect } from "react";
 import { ProcessDetails } from "./ProcessDetails";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
 import { AuthSession, useAuthSessionsDispatch } from "../../authSessions";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useRoutes } from "../../navigation/Hooks";

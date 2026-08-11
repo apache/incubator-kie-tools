@@ -24,7 +24,7 @@ import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Te
 import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDetailsContainer";
 import "../../styles.css";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import Moment from "react-moment";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";

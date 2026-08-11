@@ -692,7 +692,7 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rimraf:
@@ -2400,7 +2400,7 @@ importers:
       react-dom:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1(react@18.3.1)
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
@@ -5781,7 +5781,7 @@ importers:
       react-dropzone:
         specifier: ^11.4.2
         version: 11.7.1(react@18.3.1)
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-virtualized-auto-sizer:
@@ -6071,7 +6071,7 @@ importers:
       react-redux:
         specifier: ^9.1.2
         version: 9.3.0(@types/react@18.3.31)(react@18.3.1)(redux@4.2.1)
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-sortable-hoc:
@@ -6459,7 +6459,7 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       uniforms:
@@ -6605,7 +6605,7 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
@@ -6867,7 +6867,7 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       util:
@@ -7375,7 +7375,7 @@ importers:
       react:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1
-      react-router-dom:
+      react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
@@ -21125,13 +21125,6 @@ packages:
     peerDependencies:
       react: '>= 16.3'
       react-dom: '>= 16.3'
-
-  react-router-dom@7.18.2:
-    resolution: {integrity: sha512-AIKJ/jgGlFb3EbfCXk5Gzshiwt+l3mqbCrNjmEWMMjqQxNJ3svBa6bgzFyCC2Sw3RA0VWF1kg3uQf2OFhxb8hw==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
 
   react-router@7.18.2:
     resolution: {integrity: sha512-aUVMjFm3GAPTTZL7oYr5E7ETiqfQCHRLH+B+5afnICvf0r7kkK4eR6SMuwbSTJw/7t+12khT/Kahij49fqOCIg==}
@@ -39756,12 +39749,6 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-draggable: 4.7.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-
-  react-router-dom@7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-router: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   react-router@7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:

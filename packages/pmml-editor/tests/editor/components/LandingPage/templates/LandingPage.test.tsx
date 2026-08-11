@@ -22,7 +22,7 @@ import { LandingPage } from "@kie-tools/pmml-editor/dist/editor/components/Landi
 import { Provider } from "react-redux";
 import { createStore, Store } from "redux";
 import { PMML, Scorecard, TreeModel } from "@kie-tools/pmml-editor-marshaller";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 
 const PATH: string = "path";
 

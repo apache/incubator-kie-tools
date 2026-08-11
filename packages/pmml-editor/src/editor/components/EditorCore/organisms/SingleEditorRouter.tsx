@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { ScorecardEditorPage } from "../../EditorScorecard/templates";
 import { getModelType, isSupportedModelType } from "../../..";
 import { Model, PMML } from "@kie-tools/pmml-editor-marshaller";

@@ -18,7 +18,7 @@
  */
 import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router";
 import { useRuntimeSpecificRoutes } from "./RuntimeContext";
 
 export const RuntimeNav: React.FC = () => {
