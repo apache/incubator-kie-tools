@@ -2207,7 +2207,7 @@ importers:
         specifier: ^2.8.5
         version: 2.8.6
       express:
-        specifier: ^4.22.1
+        specifier: ^4.22.2
         version: 4.22.2
       https-proxy-agent:
         specifier: ^7.0.6
@@ -6700,7 +6700,7 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1(webpack@5.108.4)
       express:
-        specifier: ^4.22.1
+        specifier: ^4.22.2
         version: 4.22.2
       file-loader:
         specifier: ^6.2.0

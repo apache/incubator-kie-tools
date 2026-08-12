@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.22.1",
+    "express": "^4.22.2",
     "https-proxy-agent": "^7.0.6",
     "minimatch": "^4.2.5",
     "node-fetch": "^3.3.2"
