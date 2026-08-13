@@ -40,6 +40,17 @@ export type Task = Normalized<
   >
 >;
 
+export function addOrGetIoSpecification(e: WithDataMapping): NonNullable<WithDataMapping["ioSpecification"]> {
+  e.ioSpecification ??= {
+    "@_id": generateUuid(),
+    inputSet: [{ "@_id": generateUuid(), dataInputRefs: [] }],
+    outputSet: [{ "@_id": generateUuid(), dataOutputRefs: [] }],
+    dataInput: [],
+    dataOutput: [],
+  };
+  return e.ioSpecification;
+}
+
 export type UserTaskReservedDataMappingInputNames =
   | typeof USER_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS_FOR_DMN_BINDING.TASK_NAME
   | typeof USER_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS_FOR_DMN_BINDING.SKIPPABLE
