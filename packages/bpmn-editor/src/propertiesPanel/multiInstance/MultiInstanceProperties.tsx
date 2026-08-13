@@ -44,8 +44,8 @@ import {
   MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS,
   updateDataMappingWithVariableRef,
   setOutputDataMapping,
-  addOrGetIoSpecification,
 } from "../../mutations/_dataMapping";
+import { addOrGetIoSpecification } from "../../mutations/addOrGetIoSpecification";
 import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "../../mutations/addOrGetItemDefinitions";
 import { useBpmnEditorI18n } from "../../i18n";
 
