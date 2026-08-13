@@ -97,7 +97,7 @@ export type EditItemDefinition = (
 ) => void;
 
 export function DataTypes() {
-  const { i18n } = useDmnEditorI18n();
+  const { i18n, locale } = useDmnEditorI18n();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
@@ -213,7 +213,7 @@ export function DataTypes() {
     ];
     if (isImportDataTypesFromJavaClassesSupported && javaCodeCompletionService) {
       dropdownItems.unshift(
-        <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
+        <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"} locale={locale}>
           <ImportJavaClassesDropdownItem
             javaCodeCompletionService={javaCodeCompletionService}
             onClick={handleImportJavaClassButtonClick}
@@ -228,6 +228,7 @@ export function DataTypes() {
     handleImportJavaClassButtonClick,
     pasteTopLevelItemDefinition,
     i18n.dataTypes.paste,
+    locale,
   ]);
 
   return (
@@ -359,7 +360,7 @@ export function DataTypes() {
                 />
               )}
               {isOpenImportJavaClassesWizard && javaCodeCompletionService && (
-                <ImportJavaClassesI18nDictionariesProvider>
+                <ImportJavaClassesI18nDictionariesProvider locale={locale}>
                   <ImportJavaClassesWizard
                     javaCodeCompletionService={javaCodeCompletionService}
                     isOpen={isOpenImportJavaClassesWizard}
