@@ -153,12 +153,17 @@ test.describe("Change Properties - Ad-Hoc Sub-Process", () => {
 });
 
 test.describe("Change Properties - Call Activity Multi-Instance", () => {
-  test.beforeEach(async ({ palette, nodes }) => {
+  test.beforeEach(async ({ palette, nodes, subProcessPropertiesPanel }) => {
     await palette.addProcessVariable({ name: "varlist", dataType: "Object" });
 
     await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 200, y: 200 } });
 
     await expect(nodes.get({ name: DefaultNodeName.CALL_ACTIVITY })).toBeAttached();
+
+    await subProcessPropertiesPanel
+      .panel()
+      .getByRole("checkbox", { name: /multi-instance/i })
+      .click();
   });
 
   test("should assign a collection variable to a multi-instance call activity with no prior ioSpecification", async ({
