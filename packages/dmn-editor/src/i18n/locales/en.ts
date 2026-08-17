@@ -338,6 +338,12 @@ export const en: DmnEditorI18n = {
     unknownNodePlaceholder: "This is a placeholder for an unknown node",
     expressionLangPlaceholder: "Enter an expression language...",
     inputHeaderType: "Input header type",
+    informationRequirement: "Information Requirement",
+    knowledgeRequirement: "Knowledge Requirement",
+    authorityRequirement: "Authority Requirement",
+    association: "Association",
+    edge: "Edge",
+    edgeNotFound: (edgeId: string) => `Edge not found: ${edgeId}`,
   },
   boxedExpressionPropertiesPanelTitle: {
     boxedConditional: "Boxed Conditional",
