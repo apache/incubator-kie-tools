@@ -24,6 +24,8 @@ import * as vscode from "vscode";
 import { LanguageClient, LanguageClientOptions, ServerOptions, StreamInfo } from "vscode-languageclient/node";
 import * as net from "net";
 
+import { attachToClient, enumerateWorkspaceFiles, groupingSetting, registerFileGrouping } from "./fileGrouping";
+
 let languageClient: LanguageClient | undefined;
 
 const DEBUG_MODE = process.env.LSDEBUG === "true";
@@ -40,7 +42,7 @@ const log = {
   },
 };
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   channel = vscode.window.createOutputChannel("DRL Language Server");
   context.subscriptions.push(channel);
 
@@ -166,9 +168,23 @@ export function activate(context: vscode.ExtensionContext) {
         fileEvents: vscode.workspace.createFileSystemWatcher("**/target/classes/**/*.class"),
       },
       outputChannel: channel,
+      // Sent with `initialize`, so the server has both the grouping and the file
+      // list before its first scan rather than having to be told afterwards.
+      // Enumerating here means the user's own exclude settings and ignore files
+      // decide what the server sees, instead of a hardcoded skip-list.
+      initializationOptions: {
+        grouping: groupingSetting(),
+        workspaceFiles: await enumerateWorkspaceFiles(),
+      },
     };
     languageClient = new LanguageClient("Drools", "DRL Language Server", serverOptions, clientOptions);
-    languageClient.start();
+    registerFileGrouping(context, () => languageClient, log);
+
+    const startedClient = languageClient;
+    startedClient
+      .start()
+      .then(() => attachToClient(startedClient))
+      .catch((e) => log.error("Failed to start the DRL language client: " + String(e)));
 
     log.info("DRL Language Server activated.");
   }
