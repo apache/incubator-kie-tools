@@ -20,6 +20,7 @@
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
+import { EDGE_TITLE } from "../__fixtures__/propertiesPanel/edgePropertiesPanel";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -45,7 +46,7 @@ test.describe("Edge Properties Panel", () => {
       await edgePropertiesPanel.open();
 
       const title = await edgePropertiesPanel.getTitle();
-      expect(title?.trim()).toBe("Information Requirement");
+      expect(title?.trim()).toBe(EDGE_TITLE[EdgeType.INFORMATION_REQUIREMENT]);
     });
 
     test("should show the edge ID in the properties panel", async ({ edges, edgePropertiesPanel }) => {
@@ -55,6 +56,14 @@ test.describe("Edge Properties Panel", () => {
       const id = await edgePropertiesPanel.getId();
       expect(id).toBeTruthy();
       expect(id).toMatch(/^_/);
+    });
+
+    test("should set and get the edge description", async ({ edges, edgePropertiesPanel }) => {
+      await edges.select({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION });
+      await edgePropertiesPanel.open();
+      await edgePropertiesPanel.setDescription({ newDescription: "Edge description" });
+
+      expect(await edgePropertiesPanel.getDescription()).toBe("Edge description");
     });
   });
 
@@ -77,7 +86,7 @@ test.describe("Edge Properties Panel", () => {
       await edgePropertiesPanel.open();
 
       const title = await edgePropertiesPanel.getTitle();
-      expect(title?.trim()).toBe("Knowledge Requirement");
+      expect(title?.trim()).toBe(EDGE_TITLE[EdgeType.KNOWLEDGE_REQUIREMENT]);
     });
 
     test("should show the edge ID in the properties panel", async ({ edges, edgePropertiesPanel }) => {
@@ -113,7 +122,7 @@ test.describe("Edge Properties Panel", () => {
       await edgePropertiesPanel.open();
 
       const title = await edgePropertiesPanel.getTitle();
-      expect(title?.trim()).toBe("Authority Requirement");
+      expect(title?.trim()).toBe(EDGE_TITLE[EdgeType.AUTHORITY_REQUIREMENT]);
     });
 
     test("should show the edge ID in the properties panel", async ({ edges, edgePropertiesPanel }) => {
@@ -145,7 +154,7 @@ test.describe("Edge Properties Panel", () => {
       await edgePropertiesPanel.open();
 
       const title = await edgePropertiesPanel.getTitle();
-      expect(title?.trim()).toBe("Association");
+      expect(title?.trim()).toBe(EDGE_TITLE[EdgeType.ASSOCIATION]);
     });
 
     test("should show the edge ID in the properties panel", async ({ edges, edgePropertiesPanel }) => {

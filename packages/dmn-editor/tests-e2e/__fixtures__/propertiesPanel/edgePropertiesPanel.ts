@@ -19,7 +19,15 @@
 
 import { Page } from "@playwright/test";
 import { Diagram } from "../diagram";
+import { EdgeType } from "../edges";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
+
+export const EDGE_TITLE: Record<EdgeType, string> = {
+  [EdgeType.INFORMATION_REQUIREMENT]: "Information Requirement",
+  [EdgeType.KNOWLEDGE_REQUIREMENT]: "Knowledge Requirement",
+  [EdgeType.AUTHORITY_REQUIREMENT]: "Authority Requirement",
+  [EdgeType.ASSOCIATION]: "Association",
+};
 
 export class EdgePropertiesPanel extends PropertiesPanelBase {
   constructor(
@@ -32,6 +40,17 @@ export class EdgePropertiesPanel extends PropertiesPanelBase {
   /** Returns the text content of the panel header title (e.g. "Information Requirement"). */
   public async getTitle() {
     return await this.panel().locator(".kie-dmn-editor--properties-panel-header-title").first().textContent();
+  }
+
+  /** Returns the current value of the Description textarea. */
+  public async getDescription() {
+    return await this.panel().getByLabel("Description").inputValue();
+  }
+
+  /** Sets the Description textarea to the given value. */
+  public async setDescription(args: { newDescription: string }) {
+    await this.panel().getByLabel("Description").fill(args.newDescription);
+    await this.panel().getByLabel("Description").press("Tab");
   }
 
   /** Returns the read-only edge ID shown in the ClipboardCopy field. */

@@ -22,9 +22,18 @@ import { useMemo, useState } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormSection, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import {
+  DMN_LATEST__tAssociation,
+  DMN_LATEST__tAuthorityRequirement,
+  DMN_LATEST__tInformationRequirement,
+  DMN_LATEST__tKnowledgeRequirement,
+} from "@kie-tools/dmn-marshaller";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useDmnEditorI18n } from "../i18n";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
@@ -43,10 +52,51 @@ export function SingleEdgeProperties({ edgeId }: { edgeId: string }) {
   const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
+  const settings = useSettings();
 
   const edge = useDmnEditorStore((s) =>
     s.computed(s).getDiagramData(externalModelsByNamespace).selectedEdgesById.get(edgeId)
   );
+
+  const description = useDmnEditorStore((s) => {
+    if (!edge?.data) {
+      return undefined;
+    }
+    const { requirementType, index, id: parentId } = edge.data.dmnObject;
+    const defs = s.dmn.model.definitions;
+
+    if (requirementType === "association") {
+      return (defs.artifact![index] as Normalized<DMN_LATEST__tAssociation>).description?.__$$text ?? "";
+    }
+
+    const parentIndex = (defs.drgElement ?? []).findIndex((e) => e["@_id"] === parentId);
+    if (parentIndex < 0) {
+      return "";
+    }
+    const parent = defs.drgElement![parentIndex];
+
+    if (requirementType === "informationRequirement") {
+      return (
+        (parent as { informationRequirement?: Normalized<DMN_LATEST__tInformationRequirement>[] })
+          .informationRequirement?.[index]?.description?.__$$text ?? ""
+      );
+    }
+    if (requirementType === "knowledgeRequirement") {
+      return (
+        (parent as { knowledgeRequirement?: Normalized<DMN_LATEST__tKnowledgeRequirement>[] }).knowledgeRequirement?.[
+          index
+        ]?.description?.__$$text ?? ""
+      );
+    }
+    if (requirementType === "authorityRequirement") {
+      return (
+        (parent as { authorityRequirement?: Normalized<DMN_LATEST__tAuthorityRequirement>[] }).authorityRequirement?.[
+          index
+        ]?.description?.__$$text ?? ""
+      );
+    }
+    return "";
+  });
 
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
 
@@ -156,6 +206,49 @@ export function SingleEdgeProperties({ edgeId }: { edgeId: string }) {
       >
         {isSectionExpanded && (
           <FormSection style={{ paddingLeft: "20px" }}>
+            <FormGroup label={i18n.propertiesPanel.description}>
+              <TextArea
+                aria-label={"Description"}
+                isDisabled={settings.isReadOnly}
+                value={description ?? ""}
+                onChange={(_event, newDescription) => {
+                  dmnEditorStoreApi.setState((state) => {
+                    const { requirementType, index, id: parentId } = edge.data!.dmnObject;
+                    const defs = state.dmn.model.definitions;
+
+                    if (requirementType === "association") {
+                      (defs.artifact![index] as Normalized<DMN_LATEST__tAssociation>).description = {
+                        __$$text: newDescription,
+                      };
+                      return;
+                    }
+
+                    const parentIndex = (defs.drgElement ?? []).findIndex((e) => e["@_id"] === parentId);
+                    if (parentIndex < 0) {
+                      return;
+                    }
+                    const parent = defs.drgElement![parentIndex];
+
+                    if (requirementType === "informationRequirement") {
+                      (
+                        parent as { informationRequirement?: Normalized<DMN_LATEST__tInformationRequirement>[] }
+                      ).informationRequirement![index].description = { __$$text: newDescription };
+                    } else if (requirementType === "knowledgeRequirement") {
+                      (
+                        parent as { knowledgeRequirement?: Normalized<DMN_LATEST__tKnowledgeRequirement>[] }
+                      ).knowledgeRequirement![index].description = { __$$text: newDescription };
+                    } else if (requirementType === "authorityRequirement") {
+                      (
+                        parent as { authorityRequirement?: Normalized<DMN_LATEST__tAuthorityRequirement>[] }
+                      ).authorityRequirement![index].description = { __$$text: newDescription };
+                    }
+                  });
+                }}
+                placeholder={i18n.propertiesPanel.descriptionPlaceholder}
+                style={{ resize: "vertical", minHeight: "40px" }}
+                rows={6}
+              />
+            </FormGroup>
             <FormGroup label={i18n.propertiesPanel.id}>
               <ClipboardCopy
                 isReadOnly={true}
