@@ -68,6 +68,23 @@ class DrlPackageReaderTest {
     }
 
     @Test
+    void doesNotMatchPackageAsASegmentOfAQualifiedName() {
+        // "com.package.Type" has a word boundary either side of "package", so a
+        // boundary check alone accepts it and yields ".Type" as the package.
+        assertThat(DrlPackageReader.declaredPackage("import com.package.Type;\n\nrule \"r\" when then end"))
+                .isNull();
+        assertThat(DrlPackageReader.declaredPackage("import com.example.package.Thing;\npackage com.real;\n"))
+                .isEqualTo("com.real");
+    }
+
+    @Test
+    void requiresWhitespaceAfterTheKeyword() {
+        assertThat(DrlPackageReader.declaredPackage("package;\n")).isNull();
+        assertThat(DrlPackageReader.declaredPackage("package\tcom.example.tabbed;\n"))
+                .isEqualTo("com.example.tabbed");
+    }
+
+    @Test
     void returnsNullWhenThereIsNoDeclaration() {
         assertThat(DrlPackageReader.declaredPackage("rule \"r\" when then end")).isNull();
         assertThat(DrlPackageReader.declaredPackage("")).isNull();

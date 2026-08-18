@@ -129,20 +129,35 @@ final class DrlPackageReader {
                 continue;
             }
             if (c == 'p' && text.startsWith("package", i)
-                    && isWordBoundaryBefore(text, i)
-                    && isWordBoundaryAfter(text, i + "package".length())) {
+                    && isStatementStart(text, i)
+                    && isFollowedByWhitespace(text, i + "package".length())) {
                 return i;
             }
         }
         return -1;
     }
 
-    private static boolean isWordBoundaryBefore(String text, int index) {
-        return index == 0 || !Character.isJavaIdentifierPart(text.charAt(index - 1));
+    /**
+     * Whether the keyword at {@code index} opens a statement rather than sitting
+     * inside a qualified name. A word boundary alone is not enough: {@code .} is
+     * not an identifier character, so {@code com.package.Type} would otherwise
+     * qualify and yield {@code .Type} as the package.
+     */
+    private static boolean isStatementStart(String text, int index) {
+        if (index == 0) {
+            return true;
+        }
+        char before = text.charAt(index - 1);
+        return !Character.isJavaIdentifierPart(before) && before != '.';
     }
 
-    private static boolean isWordBoundaryAfter(String text, int index) {
-        return index >= text.length() || !Character.isJavaIdentifierPart(text.charAt(index));
+    /**
+     * Whether whitespace follows the keyword, as {@code KieBuilderImpl} requires
+     * by searching for {@code "package "}. Rules out {@code packageName} and a
+     * bare {@code package;}.
+     */
+    private static boolean isFollowedByWhitespace(String text, int index) {
+        return index < text.length() && Character.isWhitespace(text.charAt(index));
     }
 
     /**
