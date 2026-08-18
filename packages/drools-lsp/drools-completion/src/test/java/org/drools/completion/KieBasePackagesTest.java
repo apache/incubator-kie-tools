@@ -150,6 +150,20 @@ class KieBasePackagesTest {
     }
 
     @Test
+    void includingAnExplicitFileGroupDoesNotClaimTheWholeWorkspace() {
+        // The included group lists its files and declares no packages. An empty
+        // pattern list means "every package", so consulting it here would give
+        // the including group everything.
+        KieBaseDecl explicit = new KieBaseDecl("legacy", List.of(), List.of(), List.of(),
+                false, KieBaseDecl.Origin.UNKNOWN);
+        KieBaseDecl app = new KieBaseDecl("app", List.of("com.example.app.*"), List.of("legacy"), List.of());
+        Map<String, KieBaseDecl> all = Map.of("legacy", explicit, "app", app);
+
+        assertThat(KieBasePackages.matchesWithIncludes(app, all, "com.example.app.rules")).isTrue();
+        assertThat(KieBasePackages.matchesWithIncludes(app, all, "com.somewhere.else")).isFalse();
+    }
+
+    @Test
     void unknownIncludeIsIgnored() {
         KieBaseDecl app = new KieBaseDecl("app", List.of("com.example.app.*"), List.of("missing"), List.of());
 

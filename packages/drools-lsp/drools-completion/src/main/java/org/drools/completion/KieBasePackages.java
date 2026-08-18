@@ -120,7 +120,11 @@ final class KieBasePackages {
         if (!visited.add(kbase.name())) {
             return false;
         }
-        if (matches(kbase, packageName)) {
+        // Only consult patterns belonging to a group that selects by package. A
+        // group that lists its files explicitly has no patterns, and an empty
+        // pattern list means "everything" — so including such a group would
+        // otherwise hand the including group the entire workspace.
+        if (kbase.selectsByPackage() && matches(kbase, packageName)) {
             return true;
         }
         for (String includedName : kbase.includes()) {
