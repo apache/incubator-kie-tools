@@ -107,14 +107,21 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
     /**
      * Rebuilds the grouping from disk. Called when the workspace root is set and
      * whenever a config file changes, so an edit takes effect without a restart.
+     *
+     * <p>Synchronized because reloads genuinely overlap: initialization runs
+     * asynchronously while file watchers and settings changes each trigger their
+     * own. Without it, two reloads read different configuration, scan for
+     * different lengths of time, and whichever finishes last wins — which is not
+     * necessarily the one that read the newer configuration. Serializing means a
+     * reload always reads the state left by the one before it.
      */
     @Override
-    public void reload() {
+    public synchronized void reload() {
         Path root = workspaceRoot;
-        grouping = load(root, settingsConfig, providedFiles);
-        DrlFileGrouping current = grouping;
-        if (!current.isEmpty()) {
-            logger.info("DRL file grouping active: " + current.asMap().size() + " group(s) under " + root);
+        DrlFileGrouping loaded = load(root, settingsConfig, providedFiles);
+        grouping = loaded;
+        if (!loaded.isEmpty()) {
+            logger.info("DRL file grouping active: " + loaded.asMap().size() + " group(s) under " + root);
         }
     }
 
