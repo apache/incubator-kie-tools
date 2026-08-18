@@ -41,8 +41,8 @@ import org.eclipse.lsp4j.CompletionItemKind;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.services.LanguageClient;
 
-import static org.drools.drl.parser.antlr4.DRLParserHelper.computeTokenIndex;
-import static org.drools.drl.parser.antlr4.DRLParserHelper.createDrlParser;
+import static org.drools.drl.parser.antlr4.DRL10ParserHelper.computeTokenIndex;
+import static org.drools.drl.parser.antlr4.DRL10ParserHelper.createDrlParser;
 
 public class DRLCompletionHelper {
 
