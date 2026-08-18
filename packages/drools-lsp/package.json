@@ -29,7 +29,8 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {
-    "@kie-tools/maven-base": "workspace:*"
+    "@kie-tools/maven-base": "workspace:*",
+    "@kie-tools-core/drools-and-kogito": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

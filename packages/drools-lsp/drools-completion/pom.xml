@@ -35,9 +35,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.tools</groupId>
-      <artifactId>drools-parser</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-drl-parser</artifactId>
     </dependency>
 
     <dependency>

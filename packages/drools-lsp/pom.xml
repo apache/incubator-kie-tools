@@ -37,7 +37,6 @@
 
   <modules>
     <module>drools-lsp-server</module>
-    <module>drools-parser</module>
     <module>drools-completion</module>
   </modules>
 </project>
