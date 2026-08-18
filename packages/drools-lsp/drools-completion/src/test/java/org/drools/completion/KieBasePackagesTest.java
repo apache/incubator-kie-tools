@@ -87,6 +87,8 @@ class KieBasePackagesTest {
         assertThat(KieBasePackages.matches(kb, "com.example.validation")).isTrue();
         assertThat(KieBasePackages.matches(kb, "com.example.validation.deep")).isTrue();
         assertThat(KieBasePackages.matches(kb, "com.examples.other")).isFalse();
+        assertThat(KieBasePackages.matches(kb, "com")).isFalse();
+        assertThat(KieBasePackages.matches(kb, "")).isFalse();
     }
 
     @Test
