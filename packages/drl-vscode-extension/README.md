@@ -85,7 +85,9 @@ Use `packages`/`includes` for `kmodule.xml` semantics, or `files` for an explici
 
 ### Adopting an existing manifest
 
-`sources` allows rule group definitions with alternate syntax. `aliases` maps each canonical key to the key(s) to alternates; several may collapse onto one.
+`sources` allows rule group definitions with alternate syntax. `aliases` maps each canonical key to one or more alternate keys; several may collapse onto one.
+
+Paths listed explicitly under `files` are taken as given — build output is filtered out of discovered files, not out of a path you named yourself.
 
 ```json
 {

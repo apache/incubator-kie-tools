@@ -38,7 +38,10 @@ import java.util.Objects;
  * @param includes names of other groups whose packages this group also claims
  * @param files    absolute paths listed explicitly by the declaration, already
  *                 resolved. Always empty for kmodule-derived groups, which
- *                 select their files by package pattern instead
+ *                 select their files by package pattern instead. Taken as given:
+ *                 build output is filtered out of <em>discovered</em> files, but
+ *                 naming a path is an instruction, so a declaration that lists
+ *                 something under {@code target/classes} gets it
  * @param selectsByPackage whether this group claims workspace files by matching
  *                 {@link #packages}. True for every kmodule-derived group —
  *                 including one with no {@code packages} attribute, which claims
