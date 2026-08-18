@@ -81,10 +81,18 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
 
     @Override
     public void setWorkspaceRoot(Path workspaceRoot) {
-        this.workspaceRoot = (workspaceRoot == null) ? null : workspaceRoot.toAbsolutePath().normalize();
+        Path normalized = (workspaceRoot == null) ? null : workspaceRoot.toAbsolutePath().normalize();
+        Path previous = this.workspaceRoot;
+        this.workspaceRoot = normalized;
+
         // Overrides are keyed by absolute path and pin a file to a group by
-        // name; a new workspace shares neither, so they are dropped with it.
-        overrides.clear();
+        // name; a different workspace shares neither, so they are dropped with
+        // it. Moving off "no root yet" is initialization rather than a change,
+        // and must not discard pins the client has already restored — it sends
+        // those as soon as it starts, which can be before the root arrives.
+        if (previous != null && !previous.equals(normalized)) {
+            overrides.clear();
+        }
         reload();
     }
 

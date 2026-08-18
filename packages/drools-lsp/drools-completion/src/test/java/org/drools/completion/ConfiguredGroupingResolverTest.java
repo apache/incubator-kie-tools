@@ -493,6 +493,44 @@ class ConfiguredGroupingResolverTest {
     }
 
     @Test
+    void aPinSetBeforeTheRootArrivesSurvivesIt(@TempDir Path ws) throws Exception {
+        // The client restores pins as soon as it starts, which can land before
+        // the workspace root does — the root is set from an async task. Treating
+        // "no root yet" as a workspace change would silently discard them.
+        Path a = writeDrl(ws, "rules/A.drl", "com.example");
+        writeDrl(ws, "rules/B.drl", "com.example");
+        Path c = writeDrl(ws, "other/C.drl", "com.other");
+        write(ws, "drl-lsp-kbases.json",
+                "{\"kbases\":[{\"name\":\"one\",\"files\":[\"rules/A.drl\",\"rules/B.drl\"]},"
+                        + "{\"name\":\"two\",\"files\":[\"other/C.drl\"]}]}");
+
+        ConfiguredGroupingResolver resolver = new ConfiguredGroupingResolver();
+        resolver.setGroupOverride(a, "two");
+        resolver.setWorkspaceRoot(ws);
+
+        assertThat(resolver.resolveSiblings(a)).containsExactly(c);
+    }
+
+    @Test
+    void movingToADifferentWorkspaceStillDropsPins(@TempDir Path ws, @TempDir Path other) throws Exception {
+        Path a = writeDrl(ws, "rules/A.drl", "com.example");
+        Path b = writeDrl(ws, "rules/B.drl", "com.example");
+        Path c = writeDrl(ws, "other/C.drl", "com.other");
+        write(ws, "drl-lsp-kbases.json",
+                "{\"kbases\":[{\"name\":\"one\",\"files\":[\"rules/A.drl\",\"rules/B.drl\"]},"
+                        + "{\"name\":\"two\",\"files\":[\"other/C.drl\"]}]}");
+
+        ConfiguredGroupingResolver resolver = resolverFor(ws);
+        resolver.setGroupOverride(a, "two");
+        assertThat(resolver.resolveSiblings(a)).containsExactly(c);
+
+        resolver.setWorkspaceRoot(other);
+        resolver.setWorkspaceRoot(ws);
+
+        assertThat(resolver.resolveSiblings(a)).containsExactly(b);
+    }
+
+    @Test
     void pinningToAnUnknownGroupFallsBackRatherThanEmptyingScope(@TempDir Path ws) throws Exception {
         Path a = writeDrl(ws, "rules/A.drl", "com.example");
         Path b = writeDrl(ws, "rules/B.drl", "com.example");

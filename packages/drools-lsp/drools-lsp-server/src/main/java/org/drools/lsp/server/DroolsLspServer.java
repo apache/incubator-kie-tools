@@ -226,19 +226,25 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
 
         final String rootUri = params.getRootUri();
         if (rootUri != null) {
+            WorkspaceSiblingResolver resolver = WorkspaceSiblingResolvers.active();
+
+            // Applied before returning, so that a notification the client sends
+            // once initialize completes is necessarily the newer value. Deferring
+            // these would let a startup value captured here land afterwards and
+            // overwrite it. Neither call scans: the workspace root is still
+            // unset, so the reload each triggers resolves to nothing.
             String groupingSettings = groupingSettingsOf(params.getInitializationOptions());
+            if (groupingSettings != null) {
+                resolver.setSettingsConfig(groupingSettings);
+            }
             List<Path> workspaceFiles = workspaceFilesOf(params.getInitializationOptions());
+            if (workspaceFiles != null) {
+                resolver.setWorkspaceFiles(workspaceFiles);
+            }
+
+            // Only the root is set asynchronously, because only it scans.
             CompletableFuture.runAsync(() -> {
                 try {
-                    // Let the grouping resolver read the workspace's configuration
-                    // before the classpath work below, which is the slow part.
-                    WorkspaceSiblingResolver resolver = WorkspaceSiblingResolvers.active();
-                    if (groupingSettings != null) {
-                        resolver.setSettingsConfig(groupingSettings);
-                    }
-                    if (workspaceFiles != null) {
-                        resolver.setWorkspaceFiles(workspaceFiles);
-                    }
                     resolver.setWorkspaceRoot(Paths.get(URI.create(rootUri)));
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Failed to initialize DRL file grouping", e);
