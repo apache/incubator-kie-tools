@@ -29,6 +29,8 @@ export const EDGE_TITLE: Record<EdgeType, string> = {
   [EdgeType.ASSOCIATION]: "Association",
 };
 
+export const uuidRegExp = /^_[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/;
+
 export class EdgePropertiesPanel extends PropertiesPanelBase {
   constructor(
     public diagram: Diagram,
@@ -55,6 +57,6 @@ export class EdgePropertiesPanel extends PropertiesPanelBase {
 
   /** Returns the read-only edge ID shown in the ClipboardCopy field. */
   public async getId() {
-    return await this.panel().getByLabel("Copyable input").inputValue();
+    return await this.panel().locator("input[readonly]").first().inputValue();
   }
 }

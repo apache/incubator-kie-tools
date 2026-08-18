@@ -20,7 +20,7 @@
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
-import { EDGE_TITLE } from "../__fixtures__/propertiesPanel/edgePropertiesPanel";
+import { EDGE_TITLE, uuidRegExp } from "../__fixtures__/propertiesPanel/edgePropertiesPanel";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -55,7 +55,7 @@ test.describe("Edge Properties Panel", () => {
 
       const id = await edgePropertiesPanel.getId();
       expect(id).toBeTruthy();
-      expect(id).toMatch(/^_/);
+      expect(id).toMatch(uuidRegExp);
     });
 
     test("should set and get the edge description for Information Requirement", async ({
@@ -98,7 +98,7 @@ test.describe("Edge Properties Panel", () => {
 
       const id = await edgePropertiesPanel.getId();
       expect(id).toBeTruthy();
-      expect(id).toMatch(/^_/);
+      expect(id).toMatch(uuidRegExp);
     });
 
     test("should set and get the edge description for Knowledge Requirement", async ({
@@ -145,7 +145,7 @@ test.describe("Edge Properties Panel", () => {
 
       const id = await edgePropertiesPanel.getId();
       expect(id).toBeTruthy();
-      expect(id).toMatch(/^_/);
+      expect(id).toMatch(uuidRegExp);
     });
 
     test("should set and get the edge description for Authority Requirement", async ({
@@ -188,7 +188,7 @@ test.describe("Edge Properties Panel", () => {
 
       const id = await edgePropertiesPanel.getId();
       expect(id).toBeTruthy();
-      expect(id).toMatch(/^_/);
+      expect(id).toMatch(uuidRegExp);
     });
 
     test("should set and get the edge description for Association", async ({ edges, edgePropertiesPanel }) => {
