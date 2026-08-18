@@ -214,6 +214,17 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
     /**
      * Resolves each adopted source's globs and reads the manifests they match.
      * All sources share one glob walk.
+     *
+     * <p>TODO: this walk ignores a client-supplied file list, so a manifest the
+     * user excluded can still contribute groups — unlike every other kind of
+     * file, which the client decides on. It cannot simply reuse the supplied
+     * list: that list is enumerated before any config is read, and these globs
+     * are only known afterwards, from a config the client deliberately does not
+     * parse. Closing it needs the server to ask the client to resolve a glob
+     * (a {@code drools/findFiles}-style request), which {@link #load} cannot
+     * await today — it runs synchronously on the initialization path, where
+     * blocking on the client risks deadlock. Doing it properly means making
+     * loading asynchronous.
      */
     private static List<KieBaseDecl> adopt(List<KBaseConfigFile.SourceSpec> sources, Path workspaceRoot) {
         if (sources.isEmpty()) {
