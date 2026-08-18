@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import * as path from "path";
 import * as vscode from "vscode";
 import { LanguageClient } from "vscode-languageclient/node";
 
@@ -54,6 +55,8 @@ let groups = new Map<string, FileGroup>();
 let overrides = new Map<string, string>();
 let statusItem: vscode.StatusBarItem | undefined;
 let log: Logger = { info: () => undefined, error: () => undefined };
+/** Watchers over the files that declared the current groups; rebuilt on refresh. */
+let declaringFileWatchers: vscode.FileSystemWatcher[] = [];
 
 const OVERRIDES_STATE_KEY = "drools.fileGroupOverrides";
 const CONFIG_FILE_GLOB = "**/{drl-lsp-kbases.json,kmodule.xml}";
@@ -88,8 +91,17 @@ export async function enumerateWorkspaceFiles(): Promise<string[]> {
   return found.map((uri) => uri.toString());
 }
 
+/**
+ * Windows and macOS resolve paths case-insensitively, and the same file can
+ * reach us with different casing (a drive letter, most often). Elsewhere case is
+ * significant, and folding it would conflate `rules/Foo.drl` with
+ * `rules/foo.drl`.
+ */
+const CASE_INSENSITIVE_PATHS = process.platform === "win32" || process.platform === "darwin";
+
 function normalize(p: string): string {
-  return p.replace(/\\/g, "/").toLowerCase();
+  const forwardSlashed = p.replace(/\\/g, "/");
+  return CASE_INSENSITIVE_PATHS ? forwardSlashed.toLowerCase() : forwardSlashed;
 }
 
 function activeDrlUri(): vscode.Uri | undefined {
@@ -124,6 +136,19 @@ function provenanceOf(name: string): string {
   return `\nDeclared in ${vscode.workspace.asRelativePath(fsPath)}`;
 }
 
+/**
+ * The pin for `uri`, but only while the group it names still exists.
+ *
+ * A config edit can remove a group a file was pinned to; the server falls back
+ * to another scope in that case, so showing the vanished group as active would
+ * misreport what is actually in scope. The entry is kept rather than purged, so
+ * the pin takes effect again if the group comes back.
+ */
+function activePin(uri: vscode.Uri): string | undefined {
+  const pinned = overrides.get(uri.fsPath);
+  return pinned !== undefined && groups.has(pinned) ? pinned : undefined;
+}
+
 function updateStatusItem(): void {
   if (!statusItem) {
     return;
@@ -135,7 +160,7 @@ function updateStatusItem(): void {
   }
 
   const containing = groupsContaining(uri);
-  const pinned = overrides.get(uri.fsPath);
+  const pinned = activePin(uri);
   const active = pinned ?? containing[0];
 
   if (!active) {
@@ -184,7 +209,40 @@ export async function refreshFileGroups(client: LanguageClient | undefined): Pro
     log.error("Failed to read DRL file groups from the language server: " + String(e));
     groups = new Map();
   }
+  watchDeclaringFiles(client);
   updateStatusItem();
+}
+
+/**
+ * Watches the files that actually declared the current groups.
+ *
+ * Manifests adopted through `sources[].include` can be named anything, so no
+ * fixed glob covers them. The server already reports which file declared each
+ * group, which is exactly the set worth watching — and it stays correct as the
+ * configuration changes, without the client having to parse any of it.
+ */
+function watchDeclaringFiles(client: LanguageClient | undefined): void {
+  declaringFileWatchers.forEach((w) => w.dispose());
+  declaringFileWatchers = [];
+
+  const declaring = new Set<string>();
+  for (const group of groups.values()) {
+    if (group.declaredIn) {
+      declaring.add(vscode.Uri.parse(group.declaredIn).fsPath);
+    }
+  }
+  for (const fsPath of declaring) {
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      new vscode.RelativePattern(vscode.Uri.file(path.dirname(fsPath)), path.basename(fsPath))
+    );
+    const reload = () => {
+      client?.sendNotification("drools/reloadFileGroups");
+    };
+    watcher.onDidCreate(reload);
+    watcher.onDidChange(reload);
+    watcher.onDidDelete(reload);
+    declaringFileWatchers.push(watcher);
+  }
 }
 
 async function persistOverrides(context: vscode.ExtensionContext): Promise<void> {
@@ -232,7 +290,7 @@ async function pickGroup(context: vscode.ExtensionContext, getClient: () => Lang
   }
 
   const containing = groupsContaining(uri);
-  const pinned = overrides.get(uri.fsPath);
+  const pinned = activePin(uri);
   const CLEAR = "$(clear-all) Clear pin (use configured group)";
 
   const active = pinned ?? containing[0];
@@ -350,6 +408,13 @@ export function registerFileGrouping(
   fileWatcher.onDidCreate(resend);
   fileWatcher.onDidDelete(resend);
   context.subscriptions.push(fileWatcher);
+
+  context.subscriptions.push({
+    dispose: () => {
+      declaringFileWatchers.forEach((w) => w.dispose());
+      declaringFileWatchers = [];
+    },
+  });
 
   updateStatusItem();
 }
