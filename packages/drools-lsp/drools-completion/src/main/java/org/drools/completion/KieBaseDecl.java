@@ -73,19 +73,31 @@ record KieBaseDecl(String name, List<String> packages, List<String> includes, Li
      * project's in-house manifest, is left generic — the extension is used well
      * beyond the Drools core audience, and "group" is the word that needs no
      * explanation.
+     *
+     * <p>{@code scopeRoot} is the resources tree the declaration governs, and is
+     * set only for a kmodule descriptor: a {@code <kbase>} describes one KIE
+     * module, so its patterns must not reach into a sibling module that happens
+     * to use the same package names. A declaration from the editor's own config
+     * has no such boundary and applies across the workspace.
      */
-    record Origin(String kind, Path declaredIn) {
+    record Origin(String kind, Path declaredIn, Path scopeRoot) {
 
-        static final Origin UNKNOWN = new Origin(null, null);
+        static final Origin UNKNOWN = new Origin(null, null, null);
 
-        /** A {@code <kbase>} element in a kmodule descriptor. */
+        /**
+         * A {@code <kbase>} element in a kmodule descriptor, scoped to the
+         * resources root holding it — the directory containing {@code META-INF}.
+         */
         static Origin kieBase(Path declaredIn) {
-            return new Origin("KIE base", declaredIn);
+            Path metaInf = (declaredIn == null) ? null : declaredIn.getParent();
+            Path resourcesRoot = (metaInf == null) ? null : metaInf.getParent();
+            return new Origin("KIE base", declaredIn,
+                    resourcesRoot == null ? null : resourcesRoot.toAbsolutePath().normalize());
         }
 
         /** Any other declaration: the editor's config file, or an adopted manifest. */
         static Origin group(Path declaredIn) {
-            return new Origin(null, declaredIn);
+            return new Origin(null, declaredIn, null);
         }
     }
 

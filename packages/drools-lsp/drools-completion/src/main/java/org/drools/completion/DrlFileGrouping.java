@@ -21,6 +21,7 @@ package org.drools.completion;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -88,31 +89,46 @@ final class DrlFileGrouping {
         if (declarations.isEmpty()) {
             return EMPTY;
         }
-        Map<String, KieBaseDecl> merged = mergeByName(declarations);
-
         PackageIndex packages = new PackageIndex(workspaceRoot);
-        boolean anySelectsByPackage = merged.values().stream().anyMatch(KieBaseDecl::selectsByPackage);
+
+        // Each kmodule descriptor is its own scope. Its patterns select only from
+        // the module it governs, and its includes resolve only against kbases
+        // declared beside it — a sibling module using the same package names, or
+        // the same kbase name, is a different module's business.
+        Map<Path, List<KieBaseDecl>> byScope = new LinkedHashMap<>();
+        for (KieBaseDecl decl : declarations) {
+            byScope.computeIfAbsent(decl.origin().scopeRoot(), k -> new ArrayList<>()).add(decl);
+        }
+        Map<String, Long> scopesPerName = countScopesPerName(byScope);
 
         Map<String, WorkspaceSiblingResolver.Group> groupsByName = new LinkedHashMap<>();
         Map<Path, String> groupByFile = new LinkedHashMap<>();
 
-        for (KieBaseDecl decl : merged.values()) {
-            Set<Path> files = new LinkedHashSet<>(decl.files());
-            if (anySelectsByPackage && decl.selectsByPackage()) {
-                for (Path drl : drlFiles) {
-                    if (KieBasePackages.matchesWithIncludes(decl, merged, packages.packageOf(drl))) {
-                        files.add(drl);
+        for (Map.Entry<Path, List<KieBaseDecl>> scope : byScope.entrySet()) {
+            Path scopeRoot = scope.getKey();
+            Map<String, KieBaseDecl> merged = mergeByName(scope.getValue());
+            List<Path> candidates = filesUnder(drlFiles, scopeRoot);
+            boolean anySelectsByPackage = merged.values().stream().anyMatch(KieBaseDecl::selectsByPackage);
+
+            for (KieBaseDecl decl : merged.values()) {
+                Set<Path> files = new LinkedHashSet<>(decl.files());
+                if (anySelectsByPackage && decl.selectsByPackage()) {
+                    for (Path drl : candidates) {
+                        if (KieBasePackages.matchesWithIncludes(decl, merged, packages.packageOf(drl))) {
+                            files.add(drl);
+                        }
                     }
                 }
-            }
-            if (files.isEmpty()) {
-                continue;
-            }
-            List<Path> ordered = List.copyOf(files);
-            groupsByName.put(decl.name(), new WorkspaceSiblingResolver.Group(
-                    decl.name(), ordered, decl.origin().kind(), decl.origin().declaredIn()));
-            for (Path file : ordered) {
-                groupByFile.putIfAbsent(file, decl.name());
+                if (files.isEmpty()) {
+                    continue;
+                }
+                String name = uniqueName(decl, scopeRoot, scopesPerName, workspaceRoot);
+                List<Path> ordered = List.copyOf(files);
+                groupsByName.put(name, new WorkspaceSiblingResolver.Group(
+                        name, ordered, decl.origin().kind(), decl.origin().declaredIn()));
+                for (Path file : ordered) {
+                    groupByFile.putIfAbsent(file, name);
+                }
             }
         }
 
@@ -121,6 +137,70 @@ final class DrlFileGrouping {
         return new DrlFileGrouping(
                 Collections.unmodifiableMap(groupsByName),
                 Collections.unmodifiableMap(groupByFile));
+    }
+
+    /** How many distinct scopes declare each group name. */
+    private static Map<String, Long> countScopesPerName(Map<Path, List<KieBaseDecl>> byScope) {
+        Map<String, Long> counts = new LinkedHashMap<>();
+        for (List<KieBaseDecl> scope : byScope.values()) {
+            Set<String> namesInScope = new LinkedHashSet<>();
+            for (KieBaseDecl decl : scope) {
+                namesInScope.add(decl.name());
+            }
+            for (String name : namesInScope) {
+                counts.merge(name, 1L, Long::sum);
+            }
+        }
+        return counts;
+    }
+
+    /** The DRL files a scope may select from; all of them when it has no scope. */
+    private static List<Path> filesUnder(List<Path> drlFiles, Path scopeRoot) {
+        if (scopeRoot == null) {
+            return drlFiles;
+        }
+        List<Path> under = new ArrayList<>();
+        for (Path file : drlFiles) {
+            if (file.startsWith(scopeRoot)) {
+                under.add(file);
+            }
+        }
+        return under;
+    }
+
+    /**
+     * The name to publish a group under. Two modules may each declare a kbase
+     * called {@code rules}; they are different groups, so the name is qualified
+     * by the module rather than one silently winning.
+     */
+    private static String uniqueName(KieBaseDecl decl, Path scopeRoot,
+                                     Map<String, Long> scopesPerName, Path workspaceRoot) {
+        if (scopeRoot == null || scopesPerName.getOrDefault(decl.name(), 1L) <= 1L) {
+            return decl.name();
+        }
+        return decl.name() + " (" + moduleLabel(scopeRoot, workspaceRoot) + ")";
+    }
+
+    /** A short, human-readable name for the module owning a resources root. */
+    private static String moduleLabel(Path scopeRoot, Path workspaceRoot) {
+        Path module = scopeRoot;
+        for (String suffix : new String[] {"resources", "main", "src"}) {
+            Path name = module.getFileName();
+            if (name != null && name.toString().equals(suffix) && module.getParent() != null) {
+                module = module.getParent();
+            }
+        }
+        try {
+            Path relative = workspaceRoot.toAbsolutePath().normalize().relativize(module);
+            String label = relative.toString().replace('\\', '/');
+            if (!label.isEmpty()) {
+                return label;
+            }
+        } catch (IllegalArgumentException e) {
+            // Different roots; fall through to the directory name.
+        }
+        Path name = module.getFileName();
+        return (name == null) ? module.toString() : name.toString();
     }
 
     private static Map<String, KieBaseDecl> mergeByName(List<KieBaseDecl> declarations) {

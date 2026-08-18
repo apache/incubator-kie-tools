@@ -85,6 +85,62 @@ class ConfiguredGroupingResolverTest {
     }
 
     @Test
+    void aKModuleDoesNotClaimAnotherModulesFiles(@TempDir Path ws) throws Exception {
+        // Both modules use the same package. Each kmodule governs its own module,
+        // so neither kbase may reach into the other.
+        Path aRule = writeDrl(ws, "moduleA/src/main/resources/com/shared/A.drl", "com.shared");
+        Path bRule = writeDrl(ws, "moduleB/src/main/resources/com/shared/B.drl", "com.shared");
+        write(ws, "moduleA/src/main/resources/META-INF/kmodule.xml", KMODULE_HEADER
+                + "  <kbase name=\"onlyA\" packages=\"com.shared.*\"/>\n"
+                + "</kmodule>\n");
+        write(ws, "moduleB/src/main/resources/META-INF/kmodule.xml", KMODULE_HEADER
+                + "  <kbase name=\"onlyB\" packages=\"com.shared.*\"/>\n"
+                + "</kmodule>\n");
+
+        ConfiguredGroupingResolver resolver = resolverFor(ws);
+
+        assertThat(resolver.resolveAllGroups().get("onlyA").files()).containsExactly(aRule);
+        assertThat(resolver.resolveAllGroups().get("onlyB").files()).containsExactly(bRule);
+        assertThat(resolver.resolveSiblings(aRule)).isEmpty();
+    }
+
+    @Test
+    void aKBaseNameUsedByTwoModulesIsQualifiedRatherThanMerged(@TempDir Path ws) throws Exception {
+        Path aRule = writeDrl(ws, "moduleA/src/main/resources/com/a/A.drl", "com.a");
+        Path bRule = writeDrl(ws, "moduleB/src/main/resources/com/b/B.drl", "com.b");
+        write(ws, "moduleA/src/main/resources/META-INF/kmodule.xml", KMODULE_HEADER
+                + "  <kbase name=\"rules\" packages=\"com.a.*\"/>\n"
+                + "</kmodule>\n");
+        write(ws, "moduleB/src/main/resources/META-INF/kmodule.xml", KMODULE_HEADER
+                + "  <kbase name=\"rules\" packages=\"com.b.*\"/>\n"
+                + "</kmodule>\n");
+
+        ConfiguredGroupingResolver resolver = resolverFor(ws);
+
+        assertThat(resolver.resolveAllGroups()).containsOnlyKeys("rules (moduleA)", "rules (moduleB)");
+        assertThat(resolver.resolveAllGroups().get("rules (moduleA)").files()).containsExactly(aRule);
+        assertThat(resolver.resolveAllGroups().get("rules (moduleB)").files()).containsExactly(bRule);
+    }
+
+    @Test
+    void includesResolveWithinTheDeclaringModuleOnly(@TempDir Path ws) throws Exception {
+        Path appRule = writeDrl(ws, "moduleA/src/main/resources/com/app/A.drl", "com.app");
+        Path sharedA = writeDrl(ws, "moduleA/src/main/resources/com/shared/S.drl", "com.shared");
+        Path sharedB = writeDrl(ws, "moduleB/src/main/resources/com/shared/S.drl", "com.shared");
+        write(ws, "moduleA/src/main/resources/META-INF/kmodule.xml", KMODULE_HEADER
+                + "  <kbase name=\"shared\" packages=\"com.shared.*\"/>\n"
+                + "  <kbase name=\"app\" packages=\"com.app.*\" includes=\"shared\"/>\n"
+                + "</kmodule>\n");
+        write(ws, "moduleB/src/main/resources/META-INF/kmodule.xml", KMODULE_HEADER
+                + "  <kbase name=\"shared\" packages=\"com.shared.*\"/>\n"
+                + "</kmodule>\n");
+
+        ConfiguredGroupingResolver resolver = resolverFor(ws);
+
+        assertThat(resolver.resolveSiblings(appRule)).containsExactly(sharedA).doesNotContain(sharedB);
+    }
+
+    @Test
     void aFileInNoKBaseFallsBackToSameDirectorySiblings(@TempDir Path ws) throws Exception {
         writeDrl(ws, "m/src/main/resources/com/example/app/A.drl", "com.example.app");
         Path loose = writeDrl(ws, "scratch/Loose.drl", "com.scratch");
