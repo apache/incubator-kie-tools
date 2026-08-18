@@ -58,7 +58,10 @@ test.describe("Edge Properties Panel", () => {
       expect(id).toMatch(/^_/);
     });
 
-    test("should set and get the edge description", async ({ edges, edgePropertiesPanel }) => {
+    test("should set and get the edge description for Information Requirement", async ({
+      edges,
+      edgePropertiesPanel,
+    }) => {
       await edges.select({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION });
       await edgePropertiesPanel.open();
       await edgePropertiesPanel.setDescription({ newDescription: "Edge description" });
@@ -97,6 +100,17 @@ test.describe("Edge Properties Panel", () => {
       expect(id).toBeTruthy();
       expect(id).toMatch(/^_/);
     });
+
+    test("should set and get the edge description for Knowledge Requirement", async ({
+      edges,
+      edgePropertiesPanel,
+    }) => {
+      await edges.select({ from: "BKM - A", to: DefaultNodeName.DECISION });
+      await edgePropertiesPanel.open();
+      await edgePropertiesPanel.setDescription({ newDescription: "Edge description" });
+
+      expect(await edgePropertiesPanel.getDescription()).toBe("Edge description");
+    });
   });
 
   test.describe("Authority Requirement edge", () => {
@@ -133,6 +147,17 @@ test.describe("Edge Properties Panel", () => {
       expect(id).toBeTruthy();
       expect(id).toMatch(/^_/);
     });
+
+    test("should set and get the edge description for Authority Requirement", async ({
+      edges,
+      edgePropertiesPanel,
+    }) => {
+      await edges.select({ from: "Knowledge Source - A", to: DefaultNodeName.DECISION });
+      await edgePropertiesPanel.open();
+      await edgePropertiesPanel.setDescription({ newDescription: "Edge description" });
+
+      expect(await edgePropertiesPanel.getDescription()).toBe("Edge description");
+    });
   });
 
   test.describe("Association edge", () => {
@@ -164,6 +189,14 @@ test.describe("Edge Properties Panel", () => {
       const id = await edgePropertiesPanel.getId();
       expect(id).toBeTruthy();
       expect(id).toMatch(/^_/);
+    });
+
+    test("should set and get the edge description for Association", async ({ edges, edgePropertiesPanel }) => {
+      await edges.select({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION });
+      await edgePropertiesPanel.open();
+      await edgePropertiesPanel.setDescription({ newDescription: "Edge description" });
+
+      expect(await edgePropertiesPanel.getDescription()).toBe("Edge description");
     });
   });
 });
