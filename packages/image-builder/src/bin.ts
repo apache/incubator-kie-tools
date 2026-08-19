@@ -34,6 +34,7 @@ type ArgsType = {
   tags: string[];
   push: boolean;
   buildArg: string[];
+  secret: string[];
   arch?: string[];
   useDefaultBuilder: boolean;
   allowHostNetworkAccess: boolean;
@@ -63,7 +64,6 @@ function getImageFullNames(args: ArgsType) {
   return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
 }
 
-// If building with Podman, see "Specifics # Container Images" in repo/MANUAL.md.
 function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean; useDefaultBuilder: boolean }) {
   if (args.useDefaultBuilder) {
     execSync("docker buildx use default", { stdio: "inherit" });
@@ -118,6 +118,7 @@ function buildArchImage(args: ArgsType & { arch: string[] | undefined }, imageFu
     ${args.push ? "--push" : ""}
     ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
     ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")}
+    ${args.secret.map((s) => `--secret ${s}`).join(" ")}
     ${args.context}
     -f ${args.containerfile}`
     .split("\n")
@@ -337,6 +338,22 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
             return evaluedBuildArgs;
           },
         },
+        secret: {
+          demandOption: false,
+          describe: "Secrets to expose to the build in the format 'id=<id>,src=<path>' (Can be used multiple times)",
+          type: "array",
+          default: [],
+          coerce: (secrets: string[]) => {
+            const regex = new RegExp(/(id=.*)+/);
+            const results = secrets.map((s: string) => regex.test(s.toString().trim()));
+            if (!results.every(Boolean)) {
+              throw new Error(
+                `ERROR! --secret: Invalid secret supplied ("${secrets.join(" ")}"). Use the format 'id=<id>,src=<path>'`
+              );
+            }
+            return secrets.map((s: string) => s.toString().trim());
+          },
+        },
         arch: {
           demandOption: false,
           describe:
@@ -366,6 +383,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArgs: ${args.buildArg.join(" ")}
+    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine}
     - push: ${args.push}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
@@ -395,6 +413,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
+    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine}
     - push: ${args.push}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
@@ -438,6 +457,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
+    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine}
     - push: ${args.push}
     - arch: linux/amd64
@@ -480,6 +500,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
+    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine} (ignored)
     - push: ${args.push}
     - useDefaultBuilder: ${args.useDefaultBuilder}
