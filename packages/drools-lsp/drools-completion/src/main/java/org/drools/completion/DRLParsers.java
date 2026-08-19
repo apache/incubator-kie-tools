@@ -26,7 +26,7 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.drools.drl.parser.antlr4.DRL10Parser;
-import org.drools.drl.parser.antlr4.DRLParserHelper;
+import org.drools.drl.parser.antlr4.DRL10ParserHelper;
 
 /**
  * Shared ANTLR DRL parser construction for editor features.
@@ -67,7 +67,7 @@ final class DRLParsers {
      */
     static DRL10Parser silent(String text) {
         PARSE_COUNT.incrementAndGet();
-        DRL10Parser parser = DRLParserHelper.createDrlParser(text);
+        DRL10Parser parser = DRL10ParserHelper.createDrlParser(text);
         Lexer lexer = (Lexer) parser.getTokenStream().getTokenSource();
         lexer.removeErrorListeners();
         lexer.addErrorListener(SILENT);
