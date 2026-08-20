@@ -34,6 +34,7 @@ type ArgsType = {
   tags: string[];
   push: boolean;
   buildArg: string[];
+  secret: string[];
   arch?: string[];
   useDefaultBuilder: boolean;
   allowHostNetworkAccess: boolean;
@@ -63,7 +64,6 @@ function getImageFullNames(args: ArgsType) {
   return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
 }
 
-// If building with Podman, see "Specifics # Container Images" in repo/MANUAL.md.
 function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean; useDefaultBuilder: boolean }) {
   if (args.useDefaultBuilder) {
     execSync("docker buildx use default", { stdio: "inherit" });
@@ -118,6 +118,7 @@ function buildArchImage(args: ArgsType & { arch: string[] | undefined }, imageFu
     ${args.push ? "--push" : ""}
     ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
     ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")}
+    ${args.secret.map((s) => `--secret ${s}`).join(" ")}
     ${args.context}
     -f ${args.containerfile}`
     .split("\n")
@@ -335,6 +336,50 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
               return `${key}=${evalStringArg<string>(value)}`;
             });
             return evaluedBuildArgs;
+          },
+        },
+        secret: {
+          demandOption: false,
+          describe:
+            "Secrets to expose to the build in the format 'id=<id>,src=<path>' or 'id=<id>,env=<var>' (Can be used multiple times)",
+          type: "array",
+          default: [],
+          coerce: (secrets: string[]) => {
+            const ALLOWED_KEYS = new Set(["id", "src", "env"]);
+            for (const s of secrets) {
+              const spec = s.toString().trim();
+              const pairs: Record<string, string> = {};
+              for (const part of spec.split(",")) {
+                const eqIdx = part.indexOf("=");
+                if (eqIdx === -1) {
+                  throw new Error(
+                    `ERROR! --secret: Each part must be in 'key=value' format. Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                  );
+                }
+                const key = part.slice(0, eqIdx).trim();
+                const value = part.slice(eqIdx + 1).trim();
+                if (!ALLOWED_KEYS.has(key)) {
+                  throw new Error(`ERROR! --secret: Unknown key "${key}". Allowed keys are: id, src, env`);
+                }
+                if (value === "") {
+                  throw new Error(
+                    `ERROR! --secret: Key "${key}" has an empty value. Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                  );
+                }
+                pairs[key] = value;
+              }
+              if (!pairs["id"]) {
+                throw new Error(
+                  `ERROR! --secret: Missing required key "id". Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                );
+              }
+              if (!pairs["src"] && !pairs["env"]) {
+                throw new Error(
+                  `ERROR! --secret: Missing required source — must include either "src=<path>" or "env=<var>". Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                );
+              }
+            }
+            return secrets.map((s: string) => s.toString().trim());
           },
         },
         arch: {
