@@ -20,7 +20,7 @@
 import { Text } from "@visx/text";
 import * as React from "react";
 import { useMemo } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   BpmnNodeElement,
   BpmnNodeType,

@@ -19,7 +19,7 @@
 
 import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
@@ -222,6 +222,13 @@ export function computeDiagramData(
       // them. We always know the dimensions here, so we can simply provide them.
       width: dimensions.width,
       height: dimensions.height,
+      // v12: `measured` is what RF uses for drag/layout calculations. `width`/`height` are now
+      // only inline styles. Pre-populating `measured` prevents error #015 ("node not initialized")
+      // when a node is dragged before RF's ResizeObserver has had a chance to measure it.
+      measured: {
+        width: dimensions.width,
+        height: dimensions.height,
+      },
       style: {
         ...dimensions,
       },
@@ -245,6 +252,11 @@ export function computeDiagramData(
         };
         newNode.width = DECISION_SERVICE_COLLAPSED_DIMENSIONS.width;
         newNode.height = DECISION_SERVICE_COLLAPSED_DIMENSIONS.height;
+        // Keep measured in sync with the collapsed override dimensions.
+        newNode.measured = {
+          width: DECISION_SERVICE_COLLAPSED_DIMENSIONS.width,
+          height: DECISION_SERVICE_COLLAPSED_DIMENSIONS.height,
+        };
       }
     }
 

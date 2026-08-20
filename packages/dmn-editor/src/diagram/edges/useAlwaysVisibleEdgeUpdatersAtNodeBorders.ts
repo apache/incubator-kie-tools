@@ -19,7 +19,7 @@
 
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { useLayoutEffect } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { getLineRectangleIntersectionPoint } from "../maths/DmnMaths";
 import { scaleFromCenter } from "../maths/Maths";
 
@@ -32,15 +32,23 @@ export function useAlwaysVisibleEdgeUpdatersAtNodeBorders(
   target: string,
   snappedWaypoints: DC__Point[]
 ) {
-  const sourceNodeX = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.positionAbsolute?.x : undefined));
-  const sourceNodeY = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.positionAbsolute?.y : undefined));
-  const sourceNodeWidth = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.width : undefined));
-  const sourceNodeHeight = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.height : undefined));
+  const sourceNodeX = RF.useStore((s) =>
+    source ? s.nodeLookup.get(source)?.internals.positionAbsolute?.x : undefined
+  );
+  const sourceNodeY = RF.useStore((s) =>
+    source ? s.nodeLookup.get(source)?.internals.positionAbsolute?.y : undefined
+  );
+  const sourceNodeWidth = RF.useStore((s) => (source ? s.nodeLookup.get(source)?.measured?.width : undefined));
+  const sourceNodeHeight = RF.useStore((s) => (source ? s.nodeLookup.get(source)?.measured?.height : undefined));
 
-  const targetNodeX = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.positionAbsolute?.x : undefined));
-  const targetNodeY = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.positionAbsolute?.y : undefined));
-  const targetNodeWidth = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.width : undefined));
-  const targetNodeHeight = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.height : undefined));
+  const targetNodeX = RF.useStore((s) =>
+    target ? s.nodeLookup.get(target)?.internals.positionAbsolute?.x : undefined
+  );
+  const targetNodeY = RF.useStore((s) =>
+    target ? s.nodeLookup.get(target)?.internals.positionAbsolute?.y : undefined
+  );
+  const targetNodeWidth = RF.useStore((s) => (target ? s.nodeLookup.get(target)?.measured?.width : undefined));
+  const targetNodeHeight = RF.useStore((s) => (target ? s.nodeLookup.get(target)?.measured?.height : undefined));
 
   useLayoutEffect(() => {
     const edgeSvgGroup = interactionPathRef.current!.parentElement;

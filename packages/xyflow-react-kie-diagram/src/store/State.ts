@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { SnapGrid } from "../snapgrid/SnapGrid";
 import { DC__Point, DC__Shape } from "../maths/model";
 import { GraphStructureAdjacencyList, GraphStructureEdge } from "../graph/graph";

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   BPMN20__tBoundaryEvent,
   BPMN20__tDataObject,
@@ -108,7 +108,7 @@ export const StartEventNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tStartEvent> & { __$$element: "startEvent" }>>) => {
+  }: RF.NodeProps<RF.Node<BpmnDiagramNodeData<Normalized<BPMN20__tStartEvent> & { __$$element: "startEvent" }>>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -300,9 +300,11 @@ export const IntermediateCatchEventNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    BpmnDiagramNodeData<
-      | (Normalized<BPMN20__tIntermediateCatchEvent> & { __$$element: "intermediateCatchEvent" })
-      | (Normalized<BPMN20__tBoundaryEvent> & { __$$element: "boundaryEvent" })
+    RF.Node<
+      BpmnDiagramNodeData<
+        | (Normalized<BPMN20__tIntermediateCatchEvent> & { __$$element: "intermediateCatchEvent" })
+        | (Normalized<BPMN20__tBoundaryEvent> & { __$$element: "boundaryEvent" })
+      >
     >
   >) => {
     const renderCount = useRef<number>(0);
@@ -469,7 +471,9 @@ export const IntermediateThrowEventNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    BpmnDiagramNodeData<Normalized<BPMN20__tIntermediateThrowEvent> & { __$$element: "intermediateThrowEvent" }>
+    RF.Node<
+      BpmnDiagramNodeData<Normalized<BPMN20__tIntermediateThrowEvent> & { __$$element: "intermediateThrowEvent" }>
+    >
   >) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
@@ -613,7 +617,7 @@ export const EndEventNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tEndEvent> & { __$$element: "endEvent" }>>) => {
+  }: RF.NodeProps<RF.Node<BpmnDiagramNodeData<Normalized<BPMN20__tEndEvent> & { __$$element: "endEvent" }>>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -751,11 +755,13 @@ export const TaskNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    BpmnDiagramNodeData<
-      Normalized<
-        ElementFilter<
-          Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
-          "task" | "scriptTask" | "serviceTask" | "businessRuleTask" | "userTask" | "callActivity"
+    RF.Node<
+      BpmnDiagramNodeData<
+        Normalized<
+          ElementFilter<
+            Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
+            "task" | "scriptTask" | "serviceTask" | "businessRuleTask" | "userTask" | "callActivity"
+          >
         >
       >
     >
@@ -934,7 +940,7 @@ export const SubProcessNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    BpmnDiagramNodeData<Normalized<BPMN20__tSubProcess> & { __$$element: "adHocSubProcess" | "subProcess" }>
+    RF.Node<BpmnDiagramNodeData<Normalized<BPMN20__tSubProcess> & { __$$element: "adHocSubProcess" | "subProcess" }>>
   >) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
@@ -960,7 +966,9 @@ export const SubProcessNode = React.memo(
     //    fake mouseleave with the cursor at a position outside getBoundingClientRect(), which
     //    would incorrectly clear the hover state and cause a toggle loop.
     // Tracking the cursor position on every mousemove is immune to both problems.
-    const isConnectionBeingMade = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== id);
+    const isConnectionBeingMade = RF.useStore(
+      (s) => !!s.connection.fromHandle?.nodeId && s.connection.fromHandle.nodeId !== id
+    );
     const [isHoveredByBounds, setIsHoveredByBounds] = useState(false);
     const checkBounds = useCallback((x: number, y: number) => {
       const r = ref.current?.parentElement?.getBoundingClientRect();
@@ -1139,11 +1147,13 @@ export const GatewayNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    BpmnDiagramNodeData<
-      Normalized<
-        ElementFilter<
-          Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
-          "exclusiveGateway" | "inclusiveGateway" | "parallelGateway" | "eventBasedGateway" | "complexGateway"
+    RF.Node<
+      BpmnDiagramNodeData<
+        Normalized<
+          ElementFilter<
+            Unpacked<NonNullable<BPMN20__tProcess["flowElement"]>>,
+            "exclusiveGateway" | "inclusiveGateway" | "parallelGateway" | "eventBasedGateway" | "complexGateway"
+          >
         >
       >
     >
@@ -1275,7 +1285,7 @@ export const DataObjectNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tDataObject> & { __$$element: "dataObject" }>>) => {
+  }: RF.NodeProps<RF.Node<BpmnDiagramNodeData<Normalized<BPMN20__tDataObject> & { __$$element: "dataObject" }>>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -1406,7 +1416,7 @@ export const GroupNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tGroup> & { __$$element: "group" }>>) => {
+  }: RF.NodeProps<RF.Node<BpmnDiagramNodeData<Normalized<BPMN20__tGroup> & { __$$element: "group" }>>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -1418,7 +1428,7 @@ export const GroupNode = React.memo(
       (s) => (isHovered || isResizing) && s.xyFlowReactKieDiagram.draggingNodes.length === 0
     );
     const bpmnEditorStoreApi = useBpmnEditorStoreApi();
-    const reactFlow = RF.useReactFlow<BpmnDiagramNodeData, BpmnDiagramEdgeData>();
+    const reactFlow = RF.useReactFlow<RF.Node<BpmnDiagramNodeData>, RF.Edge<BpmnDiagramEdgeData>>();
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id, NODE_TYPES, EDGE_TYPES, true);
@@ -1500,7 +1510,7 @@ export const LaneNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tLane> & { __$$element: "lane" }>>) => {
+  }: RF.NodeProps<RF.Node<BpmnDiagramNodeData<Normalized<BPMN20__tLane> & { __$$element: "lane" }>>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -1609,7 +1619,9 @@ export const TextAnnotationNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<BpmnDiagramNodeData<Normalized<BPMN20__tTextAnnotation> & { __$$element: "textAnnotation" }>>) => {
+  }: RF.NodeProps<
+    RF.Node<BpmnDiagramNodeData<Normalized<BPMN20__tTextAnnotation> & { __$$element: "textAnnotation" }>>
+  >) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -1725,7 +1737,14 @@ export const TextAnnotationNode = React.memo(
 );
 
 export const UnknownNode = React.memo(
-  ({ data: { shape, shapeIndex }, selected, dragging, zIndex, type, id }: RF.NodeProps<BpmnDiagramNodeData<any>>) => {
+  ({
+    data: { shape, shapeIndex },
+    selected,
+    dragging,
+    zIndex,
+    type,
+    id,
+  }: RF.NodeProps<RF.Node<BpmnDiagramNodeData<any>>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 

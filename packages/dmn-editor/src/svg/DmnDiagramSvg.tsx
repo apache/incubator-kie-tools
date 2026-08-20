@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   AssociationPath,
   AuthorityRequirementPath,
@@ -128,8 +128,8 @@ export function DmnDiagramSvg({
               <AlternativeInputDataNodeSvg
                 width={node.width!}
                 height={node.height!}
-                x={node.positionAbsolute!.x}
-                y={node.positionAbsolute!.y}
+                x={node.position.x}
+                y={node.position.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isIcon={false}
@@ -139,8 +139,8 @@ export function DmnDiagramSvg({
               <InputDataNodeSvg
                 width={node.width!}
                 height={node.height!}
-                x={node.positionAbsolute!.x}
-                y={node.positionAbsolute!.y}
+                x={node.position.x}
+                y={node.position.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isCollection={isCollection}
@@ -150,8 +150,8 @@ export function DmnDiagramSvg({
             <DecisionNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               isCollection={isCollection}
@@ -162,8 +162,8 @@ export function DmnDiagramSvg({
             <BkmNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -173,8 +173,8 @@ export function DmnDiagramSvg({
             <KnowledgeSourceNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -184,8 +184,8 @@ export function DmnDiagramSvg({
             <DecisionServiceNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               showSectionLabels={false}
               isReadOnly={true}
               {...style}
@@ -196,8 +196,8 @@ export function DmnDiagramSvg({
             <GroupNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -206,8 +206,8 @@ export function DmnDiagramSvg({
             <TextAnnotationNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -216,14 +216,14 @@ export function DmnDiagramSvg({
             <UnknownNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
           )}
           <>
-            {label.split("\n").map((labelLine, i) => (
+            {label.split("\n").map((labelLine: string, i: number) => (
               <Text
                 key={i}
                 lineHeight={fontStyle.lineHeight}
@@ -264,14 +264,14 @@ export function DmnDiagramSvg({
           dmnShapeSource: e.data?.dmnShapeSource,
           dmnShapeTarget: e.data?.dmnShapeTarget,
           sourceNodeBounds: {
-            x: s?.positionAbsolute?.x,
-            y: s?.positionAbsolute?.y,
+            x: s?.position.x,
+            y: s?.position.y,
             width: s?.width,
             height: s?.height,
           },
           targetNodeBounds: {
-            x: t?.positionAbsolute?.x,
-            y: t?.positionAbsolute?.y,
+            x: t?.position.x,
+            y: t?.position.y,
             width: t?.width,
             height: t?.height,
           },

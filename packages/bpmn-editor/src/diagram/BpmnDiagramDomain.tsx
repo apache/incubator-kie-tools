@@ -355,16 +355,16 @@ export const XY_FLOW_EDGE_TYPES: Record<BpmnEdgeType, React.ComponentType<any>> 
   [EDGE_TYPES.compensationAssociation]: AssociationEdge,
 };
 
-export interface BpmnDiagramNodeData<T extends BpmnNodeElement = BpmnNodeElement> extends XyFlowReactKieDiagramNodeData<
-  BpmnNodeType,
-  BpmnDiagramNodeData
-> {
+// Interface extends Record<string,unknown> to satisfy RF.Node<T extends Record<string,unknown>>
+// and supports circular self-reference via parentXyFlowNode
+export interface BpmnDiagramNodeData<T extends BpmnNodeElement = BpmnNodeElement>
+  extends XyFlowReactKieDiagramNodeData<BpmnNodeType, BpmnDiagramNodeData>, Record<string, unknown> {
   bpmnElement: T;
   shape: Normalized<BPMNDI__BPMNShape>;
   shapeIndex: number;
 }
 
-export interface BpmnDiagramEdgeData extends XyFlowReactKieDiagramEdgeData {
+export interface BpmnDiagramEdgeData extends XyFlowReactKieDiagramEdgeData, Record<string, unknown> {
   bpmnEdge: Normalized<BPMNDI__BPMNEdge> | undefined;
   bpmnEdgeIndex: number;
   bpmnElement: BpmnEdgeElement;
