@@ -57,7 +57,7 @@
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
       { "id": "@kie-tools-examples/process-compact-architecture-springboot" },
-      { "id": "@kie-tools/jbpm-addons-springboot-dev-console" },
+      { "id": "@kie-tools/jbpm-spring-boot-dev-console" },
       { "id": "@kie-tools/spring-boot-bom" },
       { "id": "@kie-tools-examples/process-event-driven" },
       { "id": "@kie-tools-examples/process-security" },
@@ -398,21 +398,21 @@
       },
       {
         "source": "@kie-tools-examples/process-compact-architecture-springboot",
-        "target": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "target": "@kie-tools/jbpm-spring-boot-dev-console",
         "weight": 1
       },
       {
-        "source": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "source": "@kie-tools/jbpm-spring-boot-dev-console",
         "target": "@kie-tools/jbpm-dev-console-commons",
         "weight": 1
       },
       {
-        "source": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "source": "@kie-tools/jbpm-spring-boot-dev-console",
         "target": "@kie-tools/spring-boot-bom",
         "weight": 1
       },
       {
-        "source": "@kie-tools/jbpm-addons-springboot-dev-console",
+        "source": "@kie-tools/jbpm-spring-boot-dev-console",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "weight": 1
       },
@@ -987,7 +987,7 @@
     ["@kie-tools/image-builder", "packages/image-builder"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
-    ["@kie-tools/jbpm-addons-springboot-dev-console", "packages/jbpm-addons-springboot-dev-console"],
+    ["@kie-tools/jbpm-spring-boot-dev-console", "packages/jbpm-spring-boot-dev-console"],
     ["@kie-tools/jbpm-dev-console-commons", "packages/jbpm-dev-console-commons"],
     ["@kie-tools/jbpm-form-code-generator-themes", "packages/jbpm-form-code-generator-themes"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],

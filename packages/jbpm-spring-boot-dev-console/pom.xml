@@ -32,7 +32,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.jbpm</groupId>
-  <artifactId>jbpm-addons-springboot-dev-console-parent</artifactId>
+  <artifactId>jbpm-spring-boot-dev-console-parent</artifactId>
 
   <name>KIE Tools :: jBPM Spring Boot Dev Console</name>
 
@@ -44,6 +44,6 @@
   </properties>
 
   <modules>
-    <module>jbpm-addons-springboot-dev-console</module>
+    <module>jbpm-spring-boot-dev-console</module>
   </modules>
 </project>

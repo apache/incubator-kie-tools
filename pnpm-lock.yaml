@@ -927,9 +927,9 @@ importers:
 
   examples/process-compact-architecture-springboot:
     dependencies:
-      '@kie-tools/jbpm-addons-springboot-dev-console':
+      '@kie-tools/jbpm-spring-boot-dev-console':
         specifier: workspace:*
-        version: link:../../packages/jbpm-addons-springboot-dev-console
+        version: link:../../packages/jbpm-spring-boot-dev-console
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
@@ -4786,7 +4786,7 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  packages/jbpm-addons-springboot-dev-console:
+  packages/jbpm-spring-boot-dev-console:
     dependencies:
       '@kie-tools/jbpm-dev-console-commons':
         specifier: workspace:*
