@@ -340,16 +340,44 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         },
         secret: {
           demandOption: false,
-          describe: "Secrets to expose to the build in the format 'id=<id>,src=<path>' (Can be used multiple times)",
+          describe:
+            "Secrets to expose to the build in the format 'id=<id>,src=<path>' or 'id=<id>,env=<var>' (Can be used multiple times)",
           type: "array",
           default: [],
           coerce: (secrets: string[]) => {
-            const regex = new RegExp(/(id=.*)+/);
-            const results = secrets.map((s: string) => regex.test(s.toString().trim()));
-            if (!results.every(Boolean)) {
-              throw new Error(
-                `ERROR! --secret: Invalid secret supplied ("${secrets.join(" ")}"). Use the format 'id=<id>,src=<path>'`
-              );
+            const ALLOWED_KEYS = new Set(["id", "src", "env"]);
+            for (const s of secrets) {
+              const spec = s.toString().trim();
+              const pairs: Record<string, string> = {};
+              for (const part of spec.split(",")) {
+                const eqIdx = part.indexOf("=");
+                if (eqIdx === -1) {
+                  throw new Error(
+                    `ERROR! --secret: Each part must be in 'key=value' format. Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                  );
+                }
+                const key = part.slice(0, eqIdx).trim();
+                const value = part.slice(eqIdx + 1).trim();
+                if (!ALLOWED_KEYS.has(key)) {
+                  throw new Error(`ERROR! --secret: Unknown key "${key}". Allowed keys are: id, src, env`);
+                }
+                if (value === "") {
+                  throw new Error(
+                    `ERROR! --secret: Key "${key}" has an empty value. Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                  );
+                }
+                pairs[key] = value;
+              }
+              if (!pairs["id"]) {
+                throw new Error(
+                  `ERROR! --secret: Missing required key "id". Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                );
+              }
+              if (!pairs["src"] && !pairs["env"]) {
+                throw new Error(
+                  `ERROR! --secret: Missing required source — must include either "src=<path>" or "env=<var>". Use 'id=<id>,src=<path>' or 'id=<id>,env=<var>'`
+                );
+              }
             }
             return secrets.map((s: string) => s.toString().trim());
           },
@@ -383,7 +411,6 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArgs: ${args.buildArg.join(" ")}
-    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine}
     - push: ${args.push}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
@@ -413,7 +440,6 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
-    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine}
     - push: ${args.push}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
@@ -457,7 +483,6 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
-    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine}
     - push: ${args.push}
     - arch: linux/amd64
@@ -500,7 +525,6 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - containerfile: ${args.containerfile}
     - context: ${args.context}
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
-    - secret: ${args.secret?.join(" ") ?? " - "}
     - engine: ${args.engine} (ignored)
     - push: ${args.push}
     - useDefaultBuilder: ${args.useDefaultBuilder}
