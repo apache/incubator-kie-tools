@@ -126,8 +126,8 @@ export function DmnDiagramSvg({
           {node.type === NODE_TYPES.inputData &&
             (isAlternativeInputDataShape ? (
               <AlternativeInputDataNodeSvg
-                width={node.width!}
-                height={node.height!}
+                width={node.measured!.width!}
+                height={node.measured!.height!}
                 x={node.position.x}
                 y={node.position.y}
                 {...style}
@@ -137,8 +137,8 @@ export function DmnDiagramSvg({
               />
             ) : (
               <InputDataNodeSvg
-                width={node.width!}
-                height={node.height!}
+                width={node.measured!.width!}
+                height={node.measured!.height!}
                 x={node.position.x}
                 y={node.position.y}
                 {...style}
@@ -148,8 +148,8 @@ export function DmnDiagramSvg({
             ))}
           {node.type === NODE_TYPES.decision && (
             <DecisionNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -160,8 +160,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.bkm && (
             <BkmNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -171,8 +171,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.knowledgeSource && (
             <KnowledgeSourceNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -182,8 +182,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.decisionService && (
             <DecisionServiceNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position.x}
               y={node.position.y}
               showSectionLabels={false}
@@ -194,8 +194,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.group && (
             <GroupNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -204,8 +204,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.textAnnotation && (
             <TextAnnotationNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -214,8 +214,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.unknown && (
             <UnknownNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
