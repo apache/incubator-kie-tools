@@ -227,6 +227,12 @@ interface DmnEditorDictionary extends ReferenceDictionary<{
     enableHighlightingDecisionTable: string;
   };
   propertiesPanel: {
+    informationRequirement: string;
+    knowledgeRequirement: string;
+    authorityRequirement: string;
+    association: string;
+    edge: string;
+    edgeNotFound: (edgeId: string) => string;
     nothingToShow: string;
     inputExpression: string;
     constraint: string;
