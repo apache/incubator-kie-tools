@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/jbpm-addons-springboot-dev-console",
+  "name": "@kie-tools/jbpm-spring-boot-dev-console",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
