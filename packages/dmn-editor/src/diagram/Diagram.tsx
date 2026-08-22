@@ -1032,16 +1032,15 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
       });
     }, [dmnEditorStoreApi, dmnModelBeforeEditingRef]);
 
-    const onNodeDrag = useCallback<RF.OnNodeDrag>(
+    const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<DmnDiagramNodeData>>>(
       (e, node) => {
-        const typedNode = node as RF.Node<DmnDiagramNodeData>;
-        nodeIdBeingDraggedRef.current = typedNode.id;
+        nodeIdBeingDraggedRef.current = node.id;
         // v12: The node passed to onNodeDrag is a user-facing Node, not an InternalNode.
         // Read positionAbsolute from the nodeLookup (stable map reference mutated in place by RF).
-        const positionAbsolute = nodeLookupRef.current?.get(typedNode.id)?.internals.positionAbsolute ?? node.position;
+        const positionAbsolute = nodeLookupRef.current?.get(node.id)?.internals.positionAbsolute ?? node.position;
         dmnEditorStoreApi.setState((state) => {
           state.diagram.dropTargetNode = getFirstNodeFittingBounds(
-            typedNode.id,
+            node.id,
             {
               // We can't use node.data.dmnObject because it hasn't been updated at this point yet.
               "@_x": positionAbsolute.x,
@@ -1049,7 +1048,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               "@_width": node.measured?.width ?? 0,
               "@_height": node.measured?.height ?? 0,
             },
-            MIN_NODE_SIZES[typedNode.type as NodeType],
+            MIN_NODE_SIZES[node.type as NodeType],
             state.diagram.snapGrid
           );
         });
@@ -1057,7 +1056,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
       [dmnEditorStoreApi, getFirstNodeFittingBounds]
     );
 
-    const onNodeDragStart = useCallback<RF.OnNodeDrag>(
+    const onNodeDragStart = useCallback<RF.OnNodeDrag<RF.Node<DmnDiagramNodeData>>>(
       (e, node, nodes) => {
         dmnModelBeforeEditingRef.current = thisDmn.model;
         nodeActuallyMovedRef.current = false;
@@ -1066,9 +1065,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
       [thisDmn.model, dmnModelBeforeEditingRef, onNodeDrag]
     );
 
-    const onNodeDragStop = useCallback<RF.OnNodeDrag>(
+    const onNodeDragStop = useCallback<RF.OnNodeDrag<RF.Node<DmnDiagramNodeData>>>(
       (e, node) => {
-        const typedNode = node as RF.Node<DmnDiagramNodeData>;
         try {
           dmnEditorStoreApi.setState((state) => {
             console.debug("DMN DIAGRAM: `onNodeDragStop`");
@@ -1189,10 +1187,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 }
                 break;
               case "add":
+                console.debug(`DMN DIAGRAM: 'onEdgesChange' --> add '${change.item.id}'. Ignoring`);
+                break;
               case "replace":
-                console.debug(
-                  `DMN DIAGRAM: 'onEdgesChange' --> add/replace '${(change as any).item?.id ?? (change as any).id}'. Ignoring`
-                );
+                console.debug(`DMN DIAGRAM: 'onEdgesChange' --> replace '${change.id}'. Ignoring`);
             }
           }
         });
@@ -1442,11 +1440,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             fitView={previewMode ? true : false}
             fitViewOptions={previewMode ? FIT_VIEW_OPTIONS_PREVIEW : FIT_VIEW_OPTIONS}
             attributionPosition={"bottom-right"}
-            onInit={(instance) =>
-              setReactFlowInstance(
-                instance as RF.ReactFlowInstance<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>
-              )
-            }
+            onInit={setReactFlowInstance as RF.OnInit<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>}
             deleteKeyCode={settings.isReadOnly ? [] : DELETE_NODE_KEY_CODES}
             // (begin)
             // Used to make the Palette work by dropping nodes on the Reactflow Canvas
@@ -1807,18 +1801,49 @@ export function SetConnectionToReactFlowStore(props: {}) {
   const ongoingConnection = useDmnEditorStore((s) => s.diagram.ongoingConnection);
   const rfStoreApi = RF.useStoreApi();
   useEffect(() => {
-    rfStoreApi.setState({
-      connection: {
-        fromHandle: ongoingConnection
-          ? {
-              nodeId: ongoingConnection.nodeId ?? null,
-              id: ongoingConnection.handleId ?? null,
-              type: ongoingConnection.handleType ?? null,
-            }
-          : undefined,
-        toHandle: null,
-      } as any,
-    });
+    if (ongoingConnection) {
+      rfStoreApi.setState({
+        connection: {
+          inProgress: true,
+          isValid: null,
+          from: { x: 0, y: 0 },
+          fromHandle: {
+            nodeId: ongoingConnection.nodeId ?? "",
+            id: ongoingConnection.handleId ?? null,
+            type: ongoingConnection.handleType ?? "source",
+            // position/width/height are required by the Handle type but unused in this code path.
+            position: "right" as RF.Position,
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+          },
+          fromPosition: "right" as RF.Position,
+          fromNode: null as any,
+          to: { x: 0, y: 0 },
+          toHandle: null,
+          toPosition: "left" as RF.Position,
+          toNode: null,
+          pointer: { x: 0, y: 0 },
+        } satisfies RF.ConnectionInProgress,
+      });
+    } else {
+      rfStoreApi.setState({
+        connection: {
+          inProgress: false,
+          isValid: null,
+          from: null,
+          fromHandle: null,
+          fromPosition: null,
+          fromNode: null,
+          to: null,
+          toHandle: null,
+          toPosition: null,
+          toNode: null,
+          pointer: null,
+        } satisfies RF.NoConnection,
+      });
+    }
   }, [ongoingConnection?.handleId, ongoingConnection?.handleType, ongoingConnection?.nodeId, rfStoreApi]);
 
   return <></>;
