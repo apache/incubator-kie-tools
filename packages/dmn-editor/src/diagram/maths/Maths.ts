@@ -18,7 +18,7 @@
  */
 
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 
 export type Bounds = {
   width: number | undefined | null;

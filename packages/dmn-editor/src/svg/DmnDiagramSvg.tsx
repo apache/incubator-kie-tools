@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   AssociationPath,
   AuthorityRequirementPath,
@@ -126,10 +126,10 @@ export function DmnDiagramSvg({
           {node.type === NODE_TYPES.inputData &&
             (isAlternativeInputDataShape ? (
               <AlternativeInputDataNodeSvg
-                width={node.width!}
-                height={node.height!}
-                x={node.positionAbsolute!.x}
-                y={node.positionAbsolute!.y}
+                width={node.measured!.width!}
+                height={node.measured!.height!}
+                x={node.position.x}
+                y={node.position.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isIcon={false}
@@ -137,10 +137,10 @@ export function DmnDiagramSvg({
               />
             ) : (
               <InputDataNodeSvg
-                width={node.width!}
-                height={node.height!}
-                x={node.positionAbsolute!.x}
-                y={node.positionAbsolute!.y}
+                width={node.measured!.width!}
+                height={node.measured!.height!}
+                x={node.position.x}
+                y={node.position.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isCollection={isCollection}
@@ -148,10 +148,10 @@ export function DmnDiagramSvg({
             ))}
           {node.type === NODE_TYPES.decision && (
             <DecisionNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               isCollection={isCollection}
@@ -160,10 +160,10 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.bkm && (
             <BkmNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -171,10 +171,10 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.knowledgeSource && (
             <KnowledgeSourceNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -182,10 +182,10 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.decisionService && (
             <DecisionServiceNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
+              x={node.position.x}
+              y={node.position.y}
               showSectionLabels={false}
               isReadOnly={true}
               {...style}
@@ -194,36 +194,36 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.group && (
             <GroupNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
           )}
           {node.type === NODE_TYPES.textAnnotation && (
             <TextAnnotationNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
           )}
           {node.type === NODE_TYPES.unknown && (
             <UnknownNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
           )}
           <>
-            {label.split("\n").map((labelLine, i) => (
+            {label.split("\n").map((labelLine: string, i: number) => (
               <Text
                 key={i}
                 lineHeight={fontStyle.lineHeight}
@@ -264,14 +264,14 @@ export function DmnDiagramSvg({
           dmnShapeSource: e.data?.dmnShapeSource,
           dmnShapeTarget: e.data?.dmnShapeTarget,
           sourceNodeBounds: {
-            x: s?.positionAbsolute?.x,
-            y: s?.positionAbsolute?.y,
+            x: s?.position.x,
+            y: s?.position.y,
             width: s?.width,
             height: s?.height,
           },
           targetNodeBounds: {
-            x: t?.positionAbsolute?.x,
-            y: t?.positionAbsolute?.y,
+            x: t?.position.x,
+            y: t?.position.y,
             width: t?.width,
             height: t?.height,
           },

@@ -35,7 +35,7 @@ import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { OnCreateDataType, OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
@@ -122,7 +122,7 @@ export const InputDataNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN_LATEST__tInputData> & { __$$element: "inputData" }>>) => {
+  }: RF.NodeProps<RF.Node<DmnDiagramNodeData<Normalized<DMN_LATEST__tInputData> & { __$$element: "inputData" }>>>) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -344,7 +344,7 @@ export const DecisionNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN_LATEST__tDecision> & { __$$element: "decision" }>>) => {
+  }: RF.NodeProps<RF.Node<DmnDiagramNodeData<Normalized<DMN_LATEST__tDecision> & { __$$element: "decision" }>>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
 
@@ -506,7 +506,9 @@ export const BkmNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    DmnDiagramNodeData<Normalized<DMN_LATEST__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" }>
+    RF.Node<
+      DmnDiagramNodeData<Normalized<DMN_LATEST__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" }>
+    >
   >) => {
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
@@ -645,7 +647,7 @@ export const KnowledgeSourceNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    DmnDiagramNodeData<Normalized<DMN_LATEST__tKnowledgeSource> & { __$$element: "knowledgeSource" }>
+    RF.Node<DmnDiagramNodeData<Normalized<DMN_LATEST__tKnowledgeSource> & { __$$element: "knowledgeSource" }>>
   >) => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -758,7 +760,9 @@ export const TextAnnotationNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN_LATEST__tTextAnnotation> & { __$$element: "textAnnotation" }>>) => {
+  }: RF.NodeProps<
+    RF.Node<DmnDiagramNodeData<Normalized<DMN_LATEST__tTextAnnotation> & { __$$element: "textAnnotation" }>>
+  >) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -875,7 +879,7 @@ export const DecisionServiceNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    DmnDiagramNodeData<Normalized<DMN_LATEST__tDecisionService> & { __$$element: "decisionService" }>
+    RF.Node<DmnDiagramNodeData<Normalized<DMN_LATEST__tDecisionService> & { __$$element: "decisionService" }>>
   >) => {
     const ref = useRef<SVGRectElement>(null);
     const { externalModelsByNamespace } = useExternalModels();
@@ -1315,7 +1319,7 @@ export const GroupNode = React.memo(
     dragging,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN_LATEST__tGroup> & { __$$element: "group" }>>) => {
+  }: RF.NodeProps<RF.Node<DmnDiagramNodeData<Normalized<DMN_LATEST__tGroup> & { __$$element: "group" }>>>) => {
     const ref = useRef<SVGRectElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -1327,7 +1331,7 @@ export const GroupNode = React.memo(
     );
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
-    const reactFlow = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
+    const reactFlow = RF.useReactFlow<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>();
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
@@ -1350,7 +1354,7 @@ export const GroupNode = React.memo(
     useEffect(() => {
       const onDoubleClick = () => {
         dmnEditorStoreApi.setState((state) => {
-          state.diagram._selectedNodes = reactFlow.getNodes().flatMap((n) =>
+          state.diagram._selectedNodes = reactFlow.getNodes().flatMap((n: RF.Node<DmnDiagramNodeData>) =>
             getContainmentRelationship({
               bounds: n.data.shape["dc:Bounds"]!,
               container: shape["dc:Bounds"]!,
@@ -1437,7 +1441,7 @@ export const GroupNode = React.memo(
 );
 
 export const UnknownNode = React.memo(
-  ({ data: { shape }, selected, dragging, type, id }: RF.NodeProps<DmnDiagramNodeData<null>>) => {
+  ({ data: { shape }, selected, dragging, type, id }: RF.NodeProps<RF.Node<DmnDiagramNodeData<null>>>) => {
     const { i18n } = useDmnEditorI18n();
     const ref = useRef<HTMLDivElement>(null);
 
@@ -1562,7 +1566,7 @@ export function NodeResizerHandle(props: NodeResizeHandleProps) {
 }
 
 function useNodeResizing(id: string): boolean {
-  return RF.useStore((s) => s.nodeInternals.get(id)?.resizing ?? false);
+  return RF.useStore((s) => s.nodeLookup.get(id)?.resizing ?? false);
 }
 
 type NodeDimensionsArgs = {
@@ -1623,15 +1627,15 @@ function useHoveredNodeAlwaysOnTop(
 }
 
 export function useConnection(nodeId: string) {
-  const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
-  const connectionHandleType = RF.useStore((s) => s.connectionHandleType);
+  const connectionNodeId = RF.useStore((s) => s.connection.fromHandle?.nodeId ?? null);
+  const connectionHandleType = RF.useStore((s) => s.connection.fromHandle?.type ?? null);
 
   const source = connectionNodeId;
   const target = nodeId;
 
   const edgeIdBeingUpdated = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
   const sourceHandle = RF.useStore(
-    (s) => s.connectionHandleId ?? s.edges.find((e) => e.id === edgeIdBeingUpdated)?.type ?? null
+    (s) => s.connection.fromHandle?.id ?? s.edges.find((e) => e.id === edgeIdBeingUpdated)?.type ?? null
   );
 
   const connection = useMemo(
@@ -1648,9 +1652,16 @@ export function useConnection(nodeId: string) {
 }
 
 export function useConnectionTargetStatus(nodeId: string, shouldActLikeHovered: boolean) {
-  const isTargeted = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== nodeId && shouldActLikeHovered);
+  const isTargeted = RF.useStore(
+    (s) => !!s.connection.fromHandle?.nodeId && s.connection.fromHandle.nodeId !== nodeId && shouldActLikeHovered
+  );
   const connection = useConnection(nodeId);
-  const isValidConnectionTarget = RF.useStore((s) => s.isValidConnection?.(connection) ?? false);
+  const isValidConnectionTarget = RF.useStore((s) => {
+    if (!connection.source || !connection.target) {
+      return false;
+    }
+    return s.isValidConnection?.({ ...connection, source: connection.source, target: connection.target }) ?? false;
+  });
 
   return useMemo(
     () => ({
@@ -1669,7 +1680,7 @@ export function useNodeClassName(isValidConnectionTarget: boolean, nodeId: strin
   const isDropTargetNodeValidForSelection = useDmnEditorStore((s) =>
     s.computed(s).isDropTargetNodeValidForSelection(externalModelsByNamespace)
   );
-  const isConnectionNodeId = RF.useStore((s) => s.connectionNodeId === nodeId);
+  const isConnectionNodeId = RF.useStore((s) => s.connection.fromHandle?.nodeId === nodeId);
   const connection = useConnection(nodeId);
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connection.sourceHandle);
   const isNodeConnection = !!Object.values(NODE_TYPES).find((s) => s === connection.sourceHandle);

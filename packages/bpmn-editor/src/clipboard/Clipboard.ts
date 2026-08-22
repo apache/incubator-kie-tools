@@ -23,7 +23,7 @@ import {
   BPMNDI__BPMNEdge,
   BPMNDI__BPMNShape,
 } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { Normalized } from "../normalization/normalize";
 import { State } from "../store/Store";
 import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
@@ -47,13 +47,15 @@ export function buildClipboardFromDiagram(xyFlowState: RF.ReactFlowState, bpmnEd
   const copiedNodesById = new Map<string, RF.Node<BpmnDiagramNodeData>>();
   const danglingEdgesById = new Map<string, RF.Edge<BpmnDiagramEdgeData>>();
 
-  const nodesById = xyFlowState
-    .getNodes()
-    .reduce((acc, n) => acc.set(n.id, n), new Map<string, RF.Node<BpmnDiagramNodeData>>());
+  const nodesById = (xyFlowState.nodes as RF.Node<BpmnDiagramNodeData>[]).reduce(
+    (acc, n) => acc.set(n.id, n),
+    new Map<string, RF.Node<BpmnDiagramNodeData>>()
+  );
 
-  const selectedNodesById = xyFlowState
-    .getNodes()
-    .reduce((acc, n) => (n.selected ? acc.set(n.id, n) : acc), new Map<string, RF.Node<BpmnDiagramNodeData>>());
+  const selectedNodesById = (xyFlowState.nodes as RF.Node<BpmnDiagramNodeData>[]).reduce(
+    (acc, n) => (n.selected ? acc.set(n.id, n) : acc),
+    new Map<string, RF.Node<BpmnDiagramNodeData>>()
+  );
 
   const processFlowElements = new Map<string, NonNullable<Unpacked<Normalized<BPMN20__tProcess>["flowElement"]>>>();
   const shapes = new Map<string, Normalized<BPMNDI__BPMNShape>>();
@@ -170,7 +172,7 @@ export function buildClipboardFromDiagram(xyFlowState: RF.ReactFlowState, bpmnEd
     }
   );
 
-  clipboard.edges = xyFlowState.edges.flatMap((edge: RF.Edge<BpmnDiagramEdgeData>) => {
+  clipboard.edges = (xyFlowState.edges as RF.Edge<BpmnDiagramEdgeData>[]).flatMap((edge) => {
     if (copiedNodesById.has(edge.source) && !copiedNodesById.has(edge.target)) {
       danglingEdgesById.set(edge.id, edge); // Edges that point to nodes that are not part of the clipboard need to be removed when 'cut' is executed.
     }

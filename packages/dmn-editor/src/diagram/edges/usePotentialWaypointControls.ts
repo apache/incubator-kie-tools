@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { useState, useCallback, useMemo } from "react";
 import { addEdgeWaypoint } from "../../mutations/addEdgeWaypoint";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
@@ -43,14 +43,14 @@ export function usePotentialWaypointControls(
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
   const isDraggingWaypoint = useDmnEditorStore((s) => !!s.diagram.draggingWaypoints.find((e) => e === edgeId));
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
+  const reactFlowInstance = RF.useReactFlow<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>();
   const { externalModelsByNamespace } = useExternalModels();
 
   const [potentialWaypoint, setPotentialWaypoint] = useState<ReturnType<typeof approximateClosestPoint> | undefined>(
     undefined
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
 
   const isExistingWaypoint = useCallback(
     (point: DC__Point) => waypoints.find((w) => w["@_x"] === point["@_x"] && w["@_y"] === point["@_y"]),

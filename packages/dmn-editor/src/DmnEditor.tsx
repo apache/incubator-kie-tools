@@ -18,11 +18,11 @@
  */
 
 import "@patternfly/react-core/dist/styles/base.css";
-import "reactflow/dist/style.css";
+import "@xyflow/react/dist/style.css";
 
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { original } from "immer";
@@ -38,6 +38,8 @@ import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/di
 import { BoxedExpressionScreen } from "./boxedExpressions/BoxedExpressionScreen";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
+import { DmnDiagramNodeData } from "./diagram/nodes/Nodes";
+import { DmnDiagramEdgeData } from "./diagram/edges/Edges";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 import { BoxedExpressionPropertiesPanel } from "./propertiesPanel/BoxedExpressionPropertiesPanel";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
@@ -266,7 +268,8 @@ export const DmnEditorInternal = ({
           return undefined;
         }
 
-        const bounds = RF.getNodesBounds(nodes);
+        const nodeLookup = diagramRef.current?.getNodeLookup();
+        const bounds = RF.getNodesBounds(nodes, nodeLookup ? { nodeLookup } : undefined);
         const state = dmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

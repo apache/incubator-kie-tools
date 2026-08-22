@@ -20,7 +20,7 @@
 import { GraphStructureAdjacencyList, GraphStructureEdge } from "@kie-tools/xyflow-react-kie-diagram/dist/graph/graph";
 import { snapShapeDimensions, snapShapePosition } from "@kie-tools/xyflow-react-kie-diagram/dist/snapgrid/SnapGrid";
 import { XyFlowDiagramData } from "@kie-tools/xyflow-react-kie-diagram/dist/store/State";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   BPMN_CONTAINMENT_MAP,
   BpmnDiagramEdgeData,
@@ -227,6 +227,13 @@ export function computeDiagramData(
         dragging: draggingNodes.has(id),
         width: snappedShapeDimensions.width,
         height: snappedShapeDimensions.height,
+        // v12: `measured` is what RF uses for drag/layout calculations. `width`/`height` are now
+        // only inline styles. Pre-populating `measured` prevents error #015 ("node not initialized")
+        // when a node is dragged before RF's ResizeObserver has had a chance to measure it.
+        measured: {
+          width: snappedShapeDimensions.width,
+          height: snappedShapeDimensions.height,
+        },
         type: nodeType,
         style: { ...snappedShapeDimensions },
       };

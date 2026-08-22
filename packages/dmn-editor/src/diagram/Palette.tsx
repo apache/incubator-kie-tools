@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import * as React from "react";
 import { useCallback } from "react";
 import { NodeType } from "./connections/graphStructure";
@@ -48,6 +48,7 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
 import { getDrdId } from "./drd/drdId";
+import { DmnDiagramNodeData } from "./nodes/Nodes";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
@@ -74,10 +75,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
-      const selectedNodes = rfStoreApi
-        .getState()
-        .getNodes()
-        .filter((s) => s.selected);
+      const selectedNodes = (rfStoreApi.getState().nodes as RF.Node<DmnDiagramNodeData>[]).filter((s) => s.selected);
 
       if (selectedNodes.length <= 0) {
         return;
@@ -89,7 +87,11 @@ export function Palette({ pulse }: { pulse: boolean }) {
         newNode: {
           type: NODE_TYPES.group,
           bounds: getBounds({
-            nodes: selectedNodes,
+            nodes: selectedNodes.map((n) => ({
+              position: n.position,
+              width: n.measured?.width,
+              height: n.measured?.height,
+            })),
             padding: CONTAINER_NODES_DESIRABLE_PADDING,
           }),
         },
