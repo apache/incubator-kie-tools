@@ -33,7 +33,9 @@ export function setNodeStatus<
   //selected
   if (newStatus.selected !== undefined) {
     if (newStatus.selected) {
-      s.xyFlowReactKieDiagram._selectedNodes.push(nodeId);
+      if (!s.xyFlowReactKieDiagram._selectedNodes.includes(nodeId)) {
+        s.xyFlowReactKieDiagram._selectedNodes.push(nodeId);
+      }
     } else {
       s.xyFlowReactKieDiagram._selectedNodes = s.xyFlowReactKieDiagram._selectedNodes.filter((s) => s !== nodeId);
     }
@@ -41,7 +43,9 @@ export function setNodeStatus<
   //dragging
   if (newStatus.dragging !== undefined) {
     if (newStatus.dragging) {
-      s.xyFlowReactKieDiagram.draggingNodes.push(nodeId);
+      if (!s.xyFlowReactKieDiagram.draggingNodes.includes(nodeId)) {
+        s.xyFlowReactKieDiagram.draggingNodes.push(nodeId);
+      }
     } else {
       s.xyFlowReactKieDiagram.draggingNodes = s.xyFlowReactKieDiagram.draggingNodes.filter((s) => s !== nodeId);
     }
@@ -49,7 +53,9 @@ export function setNodeStatus<
   // resizing
   if (newStatus.resizing !== undefined) {
     if (newStatus.resizing) {
-      s.xyFlowReactKieDiagram.resizingNodes.push(nodeId);
+      if (!s.xyFlowReactKieDiagram.resizingNodes.includes(nodeId)) {
+        s.xyFlowReactKieDiagram.resizingNodes.push(nodeId);
+      }
     } else {
       s.xyFlowReactKieDiagram.resizingNodes = s.xyFlowReactKieDiagram.resizingNodes.filter((s) => s !== nodeId);
     }

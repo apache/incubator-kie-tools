@@ -262,12 +262,8 @@ export const DmnEditorInternal = ({
         });
       },
       getDiagramSvg: async () => {
-        const nodes = diagramRef.current?.getReactFlowInstance()?.getNodes() as
-          | RF.Node<DmnDiagramNodeData>[]
-          | undefined;
-        const edges = diagramRef.current?.getReactFlowInstance()?.getEdges() as
-          | RF.Edge<DmnDiagramEdgeData>[]
-          | undefined;
+        const nodes = diagramRef.current?.getReactFlowInstance()?.getNodes();
+        const edges = diagramRef.current?.getReactFlowInstance()?.getEdges();
         if (!nodes || !edges) {
           return undefined;
         }
