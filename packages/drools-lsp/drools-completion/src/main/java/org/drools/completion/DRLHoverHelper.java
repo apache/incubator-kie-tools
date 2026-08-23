@@ -88,6 +88,15 @@ public final class DRLHoverHelper {
                     declared, typeIndex, currentDocTypes, text, documentPath, openFiles));
         }
 
+        // 1b. Documented function/query/global — the doc-comment parser maps
+        //     names for all four declaration kinds.
+        String doc = DRLDocCommentParser.docFor(text, word);
+        if (doc != null) {
+            Map<String, String> linkTargets = DRLWorkspaceTypeIndex.buildLinkTargets(
+                    currentDocTypes, text, documentPath, openFiles);
+            return markdown(DRLDocFormatter.format(doc, linkTargets));
+        }
+
         DRL10Parser.CompilationUnitContext compilationUnit = parsed.compilationUnit;
         Integer nodeIndex = parsed.tokenIndexAt(position);
 

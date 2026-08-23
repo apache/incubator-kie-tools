@@ -323,6 +323,86 @@ class DRLHoverHelperTest {
     }
 
     @Test
+    void hoverOnDocumentedFunctionShowsItsDocComment() {
+        String drl = """
+                package org.example;
+                /**
+                 * Computes the risk score for a finding.
+                 */
+                function int riskScore(int base) {
+                    return base * 2;
+                }
+                rule R
+                    when
+                    then
+                        int x = riskScore(1);
+                end
+                """;
+        // Caret on "riskScore" in the call on the RHS (line 10, 0-based).
+        Hover hover = DRLHoverHelper.hover(drl, new Position(10, 17),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(content(hover)).contains("Computes the risk score for a finding.");
+    }
+
+    @Test
+    void hoverOnDocumentedGlobalShowsItsDocComment() {
+        String drl = """
+                package org.example;
+                /**
+                 * Shared results collector.
+                 */
+                global java.util.List results;
+                rule R
+                    when
+                    then
+                        results.add("x");
+                end
+                """;
+        // Caret on "results" in the RHS usage.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(8, 9),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(content(hover)).contains("Shared results collector.");
+    }
+
+    @Test
+    void hoverOnDocumentedQueryShowsItsDocComment() {
+        String drl = """
+                package org.example;
+                declare Person
+                    name : String
+                end
+                /**
+                 * All persons with the given name.
+                 */
+                query personsNamed(String n)
+                    Person(name == n)
+                end
+                """;
+        // Caret on "personsNamed" in the query header.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(7, 8),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(content(hover)).contains("All persons with the given name.");
+    }
+
+    @Test
+    void undocumentedFunctionNameYieldsNoDocHover() {
+        String drl = """
+                package org.example;
+                function int plain(int base) {
+                    return base;
+                }
+                """;
+        // Caret on "plain" in the function header; no preceding doc comment.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(1, 14),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(hover).isNull();
+    }
+
+    @Test
     void hoverOnJavaLangTypeResolvesWithoutImport() {
         // java.lang.Object is implicitly available and has no bean getters, yet
         // the FQN header should still render (the members-empty guard is gone).
