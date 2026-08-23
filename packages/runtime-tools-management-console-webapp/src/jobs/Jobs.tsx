@@ -22,7 +22,7 @@ import {
   JobsManagementState,
 } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
 import { useJobsManagementChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { QueryParams } from "../navigation/Routes";

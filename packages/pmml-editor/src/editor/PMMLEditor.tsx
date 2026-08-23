@@ -35,7 +35,7 @@ import mergeReducers from "combine-reducer";
 import { HistoryContext, HistoryService } from "./history";
 import { LandingPage } from "./components/LandingPage/templates";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
-import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";

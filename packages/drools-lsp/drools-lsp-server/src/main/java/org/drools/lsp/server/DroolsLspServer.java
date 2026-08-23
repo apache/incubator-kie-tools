@@ -25,8 +25,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -35,6 +37,14 @@ import java.util.logging.Logger;
 import org.drools.completion.ClassIndex;
 import org.drools.completion.ClassMemberIndex;
 import org.drools.completion.DRLDeclaredTypeParser;
+import org.drools.completion.WorkspaceSiblingResolver;
+import org.drools.completion.WorkspaceSiblingResolvers;
+import org.eclipse.lsp4j.jsonrpc.Endpoint;
+import org.eclipse.lsp4j.jsonrpc.services.JsonNotification;
+import org.eclipse.lsp4j.jsonrpc.services.JsonRequest;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.eclipse.lsp4j.CodeLensOptions;
 import org.eclipse.lsp4j.CompletionOptions;
 import org.eclipse.lsp4j.DiagnosticRegistrationOptions;
@@ -214,8 +224,37 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
                 new DiagnosticRegistrationOptions(false, false));
         initializeResult.getCapabilities().setTypeHierarchyProvider(true);
 
-        String rootUri = params.getRootUri();
+        final String rootUri = params.getRootUri();
         if (rootUri != null) {
+            WorkspaceSiblingResolver resolver = WorkspaceSiblingResolvers.active();
+
+            // Applied before returning, so that a notification the client sends
+            // once initialize completes is necessarily the newer value. Deferring
+            // these would let a startup value captured here land afterwards and
+            // overwrite it. Neither call scans: the workspace root is still
+            // unset, so the reload each triggers resolves to nothing.
+            String groupingSettings = groupingSettingsOf(params.getInitializationOptions());
+            if (groupingSettings != null) {
+                resolver.setSettingsConfig(groupingSettings);
+            }
+            List<Path> workspaceFiles = workspaceFilesOf(params.getInitializationOptions());
+            if (workspaceFiles != null) {
+                resolver.setWorkspaceFiles(workspaceFiles);
+            }
+
+            // Only the root is set asynchronously, because only it scans.
+            CompletableFuture.runAsync(() -> {
+                try {
+                    resolver.setWorkspaceRoot(Paths.get(URI.create(rootUri)));
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "Failed to initialize DRL file grouping", e);
+                } finally {
+                    // Scanning a workspace takes long enough that a client asking
+                    // once at startup can easily ask too early. Tell it when the
+                    // answer is actually ready rather than leaving it stale.
+                    notifyFileGroupsChanged();
+                }
+            });
             CompletableFuture.runAsync(() -> {
                 try {
                     Path rootPath = Paths.get(URI.create(rootUri));
@@ -261,6 +300,166 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         }
 
         return CompletableFuture.supplyAsync(() -> initializeResult);
+    }
+
+    /**
+     * Returns the workspace's DRL file groups, keyed by name, so a client can
+     * show which group the open file is in and offer the rest.
+     *
+     * <p>The client asks rather than reading the config files itself: the server
+     * already resolves kmodule descriptors, config files and adopted manifests,
+     * and a second implementation of that in the client is a second place for it
+     * to be wrong.
+     */
+    @JsonRequest("drools/fileGroups")
+    public CompletableFuture<Map<String, FileGroupingProtocol.FileGroup>> fileGroups() {
+        return CompletableFuture.supplyAsync(() -> {
+            Map<String, FileGroupingProtocol.FileGroup> groups = new LinkedHashMap<>();
+            WorkspaceSiblingResolvers.active().resolveAllGroups().forEach((name, group) -> {
+                List<String> uris = new ArrayList<>(group.files().size());
+                for (Path file : group.files()) {
+                    uris.add(file.toUri().toString());
+                }
+                Path declaredIn = group.declaredIn();
+                groups.put(name, new FileGroupingProtocol.FileGroup(uris, group.kind(),
+                        declaredIn == null ? null : declaredIn.toUri().toString()));
+            });
+            return groups;
+        });
+    }
+
+    /**
+     * Pins a document to a named group, overriding what the configuration
+     * resolves it to. A file can belong to several groups, so this is how the
+     * user settles which one the editor works in.
+     */
+    @JsonNotification("drools/setFileGroup")
+    public void setFileGroup(FileGroupingProtocol.FileGroupParams params) {
+        if (params == null || params.getUri() == null) {
+            return;
+        }
+        try {
+            WorkspaceSiblingResolvers.active()
+                    .setGroupOverride(Paths.get(URI.create(params.getUri())), params.getGroup());
+            // Pinning changes what is in scope, and diagnostics here are pulled
+            // rather than pushed, so nothing would re-ask on its own.
+            refreshDiagnostics();
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Failed to pin " + params.getUri() + " to a DRL file group", e);
+        }
+    }
+
+    /** Re-reads the workspace's grouping configuration after a config file changes. */
+    @JsonNotification("drools/reloadFileGroups")
+    public void reloadFileGroups() {
+        WorkspaceSiblingResolvers.active().reload();
+        notifyFileGroupsChanged();
+    }
+
+    /**
+     * Replaces the grouping declared in the editor's settings, so a user editing
+     * {@code drools.lsp.grouping} sees the effect without restarting the server.
+     */
+    @JsonNotification("drools/setGroupingConfig")
+    public void setGroupingConfig(FileGroupingProtocol.GroupingConfigParams params) {
+        JsonObject config = (params == null) ? null : params.getConfig();
+        WorkspaceSiblingResolvers.active().setSettingsConfig(config == null ? null : config.toString());
+        notifyFileGroupsChanged();
+    }
+
+    /**
+     * Tells the client the group map changed, so it can re-read it.
+     *
+     * <p>Sent through the raw endpoint because this is a custom method the
+     * {@link LanguageClient} interface does not declare. A client that is not an
+     * lsp4j proxy — a test double, say — simply does not get told.
+     */
+    private void notifyFileGroupsChanged() {
+        if (client instanceof Endpoint endpoint) {
+            endpoint.notify("drools/fileGroupsChanged", null);
+        }
+        refreshDiagnostics();
+    }
+
+    /**
+     * Asks the client to re-request diagnostics for its open documents.
+     *
+     * <p>Needed because this server publishes diagnostics on pull, not push: when
+     * grouping changes, the set of files in scope changes with it, but nothing
+     * would prompt the client to ask again.
+     */
+    private void refreshDiagnostics() {
+        LanguageClient target = client;
+        if (target == null) {
+            return;
+        }
+        try {
+            target.refreshDiagnostics();
+        } catch (Exception e) {
+            logger.log(Level.FINE, "Client did not accept a diagnostics refresh", e);
+        }
+    }
+
+    /**
+     * Replaces the client's view of which files the workspace contains, after it
+     * has seen one created, deleted or renamed.
+     */
+    @JsonNotification("drools/setWorkspaceFiles")
+    public void setWorkspaceFiles(FileGroupingProtocol.WorkspaceFilesParams params) {
+        List<String> uris = (params == null) ? null : params.getUris();
+        WorkspaceSiblingResolvers.active().setWorkspaceFiles(uris == null ? null : toPaths(uris));
+        notifyFileGroupsChanged();
+    }
+
+    /**
+     * Pulls {@code workspaceFiles} out of the client's
+     * {@code initializationOptions}. Absent means the client is not enumerating,
+     * and the resolver should discover files itself.
+     */
+    private static List<Path> workspaceFilesOf(Object initializationOptions) {
+        if (!(initializationOptions instanceof JsonObject options)) {
+            return null;
+        }
+        JsonElement files = options.get("workspaceFiles");
+        if (files == null || !files.isJsonArray()) {
+            return null;
+        }
+        List<String> uris = new ArrayList<>();
+        for (JsonElement uri : files.getAsJsonArray()) {
+            if (uri.isJsonPrimitive()) {
+                uris.add(uri.getAsString());
+            }
+        }
+        return toPaths(uris);
+    }
+
+    /** Converts document URIs to paths, dropping any the platform cannot represent. */
+    private static List<Path> toPaths(List<String> uris) {
+        List<Path> paths = new ArrayList<>(uris.size());
+        for (String uri : uris) {
+            try {
+                paths.add(Paths.get(URI.create(uri)));
+            } catch (Exception e) {
+                logger.log(Level.FINE, "Ignoring unusable workspace file URI: " + uri, e);
+            }
+        }
+        return paths;
+    }
+
+    /**
+     * Pulls {@code grouping} out of the client's {@code initializationOptions},
+     * as raw JSON. Delivered this way rather than as a JVM argument because the
+     * setting is a structured object, and JSON on a command line runs into
+     * quoting rules and length limits that differ per platform.
+     */
+    private static String groupingSettingsOf(Object initializationOptions) {
+        if (!(initializationOptions instanceof JsonObject options)) {
+            return null;
+        }
+        JsonElement grouping = options.get("grouping");
+        // Only an object is meaningful; toString() on anything else would yield
+        // a quoted literal that no longer parses as the config.
+        return (grouping == null || !grouping.isJsonObject()) ? null : grouping.toString();
     }
 
     @Override

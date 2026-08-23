@@ -30,7 +30,7 @@ import {
   DataListItemCells,
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";

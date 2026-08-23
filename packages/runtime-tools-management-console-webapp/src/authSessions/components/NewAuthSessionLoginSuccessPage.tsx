@@ -19,7 +19,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthSessions, useAuthSessionsDispatch } from "../AuthSessionsContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { AuthSessionsService } from "../AuthSessionsService";
 import { ManagementConsolePageLayout } from "../../managementConsole/ManagementConsolePageLayout";
 import { useRoutes } from "../../navigation/Hooks";

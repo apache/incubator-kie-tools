@@ -45,6 +45,7 @@ import {
   updateDataMappingWithVariableRef,
   setOutputDataMapping,
 } from "../../mutations/_dataMapping";
+import { addOrGetIoSpecification } from "../../mutations/addOrGetIoSpecification";
 import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "../../mutations/addOrGetItemDefinitions";
 import { useBpmnEditorI18n } from "../../i18n";
 
@@ -202,12 +203,10 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                       .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                   );
 
-                  if (e.ioSpecification) {
-                    setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e.ioSpecification, e);
-                  }
+                  setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, addOrGetIoSpecification(e), e);
 
                   if (newVariableRef) {
-                    const ioSpecificationReference = e.ioSpecification?.dataInput?.find(
+                    const ioSpecificationReference = addOrGetIoSpecification(e).dataInput?.find(
                       (dIn) =>
                         dIn["@_name"] === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.IN_COLLECTION
                     )?.["@_id"];
@@ -262,18 +261,16 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                         .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                     );
 
-                    if (e.ioSpecification) {
-                      setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e.ioSpecification, e);
+                    setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, addOrGetIoSpecification(e), e);
 
-                      const ioSpecificationReference = e.ioSpecification?.dataInput?.find(
-                        (dIn) =>
-                          dIn["@_name"] === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.IN_COLLECTION
-                      )?.["@_id"];
+                    const ioSpecificationReference = addOrGetIoSpecification(e).dataInput?.find(
+                      (dIn) =>
+                        dIn["@_name"] === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.IN_COLLECTION
+                    )?.["@_id"];
 
-                      e.loopCharacteristics.loopDataInputRef = ioSpecificationReference
-                        ? { __$$text: ioSpecificationReference }
-                        : undefined;
-                    }
+                    e.loopCharacteristics.loopDataInputRef = ioSpecificationReference
+                      ? { __$$text: ioSpecificationReference }
+                      : undefined;
 
                     // Update inputDataItem name
                     e.loopCharacteristics.inputDataItem ??= { "@_id": generateUuid() };
@@ -354,12 +351,10 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                       .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                   );
 
-                  if (e.ioSpecification) {
-                    setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e.ioSpecification, e);
-                  }
+                  setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, addOrGetIoSpecification(e), e);
 
                   if (newVariableRef) {
-                    const ioSpecificationReference = e.ioSpecification?.dataOutput?.find(
+                    const ioSpecificationReference = addOrGetIoSpecification(e).dataOutput?.find(
                       (dOut) =>
                         dOut["@_name"] === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.OUT_COLLECTION
                     )?.["@_id"];
@@ -417,18 +412,16 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                         .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                     );
 
-                    if (e.ioSpecification) {
-                      setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e.ioSpecification, e);
+                    setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, addOrGetIoSpecification(e), e);
 
-                      const ioSpecificationReference = e.ioSpecification?.dataOutput?.find(
-                        (dOut) =>
-                          dOut["@_name"] === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.OUT_COLLECTION
-                      )?.["@_id"];
+                    const ioSpecificationReference = addOrGetIoSpecification(e).dataOutput?.find(
+                      (dOut) =>
+                        dOut["@_name"] === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.OUT_COLLECTION
+                    )?.["@_id"];
 
-                      e.loopCharacteristics.loopDataOutputRef = ioSpecificationReference
-                        ? { __$$text: ioSpecificationReference }
-                        : undefined;
-                    }
+                    e.loopCharacteristics.loopDataOutputRef = ioSpecificationReference
+                      ? { __$$text: ioSpecificationReference }
+                      : undefined;
 
                     e.loopCharacteristics.outputDataItem ??= { "@_id": generateUuid() };
                     e.loopCharacteristics.outputDataItem["@_name"] = newDataOutput;

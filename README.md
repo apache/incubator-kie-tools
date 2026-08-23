@@ -47,7 +47,7 @@ To build and test all packages on this repository, you're going to need:
 
 - Node.js `24` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `10.34.4` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
-- Maven `3.9.11`
+- Maven `3.9.16`
 - Java `17`
 - Go `1.26.5` _(To install, follow these instructions: https://go.dev/doc/install)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_

@@ -21,7 +21,7 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Tasks } from "./Tasks";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";

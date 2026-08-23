@@ -31,7 +31,7 @@ import {
 } from "./AcceleratorsApi";
 import { WorkspaceFile, useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { dirname, join } from "path";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { useGlobalAlert } from "../alerts";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";

@@ -23,7 +23,7 @@ import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { PageHeader } from "@patternfly/react-core/deprecated";
-import { HashRouter as Router, Link, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Link, Route, Routes } from "react-router";
 import { PingPongReactIFrameViewsPage } from "./React/PingPongReactIFrameViewsPage";
 import { PingPongReactDivViewsPage } from "./React/PingPongReactDivViewsPage";
 import { PingPongAngularIFrameViewsPage } from "./Angular/PingPongAngularIFrameViewsPage";

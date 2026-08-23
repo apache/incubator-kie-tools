@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@apidevtools/json-schema-ref-parser>js-yaml': ^3.15.0
+  '@apidevtools/swagger-parser>@apidevtools/json-schema-ref-parser': ^15.3.6
   '@istanbuljs/load-nyc-config>js-yaml': ^3.15.0
   cross-spawn: ^7.0.6
   d3-color: 3.1.0
@@ -692,9 +692,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -927,9 +927,9 @@ importers:
 
   examples/process-compact-architecture-springboot:
     dependencies:
-      '@kie-tools/jbpm-addons-springboot-dev-console':
+      '@kie-tools/jbpm-spring-boot-dev-console':
         specifier: workspace:*
-        version: link:../../packages/jbpm-addons-springboot-dev-console
+        version: link:../../packages/jbpm-spring-boot-dev-console
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
@@ -2207,7 +2207,7 @@ importers:
         specifier: ^2.8.5
         version: 2.8.6
       express:
-        specifier: ^4.22.1
+        specifier: ^4.22.2
         version: 4.22.2
       https-proxy-agent:
         specifier: ^7.0.6
@@ -2400,9 +2400,9 @@ importers:
       react-dom:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -4786,7 +4786,7 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  packages/jbpm-addons-springboot-dev-console:
+  packages/jbpm-spring-boot-dev-console:
     dependencies:
       '@kie-tools/jbpm-dev-console-commons':
         specifier: workspace:*
@@ -5781,9 +5781,9 @@ importers:
       react-dropzone:
         specifier: ^11.4.2
         version: 11.7.1(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-virtualized-auto-sizer:
         specifier: ^1.0.7
         version: 1.0.26(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -6071,9 +6071,9 @@ importers:
       react-redux:
         specifier: ^9.1.2
         version: 9.3.0(@types/react@18.3.31)(react@18.3.1)(redux@4.2.1)
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-sortable-hoc:
         specifier: ^2.0.0
         version: 2.0.0(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -6397,8 +6397,8 @@ importers:
   packages/runtime-tools-components:
     dependencies:
       '@apidevtools/json-schema-ref-parser':
-        specifier: ^13.0.5
-        version: 13.0.5
+        specifier: ^15.3.6
+        version: 15.5.1(@types/json-schema@7.0.15)
       '@kie-tools-core/editor':
         specifier: workspace:*
         version: link:../editor
@@ -6459,9 +6459,9 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       uniforms:
         specifier: ^3.10.2
         version: 3.10.2(react@18.3.1)
@@ -6605,9 +6605,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -6700,7 +6700,7 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1(webpack@5.108.4)
       express:
-        specifier: ^4.22.1
+        specifier: ^4.22.2
         version: 4.22.2
       file-loader:
         specifier: ^6.2.0
@@ -6785,7 +6785,7 @@ importers:
     dependencies:
       '@apidevtools/swagger-parser':
         specifier: ^10.1.0
-        version: 10.1.1(openapi-types@7.2.3)
+        version: 10.1.1(@types/json-schema@7.0.15)(openapi-types@7.2.3)
       '@babel/standalone':
         specifier: 7.15.3
         version: 7.15.3
@@ -6867,9 +6867,9 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       util:
         specifier: ^0.12.5
         version: 0.12.5
@@ -7177,7 +7177,7 @@ importers:
     dependencies:
       '@apidevtools/swagger-parser':
         specifier: ^10.1.0
-        version: 10.1.1(openapi-types@7.2.3)
+        version: 10.1.1(@types/json-schema@7.0.15)(openapi-types@7.2.3)
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api
@@ -7375,9 +7375,9 @@ importers:
       react:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1
-      react-router-dom:
-        specifier: ^6.30.4
-        version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router:
+        specifier: ^7.18.0
+        version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -9324,13 +9324,11 @@ packages:
       '@angular/animations':
         optional: true
 
-  '@apidevtools/json-schema-ref-parser@11.7.2':
-    resolution: {integrity: sha512-4gY54eEGEstClvEkGnwVkTkrx0sqwemEFG5OSRRn3tD91XH0+Q8XIkYIfo7IwEWPpJZwILb9GUXeShtplRc/eA==}
-    engines: {node: '>= 16'}
-
-  '@apidevtools/json-schema-ref-parser@13.0.5':
-    resolution: {integrity: sha512-xfh4xVJD62gG6spIc7lwxoWT+l16nZu1ELyU8FkjaP/oD2yP09EvLAU6KhtudN9aML2Khhs9pY6Slr7KGTES3w==}
-    engines: {node: '>= 16'}
+  '@apidevtools/json-schema-ref-parser@15.5.1':
+    resolution: {integrity: sha512-69KDKWQvk5jfDQfSTzAUHkI731X7CaJLwQxlS87AXyFHoJzsd/Pufrqsz7PqXMgrtAA99D9Y6NujkEkzli6kVA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@types/json-schema': ^7.0.15
 
   '@apidevtools/openapi-schemas@2.1.0':
     resolution: {integrity: sha512-Zc1AlqrJlX3SlpupFGpiLi2EbteyP7fXmUOGup6/DnkRgjP9bgMM/ag+n91rsv0U1Gpz0H3VILA/o3bW7Ua6BQ==}
@@ -12773,10 +12771,6 @@ packages:
       selenium-webdriver: '>=4.6.1'
       typescript: '>=4.6.2'
 
-  '@remix-run/router@1.23.3':
-    resolution: {integrity: sha512-4An71tdz9X8+3sI4Qqqd2LWd9vS39J7sqd9EU4Scw7TJE/qB10Flv/UuqbPVgfQV9XoK8Np6jNquZitnZq5i+Q==}
-    engines: {node: '>=14.0.0'}
-
   '@repeaterjs/repeater@3.0.4':
     resolution: {integrity: sha512-AW8PKd6iX3vAZ0vA43nOUOnbq/X5ihgU+mSXXqunMkeQADGiqw/PY0JNeYtD5sr0PAy51YPgAPbDoeapv9r8WA==}
 
@@ -15618,6 +15612,10 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
+
+  cookie@1.1.1:
+    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
+    engines: {node: '>=18'}
 
   cookiejar@2.1.4:
     resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
@@ -18480,6 +18478,10 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
+  js-yaml@5.2.3:
+    resolution: {integrity: sha512-n+mUVyUX5bVv7G/G2zyIHOhdxfuU1dY2NOFzTQUWiMUbFss8b57NFlgCCaggU78wSw5KVS9cllzeLyzyR+n5nw==}
+    hasBin: true
+
   jsbn@0.1.1:
     resolution: {integrity: sha512-UVU9dibq2JcFWxQPA6KCqj5O42VOmAY3zQUfEKxU0KpTGXwNoCjkX1e13eHNvw/xPynt6pU0rZ1htjWTNTSXsg==}
 
@@ -21049,18 +21051,15 @@ packages:
       react: '>= 16.3'
       react-dom: '>= 16.3'
 
-  react-router-dom@6.30.4:
-    resolution: {integrity: sha512-q4HvNl+mmDdkS0g+MqiBZNteQJCuimWoOyHMy4T/RQLAn9Z29+E91QXRaxOujeMl2HTzRSS0KFPd7lxX3PjV0Q==}
-    engines: {node: '>=14.0.0'}
+  react-router@7.18.2:
+    resolution: {integrity: sha512-aUVMjFm3GAPTTZL7oYr5E7ETiqfQCHRLH+B+5afnICvf0r7kkK4eR6SMuwbSTJw/7t+12khT/Kahij49fqOCIg==}
+    engines: {node: '>=20.0.0'}
     peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
-
-  react-router@6.30.4:
-    resolution: {integrity: sha512-SVUsDe+DybHM/WmYKIVYhZh1o5Dcuf16yM6WjG02Q9XVFMZIJyHYhwrr6bFBXZkVP6z69kNkMyBCujt8FaFLJA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      react: '>=16.8'
+      react: '>=18'
+      react-dom: '>=18'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
 
   react-side-effect@2.1.2:
     resolution: {integrity: sha512-PVjOcvVOyIILrYoyGEpDN3vmYNLdy1CajSFNt4TDsVQC5KpTijDvWVoR+/7Rz2xT978D8/ZtFceXxzsPwZEDvw==}
@@ -21654,6 +21653,9 @@ packages:
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
+
+  set-cookie-parser@2.7.2:
+    resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
 
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -24133,24 +24135,19 @@ snapshots:
       '@angular/core': 20.3.27(@angular/compiler@20.3.27)(rxjs@7.8.2)(zone.js@0.14.10)
       tslib: 2.8.1
 
-  '@apidevtools/json-schema-ref-parser@11.7.2':
-    dependencies:
-      '@jsdevtools/ono': 7.1.3
-      '@types/json-schema': 7.0.15
-      js-yaml: 3.15.0
-
-  '@apidevtools/json-schema-ref-parser@13.0.5':
+  '@apidevtools/json-schema-ref-parser@15.5.1(@types/json-schema@7.0.15)':
     dependencies:
       '@types/json-schema': 7.0.15
-      js-yaml: 3.15.0
+      js-yaml: 5.2.3
+      undici: 6.28.0
 
   '@apidevtools/openapi-schemas@2.1.0': {}
 
   '@apidevtools/swagger-methods@3.0.2': {}
 
-  '@apidevtools/swagger-parser@10.1.1(openapi-types@7.2.3)':
+  '@apidevtools/swagger-parser@10.1.1(@types/json-schema@7.0.15)(openapi-types@7.2.3)':
     dependencies:
-      '@apidevtools/json-schema-ref-parser': 11.7.2
+      '@apidevtools/json-schema-ref-parser': 15.5.1(@types/json-schema@7.0.15)
       '@apidevtools/openapi-schemas': 2.1.0
       '@apidevtools/swagger-methods': 3.0.2
       '@jsdevtools/ono': 7.1.3
@@ -24158,6 +24155,8 @@ snapshots:
       ajv-draft-04: 1.0.0(ajv@8.20.0)
       call-me-maybe: 1.0.2
       openapi-types: 7.2.3
+    transitivePeerDependencies:
+      - '@types/json-schema'
 
   '@apollo/protobufjs@1.2.6':
     dependencies:
@@ -26508,7 +26507,7 @@ snapshots:
       camelcase: 5.3.1
       find-up: 4.1.0
       get-package-type: 0.1.0
-      js-yaml: 3.15.0
+      js-yaml: 3.15.1
       resolve-from: 5.0.0
 
   '@istanbuljs/schema@0.1.6': {}
@@ -28823,8 +28822,6 @@ snapshots:
       selenium-webdriver: 4.46.0
       type-fest: 4.41.0
       typescript: 5.9.3
-
-  '@remix-run/router@1.23.3': {}
 
   '@repeaterjs/repeater@3.0.4': {}
 
@@ -33068,6 +33065,8 @@ snapshots:
 
   cookie@0.7.2: {}
 
+  cookie@1.1.1: {}
+
   cookiejar@2.1.4: {}
 
   cookies@0.9.1:
@@ -36707,6 +36706,10 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
+  js-yaml@5.2.3:
+    dependencies:
+      argparse: 2.0.1
+
   jsbn@0.1.1: {}
 
   jscodeshift@0.15.2(@babel/preset-env@7.29.7(@babel/core@7.29.7)):
@@ -39677,17 +39680,13 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-draggable: 4.7.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  react-router-dom@6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-router@7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@remix-run/router': 1.23.3
+      cookie: 1.1.1
       react: 18.3.1
+      set-cookie-parser: 2.7.2
+    optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)
-      react-router: 6.30.4(react@18.3.1)
-
-  react-router@6.30.4(react@18.3.1):
-    dependencies:
-      '@remix-run/router': 1.23.3
-      react: 18.3.1
 
   react-side-effect@2.1.2(react@18.3.1):
     dependencies:
@@ -40428,6 +40427,8 @@ snapshots:
       - supports-color
 
   set-blocking@2.0.0: {}
+
+  set-cookie-parser@2.7.2: {}
 
   set-function-length@1.2.2:
     dependencies:

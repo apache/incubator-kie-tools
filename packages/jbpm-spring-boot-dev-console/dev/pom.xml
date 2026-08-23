@@ -32,7 +32,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.kie.kogito</groupId>
-  <artifactId>jbpm-addons-springboot-dev-console-dev-app</artifactId>
+  <artifactId>jbpm-spring-boot-dev-console-dev-app</artifactId>
   <version>${revision}</version>
 
   <name>KIE Tools :: jBPM Spring Boot Dev Console :: Dev App</name>
@@ -56,7 +56,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-addons-springboot-dev-console</artifactId>
+      <artifactId>jbpm-spring-boot-dev-console</artifactId>
       <version>${revision}</version>
     </dependency>
 

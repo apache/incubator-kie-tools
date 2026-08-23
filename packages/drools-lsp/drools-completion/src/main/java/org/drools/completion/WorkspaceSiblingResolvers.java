@@ -25,13 +25,20 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Process-wide registry for the active {@link WorkspaceSiblingResolver}.
- * Defaults to directory grouping: all other {@code .drl} files in the same
- * directory as the current document, in stable (sorted) order.
+ *
+ * <p>Resolution order at class-init: a {@link ServiceLoader} provider from
+ * outside this module, then the shipped {@link ConfiguredGroupingResolver}, then
+ * same-directory grouping. A third-party provider is preferred over the shipped
+ * one so that installing a resolver takes nothing more than putting a jar on the
+ * server's classpath — the extension point is of no use if exercising it means
+ * running custom code inside the server process.
  */
 public final class WorkspaceSiblingResolvers {
 
@@ -40,7 +47,7 @@ public final class WorkspaceSiblingResolvers {
     private static final WorkspaceSiblingResolver SAME_DIRECTORY =
             WorkspaceSiblingResolvers::sameDirectorySiblings;
 
-    private static volatile WorkspaceSiblingResolver active = SAME_DIRECTORY;
+    private static volatile WorkspaceSiblingResolver active = discover();
 
     private WorkspaceSiblingResolvers() {
     }
@@ -50,14 +57,32 @@ public final class WorkspaceSiblingResolvers {
     }
 
     /**
-     * Installs {@code resolver}, or restores the same-directory default when
-     * {@code null}.
+     * Installs {@code resolver}, or restores the discovered default when
+     * {@code null}. Takes precedence over any {@link ServiceLoader} provider.
      */
     public static void setActive(WorkspaceSiblingResolver resolver) {
-        active = (resolver == null) ? SAME_DIRECTORY : resolver;
+        active = (resolver == null) ? discover() : resolver;
     }
 
-    private static List<Path> sameDirectorySiblings(Path currentFile) {
+    private static WorkspaceSiblingResolver discover() {
+        WorkspaceSiblingResolver shipped = null;
+        try {
+            for (WorkspaceSiblingResolver provider : ServiceLoader.load(
+                    WorkspaceSiblingResolver.class, WorkspaceSiblingResolvers.class.getClassLoader())) {
+                if (provider instanceof ConfiguredGroupingResolver) {
+                    shipped = provider;
+                    continue;
+                }
+                logger.info("Using DRL workspace sibling resolver: " + provider.getClass().getName());
+                return provider;
+            }
+        } catch (Exception | ServiceConfigurationError e) {
+            logger.log(Level.WARNING, "Failed to load a WorkspaceSiblingResolver provider", e);
+        }
+        return (shipped != null) ? shipped : SAME_DIRECTORY;
+    }
+
+    static List<Path> sameDirectorySiblings(Path currentFile) {
         if (currentFile == null) {
             return Collections.emptyList();
         }

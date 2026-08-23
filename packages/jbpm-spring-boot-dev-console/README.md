@@ -34,7 +34,7 @@ Add the dependency to a jBPM Spring Boot application (an application using `org.
 ```xml
 <dependency>
   <groupId>org.jbpm</groupId>
-  <artifactId>jbpm-addons-springboot-dev-console</artifactId>
+  <artifactId>jbpm-spring-boot-dev-console</artifactId>
 </dependency>
 ```
 
@@ -89,13 +89,13 @@ The Forms page of the console lists them, previews them, and lets you edit them;
 ## Build
 
 ```bash
-pnpm -F @kie-tools/jbpm-addons-springboot-dev-console... build:dev
+pnpm -F @kie-tools/jbpm-spring-boot-dev-console... build:dev
 ```
 
 ## Run the example
 
 ```bash
-pnpm -F @kie-tools/jbpm-addons-springboot-dev-console start
+pnpm -F @kie-tools/jbpm-spring-boot-dev-console start
 ```
 
 Then open `http://localhost:8080/jbpm-dev-console/`. Start a process instance with:

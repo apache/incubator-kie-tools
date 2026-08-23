@@ -18,7 +18,10 @@
  */
 
 import "@testing-library/jest-dom";
+import { TextEncoder } from "util";
 import { enableMapSet, enablePatches } from "immer";
+
+global.TextEncoder = TextEncoder;
 
 enableMapSet();
 enablePatches();

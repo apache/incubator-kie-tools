@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { matchPath } from "react-router-dom";
+import { matchPath } from "react-router";
 import { ImportableUrl, UrlType } from "../importFromUrl/ImportableUrlHooks";
 
 const GITLAB_NAMESPACE_REGEX = "([^\\/]+(?:\\/[^\\/]+)*)"; // group or nested group(s)

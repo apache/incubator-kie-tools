@@ -22,7 +22,7 @@ import { PageHeaderToolsItem } from "@patternfly/react-core/deprecated";
 
 import * as React from "react";
 import { useRoutes } from "../navigation/Hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../settings/SettingsButton";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";

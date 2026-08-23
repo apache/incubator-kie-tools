@@ -53,11 +53,73 @@ Language support for [DRL (Drools Rule Language)](https://kie.apache.org/docs/10
 - Hover tooltips for DRL/Java types with doc-comment rendering
 - Reference-count code lens for DRL declared types
 
+## File Grouping
+
+Scopes completion, navigation and validation to the files a rule compiles with, so `declare` types, imports, functions and `global` declarations resolve across the group. Resolved in this order:
+
+1. The `drools.lsp.grouping` setting
+2. `drl-lsp-kbases.json` anywhere in the workspace — same content as the setting, for committed grouping
+3. `META-INF/kmodule.xml` — the `packages` and `includes` attributes the build already uses
+4. The containing directory of the active file, if none of the above
+
+Changes apply without a restart. The status bar shows the active group, and pins one when a file matches several; pins persist per workspace, and the tooltip names the declaring file. Groups from a `kmodule.xml` show as **KIE base**, all others as **DRL group**.
+
+### Declaring groups
+
+Use `packages`/`includes` for `kmodule.xml` semantics, or `files` for an explicit ordered list. Relative paths resolve against the workspace root in the setting, against the file's own directory in `drl-lsp-kbases.json`.
+
+```json
+{
+  "kbases": [
+    {
+      "name": "validation",
+      "packages": ["!com.example.validation.internal.*", "com.example.validation.*"],
+      "includes": ["shared"]
+    },
+    { "name": "legacy", "files": ["rules/Types.drl", "rules/Enums.drl"] }
+  ]
+}
+```
+
+> In `packages`, the first matching pattern decides — including its sign. List exclusions before the wildcard they carve out of.
+
+### Adopting an existing manifest
+
+`sources` allows rule group definitions with alternate syntax. `aliases` maps each canonical key to one or more alternate keys; several may collapse onto one.
+
+Paths listed explicitly under `files` are taken as given — build output is filtered out of discovered files, not out of a path you named yourself.
+
+```json
+{
+  "sources": [
+    {
+      "include": "**/*_Rule-Configs.json",
+      "pathsRelativeTo": ["**/src/main/resources"],
+      "aliases": {
+        "kbases": "rule.config.list",
+        "name": "rule.config.type",
+        "files": ["relative.path.list", "absolute.path.list"]
+      }
+    }
+  ]
+}
+```
+
+Same-named groups from several files are merged, with a warning.
+
+## Commands
+
+| Command                   | Description                                               |
+| ------------------------- | --------------------------------------------------------- |
+| `DRL: Select File Group…` | Pin the current file to a group, or clear an existing pin |
+| `DRL: Reload File Groups` | Re-read grouping configuration from disk                  |
+
 ## Extension Settings
 
 | Setting                              | Default   | Description                                                   |
 | ------------------------------------ | --------- | ------------------------------------------------------------- |
 | `drools.lsp.logLevel`                | `INFO`    | Server-side log level                                         |
+| `drools.lsp.grouping`                | `{}`      | DRL file grouping, declared inline (see above)                |
 | `drools.lsp.lint.missingEnd`         | `warning` | Severity for missing `end` keyword                            |
 | `drools.lsp.lint.missingSeparator`   | `warning` | Severity for missing constraint separator                     |
 | `drools.lsp.lint.missingSemicolon`   | `warning` | Severity for missing semicolon in consequence                 |
