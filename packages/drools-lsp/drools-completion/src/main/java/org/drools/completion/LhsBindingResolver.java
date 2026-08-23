@@ -376,8 +376,11 @@ public final class LhsBindingResolver {
      * resolving each segment's field type via {@link #lookupFieldType} and
      * advancing through {@code typesByName}. Returns the final segment's (simple)
      * type name, or {@code null} if any segment can't be resolved.
+     *
+     * <p>Also used by member completion after a dot, so that the path a caret
+     * sits at the end of resolves exactly as a binding on the same path would.
      */
-    private static String resolvePath(DeclaredType type, String path,
+    static String resolvePath(DeclaredType type, String path,
                                       Map<String, DeclaredType> typesByName) {
         DeclaredType current = type;
         String resolved = null;
@@ -399,8 +402,8 @@ public final class LhsBindingResolver {
      * stand-in built from the host's member lookup so bindings on classpath and
      * workspace-source types resolve too.
      */
-    private static DeclaredType typeOrClasspath(String name,
-                                                Map<String, DeclaredType> typesByName) {
+    static DeclaredType typeOrClasspath(String name,
+                                        Map<String, DeclaredType> typesByName) {
         DeclaredType declared = typesByName.get(name);
         return declared != null ? declared : ClasspathTypeMembers.asDeclaredType(name);
     }

@@ -384,6 +384,213 @@ class DRLCompletionHelperTest {
         assertThat(fieldLabels).contains("name", "friendly", "legs");
     }
 
+    /**
+     * A caret after a dot can only be followed by a member of the path's type.
+     * The grammar predicts the constraint operators there (it cannot see the path
+     * is unfinished), so that position is answered from the type walk alone.
+     */
+    @Test
+    void memberCompletionAfterADotOnAPatternField() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                  ref : Fact
+                end
+
+                rule R
+                  when
+                    Fact( ref. )
+                  then
+                end
+                """;
+
+        Position caretPosition = new Position(9, 14); // right after 'ref.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("order", "ref");
+        assertThat(result).allSatisfy(item ->
+                assertThat(item.getKind()).isEqualTo(CompletionItemKind.Field));
+    }
+
+    /** Mid-edit the constraint is unfinished; the members must still resolve. */
+    @Test
+    void memberCompletionAfterADotWithTheConstraintStillUnclosed() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                  ref : Fact
+                end
+
+                rule R
+                  when
+                    Fact( ref.""";
+
+        Position caretPosition = new Position(9, 14);
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("order", "ref");
+    }
+
+    @Test
+    void memberCompletionAfterADotWalksEveryHopOfTheChain() {
+        String text = """
+                package demo;
+
+                declare Inner
+                  depth : int
+                end
+
+                declare Fact
+                  inner : Inner
+                end
+
+                rule R
+                  when
+                    Fact( inner.depth. )
+                  then
+                end
+                """;
+
+        // After 'inner.' — one hop, then after 'inner.depth.' — two hops onto an int.
+        List<CompletionItem> oneHop = DRLCompletionHelper.getCompletionItems(
+                text, new Position(12, 16), getLanguageClient(), ClassIndex.empty());
+        assertThat(oneHop).extracting(CompletionItem::getLabel).containsExactly("depth");
+
+        List<CompletionItem> twoHops = DRLCompletionHelper.getCompletionItems(
+                text, new Position(12, 22), getLanguageClient(), ClassIndex.empty());
+        assertThat(twoHops).as("int has no DRL-visible members").isEmpty();
+    }
+
+    @Test
+    void memberCompletionAfterADotOnABinding() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                end
+
+                rule R
+                  when
+                    $f : Fact( order > 0 )
+                    Fact( order > $f. )
+                  then
+                end
+                """;
+
+        Position caretPosition = new Position(9, 21); // right after '$f.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel).containsExactly("order");
+    }
+
+    @Test
+    void memberCompletionAfterADotOnAClasspathType() {
+        String text = """
+                package demo;
+
+                import org.drools.completion.fixtures.Pet;
+
+                declare Owner
+                  pet : Pet
+                end
+
+                rule R
+                  when
+                    Owner( pet. )
+                  then
+                end
+                """;
+
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+        Position caretPosition = new Position(10, 15); // right after 'pet.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty(), memberIndex);
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("name", "friendly", "legs");
+    }
+
+    /** A decimal literal being typed is not a member position. */
+    @Test
+    void aTrailingDotOnANumberIsNotAMemberPosition() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                end
+
+                rule R
+                  when
+                    Fact( order > 1. )
+                  then
+                end
+                """;
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, new Position(9, 20), getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getKind)
+                .doesNotContain(CompletionItemKind.Field);
+    }
+
+    /**
+     * Rule attributes are legal only in a rule/query header. c3 predicts them at a
+     * statement boundary too, where they cannot be typed.
+     */
+    @Test
+    void statementBoundaryOmitsRuleAttributes() {
+        String text = """
+                package demo;
+
+                rule R
+                  when
+                  then
+                end
+
+                """;
+
+        List<String> labels = DRLCompletionHelper.getCompletionItems(
+                        text, new Position(6, 0), getLanguageClient())
+                .stream().map(CompletionItem::getLabel).toList();
+
+        assertThat(labels).contains("import", "global", "rule", "declare", "function", "query");
+        assertThat(labels).doesNotContain(
+                "salience", "no-loop", "dialect", "ruleflow-group", "agenda-group",
+                "auto-focus", "lock-on-active", "activation-group", "date-effective",
+                "date-expires", "calendars", "timer", "duration", "attributes", "enabled");
+    }
+
+    /** The same attributes stay available where they belong. */
+    @Test
+    void ruleHeaderKeepsOfferingRuleAttributes() {
+        String text = """
+                package demo;
+
+                rule R
+                 \s
+                  when
+                  then
+                end
+                """;
+
+        List<String> labels = DRLCompletionHelper.getCompletionItems(
+                        text, new Position(3, 2), getLanguageClient())
+                .stream().map(CompletionItem::getLabel).toList();
+
+        assertThat(labels).contains("salience", "no-loop", "dialect", "when");
+    }
+
     @Test
     void constraintPositionOmitsPrimitiveKeywordNoise() {
         // Inside a pattern's parens c3 also predicts Java expression starters

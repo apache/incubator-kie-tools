@@ -643,7 +643,7 @@ public final class DRLHoverHelper {
      * character offset into {@code text}. DRL files are ASCII in practice, so
      * the character offset matches code units. Clamped to {@code text.length()}.
      */
-    private static int positionToOffset(String text, Position position) {
+    static int positionToOffset(String text, Position position) {
         int line = position.getLine();
         int offset = 0;
         int currentLine = 0;
