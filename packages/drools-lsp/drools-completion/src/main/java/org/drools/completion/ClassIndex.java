@@ -47,6 +47,15 @@ public class ClassIndex {
         return new ClassIndex(new HashMap<>());
     }
 
+    /** Builds an index directly from a simple-name → FQCNs map (defensively copied). */
+    public static ClassIndex of(Map<String, List<String>> nameToFqcns) {
+        Map<String, List<String>> index = new HashMap<>();
+        for (Map.Entry<String, List<String>> e : nameToFqcns.entrySet()) {
+            index.put(e.getKey(), new ArrayList<>(e.getValue()));
+        }
+        return new ClassIndex(index);
+    }
+
     public static ClassIndex build(Set<Path> classpathEntries) {
         Map<String, List<String>> index = new HashMap<>();
         for (Path entry : classpathEntries) {
@@ -63,9 +72,9 @@ public class ClassIndex {
         Map<String, List<String>> merged = new HashMap<>(base.index);
         for (Map.Entry<String, List<String>> entry : overlay.index.entrySet()) {
             merged.merge(entry.getKey(), entry.getValue(), (a, b) -> {
-                List<String> combined = new ArrayList<>(a);
+                java.util.LinkedHashSet<String> combined = new java.util.LinkedHashSet<>(a);
                 combined.addAll(b);
-                return combined;
+                return new ArrayList<>(combined);
             });
         }
         return new ClassIndex(merged);

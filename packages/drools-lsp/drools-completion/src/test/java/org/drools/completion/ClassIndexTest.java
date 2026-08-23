@@ -22,12 +22,16 @@ package org.drools.completion;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassIndexTest {
 
@@ -129,5 +133,28 @@ class ClassIndexTest {
         assertThat(merged.getMatching("Per")).containsExactly("org.example.Person");
         assertThat(merged.getMatching("Or")).containsExactly("com.acme.Order");
         assertThat(merged.size()).isEqualTo(2);
+    }
+
+    @Test
+    void ofBuildsFromNameMap() {
+        ClassIndex idx = ClassIndex.of(Map.of("Patient", List.of("com.example.Patient")));
+        assertTrue(idx.getMatching("Pat").contains("com.example.Patient"));
+        assertEquals(1, idx.size());
+    }
+
+    @Test
+    void mergeDeduplicatesSameFqcn() {
+        ClassIndex source = ClassIndex.of(Map.of("Patient", List.of("com.example.Patient")));
+        ClassIndex compiled = ClassIndex.of(Map.of("Patient", List.of("com.example.Patient")));
+        ClassIndex merged = ClassIndex.merge(source, compiled);
+        assertEquals(List.of("com.example.Patient"), merged.getMatching("Patient"));
+        assertEquals(1, merged.size());
+    }
+
+    @Test
+    void mergeKeepsDistinctCollisions() {
+        ClassIndex a = ClassIndex.of(Map.of("List", List.of("java.util.List")));
+        ClassIndex b = ClassIndex.of(Map.of("List", List.of("com.example.List")));
+        assertEquals(2, ClassIndex.merge(a, b).getMatching("List").size());
     }
 }
