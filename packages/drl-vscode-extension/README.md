@@ -128,8 +128,18 @@ Same-named groups from several files are merged, with a warning.
 | `drools.lsp.lint.mvelPropertyAccess` | `off`     | Hint to prefer property-access style over getter calls in LHS |
 | `drools.lsp.inlayHints.enabled`      | `true`    | Show inline type hints for bound variables                    |
 | `drools.lsp.maven.pomPath`           | `""`      | Maven POM path(s) for classpath resolution                    |
+| `drools.lsp.java.sourcePaths`        | see below | Java source roots used to resolve types before a build        |
+| `drools.lsp.java.packageFilters`     | `[]`      | Package prefixes limiting which Java source types are indexed |
 
 All lint settings accept: `off`, `hint`, `info`, `warning`, `error`.
+
+The project's own Java types resolve from `.java` sources, so completion, hover,
+navigation and the unknown-type lint work on a fresh checkout, before Maven has
+produced any class files. Compiled classes take precedence as soon as they
+exist. `drools.lsp.java.sourcePaths` defaults to `src/main/java` and
+`**/src/main/java`; Maven-convention roots are discovered regardless, and
+entries here are added to them. Both settings are read when the language server
+starts, so changing either needs a restart.
 
 ## Known Issues
 
