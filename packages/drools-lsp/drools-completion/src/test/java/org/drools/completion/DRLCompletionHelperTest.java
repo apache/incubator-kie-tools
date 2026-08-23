@@ -493,6 +493,23 @@ class DRLCompletionHelperTest {
         assertThat(result).extracting(CompletionItem::getLabel).containsExactly("order");
     }
 
+    /**
+     * A dot is not only a member access: it also separates the segments of a
+     * qualified name. The head of such a name resolves to no type, so the member
+     * walk finds nothing and must leave the position to the grammar's own
+     * candidates rather than answering with an empty list.
+     */
+    @Test
+    void aDotInAQualifiedNameStillOffersTheGrammarCandidates() {
+        String text = "package demo;\n\nimport com.example.\n";
+
+        Position caretPosition = new Position(2, 19); // right after 'com.example.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).isNotEmpty();
+    }
+
     @Test
     void memberCompletionAfterADotOnAClasspathType() {
         String text = """

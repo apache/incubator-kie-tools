@@ -135,20 +135,26 @@ public class DRLCompletionHelper {
                 ? nodeIndex
                 : drlParser.getInputStream().size() - 1;
 
+        // A caret directly after a dot is a member position: the only thing that
+        // can follow is a member of the path's type. c3 predicts the constraint
+        // operators there instead (it cannot see that the path is incomplete), so
+        // this position is answered from the type walk alone, keywords included —
+        // but only when the walk recognises the path. A dot also separates the
+        // segments of a qualified name, where the head names no type and the
+        // walk must leave the position to c3 rather than answer with nothing.
+        String[] chain = dottedChainBeforeCaret(text, caretPosition);
+        if (chain != null) {
+            List<CompletionItem> members = memberItemsForChain(chain, text, caretPosition,
+                    compilationUnit, caretTokenIndex, classIndex, memberIndex, documentPath, openFiles);
+            if (members != null) {
+                return members;
+            }
+        }
+
         // Right after '(' the matched token is the paren itself, for which c3
         // yields no candidates; look one token ahead for the constraint, but
         // keep the paren's index to resolve the pattern type (its span ends at
         // '(' until the closing ')' is typed).
-        // A caret directly after a dot is a member position: the only thing that
-        // can follow is a member of the path's type. c3 predicts the constraint
-        // operators there instead (it cannot see that the path is incomplete), so
-        // this position is answered from the type walk alone, keywords included.
-        String[] chain = dottedChainBeforeCaret(text, caretPosition);
-        if (chain != null) {
-            return memberItemsForChain(chain, text, caretPosition, compilationUnit,
-                    caretTokenIndex, classIndex, memberIndex, documentPath, openFiles);
-        }
-
         int candidatesIndex = caretTokenIndex;
         if (caretTokenIndex >= 0 && caretTokenIndex < drlParser.getInputStream().size() - 1
                 && drlParser.getInputStream().get(caretTokenIndex).getType() == DRL10Lexer.LPAREN) {
@@ -286,13 +292,20 @@ public class DRLCompletionHelper {
      * segments are fields. Every hop goes through the same walker the bindings and
      * hover use, so all three agree on what a path resolves to.
      */
+    /**
+     * Completion items for the members of the type the chain resolves to, or
+     * {@code null} when the chain's head names no type the document knows — a
+     * qualified name rather than a member access. An empty list means the path
+     * did resolve and simply has no members to offer, which is an answer: after
+     * a dot nothing but a member is legal.
+     */
     private static List<CompletionItem> memberItemsForChain(String[] chain, String text, Position caret,
                                                             DRL10Parser.CompilationUnitContext compilationUnit,
                                                             int caretTokenIndex, ClassIndex classIndex,
                                                             ClassMemberIndex memberIndex, Path documentPath,
                                                             Map<Path, String> openFiles) {
         if (compilationUnit == null) {
-            return List.of();
+            return null;
         }
         Map<String, DeclaredType> typeIndex = DRLWorkspaceTypeIndex.build(
                 DRLDeclaredTypeParser.extractFromCompilationUnit(compilationUnit), documentPath, openFiles);
@@ -311,7 +324,9 @@ public class DRLCompletionHelper {
             firstFieldSegment = 0;
         }
         if (rootType == null || rootType.isEmpty()) {
-            return List.of();
+            // The head names no type the document knows, so this dot is not a
+            // member access at all — a qualified name, most likely.
+            return null;
         }
 
         String resolved = rootType.substring(rootType.lastIndexOf('.') + 1);
