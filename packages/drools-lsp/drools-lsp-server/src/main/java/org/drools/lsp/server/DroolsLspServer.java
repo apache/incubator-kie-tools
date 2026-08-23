@@ -119,10 +119,11 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
             if (workspaceRootPath != null) {
                 refreshJavaSourceIndex(workspaceRootPath);
             }
-            Set<Path> dirs = buildOutputDirs;
-            if (dirs.isEmpty() && jarClassIndex.size() == 0 && javaSourceIndex.classNames().isEmpty()) {
-                return;
-            }
+            // Published unconditionally. Having nothing to index is itself a
+            // result the consumers need: the source index reaches them only
+            // through publishClassIndex and swapMemberIndex, so returning early
+            // on an empty workspace would leave them answering from the previous
+            // snapshot — for types whose files have just been deleted.
             publishClassIndex();
             // Fresh loader so recompiled classes aren't served from the old one's cache.
             swapMemberIndex(ClassMemberIndex.of(classpathEntries));

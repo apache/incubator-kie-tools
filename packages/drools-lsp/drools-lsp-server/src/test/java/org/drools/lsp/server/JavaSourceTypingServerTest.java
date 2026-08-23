@@ -72,6 +72,45 @@ class JavaSourceTypingServerTest {
         assertThat(members).anyMatch(f -> f.name.equals("code"));
     }
 
+    /**
+     * When the last indexed source disappears, the refreshed — now empty — index
+     * still has to reach its consumers. The rebuild's early return is taken in
+     * exactly this state (no build output, no jars, nothing left to index), and
+     * skipping the publish there leaves definition, type hierarchy and member
+     * lookup answering for a type that no longer exists.
+     */
+    @Test
+    void removingTheLastSourceClearsWhatTheConsumersSee() throws IOException {
+        Path srcDir = tempDir.resolve("src/main/java/com/example");
+        Files.createDirectories(srcDir);
+        Path foo = srcDir.resolve("Foo.java");
+        Files.writeString(foo, """
+                package com.example;
+
+                public class Foo {
+                    public String getCode() {
+                        return "c";
+                    }
+                }
+                """);
+
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        server.initializeJavaSourceTypingForTest(tempDir);
+        assertThat(server.getTextDocumentService().getClassMemberIndexForTest()
+                .membersOf("com.example.Foo")).isNotEmpty();
+
+        Files.delete(foo);
+        server.rebuildClassIndex();
+
+        assertThat(server.getTextDocumentService().getClassMemberIndexForTest()
+                .membersOf("com.example.Foo"))
+                .as("a deleted type must stop answering")
+                .isEmpty();
+        assertThat(server.getTextDocumentService().getClassIndexForTest().size())
+                .as("and stop being offered")
+                .isZero();
+    }
+
     @Test
     void packageFiltersSettingExcludesNonMatchingPackage() throws IOException {
         Path srcDir = tempDir.resolve("src/main/java/com/example");
