@@ -22,6 +22,7 @@ package org.drools.completion;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.completion.fixtures.InitProbe;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,32 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassMemberIndexTest {
+
+    /**
+     * A link error can be transient — a dependency jar being rewritten by a
+     * build running alongside the editor is the ordinary case — so it must not
+     * write the name off for the rest of the index's life. Only a genuine "not
+     * on the classpath" answer is worth remembering, because a name that cannot
+     * be loaded also reports "unverifiable" to the unknown-type lint.
+     */
+    @Test
+    void aTransientLinkFailureIsRetried() {
+        String fqcn = "org.drools.completion.fixtures.Pet";
+        AtomicBoolean failNextLoad = new AtomicBoolean(true);
+        ClassLoader flaky = new ClassLoader(getClass().getClassLoader()) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                if (fqcn.equals(name) && failNextLoad.getAndSet(false)) {
+                    throw new NoClassDefFoundError("jar being rewritten");
+                }
+                return super.loadClass(name);
+            }
+        };
+        ClassMemberIndex index = new ClassMemberIndex(flaky);
+
+        assertTrue(index.membersOf(fqcn).isEmpty(), "the failed attempt yields nothing");
+        assertThat(index.membersOf(fqcn)).as("and the name is not written off").isNotEmpty();
+    }
 
     private final ClassMemberIndex index =
             new ClassMemberIndex(getClass().getClassLoader());

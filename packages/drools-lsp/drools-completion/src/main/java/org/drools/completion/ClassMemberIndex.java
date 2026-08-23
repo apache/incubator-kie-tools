@@ -278,8 +278,18 @@ public final class ClassMemberIndex implements AutoCloseable {
         }
         try {
             return Class.forName(fqcn, false, loader);
-        } catch (Throwable t) {
+        } catch (ClassNotFoundException e) {
+            // Settled: the name is not on this classpath, and asking again on
+            // every keystroke would cost the same answer.
             notLoadable.add(fqcn);
+            return null;
+        } catch (Throwable t) {
+            // A link error can be transient — a dependency jar rewritten by a
+            // build running alongside the editor — so the name is not written
+            // off. Logged because the effect is otherwise invisible: an
+            // unloadable class also reports "unverifiable" to the lint, which
+            // then stops flagging typos on it.
+            logger.log(Level.FINE, t, () -> "Could not load " + fqcn);
             return null;
         }
     }
