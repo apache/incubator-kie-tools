@@ -403,6 +403,34 @@ class DRLInlayHintHelperTest {
             .containsExactlyInAnyOrder(": int", ": int");
     }
 
+    @Test
+    void emitsHintsForBindingsAfterAConditionCommentSayingThen() {
+        String drl = """
+                package demo;
+
+                global java.util.List results;
+
+                declare Fact
+                  code : String
+                end
+
+                rule R
+                  when
+                    Fact( $first : code )
+                    // match this and then the other
+                    Fact( $second : code )
+                  then
+                    results.add($second);
+                end
+                """;
+
+        List<InlayHint> hints = DRLInlayHintHelper.getHints(drl, null);
+
+        // Both declarations, plus the consequence usage.
+        assertThat(hints).extracting(DRLInlayHintHelperTest::labelOf)
+            .containsExactlyInAnyOrder(": String", ": String", ": String");
+    }
+
     private static String labelOf(InlayHint hint) {
         Either<String, ?> label = hint.getLabel();
         return label.isLeft() ? label.getLeft() : null;

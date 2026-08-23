@@ -911,4 +911,31 @@ class DRLHoverHelperTest {
         String md = content(hover);
         assertThat(md).contains("maxBD : BigDecimal").contains("accumulate function");
     }
+
+    @Test
+    void hoverOnABindingUsedInTheConsequenceIgnoresAConditionCommentSayingThen() {
+        String drl = """
+                package demo;
+
+                global java.util.List results;
+
+                declare Fact
+                  code : String
+                end
+
+                rule R
+                  when
+                    Fact( $first : code )
+                    // match this and then the other
+                    Fact( $second : code )
+                  then
+                    results.add($second);
+                end
+                """;
+        // Line 14 is `    results.add($second);`; "$second" spans cols 16-22.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(14, 18),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(content(hover)).contains("String");
+    }
 }
