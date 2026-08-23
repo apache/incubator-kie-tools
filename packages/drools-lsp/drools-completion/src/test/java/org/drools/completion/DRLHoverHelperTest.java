@@ -420,4 +420,132 @@ class DRLHoverHelperTest {
 
         assertThat(content(hover)).contains("java.lang.Object");
     }
+
+    private static final String ENUM_CHAIN_DRL = """
+            package demo;
+
+            declare enum Status
+              ACTIVE, CLOSED;
+            end
+
+            declare Ticket
+              status : Status
+            end
+
+            rule R
+              when
+                Ticket( status == Status.ACTIVE )
+              then
+            end
+            """;
+
+    @Test
+    void hoverOnQualifiedEnumConstantShowsTheEnum() {
+        // Caret on "ACTIVE" in "Status.ACTIVE": line 12 is
+        // `    Ticket( status == Status.ACTIVE )`, "ACTIVE" spans cols 29-34.
+        Hover hover = DRLHoverHelper.hover(ENUM_CHAIN_DRL, new Position(12, 30),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("Status.ACTIVE");
+        assertThat(md).contains("declare enum Status");
+        assertThat(md).contains("CLOSED");
+    }
+
+    @Test
+    void hoverOnEnumQualifierShowsTheEnumItself() {
+        // Caret on "Status" in "Status.ACTIVE" (cols 22-27 of line 12): the
+        // enum's own render, not the constant header.
+        Hover hover = DRLHoverHelper.hover(ENUM_CHAIN_DRL, new Position(12, 23),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("declare enum Status");
+        assertThat(md).doesNotContain("Status.ACTIVE");
+    }
+
+    @Test
+    void hoverOnChainedFieldResolvesThroughTheBinding() {
+        String drl = """
+                package demo;
+
+                declare Order
+                  total : double
+                end
+
+                declare Line
+                  amount : double
+                end
+
+                rule R
+                  when
+                    $o : Order( )
+                    Line( amount > $o.total )
+                  then
+                end
+                """;
+        // Caret on "total" in "$o.total": line 13 is
+        // `    Line( amount > $o.total )`, "total" spans cols 22-26.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(13, 23),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("**total**").contains("double");
+        assertThat(md).contains("Field of `Order`");
+    }
+
+    @Test
+    void hoverMidChainSegmentRendersThatSegment() {
+        String drl = """
+                package demo;
+
+                declare Inner
+                  c : int
+                end
+
+                declare Outer
+                  b : Inner
+                end
+
+                rule R
+                  when
+                    $a : Outer( )
+                    Inner( c > $a.b.c )
+                  then
+                end
+                """;
+        // Caret on "b" in "$a.b.c": line 13 is `    Inner( c > $a.b.c )`,
+        // "b" is col 18. The hover renders b (type Inner, owner Outer), not c.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(13, 18),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("**b**").contains("Inner");
+        assertThat(md).contains("Field of `Outer`");
+        assertThat(md).doesNotContain("**c**").doesNotContain("int");
+    }
+
+    @Test
+    void unresolvableChainYieldsNull() {
+        // `$nope` binds nothing, so the chain must not resolve — and must not
+        // fall back to hovering "age" as a field of the enclosing Person
+        // pattern (here it is $nope's member, not Person's).
+        String drl = """
+                package demo;
+
+                declare Person
+                  age : int
+                end
+
+                rule R
+                  when
+                    Person( age > $nope.age )
+                  then
+                end
+                """;
+        // Caret on "age" in "$nope.age": line 8 is
+        // `    Person( age > $nope.age )`, the chained "age" spans cols 24-26.
+        assertThat(DRLHoverHelper.hover(drl, new Position(8, 25),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null)).isNull();
+    }
 }

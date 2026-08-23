@@ -214,7 +214,13 @@ public final class DRLDefinitionHelper {
         return new Range(new Position(position.getLine(), start), new Position(position.getLine(), end));
     }
 
-    private static boolean isIdentifierChar(char c) {
+    /**
+     * The identifier alphabet shared by the word/chain extractors: DRL
+     * identifiers plus the {@code $} binding prefix. Package-private so
+     * {@link DRLHoverHelper}'s chain extraction stays character-for-character
+     * consistent with {@link #wordAt}.
+     */
+    static boolean isIdentifierChar(char c) {
         return Character.isLetterOrDigit(c) || c == '_' || c == '$';
     }
 

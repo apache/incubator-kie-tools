@@ -75,11 +75,20 @@ public final class DRLHoverHelper {
             return null;
         }
 
+        // Dotted member chain ($o.total, Status.ACTIVE, $a.b.c): handled by a
+        // dedicated segment walk. Single-segment words take the steps below.
+        Chain chain = chainAt(text, position);
+
         // Parse the current document once; every step below reuses this parse.
         ParsedDrl parsed = ParsedDrl.of(text);
         List<DeclaredType> currentDocTypes = parsed.declaredTypes();
         Map<String, DeclaredType> typeIndex =
                 DRLWorkspaceTypeIndex.build(currentDocTypes, documentPath, openFiles);
+
+        if (chain.segments.length >= 2) {
+            return hoverChain(chain, text, position, parsed, currentDocTypes, typeIndex,
+                              classIndex, memberIndex, documentPath, openFiles);
+        }
 
         // 1. The word is itself a DRL-declared type.
         DeclaredType declared = typeIndex.get(word);
@@ -90,11 +99,9 @@ public final class DRLHoverHelper {
 
         // 1b. Documented function/query/global — the doc-comment parser maps
         //     names for all four declaration kinds.
-        String doc = DRLDocCommentParser.docFor(text, word);
+        Hover doc = docHover(word, currentDocTypes, text, documentPath, openFiles);
         if (doc != null) {
-            Map<String, String> linkTargets = DRLWorkspaceTypeIndex.buildLinkTargets(
-                    currentDocTypes, text, documentPath, openFiles);
-            return markdown(DRLDocFormatter.format(doc, linkTargets));
+            return doc;
         }
 
         DRL10Parser.CompilationUnitContext compilationUnit = parsed.compilationUnit;
@@ -130,9 +137,7 @@ public final class DRLHoverHelper {
                 Field field = findField(patternType, word, typeIndex,
                                         compilationUnit, classIndex, memberIndex);
                 if (field != null) {
-                    String owner = patternType.substring(patternType.lastIndexOf('.') + 1);
-                    return markdown("**" + field.name + "** : `" + field.type
-                            + "`\n\nField of `" + owner + "`");
+                    return markdown(renderField(field, simpleName(patternType)));
                 }
             }
         }
@@ -144,6 +149,225 @@ public final class DRLHoverHelper {
             return markdown(renderJavaType(word, fqcn, memberIndex.membersOf(fqcn)));
         }
         return null;
+    }
+
+    /**
+     * The dotted member chain around the caret ({@code $o.total},
+     * {@code Status.ACTIVE.level}): the dot-separated segments (an empty entry
+     * marks a stray dot, e.g. {@code a..b} mid-edit) and the index of the
+     * segment the caret sits in.
+     */
+    private static final class Chain {
+
+        final String[] segments;
+        final int hoveredIndex;
+
+        Chain(String[] segments, int hoveredIndex) {
+            this.segments = segments;
+            this.hoveredIndex = hoveredIndex;
+        }
+    }
+
+    /**
+     * Extracts the dotted chain around the caret by expanding over identifier
+     * characters and {@code .} on the caret's line. Only called after the word
+     * guard in {@link #hover}, so the line index is valid and at least one
+     * segment is non-empty. Kept separate from
+     * {@link DRLDefinitionHelper#wordAt}, whose single-identifier expansion is
+     * shared with rename and go-to-definition.
+     */
+    private static Chain chainAt(String text, Position position) {
+        String[] lines = text.split("\r?\n", -1);
+        String line = lines[position.getLine()];
+        int col = Math.min(Math.max(position.getCharacter(), 0), line.length());
+
+        int start = col;
+        while (start > 0 && isChainChar(line.charAt(start - 1))) {
+            start--;
+        }
+        int end = col;
+        while (end < line.length() && isChainChar(line.charAt(end))) {
+            end++;
+        }
+        String[] segments = line.substring(start, end).split("\\.", -1);
+        return new Chain(segments, hoveredSegment(segments, col - start));
+    }
+
+    private static boolean isChainChar(char c) {
+        return DRLDefinitionHelper.isIdentifierChar(c) || c == '.';
+    }
+
+    /** Index of the segment containing the caret, {@code rel} chars into the chain. */
+    private static int hoveredSegment(String[] segments, int rel) {
+        int segmentStart = 0;
+        for (int i = 0; i < segments.length; i++) {
+            int segmentEnd = segmentStart + segments[i].length();
+            if (rel <= segmentEnd) {
+                return i;
+            }
+            segmentStart = segmentEnd + 1; // skip the '.'
+        }
+        return segments.length - 1;
+    }
+
+    /**
+     * Resolves a dotted chain segment by segment up to the hovered one,
+     * tracking the running type, and renders only the hovered segment.
+     *
+     * <p>Segment 0 resolves as a {@code $binding} (rule-scoped), a declared
+     * type, a classpath type, or a field of the enclosing pattern — and, when
+     * it is itself the hovered segment, falls back to a documented
+     * function/query/global by that name (the chain head is a plain identifier
+     * reference, e.g. {@code results} in {@code results.add(..)}). Later
+     * segments are enum constants or fields of the running type; a constant is
+     * an instance of its enum, so member access on it continues from the enum
+     * type itself.
+     *
+     * <p>Any segment before the hovered one that does not resolve yields no
+     * hover at all: falling back to the single-word steps with one segment of
+     * the chain would mis-render it (e.g. a chain tail as a field of the
+     * enclosing pattern).
+     */
+    private static Hover hoverChain(Chain chain, String text, Position position,
+                                    ParsedDrl parsed, List<DeclaredType> currentDocTypes,
+                                    Map<String, DeclaredType> typeIndex,
+                                    ClassIndex classIndex, ClassMemberIndex memberIndex,
+                                    Path documentPath, Map<Path, String> openFiles) {
+        String runningType = null;
+        for (int i = 0; i <= chain.hoveredIndex; i++) {
+            String segment = chain.segments[i];
+            boolean hovered = i == chain.hoveredIndex;
+            if (segment.isEmpty()) {
+                return null;
+            }
+
+            if (i == 0) {
+                if (segment.charAt(0) == '$') {
+                    int offset = positionToOffset(text, position);
+                    String boundType = LhsBindingResolver.resolveAt(text, offset, typeIndex)
+                            .get(segment.substring(1));
+                    if (boundType == null) {
+                        return null;
+                    }
+                    if (hovered) {
+                        return markdown(renderBinding(segment, boundType, parsed, typeIndex,
+                                currentDocTypes, text, classIndex, memberIndex,
+                                documentPath, openFiles));
+                    }
+                    runningType = boundType;
+                } else if (typeIndex.get(segment) != null) {
+                    if (hovered) {
+                        return markdown(renderDeclaredHover(typeIndex.get(segment), typeIndex,
+                                currentDocTypes, text, documentPath, openFiles));
+                    }
+                    runningType = segment;
+                } else {
+                    String fqcn = DRLCompletionHelper.resolveFqcn(
+                            segment, segment, parsed.compilationUnit, classIndex);
+                    if (fqcn != null) {
+                        if (hovered) {
+                            return markdown(renderJavaType(
+                                    segment, fqcn, memberIndex.membersOf(fqcn)));
+                        }
+                        runningType = fqcn;
+                    } else {
+                        Integer nodeIndex = parsed.tokenIndexAt(position);
+                        String patternType = nodeIndex == null ? null
+                                : DRLCompletionHelper.findEnclosingPatternTypeName(
+                                        parsed.compilationUnit, nodeIndex);
+                        Field field = patternType == null || patternType.equals(segment) ? null
+                                : findField(patternType, segment, typeIndex,
+                                            parsed.compilationUnit, classIndex, memberIndex);
+                        if (field != null) {
+                            if (hovered) {
+                                return markdown(renderField(field, simpleName(patternType)));
+                            }
+                            runningType = field.type;
+                        } else if (hovered) {
+                            return docHover(segment, currentDocTypes, text,
+                                            documentPath, openFiles);
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+            } else {
+                DeclaredType declared = typeIndex.get(simpleName(runningType));
+                if (declared != null && declared.isEnum && isEnumConstant(declared, segment)) {
+                    if (hovered) {
+                        return markdown(fencedHeader(declared.name + "." + segment)
+                                + renderDeclaredHover(declared, typeIndex, currentDocTypes,
+                                                      text, documentPath, openFiles));
+                    }
+                    // Running type stays the enum: the constant is an instance of it.
+                } else {
+                    Field field = findField(runningType, segment, typeIndex,
+                                            parsed.compilationUnit, classIndex, memberIndex);
+                    if (field == null) {
+                        return null;
+                    }
+                    if (hovered) {
+                        return markdown(renderField(field, simpleName(runningType)));
+                    }
+                    runningType = field.type;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** True when {@code name} is a constant of {@code enumType} (a field typed as the enum). */
+    private static boolean isEnumConstant(DeclaredType enumType, String name) {
+        return enumType.fields.stream()
+                .anyMatch(field -> name.equals(field.name) && enumType.name.equals(field.type));
+    }
+
+    /** Header {@code $x : Type} followed by the bound type's details. */
+    private static String renderBinding(String binding, String typeName, ParsedDrl parsed,
+                                        Map<String, DeclaredType> typeIndex,
+                                        List<DeclaredType> currentDocTypes, String text,
+                                        ClassIndex classIndex, ClassMemberIndex memberIndex,
+                                        Path documentPath, Map<Path, String> openFiles) {
+        String header = fencedHeader(binding + " : " + typeName);
+        DeclaredType declared = typeIndex.get(typeName);
+        if (declared != null) {
+            return header + renderDeclaredHover(declared, typeIndex, currentDocTypes, text,
+                                                documentPath, openFiles);
+        }
+        String fqcn = DRLCompletionHelper.resolveFqcn(
+                typeName, typeName, parsed.compilationUnit, classIndex);
+        if (fqcn != null) {
+            return header + renderJavaType(typeName, fqcn, memberIndex.membersOf(fqcn));
+        }
+        return header.stripTrailing();
+    }
+
+    private static String fencedHeader(String content) {
+        return "```\n" + content + "\n```\n\n";
+    }
+
+    private static String renderField(Field field, String owner) {
+        return "**" + field.name + "** : `" + field.type + "`\n\nField of `" + owner + "`";
+    }
+
+    private static String simpleName(String typeName) {
+        return typeName.substring(typeName.lastIndexOf('.') + 1);
+    }
+
+    /**
+     * Hover for a documented function, query, or global named {@code name}, or
+     * {@code null} when it has no doc comment. Shared by the single-word flow
+     * and the chain-head fallback.
+     */
+    private static Hover docHover(String name, List<DeclaredType> currentDocTypes, String text,
+                                  Path documentPath, Map<Path, String> openFiles) {
+        String doc = DRLDocCommentParser.docFor(text, name);
+        if (doc == null) {
+            return null;
+        }
+        Map<String, String> linkTargets = DRLWorkspaceTypeIndex.buildLinkTargets(
+                currentDocTypes, text, documentPath, openFiles);
+        return markdown(DRLDocFormatter.format(doc, linkTargets));
     }
 
     /**
