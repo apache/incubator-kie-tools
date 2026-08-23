@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.parser.antlr4.DRL10Parser;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.MarkupContent;
@@ -30,14 +32,19 @@ import org.eclipse.lsp4j.MarkupKind;
 import org.eclipse.lsp4j.Position;
 
 /**
- * Hover content for DRL documents: type structure for pattern type names and
- * type information for fields inside constraints.
+ * Hover content for DRL documents: declared and classpath types, fields inside
+ * constraints, bound variables, dotted member chains ({@code $o.total},
+ * {@code Status.ACTIVE}) rendered at the hovered segment, qualified enum
+ * constants, accumulate-function names, and doc comments for documented
+ * {@code function}/{@code query}/{@code global} declarations.
  *
  * <p>Type names resolve through {@link DRLWorkspaceTypeIndex} — the same
  * layered view (current document, open unsaved siblings, on-disk siblings)
  * that completion and go-to-definition use — then classpath types through
  * imports and the class index. Declared types render as their declare block
  * with the doc comment above it, classpath types as their member list.
+ * Accumulate functions are detected structurally from the parse tree; their
+ * result types come from {@link AccumulateFunctionTypes}.
  */
 public final class DRLHoverHelper {
 
@@ -97,17 +104,29 @@ public final class DRLHoverHelper {
                     declared, typeIndex, currentDocTypes, text, documentPath, openFiles));
         }
 
-        // 1b. Documented function/query/global — the doc-comment parser maps
+        DRL10Parser.CompilationUnitContext compilationUnit = parsed.compilationUnit;
+        Integer nodeIndex = parsed.tokenIndexAt(position);
+
+        // 1b. Accumulate function name ($c : count()): detected purely from
+        //     the parse tree — the caret's terminal sits under the function's
+        //     own identifier. Structural, so it outranks the name-based doc
+        //     step below: at this position the identifier can only be an
+        //     accumulate function, even when a DRL function shares its name.
+        if (nodeIndex != null) {
+            Hover accumulate = accumulateFunctionHover(word, compilationUnit, nodeIndex);
+            if (accumulate != null) {
+                return accumulate;
+            }
+        }
+
+        // 1c. Documented function/query/global — the doc-comment parser maps
         //     names for all four declaration kinds.
         Hover doc = docHover(word, currentDocTypes, text, documentPath, openFiles);
         if (doc != null) {
             return doc;
         }
 
-        DRL10Parser.CompilationUnitContext compilationUnit = parsed.compilationUnit;
-        Integer nodeIndex = parsed.tokenIndexAt(position);
-
-        // 2. Bound variable: resolve $var to its type via the shared binding
+        // 3. Bound variable: resolve $var to its type via the shared binding
         //    engine (pattern, field, nested-path, JDK-accessor, accumulate),
         //    scoped to the rule under the caret so a binding name reused across
         //    rules resolves to the right one, then hover that type.
@@ -129,7 +148,7 @@ public final class DRLHoverHelper {
             }
         }
 
-        // 3. Field of the pattern enclosing the caret.
+        // 4. Field of the pattern enclosing the caret.
         if (nodeIndex != null) {
             String patternType = DRLCompletionHelper.findEnclosingPatternTypeName(
                     compilationUnit, nodeIndex);
@@ -142,7 +161,7 @@ public final class DRLHoverHelper {
             }
         }
 
-        // 4. Classpath type (or java.lang built-in). Show the hover even with no
+        // 5. Classpath type (or java.lang built-in). Show the hover even with no
         //    members — knowing the FQN (e.g. java.lang.Object) is still useful.
         String fqcn = DRLCompletionHelper.resolveFqcn(word, word, compilationUnit, classIndex);
         if (fqcn != null) {
@@ -340,6 +359,72 @@ public final class DRLHoverHelper {
             return header + renderJavaType(typeName, fqcn, memberIndex.membersOf(fqcn));
         }
         return header.stripTrailing();
+    }
+
+    /**
+     * Hover for an accumulate function name ({@code count} in
+     * {@code $c : count()}), or {@code null} when the word at
+     * {@code tokenIndex} is not one. Detection is purely structural: the
+     * terminal at that token index must BE (part of) the function identifier
+     * of an {@link DRL10Parser.AccumulateFunctionContext} — an argument whose
+     * text merely equals the function name does not qualify — and the name
+     * must be a known accumulate function.
+     */
+    private static Hover accumulateFunctionHover(String word,
+                                                 DRL10Parser.CompilationUnitContext compilationUnit,
+                                                 int tokenIndex) {
+        TerminalNode terminal = terminalAtTokenIndex(compilationUnit, tokenIndex);
+        if (terminal == null) {
+            return null;
+        }
+        DRL10Parser.AccumulateFunctionContext function = enclosingAccumulateFunction(terminal);
+        if (function == null || function.drlIdentifier() == null
+                || !word.equals(function.drlIdentifier().getText())
+                || !isUnder(terminal, function.drlIdentifier())) {
+            return null;
+        }
+        String resultType = AccumulateFunctionTypes.get().get(word);
+        if (resultType == null) {
+            return null;
+        }
+        return markdown(fencedHeader(word + " : " + resultType) + "_accumulate function_");
+    }
+
+    /**
+     * The terminal node whose token sits at {@code tokenIndex} in the parse
+     * tree rooted at {@code node}, or {@code null} when none does.
+     */
+    private static TerminalNode terminalAtTokenIndex(ParseTree node, int tokenIndex) {
+        if (node instanceof TerminalNode terminal) {
+            return terminal.getSymbol().getTokenIndex() == tokenIndex ? terminal : null;
+        }
+        for (int i = 0; i < node.getChildCount(); i++) {
+            TerminalNode found = terminalAtTokenIndex(node.getChild(i), tokenIndex);
+            if (found != null) {
+                return found;
+            }
+        }
+        return null;
+    }
+
+    /** The nearest {@code accumulateFunction} ancestor of {@code node}, or {@code null}. */
+    private static DRL10Parser.AccumulateFunctionContext enclosingAccumulateFunction(ParseTree node) {
+        for (ParseTree current = node; current != null; current = current.getParent()) {
+            if (current instanceof DRL10Parser.AccumulateFunctionContext function) {
+                return function;
+            }
+        }
+        return null;
+    }
+
+    /** True when {@code node} is {@code ancestor} itself or sits beneath it. */
+    private static boolean isUnder(ParseTree node, ParseTree ancestor) {
+        for (ParseTree current = node; current != null; current = current.getParent()) {
+            if (current == ancestor) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String fencedHeader(String content) {

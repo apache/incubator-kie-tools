@@ -548,4 +548,196 @@ class DRLHoverHelperTest {
         assertThat(DRLHoverHelper.hover(drl, new Position(8, 25),
                 ClassIndex.empty(), ClassMemberIndex.empty(), null)).isNull();
     }
+
+    private static final String ACCUMULATE_DRL = """
+            package demo;
+
+            declare Person
+              name : String
+            end
+
+            rule R
+              when
+                accumulate( $p : Person(); $c : count() )
+              then
+            end
+            """;
+
+    @Test
+    void hoverOnAccumulateFunctionShowsResultType() {
+        // Caret on "count" in "$c : count()": line 8 is
+        // `    accumulate( $p : Person(); $c : count() )`, "count" spans
+        // cols 36-40.
+        Hover hover = DRLHoverHelper.hover(ACCUMULATE_DRL, new Position(8, 38),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("count : Long");
+        assertThat(md).contains("accumulate function");
+    }
+
+    private static final String COUNT_FIELD_DRL = """
+            package demo;
+
+            declare Bucket
+              count : int
+            end
+
+            rule R
+              when
+                Bucket( count > 0 )
+              then
+            end
+            """;
+
+    @Test
+    void countOutsideAccumulateIsNotAFunctionHover() {
+        // "count" here is a plain field of Bucket, not an accumulate function:
+        // line 8 is `    Bucket( count > 0 )`, "count" spans cols 12-16. It must
+        // render as a field, never as the accumulate-function hover.
+        Hover hover = DRLHoverHelper.hover(COUNT_FIELD_DRL, new Position(8, 14),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("count").contains("int");
+        assertThat(md).doesNotContain("accumulate function");
+    }
+
+    private static final String COLLECT_ARG_DRL = """
+            package demo;
+
+            declare Person
+              name : String
+            end
+
+            rule R
+              when
+                accumulate( $p : Person(); $l : collectList($p) )
+              then
+            end
+            """;
+
+    @Test
+    void hoverOnAccumulateArgumentResolvesAsTheBinding() {
+        // Caret on "$p" inside "collectList($p)" (line 8, cols 48-49): the
+        // argument must resolve through the binding step, never as the
+        // function itself.
+        Hover hover = DRLHoverHelper.hover(COLLECT_ARG_DRL, new Position(8, 48),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("declare Person");
+        assertThat(md).doesNotContain("accumulate function");
+    }
+
+    private static final String SUM_ARG_DRL = """
+            package demo;
+
+            declare Person
+              weight : int
+            end
+
+            rule R
+              when
+                accumulate( $p : Person(); $t : sum(sum) )
+              then
+            end
+            """;
+
+    @Test
+    void accumulateArgumentTextEqualToTheFunctionNameIsNotAFunctionHover() {
+        // Line 8 is `    accumulate( $p : Person(); $t : sum(sum) )`: the
+        // function identifier spans cols 36-38, the argument cols 40-42. Only
+        // the identifier itself may render the function hover; the argument
+        // resolves as nothing here and must yield no hover at all.
+        Hover hover = DRLHoverHelper.hover(SUM_ARG_DRL, new Position(8, 41),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(hover).isNull();
+    }
+
+    private static final String DOCUMENTED_SUM_DRL = """
+            package demo;
+
+            declare Person
+              weight : int
+            end
+
+            /**
+             * Adds two numbers the slow way.
+             */
+            function int sum(int a, int b) {
+                return a + b;
+            }
+
+            rule R
+              when
+                accumulate( Person( $w : weight ); $t : sum($w) )
+              then
+            end
+            """;
+
+    @Test
+    void accumulateUsageOutranksASameNamedDocumentedFunction() {
+        // Line 15 is `    accumulate( Person( $w : weight ); $t : sum($w) )`;
+        // the accumulate identifier "sum" spans cols 44-46. At that position
+        // the name is structurally an accumulate function, so the hover must
+        // show the function's result type — not the doc of the DRL function
+        // that happens to share its name.
+        Hover hover = DRLHoverHelper.hover(DOCUMENTED_SUM_DRL, new Position(15, 45),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("sum : Double").contains("accumulate function");
+        assertThat(md).doesNotContain("slow way");
+    }
+
+    @Test
+    void documentedFunctionStillShowsItsDocOutsideAccumulate() {
+        // Line 9 is `function int sum(int a, int b) {`; "sum" spans cols
+        // 13-15. Outside an accumulate span the doc-comment hover applies.
+        Hover hover = DRLHoverHelper.hover(DOCUMENTED_SUM_DRL, new Position(9, 14),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(content(hover)).contains("Adds two numbers the slow way.");
+    }
+
+    @Test
+    void hoverOnAccumulateResultBindingResolvesAsTheBinding() {
+        // Caret on "$c" in "$c : count()" (line 8, cols 31-32): the label
+        // sits inside the accumulateFunction node, but only the function
+        // identifier itself may render the function hover — the label resolves
+        // through the binding step to the function's result type.
+        Hover hover = DRLHoverHelper.hover(ACCUMULATE_DRL, new Position(8, 31),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("Long");
+        assertThat(md).doesNotContain("accumulate function");
+    }
+
+    private static final String BIG_DECIMAL_ACCUMULATE_DRL = """
+            package demo;
+
+            declare Person
+              amount : java.math.BigDecimal
+            end
+
+            rule R
+              when
+                accumulate( Person( $a : amount ); $m : maxBD($a) )
+              then
+            end
+            """;
+
+    @Test
+    void hoverOnABigDecimalAccumulateFunctionShowsItsResultType() {
+        // Line 8 is `    accumulate( Person( $a : amount ); $m : maxBD($a) )`;
+        // the function identifier "maxBD" spans cols 44-48.
+        Hover hover = DRLHoverHelper.hover(BIG_DECIMAL_ACCUMULATE_DRL, new Position(8, 46),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("maxBD : BigDecimal").contains("accumulate function");
+    }
 }
