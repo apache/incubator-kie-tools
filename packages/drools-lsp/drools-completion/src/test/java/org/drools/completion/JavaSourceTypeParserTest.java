@@ -38,6 +38,33 @@ class JavaSourceTypeParserTest {
         return t.members.stream().filter(f -> f.name.equals(name)).findFirst();
     }
 
+    /**
+     * Reflection reports public methods and public constructors only, so the
+     * source view must not offer more than the compiled view will: a member that
+     * appears before a build and vanishes after it is worse than one that never
+     * appeared, and hover's Constructors section would otherwise name a
+     * constructor the author cannot call.
+     */
+    @Test
+    void nonPublicGettersAndConstructorsAreNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public int id;\n"
+            + "  private String secret;\n"
+            + "  private String getSecret() { return secret; }\n"
+            + "  public String getCode() { return \"c\"; }\n"
+            + "  private Order() { }\n"
+            + "  public Order(int id) { }\n"
+            + "}\n");
+
+        assertTrue(member(t, "id").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "code").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "secret").isEmpty(),
+            () -> "a non-public getter must not be a member: " + t.members);
+        assertEquals(List.of("Order(int)"), t.constructors);
+    }
+
     @Test
     void parsesClassFieldsGettersAndFqcn() {
         JavaSourceType t = only(

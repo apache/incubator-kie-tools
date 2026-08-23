@@ -251,14 +251,14 @@ public final class JavaSourceTypeParser {
                         String name = vd.variableDeclaratorId().identifier().getText();
                         fieldsOut.add(new Field(name, type, null, Field.Origin.FIELD));
                     }
-                } else if (md.methodDeclaration() != null) {
+                } else if (md.methodDeclaration() != null && hasPublicModifier(cbd.modifier())) {
                     JavaParser.MethodDeclarationContext mt = md.methodDeclaration();
                     String property = getterPropertyOf(mt.typeTypeOrVoid(), mt.identifier(), mt.formalParameters());
                     if (property != null) {
                         gettersOut.add(new Field(property, simplify(mt.typeTypeOrVoid().typeType()), null,
                                 Field.Origin.GETTER));
                     }
-                } else if (md.constructorDeclaration() != null) {
+                } else if (md.constructorDeclaration() != null && hasPublicModifier(cbd.modifier())) {
                     ctorsOut.add(constructorSignature(simpleName, md.constructorDeclaration().formalParameters()));
                 }
             } catch (Exception e) {
