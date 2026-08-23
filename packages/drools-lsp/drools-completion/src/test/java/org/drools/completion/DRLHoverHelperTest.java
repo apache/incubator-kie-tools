@@ -938,4 +938,39 @@ class DRLHoverHelperTest {
 
         assertThat(content(hover)).contains("String");
     }
+
+    private static final String PRIMITIVE_BINDING_DRL = """
+            package demo;
+
+            global java.util.List results;
+
+            declare Fact
+              size : int
+            end
+
+            rule R
+              when
+                Fact( $size : size )
+              then
+                results.add($size);
+            end
+            """;
+
+    @Test
+    void hoverOnAPrimitiveTypedBindingNamesItsType() {
+        // Line 10 is `    Fact( $size : size )`; the binding spans cols 10-14.
+        Hover hover = DRLHoverHelper.hover(PRIMITIVE_BINDING_DRL, new Position(10, 12),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(content(hover)).contains("$size").contains("int");
+    }
+
+    @Test
+    void hoverOnAPrimitiveTypedBindingInTheConsequenceNamesItsType() {
+        // Line 12 is `    results.add($size);`; the binding spans cols 16-20.
+        Hover hover = DRLHoverHelper.hover(PRIMITIVE_BINDING_DRL, new Position(12, 18),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        assertThat(content(hover)).contains("$size").contains("int");
+    }
 }

@@ -146,6 +146,9 @@ public final class DRLHoverHelper {
                     return markdown(renderJavaType(boundType, boundFqcn, memberIndex.membersOf(boundFqcn),
                             memberIndex.constructorsOf(boundFqcn)));
                 }
+                // Nothing to describe beyond the name: a primitive has no class
+                // to load and no members, and the type is the useful part anyway.
+                return markdown(fencedHeader(word + " : " + boundType).stripTrailing());
             }
         }
 
