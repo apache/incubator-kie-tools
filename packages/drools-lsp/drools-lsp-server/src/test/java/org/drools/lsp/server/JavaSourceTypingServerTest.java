@@ -23,10 +23,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.completion.ClassIndex;
 import org.drools.completion.ClassMemberIndex;
 import org.drools.completion.Field;
+import org.drools.completion.LhsBindingResolver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -109,6 +111,43 @@ class JavaSourceTypingServerTest {
         assertThat(server.getTextDocumentService().getClassIndexForTest().size())
                 .as("and stop being offered")
                 .isZero();
+    }
+
+    /**
+     * The classpath-members seam the document service installs is JVM-wide
+     * static state, and shutdown already releases this server's other global
+     * state — the member index's loader, and both parse caches. The seam has to
+     * go with them, or a stopped server keeps answering through a closure that
+     * pins it.
+     */
+    @Test
+    void shutdownReleasesTheClasspathMembersSeam() throws IOException {
+        Path srcDir = tempDir.resolve("src/main/java/com/example");
+        Files.createDirectories(srcDir);
+        Files.writeString(srcDir.resolve("Foo.java"), """
+                package com.example;
+
+                public class Foo {
+                    public String getCode() {
+                        return "c";
+                    }
+                }
+                """);
+
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        server.initializeJavaSourceTypingForTest(tempDir);
+
+        String drl = "rule R\n  when\n    Foo( $c : code )\n  then\nend\n";
+        int caret = drl.indexOf("$c");
+        assertThat(LhsBindingResolver.resolveAt(drl, caret, Map.of()))
+                .as("the seam answers while the server is up")
+                .containsEntry("c", "String");
+
+        server.shutdown().join();
+
+        assertThat(LhsBindingResolver.resolveAt(drl, caret, Map.of()))
+                .as("and not after it has stopped")
+                .doesNotContainKey("c");
     }
 
     @Test

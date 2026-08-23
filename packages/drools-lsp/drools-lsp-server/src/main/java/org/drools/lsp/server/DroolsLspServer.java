@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 
 import org.drools.completion.ClassIndex;
 import org.drools.completion.ClassMemberIndex;
+import org.drools.completion.ClasspathTypeMembers;
 import org.drools.completion.DRLDeclaredTypeParser;
 import org.drools.completion.JavaSourceRoots;
 import org.drools.completion.JavaSourceTypeIndex;
@@ -605,6 +606,9 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         }
         DRLDeclaredTypeParser.clearCache();
         JavaSourceTypeIndex.clearCache();
+        // The lookup closes over the document service, so leaving it installed
+        // keeps a stopped server — and its indexes — reachable and answering.
+        ClasspathTypeMembers.install(null);
         return CompletableFuture.completedFuture(null);
     }
 
