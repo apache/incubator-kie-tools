@@ -21,6 +21,8 @@ package org.drools.completion;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.Position;
@@ -175,6 +177,91 @@ class DRLHoverHelperTest {
         String md = content(hover);
         assertThat(md).contains("org.drools.completion.fixtures.Pet");
         assertThat(md).contains("name").contains("friendly").contains("legs");
+    }
+
+    @Test
+    void hoverOnDeclareExtendingAJavaClassShowsTheInheritedJavaFields() {
+        String drl = """
+                package demo;
+
+                import org.drools.completion.fixtures.Pet;
+
+                declare SpecialPet extends Pet
+                  nickname : String
+                end
+
+                rule R
+                  when
+                    SpecialPet( )
+                  then
+                end
+                """;
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+        ClasspathTypeMembers.install(name -> "Pet".equals(name)
+                ? memberIndex.membersOf("org.drools.completion.fixtures.Pet")
+                : List.of());
+        try {
+            // Caret on the declare's own name (line 4: "declare SpecialPet extends Pet").
+            Hover hover = DRLHoverHelper.hover(drl, new Position(4, 10),
+                    ClassIndex.empty(), memberIndex, null);
+
+            String md = content(hover);
+            assertThat(md).contains("nickname");
+            // Inherited from the Java supertype, which the declared-type index
+            // cannot describe on its own.
+            assertThat(md).contains("legs").contains("name").contains("friendly");
+        } finally {
+            ClasspathTypeMembers.install(null);
+        }
+    }
+
+    @Test
+    void hoverOnFullyQualifiedTypeNameResolvesTheType() {
+        String drl = """
+                package demo;
+
+                rule R
+                  when
+                    org.drools.completion.fixtures.Pet( )
+                  then
+                end
+                """;
+        ClassIndex classIndex = ClassIndex.of(
+                Map.of("Pet", List.of("org.drools.completion.fixtures.Pet")));
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+
+        // Caret on the "Pet" segment of the qualified name.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(4, 36), classIndex, memberIndex, null);
+
+        String md = content(hover);
+        assertThat(md).contains("org.drools.completion.fixtures.Pet");
+        assertThat(md).contains("name").contains("legs");
+    }
+
+    /**
+     * The package segments of a qualified name resolve to nothing on their own,
+     * so the chain walk cannot start from one. Any segment of the name describes
+     * the type the whole name identifies.
+     */
+    @Test
+    void hoverOnAPackageSegmentOfAQualifiedNameStillDescribesTheType() {
+        String drl = """
+                package demo;
+
+                rule R
+                  when
+                    org.drools.completion.fixtures.Pet( )
+                  then
+                end
+                """;
+        ClassIndex classIndex = ClassIndex.of(
+                Map.of("Pet", List.of("org.drools.completion.fixtures.Pet")));
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+
+        // Caret on "org", the first package segment.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(4, 5), classIndex, memberIndex, null);
+
+        assertThat(content(hover)).contains("org.drools.completion.fixtures.Pet");
     }
 
     @Test

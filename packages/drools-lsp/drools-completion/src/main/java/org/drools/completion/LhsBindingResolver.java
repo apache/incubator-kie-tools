@@ -237,7 +237,7 @@ public final class LhsBindingResolver {
 
             int bodyStart = openParen + 1;
             String body = whenSection.substring(bodyStart, closeParen);
-            DeclaredType declared = typesByName.get(typeName);
+            DeclaredType declared = typeOrClasspath(typeName, typesByName);
 
             Matcher fb = FIELD_BINDING.matcher(body);
             while (fb.find()) {
@@ -306,7 +306,9 @@ public final class LhsBindingResolver {
             if (current.extendsName == null) {
                 return null;
             }
-            current = typesByName.get(current.extendsName);
+            // The supertype may be a Java class rather than another declare, in
+            // which case only the host can describe it.
+            current = typeOrClasspath(current.extendsName, typesByName);
         }
         return null;
     }
@@ -329,9 +331,20 @@ public final class LhsBindingResolver {
             if (resolved == null) {
                 return null;
             }
-            current = typesByName.get(resolved);
+            current = typeOrClasspath(resolved, typesByName);
         }
         return resolved;
+    }
+
+    /**
+     * The DRL-declared type named {@code name}, or — when none is declared — a
+     * stand-in built from the host's member lookup so bindings on classpath and
+     * workspace-source types resolve too.
+     */
+    private static DeclaredType typeOrClasspath(String name,
+                                                Map<String, DeclaredType> typesByName) {
+        DeclaredType declared = typesByName.get(name);
+        return declared != null ? declared : ClasspathTypeMembers.asDeclaredType(name);
     }
 
     private static String simpleName(String type) {

@@ -37,6 +37,8 @@ import java.util.logging.Logger;
 
 import org.drools.completion.ClassIndex;
 import org.drools.completion.ClassMemberIndex;
+import org.drools.completion.ClasspathTypeMembers;
+import org.drools.completion.Field;
 import org.drools.completion.DRLCompletionHelper;
 import org.drools.completion.DRLCodeLensHelper;
 import org.drools.completion.DRLDefinitionHelper;
@@ -111,6 +113,46 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     public DroolsLspDocumentService(DroolsLspServer server) {
         this.server = server;
+        // Lets binding resolution describe types the DRL does not declare, so
+        // hover and inlay hints work on Java fact classes. The closure reads the
+        // live indexes on every call, so a rebuilt classpath needs no re-install.
+        ClasspathTypeMembers.install(this::membersOfTypeName);
+    }
+
+    /**
+     * Members of the type named {@code typeName} as written in the DRL, with
+     * inherited members folded in — {@link ClassMemberIndex} reflects over the
+     * full hierarchy, and its source fallback walks the {@code extends} chain,
+     * so a superclass field resolves before and after a build. Empty when the
+     * name is unknown or ambiguous.
+     */
+    private List<Field> membersOfTypeName(String typeName) {
+        if (typeName == null || typeName.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String fqcn = typeName.indexOf('.') >= 0
+                ? typeName
+                : uniqueFqcnForSimpleName(typeName);
+        return fqcn == null ? Collections.emptyList() : classMemberIndex.membersOf(fqcn);
+    }
+
+    /**
+     * The single classpath FQCN whose simple name is {@code simpleName}, or
+     * {@code null} when none or several match — the same any-package,
+     * skip-when-ambiguous rule {@code DRLCompletionHelper.resolveFqcn} applies.
+     */
+    private String uniqueFqcnForSimpleName(String simpleName) {
+        String suffix = "." + simpleName;
+        String found = null;
+        for (String fqcn : classIndex.getMatching(simpleName)) {
+            if (fqcn.endsWith(suffix) || fqcn.equals(simpleName)) {
+                if (found != null && !found.equals(fqcn)) {
+                    return null;
+                }
+                found = fqcn;
+            }
+        }
+        return found;
     }
 
     public void setClassIndex(ClassIndex classIndex) {

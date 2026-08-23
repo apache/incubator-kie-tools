@@ -255,7 +255,27 @@ public final class DRLHoverHelper {
                                     ClassIndex classIndex, ClassMemberIndex memberIndex,
                                     Path documentPath, Map<Path, String> openFiles) {
         String runningType = null;
-        for (int i = 0; i <= chain.hoveredIndex; i++) {
+        int start = 0;
+
+        // A chain can open with a fully-qualified type name, whose leading
+        // segments are package names that resolve to nothing on their own
+        // (`com` in `com.example.model.Order`). Consume the longest dotted
+        // prefix that names a known type first, so the walk below starts from
+        // the type rather than failing on the package.
+        int fqcnEnd = fqcnPrefixEnd(chain.segments, classIndex);
+        if (fqcnEnd >= 1) {
+            String fqcn = joinSegments(chain.segments, fqcnEnd);
+            if (chain.hoveredIndex <= fqcnEnd) {
+                // Anywhere inside the qualified name describes that type.
+                String simple = chain.segments[fqcnEnd];
+                return markdown(renderJavaType(simple, fqcn, memberIndex.membersOf(fqcn),
+                        memberIndex.constructorsOf(fqcn)));
+            }
+            runningType = fqcn;
+            start = fqcnEnd + 1;
+        }
+
+        for (int i = start; i <= chain.hoveredIndex; i++) {
             String segment = chain.segments[i];
             boolean hovered = i == chain.hoveredIndex;
             if (segment.isEmpty()) {
@@ -335,6 +355,36 @@ public final class DRLHoverHelper {
             }
         }
         return null;
+    }
+
+    /**
+     * The index of the last segment of the longest leading run of
+     * {@code segments} that names a type on the classpath, or {@code -1} when
+     * no prefix of two or more segments does. Longest-first so
+     * {@code com.example.Order.status} prefers the type {@code com.example.Order}
+     * over a shorter accidental match.
+     */
+    private static int fqcnPrefixEnd(String[] segments, ClassIndex classIndex) {
+        for (int end = segments.length - 1; end >= 1; end--) {
+            String simple = segments[end];
+            if (simple.isEmpty()) {
+                continue;
+            }
+            String candidate = joinSegments(segments, end);
+            if (classIndex.getMatching(simple).contains(candidate)) {
+                return end;
+            }
+        }
+        return -1;
+    }
+
+    /** {@code segments[0..end]} rejoined with dots. */
+    private static String joinSegments(String[] segments, int end) {
+        StringBuilder sb = new StringBuilder(segments[0]);
+        for (int i = 1; i <= end; i++) {
+            sb.append('.').append(segments[i]);
+        }
+        return sb.toString();
     }
 
     /** True when {@code name} is a constant of {@code enumType} (a field typed as the enum). */

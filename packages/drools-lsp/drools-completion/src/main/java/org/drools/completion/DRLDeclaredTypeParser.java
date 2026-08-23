@@ -124,6 +124,9 @@ public final class DRLDeclaredTypeParser {
         while (parentName != null && depth++ < 10 && seen.add(parentName)) {
             DeclaredType parent = index.get(parentName);
             if (parent == null) {
+                // A declare may extend a Java class, whose members only the host
+                // can supply; they arrive already flattened, so the walk ends here.
+                out.addAll(ClasspathTypeMembers.membersOf(parentName));
                 break;
             }
             out.addAll(parent.fields);
