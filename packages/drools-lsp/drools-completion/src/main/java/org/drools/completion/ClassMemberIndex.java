@@ -80,9 +80,11 @@ public final class ClassMemberIndex implements AutoCloseable {
     /**
      * Sets the fallback consulted when reflection can't load a type — the
      * server owns the single instance and sets this right after construction.
-     * No-op on the shared {@link #empty()} index.
+     * No-op on the shared {@link #empty()} index. Public so a caller in
+     * another module can install the fallback after building an
+     * {@link #of} instance.
      */
-    void setSourceFallback(JavaMemberSource f) {
+    public void setSourceFallback(JavaMemberSource f) {
         if (this == EMPTY) {
             logger.log(Level.FINE, "ignoring source fallback on shared empty index");
             return;
@@ -159,12 +161,9 @@ public final class ClassMemberIndex implements AutoCloseable {
      * interfaces. Loaded without running static initializers. When the class
      * can't be loaded, consults the {@link #fallback} source (if set); empty
      * when neither knows the type. Used by type hierarchy to walk classpath
-     * ancestry one level at a time.
-     *
-     * <p><b>Note:</b> the reflected path returns fully-qualified names, but
-     * the fallback path returns <b>simple</b> names (source files don't
-     * resolve imports the way compiled classes do) — callers resolve those
-     * through the class index or declared types.
+     * ancestry one level at a time. Both the reflected path and the {@link
+     * #fallback} path return fully-qualified names — see {@link
+     * JavaMemberSource#supertypesOf} for the fallback's resolution contract.
      */
     public List<String> supertypesOf(String fqcn) {
         if (fqcn == null || fqcn.isEmpty()) {
@@ -269,8 +268,8 @@ public final class ClassMemberIndex implements AutoCloseable {
      * Returns {@code null} (rather than throwing) when the loader is absent
      * or the class can't be loaded — the signal callers use to fall back to
      * {@link #fallback}. A failed load is memoized in {@link #notLoadable} so
-     * repeated lookups of the same unloadable FQCN (the common case for R8's
-     * works-before-build target population) skip the {@code Class.forName}
+     * repeated lookups of the same unloadable FQCN (the common case for a
+     * works-before-build workspace) skip the {@code Class.forName}
      * attempt; the fallback itself is still consulted fresh every call.
      */
     private Class<?> tryLoad(String fqcn) {

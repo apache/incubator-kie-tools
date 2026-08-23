@@ -33,9 +33,9 @@ import java.util.Set;
  * returns {@code null} when unknown, letting callers distinguish "no such
  * member" (a real typo) from "couldn't verify" (classpath/source gap) — see
  * {@link ClassMemberIndex#memberNames}; {@link #supertypesOf} returns direct
- * supertype <b>simple</b> names (source-side, sufficient for the type-hierarchy
- * walk's display plus further source resolution), empty when unknown; {@link
- * #constructorsOf} returns signatures, empty when unknown.
+ * supertypes as fully-qualified names where resolvable within the source
+ * index — unresolvable supertypes are omitted, never guessed at — empty when
+ * unknown; {@link #constructorsOf} returns signatures, empty when unknown.
  */
 public interface JavaMemberSource {
 

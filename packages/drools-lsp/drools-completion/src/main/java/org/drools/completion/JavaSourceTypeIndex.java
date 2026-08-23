@@ -310,6 +310,14 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
         return (candidates != null && candidates.size() == 1) ? candidates.get(0) : null;
     }
 
+    /**
+     * Returns {@code fqcn}'s direct supertypes — its {@code extends} target
+     * followed by its directly-implemented interfaces — resolved to FQCNs via
+     * {@link #resolveParentFqcn} (same package first, else a unique
+     * cross-package simple-name match within this index). A supertype that
+     * can't be resolved that way is omitted rather than guessed at, mirroring
+     * {@link #membersIncludingInherited}'s stop-don't-guess discipline.
+     */
     @Override
     public List<String> supertypesOf(String fqcn) {
         JavaSourceType type = byFqcn(fqcn);
@@ -318,9 +326,17 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
         }
         List<String> out = new ArrayList<>();
         if (type.extendsSimpleName != null) {
-            out.add(type.extendsSimpleName);
+            String resolved = resolveParentFqcn(fqcn, type.extendsSimpleName);
+            if (resolved != null) {
+                out.add(resolved);
+            }
         }
-        out.addAll(type.interfaceSimpleNames);
+        for (String interfaceSimpleName : type.interfaceSimpleNames) {
+            String resolved = resolveParentFqcn(fqcn, interfaceSimpleName);
+            if (resolved != null) {
+                out.add(resolved);
+            }
+        }
         return out;
     }
 

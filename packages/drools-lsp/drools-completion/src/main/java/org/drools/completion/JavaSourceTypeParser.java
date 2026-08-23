@@ -244,7 +244,7 @@ public final class JavaSourceTypeParser {
                 if (md == null) {
                     continue; // static block or bare ';'
                 }
-                if (md.fieldDeclaration() != null) {
+                if (md.fieldDeclaration() != null && hasPublicModifier(cbd.modifier())) {
                     JavaParser.FieldDeclarationContext fd = md.fieldDeclaration();
                     String type = simplify(fd.typeType());
                     for (JavaParser.VariableDeclaratorContext vd : fd.variableDeclarators().variableDeclarator()) {
@@ -265,6 +265,22 @@ public final class JavaSourceTypeParser {
                 logger.fine(() -> "Skipping class member in " + simpleName + ": " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * True when {@code modifiers} includes {@code public} — mirrors
+     * reflection's {@code Class#getFields()}, which surfaces public fields
+     * only (instance and static alike; static-field inclusion is a
+     * documented residual drift, see the roadmap's known limitations).
+     */
+    private static boolean hasPublicModifier(List<JavaParser.ModifierContext> modifiers) {
+        for (JavaParser.ModifierContext modifier : modifiers) {
+            JavaParser.ClassOrInterfaceModifierContext coim = modifier.classOrInterfaceModifier();
+            if (coim != null && coim.PUBLIC() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Extracts a {@code constDeclaration} or no-arg getter from one interface body member, if any. */

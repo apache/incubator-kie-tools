@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  * that resolves to an existing directory, with roots nested inside other roots
  * collapsed away.
  */
-final class JavaSourceRoots {
+public final class JavaSourceRoots {
 
     private static final Logger logger = Logger.getLogger(JavaSourceRoots.class.getName());
 
@@ -56,7 +56,7 @@ final class JavaSourceRoots {
      * convention roots in walk-encounter order, then configured entries;
      * duplicates (by normalized absolute path) are dropped.
      */
-    static List<Path> discover(Path workspaceRoot, List<String> configuredPaths) {
+    public static List<Path> discover(Path workspaceRoot, List<String> configuredPaths) {
         LinkedHashSet<Path> seen = new LinkedHashSet<>();
         List<Path> out = new ArrayList<>();
 

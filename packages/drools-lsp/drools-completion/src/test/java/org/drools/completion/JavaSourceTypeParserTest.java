@@ -44,7 +44,7 @@ class JavaSourceTypeParserTest {
             "package com.example.model;\n"
             + "public class Patient {\n"
             + "  private String name;\n"
-            + "  private int ageYears;\n"
+            + "  public int ageYears;\n"
             + "  public String getName() { return name; }\n"
             + "  public boolean isActive() { return true; }\n"
             + "  public Patient(String name, int ageYears) { }\n"

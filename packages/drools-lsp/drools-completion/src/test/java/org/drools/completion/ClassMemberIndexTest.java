@@ -137,7 +137,8 @@ class ClassMemberIndexTest {
                 return "com.example.Only".equals(fqcn) ? Set.of("code", "active") : null;
             }
             public List<String> supertypesOf(String fqcn) {
-                return "com.example.Only".equals(fqcn) ? List.of("Base") : List.of();
+                // FQCN, per the JavaMemberSource contract: resolvable supertypes only.
+                return "com.example.Only".equals(fqcn) ? List.of("com.example.Base") : List.of();
             }
             public List<String> constructorsOf(String fqcn) {
                 return "com.example.Only".equals(fqcn) ? List.of("Only(String)") : List.of();
@@ -174,7 +175,7 @@ class ClassMemberIndexTest {
         // com.example.Only is not on the test classpath -> reflection miss -> fallback
         assertTrue(idx.membersOf("com.example.Only").stream().anyMatch(f -> f.name.equals("code")));
         assertEquals(Set.of("code", "active"), idx.memberNames("com.example.Only"));
-        assertEquals(List.of("Base"), idx.supertypesOf("com.example.Only"));
+        assertEquals(List.of("com.example.Base"), idx.supertypesOf("com.example.Only"));
         assertEquals(List.of("Only(String)"), idx.constructorsOf("com.example.Only"));
     }
 

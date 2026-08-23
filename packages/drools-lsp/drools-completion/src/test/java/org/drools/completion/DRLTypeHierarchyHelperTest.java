@@ -292,6 +292,52 @@ class DRLTypeHierarchyHelperTest {
     }
 
     @Test
+    void supertypesOfSourceOnlyClasspathItemResolvesCrossPackageParentToFqcn(
+            @TempDir Path srcRoot) throws Exception {
+        // Child and Parent are both source-only (no target/classes anywhere)
+        // and live in different packages, so the parent can only be found by
+        // its unique simple name — the same seam JavaSourceTypeIndex#supertypesOf
+        // must resolve to an FQCN for classpathItem's FQCN-keyed lookups to work.
+        Path childDir = srcRoot.resolve("com/a");
+        Files.createDirectories(childDir);
+        Files.writeString(childDir.resolve("Child.java"),
+                "package com.a;\npublic class Child extends Parent {\n}\n");
+        Path parentDir = srcRoot.resolve("com/b");
+        Files.createDirectories(parentDir);
+        Path parentJava = parentDir.resolve("Parent.java");
+        Files.writeString(parentJava, "package com.b;\npublic class Parent {\n}\n");
+
+        JavaSourceTypeIndex sourceIndex = JavaSourceTypeIndex.build(Set.of(srcRoot), List.of());
+        ClassMemberIndex memberIndex = ClassMemberIndex.of(Set.<Path>of());
+        memberIndex.setSourceFallback(sourceIndex);
+
+        String drl = """
+                package demo;
+
+                import com.a.Child;
+
+                rule R
+                  when
+                    Child( )
+                  then
+                end
+                """;
+
+        TypeHierarchyItem child = DRLTypeHierarchyHelper.prepare(
+                drl, new Position(6, 5), "myDocument",
+                Map.of(), ClassIndex.empty(), Set.of(), sourceIndex).get(0);
+
+        List<TypeHierarchyItem> supers = DRLTypeHierarchyHelper.supertypes(
+                child, drl, Map.of(), ClassIndex.empty(), memberIndex, Set.of(), sourceIndex);
+
+        assertThat(supers).hasSize(1);
+        TypeHierarchyItem parent = supers.get(0);
+        assertThat(parent.getName()).isEqualTo("Parent");
+        assertThat(parent.getUri()).isEqualTo(parentJava.toUri().toString());
+        assertThat(parent.getData()).isEqualTo("com.b.Parent");
+    }
+
+    @Test
     void supertypesOfClasspathItemReflectsAncestry() {
         // A classpath item whose FQCN is a JDK type with a clear, stable
         // superclass + interfaces; reflected one level via ClassMemberIndex.

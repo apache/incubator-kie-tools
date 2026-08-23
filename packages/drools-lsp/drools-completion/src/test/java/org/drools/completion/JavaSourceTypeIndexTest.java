@@ -168,6 +168,17 @@ class JavaSourceTypeIndexTest {
     }
 
     @Test
+    void supertypesOfResolvesCrossPackageParentByUniqueSimpleNameToFqcn(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        write(src, "com/a/Child.java", "package com.a;\npublic class Child extends Parent {}\n");
+        write(src, "com/b/Parent.java", "package com.b;\npublic class Parent {}\n");
+
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.of(src), List.of());
+
+        assertEquals(List.of("com.b.Parent"), idx.supertypesOf("com.a.Child"));
+    }
+
+    @Test
     void membersOfTerminatesOnExtendsCycle(@TempDir Path root) throws Exception {
         Path src = root.resolve("src/main/java");
         write(src, "com/example/A.java",

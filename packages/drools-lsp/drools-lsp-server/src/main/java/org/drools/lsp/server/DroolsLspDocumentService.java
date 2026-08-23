@@ -109,6 +109,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
     private final Map<String, String> sourcesMap = new ConcurrentHashMap<>();
     private volatile ClassIndex classIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
+    private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
 
     private final DroolsLspServer server;
 
@@ -164,8 +165,16 @@ public class DroolsLspDocumentService implements TextDocumentService {
         this.classMemberIndex = classMemberIndex;
     }
 
+    public void setJavaSourceIndex(JavaSourceTypeIndex javaSourceIndex) {
+        this.javaSourceIndex = javaSourceIndex;
+    }
+
     ClassIndex getClassIndexForTest() {
         return classIndex;
+    }
+
+    ClassMemberIndex getClassMemberIndexForTest() {
+        return classMemberIndex;
     }
 
     @Override
@@ -410,7 +419,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
             Path documentPath = toPath(uri);
             return DRLTypeHierarchyHelper.prepare(textForUri(uri), params.getPosition(), uri,
                     openSiblings(documentPath), classIndex, server.getBuildOutputDirs(),
-                    JavaSourceTypeIndex.empty());
+                    javaSourceIndex);
         });
     }
 
@@ -428,7 +437,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
                     classpath ? null : textForUri(item.getUri()),
                     classpath ? Collections.emptyMap() : openSiblings(toPath(item.getUri())),
                     classIndex, classMemberIndex, server.getBuildOutputDirs(),
-                    JavaSourceTypeIndex.empty());
+                    javaSourceIndex);
         });
     }
 
@@ -456,7 +465,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
             Path documentPath = toPath(uri);
             List<Location> definitions = attempt(() -> DRLDefinitionHelper.findDefinitions(
                     uri, text, params.getPosition(), classIndex, server.getBuildOutputDirs(),
-                    JavaSourceTypeIndex.empty(), openSiblings(documentPath)));
+                    javaSourceIndex, openSiblings(documentPath)));
             return Either.forLeft(definitions == null ? List.of() : definitions);
         });
     }
