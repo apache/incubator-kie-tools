@@ -973,4 +973,33 @@ class DRLHoverHelperTest {
 
         assertThat(content(hover)).contains("$size").contains("int");
     }
+
+    @Test
+    void aDocumentedGlobalDoesNotShadowAFieldOfTheSameName() {
+        String drl = """
+                package demo;
+
+                /** Running order total. */
+                global java.math.BigDecimal total
+
+                declare Order
+                  total : int
+                end
+
+                rule R
+                  when
+                    Order( total > 5 )
+                  then
+                end
+                """;
+        // Line 11 is `    Order( total > 5 )`; "total" spans cols 11-15. The
+        // doc-comment parser maps names document-wide, with no position scoping,
+        // so the global's doc must not answer for the field in the constraint.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(11, 13),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
+
+        String md = content(hover);
+        assertThat(md).contains("total").contains("int").contains("Order");
+        assertThat(md).doesNotContain("Running order total.");
+    }
 }

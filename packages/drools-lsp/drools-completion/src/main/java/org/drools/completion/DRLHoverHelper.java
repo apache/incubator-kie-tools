@@ -119,13 +119,6 @@ public final class DRLHoverHelper {
             }
         }
 
-        // 1c. Documented function/query/global — the doc-comment parser maps
-        //     names for all four declaration kinds.
-        Hover doc = docHover(word, currentDocTypes, text, documentPath, openFiles);
-        if (doc != null) {
-            return doc;
-        }
-
         // 3. Bound variable: resolve $var to its type via the shared binding
         //    engine (pattern, field, nested-path, JDK-accessor, accumulate),
         //    scoped to the rule under the caret so a binding name reused across
@@ -165,7 +158,16 @@ public final class DRLHoverHelper {
             }
         }
 
-        // 5. Classpath type (or java.lang built-in). Show the hover even with no
+        // 5. Documented function/query/global. The doc-comment parser maps names
+        //    across the whole document with no position scoping, so this comes
+        //    after the binding and pattern-field steps: a field sharing its name
+        //    with a documented declaration must still describe the field.
+        Hover doc = docHover(word, currentDocTypes, text, documentPath, openFiles);
+        if (doc != null) {
+            return doc;
+        }
+
+        // 6. Classpath type (or java.lang built-in). Show the hover even with no
         //    members — knowing the FQN (e.g. java.lang.Object) is still useful.
         String fqcn = DRLCompletionHelper.resolveFqcn(word, word, compilationUnit, classIndex);
         if (fqcn != null) {
