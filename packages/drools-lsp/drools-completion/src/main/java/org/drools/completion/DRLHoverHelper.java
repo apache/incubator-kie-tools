@@ -376,7 +376,7 @@ public final class DRLHoverHelper {
                 continue;
             }
             String candidate = joinSegments(segments, end);
-            if (classIndex.getMatching(simple).contains(candidate)) {
+            if (classIndex.forSimpleName(simple).contains(candidate)) {
                 return end;
             }
         }

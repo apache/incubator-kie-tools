@@ -144,15 +144,12 @@ public class DroolsLspDocumentService implements TextDocumentService {
      * skip-when-ambiguous rule {@code DRLCompletionHelper.resolveFqcn} applies.
      */
     private String uniqueFqcnForSimpleName(String simpleName) {
-        String suffix = "." + simpleName;
         String found = null;
-        for (String fqcn : classIndex.getMatching(simpleName)) {
-            if (fqcn.endsWith(suffix) || fqcn.equals(simpleName)) {
-                if (found != null && !found.equals(fqcn)) {
-                    return null;
-                }
-                found = fqcn;
+        for (String fqcn : classIndex.forSimpleName(simpleName)) {
+            if (found != null && !found.equals(fqcn)) {
+                return null;
             }
+            found = fqcn;
         }
         return found;
     }

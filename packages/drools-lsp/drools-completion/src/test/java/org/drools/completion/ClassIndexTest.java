@@ -35,6 +35,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassIndexTest {
 
+    /**
+     * The index is keyed by simple name, so answering "which FQCNs carry this
+     * exact name" needs no scan. getMatching is a prefix search — it also
+     * answers for OrderLine — which makes it the wrong tool for the callers
+     * that only want to confirm a single name.
+     */
+    @Test
+    void forSimpleNameIsExactWhereGetMatchingIsAPrefixSearch() {
+        ClassIndex index = ClassIndex.of(Map.of(
+                "Order", List.of("com.example.Order"),
+                "OrderLine", List.of("com.example.OrderLine")));
+
+        assertEquals(List.of("com.example.Order"), index.forSimpleName("Order"));
+        assertEquals(2, index.getMatching("Order").size(), "getMatching stays a prefix search");
+        assertTrue(index.forSimpleName("Nope").isEmpty());
+    }
+
     @TempDir
     Path tempDir;
 
