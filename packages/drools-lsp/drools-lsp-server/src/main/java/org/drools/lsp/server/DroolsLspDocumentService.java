@@ -51,6 +51,7 @@ import org.drools.completion.DRLHoverHelper;
 import org.drools.completion.DRLInlayHintHelper;
 import org.drools.completion.DRLLintHelper;
 import org.drools.completion.DRLTypeHierarchyHelper;
+import org.drools.completion.JavaSourceTypeIndex;
 import org.drools.drl.parser.antlr4.DRLParserHelper;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.CodeActionKind;
@@ -408,7 +409,8 @@ public class DroolsLspDocumentService implements TextDocumentService {
             String uri = params.getTextDocument().getUri();
             Path documentPath = toPath(uri);
             return DRLTypeHierarchyHelper.prepare(textForUri(uri), params.getPosition(), uri,
-                    openSiblings(documentPath), classIndex, server.getBuildOutputDirs());
+                    openSiblings(documentPath), classIndex, server.getBuildOutputDirs(),
+                    JavaSourceTypeIndex.empty());
         });
     }
 
@@ -425,7 +427,8 @@ public class DroolsLspDocumentService implements TextDocumentService {
             return DRLTypeHierarchyHelper.supertypes(item,
                     classpath ? null : textForUri(item.getUri()),
                     classpath ? Collections.emptyMap() : openSiblings(toPath(item.getUri())),
-                    classIndex, classMemberIndex, server.getBuildOutputDirs());
+                    classIndex, classMemberIndex, server.getBuildOutputDirs(),
+                    JavaSourceTypeIndex.empty());
         });
     }
 
@@ -453,7 +456,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
             Path documentPath = toPath(uri);
             List<Location> definitions = attempt(() -> DRLDefinitionHelper.findDefinitions(
                     uri, text, params.getPosition(), classIndex, server.getBuildOutputDirs(),
-                    openSiblings(documentPath)));
+                    JavaSourceTypeIndex.empty(), openSiblings(documentPath)));
             return Either.forLeft(definitions == null ? List.of() : definitions);
         });
     }

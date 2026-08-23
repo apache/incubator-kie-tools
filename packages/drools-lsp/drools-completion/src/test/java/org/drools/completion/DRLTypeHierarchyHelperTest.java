@@ -55,7 +55,7 @@ class DRLTypeHierarchyHelperTest {
         // Caret on "Dog" at its declare site (line 6, cols 8..11).
         List<TypeHierarchyItem> items = DRLTypeHierarchyHelper.prepare(
                 HIERARCHY_DRL, new Position(6, 9), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of());
+                Map.of(), ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty());
 
         assertThat(items).hasSize(1);
         TypeHierarchyItem item = items.get(0);
@@ -93,7 +93,8 @@ class DRLTypeHierarchyHelperTest {
         // Caret on "Pet" in the pattern (line 6, col 5).
         List<TypeHierarchyItem> items = DRLTypeHierarchyHelper.prepare(
                 drl, new Position(6, 5), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of(module.resolve("target/classes")));
+                Map.of(), ClassIndex.empty(), Set.of(module.resolve("target/classes")),
+                JavaSourceTypeIndex.empty());
 
         assertThat(items).hasSize(1);
         TypeHierarchyItem item = items.get(0);
@@ -104,10 +105,77 @@ class DRLTypeHierarchyHelperTest {
     }
 
     @Test
+    void prepareResolvesClasspathTypeToSourceIndexBeforeBuild(@TempDir Path srcRoot) throws Exception {
+        // No target/classes at all — the type has never been compiled.
+        Path petDir = srcRoot.resolve("org/example");
+        Files.createDirectories(petDir);
+        Path petJava = petDir.resolve("Pet.java");
+        Files.writeString(petJava, "package org.example;\npublic class Pet {\n}\n");
+
+        JavaSourceTypeIndex sourceIndex = JavaSourceTypeIndex.build(Set.of(srcRoot), List.of());
+
+        String drl = """
+                package demo;
+
+                import org.example.Pet;
+
+                rule R
+                  when
+                    Pet( )
+                  then
+                end
+                """;
+
+        // Caret on "Pet" in the pattern (line 6, col 5); buildOutputDirs is
+        // empty so JavaSourceLocator.locate has nothing to find.
+        List<TypeHierarchyItem> items = DRLTypeHierarchyHelper.prepare(
+                drl, new Position(6, 5), "myDocument",
+                Map.of(), ClassIndex.empty(), Set.of(), sourceIndex);
+
+        assertThat(items).hasSize(1);
+        TypeHierarchyItem item = items.get(0);
+        assertThat(item.getName()).isEqualTo("Pet");
+        assertThat(item.getKind()).isEqualTo(SymbolKind.Class);
+        assertThat(item.getUri()).isEqualTo(petJava.toUri().toString());
+        assertThat(item.getData()).as("classpath items round-trip their FQCN in data")
+                .isEqualTo("org.example.Pet");
+    }
+
+    @Test
+    void prepareResolvesEnumClasspathTypeToSourceIndexWithEnumKind(@TempDir Path srcRoot) throws Exception {
+        Path dir = srcRoot.resolve("org/example");
+        Files.createDirectories(dir);
+        Path statusJava = dir.resolve("Status.java");
+        Files.writeString(statusJava, "package org.example;\npublic enum Status {\n  ON, OFF\n}\n");
+
+        JavaSourceTypeIndex sourceIndex = JavaSourceTypeIndex.build(Set.of(srcRoot), List.of());
+
+        String drl = """
+                package demo;
+
+                import org.example.Status;
+
+                rule R
+                  when
+                    Status( )
+                  then
+                end
+                """;
+
+        // Caret on "Status" in the pattern (line 6, col 8).
+        List<TypeHierarchyItem> items = DRLTypeHierarchyHelper.prepare(
+                drl, new Position(6, 8), "myDocument",
+                Map.of(), ClassIndex.empty(), Set.of(), sourceIndex);
+
+        assertThat(items).hasSize(1);
+        assertThat(items.get(0).getKind()).isEqualTo(SymbolKind.Enum);
+    }
+
+    @Test
     void prepareYieldsNothingForUnknownWord() {
         assertThat(DRLTypeHierarchyHelper.prepare(
                 HIERARCHY_DRL, new Position(3, 3), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of()))
+                Map.of(), ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty()))
                 .isEmpty();
     }
 
@@ -115,7 +183,7 @@ class DRLTypeHierarchyHelperTest {
     void prepareYieldsNothingForNullText() {
         assertThat(DRLTypeHierarchyHelper.prepare(
                 null, new Position(0, 0), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of()))
+                Map.of(), ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty()))
                 .isEmpty();
     }
 
@@ -125,11 +193,11 @@ class DRLTypeHierarchyHelperTest {
     void supertypesOfDeclareResolvesExtendsParentInSameDocument() {
         TypeHierarchyItem dog = DRLTypeHierarchyHelper.prepare(
                 HIERARCHY_DRL, new Position(6, 9), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of()).get(0);
+                Map.of(), ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty()).get(0);
 
         List<TypeHierarchyItem> supers = DRLTypeHierarchyHelper.supertypes(
                 dog, HIERARCHY_DRL, Map.of(), ClassIndex.empty(),
-                ClassMemberIndex.empty(), Set.of());
+                ClassMemberIndex.empty(), Set.of(), JavaSourceTypeIndex.empty());
 
         assertThat(supers).hasSize(1);
         TypeHierarchyItem parent = supers.get(0);
@@ -144,11 +212,11 @@ class DRLTypeHierarchyHelperTest {
     void supertypesOfDeclareWithoutExtendsYieldsNothing() {
         TypeHierarchyItem animal = DRLTypeHierarchyHelper.prepare(
                 HIERARCHY_DRL, new Position(2, 9), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of()).get(0);
+                Map.of(), ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty()).get(0);
 
         assertThat(DRLTypeHierarchyHelper.supertypes(
                 animal, HIERARCHY_DRL, Map.of(), ClassIndex.empty(),
-                ClassMemberIndex.empty(), Set.of()))
+                ClassMemberIndex.empty(), Set.of(), JavaSourceTypeIndex.empty()))
                 .isEmpty();
     }
 
@@ -174,11 +242,47 @@ class DRLTypeHierarchyHelperTest {
 
         TypeHierarchyItem dog = DRLTypeHierarchyHelper.prepare(
                 drl, new Position(4, 9), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of(module.resolve("target/classes"))).get(0);
+                Map.of(), ClassIndex.empty(), Set.of(module.resolve("target/classes")),
+                JavaSourceTypeIndex.empty()).get(0);
 
         List<TypeHierarchyItem> supers = DRLTypeHierarchyHelper.supertypes(
                 dog, drl, Map.of(), ClassIndex.empty(), ClassMemberIndex.empty(),
-                Set.of(module.resolve("target/classes")));
+                Set.of(module.resolve("target/classes")), JavaSourceTypeIndex.empty());
+
+        assertThat(supers).hasSize(1);
+        TypeHierarchyItem parent = supers.get(0);
+        assertThat(parent.getName()).isEqualTo("Animal");
+        assertThat(parent.getUri()).isEqualTo(animalJava.toUri().toString());
+        assertThat(parent.getData()).isEqualTo("org.example.Animal");
+    }
+
+    @Test
+    void supertypesOfDeclareResolvesSourceIndexParentBeforeBuild(@TempDir Path srcRoot) throws Exception {
+        // No target/classes at all — the type has never been compiled.
+        Path dir = srcRoot.resolve("org/example");
+        Files.createDirectories(dir);
+        Path animalJava = dir.resolve("Animal.java");
+        Files.writeString(animalJava, "package org.example;\npublic class Animal {\n}\n");
+
+        JavaSourceTypeIndex sourceIndex = JavaSourceTypeIndex.build(Set.of(srcRoot), List.of());
+
+        String drl = """
+                package demo;
+
+                import org.example.Animal;
+
+                declare Dog extends Animal
+                  good : boolean
+                end
+                """;
+
+        TypeHierarchyItem dog = DRLTypeHierarchyHelper.prepare(
+                drl, new Position(4, 9), "myDocument",
+                Map.of(), ClassIndex.empty(), Set.of(), sourceIndex).get(0);
+
+        List<TypeHierarchyItem> supers = DRLTypeHierarchyHelper.supertypes(
+                dog, drl, Map.of(), ClassIndex.empty(), ClassMemberIndex.empty(),
+                Set.of(), sourceIndex);
 
         assertThat(supers).hasSize(1);
         TypeHierarchyItem parent = supers.get(0);
@@ -202,7 +306,8 @@ class DRLTypeHierarchyHelperTest {
         ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
 
         assertThat(DRLTypeHierarchyHelper.supertypes(
-                arrayList, null, Map.of(), ClassIndex.empty(), memberIndex, Set.of()))
+                arrayList, null, Map.of(), ClassIndex.empty(), memberIndex, Set.of(),
+                JavaSourceTypeIndex.empty()))
                 .isEmpty();
     }
 
@@ -212,7 +317,7 @@ class DRLTypeHierarchyHelperTest {
     void subtypesOfDeclareFindsChildrenInSameDocument() {
         TypeHierarchyItem animal = DRLTypeHierarchyHelper.prepare(
                 HIERARCHY_DRL, new Position(2, 9), "myDocument",
-                Map.of(), ClassIndex.empty(), Set.of()).get(0);
+                Map.of(), ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty()).get(0);
 
         List<TypeHierarchyItem> subs = DRLTypeHierarchyHelper.subtypes(
                 animal, HIERARCHY_DRL, Map.of());
@@ -233,7 +338,7 @@ class DRLTypeHierarchyHelperTest {
         String animalText = Files.readString(animalFile);
         TypeHierarchyItem animal = DRLTypeHierarchyHelper.prepare(
                 animalText, new Position(1, 9), animalFile.toUri().toString(),
-                Map.of(), ClassIndex.empty(), Set.of()).get(0);
+                Map.of(), ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty()).get(0);
 
         List<TypeHierarchyItem> subs = DRLTypeHierarchyHelper.subtypes(
                 animal, animalText, Map.of());
