@@ -68,6 +68,27 @@ class JavaSourceTypeIndexTest {
         assertTrue(!idx.classNames().containsKey("B"));
     }
 
+    /**
+     * {@code com.example.*} — the documented form — must cover the package
+     * itself as well as everything under it. Reading it as a bare prefix
+     * excludes exactly the types the author meant to include.
+     */
+    @Test
+    void aDottedStarFilterCoversItsOwnPackage(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        write(src, "com/example/A.java", "package com.example;\npublic class A {}\n");
+        write(src, "com/example/model/M.java", "package com.example.model;\npublic class M {}\n");
+        write(src, "com/examplefoo/F.java", "package com.examplefoo;\npublic class F {}\n");
+        write(src, "org/other/B.java", "package org.other;\npublic class B {}\n");
+
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.of(src), List.of("com.example.*"));
+
+        assertTrue(idx.classNames().containsKey("A"), "the filtered package's own types");
+        assertTrue(idx.classNames().containsKey("M"), "and its sub-packages");
+        assertTrue(!idx.classNames().containsKey("F"), "but not a package merely sharing the prefix");
+        assertTrue(!idx.classNames().containsKey("B"));
+    }
+
     @Test
     void discoverUnionsConventionAndConfigured(@TempDir Path root) throws Exception {
         Files.createDirectories(root.resolve("module-a/src/main/java"));

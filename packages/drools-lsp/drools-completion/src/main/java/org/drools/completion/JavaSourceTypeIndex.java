@@ -179,11 +179,20 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
             return false;
         }
         for (String filter : filters) {
-            if (filter.endsWith("*")) {
-                if (pkg.startsWith(filter.substring(0, filter.length() - 1))) {
+            if (!filter.endsWith("*")) {
+                if (pkg.equals(filter)) {
                     return true;
                 }
-            } else if (pkg.equals(filter)) {
+                continue;
+            }
+            String prefix = filter.substring(0, filter.length() - 1);
+            // "com.example.*" means that package and everything under it. Read as
+            // a bare prefix it would exclude com.example itself, which is the one
+            // package the author certainly meant to include.
+            if (prefix.endsWith(".") && pkg.equals(prefix.substring(0, prefix.length() - 1))) {
+                return true;
+            }
+            if (pkg.startsWith(prefix)) {
                 return true;
             }
         }
