@@ -177,6 +177,90 @@ class DRLHoverHelperTest {
         assertThat(md).contains("name").contains("friendly").contains("legs");
     }
 
+    @Test
+    void hoverOnClasspathTypeShowsFieldsGettersAndConstructorsAsSections() {
+        String drl = """
+                package demo;
+
+                import org.drools.completion.fixtures.Pet;
+
+                rule R
+                  when
+                    Pet( )
+                  then
+                end
+                """;
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+
+        Hover hover = DRLHoverHelper.hover(drl, new Position(6, 5),
+                ClassIndex.empty(), memberIndex, null);
+
+        String md = content(hover);
+        int fieldsAt = md.indexOf("**Fields**");
+        int gettersAt = md.indexOf("**Getters**");
+        int constructorsAt = md.indexOf("**Constructors**");
+        assertThat(fieldsAt).isPositive();
+        assertThat(gettersAt).isGreaterThan(fieldsAt);
+        assertThat(constructorsAt).isGreaterThan(gettersAt);
+        assertThat(md).contains("- legs : int");
+        assertThat(md).contains("- name : String");
+        assertThat(md).contains("- `Pet()`");
+    }
+
+    @Test
+    void hoverOnClasspathTypeWithNoMembersOrConstructorsRendersHeaderOnly() {
+        // java.lang.Math: only static fields/methods, so membersOf is empty,
+        // and its sole constructor is private, so constructorsOf is empty too.
+        String drl = """
+                package demo;
+
+                rule R
+                  when
+                    Math()
+                  then
+                end
+                """;
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+
+        Hover hover = DRLHoverHelper.hover(drl, new Position(4, 4),
+                ClassIndex.empty(), memberIndex, null);
+
+        String md = content(hover);
+        assertThat(md).contains("java.lang.Math");
+        assertThat(md).doesNotContain("**Fields**")
+                .doesNotContain("**Getters**")
+                .doesNotContain("**Constructors**")
+                .doesNotContain("**Constants**");
+    }
+
+    @Test
+    void hoverOnClasspathEnumShowsConstantsSection() {
+        String drl = """
+                package demo;
+
+                import org.drools.completion.fixtures.PetKind;
+
+                rule R
+                  when
+                    PetKind( )
+                  then
+                end
+                """;
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+
+        Hover hover = DRLHoverHelper.hover(drl, new Position(6, 9),
+                ClassIndex.empty(), memberIndex, null);
+
+        String md = content(hover);
+        // PetKind also picks up "declaringClass" as an inherited Enum getter,
+        // so only Fields (no FIELD-origin members exist) is asserted absent.
+        assertThat(md).contains("**Constants**");
+        assertThat(md).contains("- CAT");
+        assertThat(md).contains("- DOG");
+        assertThat(md).doesNotContain("**Fields**");
+        assertThat(md.indexOf("**Constants**")).isLessThan(md.indexOf("**Getters**"));
+    }
+
     private static final String EXTENDS_DRL = """
             package demo;
 

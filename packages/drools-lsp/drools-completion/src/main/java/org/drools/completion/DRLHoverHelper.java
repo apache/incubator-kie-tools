@@ -143,7 +143,8 @@ public final class DRLHoverHelper {
                 String boundFqcn = DRLCompletionHelper.resolveFqcn(
                         boundType, boundType, compilationUnit, classIndex);
                 if (boundFqcn != null) {
-                    return markdown(renderJavaType(boundType, boundFqcn, memberIndex.membersOf(boundFqcn)));
+                    return markdown(renderJavaType(boundType, boundFqcn, memberIndex.membersOf(boundFqcn),
+                            memberIndex.constructorsOf(boundFqcn)));
                 }
             }
         }
@@ -165,7 +166,8 @@ public final class DRLHoverHelper {
         //    members — knowing the FQN (e.g. java.lang.Object) is still useful.
         String fqcn = DRLCompletionHelper.resolveFqcn(word, word, compilationUnit, classIndex);
         if (fqcn != null) {
-            return markdown(renderJavaType(word, fqcn, memberIndex.membersOf(fqcn)));
+            return markdown(renderJavaType(word, fqcn, memberIndex.membersOf(fqcn),
+                    memberIndex.constructorsOf(fqcn)));
         }
         return null;
     }
@@ -285,8 +287,8 @@ public final class DRLHoverHelper {
                             segment, segment, parsed.compilationUnit, classIndex);
                     if (fqcn != null) {
                         if (hovered) {
-                            return markdown(renderJavaType(
-                                    segment, fqcn, memberIndex.membersOf(fqcn)));
+                            return markdown(renderJavaType(segment, fqcn, memberIndex.membersOf(fqcn),
+                                    memberIndex.constructorsOf(fqcn)));
                         }
                         runningType = fqcn;
                     } else {
@@ -356,7 +358,8 @@ public final class DRLHoverHelper {
         String fqcn = DRLCompletionHelper.resolveFqcn(
                 typeName, typeName, parsed.compilationUnit, classIndex);
         if (fqcn != null) {
-            return header + renderJavaType(typeName, fqcn, memberIndex.membersOf(fqcn));
+            return header + renderJavaType(typeName, fqcn, memberIndex.membersOf(fqcn),
+                    memberIndex.constructorsOf(fqcn));
         }
         return header.stripTrailing();
     }
@@ -539,13 +542,43 @@ public final class DRLHoverHelper {
         return sb.toString();
     }
 
-    private static String renderJavaType(String simpleName, String fqcn, List<Field> members) {
+    private static String renderJavaType(String simpleName, String fqcn, List<Field> members,
+                                         List<String> constructors) {
         StringBuilder sb = new StringBuilder();
         sb.append("**").append(simpleName).append("** — `").append(fqcn).append("`\n");
-        for (Field member : members) {
-            sb.append("\n- ").append(member.name).append(" : ").append(member.type);
+        appendMemberSection(sb, "Constants", members, Field.Origin.ENUM_CONSTANT);
+        appendMemberSection(sb, "Fields", members, Field.Origin.FIELD);
+        appendMemberSection(sb, "Getters", members, Field.Origin.GETTER);
+        if (!constructors.isEmpty()) {
+            sb.append("\n\n**Constructors**");
+            for (String signature : constructors) {
+                sb.append("\n- `").append(signature).append('`');
+            }
         }
         return sb.toString();
+    }
+
+    /** Appends {@code title}'s section for {@code members} of the given {@code origin}, or nothing when none match. */
+    private static void appendMemberSection(StringBuilder sb, String title, List<Field> members,
+                                            Field.Origin origin) {
+        boolean headerWritten = false;
+        for (Field member : members) {
+            if (member.origin != origin) {
+                continue;
+            }
+            if (!headerWritten) {
+                sb.append("\n\n**").append(title).append("**");
+                headerWritten = true;
+            }
+            if (origin == Field.Origin.ENUM_CONSTANT) {
+                sb.append("\n- ").append(member.name);
+                if (member.args != null) {
+                    sb.append(" (").append(member.args).append(')');
+                }
+            } else {
+                sb.append("\n- ").append(member.name).append(" : ").append(member.type);
+            }
+        }
     }
 
     private static Hover markdown(String content) {
