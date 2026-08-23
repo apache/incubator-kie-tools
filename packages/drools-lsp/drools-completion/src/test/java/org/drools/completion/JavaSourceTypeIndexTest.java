@@ -77,10 +77,108 @@ class JavaSourceTypeIndexTest {
         assertTrue(roots.stream().anyMatch(p -> p.endsWith(Path.of("custom/gen"))));
     }
 
+    /**
+     * A configured root that contains a discovered one must collapse to the
+     * outermost: indexing walks recursively, so keeping both parses every file
+     * beneath the inner root twice. The ancestor is kept because it is the
+     * broader instruction — naming {@code src} asks for test sources too.
+     */
+    @Test
+    void discoverCollapsesARootNestedInsideAnother(@TempDir Path root) throws Exception {
+        Files.createDirectories(root.resolve("module-a/src/main/java"));
+        Files.createDirectories(root.resolve("module-a/src/test/java"));
+
+        List<Path> roots = JavaSourceRoots.discover(root, List.of("module-a/src"));
+
+        assertEquals(1, roots.size(), () -> "expected only the outermost root, got " + roots);
+        assertTrue(roots.get(0).endsWith(Path.of("module-a/src")),
+                () -> "expected module-a/src, got " + roots.get(0));
+    }
+
+    @Test
+    void siblingRootsAreBothKept(@TempDir Path root) throws Exception {
+        Files.createDirectories(root.resolve("module-a/src/main/java"));
+        Files.createDirectories(root.resolve("module-b/src/main/java"));
+
+        assertEquals(2, JavaSourceRoots.discover(root, List.of()).size());
+    }
+
+    /** Overlapping roots must not index the same file twice. */
+    @Test
+    void overlappingRootsIndexEachTypeOnce(@TempDir Path root) throws Exception {
+        Path pkg = root.resolve("module-a/src/main/java/com/example");
+        Files.createDirectories(pkg);
+        Files.writeString(pkg.resolve("Order.java"),
+                "package com.example;\npublic class Order { private int id; }\n");
+
+        List<Path> roots = JavaSourceRoots.discover(root, List.of("module-a/src"));
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.copyOf(roots), List.of());
+
+        assertEquals(1, idx.roots().size());
+        assertEquals(List.of("com.example.Order"), idx.classNames().get("Order"));
+    }
+
     @Test
     void emptyIsInert() {
         assertTrue(JavaSourceTypeIndex.empty().classNames().isEmpty());
         assertNull(JavaSourceTypeIndex.empty().memberNames("x"));
         assertTrue(JavaSourceTypeIndex.empty().membersOf("x").isEmpty());
+    }
+
+    @Test
+    void membersOfIncludesInheritedFieldsFromSamePackageParent(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        write(src, "com/example/Parent.java",
+            "package com.example;\npublic class Parent { public String parentField; }\n");
+        write(src, "com/example/Child.java",
+            "package com.example;\npublic class Child extends Parent { public String childField; }\n");
+
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.of(src), List.of());
+
+        assertTrue(idx.membersOf("com.example.Child").stream().anyMatch(f -> f.name.equals("parentField")));
+        assertTrue(idx.memberNames("com.example.Child").contains("parentField"));
+        assertTrue(idx.membersOf("com.example.Parent").stream().noneMatch(f -> f.name.equals("childField")));
+    }
+
+    @Test
+    void membersOfLetsOwnFieldShadowInheritedOne(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        write(src, "com/example/Parent.java",
+            "package com.example;\npublic class Parent { public String value; }\n");
+        write(src, "com/example/Child.java",
+            "package com.example;\npublic class Child extends Parent { public int value; }\n");
+
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.of(src), List.of());
+
+        List<Field> values = idx.membersOf("com.example.Child").stream()
+                .filter(f -> f.name.equals("value")).toList();
+        assertEquals(1, values.size());
+        assertEquals("int", values.get(0).type);
+    }
+
+    @Test
+    void membersOfResolvesCrossPackageParentByUniqueSimpleName(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        write(src, "com/a/Child.java", "package com.a;\npublic class Child extends Base {}\n");
+        write(src, "com/b/Base.java", "package com.b;\npublic class Base { public String baseField; }\n");
+
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.of(src), List.of());
+
+        assertTrue(idx.membersOf("com.a.Child").stream().anyMatch(f -> f.name.equals("baseField")));
+    }
+
+    @Test
+    void membersOfTerminatesOnExtendsCycle(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        write(src, "com/example/A.java",
+            "package com.example;\npublic class A extends B { public String aField; }\n");
+        write(src, "com/example/B.java",
+            "package com.example;\npublic class B extends A { public String bField; }\n");
+
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.of(src), List.of());
+
+        List<Field> members = idx.membersOf("com.example.A");
+        assertEquals(1, members.stream().filter(f -> f.name.equals("aField")).count());
+        assertEquals(1, members.stream().filter(f -> f.name.equals("bField")).count());
     }
 }

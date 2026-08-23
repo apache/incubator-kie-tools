@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -112,6 +113,14 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
                 usedRoots.add(root);
                 indexRoot(root, filters, typesByFqcn, fileByFqcn);
             }
+        }
+
+        // The roots are the one fact needed to explain everything else this
+        // index reports — including duplicate-FQCN drops, which are expected
+        // when two roots legitimately see the same file and alarming otherwise.
+        if (!usedRoots.isEmpty()) {
+            logger.info("Indexed " + typesByFqcn.size() + " Java source type(s) from "
+                    + usedRoots.size() + " root(s): " + usedRoots);
         }
 
         Map<String, List<String>> classNames = new LinkedHashMap<>();
@@ -229,7 +238,7 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
     @Override
     public List<Field> membersOf(String fqcn) {
         JavaSourceType type = byFqcn(fqcn);
-        return type == null ? List.of() : type.members;
+        return type == null ? List.of() : List.copyOf(membersIncludingInherited(fqcn, type).values());
     }
 
     @Override
@@ -238,11 +247,67 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
         if (type == null) {
             return null;
         }
-        Set<String> names = new LinkedHashSet<>();
+        return new LinkedHashSet<>(membersIncludingInherited(fqcn, type).keySet());
+    }
+
+    /**
+     * Returns {@code type}'s own members followed by those of its ancestors,
+     * walked through {@code extendsSimpleName} within this index only, so a
+     * source-only subclass shows the same member set the reflection path
+     * (which walks {@code getMethods()}/superclass automatically) would show
+     * once a build replaces it. Deduped by name via {@code putIfAbsent} — own
+     * members and nearer ancestors win over farther ones. Depth-capped at 10
+     * and cycle-guarded by a seen-FQCN set, mirroring {@code
+     * DRLDeclaredTypeParser#fieldsIncludingInherited}'s shape. Stops (rather
+     * than guessing) the moment a parent's simple name can't be resolved to
+     * exactly one FQCN in this index.
+     */
+    private Map<String, Field> membersIncludingInherited(String fqcn, JavaSourceType type) {
+        Map<String, Field> members = new LinkedHashMap<>();
         for (Field f : type.members) {
-            names.add(f.name);
+            members.putIfAbsent(f.name, f);
         }
-        return names;
+        Set<String> seen = new HashSet<>();
+        seen.add(fqcn);
+        String currentFqcn = fqcn;
+        String parentSimpleName = type.extendsSimpleName;
+        int depth = 0;
+        while (parentSimpleName != null && depth++ < 10) {
+            String parentFqcn = resolveParentFqcn(currentFqcn, parentSimpleName);
+            if (parentFqcn == null || !seen.add(parentFqcn)) {
+                break;
+            }
+            JavaSourceType parent = typesByFqcn.get(parentFqcn);
+            if (parent == null) {
+                break;
+            }
+            for (Field f : parent.members) {
+                members.putIfAbsent(f.name, f);
+            }
+            currentFqcn = parentFqcn;
+            parentSimpleName = parent.extendsSimpleName;
+        }
+        return members;
+    }
+
+    /**
+     * Resolves {@code parentSimpleName} (an {@code extends} target) to an
+     * FQCN within this index: first the same package as {@code childFqcn}
+     * (the common case), else — only when {@code classNames()} maps the
+     * simple name to exactly one FQCN — that unique cross-package match.
+     * Returns {@code null} (stop the walk) rather than guess among several
+     * same-named candidates.
+     */
+    private String resolveParentFqcn(String childFqcn, String parentSimpleName) {
+        int dot = childFqcn.lastIndexOf('.');
+        String childPackage = dot >= 0 ? childFqcn.substring(0, dot) : "";
+        String samePackageCandidate = childPackage.isEmpty()
+                ? parentSimpleName : childPackage + "." + parentSimpleName;
+        if (typesByFqcn.containsKey(samePackageCandidate)) {
+            return samePackageCandidate;
+        }
+        List<String> candidates = classNames.get(parentSimpleName);
+        return (candidates != null && candidates.size() == 1) ? candidates.get(0) : null;
     }
 
     @Override
