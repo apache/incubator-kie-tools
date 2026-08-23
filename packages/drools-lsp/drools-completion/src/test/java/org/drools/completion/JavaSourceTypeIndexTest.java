@@ -78,6 +78,23 @@ class JavaSourceTypeIndexTest {
     }
 
     /**
+     * A configured entry is a literal path, and on Windows a glob character is
+     * not even a legal one. Discovery must skip such an entry and still return
+     * the convention roots, rather than letting the setting abort the caller.
+     */
+    @Test
+    void discoverSkipsAConfiguredEntryThatIsNotAUsablePath(@TempDir Path root) throws Exception {
+        Files.createDirectories(root.resolve("module-a/src/main/java"));
+
+        List<Path> roots = JavaSourceRoots.discover(
+                root, List.of("**/src/main/java", "modules/*/src/main/java", "does/not/exist"));
+
+        assertEquals(1, roots.size(), () -> "expected only the convention root, got " + roots);
+        assertTrue(roots.get(0).endsWith(Path.of("src/main/java")),
+                () -> "expected the convention root, got " + roots.get(0));
+    }
+
+    /**
      * A configured root that contains a discovered one must collapse to the
      * outermost: indexing walks recursively, so keeping both parses every file
      * beneath the inner root twice. The ancestor is kept because it is the

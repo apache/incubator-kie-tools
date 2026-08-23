@@ -21,6 +21,7 @@ package org.drools.completion;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -75,12 +76,25 @@ public final class JavaSourceRoots {
                 if (configured == null || configured.isBlank()) {
                     continue;
                 }
-                Path candidate = Path.of(configured);
+                Path candidate;
+                try {
+                    candidate = Path.of(configured);
+                } catch (InvalidPathException e) {
+                    // A setting is user input, and on Windows a glob character
+                    // is not a legal path character at all. Skipping one entry
+                    // must not cost the caller its other roots.
+                    logger.fine(() -> "Ignoring source path '" + configured
+                            + "': not a usable path (" + e.getMessage() + ")");
+                    continue;
+                }
                 if (!candidate.isAbsolute() && workspaceRoot != null) {
                     candidate = workspaceRoot.resolve(candidate);
                 }
                 if (Files.isDirectory(candidate)) {
                     addIfNew(out, seen, candidate);
+                } else {
+                    logger.fine(() -> "Ignoring source path '" + configured
+                            + "': not an existing directory");
                 }
             }
         }

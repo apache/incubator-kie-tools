@@ -191,14 +191,11 @@
           "type": "array"
         },
         "drools.lsp.java.sourcePaths": {
-          "default": [
-            "src/main/java",
-            "**/src/main/java"
-          ],
+          "default": [],
           "items": {
             "type": "string"
           },
-          "markdownDescription": "Java source roots used to resolve the project's own types before a build, each absolute or workspace-relative. Maven-convention roots (`src/main/java`) are always discovered; entries here are added to that. Applied when the language server next starts.",
+          "markdownDescription": "Additional Java source roots used to resolve the project's own types before a build. Every `src/main/java` under the workspace is found automatically, so this is only for roots that sit elsewhere. Each entry is a literal directory path, absolute or workspace-relative — not a glob. Applied when the language server next starts.",
           "type": "array"
         },
         "drools.lsp.lint.missingEnd": {
