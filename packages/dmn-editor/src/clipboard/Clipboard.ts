@@ -61,19 +61,18 @@ export type DmnEditorDiagramClipboard = {
   edges: Normalized<DMN_LATEST__DMNEdge>[];
 };
 
-export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorState: State) {
+export function buildClipboardFromDiagram(
+  rfState: RF.ReactFlowState<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>,
+  dmnEditorState: State
+) {
   const copiedEdgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
   const copiedNodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
   const danglingEdgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
 
-  const nodesById = (rfState.nodes as RF.Node<DmnDiagramNodeData>[]).reduce(
-    (acc: Map<string, RF.Node<DmnDiagramNodeData>>, n: RF.Node<DmnDiagramNodeData>) => acc.set(n.id, n),
-    new Map<string, RF.Node<DmnDiagramNodeData>>()
-  );
+  const nodesById = rfState.nodes.reduce((acc, n) => acc.set(n.id, n), new Map<string, RF.Node<DmnDiagramNodeData>>());
 
-  const selectedNodesById = (rfState.nodes as RF.Node<DmnDiagramNodeData>[]).reduce(
-    (acc: Map<string, RF.Node<DmnDiagramNodeData>>, n: RF.Node<DmnDiagramNodeData>) =>
-      n.selected ? acc.set(n.id, n) : acc,
+  const selectedNodesById = rfState.nodes.reduce(
+    (acc, n) => (n.selected ? acc.set(n.id, n) : acc),
     new Map<string, RF.Node<DmnDiagramNodeData>>()
   );
 

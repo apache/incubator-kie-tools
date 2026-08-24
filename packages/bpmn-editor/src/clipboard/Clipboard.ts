@@ -42,17 +42,20 @@ export type BpmnEditorDiagramClipboard = {
   lanes: Normalized<BPMN20__tLane>[];
 };
 
-export function buildClipboardFromDiagram(xyFlowState: RF.ReactFlowState, bpmnEditorState: State) {
+export function buildClipboardFromDiagram(
+  xyFlowState: RF.ReactFlowState<RF.Node<BpmnDiagramNodeData>, RF.Edge<BpmnDiagramEdgeData>>,
+  bpmnEditorState: State
+) {
   const copiedEdgesById = new Map<string, RF.Edge<BpmnDiagramEdgeData>>();
   const copiedNodesById = new Map<string, RF.Node<BpmnDiagramNodeData>>();
   const danglingEdgesById = new Map<string, RF.Edge<BpmnDiagramEdgeData>>();
 
-  const nodesById = (xyFlowState.nodes as RF.Node<BpmnDiagramNodeData>[]).reduce(
+  const nodesById = xyFlowState.nodes.reduce(
     (acc, n) => acc.set(n.id, n),
     new Map<string, RF.Node<BpmnDiagramNodeData>>()
   );
 
-  const selectedNodesById = (xyFlowState.nodes as RF.Node<BpmnDiagramNodeData>[]).reduce(
+  const selectedNodesById = xyFlowState.nodes.reduce(
     (acc, n) => (n.selected ? acc.set(n.id, n) : acc),
     new Map<string, RF.Node<BpmnDiagramNodeData>>()
   );

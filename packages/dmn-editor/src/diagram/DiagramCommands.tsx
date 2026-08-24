@@ -45,7 +45,7 @@ import { DEFAULT_VIEWPORT } from "./Diagram";
 import { useCommands } from "../commands/CommandsContextProvider";
 
 export function DiagramCommands(props: {}) {
-  const rfStoreApi = RF.useStoreApi();
+  const rfStoreApi = RF.useStoreApi<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { commandsRef } = useCommands();
   const { externalModelsByNamespace } = useExternalModels();
@@ -147,32 +147,30 @@ export function DiagramCommands(props: {}) {
           });
 
           // Delete nodes
-          (rfStoreApi.getState().nodes as RF.Node<DmnDiagramNodeData>[]).forEach(
-            (node: RF.Node<DmnDiagramNodeData>) => {
-              if (copiedNodesById.has(node.id)) {
-                deleteNode({
-                  __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
-                  definitions: state.dmn.model.definitions,
-                  __readonly_drdIndex: state.computed(state).getDrdIndex(),
-                  __readonly_dmnObjectNamespace:
-                    node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                  __readonly_dmnObjectQName: node.data.dmnObjectQName,
-                  __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
-                  __readonly_nodeNature: nodeNatures[node.type as NodeType],
-                  __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                  __readonly_externalDmnsIndex: state
-                    .computed(state)
-                    .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
-                  __readonly_externalModelsByNamespace: externalModelsByNamespace,
-                });
-                state.dispatch(state).diagram.setNodeStatus(node.id, {
-                  selected: false,
-                  dragging: false,
-                  resizing: false,
-                });
-              }
+          rfStoreApi.getState().nodes.forEach((node) => {
+            if (copiedNodesById.has(node.id)) {
+              deleteNode({
+                __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
+                definitions: state.dmn.model.definitions,
+                __readonly_drdIndex: state.computed(state).getDrdIndex(),
+                __readonly_dmnObjectNamespace:
+                  node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
+                __readonly_dmnObjectQName: node.data.dmnObjectQName,
+                __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
+                __readonly_nodeNature: nodeNatures[node.type as NodeType],
+                __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                __readonly_externalDmnsIndex: state
+                  .computed(state)
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                __readonly_externalModelsByNamespace: externalModelsByNamespace,
+              });
+              state.dispatch(state).diagram.setNodeStatus(node.id, {
+                selected: false,
+                dragging: false,
+                resizing: false,
+              });
             }
-          );
+          });
         });
       });
     };
@@ -283,7 +281,7 @@ export function DiagramCommands(props: {}) {
     }
     commandsRef.current.selectAll = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Selecting/Deselecting nodes...");
-      const allNodeIds = (rfStoreApi.getState().nodes as RF.Node<DmnDiagramNodeData>[]).map((s) => s.id);
+      const allNodeIds = rfStoreApi.getState().nodes.map((s) => s.id);
 
       const allEdgeIds = rfStoreApi.getState().edges.map((s) => s.id);
 

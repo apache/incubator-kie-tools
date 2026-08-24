@@ -323,8 +323,7 @@ function XyFlowReactKieDiagramInner<
   );
 
   const nodeIdBeingDraggedRef = useRef<string | null>(null);
-  // v12: `node.dragging` is always false in onNodeDragStop. Track whether actual movement
-  // occurred (i.e., a position change with dragging=true fired) so we can guard parenting logic.
+  // v12: Track actual movement (dragging=true position change) since `node.dragging` is always false in onNodeDragStop.
   const nodeActuallyMovedRef = useRef<boolean>(false);
 
   // Memos
@@ -548,11 +547,7 @@ function XyFlowReactKieDiagramInner<
                 nodeActuallyMovedRef.current = true;
               }
 
-              // v12: change.positionAbsolute is never set by the RF drag system.
-              // change.position IS the correct snapped drag position (position === positionAbsolute
-              // for root-level nodes since this codebase does not use RF native parenting).
-              // The nodeLookup entry is stale at this point — it is only updated after
-              // adoptUserNodes runs in the React render cycle, which happens after onNodesChange.
+              // v12: Use change.position as the drag position (positionAbsolute is never set by RF drag; nodeLookup is stale here).
               const positionAbsolute: RF.XYPosition | undefined =
                 change.positionAbsolute ??
                 change.position ??
@@ -567,9 +562,8 @@ function XyFlowReactKieDiagramInner<
                     state.xyFlowReactKieDiagram.newNodeProjection!;
 
                   let foundContainer = false;
-                  // Use xyFlowStoreApi for synchronous node access — available before onInit fires.
-                  // nodeLookup stores InternalNode<Node>; we cast through unknown to Node<NData, N>
-                  // since NData satisfies Record<string, unknown> (enforced by XyFlowReactKieDiagramNodeData).
+                  // Use xyFlowStoreApi for synchronous access; nodeLookup stores InternalNode<Node> so we cast
+                  // through unknown to Node<NData, N> (safe since NData satisfies Record<string, unknown>).
                   for (const potentialContainer of (
                     Array.from(xyFlowStoreApi.getState().nodeLookup.values()) as unknown as RF.Node<NData, N>[]
                   ).reverse() /* Respect the nodes z-index */) {
@@ -691,12 +685,7 @@ function XyFlowReactKieDiagramInner<
                   state.xyFlowReactKieDiagram.newNodeProjection.data.shape["dc:Bounds"]["@_x"] = newPosition.x;
                   state.xyFlowReactKieDiagram.newNodeProjection.data.shape["dc:Bounds"]["@_y"] = newPosition.y;
                 } else if (!change.dragging) {
-                  // v12: Do NOT write the model while dragging (change.dragging === true).
-                  // Writing to the model on every drag tick causes computeDiagramData to produce
-                  // new node object references. ReactFlow's adoptUserNodes then resets
-                  // positionAbsolute back to node.position (from the new object), fighting the
-                  // drag system and making nodes appear frozen. Only persist on drag-end
-                  // (change.dragging === false), which delivers the final snapped position.
+                  // v12: Skip model writes while dragging — new object refs from computeDiagramData cause RF to reset positionAbsolute, freezing nodes.
                   if (isAnyParentSelected(node?.data.parentXyFlowNode)) {
                     // Do nothing.
                     // Nodes that have a virtual parent will be automatically dragged with them, so there's no need to reposition them here.
@@ -805,7 +794,7 @@ function XyFlowReactKieDiagramInner<
           // Un-parent
           if (nodeBeingDragged.data.parentXyFlowNode) {
             const p = state.computed(state).getDiagramData().nodesById.get(nodeBeingDragged.data.parentXyFlowNode.id);
-            if (p?.type && containmentMap.get(p.type as N)) {
+            if (p?.type && (containmentMap as Map<string, unknown>).has(p.type)) {
               onNodeUnparented({
                 state,
                 exParentNode: p,
@@ -976,10 +965,9 @@ function XyFlowReactKieDiagramInner<
           nodeIdBeingDraggedRef.current = newNodeId;
         });
 
-        // Palette drops count as "moved" so parenting logic fires correctly in onNodeDragStop.
+        // Palette drops count as "moved"; invoke onNodeDragStop with a synthetic event to trigger parenting logic
+        // (callback only reads nodeIdBeingDraggedRef, not `node`).
         nodeActuallyMovedRef.current = true;
-        // Invoke onNodeDragStop with a synthetic event and an empty-id node shell to trigger
-        // the parenting/containment logic. The callback only reads nodeIdBeingDraggedRef, not `node`.
         onNodeDragStop(new MouseEvent("mouseup"), {} as RF.Node<NData, N>, []);
 
         xyFlowReactKieDiagramStoreApi.setState((state) => {
@@ -1130,10 +1118,10 @@ function XyFlowReactKieDiagramInner<
           // 'Starting to drag' and 'dragging' should have the same behavior. Otherwise,
           // clicking a node and letting it go, without moving, won't work properly, and
           // Nodes will be removed from Containment Nodes.
-          onNodeDragStart={onNodeDragStart as RF.OnNodeDrag}
-          onNodeDrag={onNodeDrag as RF.OnNodeDrag}
+          onNodeDragStart={onNodeDragStart}
+          onNodeDrag={onNodeDrag}
           // (end)
-          onNodeDragStop={onNodeDragStop as RF.OnNodeDrag}
+          onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeComponents}
           edgeTypes={edgeComponents}
           snapToGrid={true}
@@ -1142,7 +1130,9 @@ function XyFlowReactKieDiagramInner<
           fitView={false}
           fitViewOptions={FIT_VIEW_OPTIONS}
           attributionPosition={"bottom-right"}
-          onInit={setReactFlowInstance as RF.OnInit}
+          onInit={(instance) =>
+            setReactFlowInstance(instance as RF.ReactFlowInstance<RF.Node<NData, N>, RF.Edge<EData>>)
+          }
           deleteKeyCode={DELETE_NODE_KEY_CODES}
           // (begin)
           // Used to make the Palette work by dropping nodes on the Reactflow Canvas

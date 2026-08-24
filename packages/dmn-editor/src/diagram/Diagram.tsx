@@ -202,8 +202,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     );
 
     const nodeIdBeingDraggedRef = useRef<string | null>(null);
-    // v12: `node.dragging` is always false in onNodeDragStop. Track whether actual movement
-    // occurred so we can guard parenting logic correctly.
+    // v12: Track actual movement since `node.dragging` is always false in onNodeDragStop.
     const nodeActuallyMovedRef = useRef<boolean>(false);
 
     // Memos
@@ -834,22 +833,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   nodeActuallyMovedRef.current = true;
                 }
 
-                // v12: change.positionAbsolute is never set by the RF drag system.
-                // change.position IS the correct snapped drag position (position === positionAbsolute
-                // for root-level nodes since this codebase does not use RF native parenting).
-                // The nodeLookup entry is stale at this point — it is only updated after
-                // adoptUserNodes runs in the React render cycle, which happens after onNodesChange.
+                // v12: Use change.position as the drag position (positionAbsolute is never set by RF drag; nodeLookup is stale here).
                 const positionAbsolute: RF.XYPosition | undefined =
                   change.positionAbsolute ??
                   change.position ??
                   nodeLookupRef.current?.get(change.id)?.internals.positionAbsolute;
 
-                // v12: Do NOT write the model while dragging (change.dragging === true).
-                // Writing to the model on every drag tick causes computeDiagramData to produce
-                // new node object references. ReactFlow's adoptUserNodes then resets
-                // positionAbsolute back to node.position (from the new object), fighting the
-                // drag system and making nodes appear frozen. Only persist on drag-end
-                // (change.dragging === false), which delivers the final snapped position.
+                // v12: Skip model writes while dragging — new object refs from computeDiagramData cause RF to reset positionAbsolute, freezing nodes.
                 if (positionAbsolute && !change.dragging) {
                   const node = state
                     .computed(state)
@@ -1035,8 +1025,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<DmnDiagramNodeData>>>(
       (e, node) => {
         nodeIdBeingDraggedRef.current = node.id;
-        // v12: The node passed to onNodeDrag is a user-facing Node, not an InternalNode.
-        // Read positionAbsolute from the nodeLookup (stable map reference mutated in place by RF).
+        // v12: Read positionAbsolute from nodeLookup (node is user-facing Node, not InternalNode; nodeLookup is mutated in place by RF).
         const positionAbsolute = nodeLookupRef.current?.get(node.id)?.internals.positionAbsolute ?? node.position;
         dmnEditorStoreApi.setState((state) => {
           state.diagram.dropTargetNode = getFirstNodeFittingBounds(
@@ -1440,7 +1429,9 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             fitView={previewMode ? true : false}
             fitViewOptions={previewMode ? FIT_VIEW_OPTIONS_PREVIEW : FIT_VIEW_OPTIONS}
             attributionPosition={"bottom-right"}
-            onInit={setReactFlowInstance as RF.OnInit<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>}
+            onInit={(instance: RF.ReactFlowInstance<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>) =>
+              setReactFlowInstance(instance)
+            }
             deleteKeyCode={settings.isReadOnly ? [] : DELETE_NODE_KEY_CODES}
             // (begin)
             // Used to make the Palette work by dropping nodes on the Reactflow Canvas
@@ -1822,8 +1813,7 @@ function DmnNodeLookupSync(props: {
   nodeLookupRef: React.MutableRefObject<RF.ReactFlowState["nodeLookup"] | undefined>;
 }) {
   const xyFlowStoreApi = RF.useStoreApi();
-  // useLayoutEffect fires synchronously before paint, ensuring nodeLookupRef is populated
-  // before onNodesChange can read from it during the same render cycle.
+  // useLayoutEffect fires synchronously before paint, ensuring nodeLookupRef is populated before onNodesChange reads it.
   useLayoutEffect(() => {
     props.nodeLookupRef.current = xyFlowStoreApi.getState().nodeLookup;
   });

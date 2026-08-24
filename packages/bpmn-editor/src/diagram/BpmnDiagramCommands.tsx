@@ -43,7 +43,7 @@ import { deleteNode } from "../mutations/deleteNode";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 
 export function BpmnDiagramCommands(props: {}) {
-  const xyFlowStoreApi = RF.useStoreApi();
+  const xyFlowStoreApi = RF.useStoreApi<RF.Node<BpmnDiagramNodeData>, RF.Edge<BpmnDiagramEdgeData>>();
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
   const { commandsRef } = useCommands();
   const xyFlow = RF.useReactFlow<RF.Node<BpmnDiagramNodeData>, RF.Edge<BpmnDiagramEdgeData>>();
@@ -140,25 +140,23 @@ export function BpmnDiagramCommands(props: {}) {
           });
 
           // Delete nodes
-          (xyFlowStoreApi.getState().nodes as RF.Node<BpmnDiagramNodeData>[]).forEach(
-            (node: RF.Node<BpmnDiagramNodeData>) => {
-              if (copiedNodesById.has(node.id)) {
-                deleteNode({
-                  definitions: state.bpmn.model.definitions,
-                  __readonly_bpmnElementId: node.data.bpmnElement?.["@_id"],
-                  __readonly_bpmnEdgeData: state
-                    .computed(state)
-                    .getDiagramData()
-                    .edges.flatMap((edge) => edge.data!),
-                });
-                state.dispatch(state).setNodeStatus(node.id, {
-                  selected: false,
-                  dragging: false,
-                  resizing: false,
-                });
-              }
+          xyFlowStoreApi.getState().nodes.forEach((node) => {
+            if (copiedNodesById.has(node.id)) {
+              deleteNode({
+                definitions: state.bpmn.model.definitions,
+                __readonly_bpmnElementId: node.data.bpmnElement?.["@_id"],
+                __readonly_bpmnEdgeData: state
+                  .computed(state)
+                  .getDiagramData()
+                  .edges.flatMap((edge) => edge.data!),
+              });
+              state.dispatch(state).setNodeStatus(node.id, {
+                selected: false,
+                dragging: false,
+                resizing: false,
+              });
             }
-          );
+          });
         });
       });
     };
@@ -266,7 +264,7 @@ export function BpmnDiagramCommands(props: {}) {
     }
     commandsRef.current.selectAll = async () => {
       console.debug("BPMN DIAGRAM: COMMANDS: Selecting/Deselecting nodes...");
-      const allNodeIds = (xyFlowStoreApi.getState().nodes as RF.Node<BpmnDiagramNodeData>[]).map((s) => s.id);
+      const allNodeIds = xyFlowStoreApi.getState().nodes.map((s) => s.id);
 
       const allEdgeIds = xyFlowStoreApi.getState().edges.map((s) => s.id);
 

@@ -106,8 +106,8 @@ export function ConnectionLine<N extends string, E extends string>({
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       {
-        x: (fromNode as any)?.internals?.positionAbsolute?.x,
-        y: (fromNode as any)?.internals?.positionAbsolute?.y,
+        x: fromNode?.internals?.positionAbsolute?.x,
+        y: fromNode?.internals?.positionAbsolute?.y,
         width: fromNode!.measured?.width,
         height: fromNode!.measured?.height,
       },
@@ -116,8 +116,8 @@ export function ConnectionLine<N extends string, E extends string>({
 
     const [fromXauto, fromYauto] = getPositionalHandlePosition(
       {
-        x: (fromNode as any)?.internals?.positionAbsolute?.x,
-        y: (fromNode as any)?.internals?.positionAbsolute?.y,
+        x: fromNode?.internals?.positionAbsolute?.x,
+        y: fromNode?.internals?.positionAbsolute?.y,
         width: fromNode!.measured?.width,
         height: fromNode!.measured?.height,
       },

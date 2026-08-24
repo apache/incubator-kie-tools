@@ -1134,7 +1134,7 @@ th {
 
 /* controls */
 .react-flow__controls {
-  border-radius: 20px;
+  border-radius: 1000px;
   border: 1px solid black;
   background: white;
   margin-bottom: 24px;
@@ -1142,33 +1142,27 @@ th {
 .react-flow__controls:hover {
   box-shadow: -4px -4px 2px 0px rgb(127 127 127);
 }
-.react-flow__controls > button {
-  border-radius: 20px;
-}
-.react-flow__controls > button:hover {
-  filter: brightness(95%);
-}
-.react-flow__controls > button:active {
-  filter: brightness(90%);
-}
-.react-flow__controls {
-  border-radius: 1000px;
-}
 .react-flow__controls-button {
   width: 40px !important;
   height: 40px !important;
   box-sizing: border-box !important;
-  border: 0;
+  border: 0 !important;
   border-radius: 1000px;
   padding: 4px !important;
-  color: #333 !important;
+  color: var(--xy-controls-button-color, var(--xy-controls-button-color-default, currentColor)) !important;
 }
 .react-flow__controls-button svg {
   width: 12px !important;
-  height: 12px !important;
   max-width: 12px !important;
-  max-height: 12px !important;
+  height: auto !important;
+  max-height: unset !important;
   fill: currentColor;
+}
+.react-flow__controls-button:hover {
+  filter: brightness(95%);
+}
+.react-flow__controls-button:active {
+  filter: brightness(90%);
 }
 .react-flow__resize-control {
   z-index: 0;

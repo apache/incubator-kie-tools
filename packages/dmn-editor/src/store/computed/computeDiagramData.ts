@@ -222,9 +222,7 @@ export function computeDiagramData(
       // them. We always know the dimensions here, so we can simply provide them.
       width: dimensions.width,
       height: dimensions.height,
-      // v12: `measured` is what RF uses for drag/layout calculations. `width`/`height` are now
-      // only inline styles. Pre-populating `measured` prevents error #015 ("node not initialized")
-      // when a node is dragged before RF's ResizeObserver has had a chance to measure it.
+      // v12: Pre-populate `measured` (used by RF for drag/layout) to prevent error #015 before ResizeObserver fires.
       measured: {
         width: dimensions.width,
         height: dimensions.height,
