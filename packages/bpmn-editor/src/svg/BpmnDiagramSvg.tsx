@@ -376,9 +376,9 @@ export function getNodeLabelSvgTextAlignmentProps(
 ) {
   switch (labelPosition) {
     case "center-bottom":
-      const cbTx = n.position.x! + n.width! / 2;
-      const cbTy = n.position.y! + n.height! + 4;
-      const cbWidth = n.width!;
+      const cbTx = n.position.x! + n.measured!.width! / 2;
+      const cbTy = n.position.y! + n.measured!.height! + 4;
+      const cbWidth = n.measured!.width!;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -387,9 +387,9 @@ export function getNodeLabelSvgTextAlignmentProps(
       } as const;
 
     case "center-center":
-      const ccTx = n.position.x! + n.width! / 2;
-      const ccTy = n.position.y! + n.height! / 2;
-      const ccWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const ccTx = n.position.x! + n.measured!.width! / 2;
+      const ccTy = n.position.y! + n.measured!.height! / 2;
+      const ccWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "middle",
@@ -398,9 +398,9 @@ export function getNodeLabelSvgTextAlignmentProps(
       } as const;
 
     case "top-center":
-      const tcTx = n.position.x! + n.width! / 2;
+      const tcTx = n.position.x! + n.measured!.width! / 2;
       const tcTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const tcWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const tcWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -410,8 +410,8 @@ export function getNodeLabelSvgTextAlignmentProps(
 
     case "center-left":
       const clTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const clTy = n.position.y! + n.height! / 2;
-      const clWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const clTy = n.position.y! + n.measured!.height! / 2;
+      const clWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "start",
@@ -424,7 +424,7 @@ export function getNodeLabelSvgTextAlignmentProps(
       const tlTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlWidth =
-        n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
+        n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       return {
         verticalAnchor: "start",
         textAnchor: "start",

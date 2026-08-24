@@ -154,10 +154,20 @@
   border-radius: 1000px;
 }
 .react-flow__controls-button {
-  width: 30px;
-  height: 30px;
+  width: 40px !important;
+  height: 40px !important;
+  box-sizing: border-box !important;
   border: 0;
   border-radius: 1000px;
+  padding: 4px !important;
+  color: #333 !important;
+}
+.react-flow__controls-button svg {
+  width: 12px !important;
+  height: 12px !important;
+  max-width: 12px !important;
+  max-height: 12px !important;
+  fill: currentColor;
 }
 .react-flow__resize-control {
   z-index: 10000;
