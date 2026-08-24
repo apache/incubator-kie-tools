@@ -140,8 +140,13 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     /**
      * The single classpath FQCN whose simple name is {@code simpleName}, or
-     * {@code null} when none or several match — the same any-package,
-     * skip-when-ambiguous rule {@code DRLCompletionHelper.resolveFqcn} applies.
+     * {@code null} when none or several match.
+     *
+     * <p>Weaker than {@code DRLCompletionHelper.resolveFqcn}, which consults the
+     * document's imports first and so picks the right one of two same-named
+     * classes. The seam carries no import context, so an explicitly imported type
+     * whose simple name collides elsewhere on the classpath resolves to nothing
+     * here, and a {@code declare ... extends} on it loses its inherited members.
      */
     private String uniqueFqcnForSimpleName(String simpleName) {
         String found = null;
@@ -216,8 +221,13 @@ public class DroolsLspDocumentService implements TextDocumentService {
             return Collections.emptyList();
         }
         Path documentPath = toPath(uri);
+        // Gated on the dependency classpath, not on the class index being
+        // non-empty: source-derived names land in that index before Maven has
+        // resolved anything, and judging a dependency type unknown on that basis
+        // reports every one of them as a typo until the build catches up.
         return DRLLintHelper.lintUnknownTypes(text, parsed.compilationUnit, documentPath,
-                openSiblings(documentPath), classIndex, classMemberIndex, classIndex.size() > 0);
+                openSiblings(documentPath), classIndex, classMemberIndex,
+                server.isDependencyClasspathResolved());
     }
 
     @Override

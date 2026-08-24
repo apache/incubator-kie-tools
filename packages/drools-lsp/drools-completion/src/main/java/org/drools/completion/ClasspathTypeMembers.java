@@ -39,6 +39,13 @@ import java.util.logging.Logger;
  * inherited ones already folded in; this class is the single seam both walks
  * consult. Absent a lookup every method is inert, so the module works
  * standalone, and in tests, with no host at all.
+ *
+ * <p>The lookup is keyed by the type name as the DRL writes it, which carries no
+ * import context. A host resolving a bare simple name therefore cannot tell
+ * which of two same-named classes the document meant, and answers for neither.
+ * Closing that needs the document's imports to reach the lookup — the callers
+ * are text-level and hold none today — so the seam would take a resolved name
+ * instead of a simple one.
  */
 public final class ClasspathTypeMembers {
 
