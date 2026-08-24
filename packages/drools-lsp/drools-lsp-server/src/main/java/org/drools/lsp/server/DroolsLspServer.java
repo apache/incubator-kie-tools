@@ -85,6 +85,12 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     /** {@code drools.lsp.java.packageFilters}, parsed once at {@code initialize}. */
     private volatile List<String> javaPackageFiltersSetting = List.of();
 
+    /**
+     * Set once the Maven resolve returns, whether or not it found anything. Not
+     * inferred from the class index, which also carries source-derived names.
+     */
+    private volatile boolean dependencyClasspathResolved = false;
+
     /** Tracks whether {@code shutdown} preceded {@code exit} (LSP spec). */
     private volatile boolean shutdownReceived = false;
 
@@ -178,8 +184,17 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         }
     }
 
+    /**
+     * The unknown-type lint waits on this: it cannot call a type unknown while
+     * part of the classpath is still missing.
+     */
+    boolean isDependencyClasspathResolved() {
+        return dependencyClasspathResolved;
+    }
+
     private void setResolvedClasspath(Set<Path> entries) {
         this.classpathEntries = entries;
+        this.dependencyClasspathResolved = true;
         this.buildOutputDirs = filterDirectories(entries);
         Set<Path> jars = filterJars(entries);
         this.jarClassIndex = jars.isEmpty() ? ClassIndex.empty() : ClassIndex.build(jars);
