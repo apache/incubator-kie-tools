@@ -39,6 +39,31 @@ class JavaSourceTypeParserTest {
     }
 
     /**
+     * Reflection lists instance members: it filters static fields out and its
+     * property scan rejects static methods. A static offered as a fact property
+     * before a build and withdrawn after it is worse than never offering it,
+     * because a rule written against it does not compile.
+     */
+    @Test
+    void staticMembersAreNotFactProperties() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String VERSION = \"1\";\n"
+            + "  public int id;\n"
+            + "  public static String getBuild() { return \"b\"; }\n"
+            + "  public String getCode() { return \"c\"; }\n"
+            + "}\n");
+
+        assertTrue(member(t, "id").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "code").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "VERSION").isEmpty(),
+            () -> "a static field is not a fact property: " + t.members);
+        assertTrue(member(t, "build").isEmpty(),
+            () -> "nor is a static getter: " + t.members);
+    }
+
+    /**
      * Reflection reports public methods and public constructors only, so the
      * source view must not offer more than the compiled view will: a member that
      * appears before a build and vanishes after it is worse than one that never

@@ -244,14 +244,14 @@ public final class JavaSourceTypeParser {
                 if (md == null) {
                     continue; // static block or bare ';'
                 }
-                if (md.fieldDeclaration() != null && hasPublicModifier(cbd.modifier())) {
+                if (md.fieldDeclaration() != null && isPublicInstanceMember(cbd.modifier())) {
                     JavaParser.FieldDeclarationContext fd = md.fieldDeclaration();
                     String type = simplify(fd.typeType());
                     for (JavaParser.VariableDeclaratorContext vd : fd.variableDeclarators().variableDeclarator()) {
                         String name = vd.variableDeclaratorId().identifier().getText();
                         fieldsOut.add(new Field(name, type, null, Field.Origin.FIELD));
                     }
-                } else if (md.methodDeclaration() != null && hasPublicModifier(cbd.modifier())) {
+                } else if (md.methodDeclaration() != null && isPublicInstanceMember(cbd.modifier())) {
                     JavaParser.MethodDeclarationContext mt = md.methodDeclaration();
                     String property = getterPropertyOf(mt.typeTypeOrVoid(), mt.identifier(), mt.formalParameters());
                     if (property != null) {
@@ -268,11 +268,26 @@ public final class JavaSourceTypeParser {
     }
 
     /**
-     * True when {@code modifiers} includes {@code public} — mirrors
-     * reflection's {@code Class#getFields()}, which surfaces public fields
-     * only (instance and static alike; static-field inclusion is a
-     * documented residual drift, see the roadmap's known limitations).
+     * A public, non-static member — the shape reflection reports as an instance
+     * member, and so the only shape this view may claim. Statics are excluded
+     * rather than modelled separately: parity with the compiled path is what
+     * keeps a member from appearing before a build and vanishing after it.
      */
+    private static boolean isPublicInstanceMember(List<JavaParser.ModifierContext> modifiers) {
+        return hasPublicModifier(modifiers) && !hasStaticModifier(modifiers);
+    }
+
+    private static boolean hasStaticModifier(List<JavaParser.ModifierContext> modifiers) {
+        for (JavaParser.ModifierContext modifier : modifiers) {
+            JavaParser.ClassOrInterfaceModifierContext coim = modifier.classOrInterfaceModifier();
+            if (coim != null && coim.STATIC() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** True when {@code modifiers} includes {@code public}. */
     private static boolean hasPublicModifier(List<JavaParser.ModifierContext> modifiers) {
         for (JavaParser.ModifierContext modifier : modifiers) {
             JavaParser.ClassOrInterfaceModifierContext coim = modifier.classOrInterfaceModifier();
