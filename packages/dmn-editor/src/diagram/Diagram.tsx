@@ -1801,19 +1801,19 @@ export function SetConnectionToReactFlowStore(props: {}) {
   const ongoingConnection = useDmnEditorStore((s) => s.diagram.ongoingConnection);
   const rfStoreApi = RF.useStoreApi();
   useEffect(() => {
-    rfStoreApi.setState({
-      connection: {
-        fromHandle: ongoingConnection
-          ? {
-              nodeId: ongoingConnection.nodeId ?? null,
-              id: ongoingConnection.handleId ?? null,
-              type: ongoingConnection.handleType ?? null,
-            }
-          : undefined,
-        toHandle: null,
-      } as any,
-    });
-  }, [ongoingConnection?.handleId, ongoingConnection?.handleType, ongoingConnection?.nodeId, rfStoreApi]);
+    if (ongoingConnection) {
+      rfStoreApi.setState({
+        connectionClickStartHandle: {
+          nodeId: ongoingConnection.nodeId!,
+          id: ongoingConnection.handleId,
+          type: ongoingConnection.handleType!,
+        },
+      });
+    } else {
+      rfStoreApi.getState().cancelConnection();
+      rfStoreApi.setState({ connectionClickStartHandle: null });
+    }
+  }, [ongoingConnection, rfStoreApi]);
 
   return <></>;
 }

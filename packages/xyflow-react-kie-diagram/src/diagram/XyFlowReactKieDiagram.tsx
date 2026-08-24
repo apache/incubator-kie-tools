@@ -1177,19 +1177,19 @@ export function SetConnectionToReactFlowStore(props: {}) {
   const xyFlowStoreApi = RF.useStoreApi();
 
   useEffect(() => {
-    xyFlowStoreApi.setState({
-      connection: {
-        fromHandle: ongoingConnection
-          ? {
-              nodeId: ongoingConnection.nodeId ?? null,
-              id: ongoingConnection.handleId ?? null,
-              type: ongoingConnection.handleType ?? null,
-            }
-          : undefined,
-        toHandle: null,
-      } as any,
-    });
-  }, [ongoingConnection?.handleId, ongoingConnection?.handleType, ongoingConnection?.nodeId, xyFlowStoreApi]);
+    if (ongoingConnection) {
+      xyFlowStoreApi.setState({
+        connectionClickStartHandle: {
+          nodeId: ongoingConnection.nodeId!,
+          id: ongoingConnection.handleId,
+          type: ongoingConnection.handleType!,
+        },
+      });
+    } else {
+      xyFlowStoreApi.getState().cancelConnection();
+      xyFlowStoreApi.setState({ connectionClickStartHandle: null });
+    }
+  }, [ongoingConnection, xyFlowStoreApi]);
 
   return <></>;
 }
