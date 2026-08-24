@@ -19,6 +19,7 @@
 
 package org.drools.completion;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -153,8 +154,8 @@ class JavaSourceTypeParserTest {
     @Test
     void toleratesGarbageAndDefaultPackage() {
         assertTrue(JavaSourceTypeParser.parse("").isEmpty());
-        assertTrue(JavaSourceTypeParser.parse("this is not java {{{").isEmpty()
-            || !JavaSourceTypeParser.parse("this is not java {{{").isEmpty()); // never throws
+        // Garbage must not throw; what it returns is not specified.
+        assertDoesNotThrow(() -> JavaSourceTypeParser.parse("this is not java {{{"));
         JavaSourceType t = only("public class NoPkg { int x; }");
         assertEquals("NoPkg", t.fqcn); // default package => fqcn == simpleName
     }

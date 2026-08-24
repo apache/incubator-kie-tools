@@ -60,6 +60,9 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
     /** Per-file cache keyed by normalized absolute path, valid by mtime. Shared across builds. */
     private static final Map<Path, CachedEntry> FILE_CACHE = new ConcurrentHashMap<>();
 
+    /** The root set most recently announced at INFO, so a rebuild over the same roots stays quiet. */
+    private static volatile Set<Path> lastAnnouncedRoots = Set.of();
+
     /**
      * Drops all cached parse results. Entries are already mtime-validated, so
      * this is about bounding memory in a long-running server rather than
@@ -118,9 +121,18 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
         // The roots are the one fact needed to explain everything else this
         // index reports — including duplicate-FQCN drops, which are expected
         // when two roots legitimately see the same file and alarming otherwise.
+        // Announced only when the set changes, though: a rebuild runs on every
+        // watched .java save, and repeating this at INFO would bury the log it
+        // is meant to inform.
         if (!usedRoots.isEmpty()) {
-            logger.info("Indexed " + typesByFqcn.size() + " Java source type(s) from "
-                    + usedRoots.size() + " root(s): " + usedRoots);
+            String message = "Indexed " + typesByFqcn.size() + " Java source type(s) from "
+                    + usedRoots.size() + " root(s): " + usedRoots;
+            if (usedRoots.equals(lastAnnouncedRoots)) {
+                logger.fine(message);
+            } else {
+                lastAnnouncedRoots = Set.copyOf(usedRoots);
+                logger.info(message);
+            }
         }
 
         Map<String, List<String>> classNames = new LinkedHashMap<>();
