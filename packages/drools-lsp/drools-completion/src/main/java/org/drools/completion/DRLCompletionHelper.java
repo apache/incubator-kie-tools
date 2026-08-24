@@ -260,7 +260,7 @@ public class DRLCompletionHelper {
         if (text == null || caret == null) {
             return null;
         }
-        String[] lines = text.split("\n", -1);
+        String[] lines = text.split("\r?\n", -1);
         int row = caret.getLine();
         if (row < 0 || row >= lines.length) {
             return null;
@@ -329,7 +329,12 @@ public class DRLCompletionHelper {
             return null;
         }
 
-        String resolved = rootType.substring(rootType.lastIndexOf('.') + 1);
+        // Kept qualified. A pattern head written as a fully-qualified name is
+        // how an author disambiguates a simple name that collides on the
+        // classpath, and resolveFqcn returns a dotted name as-is, so dropping
+        // the package here is what leaves it unresolvable without an import.
+        // Both consumers below simplify for themselves where they need to.
+        String resolved = rootType;
         if (firstFieldSegment < chain.length) {
             String path = String.join(".", Arrays.copyOfRange(chain, firstFieldSegment, chain.length));
             resolved = LhsBindingResolver.resolvePath(

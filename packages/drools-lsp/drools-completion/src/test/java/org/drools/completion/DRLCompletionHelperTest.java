@@ -494,6 +494,40 @@ class DRLCompletionHelperTest {
     }
 
     /**
+     * Writing the pattern head fully qualified is how an author disambiguates a
+     * simple name that collides on the classpath. So the head has to reach member
+     * resolution still qualified: reduced to its simple name it runs into the very
+     * ambiguity it was written to avoid.
+     */
+    @Test
+    void aFullyQualifiedPatternHeadResolvesWhenItsSimpleNameIsAmbiguous() {
+        String text = """
+                package demo;
+
+                rule R
+                  when
+                    org.drools.completion.fixtures.Pet( name. )
+                  then
+                end
+                """;
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+        // Stands in for the ambiguous case: the host can answer for a qualified
+        // name and refuses a bare one, as it does when two classes share a
+        // simple name.
+        ClasspathTypeMembers.install(n -> n != null && n.indexOf('.') >= 0
+                ? memberIndex.membersOf(n) : List.of());
+        try {
+            // Line 4 is the pattern; the caret sits right after 'name.' at col 45.
+            List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                    text, new Position(4, 45), getLanguageClient(), ClassIndex.empty(), memberIndex);
+
+            assertThat(result).as("members of the field's type").isNotEmpty();
+        } finally {
+            ClasspathTypeMembers.install(null);
+        }
+    }
+
+    /**
      * The scan back to the enclosing pattern counts parentheses, so a paren
      * inside a string literal would unbalance it and find the wrong pattern —
      * or none. The same mask the binding resolver uses keeps the count honest.
