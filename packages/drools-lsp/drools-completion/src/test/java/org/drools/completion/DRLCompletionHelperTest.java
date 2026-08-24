@@ -494,6 +494,39 @@ class DRLCompletionHelperTest {
     }
 
     /**
+     * The scan back to the enclosing pattern counts parentheses, so a paren
+     * inside a string literal would unbalance it and find the wrong pattern —
+     * or none. The same mask the binding resolver uses keeps the count honest.
+     */
+    @Test
+    void memberCompletionSurvivesAParenInsideAStringConstraint() {
+        String text = """
+                package demo;
+
+                declare Inner
+                  depth : int
+                end
+
+                declare Fact
+                  note : String
+                  ref : Inner
+                end
+
+                rule R
+                  when
+                    Fact( note == ")", ref. )
+                  then
+                end
+                """;
+
+        int col = text.split("\n")[13].indexOf("ref.") + "ref.".length();
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, new Position(13, col), getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel).containsExactly("depth");
+    }
+
+    /**
      * A dot is not only a member access: it also separates the segments of a
      * qualified name. The head of such a name resolves to no type, so the member
      * walk finds nothing and must leave the position to the grammar's own

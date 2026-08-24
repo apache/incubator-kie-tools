@@ -353,9 +353,14 @@ public class DRLCompletionHelper {
      * pattern heads. {@code null} when no pattern encloses the offset.
      */
     private static String enclosingPatternTypeFromText(String text, int offset) {
+        // Scanned over the masked text: a parenthesis or a terminator inside a
+        // string literal or a comment would otherwise unbalance the count and
+        // find the wrong pattern head, or none. The mask keeps every offset, so
+        // the indices below still address the original.
+        String scan = LhsBindingResolver.maskCommentsAndStrings(text);
         int closed = 0;
         for (int i = offset - 1; i >= 0; i--) {
-            char c = text.charAt(i);
+            char c = scan.charAt(i);
             if (c == ')') {
                 closed++;
             } else if (c == ';' || c == '}') {
@@ -366,11 +371,11 @@ public class DRLCompletionHelper {
                     continue;
                 }
                 int end = i;
-                while (end > 0 && Character.isWhitespace(text.charAt(end - 1))) {
+                while (end > 0 && Character.isWhitespace(scan.charAt(end - 1))) {
                     end--;
                 }
                 int start = end;
-                while (start > 0 && isChainChar(text.charAt(start - 1))) {
+                while (start > 0 && isChainChar(scan.charAt(start - 1))) {
                     start--;
                 }
                 String word = text.substring(start, end);
