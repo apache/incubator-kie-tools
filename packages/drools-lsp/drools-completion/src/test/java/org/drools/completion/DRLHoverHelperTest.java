@@ -975,6 +975,33 @@ class DRLHoverHelperTest {
     }
 
     @Test
+    void aDocumentedFunctionDoesNotShadowAnImportedTypeOfTheSameName() {
+        String drl = """
+                package demo;
+
+                import org.drools.completion.fixtures.Pet;
+
+                /** Counts the pets. */
+                function int Pet(int n) {
+                    return n;
+                }
+
+                rule R
+                  when
+                    Pet( )
+                  then
+                end
+                """;
+        // Line 11 is `    Pet( )`; the pattern head spans cols 4-6.
+        Hover hover = DRLHoverHelper.hover(drl, new Position(11, 5), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()), null);
+
+        String md = content(hover);
+        assertThat(md).contains("org.drools.completion.fixtures.Pet");
+        assertThat(md).doesNotContain("Counts the pets.");
+    }
+
+    @Test
     void aDocumentedGlobalDoesNotShadowAFieldOfTheSameName() {
         String drl = """
                 package demo;
