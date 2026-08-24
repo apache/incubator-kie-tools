@@ -40,13 +40,20 @@ public final class JavaSourceType {
     public final List<Field> members;
     /** Constructor signatures, e.g. {@code "Foo(int, String)"}. */
     public final List<String> constructors;
+    /**
+     * Names of the public static fields. Not members — a static is not a fact
+     * property — but nameable through {@code Type.NAME}, which is what
+     * {@link JavaSourceTypeIndex#memberNames} answers for.
+     */
+    public final List<String> staticFieldNames;
     /** 0-based line/column of the type's name token. */
     public final int declLine;
     public final int declColumn;
 
     JavaSourceType(String fqcn, String simpleName, boolean isEnum, String extendsSimpleName,
                    List<String> interfaceSimpleNames, List<Field> members,
-                   List<String> constructors, int declLine, int declColumn) {
+                   List<String> constructors, List<String> staticFieldNames,
+                   int declLine, int declColumn) {
         this.fqcn = fqcn;
         this.simpleName = simpleName;
         this.isEnum = isEnum;
@@ -54,6 +61,7 @@ public final class JavaSourceType {
         this.interfaceSimpleNames = List.copyOf(interfaceSimpleNames);
         this.members = List.copyOf(members);
         this.constructors = List.copyOf(constructors);
+        this.staticFieldNames = List.copyOf(staticFieldNames);
         this.declLine = declLine;
         this.declColumn = declColumn;
     }

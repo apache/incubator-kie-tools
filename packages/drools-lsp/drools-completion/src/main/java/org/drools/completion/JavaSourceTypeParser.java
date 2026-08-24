@@ -124,15 +124,17 @@ public final class JavaSourceTypeParser {
         List<Field> fields = new ArrayList<>();
         List<Field> getters = new ArrayList<>();
         List<String> ctors = new ArrayList<>();
+        List<String> staticFields = new ArrayList<>();
         if (cd.classBody() != null) {
-            collectBodyMembers(cd.classBody().classBodyDeclaration(), fields, getters, ctors, simpleName);
+            collectBodyMembers(cd.classBody().classBodyDeclaration(), fields, getters, ctors,
+                    staticFields, simpleName);
         }
 
         Map<String, Field> members = new LinkedHashMap<>();
         mergeGettersThenFields(members, getters, fields);
 
         return new JavaSourceType(fqcn(pkg, simpleName), simpleName, false, extendsName, interfaces,
-                new ArrayList<>(members.values()), ctors,
+                new ArrayList<>(members.values()), ctors, staticFields,
                 declLine(cd.identifier()), declColumn(cd.identifier()));
     }
 
@@ -153,13 +155,15 @@ public final class JavaSourceTypeParser {
         List<Field> fields = new ArrayList<>();
         List<Field> getters = new ArrayList<>();
         List<String> ctors = new ArrayList<>();
+        List<String> staticFields = new ArrayList<>();
         if (ed.enumBodyDeclarations() != null) {
-            collectBodyMembers(ed.enumBodyDeclarations().classBodyDeclaration(), fields, getters, ctors, simpleName);
+            collectBodyMembers(ed.enumBodyDeclarations().classBodyDeclaration(), fields, getters, ctors,
+                    staticFields, simpleName);
         }
         mergeGettersThenFields(members, getters, fields);
 
         return new JavaSourceType(fqcn(pkg, simpleName), simpleName, true, null, interfaces,
-                new ArrayList<>(members.values()), ctors,
+                new ArrayList<>(members.values()), ctors, staticFields,
                 declLine(ed.identifier()), declColumn(ed.identifier()));
     }
 
@@ -183,7 +187,7 @@ public final class JavaSourceTypeParser {
         mergeGettersThenFields(members, getters, fields);
 
         return new JavaSourceType(fqcn(pkg, simpleName), simpleName, false, null, interfaces,
-                new ArrayList<>(members.values()), List.of(),
+                new ArrayList<>(members.values()), List.of(), List.of(),
                 declLine(id.identifier()), declColumn(id.identifier()));
     }
 
@@ -210,7 +214,7 @@ public final class JavaSourceTypeParser {
         String canonicalCtor = simpleName + "(" + String.join(", ", ctorTypes) + ")";
 
         return new JavaSourceType(fqcn(pkg, simpleName), simpleName, false, null, interfaces,
-                new ArrayList<>(members.values()), List.of(canonicalCtor),
+                new ArrayList<>(members.values()), List.of(canonicalCtor), List.of(),
                 declLine(rd.identifier()), declColumn(rd.identifier()));
     }
 
@@ -237,19 +241,27 @@ public final class JavaSourceTypeParser {
      */
     private static void collectBodyMembers(List<JavaParser.ClassBodyDeclarationContext> decls,
                                             List<Field> fieldsOut, List<Field> gettersOut,
-                                            List<String> ctorsOut, String simpleName) {
+                                            List<String> ctorsOut, List<String> staticFieldsOut,
+                                            String simpleName) {
         for (JavaParser.ClassBodyDeclarationContext cbd : decls) {
             try {
                 JavaParser.MemberDeclarationContext md = cbd.memberDeclaration();
                 if (md == null) {
                     continue; // static block or bare ';'
                 }
-                if (md.fieldDeclaration() != null && isPublicInstanceMember(cbd.modifier())) {
+                if (md.fieldDeclaration() != null && hasPublicModifier(cbd.modifier())) {
                     JavaParser.FieldDeclarationContext fd = md.fieldDeclaration();
                     String type = simplify(fd.typeType());
+                    boolean isStatic = hasStaticModifier(cbd.modifier());
                     for (JavaParser.VariableDeclaratorContext vd : fd.variableDeclarators().variableDeclarator()) {
                         String name = vd.variableDeclaratorId().identifier().getText();
-                        fieldsOut.add(new Field(name, type, null, Field.Origin.FIELD));
+                        if (isStatic) {
+                            // Kept by name only: reachable as Type.NAME, but not a
+                            // property of a fact, so out of the member list.
+                            staticFieldsOut.add(name);
+                        } else {
+                            fieldsOut.add(new Field(name, type, null, Field.Origin.FIELD));
+                        }
                     }
                 } else if (md.methodDeclaration() != null && isPublicInstanceMember(cbd.modifier())) {
                     JavaParser.MethodDeclarationContext mt = md.methodDeclaration();

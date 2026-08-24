@@ -57,6 +57,30 @@ class JavaSourceTypeIndexTest {
         assertNull(idx.memberNames("com.example.DoesNotExist"));
     }
 
+    /**
+     * A public static field is not a fact property, so it stays out of the
+     * member list — but it is still written as Type.NAME, so it has to be in the
+     * name view. Reflection draws the same line, and the unknown-type lint reads
+     * the name view.
+     */
+    @Test
+    void aStaticFieldIsNameableWithoutBeingAMember(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        write(src, "com/example/NumberFact.java",
+            "package com.example;\npublic class NumberFact {\n"
+            + "  public static final String ONE_HUNDRED = \"100\";\n"
+            + "  public String getLabel() { return \"l\"; }\n}\n");
+
+        JavaSourceTypeIndex idx = JavaSourceTypeIndex.build(Set.of(src), List.of());
+
+        assertTrue(idx.membersOf("com.example.NumberFact").stream()
+                        .noneMatch(f -> f.name.equals("ONE_HUNDRED")),
+                () -> "not a property: " + idx.membersOf("com.example.NumberFact"));
+        assertTrue(idx.memberNames("com.example.NumberFact").contains("ONE_HUNDRED"),
+                () -> "but nameable: " + idx.memberNames("com.example.NumberFact"));
+        assertTrue(idx.memberNames("com.example.NumberFact").contains("label"));
+    }
+
     @Test
     void appliesPackageFilters(@TempDir Path root) throws Exception {
         Path src = root.resolve("src/main/java");

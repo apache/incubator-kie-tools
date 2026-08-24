@@ -251,12 +251,22 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
     }
 
     @Override
+    /**
+     * Every name reachable through {@code Type.NAME}, which is wider than the
+     * member list: it adds the public static fields, because a constant is not a
+     * fact property but is still written that way. Mirrors reflection's
+     * {@code Class#getFields()}, which the compiled path uses here and which
+     * likewise includes statics — without this the unknown-type lint would call
+     * {@code Type.CONSTANT} an unknown member until the type is compiled.
+     */
     public Set<String> memberNames(String fqcn) {
         JavaSourceType type = byFqcn(fqcn);
         if (type == null) {
             return null;
         }
-        return new LinkedHashSet<>(membersIncludingInherited(fqcn, type).keySet());
+        Set<String> names = new LinkedHashSet<>(membersIncludingInherited(fqcn, type).keySet());
+        names.addAll(type.staticFieldNames);
+        return names;
     }
 
     /**
