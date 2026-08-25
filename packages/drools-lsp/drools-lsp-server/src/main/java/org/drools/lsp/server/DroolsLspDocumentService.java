@@ -37,6 +37,8 @@ import java.util.logging.Logger;
 
 import org.drools.completion.ClassIndex;
 import org.drools.completion.ClassMemberIndex;
+import org.drools.completion.ClasspathTypeMembers;
+import org.drools.completion.Field;
 import org.drools.completion.DRLCompletionHelper;
 import org.drools.completion.DRLCodeLensHelper;
 import org.drools.completion.DRLDefinitionHelper;
@@ -49,6 +51,7 @@ import org.drools.completion.DRLHoverHelper;
 import org.drools.completion.DRLInlayHintHelper;
 import org.drools.completion.DRLLintHelper;
 import org.drools.completion.DRLTypeHierarchyHelper;
+import org.drools.completion.JavaSourceTypeIndex;
 import org.drools.drl.parser.antlr4.DRLParserHelper;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.CodeActionKind;
@@ -106,11 +109,54 @@ public class DroolsLspDocumentService implements TextDocumentService {
     private final Map<String, String> sourcesMap = new ConcurrentHashMap<>();
     private volatile ClassIndex classIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
+    private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
 
     private final DroolsLspServer server;
 
     public DroolsLspDocumentService(DroolsLspServer server) {
         this.server = server;
+        // Lets binding resolution describe types the DRL does not declare, so
+        // hover and inlay hints work on Java fact classes. The closure reads the
+        // live indexes on every call, so a rebuilt classpath needs no re-install.
+        ClasspathTypeMembers.install(this::membersOfTypeName);
+    }
+
+    /**
+     * Members of the type named {@code typeName} as written in the DRL, with
+     * inherited members folded in — {@link ClassMemberIndex} reflects over the
+     * full hierarchy, and its source fallback walks the {@code extends} chain,
+     * so a superclass field resolves before and after a build. Empty when the
+     * name is unknown or ambiguous.
+     */
+    private List<Field> membersOfTypeName(String typeName) {
+        if (typeName == null || typeName.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String fqcn = typeName.indexOf('.') >= 0
+                ? typeName
+                : uniqueFqcnForSimpleName(typeName);
+        return fqcn == null ? Collections.emptyList() : classMemberIndex.membersOf(fqcn);
+    }
+
+    /**
+     * The single classpath FQCN whose simple name is {@code simpleName}, or
+     * {@code null} when none or several match.
+     *
+     * <p>Weaker than {@code DRLCompletionHelper.resolveFqcn}, which consults the
+     * document's imports first and so picks the right one of two same-named
+     * classes. The seam carries no import context, so an explicitly imported type
+     * whose simple name collides elsewhere on the classpath resolves to nothing
+     * here, and a {@code declare ... extends} on it loses its inherited members.
+     */
+    private String uniqueFqcnForSimpleName(String simpleName) {
+        String found = null;
+        for (String fqcn : classIndex.forSimpleName(simpleName)) {
+            if (found != null && !found.equals(fqcn)) {
+                return null;
+            }
+            found = fqcn;
+        }
+        return found;
     }
 
     public void setClassIndex(ClassIndex classIndex) {
@@ -121,8 +167,16 @@ public class DroolsLspDocumentService implements TextDocumentService {
         this.classMemberIndex = classMemberIndex;
     }
 
+    public void setJavaSourceIndex(JavaSourceTypeIndex javaSourceIndex) {
+        this.javaSourceIndex = javaSourceIndex;
+    }
+
     ClassIndex getClassIndexForTest() {
         return classIndex;
+    }
+
+    ClassMemberIndex getClassMemberIndexForTest() {
+        return classMemberIndex;
     }
 
     @Override
@@ -167,8 +221,13 @@ public class DroolsLspDocumentService implements TextDocumentService {
             return Collections.emptyList();
         }
         Path documentPath = toPath(uri);
+        // Gated on the dependency classpath, not on the class index being
+        // non-empty: source-derived names land in that index before Maven has
+        // resolved anything, and judging a dependency type unknown on that basis
+        // reports every one of them as a typo until the build catches up.
         return DRLLintHelper.lintUnknownTypes(text, parsed.compilationUnit, documentPath,
-                openSiblings(documentPath), classIndex, classMemberIndex, classIndex.size() > 0);
+                openSiblings(documentPath), classIndex, classMemberIndex,
+                server.isDependencyClasspathResolved());
     }
 
     @Override
@@ -366,7 +425,8 @@ public class DroolsLspDocumentService implements TextDocumentService {
             String uri = params.getTextDocument().getUri();
             Path documentPath = toPath(uri);
             return DRLTypeHierarchyHelper.prepare(textForUri(uri), params.getPosition(), uri,
-                    openSiblings(documentPath), classIndex, server.getBuildOutputDirs());
+                    openSiblings(documentPath), classIndex, server.getBuildOutputDirs(),
+                    javaSourceIndex);
         });
     }
 
@@ -383,7 +443,8 @@ public class DroolsLspDocumentService implements TextDocumentService {
             return DRLTypeHierarchyHelper.supertypes(item,
                     classpath ? null : textForUri(item.getUri()),
                     classpath ? Collections.emptyMap() : openSiblings(toPath(item.getUri())),
-                    classIndex, classMemberIndex, server.getBuildOutputDirs());
+                    classIndex, classMemberIndex, server.getBuildOutputDirs(),
+                    javaSourceIndex);
         });
     }
 
@@ -411,7 +472,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
             Path documentPath = toPath(uri);
             List<Location> definitions = attempt(() -> DRLDefinitionHelper.findDefinitions(
                     uri, text, params.getPosition(), classIndex, server.getBuildOutputDirs(),
-                    openSiblings(documentPath)));
+                    javaSourceIndex, openSiblings(documentPath)));
             return Either.forLeft(definitions == null ? List.of() : definitions);
         });
     }

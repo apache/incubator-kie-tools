@@ -20,6 +20,7 @@ package org.drools.completion;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,19 @@ public class DRLCompletionHelper {
                     DRL10Parser.DRL_BIG_DECIMAL_LITERAL, DRL10Parser.DRL_BIG_INTEGER_LITERAL)
     ).collect(Collectors.toUnmodifiableSet());
 
+    // Rule attributes are only legal in a rule/query header. c3 predicts them at
+    // a statement boundary too (after `end`, or in an empty document), where they
+    // cannot be typed — 14 unusable items next to the 6 that are usable. They are
+    // dropped there only; the rule header keeps offering them.
+    private static final Set<Integer> RULE_ATTRIBUTE_TOKENS = Set.of(
+            DRL10Parser.DRL_ATTRIBUTES, DRL10Parser.DRL_SALIENCE, DRL10Parser.DRL_ENABLED,
+            DRL10Parser.DRL_NO_LOOP, DRL10Parser.DRL_AUTO_FOCUS, DRL10Parser.DRL_LOCK_ON_ACTIVE,
+            DRL10Parser.DRL_ACTIVATION_GROUP, DRL10Parser.DRL_RULEFLOW_GROUP,
+            DRL10Parser.DRL_DATE_EFFECTIVE, DRL10Parser.DRL_DATE_EXPIRES,
+            DRL10Parser.DRL_DIALECT, DRL10Parser.DRL_CALENDARS,
+            DRL10Parser.DRL_TIMER, DRL10Parser.DRL_DURATION
+    );
+
     private DRLCompletionHelper() {
     }
 
@@ -121,6 +135,22 @@ public class DRLCompletionHelper {
                 ? nodeIndex
                 : drlParser.getInputStream().size() - 1;
 
+        // A caret directly after a dot is a member position: the only thing that
+        // can follow is a member of the path's type. c3 predicts the constraint
+        // operators there instead (it cannot see that the path is incomplete), so
+        // this position is answered from the type walk alone, keywords included —
+        // but only when the walk recognises the path. A dot also separates the
+        // segments of a qualified name, where the head names no type and the
+        // walk must leave the position to c3 rather than answer with nothing.
+        String[] chain = dottedChainBeforeCaret(text, caretPosition);
+        if (chain != null) {
+            List<CompletionItem> members = memberItemsForChain(chain, text, caretPosition,
+                    compilationUnit, caretTokenIndex, classIndex, memberIndex, documentPath, openFiles);
+            if (members != null) {
+                return members;
+            }
+        }
+
         // Right after '(' the matched token is the paren itself, for which c3
         // yields no candidates; look one token ahead for the constraint, but
         // keep the paren's index to resolve the pattern type (its span ends at
@@ -148,9 +178,11 @@ public class DRLCompletionHelper {
         }
 
         boolean constraintPosition = compilationUnit != null && isConstraintPosition(candidates);
+        boolean statementBoundary = isStatementBoundary(candidates);
 
         List<CompletionItem> items = candidates.tokens.keySet().stream().filter(Objects::nonNull)
                 .filter(token -> !(constraintPosition && CONSTRAINT_KEYWORD_NOISE.contains(token)))
+                .filter(token -> !(statementBoundary && RULE_ATTRIBUTE_TOKENS.contains(token)))
                 .map(integer -> drlParser.getVocabulary().getDisplayName(integer).replace("'", ""))
                 .map(String::toLowerCase)
                 .map(k -> createCompletionItem(k, CompletionItemKind.Keyword))
@@ -170,6 +202,16 @@ public class DRLCompletionHelper {
     private static boolean isConstraintPosition(CodeCompletionCore.CandidatesCollection candidates) {
         List<Integer> path = candidates.rules.get(DRL10Parser.RULE_drlIdentifier);
         return path != null && path.contains(DRL10Parser.RULE_constraint);
+    }
+
+    /**
+     * Whether the caret sits where a whole top-level statement can start, which
+     * c3 reports by predicting the statement keywords together. A rule header
+     * predicts the attributes without them, so the two positions stay distinct.
+     */
+    private static boolean isStatementBoundary(CodeCompletionCore.CandidatesCollection candidates) {
+        return candidates.tokens.containsKey(DRL10Parser.IMPORT)
+                && candidates.tokens.containsKey(DRL10Parser.DRL_RULE);
     }
 
     /**
@@ -202,6 +244,165 @@ public class DRLCompletionHelper {
         }
 
         String fqcn = resolveFqcn(patternType, simpleName, compilationUnit, classIndex);
+        if (fqcn == null) {
+            return List.of();
+        }
+        return fieldItems(memberIndex.membersOf(fqcn));
+    }
+
+    /**
+     * The dot-separated segments preceding a caret that sits immediately after a
+     * dot ({@code $ref.order.|} → {@code [$ref, order]}), or {@code null} when the
+     * caret follows something else. A numeric head is a decimal literal being
+     * typed, not a path.
+     */
+    private static String[] dottedChainBeforeCaret(String text, Position caret) {
+        if (text == null || caret == null) {
+            return null;
+        }
+        String[] lines = text.split("\r?\n", -1);
+        int row = caret.getLine();
+        if (row < 0 || row >= lines.length) {
+            return null;
+        }
+        String line = lines[row];
+        int col = Math.min(caret.getCharacter(), line.length());
+        if (col == 0 || line.charAt(col - 1) != '.') {
+            return null;
+        }
+        int start = col - 1;
+        while (start > 0 && isChainChar(line.charAt(start - 1))) {
+            start--;
+        }
+        String path = line.substring(start, col - 1);
+        if (path.isEmpty() || path.endsWith(".") || Character.isDigit(path.charAt(0))) {
+            return null;
+        }
+        return path.split("\\.", -1);
+    }
+
+    private static boolean isChainChar(char c) {
+        return Character.isLetterOrDigit(c) || c == '_' || c == '$' || c == '.';
+    }
+
+    /**
+     * Member items for a dotted path the caret sits at the end of. The head is a
+     * binding ({@code $p.}), a field of the enclosing pattern's type ({@code ref.}
+     * inside {@code Fact(...)}), or a type name ({@code Status.}); the remaining
+     * segments are fields. Every hop goes through the same walker the bindings and
+     * hover use, so all three agree on what a path resolves to.
+     */
+    /**
+     * Completion items for the members of the type the chain resolves to, or
+     * {@code null} when the chain's head names no type the document knows — a
+     * qualified name rather than a member access. An empty list means the path
+     * did resolve and simply has no members to offer, which is an answer: after
+     * a dot nothing but a member is legal.
+     */
+    private static List<CompletionItem> memberItemsForChain(String[] chain, String text, Position caret,
+                                                            DRL10Parser.CompilationUnitContext compilationUnit,
+                                                            int caretTokenIndex, ClassIndex classIndex,
+                                                            ClassMemberIndex memberIndex, Path documentPath,
+                                                            Map<Path, String> openFiles) {
+        if (compilationUnit == null) {
+            return null;
+        }
+        Map<String, DeclaredType> typeIndex = DRLWorkspaceTypeIndex.build(
+                DRLDeclaredTypeParser.extractFromCompilationUnit(compilationUnit), documentPath, openFiles);
+
+        String head = chain[0];
+        String rootType;
+        int firstFieldSegment = 1;
+        if (head.startsWith("$")) {
+            rootType = LhsBindingResolver.resolveAt(text, DRLHoverHelper.positionToOffset(text, caret), typeIndex)
+                    .get(head.substring(1));
+        } else if (!head.isEmpty() && Character.isUpperCase(head.charAt(0))) {
+            rootType = head;
+        } else {
+            // A bare lower-case head is a field of the pattern the caret is in.
+            rootType = enclosingPatternTypeFromText(text, DRLHoverHelper.positionToOffset(text, caret));
+            firstFieldSegment = 0;
+        }
+        if (rootType == null || rootType.isEmpty()) {
+            // The head names no type the document knows, so this dot is not a
+            // member access at all — a qualified name, most likely.
+            return null;
+        }
+
+        // Kept qualified. A pattern head written as a fully-qualified name is
+        // how an author disambiguates a simple name that collides on the
+        // classpath, and resolveFqcn returns a dotted name as-is, so dropping
+        // the package here is what leaves it unresolvable without an import.
+        // Both consumers below simplify for themselves where they need to.
+        String resolved = rootType;
+        if (firstFieldSegment < chain.length) {
+            String path = String.join(".", Arrays.copyOfRange(chain, firstFieldSegment, chain.length));
+            resolved = LhsBindingResolver.resolvePath(
+                    LhsBindingResolver.typeOrClasspath(resolved, typeIndex), path, typeIndex);
+            if (resolved == null) {
+                return List.of();
+            }
+        }
+        return memberItemsOfType(resolved, typeIndex, compilationUnit, classIndex, memberIndex);
+    }
+
+    /**
+     * The type name of the pattern whose parentheses are still open at
+     * {@code offset}, read from the text rather than the parse tree: a caret in
+     * mid-edit leaves the constraint incomplete, and error recovery then parses
+     * the incomplete path itself as a pattern head, which
+     * {@link #findEnclosingPatternTypeName} would return in preference to the
+     * real pattern. Non-pattern parens ({@code accumulate(}, {@code eval(}, a
+     * method call) are stepped over — a DRL pattern type's simple name always
+     * begins upper case, which is also how {@code LhsBindingResolver} finds
+     * pattern heads. {@code null} when no pattern encloses the offset.
+     */
+    private static String enclosingPatternTypeFromText(String text, int offset) {
+        // Scanned over the masked text: a parenthesis or a terminator inside a
+        // string literal or a comment would otherwise unbalance the count and
+        // find the wrong pattern head, or none. The mask keeps every offset, so
+        // the indices below still address the original.
+        String scan = LhsBindingResolver.maskCommentsAndStrings(text);
+        int closed = 0;
+        for (int i = offset - 1; i >= 0; i--) {
+            char c = scan.charAt(i);
+            if (c == ')') {
+                closed++;
+            } else if (c == ';' || c == '}') {
+                return null;
+            } else if (c == '(') {
+                if (closed > 0) {
+                    closed--;
+                    continue;
+                }
+                int end = i;
+                while (end > 0 && Character.isWhitespace(scan.charAt(end - 1))) {
+                    end--;
+                }
+                int start = end;
+                while (start > 0 && isChainChar(scan.charAt(start - 1))) {
+                    start--;
+                }
+                String word = text.substring(start, end);
+                String simple = word.substring(word.lastIndexOf('.') + 1);
+                if (!simple.isEmpty() && Character.isUpperCase(simple.charAt(0))) {
+                    return word;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Field items for a type name: DRL declares win, then the classpath. */
+    private static List<CompletionItem> memberItemsOfType(String typeName, Map<String, DeclaredType> typeIndex,
+                                                          DRL10Parser.CompilationUnitContext compilationUnit,
+                                                          ClassIndex classIndex, ClassMemberIndex memberIndex) {
+        String simple = typeName.substring(typeName.lastIndexOf('.') + 1);
+        DeclaredType declared = typeIndex.get(simple);
+        if (declared != null) {
+            return fieldItems(DRLDeclaredTypeParser.fieldsIncludingInherited(declared, typeIndex));
+        }
+        String fqcn = resolveFqcn(typeName, simple, compilationUnit, classIndex);
         if (fqcn == null) {
             return List.of();
         }

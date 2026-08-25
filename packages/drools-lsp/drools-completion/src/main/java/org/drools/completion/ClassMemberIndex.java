@@ -45,6 +45,10 @@ import java.util.logging.Logger;
  * arbitrary user code inside the language server. The loader's parent is the
  * platform class loader, so the server's own classes never leak into user
  * completions. Results (including misses) are cached per FQCN.
+ *
+ * <p>When reflection can't load a type, an optional {@link JavaMemberSource}
+ * fallback (e.g. one backed by uncompiled {@code .java} sources) is consulted
+ * instead — compiled classes always win over the fallback when both know a type.
  */
 public final class ClassMemberIndex implements AutoCloseable {
 
@@ -55,6 +59,8 @@ public final class ClassMemberIndex implements AutoCloseable {
     private final ClassLoader loader;
     private final boolean ownsLoader;
     private final Map<String, List<Field>> cache = new ConcurrentHashMap<>();
+    private final Set<String> notLoadable = ConcurrentHashMap.newKeySet();
+    private volatile JavaMemberSource fallback;
 
     /** Visible for tests: reflect against an existing (externally-owned) loader. */
     ClassMemberIndex(ClassLoader loader) {
@@ -71,10 +77,32 @@ public final class ClassMemberIndex implements AutoCloseable {
         return EMPTY;
     }
 
-    /** Builds an index over the given classpath entries (jars and class dirs). */
+    /**
+     * Sets the fallback consulted when reflection can't load a type — the
+     * server owns the single instance and sets this right after construction.
+     * No-op on the shared {@link #empty()} index. Public so a caller in
+     * another module can install the fallback after building an
+     * {@link #of} instance.
+     */
+    public void setSourceFallback(JavaMemberSource f) {
+        if (this == EMPTY) {
+            logger.log(Level.FINE, "ignoring source fallback on shared empty index");
+            return;
+        }
+        this.fallback = f;
+    }
+
+    /**
+     * Builds an index over the given classpath entries (jars and class dirs).
+     * A {@code null}/empty set yields a fresh, fallback-capable instance (no
+     * loader, so every lookup misses reflection and falls straight through to
+     * a fallback set via {@link #setSourceFallback} — the source-only,
+     * works-before-build workspace) rather than the shared {@link #empty()}
+     * singleton, which never accepts a fallback.
+     */
     public static ClassMemberIndex of(Set<Path> classpathEntries) {
         if (classpathEntries == null || classpathEntries.isEmpty()) {
-            return EMPTY;
+            return new ClassMemberIndex((ClassLoader) null, false);
         }
         List<URL> urls = new ArrayList<>(classpathEntries.size());
         for (Path entry : classpathEntries) {
@@ -92,6 +120,7 @@ public final class ClassMemberIndex implements AutoCloseable {
     @Override
     public void close() {
         cache.clear();
+        notLoadable.clear();
         if (ownsLoader && loader instanceof java.io.Closeable closeable) {
             try {
                 closeable.close();
@@ -104,32 +133,46 @@ public final class ClassMemberIndex implements AutoCloseable {
     /**
      * Returns the completable members of {@code fqcn}: enum constants, bean
      * properties derived from public no-arg {@code getX()}/{@code isX()}
-     * methods (including inherited ones), and public instance fields. Empty
-     * when the class cannot be loaded.
+     * methods (including inherited ones), and public instance fields. When
+     * the class cannot be loaded, consults the {@link #fallback} source (if
+     * set); empty when neither knows the type. Compiled classes win: a
+     * successful reflection load is always used over the fallback.
      */
     public List<Field> membersOf(String fqcn) {
-        if (loader == null || fqcn == null || fqcn.isEmpty()) {
+        if (fqcn == null || fqcn.isEmpty()) {
             return Collections.emptyList();
         }
-        return cache.computeIfAbsent(fqcn, this::reflectMembers);
+        List<Field> cached = cache.get(fqcn);
+        if (cached != null) {
+            return cached;
+        }
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            // Not cached: the source index maintains its own mtime-based cache.
+            JavaMemberSource f = fallback;
+            return f != null ? f.membersOf(fqcn) : Collections.emptyList();
+        }
+        return cache.computeIfAbsent(fqcn, key -> reflectMembers(clazz));
     }
 
     /**
-     * Returns the fully-qualified names of {@code fqcn}'s direct supertypes —
-     * its superclass (omitting {@code java.lang.Object}) followed by its
-     * directly-implemented interfaces. Loaded without running static
-     * initializers; empty when the class can't be loaded. Used by type
-     * hierarchy to walk classpath ancestry one level at a time.
+     * Returns {@code fqcn}'s direct supertypes — its superclass (omitting
+     * {@code java.lang.Object}) followed by its directly-implemented
+     * interfaces. Loaded without running static initializers. When the class
+     * can't be loaded, consults the {@link #fallback} source (if set); empty
+     * when neither knows the type. Used by type hierarchy to walk classpath
+     * ancestry one level at a time. Both the reflected path and the {@link
+     * #fallback} path return fully-qualified names — see {@link
+     * JavaMemberSource#supertypesOf} for the fallback's resolution contract.
      */
     public List<String> supertypesOf(String fqcn) {
-        if (loader == null || fqcn == null || fqcn.isEmpty()) {
+        if (fqcn == null || fqcn.isEmpty()) {
             return Collections.emptyList();
         }
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(fqcn, false, loader);
-        } catch (Throwable t) {
-            return Collections.emptyList();
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            JavaMemberSource f = fallback;
+            return f != null ? f.supertypesOf(fqcn) : Collections.emptyList();
         }
         try {
             List<String> out = new ArrayList<>();
@@ -151,19 +194,19 @@ public final class ClassMemberIndex implements AutoCloseable {
      * The names addressable as {@code Type.X} on {@code fqcn}: public fields
      * (including enum constants and static fields, inherited included) and
      * public nested-type simple names. Returns {@code null} when the class
-     * cannot be loaded — letting callers distinguish "no such member" (a real
-     * typo) from "couldn't verify" (classpath gap), so they only flag the
+     * cannot be loaded and the {@link #fallback} source (if set) doesn't know
+     * it either — letting callers distinguish "no such member" (a real typo)
+     * from "couldn't verify" (classpath/source gap), so they only flag the
      * former. Loaded without running static initializers.
      */
     public Set<String> memberNames(String fqcn) {
-        if (loader == null || fqcn == null || fqcn.isEmpty()) {
+        if (fqcn == null || fqcn.isEmpty()) {
             return null;
         }
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(fqcn, false, loader);
-        } catch (Throwable t) {
-            return null;
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            JavaMemberSource f = fallback;
+            return f != null ? f.memberNames(fqcn) : null;
         }
         try {
             Set<String> names = new LinkedHashSet<>();
@@ -180,20 +223,85 @@ public final class ClassMemberIndex implements AutoCloseable {
         }
     }
 
-    private List<Field> reflectMembers(String fqcn) {
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(fqcn, false, loader);
-        } catch (Throwable t) {
+    /**
+     * Reflected public constructor signatures of {@code fqcn} —
+     * {@code SimpleName(ParamSimple, ParamSimple)}, in the order the JVM
+     * reports them — or the {@link #fallback} source's when the class can't
+     * load, or empty when neither knows the type. Not cached: constructors
+     * are only reflected on hover.
+     */
+    public List<String> constructorsOf(String fqcn) {
+        if (fqcn == null || fqcn.isEmpty()) {
             return Collections.emptyList();
         }
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            JavaMemberSource f = fallback;
+            return f != null ? f.constructorsOf(fqcn) : Collections.emptyList();
+        }
+        try {
+            List<String> out = new ArrayList<>();
+            for (java.lang.reflect.Constructor<?> ctor : clazz.getDeclaredConstructors()) {
+                if (!Modifier.isPublic(ctor.getModifiers())) {
+                    continue;
+                }
+                StringBuilder signature = new StringBuilder(clazz.getSimpleName()).append('(');
+                Class<?>[] params = ctor.getParameterTypes();
+                for (int i = 0; i < params.length; i++) {
+                    if (i > 0) {
+                        signature.append(", ");
+                    }
+                    signature.append(params[i].getSimpleName());
+                }
+                signature.append(')');
+                out.add(signature.toString());
+            }
+            return Collections.unmodifiableList(out);
+        } catch (Throwable t) {
+            logger.log(Level.FINE, "Failed to reflect constructors of " + fqcn, t);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Attempts to load {@code fqcn} without running static initializers.
+     * Returns {@code null} (rather than throwing) when the loader is absent
+     * or the class can't be loaded — the signal callers use to fall back to
+     * {@link #fallback}. A failed load is memoized in {@link #notLoadable} so
+     * repeated lookups of the same unloadable FQCN (the common case for a
+     * works-before-build workspace) skip the {@code Class.forName}
+     * attempt; the fallback itself is still consulted fresh every call.
+     */
+    private Class<?> tryLoad(String fqcn) {
+        if (loader == null || notLoadable.contains(fqcn)) {
+            return null;
+        }
+        try {
+            return Class.forName(fqcn, false, loader);
+        } catch (ClassNotFoundException e) {
+            // Settled: the name is not on this classpath, and asking again on
+            // every keystroke would cost the same answer.
+            notLoadable.add(fqcn);
+            return null;
+        } catch (Throwable t) {
+            // A link error can be transient — a dependency jar rewritten by a
+            // build running alongside the editor — so the name is not written
+            // off. Logged because the effect is otherwise invisible: an
+            // unloadable class also reports "unverifiable" to the lint, which
+            // then stops flagging typos on it.
+            logger.log(Level.FINE, t, () -> "Could not load " + fqcn);
+            return null;
+        }
+    }
+
+    private List<Field> reflectMembers(Class<?> clazz) {
         try {
             Map<String, Field> members = new LinkedHashMap<>();
             if (clazz.isEnum()) {
                 for (java.lang.reflect.Field f : clazz.getFields()) {
                     if (f.isEnumConstant()) {
                         members.put(f.getName(),
-                                new Field(f.getName(), clazz.getSimpleName()));
+                                new Field(f.getName(), clazz.getSimpleName(), null, Field.Origin.ENUM_CONSTANT));
                     }
                 }
             }
@@ -201,19 +309,19 @@ public final class ClassMemberIndex implements AutoCloseable {
                 String property = propertyNameOf(m);
                 if (property != null) {
                     members.putIfAbsent(property,
-                            new Field(property, m.getReturnType().getSimpleName()));
+                            new Field(property, m.getReturnType().getSimpleName(), null, Field.Origin.GETTER));
                 }
             }
             for (java.lang.reflect.Field f : clazz.getFields()) {
                 if (!Modifier.isStatic(f.getModifiers())) {
                     members.putIfAbsent(f.getName(),
-                            new Field(f.getName(), f.getType().getSimpleName()));
+                            new Field(f.getName(), f.getType().getSimpleName(), null, Field.Origin.FIELD));
                 }
             }
             return Collections.unmodifiableList(new ArrayList<>(members.values()));
         } catch (Throwable t) {
             // LinkageError etc. while reflecting — treat as unknown.
-            logger.log(Level.FINE, "Failed to reflect members of " + fqcn, t);
+            logger.log(Level.FINE, "Failed to reflect members of " + clazz.getName(), t);
             return Collections.emptyList();
         }
     }
