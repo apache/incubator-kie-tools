@@ -50,10 +50,10 @@ function selfLink(pkg, selfLinkPath) {
       selfLinkPath
     )} -> ${relTargetPath}`
   );
-  if (fs.existsSync(selfLinkPath)) {
+  if (fs.lstatSync(selfLinkPath, { throwIfNoEntry: false })) {
     fs.unlinkSync(selfLinkPath);
   }
-  fs.symlinkSync(relTargetPath, selfLinkPath);
+  fs.symlinkSync(relTargetPath, selfLinkPath, process.platform === "win32" ? "junction" : undefined);
 }
 
 main();
