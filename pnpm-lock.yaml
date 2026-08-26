@@ -149,7 +149,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -218,7 +218,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -264,7 +264,7 @@ importers:
         version: 4.10.2
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -376,7 +376,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -445,7 +445,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -496,7 +496,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -706,7 +706,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -812,7 +812,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -860,7 +860,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -1084,7 +1084,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -1329,7 +1329,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(esbuild@0.18.20)(postcss@8.5.22)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -1549,7 +1549,7 @@ importers:
         version: 5.108.4(postcss@8.5.22)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -1826,7 +1826,7 @@ importers:
         version: 4.10.2
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -1957,7 +1957,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -2166,7 +2166,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -2284,7 +2284,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-merge:
         specifier: ^5.9.0
         version: 5.10.0
@@ -2508,7 +2508,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -2848,7 +2848,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(postcss@8.5.22)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -3119,7 +3119,7 @@ importers:
         version: 4.10.2
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -3622,7 +3622,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -3689,7 +3689,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -3796,7 +3796,7 @@ importers:
         version: 14.3.1(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/react-hooks':
         specifier: ^8.0.1
-        version: 8.0.1(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 8.0.1(@types/react@18.3.31)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.14
@@ -4071,7 +4071,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -4177,7 +4177,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -4476,7 +4476,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -4781,35 +4781,13 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
       webpack-merge:
         specifier: ^5.9.0
         version: 5.10.0
-
-  packages/jbpm-spring-boot-dev-console:
-    dependencies:
-      '@kie-tools/jbpm-dev-console-commons':
-        specifier: workspace:*
-        version: link:../jbpm-dev-console-commons
-      '@kie-tools/maven-base':
-        specifier: workspace:*
-        version: link:../maven-base
-      '@kie-tools/spring-boot-bom':
-        specifier: workspace:*
-        version: link:../spring-boot-bom
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      '@kie-tools/runtime-tools-process-dev-ui-webapp':
-        specifier: workspace:*
-        version: link:../runtime-tools-process-dev-ui-webapp
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
 
   packages/jbpm-dev-console-commons:
     dependencies:
@@ -4916,6 +4894,28 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
 
+  packages/jbpm-spring-boot-dev-console:
+    dependencies:
+      '@kie-tools/jbpm-dev-console-commons':
+        specifier: workspace:*
+        version: link:../jbpm-dev-console-commons
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+      '@kie-tools/spring-boot-bom':
+        specifier: workspace:*
+        version: link:../spring-boot-bom
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/runtime-tools-process-dev-ui-webapp':
+        specifier: workspace:*
+        version: link:../runtime-tools-process-dev-ui-webapp
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6(patch_hash=82e28a047ef68998aa768f2d01885d4c96b061f05645c133026c22738f9a8753)
+
   packages/jest-base:
     devDependencies:
       '@kie-tools/root-env':
@@ -4932,7 +4932,7 @@ importers:
         version: 3.1.1
       js-yaml:
         specifier: ^4.2.0
-        version: 4.3.0
+        version: 4.3.1
       jsonpath-rfc9535:
         specifier: ^1.3.0
         version: 1.3.0
@@ -5027,7 +5027,7 @@ importers:
         version: 14.3.1(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/react-hooks':
         specifier: ^8.0.1
-        version: 8.0.1(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 8.0.1(@types/react@18.3.31)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.14
@@ -5202,7 +5202,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -5593,7 +5593,7 @@ importers:
         version: 5.108.4(postcss@8.5.22)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -5765,7 +5765,7 @@ importers:
         version: 1.38.10
       js-yaml:
         specifier: ^4.2.0
-        version: 4.3.0
+        version: 4.3.1
       json-refs:
         specifier: ^3.0.15
         version: 3.0.15
@@ -5919,7 +5919,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -6040,7 +6040,7 @@ importers:
         version: link:../pmml-editor-marshaller
       '@patternfly/react-charts':
         specifier: ^7.4.7
-        version: 7.4.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 7.4.9
       '@patternfly/react-core':
         specifier: ^5.4.1
         version: 5.4.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -6064,25 +6064,25 @@ importers:
         version: 18.3.1
       react-cool-onclickoutside:
         specifier: ^1.6.1
-        version: 1.7.0(react@18.3.1)
+        version: 1.7.0
       react-dom:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1(react@18.3.1)
       react-monaco-editor:
         specifier: ^0.49.0
-        version: 0.49.0(@types/react@18.3.31)(monaco-editor@0.39.0)(react@18.3.1)
+        version: 0.49.0(@types/react@18.3.31)(monaco-editor@0.39.0)
       react-redux:
         specifier: ^9.1.2
-        version: 9.3.0(@types/react@18.3.31)(react@18.3.1)(redux@4.2.1)
+        version: 9.3.0(@types/react@18.3.31)(redux@4.2.1)
       react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-sortable-hoc:
         specifier: ^2.0.0
-        version: 2.0.0(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 2.0.0(prop-types@15.8.1)
       react-transition-group:
         specifier: ^4.4.1
-        version: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.4.5
       redux:
         specifier: ^4.1.0
         version: 4.2.1
@@ -6218,7 +6218,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -6340,7 +6340,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -6776,7 +6776,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(postcss@8.5.22)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -7008,7 +7008,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -7568,7 +7568,7 @@ importers:
         version: 5.108.4(postcss@8.5.22)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -8025,7 +8025,7 @@ importers:
         version: 5.108.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -8510,7 +8510,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -8546,7 +8546,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -8974,7 +8974,7 @@ importers:
         version: 5.108.4(webpack-cli@7.2.1)
       webpack-cli:
         specifier: ^7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
       webpack-dev-server:
         specifier: ^5.2.5
         version: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -18558,8 +18558,12 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
-  js-yaml@5.2.3:
-    resolution: {integrity: sha512-n+mUVyUX5bVv7G/G2zyIHOhdxfuU1dY2NOFzTQUWiMUbFss8b57NFlgCCaggU78wSw5KVS9cllzeLyzyR+n5nw==}
+  js-yaml@4.3.1:
+    resolution: {integrity: sha512-CY6crGq313MX8GkwvB7tzgp99vjQxY1++5y10/BKN/GUfHqWaOGQMNZkBvqSzsZKWk/ijwHlWzzkLulsGHhjWQ==}
+    hasBin: true
+
+  js-yaml@5.4.0:
+    resolution: {integrity: sha512-jE7vUJIebKzYQI5xu4co5CRBDlDEYnHrdzsxs4O2giCz4v2SbVMYKpmt1D9L38OKQAeCWmrOTRiCV93u0UkaJA==}
     hasBin: true
 
   jsbn@0.1.1:
@@ -24224,7 +24228,7 @@ snapshots:
   '@apidevtools/json-schema-ref-parser@15.5.1(@types/json-schema@7.0.15)':
     dependencies:
       '@types/json-schema': 7.0.15
-      js-yaml: 5.2.3
+      js-yaml: 5.4.0
       undici: 6.28.0
 
   '@apidevtools/openapi-schemas@2.1.0': {}
@@ -26309,7 +26313,7 @@ snapshots:
       http-proxy-agent: 6.1.1
       https-proxy-agent: 6.2.1
       jose: 4.15.9
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       json-stable-stringify: 1.3.0
       lodash: 4.18.1
       scuid: 1.1.0
@@ -27438,32 +27442,30 @@ snapshots:
 
   '@patternfly/patternfly@5.4.2': {}
 
-  '@patternfly/react-charts@7.4.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@patternfly/react-charts@7.4.9':
     dependencies:
       '@patternfly/react-styles': 5.4.1
       '@patternfly/react-tokens': 5.4.1
       hoist-non-react-statics: 3.3.2
       lodash: 4.18.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
       tslib: 2.8.1
-      victory-area: 37.3.6(react@18.3.1)
-      victory-axis: 37.3.6(react@18.3.1)
-      victory-bar: 37.3.6(react@18.3.1)
-      victory-box-plot: 37.3.6(react@18.3.1)
-      victory-chart: 37.3.6(react@18.3.1)
-      victory-core: 37.3.6(react@18.3.1)
-      victory-create-container: 37.3.6(react@18.3.1)
-      victory-cursor-container: 37.3.6(react@18.3.1)
-      victory-group: 37.3.6(react@18.3.1)
-      victory-legend: 37.3.6(react@18.3.1)
-      victory-line: 37.3.6(react@18.3.1)
-      victory-pie: 37.3.6(react@18.3.1)
-      victory-scatter: 37.3.6(react@18.3.1)
-      victory-stack: 37.3.6(react@18.3.1)
-      victory-tooltip: 37.3.6(react@18.3.1)
-      victory-voronoi-container: 37.3.6(react@18.3.1)
-      victory-zoom-container: 37.3.6(react@18.3.1)
+      victory-area: 37.3.6
+      victory-axis: 37.3.6
+      victory-bar: 37.3.6
+      victory-box-plot: 37.3.6
+      victory-chart: 37.3.6
+      victory-core: 37.3.6
+      victory-create-container: 37.3.6
+      victory-cursor-container: 37.3.6
+      victory-group: 37.3.6
+      victory-legend: 37.3.6
+      victory-line: 37.3.6
+      victory-pie: 37.3.6
+      victory-scatter: 37.3.6
+      victory-stack: 37.3.6
+      victory-tooltip: 37.3.6
+      victory-voronoi-container: 37.3.6
+      victory-zoom-container: 37.3.6
 
   '@patternfly/react-code-editor@5.4.3(monaco-editor@0.39.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -28956,7 +28958,7 @@ snapshots:
       '@jsdevtools/ono': 7.1.3
       '@types/json-schema': 7.0.15
       call-me-maybe: 1.0.2
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
 
   '@readme/openapi-parser@2.7.0(openapi-types@7.2.3)':
     dependencies:
@@ -30380,14 +30382,12 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react-hooks@8.0.1(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@testing-library/react-hooks@8.0.1(@types/react@18.3.31)':
     dependencies:
       '@babel/runtime': 7.29.7
-      react: 18.3.1
-      react-error-boundary: 3.1.4(react@18.3.1)
+      react-error-boundary: 3.1.4
     optionalDependencies:
       '@types/react': 18.3.31
-      react-dom: 18.3.1(react@18.3.1)
 
   '@testing-library/react@14.3.1(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -30410,7 +30410,7 @@ snapshots:
       '@textlint/types': 15.7.1
       chalk: 4.1.2
       debug: 4.4.3(supports-color@8.1.1)
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       lodash: 4.18.1
       pluralize: 2.0.0
       string-width: 4.2.3
@@ -33373,7 +33373,7 @@ snapshots:
   cosmiconfig@8.0.0:
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       parse-json: 5.2.0
       path-type: 4.0.0
 
@@ -33381,7 +33381,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.3
@@ -36925,7 +36925,11 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  js-yaml@5.2.3:
+  js-yaml@4.3.1:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@5.4.0:
     dependencies:
       argparse: 2.0.1
 
@@ -38660,7 +38664,7 @@ snapshots:
 
   openapi-typescript@5.4.2:
     dependencies:
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       mime: 3.0.0
       prettier: 2.8.8
       tiny-glob: 0.2.9
@@ -39632,7 +39636,7 @@ snapshots:
   rc-config-loader@4.1.4:
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       json5: 2.2.3
       require-from-string: 2.0.2
     transitivePeerDependencies:
@@ -39702,9 +39706,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-cool-onclickoutside@1.7.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
+  react-cool-onclickoutside@1.7.0: {}
 
   react-date-picker@8.4.0(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -39789,10 +39791,9 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-is: 18.1.0
 
-  react-error-boundary@3.1.4(react@18.3.1):
+  react-error-boundary@3.1.4:
     dependencies:
       '@babel/runtime': 7.29.7
-      react: 18.3.1
 
   react-error-boundary@4.1.2(react@18.3.1):
     dependencies:
@@ -39850,22 +39851,20 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
 
-  react-monaco-editor@0.49.0(@types/react@18.3.31)(monaco-editor@0.39.0)(react@18.3.1):
+  react-monaco-editor@0.49.0(@types/react@18.3.31)(monaco-editor@0.39.0):
     dependencies:
       '@types/react': 18.3.31
       monaco-editor: 0.39.0
       prop-types: 15.8.1
-      react: 18.3.1
 
   react-pure-loaders@3.0.1(@emotion/core@11.0.0)(react@18.3.1):
     dependencies:
       '@emotion/core': 11.0.0
       react: 18.3.1
 
-  react-redux@9.3.0(@types/react@18.3.31)(react@18.3.1)(redux@4.2.1):
+  react-redux@9.3.0(@types/react@18.3.31)(redux@4.2.1):
     dependencies:
       '@types/use-sync-external-store': 0.0.6
-      react: 18.3.1
       use-sync-external-store: 1.6.0(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.3.31
@@ -39911,13 +39910,11 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  react-sortable-hoc@2.0.0(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-sortable-hoc@2.0.0(prop-types@15.8.1):
     dependencies:
       '@babel/runtime': 7.29.7
       invariant: 2.2.4
       prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
 
   react-style-singleton@2.2.3(@types/react@18.3.31)(react@18.3.1):
     dependencies:
@@ -39975,14 +39972,12 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-transition-group@4.4.5:
     dependencies:
       '@babel/runtime': 7.29.7
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
 
   react-virtualized-auto-sizer@1.0.26(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -40039,7 +40034,7 @@ snapshots:
 
   read-yaml-file@2.1.0:
     dependencies:
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       strip-bom: 4.0.0
 
   read@1.0.7:
@@ -42186,141 +42181,122 @@ snapshots:
     dependencies:
       semver: 7.8.5
 
-  victory-area@37.3.6(react@18.3.1):
+  victory-area@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
       victory-vendor: 37.3.6
 
-  victory-axis@37.3.6(react@18.3.1):
+  victory-axis@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-bar@37.3.6(react@18.3.1):
+  victory-bar@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
       victory-vendor: 37.3.6
 
-  victory-box-plot@37.3.6(react@18.3.1):
+  victory-box-plot@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
       victory-vendor: 37.3.6
 
-  victory-brush-container@37.3.6(react@18.3.1):
+  victory-brush-container@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-chart@37.3.6(react@18.3.1):
+  victory-chart@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
       react-fast-compare: 3.2.2
-      victory-axis: 37.3.6(react@18.3.1)
-      victory-core: 37.3.6(react@18.3.1)
-      victory-polar-axis: 37.3.6(react@18.3.1)
-      victory-shared-events: 37.3.6(react@18.3.1)
+      victory-axis: 37.3.6
+      victory-core: 37.3.6
+      victory-polar-axis: 37.3.6
+      victory-shared-events: 37.3.6
 
-  victory-core@37.3.6(react@18.3.1):
+  victory-core@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
       react-fast-compare: 3.2.2
       victory-vendor: 37.3.6
 
-  victory-create-container@37.3.6(react@18.3.1):
+  victory-create-container@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-brush-container: 37.3.6(react@18.3.1)
-      victory-core: 37.3.6(react@18.3.1)
-      victory-cursor-container: 37.3.6(react@18.3.1)
-      victory-selection-container: 37.3.6(react@18.3.1)
-      victory-voronoi-container: 37.3.6(react@18.3.1)
-      victory-zoom-container: 37.3.6(react@18.3.1)
+      victory-brush-container: 37.3.6
+      victory-core: 37.3.6
+      victory-cursor-container: 37.3.6
+      victory-selection-container: 37.3.6
+      victory-voronoi-container: 37.3.6
+      victory-zoom-container: 37.3.6
 
-  victory-cursor-container@37.3.6(react@18.3.1):
+  victory-cursor-container@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-group@37.3.6(react@18.3.1):
+  victory-group@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@18.3.1)
-      victory-shared-events: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
+      victory-shared-events: 37.3.6
 
-  victory-legend@37.3.6(react@18.3.1):
+  victory-legend@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-line@37.3.6(react@18.3.1):
+  victory-line@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
       victory-vendor: 37.3.6
 
-  victory-pie@37.3.6(react@18.3.1):
+  victory-pie@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
       victory-vendor: 37.3.6
 
-  victory-polar-axis@37.3.6(react@18.3.1):
+  victory-polar-axis@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-scatter@37.3.6(react@18.3.1):
+  victory-scatter@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-selection-container@37.3.6(react@18.3.1):
+  victory-selection-container@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-shared-events@37.3.6(react@18.3.1):
+  victory-shared-events@37.3.6:
     dependencies:
       json-stringify-safe: 5.0.1
       lodash: 4.18.1
-      react: 18.3.1
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
-  victory-stack@37.3.6(react@18.3.1):
+  victory-stack@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@18.3.1)
-      victory-shared-events: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
+      victory-shared-events: 37.3.6
 
-  victory-tooltip@37.3.6(react@18.3.1):
+  victory-tooltip@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
   victory-vendor@37.3.6:
     dependencies:
@@ -42339,20 +42315,18 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  victory-voronoi-container@37.3.6(react@18.3.1):
+  victory-voronoi-container@37.3.6:
     dependencies:
       delaunay-find: 0.0.6
       lodash: 4.18.1
-      react: 18.3.1
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@18.3.1)
-      victory-tooltip: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
+      victory-tooltip: 37.3.6
 
-  victory-zoom-container@37.3.6(react@18.3.1):
+  victory-zoom-container@37.3.6:
     dependencies:
       lodash: 4.18.1
-      react: 18.3.1
-      victory-core: 37.3.6(react@18.3.1)
+      victory-core: 37.3.6
 
   vite@7.3.6(@types/node@24.13.3)(jiti@1.21.7)(less@4.4.0)(sass@1.90.0)(terser@5.43.1)(yaml@2.9.0):
     dependencies:
@@ -42389,7 +42363,7 @@ snapshots:
       glob: 13.0.6
       got: 14.6.6
       hpagent: 1.2.0
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       mocha: 10.8.2
       sanitize-filename: 1.6.4
       selenium-webdriver: 4.46.0
@@ -42507,7 +42481,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-cli@7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4):
+  webpack-cli@7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4):
     dependencies:
       '@discoveryjs/json-ext': 1.1.0
       commander: 14.0.3
@@ -42519,7 +42493,7 @@ snapshots:
       webpack: 5.108.4(webpack-cli@7.2.1)
       webpack-merge: 6.0.1
     optionalDependencies:
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       json5: 2.2.3
       webpack-bundle-analyzer: 4.10.2
       webpack-dev-server: 5.2.6(tslib@2.8.1)(webpack-cli@7.2.1)(webpack@5.108.4)
@@ -42667,7 +42641,7 @@ snapshots:
       ws: 8.21.1
     optionalDependencies:
       webpack: 5.108.4(webpack-cli@7.2.1)
-      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -42855,7 +42829,7 @@ snapshots:
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     optionalDependencies:
-      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
@@ -42971,7 +42945,7 @@ snapshots:
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     optionalDependencies:
-      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
@@ -43011,7 +42985,7 @@ snapshots:
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     optionalDependencies:
-      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
@@ -43051,7 +43025,7 @@ snapshots:
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     optionalDependencies:
-      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
@@ -43091,7 +43065,7 @@ snapshots:
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     optionalDependencies:
-      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@4.3.1)(json5@2.2.3)(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.6)(webpack@5.108.4)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
@@ -43270,7 +43244,7 @@ snapshots:
 
   write-yaml-file@4.2.0:
     dependencies:
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       write-file-atomic: 3.0.3
 
   ws@6.2.6:
@@ -43310,7 +43284,7 @@ snapshots:
       '@oozcitak/infra': 1.0.8
       '@oozcitak/util': 8.3.8
       '@types/node': 24.13.3
-      js-yaml: 3.15.0
+      js-yaml: 3.15.1
 
   xmlbuilder@11.0.1: {}
 
