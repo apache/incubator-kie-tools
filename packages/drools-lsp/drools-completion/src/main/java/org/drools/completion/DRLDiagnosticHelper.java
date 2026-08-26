@@ -135,7 +135,7 @@ public final class DRLDiagnosticHelper {
             d.setRange(new Range(new Position(line - 1, startCol),
                                  new Position(line - 1, endCol)));
             d.setSeverity(DiagnosticSeverity.Error);
-            d.setSource("drools-parser");
+            d.setSource("drools-drl-parser");
             d.setMessage(msg);
             diagnostics.add(d);
         }

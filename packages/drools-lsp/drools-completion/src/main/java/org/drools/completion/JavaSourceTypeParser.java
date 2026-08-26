@@ -36,7 +36,7 @@ import org.drools.drl.parser.antlr4.JavaParser;
 
 /**
  * Parses {@code .java} source into {@link JavaSourceType}s using the ANTLR Java
- * grammar generated into the {@code drools-parser} jar
+ * grammar generated into the {@code drools-drl-parser} jar
  * ({@code org.drools.drl.parser.antlr4.JavaParser}). Only top-level types are
  * indexed; nested types are skipped. Best-effort: syntax errors are silenced so
  * partial/edited buffers still yield whatever parsed cleanly, and the parser

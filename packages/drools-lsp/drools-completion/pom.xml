@@ -37,6 +37,16 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-drl-parser</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-io</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
