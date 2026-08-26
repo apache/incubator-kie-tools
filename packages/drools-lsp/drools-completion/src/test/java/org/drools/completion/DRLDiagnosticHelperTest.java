@@ -58,7 +58,7 @@ class DRLDiagnosticHelperTest {
         assertThat(diags).isNotEmpty();
         for (Diagnostic d : diags) {
             assertThat(d.getSeverity()).isEqualTo(DiagnosticSeverity.Error);
-            assertThat(d.getSource()).isEqualTo("drools-parser");
+            assertThat(d.getSource()).isEqualTo("drools-drl-parser");
             assertThat(d.getMessage()).isNotBlank();
             assertThat(d.getRange().getStart().getLine())
                     .isEqualTo(d.getRange().getEnd().getLine());

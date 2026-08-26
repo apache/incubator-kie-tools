@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl.parser.antlr4;
+package org.drools.completion;
 
+import org.drools.drl.parser.antlr4.DRL10Parser;
 import org.drools.drl.parser.antlr4.DRL10Parser.BooleanAttributeContext;
 import org.drools.drl.parser.antlr4.DRL10Parser.CompilationUnitContext;
 import org.drools.drl.parser.antlr4.DRL10Parser.ConstraintContext;
@@ -28,15 +29,12 @@ import org.drools.drl.parser.antlr4.DRL10Parser.LhsPatternContext;
 import org.drools.drl.parser.antlr4.DRL10Parser.LhsUnarySingleContext;
 import org.drools.drl.parser.antlr4.DRL10Parser.PackagedefContext;
 import org.drools.drl.parser.antlr4.DRL10Parser.RuledefContext;
+import org.drools.drl.parser.antlr4.DRL10ParserHelper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * This class is a quick test to check if the antlr4 parser is working.
- * The real tests are done in the Drools project.
- */
-class SmokeTest {
+class DRLParserSmokeTest {
 
     private static final String BASIC_DRL = """
             package org.test;
@@ -55,7 +53,7 @@ class SmokeTest {
 
     @Test
     void basicDrl() {
-        DRL10Parser parser = DRLParserHelper.createDrlParser(BASIC_DRL);
+        DRL10Parser parser = DRL10ParserHelper.createDrlParser(BASIC_DRL);
         CompilationUnitContext compilationUnitContext = parser.compilationUnit();
 
         PackagedefContext packagedef = compilationUnitContext.packagedef();

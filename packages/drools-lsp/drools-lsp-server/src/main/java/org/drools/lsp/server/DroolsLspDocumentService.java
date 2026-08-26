@@ -52,7 +52,6 @@ import org.drools.completion.DRLInlayHintHelper;
 import org.drools.completion.DRLLintHelper;
 import org.drools.completion.DRLTypeHierarchyHelper;
 import org.drools.completion.JavaSourceTypeIndex;
-import org.drools.drl.parser.antlr4.DRLParserHelper;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.CodeActionKind;
 import org.eclipse.lsp4j.CodeActionParams;
@@ -233,11 +232,6 @@ public class DroolsLspDocumentService implements TextDocumentService {
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
         sourcesMap.put(params.getTextDocument().getUri(), params.getContentChanges().get(0).getText());
-    }
-
-    public String getRuleName(CompletionParams completionParams) {
-        String text = sourcesMap.get(completionParams.getTextDocument().getUri());
-        return DRLParserHelper.getFirstRuleName(text);
     }
 
     @Override

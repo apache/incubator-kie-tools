@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.drools.drl.parser.antlr4.DRL10Parser;
-import org.drools.drl.parser.antlr4.DRLParserHelper;
+import org.drools.drl.parser.antlr4.DRL10ParserHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DRLDeclaredTypeParserTest {
 
     private static List<DeclaredType> parse(String drl) {
-        DRL10Parser parser = DRLParserHelper.createDrlParser(drl);
+        DRL10Parser parser = DRL10ParserHelper.createDrlParser(drl);
         parser.removeErrorListeners(); // partial/malformed DRL is expected here
         return DRLDeclaredTypeParser.extractFromCompilationUnit(parser.compilationUnit());
     }

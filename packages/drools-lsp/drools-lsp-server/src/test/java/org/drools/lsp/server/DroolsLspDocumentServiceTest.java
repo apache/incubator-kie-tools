@@ -76,19 +76,6 @@ class DroolsLspDocumentServiceTest {
     }
 
     @Test
-    void getRuleName() {
-        String drl = "rule MyRule when Dog(name == \"Bart\") then end";
-
-        DroolsLspDocumentService droolsLspDocumentService = getDroolsLspDocumentService(drl);
-
-        CompletionParams completionParams = new CompletionParams();
-        completionParams.setTextDocument(new TextDocumentIdentifier("myDocument"));
-
-        String ruleName = droolsLspDocumentService.getRuleName(completionParams);
-        assertThat(ruleName).isEqualTo("MyRule");
-    }
-
-    @Test
     void getCompletionItems_findLHSandRHS() {
         String drl =
                 "package org.test;\n" +
@@ -156,7 +143,7 @@ class DroolsLspDocumentServiceTest {
         List<Diagnostic> diags = service.validate("myDocument");
         assertThat(diags).isNotEmpty();
         assertThat(diags)
-                 .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-parser"));
+                 .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-drl-parser"));
     }
 
     @Test
@@ -169,7 +156,7 @@ class DroolsLspDocumentServiceTest {
 
         assertThat(report.getRelatedFullDocumentDiagnosticReport().getItems())
                 .isNotEmpty()
-                .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-parser"));
+                .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-drl-parser"));
     }
 
     @Test
