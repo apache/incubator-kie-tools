@@ -19,7 +19,7 @@
 
 import * as RF from "reactflow";
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NodeType } from "./connections/graphStructure";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import { DiagramLhsPanel } from "../store/Store";
@@ -43,6 +43,7 @@ import { DrdSelectorPanel } from "./DrdSelectorPanel";
 import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
+import { EllipsisHIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-h-icon";
 import { DrgNodesPanel } from "./DrgNodesPanel";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
@@ -54,6 +55,33 @@ import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { useDmnEditorI18n } from "../i18n";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
+
+const VIEWPORT_PADDING = 20;
+
+function calculateVisibleIconCount(
+  panelRect: DOMRect,
+  paletteRect: DOMRect,
+  viewportHeight: number,
+  iconHeight: number,
+  ellipsisHeight: number,
+  totalIcons: number
+): number {
+  const effectiveViewportHeight = viewportHeight - VIEWPORT_PADDING;
+  const currentPaletteHeight = paletteRect.height;
+  const fullPaletteHeight = totalIcons * iconHeight;
+
+  const heightDifference = fullPaletteHeight - currentPaletteHeight;
+  const panelBottomIfAllVisible = panelRect.bottom + heightDifference;
+
+  if (panelBottomIfAllVisible > effectiveViewportHeight) {
+    const availableSpace = effectiveViewportHeight - (panelRect.bottom - currentPaletteHeight);
+    const spaceForIcons = availableSpace - ellipsisHeight;
+    const iconsThatFit = Math.floor(spaceForIcons / iconHeight);
+    return Math.max(1, Math.min(totalIcons - 1, iconsThatFit));
+  }
+
+  return totalIcons;
+}
 
 export function Palette({ pulse }: { pulse: boolean }) {
   const { i18n } = useDmnEditorI18n();
@@ -106,6 +134,131 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const nodesPalletePopoverRef = React.useRef<HTMLDivElement>(null);
 
   const { maxHeight } = useInViewSelect(dmnEditorRootElementRef, nodesPalletePopoverRef);
+
+  // Responsive palette: measure how many icons fit vertically
+  const panelRef = useRef<HTMLDivElement>(null);
+  const paletteRef = useRef<HTMLDivElement>(null);
+  const submenuRef = useRef<HTMLDivElement>(null);
+  const iconMeasureRef = useRef<HTMLDivElement>(null);
+  const ellipsisButtonRef = useRef<HTMLButtonElement>(null);
+
+  const primaryIcons = useMemo(
+    () => [
+      { nodeType: NODE_TYPES.inputData as NodeType, title: i18n.nodes.inputData, className: "input-data" },
+      { nodeType: NODE_TYPES.decision as NodeType, title: i18n.nodes.decision, className: "decision" },
+      { nodeType: NODE_TYPES.bkm as NodeType, title: i18n.nodes.businessKnowledgeModel, className: "bkm" },
+      {
+        nodeType: NODE_TYPES.knowledgeSource as NodeType,
+        title: i18n.nodes.knowledgeSource,
+        className: "knowledge-source",
+      },
+      {
+        nodeType: NODE_TYPES.decisionService as NodeType,
+        title: i18n.nodes.decisionService,
+        className: "decision-service",
+      },
+    ],
+    [i18n]
+  );
+
+  const totalIcons = primaryIcons.length;
+  const [visibleIconCount, setVisibleIconCount] = useState<number>(totalIcons);
+  const [submenuOpen, setSubmenuOpen] = useState(false);
+
+  const showEllipsis = visibleIconCount < totalIcons;
+
+  const iconHeightRef = useRef(48); // margin-bottom: 8px + height: 40px
+  const ellipsisHeightRef = useRef(40);
+
+  useEffect(() => {
+    if (iconMeasureRef.current) {
+      const rect = iconMeasureRef.current.getBoundingClientRect();
+      if (rect.height) {
+        iconHeightRef.current = rect.height;
+      }
+    }
+    if (ellipsisButtonRef.current) {
+      const rect = ellipsisButtonRef.current.getBoundingClientRect();
+      if (rect.height) {
+        ellipsisHeightRef.current = rect.height;
+      }
+    }
+  }, [visibleIconCount]);
+
+  useEffect(() => {
+    let animationFrameId: number | null = null;
+    let lastCount = totalIcons;
+
+    const updateVisibleIcons = () => {
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
+
+      animationFrameId = requestAnimationFrame(() => {
+        if (!panelRef.current || !paletteRef.current) {
+          if (lastCount !== totalIcons) {
+            setVisibleIconCount(totalIcons);
+            lastCount = totalIcons;
+          }
+          return;
+        }
+
+        const newCount = calculateVisibleIconCount(
+          panelRef.current.getBoundingClientRect(),
+          paletteRef.current.getBoundingClientRect(),
+          window.innerHeight,
+          iconHeightRef.current,
+          ellipsisHeightRef.current,
+          totalIcons
+        );
+
+        if (newCount !== lastCount) {
+          setVisibleIconCount(newCount);
+          lastCount = newCount;
+        }
+      });
+    };
+
+    updateVisibleIcons();
+    window.addEventListener("resize", updateVisibleIcons);
+
+    return () => {
+      window.removeEventListener("resize", updateVisibleIcons);
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
+    };
+  }, [totalIcons]);
+
+  const renderPaletteIcon = useCallback(
+    (icon: (typeof primaryIcons)[number]) => {
+      const isInputData = icon.nodeType === NODE_TYPES.inputData;
+      const iconContent = isInputData ? (
+        isAlternativeInputDataShape ? (
+          <AlternativeInputDataIcon />
+        ) : (
+          <InputDataIcon />
+        )
+      ) : icon.nodeType === NODE_TYPES.decision ? (
+        <DecisionIcon />
+      ) : icon.nodeType === NODE_TYPES.bkm ? (
+        <BkmIcon />
+      ) : icon.nodeType === NODE_TYPES.knowledgeSource ? (
+        <KnowledgeSourceIcon />
+      ) : (
+        <DecisionServiceIcon />
+      );
+
+      return (
+        <div
+          key={icon.nodeType}
+          title={icon.title}
+          className={`kie-dmn-editor--palette-button dndnode ${icon.className}`}
+          onDragStart={(event) => onDragStart(event, icon.nodeType)}
+          draggable={true}
+        >
+          {iconContent}
+        </div>
+      );
+    },
+    [isAlternativeInputDataShape, onDragStart]
+  );
 
   const clearCurrentFocusToAllowDraggingNewNode = useCallback(() => {
     (document.activeElement as any)?.blur?.();
@@ -177,50 +330,49 @@ export function Palette({ pulse }: { pulse: boolean }) {
           style={{ marginTop: "78px" }}
           onMouseDownCapture={clearCurrentFocusToAllowDraggingNewNode}
         >
+          <div
+            ref={panelRef}
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+          />
           <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
-          <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
-            <div
-              title={i18n.nodes.inputData}
-              className={"kie-dmn-editor--palette-button dndnode input-data"}
-              onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
-              draggable={true}
-            >
-              {isAlternativeInputDataShape ? <AlternativeInputDataIcon /> : <InputDataIcon />}
-            </div>
-            <div
-              title={i18n.nodes.decision}
-              className={"kie-dmn-editor--palette-button dndnode decision"}
-              onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
-              draggable={true}
-            >
-              <DecisionIcon />
-            </div>
-            <div
-              title={i18n.nodes.businessKnowledgeModel}
-              className={"kie-dmn-editor--palette-button dndnode bkm"}
-              onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
-              draggable={true}
-            >
-              <BkmIcon />
-            </div>
-            <div
-              title={i18n.nodes.knowledgeSource}
-              className={"kie-dmn-editor--palette-button dndnode knowledge-source"}
-              onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
-              draggable={true}
-            >
-              <KnowledgeSourceIcon />
-            </div>
-            <div
-              title={i18n.nodes.decisionService}
-              className={"kie-dmn-editor--palette-button dndnode decision-service"}
-              onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
-              draggable={true}
-            >
-              <DecisionServiceIcon />
-            </div>
+          <aside
+            ref={paletteRef}
+            className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}
+            style={{ position: "relative" }}
+          >
+            {primaryIcons.slice(0, visibleIconCount).map((icon, index) => {
+              const element = renderPaletteIcon(icon);
+
+              return index === 0 ? (
+                <div key={icon.nodeType} ref={iconMeasureRef}>
+                  {element}
+                </div>
+              ) : (
+                element
+              );
+            })}
+
+            {showEllipsis && (
+              <>
+                {submenuOpen && (
+                  <div ref={submenuRef} className={"kie-dmn-editor--palette-more-items"}>
+                    <div className={"kie-dmn-editor--palette-more-items-grid"}>
+                      {primaryIcons.slice(visibleIconCount).map(renderPaletteIcon)}
+                    </div>
+                  </div>
+                )}
+                <button
+                  ref={ellipsisButtonRef}
+                  title={i18n.nodes.moreItems}
+                  className={`kie-dmn-editor--palette-button kie-dmn-editor--palette-ellipsis-button ${submenuOpen ? "active" : ""}`}
+                  onClick={() => setSubmenuOpen((v) => !v)}
+                >
+                  <EllipsisHIcon />
+                </button>
+              </>
+            )}
           </aside>
-          <br />
+
           <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
             <div
               title={i18n.nodes.group}
@@ -240,7 +392,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
               <TextAnnotationIcon />
             </div>
           </aside>
-          <br />
+
           <aside className={"kie-dmn-editor--drg-panel-toggle"}>
             {diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES && (
               <div
@@ -270,7 +422,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
               </Icon>
             </button>
           </aside>
-          <br />
+
           <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
             {diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES && (
               <div

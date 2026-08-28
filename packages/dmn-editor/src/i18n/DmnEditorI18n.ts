@@ -176,6 +176,7 @@ interface DmnEditorDictionary extends ReferenceDictionary<{
     textAnnotation: string;
     externalNodes: string;
     drgnodes: string;
+    moreItems: string;
     unknown: string;
     empty: string;
     input: string;
