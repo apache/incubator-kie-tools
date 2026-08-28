@@ -185,6 +185,7 @@ export const en: DmnEditorI18n = {
     textAnnotation: "Text Annotation",
     externalNodes: "External nodes",
     drgnodes: "DRG nodes",
+    moreItems: "More items",
     unknown: "unknown",
     empty: "<Empty>",
     input: "Input",

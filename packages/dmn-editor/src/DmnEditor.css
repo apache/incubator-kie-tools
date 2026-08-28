@@ -360,6 +360,7 @@
   background: #fff;
   border-radius: 40px;
   border: 1px solid black;
+  margin-bottom: 8px;
 }
 .kie-dmn-editor--palette:hover {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
@@ -519,6 +520,7 @@
   background: #fff;
   border-radius: 40px;
   border: 1px solid black;
+  margin-bottom: 8px;
 }
 .kie-dmn-editor--external-nodes-panel-toggle:hover,
 .kie-dmn-editor--drg-panel-toggle:hover {
@@ -555,6 +557,94 @@
   background: rgb(255, 255, 255, 90%);
   backdrop-filter: blur(4px);
   width: 400px;
+}
+
+.kie-dmn-editor--palette-more-items {
+  position: absolute;
+  left: 58px;
+  bottom: 0;
+  padding: 8px;
+  max-height: calc(100vh - 200px);
+  overflow: visible;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid black;
+  width: fit-content;
+}
+
+.kie-dmn-editor--palette-more-items:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-dmn-editor--palette-more-items::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  bottom: 18px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  transform: rotate(-45deg);
+  z-index: 1;
+}
+
+.kie-dmn-editor--palette-more-items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 40px);
+  gap: 8px;
+  padding: 0;
+  width: fit-content;
+}
+
+.kie-dmn-editor--palette-more-items-grid .kie-dmn-editor--palette-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+
+.kie-dmn-editor--palette-more-items-grid .kie-dmn-editor--palette-button:hover {
+  filter: brightness(95%);
+  cursor: grab;
+}
+
+.kie-dmn-editor--palette-more-items-grid .kie-dmn-editor--palette-button:active {
+  filter: brightness(90%);
+  cursor: grabbing;
+}
+
+.kie-dmn-editor--palette-ellipsis-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.kie-dmn-editor--palette-ellipsis-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.kie-dmn-editor--palette-ellipsis-button.active {
+  background: rgba(0, 107, 164, 0.1);
+  color: #006ba4;
+}
+
+.kie-dmn-editor--palette-ellipsis-button svg {
+  width: 16px;
+  height: 16px;
 }
 .kie-dmn-editor--external-nodes-panel-toggle {
   margin-right: 16px;
