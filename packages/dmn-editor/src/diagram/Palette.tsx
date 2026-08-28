@@ -135,7 +135,6 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   const { maxHeight } = useInViewSelect(dmnEditorRootElementRef, nodesPalletePopoverRef);
 
-  // Responsive palette: measure how many icons fit vertically
   const panelRef = useRef<HTMLDivElement>(null);
   const paletteRef = useRef<HTMLDivElement>(null);
   const submenuRef = useRef<HTMLDivElement>(null);
@@ -167,7 +166,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   const showEllipsis = visibleIconCount < totalIcons;
 
-  const iconHeightRef = useRef(48); // margin-bottom: 8px + height: 40px
+  const iconHeightRef = useRef(48);
   const ellipsisHeightRef = useRef(40);
 
   useEffect(() => {
