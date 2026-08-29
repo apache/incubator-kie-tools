@@ -50,7 +50,7 @@ test.describe("Change Properties - Start Event", () => {
     );
   });
 
-  test("should configure Timer event definition with date", async ({ startEventPropertiesPanel, page, nodes }) => {
+  test("should configure Timer event definition with date", async ({ startEventPropertiesPanel, nodes, jsonModel }) => {
     await startEventPropertiesPanel.setTimerDefinition({
       type: "date",
       value: "2025-12-31T23:59:59",
@@ -61,7 +61,13 @@ test.describe("Change Properties - Start Event", () => {
     expect(timerDef.type).toBe("date");
     expect(timerDef.value).toBe("2025-12-31T23:59:59");
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("start-event-timer-date.png");
+    const startEvent = (await jsonModel.getStartEvents())[0];
+    const eventDefinition = startEvent.eventDefinition?.[0];
+    expect(eventDefinition?.__$$element).toBe("timerEventDefinition");
+
+    // Narrow the eventDefinition union so the timerEventDefinition-only fields are reachable.
+    const timerEventDefinition = eventDefinition?.__$$element === "timerEventDefinition" ? eventDefinition : undefined;
+    expect(timerEventDefinition?.timeDate?.__$$text).toBe("2025-12-31T23:59:59");
   });
 
   test("should configure Timer event definition with duration", async ({ startEventPropertiesPanel, page, nodes }) => {
@@ -88,22 +94,58 @@ test.describe("Change Properties - Start Event", () => {
     expect(timerDef.value).toBe("R3/PT10M");
   });
 
-  test("should configure Message event definition", async ({ startEventPropertiesPanel, page, nodes }) => {
+  test("should configure Message event definition", async ({ startEventPropertiesPanel, nodes, jsonModel }) => {
     await startEventPropertiesPanel.setMessageDefinition({
       messageName: "StartMessage",
       startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("start-event-message.png");
+    expect(await startEventPropertiesPanel.panel().getByRole("combobox").first().inputValue()).toBe("StartMessage");
+
+    // The named message reaches the model a moment after an auto-named placeholder, so resolving
+    // the ref to its name has to be retried rather than read once.
+    await expect(async () => {
+      const startEvent = (await jsonModel.getStartEvents())[0];
+      const eventDefinition = startEvent.eventDefinition?.[0];
+      expect(eventDefinition?.__$$element).toBe("messageEventDefinition");
+
+      // Narrow the eventDefinition union so the messageEventDefinition-only fields are reachable.
+      const messageEventDefinition =
+        eventDefinition?.__$$element === "messageEventDefinition" ? eventDefinition : undefined;
+      const messages = (await jsonModel.getDefinitions())?.rootElement?.filter(
+        (rootElement) => rootElement.__$$element === "message"
+      );
+      expect(
+        messages?.find((message) => message["@_id"] === messageEventDefinition?.["@_messageRef"])?.["@_name"]
+      ).toBe("StartMessage");
+    }).toPass();
   });
 
-  test("should configure Signal event definition", async ({ startEventPropertiesPanel, page, nodes }) => {
+  test("should configure Signal event definition", async ({ startEventPropertiesPanel, nodes, jsonModel }) => {
     await startEventPropertiesPanel.setSignalDefinition({
       signalName: "StartSignal",
       startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
     });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("start-event-signal.png");
+    expect(await startEventPropertiesPanel.panel().getByRole("combobox").first().inputValue()).toBe("StartSignal");
+
+    // The named signal reaches the model a moment after an auto-named placeholder, so resolving
+    // the ref to its name has to be retried rather than read once.
+    await expect(async () => {
+      const startEvent = (await jsonModel.getStartEvents())[0];
+      const eventDefinition = startEvent.eventDefinition?.[0];
+      expect(eventDefinition?.__$$element).toBe("signalEventDefinition");
+
+      // Narrow the eventDefinition union so the signalEventDefinition-only fields are reachable.
+      const signalEventDefinition =
+        eventDefinition?.__$$element === "signalEventDefinition" ? eventDefinition : undefined;
+      const signals = (await jsonModel.getDefinitions())?.rootElement?.filter(
+        (rootElement) => rootElement.__$$element === "signal"
+      );
+      expect(signals?.find((signal) => signal["@_id"] === signalEventDefinition?.["@_signalRef"])?.["@_name"]).toBe(
+        "StartSignal"
+      );
+    }).toPass();
   });
 
   test("should configure Conditional event definition", async ({ startEventPropertiesPanel, page, nodes }) => {
@@ -248,21 +290,26 @@ test.describe("Change Properties - Error/Escalation Start Events in Event Sub-Pr
         startEventLocator: nodes.getByType(NodeType.START_EVENT).first(),
       });
 
-      const definitions = await jsonModel.getDefinitions();
+      // Creating the message lands in the model in two steps: an auto-named placeholder appears
+      // immediately and the named message follows ~300ms later. Reading once races that second
+      // step — the Chromium engines usually win the race, WebKit usually doesn't.
+      await expect(async () => {
+        const definitions = await jsonModel.getDefinitions();
 
-      expect(definitions?.rootElement).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            __$$element: "message",
-            "@_name": "TestMessage",
-            "@_itemRef": "__messageItemDefinition",
-          }),
-          expect.objectContaining({
-            __$$element: "itemDefinition",
-            "@_id": "__messageItemDefinition",
-          }),
-        ])
-      );
+        expect(definitions?.rootElement).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              __$$element: "message",
+              "@_name": "TestMessage",
+              "@_itemRef": "__messageItemDefinition",
+            }),
+            expect.objectContaining({
+              __$$element: "itemDefinition",
+              "@_id": "__messageItemDefinition",
+            }),
+          ])
+        );
+      }).toPass();
     });
   });
 });

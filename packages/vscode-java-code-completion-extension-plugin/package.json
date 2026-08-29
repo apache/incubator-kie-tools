@@ -8,7 +8,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
@@ -20,7 +20,7 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build:dev": "mvn clean install -DskipTests",
+    "build:dev": "mvn clean install -U -DskipTests",
     "build:prod": "pnpm lint && run-script-os",
     "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dreproducible",
     "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dreproducible\"",

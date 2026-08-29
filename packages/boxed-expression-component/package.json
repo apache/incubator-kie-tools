@@ -42,7 +42,7 @@
     "lodash": "^4.18.1",
     "react-resizable": "^4.0.1",
     "react-table": "^7.6.2",
-    "uuid": "^11.1.1"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -56,7 +56,7 @@
     "@kie-tools/storybook-base": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@microlink/react-json-view": "^1.24.0",
-    "@playwright/test": "^1.45.2",
+    "@playwright/test": "1.62.0",
     "@storybook/addon-links": "^7.3.2",
     "@storybook/blocks": "^7.3.2",
     "@storybook/manager-api": "^7.3.2",
@@ -82,8 +82,8 @@
     "storybook": "^7.3.2",
     "ts-jest": "^29.1.5",
     "typescript": "^5.9.3",
-    "webpack": "^5.107.1",
-    "webpack-cli": "^5.1.4",
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1",
     "webpack-dev-server": "^5.2.5",
     "webpack-merge": "^5.9.0"
   },

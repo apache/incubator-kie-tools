@@ -32,7 +32,7 @@ import { PushToGitAlertActionLinks } from "../GitIntegration/PushToGitAlertActio
 import { useGitIntegration } from "../GitIntegration/GitIntegrationContextProvider";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useEditorToolbarContext } from "../EditorToolbarContextProvider";
 
 export function useWorkspaceNavigationBlocker(workspace: ActiveWorkspace) {

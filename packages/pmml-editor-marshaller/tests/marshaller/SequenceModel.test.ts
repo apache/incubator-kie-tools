@@ -21,8 +21,8 @@ import { DataDictionary, Model, PMML, SequenceModel, XML2PMML } from "@kie-tools
 import { SEQUENCE_MODEL_1 } from "./TestData_SequenceModel";
 
 describe("SequenceModel tests", () => {
-  test("SequenceModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(SEQUENCE_MODEL_1);
+  test("SequenceModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(SEQUENCE_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

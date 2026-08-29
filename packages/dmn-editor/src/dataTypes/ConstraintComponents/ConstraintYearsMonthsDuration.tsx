@@ -48,8 +48,8 @@ export function ConstraintYearsMonthsDuration({
 
   const onInternalChange = useCallback(
     (args: { years?: string; months?: string }) => {
-      const y = args.years ?? years ? (args.years ?? years) + "Y" : "";
-      const m = args.months ?? months ? (args.months ?? months) + "M" : "";
+      const y = (args.years ?? years) ? (args.years ?? years) + "Y" : "";
+      const m = (args.months ?? months) ? (args.months ?? months) + "M" : "";
       const p = y || m ? "P" : "";
       onChange(`${p}${y}${m}`);
     },

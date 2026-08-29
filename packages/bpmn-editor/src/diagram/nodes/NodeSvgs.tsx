@@ -1201,8 +1201,8 @@ export const SubProcessNodeSvg = React.forwardRef<
 
   const icons = useMemo(() => new Set(_icons), [_icons]);
   const variant = _variant ?? "other";
-  const rimWidth = variant === "transaction" ? _rimWidth ?? 5 : 0;
-  const borderRadius = variant === "transaction" ? _borderRadius ?? 10 : 2;
+  const rimWidth = variant === "transaction" ? (_rimWidth ?? 5) : 0;
+  const borderRadius = variant === "transaction" ? (_borderRadius ?? 10) : 2;
   const exportedSvgId = _exportedSvgId ?? undefined;
 
   return (
@@ -1239,7 +1239,7 @@ export const SubProcessNodeSvg = React.forwardRef<
           strokeWidth={strokeWidth}
           fill={"transparent"}
           stroke={DEFAULT_NODE_STROKE_COLOR}
-          strokeDasharray={variant === "event" ? strokeDasharray ?? "10,5" : undefined}
+          strokeDasharray={variant === "event" ? (strokeDasharray ?? "10,5") : undefined}
           strokeLinejoin={"round"}
           rx={borderRadius}
           ry={borderRadius}

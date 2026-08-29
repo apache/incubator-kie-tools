@@ -45,8 +45,8 @@ import { PMMLModelData } from "./PMMLModelData";
 import { PMMLFieldData } from "./PMMLFieldData";
 
 export class PMMLEditorMarshallerService {
-  public getPMMLDocumentData(xmlContent: string): PMMLDocumentData {
-    const pmml = XML2PMML(xmlContent);
+  public async getPMMLDocumentData(xmlContent: string): Promise<PMMLDocumentData> {
+    const pmml = await XML2PMML(xmlContent);
     const models: PMMLModelData[] = [];
     const document = new PMMLDocumentData(models);
 

@@ -29,7 +29,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.drools.drl.parser.antlr4.DRL10Parser;
-import org.drools.drl.parser.antlr4.DRLParserHelper;
+import org.drools.drl.parser.antlr4.DRL10ParserHelper;
 import org.eclipse.lsp4j.Diagnostic;
 import org.eclipse.lsp4j.DiagnosticSeverity;
 import org.eclipse.lsp4j.Position;
@@ -67,11 +67,11 @@ public final class DRLDiagnosticHelper {
         if (text == null || text.isEmpty()) {
             return new Parsed(null, Collections.emptyList());
         }
-        DRL10Parser parser = DRLParserHelper.createDrlParser(text);
+        DRL10Parser parser = DRL10ParserHelper.createDrlParser(text);
         List<Diagnostic> diagnostics = new ArrayList<>();
         CollectingErrorListener listener = new CollectingErrorListener(diagnostics);
 
-        // Safe today because DRLParserHelper builds an unfilled
+        // Safe today because DRL10ParserHelper builds an unfilled
         // CommonTokenStream directly over the lexer; lexer errors emitted
         // during lazy tokenization therefore reach the listener attached
         // below. If the helper ever pre-fills the stream, lexer errors would
@@ -135,7 +135,7 @@ public final class DRLDiagnosticHelper {
             d.setRange(new Range(new Position(line - 1, startCol),
                                  new Position(line - 1, endCol)));
             d.setSeverity(DiagnosticSeverity.Error);
-            d.setSource("drools-parser");
+            d.setSource("drools-drl-parser");
             d.setMessage(msg);
             diagnostics.add(d);
         }

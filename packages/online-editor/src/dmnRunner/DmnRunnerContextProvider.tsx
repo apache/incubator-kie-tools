@@ -719,7 +719,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             props.dmnLanguageService
           );
           const modifiedSchema = importIndex
-            ? props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ?? jsonSchema
+            ? (props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ??
+              jsonSchema)
             : jsonSchema;
 
           // Remove incompatible values and add default values;
@@ -827,8 +828,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                       return;
                     }
                     const modifiedSchema = importIndex
-                      ? props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ??
-                        jsonSchema
+                      ? (props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ??
+                        jsonSchema)
                       : jsonSchema;
                     setJsonSchema((previousJsonSchema) => {
                       // Early bailout in the DMN first render;

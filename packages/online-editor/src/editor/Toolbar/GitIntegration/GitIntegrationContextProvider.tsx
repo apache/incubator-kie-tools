@@ -51,7 +51,7 @@ import {
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useNavigationBlockersBypass, useRoutes } from "../../../navigation/Hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useGitIntegrationAlerts } from "./GitIntegrationAlerts";
 import { AuthProviderGroup, isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
@@ -311,10 +311,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     () =>
       Boolean(
         authProvider &&
-          isGistEnabledAuthProviderType(authProvider?.type) &&
-          props.workspace.descriptor.origin.kind === WorkspaceKind.LOCAL &&
-          !workspaceHasNestedDirectories &&
-          isValidAuthSession()
+        isGistEnabledAuthProviderType(authProvider?.type) &&
+        props.workspace.descriptor.origin.kind === WorkspaceKind.LOCAL &&
+        !workspaceHasNestedDirectories &&
+        isValidAuthSession()
       ),
     [authProvider, isValidAuthSession, props.workspace.descriptor.origin.kind, workspaceHasNestedDirectories]
   );
@@ -323,12 +323,12 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     () =>
       Boolean(
         authProvider &&
-          isGistEnabledAuthProviderType(authProvider?.type) &&
-          !!isGistOrSnippetOwner &&
-          props.workspace &&
-          isGistLikeWorkspaceKind(props.workspace.descriptor.origin.kind) &&
-          !workspaceHasNestedDirectories &&
-          isValidAuthSession()
+        isGistEnabledAuthProviderType(authProvider?.type) &&
+        !!isGistOrSnippetOwner &&
+        props.workspace &&
+        isGistLikeWorkspaceKind(props.workspace.descriptor.origin.kind) &&
+        !workspaceHasNestedDirectories &&
+        isValidAuthSession()
       ),
     [authProvider, isGistOrSnippetOwner, isValidAuthSession, props.workspace, workspaceHasNestedDirectories]
   );

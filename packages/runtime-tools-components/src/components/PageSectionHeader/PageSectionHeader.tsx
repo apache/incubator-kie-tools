@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { Link, Location } from "react-router-dom";
+import { Link, Location } from "react-router";
 import { useMemo, ReactElement } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";

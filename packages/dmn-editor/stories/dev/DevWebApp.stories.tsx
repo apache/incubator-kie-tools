@@ -18,14 +18,14 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
+import { availableModelsByPathPromise, modelsByNamespacePromise } from "./availableModelsToInclude";
 import { generateEmptyDmn16 } from "../misc/empty/Empty.stories";
 import { loanPreQualificationDmn } from "../useCases/loanPreQualification/LoanPreQualification.stories";
 import { DmnEditorWrapper } from "../dmnEditorStoriesWrapper";
@@ -77,6 +77,16 @@ function DevWebApp(args: DmnEditorProps) {
       pointer: 0,
     };
   });
+
+  const [availableModelsByPath, setAvailableModelsByPath] = useState<
+    Record<string, import("../../src/DmnEditor").ExternalModel>
+  >({});
+  const [modelsByNamespace, setModelsByNamespace] = useState<ExternalModelsIndex>({} as ExternalModelsIndex);
+
+  useEffect(() => {
+    availableModelsByPathPromise.then(setAvailableModelsByPath);
+    modelsByNamespacePromise.then(setModelsByNamespace);
+  }, []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
@@ -162,15 +172,18 @@ function DevWebApp(args: DmnEditorProps) {
       acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
       return acc;
     }, {} as ExternalModelsIndex);
-  }, [currentModel.definitions.import]);
+  }, [currentModel.definitions.import, modelsByNamespace]);
 
-  const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(async (path) => {
-    return availableModelsByPath[path] ?? null;
-  }, []);
+  const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(
+    async (path) => {
+      return availableModelsByPath[path] ?? null;
+    },
+    [availableModelsByPath]
+  );
 
   const onRequestExternalModelsAvailableToInclude = useCallback<OnRequestExternalModelsAvailableToInclude>(async () => {
     return Object.keys(availableModelsByPath);
-  }, []);
+  }, [availableModelsByPath]);
 
   const isUndoEnabled = state.pointer > 0;
   const isRedoEnabled = state.pointer !== state.stack.length - 1;

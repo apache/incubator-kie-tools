@@ -21,8 +21,8 @@ import { DataDictionary, Model, NeuralNetwork, PMML, XML2PMML } from "@kie-tools
 import { NEURAL_NETWORK_MODEL_1 } from "./TestData_NeuralNetwork";
 
 describe("NeuralNetwork tests", () => {
-  test("NeuralNetwork::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(NEURAL_NETWORK_MODEL_1);
+  test("NeuralNetwork::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(NEURAL_NETWORK_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

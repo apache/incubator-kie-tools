@@ -8,7 +8,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
@@ -44,8 +44,8 @@
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "typescript": "^5.9.3",
-    "webpack": "^5.107.1",
-    "webpack-cli": "^5.1.4",
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1",
     "webpack-dev-server": "^5.2.5",
     "webpack-merge": "^5.9.0"
   },
@@ -57,12 +57,146 @@
     "Programming Languages"
   ],
   "contributes": {
+    "commands": [
+      {
+        "category": "DRL",
+        "command": "drools.selectFileGroup",
+        "title": "Select File Group for the Current File"
+      },
+      {
+        "category": "DRL",
+        "command": "drools.reloadFileGroups",
+        "title": "Reload File Groups"
+      }
+    ],
     "configuration": {
       "properties": {
+        "drools.lsp.grouping": {
+          "additionalProperties": false,
+          "default": {},
+          "markdownDescription": "Declares which DRL files are grouped together for completion, navigation and validation, without needing a file on disk. Same shape as `drl-lsp-kbases.json`, and takes precedence over one. Leave empty to use `META-INF/kmodule.xml` and any `drl-lsp-kbases.json` in the workspace instead.",
+          "properties": {
+            "kbases": {
+              "description": "Groups declared directly. Use 'packages' for kmodule-style package patterns, or 'files' to list paths explicitly.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "files": {
+                    "description": "Paths belonging to this group, in order. Relative entries resolve against the workspace root.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "includes": {
+                    "description": "Names of other groups whose packages this group also claims.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "name": {
+                    "description": "The group's name, as shown in the status bar.",
+                    "type": "string"
+                  },
+                  "packages": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "markdownDescription": "Package patterns, with `kmodule.xml` semantics: `*`, `com.example.*`, and a leading `!` to exclude. **The first pattern that matches decides**, so list exclusions before the wildcard they carve out of.",
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "sources": {
+              "description": "Adopts rule manifests the project already has, without editing them.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "aliases": {
+                    "description": "Maps each canonical key to the key(s) the existing files use. Several source keys may map onto one canonical key, concatenating their values.",
+                    "properties": {
+                      "files": {
+                        "type": [
+                          "string",
+                          "array"
+                        ]
+                      },
+                      "includes": {
+                        "type": [
+                          "string",
+                          "array"
+                        ]
+                      },
+                      "kbases": {
+                        "type": [
+                          "string",
+                          "array"
+                        ]
+                      },
+                      "name": {
+                        "type": [
+                          "string",
+                          "array"
+                        ]
+                      },
+                      "packages": {
+                        "type": [
+                          "string",
+                          "array"
+                        ]
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "include": {
+                    "description": "Glob matching the manifest files to read, relative to the workspace root.",
+                    "type": "string"
+                  },
+                  "pathsRelativeTo": {
+                    "description": "Directories that relative paths in those manifests resolve against. Globs allowed. Omit to anchor each manifest at its own directory.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "include"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
         "drools.lsp.inlayHints.enabled": {
           "default": true,
           "markdownDescription": "Show inline type hints for DRL rule bindings (e.g. `$count : count()` → `: Long`). VSCode's global `#editor.inlayHints.enabled#` still governs whether inlay hints are displayed at all.",
           "type": "boolean"
+        },
+        "drools.lsp.java.packageFilters": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Package prefixes limiting which Java source types are indexed, e.g. `com.example.*`. Empty means all packages. Applied when the language server next starts.",
+          "type": "array"
+        },
+        "drools.lsp.java.sourcePaths": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Additional Java source roots used to resolve the project's own types before a build. Every `src/main/java` under the workspace is found automatically, so this is only for roots that sit elsewhere. Each entry is a literal directory path, absolute or workspace-relative — not a glob. Applied when the language server next starts.",
+          "type": "array"
         },
         "drools.lsp.lint.missingEnd": {
           "default": "warning",

@@ -17,9 +17,9 @@
  * under the License.
  */
 import React, { FC, useCallback } from "react";
-import { Outlet, Route } from "react-router-dom";
+import { Outlet, Route } from "react-router";
 import { ProcessListPage, ProcessDefinitionsListPage } from "../process";
-import { Routes, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Routes, useNavigate, useLocation, useParams } from "react-router";
 import { ManagementConsoleHome } from "./ManagementConsoleHome";
 import { NewAuthSessionLoginSuccessPage, NewAuthSessionModal } from "../authSessions/components";
 import { useRoutes } from "../navigation/Hooks";

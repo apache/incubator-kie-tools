@@ -533,7 +533,7 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
         setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
           const document = getDocumentEntry(prev);
           const currentDocument =
-            document.expression?.__$$element === "literalExpression" ? document.expression.text?.__$$text ?? "" : "";
+            document.expression?.__$$element === "literalExpression" ? (document.expression.text?.__$$text ?? "") : "";
 
           return getUpdatedExpression(prev, currentDocument, newModel);
         },

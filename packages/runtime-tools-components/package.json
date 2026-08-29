@@ -7,7 +7,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
@@ -24,7 +24,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^13.0.5",
+    "@apidevtools/json-schema-ref-parser": "^15.3.6",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
@@ -43,10 +43,10 @@
     "monaco-editor": "^0.39.0",
     "react-datetime-picker": "^3.5.0",
     "react-moment": "0.9.7",
-    "react-router-dom": "^6.30.4",
+    "react-router": "^7.18.0",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2",
-    "uuid": "^11.1.1"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@kie-tools/eslint": "workspace:*",

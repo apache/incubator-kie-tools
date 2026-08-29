@@ -21,8 +21,8 @@ import { DataDictionary, Model, PMML, Scorecard, XML2PMML } from "@kie-tools/pmm
 import { MINING_SCHEMA_1 } from "./TestData_MiningSchema";
 
 describe("MiningSchema tests", () => {
-  test("MiningSchema::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(MINING_SCHEMA_1);
+  test("MiningSchema::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(MINING_SCHEMA_1);
 
     expect(pmml).not.toBeNull();
 

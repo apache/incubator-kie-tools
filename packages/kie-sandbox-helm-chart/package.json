@@ -7,7 +7,7 @@
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apache/incubator-kie-tools.git"
+    "url": "git+https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "prettier": "^3.3.2",
+    "prettier": "3.8.5",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "yaml": "^2.8.3"

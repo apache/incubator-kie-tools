@@ -21,8 +21,8 @@ import { DataDictionary, Model, PMML, RuleSetModel, XML2PMML } from "@kie-tools/
 import { RULE_SET_MODEL_1 } from "./TestData_RuleSetModel";
 
 describe("RuleSetModel tests", () => {
-  test("RuleSetModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(RULE_SET_MODEL_1);
+  test("RuleSetModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(RULE_SET_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

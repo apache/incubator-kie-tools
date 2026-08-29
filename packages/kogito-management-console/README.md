@@ -77,7 +77,6 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES` | OpenID Connect default scopes when connecting to Identity Providers. | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
 
    ### Examples
-
    1. Using a different Client ID.
 
       ```bash

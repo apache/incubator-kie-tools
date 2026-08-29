@@ -22,7 +22,7 @@ import {
   ProcessDefinitionsFilter,
   ProcessDefinitionsListState,
 } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionsList";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useQueryParam, useQueryParams } from "../../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../../runtime/RuntimeContext";

@@ -33,7 +33,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
 import { routes } from "./Routes";

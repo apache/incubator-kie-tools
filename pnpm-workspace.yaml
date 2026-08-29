@@ -3,8 +3,9 @@ packages:
   - "examples/*"
   - "scripts/*"
 overrides:
+  # CVE-2026-15195: Prototype pollution in Pointer.set. Fixed in 15.3.6.
+  "@apidevtools/swagger-parser>@apidevtools/json-schema-ref-parser": "^15.3.6"
   # GHSA-h67p-54hq-rp68: js-yaml 3.x prototype-pollution/ReDoS — upgrade transitive consumers to patched 3.15.0
-  "@apidevtools/json-schema-ref-parser>js-yaml": "^3.15.0"
   "@istanbuljs/load-nyc-config>js-yaml": "^3.15.0"
   "cross-spawn": "^7.0.6"
   "d3-color": "3.1.0"
@@ -12,8 +13,8 @@ overrides:
   "json-refs>js-yaml": "^3.15.0"
   # CVE-2026-33750: Fix security vulnerability in brace-expansion
   # Overriding transitive dependency until minimatch updates to patched brace-expansion version
-  "minimatch@^3>brace-expansion": "1.1.16"
-  "minimatch@^5>brace-expansion": "2.1.2"
+  "minimatch@^3>brace-expansion": "1.1.18"
+  "minimatch@^5>brace-expansion": "2.1.4"
   "openapi-types": "7.2.3"
   # CVE-2026-8723: Fix TypeError in qs.stringify (comma arrayFormat + encodeValuesOnly with null/undefined)
   # Overriding transitive dependency until @cypress/request updates to patched qs version
@@ -30,9 +31,9 @@ overrides:
   "minimatch@^10": "10.2.1"
   "minimatch@^5": "5.1.9"
   "minimatch@^4": "5.1.9"
-  # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203, CVE-2026-12151, CVE-2026-9679, CVE-2026-11525, CVE-2026-6733: Fix security vulnerability in undici
+  # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203, CVE-2026-12151, CVE-2026-9679, CVE-2026-11525, CVE-2026-6733, CVE-2026-16729, CVE-2026-15157, CVE-2026-16728: Fix security vulnerability in undici
   # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version
-  "undici": "^6.27.0"
+  "undici": "^6.28.0"
   # CVE-2026-41907: Fix security vulnerability in uuid
   # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
   "uuid": "^11.1.1"

@@ -43,7 +43,12 @@ test.describe("Selection", () => {
       for (let i = 0; i < 4; i++) {
         await page.keyboard.type(`"test${i}"`);
         await page.keyboard.press("Space");
+        await expect(page.getByRole("cell", { name: `test${i}` })).toBeAttached();
         await page.keyboard.press("Tab");
+        // Tab commits the edit and moves the active cell, which receives DOM focus, but the old
+        // Monaco editor's async disposal can still steal focus back for an instant afterwards.
+        // There's no DOM signal for that, so give it a moment before typing again.
+        await page.waitForTimeout(150);
       }
 
       await expect(page.getByRole("cell", { name: "test0" })).toBeAttached();
@@ -60,7 +65,12 @@ test.describe("Selection", () => {
       for (let i = 0; i < 9; i++) {
         await page.keyboard.type(`"test${i}"`);
         await page.keyboard.press("Space");
+        await expect(page.getByRole("cell", { name: `test${i}` })).toBeAttached();
         await page.keyboard.press("Tab");
+        // Tab commits the edit and moves the active cell, which receives DOM focus, but the old
+        // Monaco editor's async disposal can still steal focus back for an instant afterwards.
+        // There's no DOM signal for that, so give it a moment before typing again.
+        await page.waitForTimeout(150);
       }
 
       await expect(page.getByRole("cell", { name: "test8" })).toBeAttached();

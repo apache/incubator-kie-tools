@@ -86,9 +86,10 @@ export class Nodes {
         ? await this.getPositionalNodeHandleCoordinates({ node: to, position: args.position })
         : undefined;
 
+    // The panel holding this handle is only rendered while the node is hovered, and it takes a moment to show up
+    // after the click above. Not forcing the action makes Playwright wait for it to actually be visible.
     return await from.getByTitle(this.getAddEdgeTitle(args.type)).dragTo(to, {
       targetPosition,
-      force: true,
       noWaitAfter: true,
     });
   }
@@ -108,6 +109,7 @@ export class Nodes {
     if (args.thenRenameTo) {
       await this.rename({ current: nodeName, new: args.thenRenameTo });
     }
+    await this.waitForNewNodeEditingToSettle();
   }
 
   private getParentElement(args: { nodeName: string }) {
@@ -162,6 +164,17 @@ export class Nodes {
   public async rename(args: { current: string; new: string }) {
     await this.get({ name: args.current }).getByRole("textbox").nth(0).fill(args.new);
     await this.diagram.get().press("Enter");
+    // The `Enter` above is pressed on the diagram, which is also what re-triggers editing on the focused node,
+    // and the timer that puts a freshly created node into edit mode can still be pending on top of that. Either
+    // way the node ends up back in edit mode, and anything that drags it afterwards grabs the name input and
+    // selects text instead of moving the node. So wait for the timer and, if the input is back, commit again —
+    // this time on the input itself. It has to be `Enter`: `Escape` is swallowed by the diagram's own shortcut
+    // ("Esc pressed. Desselecting everything.") and never reaches the input.
+    await this.waitForNewNodeEditingToSettle();
+    const nameInput = this.get({ name: args.new }).getByRole("textbox").first();
+    if ((await nameInput.count()) > 0) {
+      await nameInput.press("Enter");
+    }
   }
 
   public async resize(args: { nodeName: string; position?: NodePosition; xOffset: number; yOffset: number }) {
@@ -236,6 +249,14 @@ export class Nodes {
       (nodeName) => (document.activeElement as HTMLInputElement)?.value === nodeName,
       args.name
     );
+  }
+
+  // The editor puts a newly created node's name into edit mode from a 100ms timer (see `EditableNodeLabel`'s
+  // `useFocusableElement` call). A re-render inside that window leaves a second timer pending, so the label pops
+  // back into edit mode *after* a test has already clicked the node, which then shows up as a spurious
+  // text-selection highlight in screenshots. Waiting the timer out keeps node creation deterministic.
+  public async waitForNewNodeEditingToSettle() {
+    await this.page.waitForTimeout(200);
   }
 
   private getNewConnectedNodeProperties(type: NodeType) {

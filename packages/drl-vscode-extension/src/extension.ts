@@ -24,6 +24,8 @@ import * as vscode from "vscode";
 import { LanguageClient, LanguageClientOptions, ServerOptions, StreamInfo } from "vscode-languageclient/node";
 import * as net from "net";
 
+import { attachToClient, enumerateWorkspaceFiles, groupingSetting, registerFileGrouping } from "./fileGrouping";
+
 let languageClient: LanguageClient | undefined;
 
 const DEBUG_MODE = process.env.LSDEBUG === "true";
@@ -40,7 +42,7 @@ const log = {
   },
 };
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   channel = vscode.window.createOutputChannel("DRL Language Server");
   context.subscriptions.push(channel);
 
@@ -149,6 +151,22 @@ export function activate(context: vscode.ExtensionContext) {
       args.push(`-Ddrools.lsp.maven.pomPath=${resolved.join(path.delimiter)}`);
     }
 
+    // Java source roots and package filters for resolving the project's own
+    // types before a build. Joined with ';' regardless of platform, since the
+    // server splits on that; read at spawn, so a change needs a restart.
+    const javaSourcePaths = (config.get<string[]>("drools.lsp.java.sourcePaths") ?? [])
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+    if (javaSourcePaths.length > 0) {
+      args.push(`-Ddrools.lsp.java.sourcePaths=${javaSourcePaths.join(";")}`);
+    }
+    const javaPackageFilters = (config.get<string[]>("drools.lsp.java.packageFilters") ?? [])
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+    if (javaPackageFilters.length > 0) {
+      args.push(`-Ddrools.lsp.java.packageFilters=${javaPackageFilters.join(";")}`);
+    }
+
     args.push("-jar", serverJar);
 
     serverOptions = {
@@ -163,12 +181,31 @@ export function activate(context: vscode.ExtensionContext) {
     const clientOptions: LanguageClientOptions = {
       documentSelector: [{ scheme: "file", language: "drools" }],
       synchronize: {
-        fileEvents: vscode.workspace.createFileSystemWatcher("**/target/classes/**/*.class"),
+        fileEvents: [
+          vscode.workspace.createFileSystemWatcher("**/target/classes/**/*.class"),
+          // Feeds .java edits into the server's watched-files debounce, so the
+          // source type index tracks them without waiting for a build.
+          vscode.workspace.createFileSystemWatcher("**/*.java"),
+        ],
       },
       outputChannel: channel,
+      // Sent with `initialize`, so the server has both the grouping and the file
+      // list before its first scan rather than having to be told afterwards.
+      // Enumerating here means the user's own exclude settings and ignore files
+      // decide what the server sees, instead of a hardcoded skip-list.
+      initializationOptions: {
+        grouping: groupingSetting(),
+        workspaceFiles: await enumerateWorkspaceFiles(),
+      },
     };
     languageClient = new LanguageClient("Drools", "DRL Language Server", serverOptions, clientOptions);
-    languageClient.start();
+    registerFileGrouping(context, () => languageClient, log);
+
+    const startedClient = languageClient;
+    startedClient
+      .start()
+      .then(() => attachToClient(startedClient))
+      .catch((e) => log.error("Failed to start the DRL language client: " + String(e)));
 
     log.info("DRL Language Server activated.");
   }

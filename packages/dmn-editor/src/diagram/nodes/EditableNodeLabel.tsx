@@ -210,7 +210,7 @@ export function EditableNodeLabel({
 
   useFocusableElement(
     ref,
-    enableAutoFocusing ?? true ? id ?? namedElement?.["@_id"] : undefined,
+    (enableAutoFocusing ?? true) ? (id ?? namedElement?.["@_id"]) : undefined,
     useCallback(
       (cb: () => void) => {
         setTimeout(() => {

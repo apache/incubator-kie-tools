@@ -21,8 +21,8 @@ import { DataDictionary, GeneralRegressionModel, Model, PMML, XML2PMML } from "@
 import { GENERAL_REGRESSION_MODEL_1 } from "./TestData_GeneralRegressionModel";
 
 describe("GeneralRegressionModel tests", () => {
-  test("GeneralRegressionModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(GENERAL_REGRESSION_MODEL_1);
+  test("GeneralRegressionModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(GENERAL_REGRESSION_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

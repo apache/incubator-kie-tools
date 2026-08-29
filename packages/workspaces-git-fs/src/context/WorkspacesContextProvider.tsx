@@ -32,6 +32,7 @@ import {
 } from "../worker/api/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
+import { SigningKeyConfig } from "../commitSigner/CommitSignerApi";
 
 type Props = {
   children: React.ReactNode;
@@ -113,6 +114,7 @@ export function WorkspacesContextProvider(props: Props) {
       authInfo?: { username: string; password: string };
       insecurelyDisableTlsCertificateValidation?: boolean;
       disableEncoding?: boolean;
+      signingConfig?: SigningKeyConfig;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_pull(args)
@@ -133,6 +135,8 @@ export function WorkspacesContextProvider(props: Props) {
       };
       insecurelyDisableTlsCertificateValidation?: boolean;
       disableEncoding?: boolean;
+      gitConfig?: { email: string; name: string };
+      signingConfig?: SigningKeyConfig;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) => {
         return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_push(args);
@@ -217,6 +221,7 @@ export function WorkspacesContextProvider(props: Props) {
       targetBranch: string;
       commitMessage: string;
       gitConfig?: { email: string; name: string };
+      signingConfig?: SigningKeyConfig;
     }) => {
       return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_commit(args)
@@ -231,6 +236,7 @@ export function WorkspacesContextProvider(props: Props) {
       gitConfig?: { email: string; name: string };
       commitMessage?: string;
       forceHasChanges?: boolean;
+      signingConfig?: SigningKeyConfig;
     }) => {
       if (!args.forceHasChanges && !(await hasLocalChanges(args))) {
         return;
@@ -295,6 +301,7 @@ export function WorkspacesContextProvider(props: Props) {
       preferredName?: string;
       gitAuthSessionId: string | undefined;
       gitConfig?: { email: string; name: string };
+      signingConfig?: SigningKeyConfig;
     }) => {
       const workspaceInit = await workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args)

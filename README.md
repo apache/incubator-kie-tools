@@ -33,7 +33,7 @@ This repository contains tooling applications and libraries for Apache KIE proje
 
 ## Contribute
 
-- _Work in progress 🔨_
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Build from source
 
@@ -47,7 +47,7 @@ To build and test all packages on this repository, you're going to need:
 
 - Node.js `24` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `10.34.4` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
-- Maven `3.9.11`
+- Maven `3.9.16`
 - Java `17`
 - Go `1.26.5` _(To install, follow these instructions: https://go.dev/doc/install)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
@@ -56,7 +56,7 @@ To build and test all packages on this repository, you're going to need:
 
 > **ℹ️ NOTE**
 >
-> If you plan on building container images, make sure you have a working Docker setup. Setting `KIE_TOOLS_BUILD__buildContainerImages=true` will also be necessary.
+> If you plan on building container images, make sure you have a working Docker or Podman setup. Setting `KIE_TOOLS_BUILD__buildContainerImages=true` will also be necessary. If using Podman, see ["Specifics # Container Images"](./repo/MANUAL.md#specifics--container-images) in the manual.
 
 #### Step 1: Bootstrap
 

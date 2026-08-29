@@ -28,21 +28,21 @@ export const sumBkmModel = normalize(getMarshaller(sumBkm, { upgradeTo: "latest"
 export const sumDiffDsModel = normalize(getMarshaller(sumDiffDs, { upgradeTo: "latest" }).parser.parse());
 export const testTreePmmlModel = XML2PMML(testTreePmml);
 
-export const availableModels: DmnEditor.ExternalModel[] = [
+export const availableModelsPromise: Promise<DmnEditor.ExternalModel[]> = testTreePmmlModel.then((pmmlModel) => [
   {
-    type: "dmn",
+    type: "dmn" as const,
     model: sumBkmModel,
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/sumBkm.dmn",
   },
   {
-    type: "dmn",
+    type: "dmn" as const,
     model: sumDiffDsModel,
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/sumDiffDs.dmn",
   },
   {
-    type: "dmn",
+    type: "dmn" as const,
     model: normalize(
       getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" />`, {
         upgradeTo: "latest",
@@ -52,25 +52,31 @@ export const availableModels: DmnEditor.ExternalModel[] = [
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/empty.dmn",
   },
   {
-    type: "pmml",
-    model: testTreePmmlModel,
+    type: "pmml" as const,
+    model: pmmlModel,
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/testTree.pmml",
   },
-];
+]);
 
-export const availableModelsByPath: Record<string, DmnEditor.ExternalModel> = Object.values(availableModels).reduce(
-  (acc, v) => {
-    acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;
+export const availableModelsByPathPromise: Promise<Record<string, DmnEditor.ExternalModel>> =
+  availableModelsPromise.then((models) =>
+    Object.values(models).reduce(
+      (acc, v) => {
+        acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;
+        return acc;
+      },
+      {} as Record<string, DmnEditor.ExternalModel>
+    )
+  );
+
+export const modelsByNamespacePromise: Promise<DmnEditor.ExternalModelsIndex> = availableModelsPromise.then((models) =>
+  Object.values(models).reduce((acc, v) => {
+    if (v.type === "dmn") {
+      acc[v.model.definitions["@_namespace"]] = v;
+    } else if (v.type === "pmml") {
+      acc[getPmmlNamespace({ normalizedPosixPathRelativeToTheOpenFile: v.normalizedPosixPathRelativeToTheOpenFile })] =
+        v;
+    }
     return acc;
-  },
-  {} as Record<string, DmnEditor.ExternalModel>
+  }, {} as DmnEditor.ExternalModelsIndex)
 );
-
-export const modelsByNamespace = Object.values(availableModels).reduce((acc, v) => {
-  if (v.type === "dmn") {
-    acc[v.model.definitions["@_namespace"]] = v;
-  } else if (v.type === "pmml") {
-    acc[getPmmlNamespace({ normalizedPosixPathRelativeToTheOpenFile: v.normalizedPosixPathRelativeToTheOpenFile })] = v;
-  }
-  return acc;
-}, {} as DmnEditor.ExternalModelsIndex);

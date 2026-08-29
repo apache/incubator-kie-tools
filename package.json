@@ -27,12 +27,12 @@
     "@kie-tools-scripts/update-kogito-version": "workspace:*",
     "@kie-tools-scripts/update-stream-name": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",
-    "@nice-move/prettier-plugin-package-json": "^0.8.0",
-    "@prettier/plugin-xml": "^3.4.1",
-    "@types/node": "^24.12.4",
+    "@nice-move/prettier-plugin-package-json": "^0.9.5",
+    "@prettier/plugin-xml": "^3.4.2",
+    "@types/node": "^24.13.3",
     "husky": "^6.0.0",
-    "prettier": "^3.3.2",
-    "pretty-quick": "^4.0.0"
+    "prettier": "3.8.5",
+    "pretty-quick": "^4.2.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -61,10 +61,8 @@
       }
     },
     "patchedDependencies": {
-      "immer@10.0.3": "patches/immer@10.0.3.patch",
-      "karma-firefox-launcher@2.1.2": "patches/karma-firefox-launcher@2.1.2.patch",
       "run-script-os@1.1.6": "patches/run-script-os@1.1.6.patch",
-      "zustand@4.4.2": "patches/zustand@4.4.2.patch"
+      "zustand@4.5.7": "patches/zustand@4.5.7.patch"
     }
   },
   "packageManager": "pnpm@10.34.4",

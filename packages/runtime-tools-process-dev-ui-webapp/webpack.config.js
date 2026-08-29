@@ -19,7 +19,13 @@
 
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
+// Resolved through webpack-cli's own module scope so plugins built here come from the exact same
+// webpack instance the CLI uses to run the Compiler. pnpm can install more than one physical copy
+// of the same webpack version split by peer-dependency signature, and webpack's
+// internal `instanceof` checks throw when the plugin and the Compiler differ.
+const webpack = require(
+  require.resolve("webpack", { paths: [path.dirname(require.resolve("webpack-cli/package.json"))] })
+);
 const BG_IMAGES_DIRNAME = "bgimages";
 const CopyPlugin = require("copy-webpack-plugin");
 const FileManagerPlugin = require("filemanager-webpack-plugin");

@@ -375,7 +375,7 @@ export function getMarshaller<V extends DmnMarshallerVersions>(
 
   // `opts.upgradeTo` is optional. It defaults to not upgrading at all. "latest" is an alias to whatever the `DMN_LATEST_VERSION` constante declares.
   const targetVersion: DmnVersions =
-    opts?.upgradeTo === "latest" ? DMN_LATEST_VERSION : opts?.upgradeTo ?? originalMarshaller.version;
+    opts?.upgradeTo === "latest" ? DMN_LATEST_VERSION : (opts?.upgradeTo ?? originalMarshaller.version);
 
   // If the XML is already on the latest version, we don't do anything else and just return the marshaller.
   if (originalMarshaller.version === targetVersion) {

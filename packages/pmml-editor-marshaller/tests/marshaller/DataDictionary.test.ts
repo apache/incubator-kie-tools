@@ -20,8 +20,8 @@
 import { DataDictionary, DataField, PMML, PMML2XML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 
 describe("DataDictionary tests", () => {
-  test("Empty", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Empty", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary/>
       </PMML>
@@ -34,13 +34,13 @@ describe("DataDictionary tests", () => {
     expect(dataDictionary.numberOfFields).toBeUndefined();
     expect(dataDictionary.DataField).not.toBeUndefined();
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataDictionary/>`);
   });
 
-  test("Add DataField", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Add DataField", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary/>
       </PMML>
@@ -57,14 +57,14 @@ describe("DataDictionary tests", () => {
 
     dataDictionary.DataField.push(dataField);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataDictionary numberOfFields="1">`);
     expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
   });
 
-  test("Update DataField", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Update DataField", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary numberOfFields="1">
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -85,14 +85,14 @@ describe("DataDictionary tests", () => {
     dataDictionary.DataField[0].optype = "continuous";
     dataDictionary.DataField[0].dataType = "integer";
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataDictionary numberOfFields="1">`);
     expect(xml).toContain(`<DataField name="field1-changed" optype="continuous" dataType="integer"/>`);
   });
 
-  test("Delete DataField", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Delete DataField", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary numberOfFields="1">
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -107,7 +107,7 @@ describe("DataDictionary tests", () => {
 
     dataDictionary.DataField.splice(0, 1);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataDictionary/>`);
   });

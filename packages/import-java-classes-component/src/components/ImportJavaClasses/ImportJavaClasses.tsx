@@ -42,20 +42,25 @@ interface ImportJavaClassesProps {
   loadJavaClassesInDataTypeEditor?: (javaClasses: JavaClass[]) => void;
 }
 
-const ImportJavaClassesI18nDictionariesProvider = (
-  props: Omit<
-    React.ComponentProps<typeof I18nDictionariesProvider>,
-    "defaults" | "dictionaries" | "initialLocale" | "ctx"
-  >
-) => (
-  <I18nDictionariesProvider
-    defaults={importJavaClassesWizardI18nDefaults}
-    dictionaries={importJavaClassesWizardI18nDictionaries}
-    initialLocale={navigator.language}
-    ctx={ImportJavaClassesWizardI18nContext}
-    {...props}
-  />
-);
+export type ImportJavaClassesI18nDictionariesProviderProps = Omit<
+  React.ComponentProps<typeof I18nDictionariesProvider>,
+  "defaults" | "dictionaries" | "initialLocale" | "ctx"
+> & {
+  locale?: string;
+};
+
+const ImportJavaClassesI18nDictionariesProvider = (props: ImportJavaClassesI18nDictionariesProviderProps) => {
+  const { locale, ...i18nProviderProps } = props;
+  return (
+    <I18nDictionariesProvider
+      defaults={importJavaClassesWizardI18nDefaults}
+      dictionaries={importJavaClassesWizardI18nDictionaries}
+      initialLocale={locale ?? navigator.language}
+      ctx={ImportJavaClassesWizardI18nContext}
+      {...i18nProviderProps}
+    />
+  );
+};
 
 const ImportJavaClasses = ({ javaCodeCompletionService, loadJavaClassesInDataTypeEditor }: ImportJavaClassesProps) => {
   const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);

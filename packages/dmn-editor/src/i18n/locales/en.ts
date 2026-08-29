@@ -245,6 +245,12 @@ export const en: DmnEditorI18n = {
       "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes.",
   },
   propertiesPanel: {
+    informationRequirement: "Information Requirement",
+    knowledgeRequirement: "Knowledge Requirement",
+    authorityRequirement: "Authority Requirement",
+    association: "Association",
+    edge: "Edge",
+    edgeNotFound: (edgeId: string) => `Edge not found: ${edgeId}`,
     nothingToShow: "Nothing to show",
     inputExpression: "Input Expression",
     constraint: "Constraint",

@@ -33,6 +33,7 @@ import { InputDataPropertiesPanel } from "./propertiesPanel/inputDataPropertiesP
 import { GroupPropertiesPanel } from "./propertiesPanel/groupPropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/diagramPropertiesPanel";
 import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPropertiesPanel";
+import { EdgePropertiesPanel } from "./propertiesPanel/edgePropertiesPanel";
 import { Overlays } from "./overlays";
 import { Drds } from "./drds";
 import { DrgNodes } from "./drgNodes";
@@ -62,6 +63,7 @@ type DmnEditorFixtures = {
   decisionPropertiesPanel: DecisionPropertiesPanel;
   decisionServicePropertiesPanel: DecisionServicePropertiesPanel;
   diagramPropertiesPanel: DiagramPropertiesPanel;
+  edgePropertiesPanel: EdgePropertiesPanel;
   groupPropertiesPanel: GroupPropertiesPanel;
   inputDataPropertiesPanel: InputDataPropertiesPanel;
   knowledgeSourcePropertiesPanel: KnowledgeSourcePropertiesPanel;
@@ -122,6 +124,9 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   diagramPropertiesPanel: async ({ diagram, page }, use) => {
     await use(new DiagramPropertiesPanel(diagram, page));
+  },
+  edgePropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new EdgePropertiesPanel(diagram, page));
   },
   groupPropertiesPanel: async ({ diagram, page }, use) => {
     await use(new GroupPropertiesPanel(diagram, page));

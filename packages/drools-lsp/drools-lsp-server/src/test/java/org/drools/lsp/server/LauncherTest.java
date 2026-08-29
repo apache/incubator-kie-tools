@@ -74,6 +74,16 @@ class LauncherTest {
     }
 
     @Test
+    void remoteClientProxyIsAlsoAnEndpoint() {
+        // DroolsLspServer sends drools/fileGroupsChanged through the raw endpoint,
+        // since LanguageClient does not declare that custom method. That relies on
+        // lsp4j building its proxy over both the service interface and Endpoint
+        // (ServiceEndpoints#toServiceObject), so pin it here rather than leave it
+        // to be rediscovered.
+        assertThat((Object) serverLauncher.getRemoteProxy()).isInstanceOf(Endpoint.class);
+    }
+
+    @Test
     void completionRequest() throws Exception {
         CompletionParams p = new CompletionParams();
         p.setPosition(new Position(1, 1));

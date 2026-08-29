@@ -63,6 +63,7 @@ export const EmbeddedFormDetails = React.forwardRef((props: Props, forwardedRef:
         }
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

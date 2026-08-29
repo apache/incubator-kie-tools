@@ -96,7 +96,7 @@ export function DecisionTableOutputHeaderCell(props: {
       .getDataTypes(externalModelsByNamespace);
     return allDataTypesById.get(
       allTopLevelItemDefinitionUniqueNames.get(
-        cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] ?? "" : cell?.["@_typeRef"] ?? ""
+        cellMustHaveSameTypeAsRoot ? (root?.["@_typeRef"] ?? "") : (cell?.["@_typeRef"] ?? "")
       ) ?? ""
     )?.itemDefinition;
   }, [cell, cellMustHaveSameTypeAsRoot, dmnEditorStoreApi, externalModelsByNamespace, root]);

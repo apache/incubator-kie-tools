@@ -50,10 +50,10 @@ export function ConstraintDateTimeDuration({
 
   const onInternalChange = useCallback(
     (args: { days?: string; hours?: string; minutes?: string; seconds?: string }) => {
-      const d = args.days ?? days ? (args.days ?? days) + "D" : "";
-      const h = args.hours ?? hours ? (args.hours ?? hours) + "H" : "";
-      const m = args.minutes ?? minutes ? (args.minutes ?? minutes) + "M" : "";
-      const s = args.seconds ?? seconds ? (args.seconds ?? seconds) + "S" : "";
+      const d = (args.days ?? days) ? (args.days ?? days) + "D" : "";
+      const h = (args.hours ?? hours) ? (args.hours ?? hours) + "H" : "";
+      const m = (args.minutes ?? minutes) ? (args.minutes ?? minutes) + "M" : "";
+      const s = (args.seconds ?? seconds) ? (args.seconds ?? seconds) + "S" : "";
       const t = h || m || s ? "T" : "";
       const p = d || h || m || s ? "P" : "";
       onChange(`${p}${d}${t}${h}${m}${s}`);

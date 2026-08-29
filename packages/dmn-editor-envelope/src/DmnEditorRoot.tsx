@@ -308,7 +308,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return {
         normalizedPosixPathRelativeToTheOpenFile,
         type: "pmml",
-        model: XML2PMML(resource?.content ?? ""),
+        model: await XML2PMML(resource?.content ?? ""),
       };
     } else {
       throw new Error(`Unknown extension '${ext}'.`);
@@ -664,7 +664,7 @@ function ExternalModelsManager({
         }
         return Promise.all(resources);
       })
-      .then((resources) => {
+      .then(async (resources) => {
         const externalModelsIndex: DmnEditor.ExternalModelsIndex = {};
 
         const namespacesSet = new Set(namespaces.split(NAMESPACES_EFFECT_SEPARATOR));
@@ -717,7 +717,7 @@ function ExternalModelsManager({
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               externalModelsIndex[namespace] = {
                 normalizedPosixPathRelativeToTheOpenFile,
-                model: XML2PMML(resourceContent),
+                model: await XML2PMML(resourceContent),
                 type: "pmml",
               };
             }

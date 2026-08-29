@@ -177,6 +177,8 @@ test.describe("Add Custom Tasks", () => {
       customTasks,
       nodes,
       diagram,
+      jsonModel,
+      edges,
     }) => {
       await palette.dragNewNode({ type: NodeType.START_EVENT, targetPosition: { x: 100, y: 200 } });
       await customTasks.dragCustomTask({
@@ -202,7 +204,15 @@ test.describe("Add Custom Tasks", () => {
 
       await diagram.resetFocus();
 
-      await expect(diagram.get()).toHaveScreenshot("rest-api-call-task-in-process-flow.png");
+      const restApiTaskId = await nodes.getId({ name: "Rest API call Task Flow" });
+      const sequenceFlows = await jsonModel.getSequenceFlows();
+      expect(sequenceFlows.length).toBe(2);
+      expect(sequenceFlows[0]["@_sourceRef"]).toBe(startEventId);
+      expect(sequenceFlows[0]["@_targetRef"]).toBe(restApiTaskId);
+      await expect(edges.getByIds({ from: startEventId, to: restApiTaskId })).toBeVisible();
+      expect(sequenceFlows[1]["@_sourceRef"]).toBe(restApiTaskId);
+      expect(sequenceFlows[1]["@_targetRef"]).toBe(endEventId);
+      await expect(edges.getByIds({ from: restApiTaskId, to: endEventId })).toBeVisible();
     });
   });
 });

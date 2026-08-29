@@ -31,7 +31,7 @@ import { useOnlineI18n } from "../../i18n";
 import { ExtendedServicesButtons } from "../ExtendedServices/ExtendedServicesButtons";
 import { useNavigationBlockersBypass, useRoutes } from "../../navigation/Hooks";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";

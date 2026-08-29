@@ -48,9 +48,11 @@ export function useBpmnEditorChannelType(): ChannelType | undefined {
   return useContext(BpmnEditorChannelTypeContext);
 }
 
-export class BpmnMultiplyingArchitectureEditorFactory
-  implements EditorFactory<BpmnMultiplyingArchitectureEditor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
-{
+export class BpmnMultiplyingArchitectureEditorFactory implements EditorFactory<
+  BpmnMultiplyingArchitectureEditor,
+  KogitoEditorEnvelopeApi,
+  KogitoEditorChannelApi
+> {
   public createEditor(
     envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs

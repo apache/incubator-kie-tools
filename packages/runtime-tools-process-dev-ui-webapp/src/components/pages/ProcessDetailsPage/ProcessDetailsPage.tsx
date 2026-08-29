@@ -25,7 +25,7 @@ import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/component
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";
 import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router";
 import "../../styles.css";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import {

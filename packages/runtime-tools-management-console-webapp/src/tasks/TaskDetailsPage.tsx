@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
 import { useEnv } from "../env/hooks/EnvContext";

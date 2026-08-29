@@ -21,8 +21,8 @@ import { DataDictionary, Model, PMML, TreeModel, XML2PMML } from "@kie-tools/pmm
 import { TREE_MODEL_1 } from "./TestData_TreeModel";
 
 describe("TreeModel tests", () => {
-  test("TreeModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(TREE_MODEL_1);
+  test("TreeModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(TREE_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

@@ -31,7 +31,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 

@@ -20,8 +20,8 @@
 import { DataDictionary, DataField, PMML, PMML2XML, Value, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 
 describe("Value tests", () => {
-  test("Empty", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Empty", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -36,13 +36,13 @@ describe("Value tests", () => {
     expect(dataDictionary.DataField[0].Value).not.toBeUndefined();
     expect(dataDictionary.DataField[0].Value?.length).toBe(0);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
   });
 
-  test("Add Value", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Add Value", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string"/>
@@ -57,13 +57,13 @@ describe("Value tests", () => {
 
     dataField.Value?.push(value);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Value value="value" displayValue="displayValue" property="valid"/>`);
   });
 
-  test("Update Value", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Update Value", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string">
@@ -89,13 +89,13 @@ describe("Value tests", () => {
     value.displayValue = "displayValue-changed";
     value.property = "invalid";
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<Value value="value-changed" displayValue="displayValue-changed" property="invalid"/>`);
   });
 
-  test("Delete Value", () => {
-    const pmml: PMML = XML2PMML(`
+  test("Delete Value", async () => {
+    const pmml: PMML = await XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <DataDictionary>
           <DataField name="field1" optype="categorical" dataType="string">
@@ -117,7 +117,7 @@ describe("Value tests", () => {
 
     values.splice(0, 1);
 
-    const xml: string = PMML2XML(pmml);
+    const xml: string = await PMML2XML(pmml);
 
     expect(xml).toContain(`<DataField name="field1" optype="categorical" dataType="string"/>`);
   });

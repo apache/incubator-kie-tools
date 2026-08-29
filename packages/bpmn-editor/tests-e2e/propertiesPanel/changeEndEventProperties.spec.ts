@@ -52,21 +52,42 @@ test.describe("Change Properties - End Event", () => {
     );
   });
 
-  test("should configure Terminate event definition", async ({ endEventPropertiesPanel, page, nodes }) => {
+  test("should configure Terminate event definition", async ({ endEventPropertiesPanel, nodes, jsonModel }) => {
     await endEventPropertiesPanel.setTerminateDefinition({
       endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("end-event-terminate.png");
+    await expect(nodes.getByType(NodeType.END_EVENT).first()).toBeVisible();
+
+    const endEvent = (await jsonModel.getEndEvents())[0];
+    expect(endEvent.eventDefinition?.[0]?.__$$element).toBe("terminateEventDefinition");
   });
 
-  test("should configure Message event definition", async ({ endEventPropertiesPanel, page, nodes }) => {
+  test("should configure Message event definition", async ({ endEventPropertiesPanel, nodes, jsonModel }) => {
     await endEventPropertiesPanel.setMessageDefinition({
       messageName: "CompletionMessage",
       endEventLocator: nodes.getByType(NodeType.END_EVENT).first(),
     });
 
-    await expect(page.getByTestId("kie-tools--bpmn-editor--root")).toHaveScreenshot("end-event-message.png");
+    expect(await endEventPropertiesPanel.panel().getByRole("combobox").first().inputValue()).toBe("CompletionMessage");
+
+    // The named message reaches the model a moment after an auto-named placeholder, so resolving
+    // the ref to its name has to be retried rather than read once.
+    await expect(async () => {
+      const endEvent = (await jsonModel.getEndEvents())[0];
+      const eventDefinition = endEvent.eventDefinition?.[0];
+      expect(eventDefinition?.__$$element).toBe("messageEventDefinition");
+
+      // Narrow the eventDefinition union so the messageEventDefinition-only fields are reachable.
+      const messageEventDefinition =
+        eventDefinition?.__$$element === "messageEventDefinition" ? eventDefinition : undefined;
+      const messages = (await jsonModel.getDefinitions())?.rootElement?.filter(
+        (rootElement) => rootElement.__$$element === "message"
+      );
+      expect(
+        messages?.find((message) => message["@_id"] === messageEventDefinition?.["@_messageRef"])?.["@_name"]
+      ).toBe("CompletionMessage");
+    }).toPass();
   });
 
   test("should configure Signal event definition", async ({ endEventPropertiesPanel, page, nodes }) => {

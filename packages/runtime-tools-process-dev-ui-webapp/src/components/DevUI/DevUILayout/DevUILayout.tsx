@@ -17,7 +17,7 @@
  * under the License.
  */
 import React from "react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import DevUINav from "../DevUINav/DevUINav";

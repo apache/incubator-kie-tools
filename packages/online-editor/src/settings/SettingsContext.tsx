@@ -24,7 +24,7 @@ import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoder
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useEnv } from "../env/hooks/EnvContext";
 import { QueryParams } from "../navigation/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";

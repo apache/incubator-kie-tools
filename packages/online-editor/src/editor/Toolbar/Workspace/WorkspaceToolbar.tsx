@@ -21,7 +21,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useRoutes } from "../../../navigation/Hooks";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";

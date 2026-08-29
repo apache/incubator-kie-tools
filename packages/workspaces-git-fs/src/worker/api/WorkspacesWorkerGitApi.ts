@@ -31,6 +31,7 @@ import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 import { GitServerRef } from "./GitServerRef";
 import { FetchResult } from "isomorphic-git";
 import { UnstagedModifiedFilesStatusEntryType } from "../../services/GitService";
+import { SigningKeyConfig } from "../../commitSigner/CommitSignerApi";
 
 export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_getGitServerRefs(args: {
@@ -58,6 +59,7 @@ export interface WorkspacesWorkerGitApi {
       name: string;
     };
     gitInsecurelyDisableTlsCertificateValidation?: boolean;
+    signingConfig?: SigningKeyConfig;
   }): Promise<{
     workspace: WorkspaceDescriptor;
     suggestedFirstFile?: WorkspaceWorkerFileDescriptor;
@@ -93,6 +95,7 @@ export interface WorkspacesWorkerGitApi {
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_push(args: {
@@ -107,6 +110,8 @@ export interface WorkspacesWorkerGitApi {
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
     disableEncoding?: boolean;
+    gitConfig?: { email: string; name: string };
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
@@ -144,12 +149,14 @@ export interface WorkspacesWorkerGitApi {
       name: string;
     };
     commitMessage?: string;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_createSavePoint(args: {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
     commitMessage?: string;
+    signingConfig?: SigningKeyConfig;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_fetch(args: {

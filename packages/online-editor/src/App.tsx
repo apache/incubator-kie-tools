@@ -21,13 +21,13 @@ import * as React from "react";
 import { useMemo } from "react";
 import {
   createHashRouter,
+  RouterProvider,
   createRoutesFromElements,
   Navigate,
   Outlet,
   Route,
-  RouterProvider,
   useParams,
-} from "react-router-dom";
+} from "react-router";
 import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";

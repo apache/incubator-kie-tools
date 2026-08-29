@@ -21,8 +21,8 @@ import { ClusteringModel, DataDictionary, Model, PMML, XML2PMML } from "@kie-too
 import { CLUSTERING_MODEL_1 } from "./TestData_ClusteringModel";
 
 describe("ClusteringModel tests", () => {
-  test("ClusteringModel::Basics for DMN", () => {
-    const pmml: PMML = XML2PMML(CLUSTERING_MODEL_1);
+  test("ClusteringModel::Basics for DMN", async () => {
+    const pmml: PMML = await XML2PMML(CLUSTERING_MODEL_1);
 
     expect(pmml).not.toBeNull();
 

@@ -41,8 +41,7 @@ export class KogitoEditorEnvelopeApiImpl<
   E extends Editor,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi> = KogitoEditorEnvelopeApi,
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi,
-> implements KogitoEditorEnvelopeApi
-{
+> implements KogitoEditorEnvelopeApi {
   protected view: () => EditorEnvelopeViewApi<E>;
   private capturedInitRequestYet = false;
   private normalizedPosixPathRelativeToTheWorkspaceRoot: string;

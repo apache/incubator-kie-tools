@@ -130,7 +130,7 @@
       <dependencies>
         <dependency>
           <groupId>org.jbpm</groupId>
-          <artifactId>jbpm-addons-springboot-dev-console</artifactId>
+          <artifactId>jbpm-spring-boot-dev-console</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>

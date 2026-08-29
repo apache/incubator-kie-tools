@@ -368,12 +368,6 @@ function TestScenarioDataSelectorPanel() {
         : activeItem !== undefined
           ? i18n.drawer.dataSelector.emptyDataObjectsDescription
           : i18n.drawer.dataSelector.emptyDataObjectsMissingDescription;
-    {
-      testScenarioType === "DMN"
-        ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
-        : i18n.drawer.dataSelector.emptyDataObjectsTitleRule;
-    }
-
     return { description: description, icon: WarningTriangleIcon, title: title, visibility: treeViewVisibleStatus };
   }, [
     dataObjects.length,
@@ -547,7 +541,7 @@ function TestScenarioDataSelectorPanel() {
       <StackItem isFilled>
         <div className={"kie-scesim-editor-drawer-data-objects--selector"}>
           {(treeViewEmptyStatus.visibility === "visible" && (
-            <div aria-disabled={true}>
+            <div aria-disabled={dataSelectorStatus === TestScenarioDataSelectorState.DISABLED}>
               <TreeView
                 activeItems={treeViewStatus.activeItems}
                 allExpanded={allExpanded || treeViewStatus.isExpanded}

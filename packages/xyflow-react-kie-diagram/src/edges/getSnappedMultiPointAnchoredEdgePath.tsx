@@ -92,7 +92,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
         snappedSourceNodeBounds,
         snapPoint(
           snapGrid,
-          points.length > 2 ? points[1] ?? edge["di:waypoint"][1] : getBoundsCenterPoint(snappedTargetNodeBounds)
+          points.length > 2 ? (points[1] ?? edge["di:waypoint"][1]) : getBoundsCenterPoint(snappedTargetNodeBounds)
         ),
         sourceHandlePosition
       );
@@ -103,7 +103,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
         snapPoint(
           snapGrid,
           points.length > 2
-            ? points[points.length - 2] ?? edge["di:waypoint"][edge["di:waypoint"].length - 2]
+            ? (points[points.length - 2] ?? edge["di:waypoint"][edge["di:waypoint"].length - 2])
             : getBoundsCenterPoint(snappedSourceNodeBounds)
         ),
         targetHandlePosition

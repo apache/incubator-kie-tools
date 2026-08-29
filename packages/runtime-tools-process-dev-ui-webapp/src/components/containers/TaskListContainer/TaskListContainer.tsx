@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import { EmbeddedTaskList, TaskListApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
