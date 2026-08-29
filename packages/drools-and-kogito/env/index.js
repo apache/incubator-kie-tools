@@ -24,11 +24,11 @@ const rootEnv = require("@kie-tools/root-env/env");
 module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DROOLS_AND_KOGITO__droolsRepoUrl: {
-      default: "https://github.com/apache/incubator-kie-drools",
+      default: "https://github.com/apache/incubator-kie",
       description: "Git repository URL for Drools",
     },
     DROOLS_AND_KOGITO__droolsRepoGitRef: {
-      default: "8816430978be02c31a59d8e35a629c3fab6dd37e",
+      default: "13d28287aec18723549707e0f3bf8f060b88a988",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
