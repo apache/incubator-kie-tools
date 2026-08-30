@@ -44,9 +44,12 @@ export class Diagram {
   }
 
   public async select(args: { startPosition: { x: number; y: number }; endPosition: { x: number; y: number } }) {
-    await this.page.mouse.move(args.startPosition.x, args.startPosition.y);
+    const bounds = await this.get().boundingBox();
+    const offsetX = bounds?.x ?? 0;
+    const offsetY = bounds?.y ?? 0;
+    await this.page.mouse.move(offsetX + args.startPosition.x, offsetY + args.startPosition.y);
     await this.page.mouse.down();
-    await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
+    await this.page.mouse.move(offsetX + args.endPosition.x, offsetY + args.endPosition.y);
     await this.page.mouse.up();
   }
 

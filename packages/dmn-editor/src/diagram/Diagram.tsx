@@ -833,13 +833,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   nodeActuallyMovedRef.current = true;
                 }
 
-                // v12: Use change.position as the drag position (positionAbsolute is never set by RF drag; nodeLookup is stale here).
+                // v12: change.position is used as the drag position (positionAbsolute removed in v12; nodeLookup is stale during onNodesChange).
                 const positionAbsolute: RF.XYPosition | undefined =
                   change.positionAbsolute ??
                   change.position ??
                   nodeLookupRef.current?.get(change.id)?.internals.positionAbsolute;
 
-                // v12: Skip model writes while dragging — new object refs from computeDiagramData cause RF to reset positionAbsolute, freezing nodes.
+                // v12: Skip model writes while dragging; new object refs freeze nodes on screen. Committed in onNodeDragStop.
                 if (positionAbsolute && !change.dragging) {
                   const node = state
                     .computed(state)

@@ -280,14 +280,14 @@ export const BpmnEditorInternal = ({
           | undefined
           | RF.Node<BpmnDiagramNodeData<BpmnNodeElement>, BpmnNodeType>[];
 
-        const edges = diagramRef.current?.getReactFlowInstance()?.getEdges();
-        if (!nodes || !edges) {
+        if (!nodes) {
           return undefined;
         }
 
+        const state = bpmnEditorStoreApi.getState();
+        const edges = state.computed(state).getDiagramData().edges;
         const nodeLookup = diagramRef.current?.getNodeLookup();
         const bounds = RF.getNodesBounds(nodes, nodeLookup ? { nodeLookup } : undefined);
-        const state = bpmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svg.setAttribute("width", bounds.width + SVG_PADDING * 2 + "");
@@ -306,6 +306,7 @@ export const BpmnEditorInternal = ({
                 edges={edges}
                 customTasks={customTasks}
                 snapGrid={state.xyFlowReactKieDiagram.snapGrid}
+                nodeLookup={nodeLookup}
               />
             </g>
           );

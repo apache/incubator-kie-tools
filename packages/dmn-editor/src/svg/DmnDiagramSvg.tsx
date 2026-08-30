@@ -69,6 +69,7 @@ export function DmnDiagramSvg({
   isAlternativeInputDataShape,
   allDataTypesById,
   allTopLevelItemDefinitionUniqueNames,
+  nodeLookup,
 }: {
   nodes: RF.Node<DmnDiagramNodeData>[];
   edges: RF.Edge<DmnDiagramEdgeData>[];
@@ -78,11 +79,16 @@ export function DmnDiagramSvg({
   isAlternativeInputDataShape: boolean;
   allDataTypesById: DataTypeIndex;
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
+  // v12: node.position is parent-relative for child nodes; positionAbsolute lives in nodeLookup.
+  nodeLookup: RF.ReactFlowState["nodeLookup"] | undefined;
 }) {
   const { nodesSvg, nodesById } = useMemo(() => {
     const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
 
     const nodesSvg = nodes.map((node) => {
+      // v12: node.position is parent-relative for child nodes; use positionAbsolute from nodeLookup.
+      const positionAbsolute = nodeLookup?.get(node.id)?.internals.positionAbsolute ?? node.position;
+
       const { fontCssProperties: fontStyle, shapeStyle } = getNodeStyle({
         fillColor: getNodeShapeFillColor({
           dmnStyle: node.data.shape["di:Style"],
@@ -128,8 +134,8 @@ export function DmnDiagramSvg({
               <AlternativeInputDataNodeSvg
                 width={node.measured!.width!}
                 height={node.measured!.height!}
-                x={node.position.x}
-                y={node.position.y}
+                x={positionAbsolute.x}
+                y={positionAbsolute.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isIcon={false}
@@ -139,8 +145,8 @@ export function DmnDiagramSvg({
               <InputDataNodeSvg
                 width={node.measured!.width!}
                 height={node.measured!.height!}
-                x={node.position.x}
-                y={node.position.y}
+                x={positionAbsolute.x}
+                y={positionAbsolute.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isCollection={isCollection}
@@ -150,8 +156,8 @@ export function DmnDiagramSvg({
             <DecisionNodeSvg
               width={node.measured!.width!}
               height={node.measured!.height!}
-              x={node.position.x}
-              y={node.position.y}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
               {...style}
               {...(shapeStyle as any)}
               isCollection={isCollection}
@@ -162,8 +168,8 @@ export function DmnDiagramSvg({
             <BkmNodeSvg
               width={node.measured!.width!}
               height={node.measured!.height!}
-              x={node.position.x}
-              y={node.position.y}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -173,8 +179,8 @@ export function DmnDiagramSvg({
             <KnowledgeSourceNodeSvg
               width={node.measured!.width!}
               height={node.measured!.height!}
-              x={node.position.x}
-              y={node.position.y}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -184,8 +190,8 @@ export function DmnDiagramSvg({
             <DecisionServiceNodeSvg
               width={node.measured!.width!}
               height={node.measured!.height!}
-              x={node.position.x}
-              y={node.position.y}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
               showSectionLabels={false}
               isReadOnly={true}
               {...style}
@@ -196,8 +202,8 @@ export function DmnDiagramSvg({
             <GroupNodeSvg
               width={node.measured!.width!}
               height={node.measured!.height!}
-              x={node.position.x}
-              y={node.position.y}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -206,8 +212,8 @@ export function DmnDiagramSvg({
             <TextAnnotationNodeSvg
               width={node.measured!.width!}
               height={node.measured!.height!}
-              x={node.position.x}
-              y={node.position.y}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -216,8 +222,8 @@ export function DmnDiagramSvg({
             <UnknownNodeSvg
               width={node.measured!.width!}
               height={node.measured!.height!}
-              x={node.position.x}
-              y={node.position.y}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -231,6 +237,7 @@ export function DmnDiagramSvg({
                 dy={`calc(1.5em * ${i})`}
                 {...getNodeLabelSvgTextAlignmentProps(
                   node,
+                  positionAbsolute,
                   getNodeLabelPosition({ nodeType: node.type as NodeType, isAlternativeInputDataShape })
                 )}
               >
@@ -248,6 +255,7 @@ export function DmnDiagramSvg({
     allTopLevelItemDefinitionUniqueNames,
     importsByNamespace,
     isAlternativeInputDataShape,
+    nodeLookup,
     nodes,
     thisDmn.model.definitions,
   ]);
@@ -264,14 +272,15 @@ export function DmnDiagramSvg({
           dmnShapeSource: e.data?.dmnShapeSource,
           dmnShapeTarget: e.data?.dmnShapeTarget,
           sourceNodeBounds: {
-            x: s?.position.x,
-            y: s?.position.y,
+            // v12: use positionAbsolute from nodeLookup; position is parent-relative for child nodes.
+            x: s ? (nodeLookup?.get(s.id)?.internals.positionAbsolute ?? s.position).x : undefined,
+            y: s ? (nodeLookup?.get(s.id)?.internals.positionAbsolute ?? s.position).y : undefined,
             width: s?.measured?.width ?? s?.width,
             height: s?.measured?.height ?? s?.height,
           },
           targetNodeBounds: {
-            x: t?.position.x,
-            y: t?.position.y,
+            x: t ? (nodeLookup?.get(t.id)?.internals.positionAbsolute ?? t.position).x : undefined,
+            y: t ? (nodeLookup?.get(t.id)?.internals.positionAbsolute ?? t.position).y : undefined,
             width: t?.measured?.width ?? t?.width,
             height: t?.measured?.height ?? t?.height,
           },
@@ -295,11 +304,17 @@ export function DmnDiagramSvg({
 const SVG_NODE_LABEL_TEXT_PADDING_ALL = 10;
 const SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT = 8;
 
-export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>, labelPosition: NodeLabelPosition) {
+// v12: positionAbsolute is passed explicitly (computed from nodeLookup at the call site)
+// so this function does not need to know about nodeLookup itself.
+export function getNodeLabelSvgTextAlignmentProps(
+  n: RF.Node<DmnDiagramNodeData>,
+  positionAbsolute: RF.XYPosition,
+  labelPosition: NodeLabelPosition
+) {
   switch (labelPosition) {
     case "center-bottom":
-      const cbTx = n.position.x! + n.measured!.width! / 2;
-      const cbTy = n.position.y! + n.measured!.height! + 4;
+      const cbTx = positionAbsolute.x + n.measured!.width! / 2;
+      const cbTy = positionAbsolute.y + n.measured!.height! + 4;
       const cbWidth = n.measured!.width!;
       return {
         verticalAnchor: "start",
@@ -309,8 +324,8 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "center-center":
-      const ccTx = n.position.x! + n.measured!.width! / 2;
-      const ccTy = n.position.y! + n.measured!.height! / 2;
+      const ccTx = positionAbsolute.x + n.measured!.width! / 2;
+      const ccTy = positionAbsolute.y + n.measured!.height! / 2;
       const ccWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
@@ -320,8 +335,8 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "top-center":
-      const tcTx = n.position.x! + n.measured!.width! / 2;
-      const tcTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const tcTx = positionAbsolute.x + n.measured!.width! / 2;
+      const tcTy = positionAbsolute.y + SVG_NODE_LABEL_TEXT_PADDING_ALL;
       const tcWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "start",
@@ -331,8 +346,8 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "center-left":
-      const clTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const clTy = n.position.y! + n.measured!.height! / 2;
+      const clTx = positionAbsolute.x + SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const clTy = positionAbsolute.y + n.measured!.height! / 2;
       const clWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
@@ -342,8 +357,10 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "top-left":
-      const tlTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
-      const tlTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
+      const tlTx =
+        positionAbsolute.x + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
+      const tlTy =
+        positionAbsolute.y + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlWidth =
         n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       return {

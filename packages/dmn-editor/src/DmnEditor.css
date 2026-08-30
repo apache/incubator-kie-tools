@@ -184,6 +184,8 @@
 .react-flow__node-node_decisionService:not(.selected) .kie-dmn-editor--node-shape {
   filter: none !important;
 }
+.react-flow__node-node_decisionService .kie-dmn-editor--decision-service-node,
+.react-flow__node-node_group .kie-dmn-editor--group-node,
 .react-flow__node-node_decisionService .kie-dmn-editor--outgoing-stuff-node-panel,
 .react-flow__node-node_group .kie-dmn-editor--outgoing-stuff-node-panel,
 .react-flow__node-node_decisionService .kie-dmn-editor--editable-node-name-input span,

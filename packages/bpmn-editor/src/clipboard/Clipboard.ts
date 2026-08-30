@@ -175,7 +175,7 @@ export function buildClipboardFromDiagram(
     }
   );
 
-  clipboard.edges = (xyFlowState.edges as RF.Edge<BpmnDiagramEdgeData>[]).flatMap((edge) => {
+  clipboard.edges = xyFlowState.edges.flatMap((edge) => {
     if (copiedNodesById.has(edge.source) && !copiedNodesById.has(edge.target)) {
       danglingEdgesById.set(edge.id, edge); // Edges that point to nodes that are not part of the clipboard need to be removed when 'cut' is executed.
     }
