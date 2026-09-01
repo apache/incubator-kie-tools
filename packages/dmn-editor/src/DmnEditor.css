@@ -1145,20 +1145,10 @@ th {
   box-shadow: -4px -4px 2px 0px rgb(127 127 127);
 }
 .react-flow__controls-button {
-  width: 40px !important;
-  height: 40px !important;
-  box-sizing: border-box !important;
+  width: 30px !important;
+  height: 30px !important;
   border: 0 !important;
   border-radius: 1000px;
-  padding: 4px !important;
-  color: var(--xy-controls-button-color, var(--xy-controls-button-color-default, currentColor)) !important;
-}
-.react-flow__controls-button svg {
-  width: 12px !important;
-  max-width: 12px !important;
-  height: auto !important;
-  max-height: unset !important;
-  fill: currentColor;
 }
 .react-flow__controls-button:hover {
   filter: brightness(95%);

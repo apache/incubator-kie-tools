@@ -548,10 +548,6 @@ function XyFlowReactKieDiagramInner<
               console.debug(`XYFLOW KIE DIAGRAM: 'onNodesChange' --> position '${change.id}'`);
               state.dispatch(state).setNodeStatus(change.id, { dragging: change.dragging });
 
-              if (change.dragging) {
-                nodeActuallyMovedRef.current = true;
-              }
-
               // v12: change.position is used as the drag position (positionAbsolute removed in v12; nodeLookup is stale during onNodesChange).
               const positionAbsolute: RF.XYPosition | undefined =
                 change.positionAbsolute ??
@@ -747,6 +743,8 @@ function XyFlowReactKieDiagramInner<
 
   const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>((e, nodeBeingDragged, _nodes) => {
     nodeIdBeingDraggedRef.current = nodeBeingDragged.id;
+    // v12: node.dragging is always false in onNodeDragStop; mark movement here where we know the mouse actually moved.
+    nodeActuallyMovedRef.current = true;
   }, []);
 
   const onNodeDragStart = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>(

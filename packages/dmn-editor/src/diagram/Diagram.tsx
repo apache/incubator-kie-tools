@@ -829,10 +829,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> position '${change.id}'`);
                 state.dispatch(state).diagram.setNodeStatus(change.id, { dragging: change.dragging });
 
-                if (change.dragging) {
-                  nodeActuallyMovedRef.current = true;
-                }
-
                 // v12: change.position is used as the drag position (positionAbsolute removed in v12; nodeLookup is stale during onNodesChange).
                 const positionAbsolute: RF.XYPosition | undefined =
                   change.positionAbsolute ??
@@ -1025,6 +1021,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<DmnDiagramNodeData>>>(
       (e, node) => {
         nodeIdBeingDraggedRef.current = node.id;
+        // v12: node.dragging is always false in onNodeDragStop; mark movement here where we know the mouse actually moved.
+        nodeActuallyMovedRef.current = true;
         // v12: Read positionAbsolute from nodeLookup (node is user-facing Node, not InternalNode; nodeLookup is mutated in place by RF).
         const positionAbsolute = nodeLookupRef.current?.get(node.id)?.internals.positionAbsolute ?? node.position;
         dmnEditorStoreApi.setState((state) => {
