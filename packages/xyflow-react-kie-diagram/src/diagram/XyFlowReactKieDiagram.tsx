@@ -333,11 +333,6 @@ function XyFlowReactKieDiagramInner<
     [snapGrid.isEnabled, snapGrid.x, snapGrid.y]
   );
 
-  const isKnownNodeType = useCallback(
-    (t: string | undefined): t is N => t !== undefined && t in minNodeSizes,
-    [minNodeSizes]
-  );
-
   // Callbacks
 
   const onConnect = useCallback<RF.OnConnect>(
@@ -608,13 +603,11 @@ function XyFlowReactKieDiagramInner<
                       continue;
                     }
 
-                    const allowedContainmentModes = isKnownNodeType(potentialContainer.type)
-                      ? (containmentMap.get(potentialContainer.type) ?? new Map<ContainmentMode, Set<N>>())
-                      : new Map<ContainmentMode, Set<N>>();
+                    const allowedContainmentModes =
+                      containmentMap.get(potentialContainer.type as N) ?? new Map<ContainmentMode, Set<N>>();
 
-                    const projectionType = state.xyFlowReactKieDiagram.newNodeProjection?.type;
-                    const typesOfNodesBeingDragged = isKnownNodeType(projectionType)
-                      ? [projectionType]
+                    const typesOfNodesBeingDragged = state.xyFlowReactKieDiagram.newNodeProjection?.type
+                      ? [state.xyFlowReactKieDiagram.newNodeProjection.type as N]
                       : [...diagramData.selectedNodeTypes];
 
                     const allSelectedNodesRespectContainmentMode = typesOfNodesBeingDragged.every((nodeType) =>
@@ -667,10 +660,8 @@ function XyFlowReactKieDiagramInner<
 
                 const dropTarget = state.xyFlowReactKieDiagram.dropTarget as S["xyFlowReactKieDiagram"]["dropTarget"];
 
-                const draggedNodeOrProjection = node ?? state.xyFlowReactKieDiagram.newNodeProjection;
-                const draggedNodeType = draggedNodeOrProjection?.type;
                 const newPosition =
-                  dropTarget?.containmentMode === ContainmentMode.BORDER && isKnownNodeType(draggedNodeType)
+                  dropTarget?.containmentMode === ContainmentMode.BORDER
                     ? snapToDropTargetsBorder(
                         dropTarget,
                         {
@@ -678,7 +669,7 @@ function XyFlowReactKieDiagramInner<
                           "@_x": positionAbsolute.x,
                           "@_y": positionAbsolute.y,
                         },
-                        draggedNodeType,
+                        (node ?? state.xyFlowReactKieDiagram.newNodeProjection).type! as N,
                         state.xyFlowReactKieDiagram.snapGrid,
                         minNodeSizes,
                         DEFAULT_BORDER_ALLOWANCE_IN_PX
@@ -730,7 +721,6 @@ function XyFlowReactKieDiagramInner<
     },
     [
       containmentMap,
-      isKnownNodeType,
       minNodeSizes,
       onNodeDeleted,
       onNodeRepositioned,
@@ -802,7 +792,7 @@ function XyFlowReactKieDiagramInner<
           // Un-parent
           if (nodeBeingDragged.data.parentXyFlowNode) {
             const p = state.computed(state).getDiagramData().nodesById.get(nodeBeingDragged.data.parentXyFlowNode.id);
-            if (isKnownNodeType(p?.type) && containmentMap.has(p.type)) {
+            if (p?.type && (containmentMap as Map<string, unknown>).has(p.type)) {
               onNodeUnparented({
                 state,
                 exParentNode: p,
@@ -839,14 +829,7 @@ function XyFlowReactKieDiagramInner<
         });
       }
     },
-    [
-      containmentMap,
-      isKnownNodeType,
-      onNodeParented,
-      onNodeUnparented,
-      xyFlowReactKieDiagramStoreApi,
-      onResetToBeforeEditingBegan,
-    ]
+    [containmentMap, onNodeParented, onNodeUnparented, xyFlowReactKieDiagramStoreApi, onResetToBeforeEditingBegan]
   );
 
   const onEdgesChange = useCallback<RF.OnEdgesChange>(
@@ -1145,7 +1128,9 @@ function XyFlowReactKieDiagramInner<
           fitView={false}
           fitViewOptions={FIT_VIEW_OPTIONS}
           attributionPosition={"bottom-right"}
-          onInit={(instance: RF.ReactFlowInstance<RF.Node<NData, N>, RF.Edge<EData>>) => setReactFlowInstance(instance)}
+          onInit={(instance) =>
+            setReactFlowInstance(instance as RF.ReactFlowInstance<RF.Node<NData, N>, RF.Edge<EData>>)
+          }
           deleteKeyCode={DELETE_NODE_KEY_CODES}
           // (begin)
           // Used to make the Palette work by dropping nodes on the Reactflow Canvas

@@ -835,7 +835,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   change.position ??
                   nodeLookupRef.current?.get(change.id)?.internals.positionAbsolute;
 
-                // v12: Skip model writes while dragging; new object refs freeze nodes on screen. Committed in onNodeDragStop.
+                // v12: Skip model writes while dragging — new object refs from computeDiagramData cause RF to reset positionAbsolute, freezing nodes.
                 if (positionAbsolute && !change.dragging) {
                   const node = state
                     .computed(state)

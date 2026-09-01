@@ -296,7 +296,6 @@ export const DmnEditorInternal = ({
                 allTopLevelItemDefinitionUniqueNames={
                   state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
                 }
-                nodeLookup={nodeLookup}
               />
             </g>
           );

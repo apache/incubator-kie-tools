@@ -39,7 +39,7 @@ export class Edges {
     const from = await this.nodes.getId({ name: args.from });
     const to = await this.nodes.getId({ name: args.to });
 
-    return this.page.getByRole("group", { name: `Edge from ${from} to ${to}` });
+    return this.page.getByRole("button", { name: `Edge from ${from} to ${to}` });
   }
 
   public async getWaypoint(args: { from: string; to: string; waypointIndex: number }) {
