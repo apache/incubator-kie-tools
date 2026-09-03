@@ -25,10 +25,10 @@ module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DROOLS_AND_KOGITO__droolsRepoUrl: {
       default: "https://github.com/apache/incubator-kie",
-      description: "Git repository URL for Drools",
+      description: "Git repository URL for Kie",
     },
     DROOLS_AND_KOGITO__droolsRepoGitRef: {
-      default: "af67f73d3debb4d7fad5a2e13373a7c8fdc45ad8",
+      default: "2b91940462bb57ac79912a8139e7e19b37346856",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
