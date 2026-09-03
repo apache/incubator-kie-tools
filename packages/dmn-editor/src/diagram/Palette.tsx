@@ -354,7 +354,11 @@ export function Palette({ pulse }: { pulse: boolean }) {
             {showEllipsis && (
               <>
                 {submenuOpen && (
-                  <div ref={submenuRef} className={"kie-dmn-editor--palette-more-items"}>
+                  <div
+                    ref={submenuRef}
+                    data-testid={"kie-tools--dmn-editor--palette-more-items"}
+                    className={"kie-dmn-editor--palette-more-items"}
+                  >
                     <div className={"kie-dmn-editor--palette-more-items-grid"}>
                       {primaryIcons.slice(visibleIconCount).map(renderPaletteIcon)}
                     </div>
