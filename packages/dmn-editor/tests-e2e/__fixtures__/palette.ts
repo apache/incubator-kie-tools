@@ -56,6 +56,35 @@ export class Palette {
     await this.page.getByRole("button", { name: "External nodes" }).click();
   }
 
+  public getEllipsisButton() {
+    return this.page.getByTitle("More items", { exact: true });
+  }
+
+  public getMoreItemsSubmenu() {
+    return this.page.getByTestId("kie-tools--dmn-editor--palette-more-items");
+  }
+
+  public async openMoreItems() {
+    await this.getEllipsisButton().click();
+  }
+
+  public async dragNewNodeFromMoreItems(args: {
+    type: NodeType;
+    targetPosition: { x: number; y: number };
+    thenRenameTo?: string;
+  }) {
+    const { nodeTitle, nodeName } = this.getNewNodeProperties(args.type);
+
+    await this.getMoreItemsSubmenu()
+      .getByTitle(nodeTitle, { exact: true })
+      .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+    await this.nodes.waitForNodeToBeFocused({ name: nodeName });
+    if (args.thenRenameTo) {
+      await this.nodes.rename({ current: nodeName, new: args.thenRenameTo });
+    }
+    await this.nodes.waitForNewNodeEditingToSettle();
+  }
+
   private getNewNodeProperties(type: NodeType) {
     switch (type) {
       case NodeType.INPUT_DATA:
