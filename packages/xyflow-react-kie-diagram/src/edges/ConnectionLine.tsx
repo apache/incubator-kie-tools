@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { usePathForEdgeWithWaypoints } from "./usePathForEdgeWithWaypoints";
 import { PositionalNodeHandleId } from "../nodes/PositionalNodeHandles";
 import { getBoundsCenterPoint, getPositionalHandlePosition } from "../maths/Maths";
@@ -43,7 +43,7 @@ export function ConnectionLine<N extends string, E extends string>({
   edgeType,
   nodeComponentsMapping,
   edgeComponentsMapping,
-}: RF.ConnectionLineComponentProps & {
+}: RF.ConnectionLineComponentProps<RF.Node> & {
   defaultNodeSizes: NodeSizes<N>;
   minNodeSizes: NodeSizes<N>;
   edgeType: undefined | E;
@@ -64,9 +64,7 @@ export function ConnectionLine<N extends string, E extends string>({
   //
   // When editing an existing edge from its first waypoint (i.e., source handle) the edge is rendered
   // in reverse. So the connection line's "from" properties are actually "to" properties.
-  const isUpdatingFromSourceHandle = Object.keys(PositionalNodeHandleId).some(
-    (k) => (PositionalNodeHandleId as any)[k] === fromHandle?.id
-  );
+  const isUpdatingFromSourceHandle = Object.values(PositionalNodeHandleId).some((v) => v === fromHandle?.id);
 
   const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : (edgeBeingUpdated?.type ?? fromHandle?.id);
 
@@ -81,10 +79,10 @@ export function ConnectionLine<N extends string, E extends string>({
   const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(snapGrid, { "@_x": toX, "@_y": toY });
 
   const { "@_x": fromX, "@_y": fromY } = getBoundsCenterPoint({
-    x: fromNode?.positionAbsolute?.x,
-    y: fromNode?.positionAbsolute?.y,
-    width: fromNode?.width,
-    height: fromNode?.height,
+    x: fromNode?.internals?.positionAbsolute?.x,
+    y: fromNode?.internals?.positionAbsolute?.y,
+    width: fromNode?.measured?.width,
+    height: fromNode?.measured?.height,
   });
 
   const connectionLinePath =
@@ -107,12 +105,22 @@ export function ConnectionLine<N extends string, E extends string>({
     const defaultSize = defaultNodeSizes[nodeType]({ snapGrid });
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
-      { ...fromNode!.position, width: fromNode!.width, height: fromNode!.height },
+      {
+        x: fromNode?.internals?.positionAbsolute?.x,
+        y: fromNode?.internals?.positionAbsolute?.y,
+        width: fromNode!.measured?.width,
+        height: fromNode!.measured?.height,
+      },
       undefined
     );
 
     const [fromXauto, fromYauto] = getPositionalHandlePosition(
-      { ...fromNode!.position, width: fromNode!.width, height: fromNode!.height },
+      {
+        x: fromNode?.internals?.positionAbsolute?.x,
+        y: fromNode?.internals?.positionAbsolute?.y,
+        width: fromNode!.measured?.width,
+        height: fromNode!.measured?.height,
+      },
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       undefined
     );

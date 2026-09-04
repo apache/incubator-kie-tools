@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import * as React from "react";
 import { useEffect } from "react";
 import {
@@ -45,11 +45,11 @@ import { DEFAULT_VIEWPORT } from "./Diagram";
 import { useCommands } from "../commands/CommandsContextProvider";
 
 export function DiagramCommands(props: {}) {
-  const rfStoreApi = RF.useStoreApi();
+  const rfStoreApi = RF.useStoreApi<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { commandsRef } = useCommands();
   const { externalModelsByNamespace } = useExternalModels();
-  const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
+  const rf = RF.useReactFlow<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>();
 
   // Cancel action
   useEffect(() => {
@@ -59,7 +59,7 @@ export function DiagramCommands(props: {}) {
     commandsRef.current.cancelAction = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Canceling action...");
       rfStoreApi.setState((rfState) => {
-        if (rfState.connectionNodeId) {
+        if (rfState.connection?.fromHandle?.nodeId) {
           rfState.cancelConnection();
           dmnEditorStoreApi.setState((state) => {
             state.diagram.ongoingConnection = undefined;
@@ -91,13 +91,17 @@ export function DiagramCommands(props: {}) {
     }
     commandsRef.current.focusOnSelection = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Focusing on selected bounds...");
-      const selectedNodes = rf.getNodes().filter((s) => s.selected);
+      const selectedNodes = rf.getNodes().filter((s: RF.Node<DmnDiagramNodeData>) => s.selected);
       if (selectedNodes.length <= 0) {
         return;
       }
 
       const bounds = getBounds({
-        nodes: selectedNodes,
+        nodes: selectedNodes.map((n) => ({
+          position: n.position,
+          width: n.measured?.width,
+          height: n.measured?.height,
+        })),
         padding: 100,
       });
 
@@ -143,33 +147,30 @@ export function DiagramCommands(props: {}) {
           });
 
           // Delete nodes
-          rfStoreApi
-            .getState()
-            .getNodes()
-            .forEach((node: RF.Node<DmnDiagramNodeData>) => {
-              if (copiedNodesById.has(node.id)) {
-                deleteNode({
-                  __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
-                  definitions: state.dmn.model.definitions,
-                  __readonly_drdIndex: state.computed(state).getDrdIndex(),
-                  __readonly_dmnObjectNamespace:
-                    node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                  __readonly_dmnObjectQName: node.data.dmnObjectQName,
-                  __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
-                  __readonly_nodeNature: nodeNatures[node.type as NodeType],
-                  __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                  __readonly_externalDmnsIndex: state
-                    .computed(state)
-                    .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
-                  __readonly_externalModelsByNamespace: externalModelsByNamespace,
-                });
-                state.dispatch(state).diagram.setNodeStatus(node.id, {
-                  selected: false,
-                  dragging: false,
-                  resizing: false,
-                });
-              }
-            });
+          rfStoreApi.getState().nodes.forEach((node) => {
+            if (copiedNodesById.has(node.id)) {
+              deleteNode({
+                __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
+                definitions: state.dmn.model.definitions,
+                __readonly_drdIndex: state.computed(state).getDrdIndex(),
+                __readonly_dmnObjectNamespace:
+                  node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
+                __readonly_dmnObjectQName: node.data.dmnObjectQName,
+                __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
+                __readonly_nodeNature: nodeNatures[node.type as NodeType],
+                __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                __readonly_externalDmnsIndex: state
+                  .computed(state)
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                __readonly_externalModelsByNamespace: externalModelsByNamespace,
+              });
+              state.dispatch(state).diagram.setNodeStatus(node.id, {
+                selected: false,
+                dragging: false,
+                resizing: false,
+              });
+            }
+          });
         });
       });
     };
@@ -280,10 +281,7 @@ export function DiagramCommands(props: {}) {
     }
     commandsRef.current.selectAll = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Selecting/Deselecting nodes...");
-      const allNodeIds = rfStoreApi
-        .getState()
-        .getNodes()
-        .map((s) => s.id);
+      const allNodeIds = rfStoreApi.getState().nodes.map((s) => s.id);
 
       const allEdgeIds = rfStoreApi.getState().edges.map((s) => s.id);
 
@@ -312,7 +310,7 @@ export function DiagramCommands(props: {}) {
     }
     commandsRef.current.createGroup = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Grouping nodes...");
-      const selectedNodes = rf.getNodes().filter((s) => s.selected);
+      const selectedNodes = rf.getNodes().filter((s: RF.Node<DmnDiagramNodeData>) => s.selected);
       if (selectedNodes.length <= 0) {
         return;
       }
@@ -328,7 +326,11 @@ export function DiagramCommands(props: {}) {
           newNode: {
             type: NODE_TYPES.group,
             bounds: getBounds({
-              nodes: selectedNodes,
+              nodes: selectedNodes.map((n) => ({
+                position: n.position,
+                width: n.measured?.width,
+                height: n.measured?.height,
+              })),
               padding: CONTAINER_NODES_DESIRABLE_PADDING,
             }),
           },
@@ -375,7 +377,10 @@ export function DiagramCommands(props: {}) {
       console.debug("DMN DIAGRAM: COMMANDS: Hide node from DRD...");
       const nodesById = rf
         .getNodes()
-        .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
+        .reduce(
+          (acc: Map<string, RF.Node<DmnDiagramNodeData>>, s: RF.Node<DmnDiagramNodeData>) => acc.set(s.id, s),
+          new Map<string, RF.Node<DmnDiagramNodeData>>()
+        );
 
       dmnEditorStoreApi.setState((state) => {
         const selectedNodeIds = new Set(state.diagram._selectedNodes);

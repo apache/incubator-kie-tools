@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useRef } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DrgEdge } from "../graph/graph";
@@ -128,7 +128,7 @@ const interactionStrokeProps: Partial<React.SVGAttributes<SVGPathElement>> = {
   strokeLinecap: "round",
 };
 
-export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<RF.Edge<DmnDiagramEdgeData>>) => {
   const renderCount = useRef<number>(0);
   renderCount.current++;
 
@@ -146,7 +146,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -179,7 +179,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
   );
 }, propsHaveSameValuesDeep);
 
-export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<RF.Edge<DmnDiagramEdgeData>>) => {
   const renderCount = useRef<number>(0);
   renderCount.current++;
 
@@ -197,7 +197,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -230,7 +230,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
   );
 }, propsHaveSameValuesDeep);
 
-export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<RF.Edge<DmnDiagramEdgeData>>) => {
   const renderCount = useRef<number>(0);
   renderCount.current++;
 
@@ -248,7 +248,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -286,7 +286,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
   );
 }, propsHaveSameValuesDeep);
 
-export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+export const AssociationEdge = React.memo((props: RF.EdgeProps<RF.Edge<DmnDiagramEdgeData>>) => {
   const renderCount = useRef<number>(0);
   renderCount.current++;
 
@@ -304,7 +304,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);

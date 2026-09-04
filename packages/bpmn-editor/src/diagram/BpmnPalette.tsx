@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useState, useEffect, useRef, useMemo } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   BpmnNodeElement,
   BpmnNodeType,
@@ -315,6 +315,12 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
           position,
           width: dimensions.width,
           height: dimensions.height,
+          // v12: RF checks node.measured.width/height before computing drag position (error #015).
+          // Providing measured here marks this ghost node as "initialized" even before RF renders it.
+          measured: {
+            width: dimensions.width,
+            height: dimensions.height,
+          },
           data: {
             parentXyFlowNode: undefined,
             shape: bpmnShape,

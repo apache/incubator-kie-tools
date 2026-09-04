@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useLayoutEffect, useMemo } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { ContainmentMode } from "../graph/graphStructure";
 import { DC__Shape } from "../maths/model";
 import { snapShapeDimensions } from "../snapgrid/SnapGrid";
@@ -73,7 +73,7 @@ export function NodeResizerHandle<N extends string>(props: NodeResizeHandleProps
 }
 
 export function useNodeResizing(id: string): boolean {
-  return RF.useStore((s) => s.nodeInternals.get(id)?.resizing ?? false);
+  return RF.useStore((s) => s.nodeLookup.get(id)?.resizing ?? false);
 }
 
 export type NodeDimensionsArgs<N extends string> = {
@@ -123,15 +123,15 @@ export function useHoveredNodeAlwaysOnTop(
 }
 
 export function useConnection(nodeId: string) {
-  const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
-  const connectionHandleType = RF.useStore((s) => s.connectionHandleType);
+  const connectionNodeId = RF.useStore((s) => s.connection.fromHandle?.nodeId ?? null);
+  const connectionHandleType = RF.useStore((s) => s.connection.fromHandle?.type ?? null);
 
   const source = connectionNodeId;
   const target = nodeId;
 
   const edgeIdBeingUpdated = useXyFlowReactKieDiagramStore((s) => s.xyFlowReactKieDiagram.edgeIdBeingUpdated);
   const sourceHandle = RF.useStore(
-    (s) => s.connectionHandleId ?? s.edges.find((e) => e.id === edgeIdBeingUpdated)?.type ?? null
+    (s) => s.connection.fromHandle?.id ?? s.edges.find((e) => e.id === edgeIdBeingUpdated)?.type ?? null
   );
 
   const connection = useMemo(
@@ -148,9 +148,11 @@ export function useConnection(nodeId: string) {
 }
 
 export function useConnectionTargetStatus(nodeId: string, shouldActLikeHovered: boolean) {
-  const isTargeted = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== nodeId && shouldActLikeHovered);
+  const isTargeted = RF.useStore(
+    (s) => !!s.connection.fromHandle?.nodeId && s.connection.fromHandle.nodeId !== nodeId && shouldActLikeHovered
+  );
   const connection = useConnection(nodeId);
-  const isValidConnectionTarget = RF.useStore((s) => s.isValidConnection?.(connection) ?? false);
+  const isValidConnectionTarget = RF.useStore((s) => s.isValidConnection?.(connection as RF.Connection) ?? false);
 
   return useMemo(
     () => ({
@@ -173,7 +175,7 @@ export function useNodeClassName<N extends string, E extends string>(
     (s) => s.xyFlowReactKieDiagram.dropTarget?.containmentMode
   );
 
-  const isConnectionNodeId = RF.useStore((s) => s.connectionNodeId === nodeId);
+  const isConnectionNodeId = RF.useStore((s) => s.connection.fromHandle?.nodeId === nodeId);
   const connection = useConnection(nodeId);
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connection.sourceHandle);
   const isNodeConnection = !!Object.values(NODE_TYPES).find((s) => s === connection.sourceHandle);

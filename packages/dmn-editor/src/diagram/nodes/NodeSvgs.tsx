@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 import { DEFAULT_NODE_FILL, DEFAULT_NODE_STROKE_COLOR, DEFAULT_NODE_STROKE_WIDTH } from "./NodeStyle";
 

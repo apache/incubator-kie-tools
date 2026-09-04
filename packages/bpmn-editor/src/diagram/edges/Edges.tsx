@@ -27,7 +27,7 @@ import { propsHaveSameValuesDeep } from "@kie-tools/xyflow-react-kie-diagram/dis
 import { useIsHovered } from "@kie-tools/xyflow-react-kie-diagram/dist/reactExt/useIsHovered";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { AssociationPath, SequenceFlowPath } from "./EdgeSvgs";
 import { BpmnDiagramEdgeData, MIN_NODE_SIZES } from "../BpmnDiagramDomain";
 import { useBpmnEditorStoreApi } from "../../store/StoreContext";
@@ -48,7 +48,7 @@ const interactionStrokeProps: Partial<React.SVGAttributes<SVGPathElement>> = {
   strokeLinecap: "round",
 };
 
-export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeData>) => {
+export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<RF.Edge<BpmnDiagramEdgeData>>) => {
   const { i18n } = useBpmnEditorI18n();
   const renderCount = useRef<number>(0);
   renderCount.current++;
@@ -71,7 +71,7 @@ export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeD
     isDraggingWaypoint,
   } = usePotentialWaypointControls(waypoints, props.selected, props.id, props.data?.bpmnEdgeIndex, interactionPathRef);
 
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -174,7 +174,7 @@ export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeD
   );
 }, propsHaveSameValuesDeep);
 
-export const AssociationEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeData>) => {
+export const AssociationEdge = React.memo((props: RF.EdgeProps<RF.Edge<BpmnDiagramEdgeData>>) => {
   const renderCount = useRef<number>(0);
   renderCount.current++;
 
@@ -196,7 +196,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<BpmnDiagramEdgeDa
     isDraggingWaypoint,
   } = usePotentialWaypointControls(waypoints, props.selected, props.id, props.data?.bpmnEdgeIndex, interactionPathRef);
 
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);

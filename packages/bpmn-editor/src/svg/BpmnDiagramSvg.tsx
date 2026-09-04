@@ -20,7 +20,7 @@
 import { Text } from "@visx/text";
 import * as React from "react";
 import { useMemo } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   BpmnNodeElement,
   BpmnNodeType,
@@ -142,8 +142,8 @@ export function BpmnDiagramSvg({
         <g id={node.id} data-kie-bpmn-node-id={node.id} key={node.id} {...({ bpmn2nodeid: node.id } as any)}>
           {node.type === NODE_TYPES.dataObject && (
             <DataObjectNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               showFoldedPage={true}
@@ -155,8 +155,8 @@ export function BpmnDiagramSvg({
             <TaskOrSubProcessNodeSvgWithIcons
               nodeType={NODE_TYPES.task}
               bpmnElement={node?.data?.bpmnElement as BpmnElementActivitytIcons}
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.task>(NODE_TYPES.task, node?.data?.bpmnElement)}
@@ -168,8 +168,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.group && (
             <GroupNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               strokeWidth={3}
@@ -179,8 +179,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.textAnnotation && (
             <TextAnnotationNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               // Doesn't need to be painted by the Kogito SVG Add-on
@@ -189,8 +189,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.startEvent && (
             <StartEventNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.startEvent>(NODE_TYPES.startEvent, node?.data?.bpmnElement)}
@@ -209,8 +209,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.intermediateCatchEvent && (
             <IntermediateCatchEventNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.intermediateCatchEvent>(
@@ -228,8 +228,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.intermediateThrowEvent && (
             <IntermediateThrowEventNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.intermediateThrowEvent>(
@@ -242,8 +242,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.gateway && (
             <GatewayNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.gateway>(NODE_TYPES.gateway, node?.data?.bpmnElement)}
@@ -253,8 +253,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.endEvent && (
             <EndEventNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.endEvent>(NODE_TYPES.endEvent, node?.data?.bpmnElement)}
@@ -268,8 +268,8 @@ export function BpmnDiagramSvg({
               customTasks={customTasks}
               nodeType={NODE_TYPES.subProcess}
               bpmnElement={node?.data?.bpmnElement as BpmnElementActivitytIcons}
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               variant={getBpmnNodeVariant<typeof NODE_TYPES.subProcess>(NODE_TYPES.subProcess, node?.data?.bpmnElement)}
@@ -279,8 +279,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.lane && (
             <LaneNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               // Doesn't need to be painted by the Kogito SVG Add-on
@@ -289,8 +289,8 @@ export function BpmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.unknown && (
             <UnknownNodeSvg
-              width={node.width!}
-              height={node.height!}
+              width={node.measured!.width!}
+              height={node.measured!.height!}
               x={node.position!.x}
               y={node.position!.y}
               // Doesn't need to be painted by the Kogito SVG Add-on
@@ -376,9 +376,9 @@ export function getNodeLabelSvgTextAlignmentProps(
 ) {
   switch (labelPosition) {
     case "center-bottom":
-      const cbTx = n.position.x! + n.width! / 2;
-      const cbTy = n.position.y! + n.height! + 4;
-      const cbWidth = n.width!;
+      const cbTx = n.position.x! + n.measured!.width! / 2;
+      const cbTy = n.position.y! + n.measured!.height! + 4;
+      const cbWidth = n.measured!.width!;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -387,9 +387,9 @@ export function getNodeLabelSvgTextAlignmentProps(
       } as const;
 
     case "center-center":
-      const ccTx = n.position.x! + n.width! / 2;
-      const ccTy = n.position.y! + n.height! / 2;
-      const ccWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const ccTx = n.position.x! + n.measured!.width! / 2;
+      const ccTy = n.position.y! + n.measured!.height! / 2;
+      const ccWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "middle",
@@ -398,9 +398,9 @@ export function getNodeLabelSvgTextAlignmentProps(
       } as const;
 
     case "top-center":
-      const tcTx = n.position.x! + n.width! / 2;
+      const tcTx = n.position.x! + n.measured!.width! / 2;
       const tcTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const tcWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const tcWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -410,8 +410,8 @@ export function getNodeLabelSvgTextAlignmentProps(
 
     case "center-left":
       const clTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const clTy = n.position.y! + n.height! / 2;
-      const clWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const clTy = n.position.y! + n.measured!.height! / 2;
+      const clWidth = n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "start",
@@ -424,7 +424,7 @@ export function getNodeLabelSvgTextAlignmentProps(
       const tlTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlWidth =
-        n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
+        n.measured!.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       return {
         verticalAnchor: "start",
         textAnchor: "start",

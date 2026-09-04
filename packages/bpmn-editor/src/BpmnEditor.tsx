@@ -18,7 +18,7 @@
  */
 
 import "@patternfly/react-core/dist/styles/base.css";
-import "reactflow/dist/style.css";
+import "@xyflow/react/dist/style.css";
 
 import { AllBpmnMarshallers, BpmnLatestModel } from "@kie-tools/bpmn-marshaller";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
@@ -28,7 +28,7 @@ import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { BpmnEditorContextProvider, useBpmnEditor } from "./BpmnEditorContext";
 import { BpmnEditorErrorFallback } from "./BpmnEditorErrorFallback";
 import { BpmnDiagram } from "./diagram/BpmnDiagram";
@@ -285,7 +285,8 @@ export const BpmnEditorInternal = ({
           return undefined;
         }
 
-        const bounds = RF.getNodesBounds(nodes);
+        const nodeLookup = diagramRef.current?.getNodeLookup();
+        const bounds = RF.getNodesBounds(nodes, nodeLookup ? { nodeLookup } : undefined);
         const state = bpmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

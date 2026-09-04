@@ -614,7 +614,8 @@
 handles, we make their indicators be ::before elements. The handle
 itself is a 0px by 0px div, as connection lines can move freely when
 the cursor is inside it. By making it adimensional, that never happens.  */
-.kie-dmn-editor--node-handle.connecting::before {
+/* v12: RF renamed react-flow__handle-connecting → connectingfrom / connectingto */
+.kie-dmn-editor--node-handle.connectingfrom::before {
   content: "";
   position: absolute;
   background: #0388ce;
@@ -626,7 +627,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   top: -10px;
   left: -10px;
 }
-.kie-dmn-editor--node-handle:not(.connecting)::before {
+.kie-dmn-editor--node-handle:not(.connectingfrom)::before {
   content: "";
   position: absolute;
   background: #0388ce;
@@ -1133,7 +1134,7 @@ th {
 
 /* controls */
 .react-flow__controls {
-  border-radius: 20px;
+  border-radius: 1000px;
   border: 1px solid black;
   background: white;
   margin-bottom: 24px;
@@ -1141,23 +1142,17 @@ th {
 .react-flow__controls:hover {
   box-shadow: -4px -4px 2px 0px rgb(127 127 127);
 }
-.react-flow__controls > button {
-  border-radius: 20px;
+.react-flow__controls-button {
+  width: 30px !important;
+  height: 30px !important;
+  border: 0 !important;
+  border-radius: 1000px;
 }
-.react-flow__controls > button:hover {
+.react-flow__controls-button:hover {
   filter: brightness(95%);
 }
-.react-flow__controls > button:active {
+.react-flow__controls-button:active {
   filter: brightness(90%);
-}
-.react-flow__controls {
-  border-radius: 1000px;
-}
-.react-flow__controls-button {
-  width: 30px;
-  height: 30px;
-  border: 0;
-  border-radius: 1000px;
 }
 .react-flow__resize-control {
   z-index: 0;
