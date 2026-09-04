@@ -57,15 +57,14 @@ jobs:
         with:
           ref: ${{ github.base_ref }}
 
-      - name: "Setup pnpm"
-        uses: pnpm/action-setup@v3
-        with:
-          version: 10.34.4
-
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
           node-version: 24.13.0
+
+      - name: "Setup pnpm"
+        shell: bash
+        run: npm -g install pnpm@10.34.4
 
       - name: "Setup CI patterns"
         id: ci_patterns
