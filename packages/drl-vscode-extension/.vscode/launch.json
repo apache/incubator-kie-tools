@@ -1,0 +1,46 @@
+{
+  // Open `packages/drl-vscode-extension` as its own VS Code window, so that
+  // ${workspaceFolder} is the extension itself. Run `pnpm -F drl-vscode-extension... build:dev`
+  // once beforehand: it bundles the client and copies the server JAR into dist/.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+    },
+    {
+      // Does NOT spawn the server. The extension connects to one already
+      // listening on 127.0.0.1:9925 — start org.drools.lsp.server.DroolsLspTCPLauncher
+      // yourself first, with the Java debugger attached if you want to step through it.
+      "name": "Run Extension (connect to a running LSP server)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "env": {
+        "LSDEBUG": "true"
+      }
+    },
+    {
+      // Attaches to a server started with
+      // -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      "name": "Attach to LSP Server (Java)",
+      "type": "java",
+      "request": "attach",
+      "hostName": "127.0.0.1",
+      "port": 5005
+    }
+  ],
+  "compounds": [
+    {
+      // Launches the extension host and attaches the Java debugger together.
+      "name": "Extension + Java debugger",
+      "configurations": ["Run Extension (connect to a running LSP server)", "Attach to LSP Server (Java)"]
+    }
+  ]
+}
