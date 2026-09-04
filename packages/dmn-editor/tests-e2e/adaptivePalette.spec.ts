@@ -61,7 +61,11 @@ test.describe("Adaptive Palette - small viewport", () => {
     await expect(palette.getMoreItemsSubmenu().locator(".kie-dmn-editor--palette-button").first()).toBeVisible();
   });
 
-  test("should be able to drag a node from the overflow submenu onto the canvas", async ({ palette, nodes }) => {
+  test("should be able to drag a node from the overflow submenu onto the canvas", async ({
+    palette,
+    nodes,
+    diagram,
+  }) => {
     await palette.openMoreItems();
 
     // Drag whichever node is first in the overflow submenu.
@@ -73,5 +77,6 @@ test.describe("Adaptive Palette - small viewport", () => {
     });
 
     await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
+    await expect(diagram.get()).toHaveScreenshot("adaptive-palette-node-from-more-items.png");
   });
 });
