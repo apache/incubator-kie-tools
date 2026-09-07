@@ -967,7 +967,7 @@ export const SubProcessNode = React.memo(
     //    would incorrectly clear the hover state and cause a toggle loop.
     // Tracking the cursor position on every mousemove is immune to both problems.
     const isConnectionBeingMade = RF.useStore(
-      (s) => !!s.connection.fromHandle?.nodeId && s.connection.fromHandle.nodeId !== id
+      (s) => !!s.connection.fromHandle && s.connection.fromHandle.nodeId !== id
     );
     const [isHoveredByBounds, setIsHoveredByBounds] = useState(false);
     const checkBounds = useCallback((x: number, y: number) => {

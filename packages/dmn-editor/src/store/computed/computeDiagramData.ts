@@ -222,14 +222,6 @@ export function computeDiagramData(
       // them. We always know the dimensions here, so we can simply provide them.
       width: dimensions.width,
       height: dimensions.height,
-      // v12: Pre-populate `measured` (used by RF for drag/layout) to prevent error #015 before ResizeObserver fires.
-      measured: {
-        width: dimensions.width,
-        height: dimensions.height,
-      },
-      style: {
-        ...dimensions,
-      },
     };
 
     if (dmnObject?.__$$element === "decisionService") {
@@ -244,17 +236,8 @@ export function computeDiagramData(
           parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
         }
       } else {
-        newNode.style = {
-          ...newNode.style,
-          ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
-        };
         newNode.width = DECISION_SERVICE_COLLAPSED_DIMENSIONS.width;
         newNode.height = DECISION_SERVICE_COLLAPSED_DIMENSIONS.height;
-        // Keep measured in sync with the collapsed override dimensions.
-        newNode.measured = {
-          width: DECISION_SERVICE_COLLAPSED_DIMENSIONS.width,
-          height: DECISION_SERVICE_COLLAPSED_DIMENSIONS.height,
-        };
       }
     }
 

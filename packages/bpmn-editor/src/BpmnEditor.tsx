@@ -285,8 +285,8 @@ export const BpmnEditorInternal = ({
           return undefined;
         }
 
-        const nodeLookup = diagramRef.current?.getNodeLookup();
-        const bounds = RF.getNodesBounds(nodes, nodeLookup ? { nodeLookup } : undefined);
+        const reactFlowInstance = diagramRef.current?.getReactFlowInstance();
+        const bounds = reactFlowInstance?.getNodesBounds(nodes) ?? RF.getNodesBounds(nodes);
         const state = bpmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

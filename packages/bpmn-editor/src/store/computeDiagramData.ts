@@ -227,13 +227,7 @@ export function computeDiagramData(
         dragging: draggingNodes.has(id),
         width: snappedShapeDimensions.width,
         height: snappedShapeDimensions.height,
-        // v12: Pre-populate `measured` (used by RF for drag/layout) to prevent error #015 before ResizeObserver fires.
-        measured: {
-          width: snappedShapeDimensions.width,
-          height: snappedShapeDimensions.height,
-        },
         type: nodeType,
-        style: { ...snappedShapeDimensions },
       };
 
       return n;

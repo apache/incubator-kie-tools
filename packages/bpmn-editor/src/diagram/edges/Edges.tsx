@@ -71,7 +71,7 @@ export const SequenceFlowEdge = React.memo((props: RF.EdgeProps<RF.Edge<BpmnDiag
     isDraggingWaypoint,
   } = usePotentialWaypointControls(waypoints, props.selected, props.id, props.data?.bpmnEdgeIndex, interactionPathRef);
 
-  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -196,7 +196,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<RF.Edge<BpmnDiagr
     isDraggingWaypoint,
   } = usePotentialWaypointControls(waypoints, props.selected, props.id, props.data?.bpmnEdgeIndex, interactionPathRef);
 
-  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);

@@ -49,7 +49,7 @@ export function usePotentialWaypointControls(
     undefined
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle);
 
   const isExistingWaypoint = useCallback(
     (point: DC__Point) => waypoints.find((w) => w["@_x"] === point["@_x"] && w["@_y"] === point["@_y"]),

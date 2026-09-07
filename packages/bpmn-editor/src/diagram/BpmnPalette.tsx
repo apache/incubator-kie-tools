@@ -315,12 +315,6 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
           position,
           width: dimensions.width,
           height: dimensions.height,
-          // v12: RF checks node.measured.width/height before computing drag position (error #015).
-          // Providing measured here marks this ghost node as "initialized" even before RF renders it.
-          measured: {
-            width: dimensions.width,
-            height: dimensions.height,
-          },
           data: {
             parentXyFlowNode: undefined,
             shape: bpmnShape,

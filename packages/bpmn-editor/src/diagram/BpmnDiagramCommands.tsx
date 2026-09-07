@@ -56,7 +56,7 @@ export function BpmnDiagramCommands(props: {}) {
     commandsRef.current.cancelAction = async () => {
       console.debug("BPMN DIAGRAM: COMMANDS: Canceling action...");
       xyFlowStoreApi.setState((xyFlowState) => {
-        if (xyFlowState.connection?.fromHandle?.nodeId) {
+        if (xyFlowState.connection.fromHandle) {
           xyFlowState.cancelConnection();
           bpmnEditorStoreApi.setState((state) => {
             state.xyFlowReactKieDiagram.ongoingConnection = undefined;
@@ -94,11 +94,7 @@ export function BpmnDiagramCommands(props: {}) {
       }
 
       const bounds = getBounds({
-        nodes: selectedNodes.map((n) => ({
-          position: n.position,
-          width: n.measured?.width,
-          height: n.measured?.height,
-        })),
+        nodes: selectedNodes,
         padding: 100,
       });
 
@@ -308,11 +304,7 @@ export function BpmnDiagramCommands(props: {}) {
           __readonly_newNode: {
             type: NODE_TYPES.group,
             bounds: getBounds({
-              nodes: selectedNodes.map((n) => ({
-                position: n.position,
-                width: n.measured?.width,
-                height: n.measured?.height,
-              })),
+              nodes: selectedNodes,
               padding: CONTAINER_NODES_DESIRABLE_PADDING,
             }),
             data: undefined,

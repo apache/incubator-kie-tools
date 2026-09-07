@@ -99,7 +99,7 @@ export type NodeDmnObjects =
   | Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]>
   | ElementFilter<Unpacked<Normalized<DMN_LATEST__tDefinitions>["artifact"]>, "textAnnotation" | "group">;
 
-export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
+export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = Record<string, unknown> & {
   dmnObjectNamespace: string | undefined;
   dmnObjectQName: XmlQName;
   dmnObject: T;
@@ -1354,7 +1354,7 @@ export const GroupNode = React.memo(
     useEffect(() => {
       const onDoubleClick = () => {
         dmnEditorStoreApi.setState((state) => {
-          state.diagram._selectedNodes = reactFlow.getNodes().flatMap((n: RF.Node<DmnDiagramNodeData>) =>
+          state.diagram._selectedNodes = reactFlow.getNodes().flatMap((n) =>
             getContainmentRelationship({
               bounds: n.data.shape["dc:Bounds"]!,
               container: shape["dc:Bounds"]!,
@@ -1627,10 +1627,9 @@ function useHoveredNodeAlwaysOnTop(
 }
 
 export function useConnection(nodeId: string) {
-  const connectionNodeId = RF.useStore((s) => s.connection.fromHandle?.nodeId ?? null);
-  const connectionHandleType = RF.useStore((s) => s.connection.fromHandle?.type ?? null);
+  const connectionFromHandle = RF.useStore((s) => s.connection.fromHandle);
 
-  const source = connectionNodeId;
+  const source = connectionFromHandle?.nodeId ?? null;
   const target = nodeId;
 
   const edgeIdBeingUpdated = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
@@ -1640,12 +1639,12 @@ export function useConnection(nodeId: string) {
 
   const connection = useMemo(
     () => ({
-      source: connectionHandleType === "source" ? source : target,
-      target: connectionHandleType === "source" ? target : source,
+      source: (connectionFromHandle?.type === "source" ? source : target) ?? "",
+      target: (connectionFromHandle?.type === "source" ? target : source) ?? "",
       sourceHandle,
       targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
     }),
-    [connectionHandleType, source, sourceHandle, target]
+    [connectionFromHandle?.type, source, sourceHandle, target]
   );
 
   return connection;
@@ -1653,15 +1652,10 @@ export function useConnection(nodeId: string) {
 
 export function useConnectionTargetStatus(nodeId: string, shouldActLikeHovered: boolean) {
   const isTargeted = RF.useStore(
-    (s) => !!s.connection.fromHandle?.nodeId && s.connection.fromHandle.nodeId !== nodeId && shouldActLikeHovered
+    (s) => !!s.connection.fromHandle && s.connection.fromHandle.nodeId !== nodeId && shouldActLikeHovered
   );
   const connection = useConnection(nodeId);
-  const isValidConnectionTarget = RF.useStore((s) => {
-    if (!connection.source || !connection.target) {
-      return false;
-    }
-    return s.isValidConnection?.({ ...connection, source: connection.source, target: connection.target }) ?? false;
-  });
+  const isValidConnectionTarget = RF.useStore((s) => s.isValidConnection?.(connection) ?? false);
 
   return useMemo(
     () => ({

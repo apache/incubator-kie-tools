@@ -36,8 +36,8 @@ export function useKieEdgePath(
   const sourceNodeY = RF.useStore((s) =>
     source ? s.nodeLookup.get(source)?.internals.positionAbsolute?.y : undefined
   );
-  const sourceNodeWidth = RF.useStore((s) => (source ? s.nodeLookup.get(source)?.measured?.width : undefined));
-  const sourceNodeHeight = RF.useStore((s) => (source ? s.nodeLookup.get(source)?.measured?.height : undefined));
+  const sourceNodeWidth = RF.useStore((s) => (source ? s.nodeLookup.get(source)?.width : undefined));
+  const sourceNodeHeight = RF.useStore((s) => (source ? s.nodeLookup.get(source)?.height : undefined));
 
   const targetNodeX = RF.useStore((s) =>
     target ? s.nodeLookup.get(target)?.internals.positionAbsolute?.x : undefined
@@ -45,8 +45,8 @@ export function useKieEdgePath(
   const targetNodeY = RF.useStore((s) =>
     target ? s.nodeLookup.get(target)?.internals.positionAbsolute?.y : undefined
   );
-  const targetNodeWidth = RF.useStore((s) => (target ? s.nodeLookup.get(target)?.measured?.width : undefined));
-  const targetNodeHeight = RF.useStore((s) => (target ? s.nodeLookup.get(target)?.measured?.height : undefined));
+  const targetNodeWidth = RF.useStore((s) => (target ? s.nodeLookup.get(target)?.width : undefined));
+  const targetNodeHeight = RF.useStore((s) => (target ? s.nodeLookup.get(target)?.height : undefined));
 
   const dmnEdge = data?.dmnEdge;
   const dmnShapeSource = data?.dmnShapeSource;

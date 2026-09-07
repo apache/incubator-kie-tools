@@ -41,15 +41,10 @@ export function snapToDropTargetsBorder<
   borderAllowanceInPx: number
 ): RF.XYPosition {
   const dropTargetPosition = snapShapePosition(snapGrid, dropTarget.node.data.shape);
-  const isKnownNodeType = (t: string | undefined): t is N => t !== undefined && t in minNodeSizes;
-  if (!isKnownNodeType(dropTarget.node.type)) {
-    return { x: shapeBounds["@_x"], y: shapeBounds["@_y"] };
-  }
-  const dropTargetNodeType = dropTarget.node.type;
   const dropTargetDimensions = snapShapeDimensions(
     snapGrid,
     dropTarget.node.data.shape,
-    minNodeSizes[dropTargetNodeType]({ snapGrid })
+    minNodeSizes[dropTarget.node.type! as N]({ snapGrid })
   );
 
   const shapeDimensions = snapBoundsDimensions(snapGrid, shapeBounds, minNodeSizes[nodeType!]({ snapGrid }));

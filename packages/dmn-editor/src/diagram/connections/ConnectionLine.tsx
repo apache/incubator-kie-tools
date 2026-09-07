@@ -63,8 +63,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   const { "@_x": fromX, "@_y": fromY } = getBoundsCenterPoint({
     x: fromNode?.internals?.positionAbsolute?.x,
     y: fromNode?.internals?.positionAbsolute?.y,
-    width: fromNode?.measured?.width,
-    height: fromNode?.measured?.height,
+    width: fromNode?.width,
+    height: fromNode?.height,
   });
 
   const connectionLinePath =

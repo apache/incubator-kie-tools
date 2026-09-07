@@ -26,7 +26,7 @@ import { checkIsValidConnection } from "../graph/isValidConnection";
 import { getContainmentRelationship, getDiBoundsCenterPoint } from "../maths/DcMaths";
 import { DC__Point } from "../maths/model";
 import { snapShapeDimensions } from "../snapgrid/SnapGrid";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useXyFlowReactKieDiagramStore, useXyFlowReactKieDiagramStoreApi } from "../store/Store";
 import { NodeSizes } from "../nodes/NodeSizes";
 import { SelectionStatusLabel } from "./SelectionStatusLabel";
@@ -192,7 +192,7 @@ export type Props<
   modelBeforeEditingRef: React.MutableRefObject<unknown>;
   onResetToBeforeEditingBegan: OnResetToBeforeEditingBegan<S, N, E, NData, EData>;
   // components
-  connectionLineComponent: RF.ConnectionLineComponent;
+  connectionLineComponent: RF.ConnectionLineComponent<RF.Node<NData, N>>;
   nodeComponents: RF.NodeTypes;
   edgeComponents: RF.EdgeTypes;
   // infra
@@ -241,24 +241,9 @@ export type DiagramRef<
   EData extends XyFlowReactKieDiagramEdgeData,
 > = {
   getReactFlowInstance: () => RF.ReactFlowInstance<RF.Node<NData, N>, RF.Edge<EData>> | undefined;
-  getNodeLookup: () => RF.ReactFlowState["nodeLookup"] | undefined;
 };
 
 export function XyFlowReactKieDiagram<
-  S extends XyFlowDiagramState<S, N, NData, EData>,
-  N extends string,
-  E extends string,
-  NData extends XyFlowReactKieDiagramNodeData<N, NData>,
-  EData extends XyFlowReactKieDiagramEdgeData,
->(props: Props<S, N, E, NData, EData>) {
-  return (
-    <RF.ReactFlowProvider>
-      <XyFlowReactKieDiagramInner<S, N, E, NData, EData> {...props} />
-    </RF.ReactFlowProvider>
-  );
-}
-
-function XyFlowReactKieDiagramInner<
   S extends XyFlowDiagramState<S, N, NData, EData>,
   N extends string,
   E extends string,
@@ -303,8 +288,6 @@ function XyFlowReactKieDiagramInner<
   // Contexts
   const xyFlowReactKieDiagramStoreApi = useXyFlowReactKieDiagramStoreApi<S, N, NData, EData>();
   const snapGrid = useXyFlowReactKieDiagramStore((s) => s.xyFlowReactKieDiagram.snapGrid);
-  // useStoreApi gives synchronous access to the RF store — available before onInit fires.
-  const xyFlowStoreApi = RF.useStoreApi();
 
   // State
   const [reactFlowInstance, setReactFlowInstance] = useState<
@@ -312,19 +295,9 @@ function XyFlowReactKieDiagramInner<
   >(undefined);
 
   // Refs
-  const nodeLookupRef = useRef<RF.ReactFlowState["nodeLookup"] | undefined>(undefined);
-  React.useImperativeHandle(
-    diagramRef,
-    () => ({
-      getReactFlowInstance: () => reactFlowInstance,
-      getNodeLookup: () => nodeLookupRef.current,
-    }),
-    [reactFlowInstance]
-  );
+  React.useImperativeHandle(diagramRef, () => ({ getReactFlowInstance: () => reactFlowInstance }), [reactFlowInstance]);
 
   const nodeIdBeingDraggedRef = useRef<string | null>(null);
-  // v12: Track actual movement (dragging=true position change) since `node.dragging` is always false in onNodeDragStop.
-  const nodeActuallyMovedRef = useRef<boolean>(false);
 
   // Memos
 
@@ -500,6 +473,10 @@ function XyFlowReactKieDiagramInner<
 
   const onNodesChange = useCallback<RF.OnNodesChange>(
     (changes) => {
+      if (!reactFlowInstance) {
+        return;
+      }
+
       const controlWaypointsByEdge = new Map<number, Set<number>>();
 
       xyFlowReactKieDiagramStoreApi.setState((state) => {
@@ -543,13 +520,8 @@ function XyFlowReactKieDiagramInner<
               console.debug(`XYFLOW KIE DIAGRAM: 'onNodesChange' --> position '${change.id}'`);
               state.dispatch(state).setNodeStatus(change.id, { dragging: change.dragging });
 
-              // v12: change.position is used as the drag position (positionAbsolute removed in v12; nodeLookup is stale during onNodesChange).
-              const positionAbsolute: RF.XYPosition | undefined =
-                change.positionAbsolute ??
-                change.position ??
-                nodeLookupRef.current?.get(change.id)?.internals.positionAbsolute;
-
-              if (positionAbsolute) {
+              const pos = change.positionAbsolute ?? change.position;
+              if (pos) {
                 const allNodes = state.computed(state).getDiagramData().nodes;
 
                 if (nodeIdBeingDraggedRef.current === change.id) {
@@ -558,11 +530,8 @@ function XyFlowReactKieDiagramInner<
                     state.xyFlowReactKieDiagram.newNodeProjection!;
 
                   let foundContainer = false;
-                  // Use xyFlowStoreApi for synchronous access; nodeLookup stores InternalNode<Node> so we cast
-                  // through unknown to Node<NData, N> (safe since NData satisfies Record<string, unknown>).
-                  for (const potentialContainer of (
-                    Array.from(xyFlowStoreApi.getState().nodeLookup.values()) as unknown as RF.Node<NData, N>[]
-                  ).reverse() /* Respect the nodes z-index */) {
+                  for (const potentialContainer of reactFlowInstance?.getNodes().reverse() ??
+                    [] /* Respect the nodes z-index */) {
                     if (potentialContainer.id === nodeBeingDragged.id) {
                       // ignore `nodeBeingDragged`
                       continue;
@@ -574,8 +543,8 @@ function XyFlowReactKieDiagramInner<
                       containerMinSizes: minNodeSizes[potentialContainer.type as N],
                       bounds: {
                         ...nodeBeingDragged.data.shape["dc:Bounds"],
-                        "@_x": positionAbsolute.x,
-                        "@_y": positionAbsolute.y,
+                        "@_x": pos.x,
+                        "@_y": pos.y,
                       },
                       boundsMinSizes: minNodeSizes[nodeBeingDragged.type as N],
                       borderAllowanceInPx: DEFAULT_BORDER_ALLOWANCE_IN_PX,
@@ -666,22 +635,21 @@ function XyFlowReactKieDiagramInner<
                         dropTarget,
                         {
                           ...(node ?? state.xyFlowReactKieDiagram.newNodeProjection).data.shape["dc:Bounds"],
-                          "@_x": positionAbsolute.x,
-                          "@_y": positionAbsolute.y,
+                          "@_x": pos.x,
+                          "@_y": pos.y,
                         },
                         (node ?? state.xyFlowReactKieDiagram.newNodeProjection).type! as N,
                         state.xyFlowReactKieDiagram.snapGrid,
                         minNodeSizes,
                         DEFAULT_BORDER_ALLOWANCE_IN_PX
                       )
-                    : positionAbsolute;
+                    : pos;
 
                 if (!node && state.xyFlowReactKieDiagram.newNodeProjection) {
                   state.xyFlowReactKieDiagram.newNodeProjection.position = newPosition;
                   state.xyFlowReactKieDiagram.newNodeProjection.data.shape["dc:Bounds"]["@_x"] = newPosition.x;
                   state.xyFlowReactKieDiagram.newNodeProjection.data.shape["dc:Bounds"]["@_y"] = newPosition.y;
-                } else if (!change.dragging) {
-                  // v12: Skip model writes while dragging — new object refs from computeDiagramData cause RF to reset positionAbsolute, freezing nodes.
+                } else {
                   if (isAnyParentSelected(node?.data.parentXyFlowNode)) {
                     // Do nothing.
                     // Nodes that have a virtual parent will be automatically dragged with them, so there's no need to reposition them here.
@@ -706,7 +674,7 @@ function XyFlowReactKieDiagramInner<
               state.dispatch(state).setNodeStatus(node.id, { selected: false, dragging: false, resizing: false });
               break;
             case "replace":
-              state.dispatch(state).setNodeStatus(change.id, {
+              state.dispatch(state).setNodeStatus(change.item.id, {
                 selected: false,
                 dragging: false,
                 resizing: false,
@@ -725,36 +693,34 @@ function XyFlowReactKieDiagramInner<
       onNodeDeleted,
       onNodeRepositioned,
       onNodeResized,
+      reactFlowInstance,
       snapGrid,
       xyFlowReactKieDiagramStoreApi,
-      xyFlowStoreApi,
     ]
   );
 
-  const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>((e, nodeBeingDragged, _nodes) => {
-    nodeIdBeingDraggedRef.current = nodeBeingDragged.id;
-    // v12: node.dragging is always false in onNodeDragStop; mark movement here where we know the mouse actually moved.
-    nodeActuallyMovedRef.current = true;
-  }, []);
+  const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>(
+    (e: MouseEvent | TouchEvent, nodeBeingDragged: RF.Node<NData, N>) => {
+      nodeIdBeingDraggedRef.current = nodeBeingDragged.id;
+    },
+    []
+  );
 
   const onNodeDragStart = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>(
-    (e, node, nodes) => {
+    (e: MouseEvent | TouchEvent, node: RF.Node<NData, N>, nodes: RF.Node<NData, N>[]) => {
       modelBeforeEditingRef.current = model;
-      nodeActuallyMovedRef.current = false;
       onNodeDrag(e, node, nodes);
     },
     [modelBeforeEditingRef, onNodeDrag, model]
   );
 
   const onNodeDragStop = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>(
-    (e, node, _nodes) => {
+    (e: MouseEvent | TouchEvent, node: RF.Node<NData, N>) => {
       try {
         xyFlowReactKieDiagramStoreApi.setState((state) => {
           console.debug("XYFLOW KIE DIAGRAM: `onNodeDragStop`");
           const nodeBeingDragged = state.computed(state).getDiagramData().nodesById.get(nodeIdBeingDraggedRef.current!);
           nodeIdBeingDraggedRef.current = null;
-          const actuallyMoved = nodeActuallyMovedRef.current;
-          nodeActuallyMovedRef.current = false;
           if (!nodeBeingDragged) {
             return;
           }
@@ -782,8 +748,7 @@ function XyFlowReactKieDiagramInner<
 
           const selectedNodes = [...state.computed(state).getDiagramData().selectedNodesById.values()];
 
-          // v12: node.dragging is always false in onNodeDragStop; use actuallyMoved flag instead.
-          if (!actuallyMoved) {
+          if (!node.dragging) {
             return;
           }
 
@@ -792,7 +757,7 @@ function XyFlowReactKieDiagramInner<
           // Un-parent
           if (nodeBeingDragged.data.parentXyFlowNode) {
             const p = state.computed(state).getDiagramData().nodesById.get(nodeBeingDragged.data.parentXyFlowNode.id);
-            if (p?.type && (containmentMap as Map<string, unknown>).has(p.type)) {
+            if (p?.type && containmentMap.get(p.type as N)) {
               onNodeUnparented({
                 state,
                 exParentNode: p,
@@ -855,10 +820,8 @@ function XyFlowReactKieDiagramInner<
               }
               break;
             case "add":
-              console.debug(`XYFLOW KIE DIAGRAM: 'onEdgesChange' --> add '${change.item.id}'. Ignoring`);
-              break;
             case "replace":
-              console.debug(`XYFLOW KIE DIAGRAM: 'onEdgesChange' --> replace '${change.id}'. Ignoring`);
+              console.debug(`XYFLOW KIE DIAGRAM: 'onEdgesChange' --> add/replace '${change.item.id}'. Ignoring`);
           }
         }
       });
@@ -963,10 +926,7 @@ function XyFlowReactKieDiagramInner<
           nodeIdBeingDraggedRef.current = newNodeId;
         });
 
-        // Palette drops count as "moved"; invoke onNodeDragStop with a synthetic event to trigger parenting logic
-        // (callback only reads nodeIdBeingDraggedRef, not `node`).
-        nodeActuallyMovedRef.current = true;
-        onNodeDragStop(new MouseEvent("mouseup"), {} as RF.Node<NData, N>, []);
+        onNodeDragStop(undefined as any, { dragging: true } as any, []);
 
         xyFlowReactKieDiagramStoreApi.setState((state) => {
           state.xyFlowReactKieDiagram.newNodeProjection = undefined;
@@ -997,7 +957,7 @@ function XyFlowReactKieDiagramInner<
         }
 
         onNodeDragStart(
-          new MouseEvent("dragover"),
+          undefined as any,
           xyFlowReactKieDiagramStoreApi.getState().xyFlowReactKieDiagram.newNodeProjection!,
           []
         );
@@ -1011,7 +971,7 @@ function XyFlowReactKieDiagramInner<
         onNodesChange([
           {
             type: "position",
-            position: {
+            positionAbsolute: {
               x: position.x,
               y: position.y,
             },
@@ -1068,8 +1028,12 @@ function XyFlowReactKieDiagramInner<
     [xyFlowReactKieDiagramStoreApi, modelBeforeEditingRef, onResetToBeforeEditingBegan, onEscPressed]
   );
 
-  const nodes = useXyFlowReactKieDiagramStore((s) => s.computed(s).getDiagramData().nodes);
-  const edges = useXyFlowReactKieDiagramStore((s) => s.computed(s).getDiagramData().edges);
+  const nodes = useXyFlowReactKieDiagramStore<S, N, NData, EData, RF.Node<NData, N>[]>(
+    (s) => s.computed(s).getDiagramData().nodes
+  );
+  const edges = useXyFlowReactKieDiagramStore<S, N, NData, EData, RF.Edge<EData>[]>(
+    (s) => s.computed(s).getDiagramData().edges
+  );
 
   const waypointActionsContextValue = useMemo<WaypointActionsContextType>(
     () => ({
@@ -1081,83 +1045,73 @@ function XyFlowReactKieDiagramInner<
   );
 
   return (
-    <I18nDictionariesProvider
-      defaults={kieDiagramI18nDefaults}
-      dictionaries={kieDiagramI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={KieDiagramI18nContext}
-    >
-      <WaypointActionsContextProvider value={waypointActionsContextValue}>
-        <RF.ReactFlow
-          connectionMode={RF.ConnectionMode.Loose} // Allow target handles to be used as source. This is very important for allowing the positional handles to be updated for the base of an edge.
-          onKeyDownCapture={handleRfKeyDownCapture} // Override Reactflow's keyboard listeners.
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onReconnectStart={onReconnectStart}
-          onReconnectEnd={onReconnectEnd}
-          onReconnect={onReconnect}
-          onlyRenderVisibleElements={true}
-          zoomOnDoubleClick={false}
-          elementsSelectable={true}
-          panOnScroll={true}
-          zoomOnScroll={false}
-          preventScrolling={true}
-          selectionOnDrag={true}
-          panOnDrag={PAN_ON_DRAG}
-          selectionMode={RF.SelectionMode.Full} // For selections happening inside Containment nodes it's better to leave it as "Full"
-          isValidConnection={isValidConnection}
-          connectionLineComponent={connectionLineComponent}
-          onConnect={onConnect}
-          onConnectStart={onConnectStart}
-          onConnectEnd={onConnectEnd}
-          // (begin)
-          // 'Starting to drag' and 'dragging' should have the same behavior. Otherwise,
-          // clicking a node and letting it go, without moving, won't work properly, and
-          // Nodes will be removed from Containment Nodes.
-          onNodeDragStart={onNodeDragStart}
-          onNodeDrag={onNodeDrag}
-          // (end)
-          onNodeDragStop={onNodeDragStop}
-          nodeTypes={nodeComponents}
-          edgeTypes={edgeComponents}
-          snapToGrid={true}
-          snapGrid={xyFlowSnapGrid}
-          defaultViewport={DEFAULT_VIEWPORT}
-          fitView={false}
-          fitViewOptions={FIT_VIEW_OPTIONS}
-          attributionPosition={"bottom-right"}
-          onInit={(instance) =>
-            setReactFlowInstance(instance as RF.ReactFlowInstance<RF.Node<NData, N>, RF.Edge<EData>>)
-          }
-          deleteKeyCode={DELETE_NODE_KEY_CODES}
-          // (begin)
-          // Used to make the Palette work by dropping nodes on the Reactflow Canvas
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          // (end)
-        >
-          {children}
-          <SelectionStatusLabel />
-          {!isFirefox && <RF.Background />}
-          <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
-          <SetConnectionToReactFlowStore />
-          <NodeLookupSync nodeLookupRef={nodeLookupRef} />
-        </RF.ReactFlow>
-      </WaypointActionsContextProvider>
-    </I18nDictionariesProvider>
+    <>
+      <I18nDictionariesProvider
+        defaults={kieDiagramI18nDefaults}
+        dictionaries={kieDiagramI18nDictionaries}
+        initialLocale={navigator.language}
+        ctx={KieDiagramI18nContext}
+      >
+        <WaypointActionsContextProvider value={waypointActionsContextValue}>
+          <RF.ReactFlow<RF.Node<NData, N>, RF.Edge<EData>>
+            connectionMode={RF.ConnectionMode.Loose} // Allow target handles to be used as source. This is very important for allowing the positional handles to be updated for the base of an edge.
+            onKeyDownCapture={handleRfKeyDownCapture} // Override Reactflow's keyboard listeners.
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onReconnectStart={onReconnectStart}
+            onReconnectEnd={onReconnectEnd}
+            onReconnect={onReconnect}
+            onlyRenderVisibleElements={true}
+            zoomOnDoubleClick={false}
+            elementsSelectable={true}
+            panOnScroll={true}
+            zoomOnScroll={false}
+            preventScrolling={true}
+            selectionOnDrag={true}
+            panOnDrag={PAN_ON_DRAG}
+            selectionMode={RF.SelectionMode.Full} // For selections happening inside Containment nodes it's better to leave it as "Full"
+            isValidConnection={isValidConnection}
+            connectionLineComponent={connectionLineComponent}
+            onConnect={onConnect}
+            onConnectStart={onConnectStart}
+            onConnectEnd={onConnectEnd}
+            // (begin)
+            // 'Starting to drag' and 'dragging' should have the same behavior. Otherwise,
+            // clicking a node and letting it go, without moving, won't work properly, and
+            // Nodes will be removed from Containment Nodes.
+            onNodeDragStart={onNodeDragStart}
+            onNodeDrag={onNodeDrag}
+            // (end)
+            onNodeDragStop={onNodeDragStop}
+            nodeTypes={nodeComponents}
+            edgeTypes={edgeComponents}
+            snapToGrid={true}
+            snapGrid={xyFlowSnapGrid}
+            defaultViewport={DEFAULT_VIEWPORT}
+            fitView={false}
+            fitViewOptions={FIT_VIEW_OPTIONS}
+            proOptions={{ hideAttribution: true }}
+            attributionPosition={"bottom-right"}
+            onInit={setReactFlowInstance}
+            deleteKeyCode={DELETE_NODE_KEY_CODES}
+            // (begin)
+            // Used to make the Palette work by dropping nodes on the Reactflow Canvas
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            // (end)
+          >
+            {children}
+            <SelectionStatusLabel />
+            {!isFirefox && <RF.Background />}
+            <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
+            <SetConnectionToReactFlowStore />
+          </RF.ReactFlow>
+        </WaypointActionsContextProvider>
+      </I18nDictionariesProvider>
+    </>
   );
-}
-
-function NodeLookupSync(props: { nodeLookupRef: React.MutableRefObject<RF.ReactFlowState["nodeLookup"] | undefined> }) {
-  const xyFlowStoreApi = RF.useStoreApi();
-  // useLayoutEffect fires synchronously before paint, ensuring nodeLookupRef is populated
-  // before onNodesChange can read from it during the same render cycle.
-  useLayoutEffect(() => {
-    props.nodeLookupRef.current = xyFlowStoreApi.getState().nodeLookup;
-  });
-  return null;
 }
 
 export function SetConnectionToReactFlowStore(props: {}) {
@@ -1165,19 +1119,49 @@ export function SetConnectionToReactFlowStore(props: {}) {
   const xyFlowStoreApi = RF.useStoreApi();
 
   useEffect(() => {
-    if (ongoingConnection) {
-      xyFlowStoreApi.setState({
-        connectionClickStartHandle: {
-          nodeId: ongoingConnection.nodeId!,
-          id: ongoingConnection.handleId,
-          type: ongoingConnection.handleType!,
-        },
-      });
+    const { updateConnection, nodeLookup } = xyFlowStoreApi.getState();
+    if (ongoingConnection?.nodeId && ongoingConnection?.handleId && ongoingConnection?.handleType) {
+      const fromNode = nodeLookup.get(ongoingConnection.nodeId);
+      if (fromNode) {
+        updateConnection({
+          inProgress: true,
+          isValid: null,
+          from: fromNode.internals.positionAbsolute,
+          fromHandle: {
+            nodeId: ongoingConnection.nodeId,
+            id: ongoingConnection.handleId,
+            type: ongoingConnection.handleType!,
+            x: 0,
+            y: 0,
+            position: RF.Position.Top,
+            width: 0,
+            height: 0,
+          },
+          fromPosition: RF.Position.Top,
+          fromNode,
+          to: fromNode.internals.positionAbsolute,
+          toHandle: null,
+          toPosition: RF.Position.Top,
+          toNode: null,
+          pointer: fromNode.internals.positionAbsolute,
+        });
+      }
     } else {
-      xyFlowStoreApi.getState().cancelConnection();
-      xyFlowStoreApi.setState({ connectionClickStartHandle: null });
+      updateConnection({
+        inProgress: false,
+        isValid: null,
+        from: null,
+        fromHandle: null,
+        fromPosition: null,
+        fromNode: null,
+        to: null,
+        toHandle: null,
+        toPosition: null,
+        toNode: null,
+        pointer: null,
+      });
     }
-  }, [ongoingConnection, xyFlowStoreApi]);
+  }, [ongoingConnection?.handleId, ongoingConnection?.handleType, ongoingConnection?.nodeId, xyFlowStoreApi]);
 
   return <></>;
 }

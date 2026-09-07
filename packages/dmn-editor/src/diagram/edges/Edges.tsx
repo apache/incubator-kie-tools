@@ -146,7 +146,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<RF.Edg
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -197,7 +197,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<RF.Edge<
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -248,7 +248,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<RF.Edge<
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
@@ -304,7 +304,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<RF.Edge<DmnDiagra
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle?.nodeId);
+  const isConnecting = !!RF.useStore((s) => s.connection.fromHandle);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);

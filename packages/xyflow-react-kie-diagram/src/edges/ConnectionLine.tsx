@@ -43,7 +43,7 @@ export function ConnectionLine<N extends string, E extends string>({
   edgeType,
   nodeComponentsMapping,
   edgeComponentsMapping,
-}: RF.ConnectionLineComponentProps<RF.Node> & {
+}: RF.ConnectionLineComponentProps & {
   defaultNodeSizes: NodeSizes<N>;
   minNodeSizes: NodeSizes<N>;
   edgeType: undefined | E;
@@ -64,7 +64,9 @@ export function ConnectionLine<N extends string, E extends string>({
   //
   // When editing an existing edge from its first waypoint (i.e., source handle) the edge is rendered
   // in reverse. So the connection line's "from" properties are actually "to" properties.
-  const isUpdatingFromSourceHandle = Object.values(PositionalNodeHandleId).some((v) => v === fromHandle?.id);
+  const isUpdatingFromSourceHandle = Object.keys(PositionalNodeHandleId).some(
+    (k) => (PositionalNodeHandleId as any)[k] === fromHandle?.id
+  );
 
   const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : (edgeBeingUpdated?.type ?? fromHandle?.id);
 
@@ -81,8 +83,8 @@ export function ConnectionLine<N extends string, E extends string>({
   const { "@_x": fromX, "@_y": fromY } = getBoundsCenterPoint({
     x: fromNode?.internals?.positionAbsolute?.x,
     y: fromNode?.internals?.positionAbsolute?.y,
-    width: fromNode?.measured?.width,
-    height: fromNode?.measured?.height,
+    width: fromNode?.width,
+    height: fromNode?.height,
   });
 
   const connectionLinePath =
@@ -105,22 +107,12 @@ export function ConnectionLine<N extends string, E extends string>({
     const defaultSize = defaultNodeSizes[nodeType]({ snapGrid });
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
-      {
-        x: fromNode?.internals?.positionAbsolute?.x,
-        y: fromNode?.internals?.positionAbsolute?.y,
-        width: fromNode!.measured?.width,
-        height: fromNode!.measured?.height,
-      },
+      { ...fromNode!.position, width: fromNode!.width, height: fromNode!.height },
       undefined
     );
 
     const [fromXauto, fromYauto] = getPositionalHandlePosition(
-      {
-        x: fromNode?.internals?.positionAbsolute?.x,
-        y: fromNode?.internals?.positionAbsolute?.y,
-        width: fromNode!.measured?.width,
-        height: fromNode!.measured?.height,
-      },
+      { ...fromNode!.position, width: fromNode!.width, height: fromNode!.height },
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       undefined
     );

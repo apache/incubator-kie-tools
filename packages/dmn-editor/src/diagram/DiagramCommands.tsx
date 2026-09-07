@@ -59,7 +59,7 @@ export function DiagramCommands(props: {}) {
     commandsRef.current.cancelAction = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Canceling action...");
       rfStoreApi.setState((rfState) => {
-        if (rfState.connection?.fromHandle?.nodeId) {
+        if (rfState.connection.fromHandle) {
           rfState.cancelConnection();
           dmnEditorStoreApi.setState((state) => {
             state.diagram.ongoingConnection = undefined;
@@ -91,17 +91,13 @@ export function DiagramCommands(props: {}) {
     }
     commandsRef.current.focusOnSelection = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Focusing on selected bounds...");
-      const selectedNodes = rf.getNodes().filter((s: RF.Node<DmnDiagramNodeData>) => s.selected);
+      const selectedNodes = rf.getNodes().filter((s) => s.selected);
       if (selectedNodes.length <= 0) {
         return;
       }
 
       const bounds = getBounds({
-        nodes: selectedNodes.map((n) => ({
-          position: n.position,
-          width: n.measured?.width,
-          height: n.measured?.height,
-        })),
+        nodes: selectedNodes,
         padding: 100,
       });
 
@@ -310,7 +306,7 @@ export function DiagramCommands(props: {}) {
     }
     commandsRef.current.createGroup = async () => {
       console.debug("DMN DIAGRAM: COMMANDS: Grouping nodes...");
-      const selectedNodes = rf.getNodes().filter((s: RF.Node<DmnDiagramNodeData>) => s.selected);
+      const selectedNodes = rf.getNodes().filter((s) => s.selected);
       if (selectedNodes.length <= 0) {
         return;
       }
@@ -326,11 +322,7 @@ export function DiagramCommands(props: {}) {
           newNode: {
             type: NODE_TYPES.group,
             bounds: getBounds({
-              nodes: selectedNodes.map((n) => ({
-                position: n.position,
-                width: n.measured?.width,
-                height: n.measured?.height,
-              })),
+              nodes: selectedNodes,
               padding: CONTAINER_NODES_DESIRABLE_PADDING,
             }),
           },
@@ -377,10 +369,7 @@ export function DiagramCommands(props: {}) {
       console.debug("DMN DIAGRAM: COMMANDS: Hide node from DRD...");
       const nodesById = rf
         .getNodes()
-        .reduce(
-          (acc: Map<string, RF.Node<DmnDiagramNodeData>>, s: RF.Node<DmnDiagramNodeData>) => acc.set(s.id, s),
-          new Map<string, RF.Node<DmnDiagramNodeData>>()
-        );
+        .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
 
       dmnEditorStoreApi.setState((state) => {
         const selectedNodeIds = new Set(state.diagram._selectedNodes);

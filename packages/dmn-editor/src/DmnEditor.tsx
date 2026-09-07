@@ -38,8 +38,6 @@ import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/di
 import { BoxedExpressionScreen } from "./boxedExpressions/BoxedExpressionScreen";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
-import { DmnDiagramNodeData } from "./diagram/nodes/Nodes";
-import { DmnDiagramEdgeData } from "./diagram/edges/Edges";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 import { BoxedExpressionPropertiesPanel } from "./propertiesPanel/BoxedExpressionPropertiesPanel";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
@@ -268,8 +266,8 @@ export const DmnEditorInternal = ({
           return undefined;
         }
 
-        const nodeLookup = diagramRef.current?.getNodeLookup();
-        const bounds = RF.getNodesBounds(nodes, nodeLookup ? { nodeLookup } : undefined);
+        const reactFlowInstance = diagramRef.current?.getReactFlowInstance();
+        const bounds = reactFlowInstance?.getNodesBounds(nodes) ?? RF.getNodesBounds(nodes);
         const state = dmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
