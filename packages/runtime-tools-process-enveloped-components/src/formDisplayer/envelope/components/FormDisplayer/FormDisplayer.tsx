@@ -19,7 +19,6 @@
 
 import React, { useMemo, useCallback, useEffect, useImperativeHandle, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { BallBeat } from "react-pure-loaders";
 import { Form, FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormOpened, FormOpenedState } from "../../../api";
 import ReactFormRenderer from "../ReactFormRenderer/ReactFormRenderer";
@@ -27,6 +26,7 @@ import HtmlFormRenderer from "../HtmlFormRenderer/HtmlFormRenderer";
 import "../styles.css";
 import { FormConfig, EmbeddedFormApi, InternalFormDisplayerApi, InternalFormDisplayerApiImpl } from "./apis";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 interface FormDisplayerProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -100,7 +100,7 @@ export const FormDisplayer = React.forwardRef<EmbeddedFormApi, FormDisplayerProp
           </div>
         ) : (
           <Bullseye className="kogito-form-displayer__ball-beats">
-            <BallBeat color={"#000000"} loading={!isEnvelopeConnectedToChannel} />
+            {!isEnvelopeConnectedToChannel && <Spinner />}
           </Bullseye>
         )}
       </div>

@@ -52,7 +52,6 @@
     "react-helmet": "^6.1.0",
     "react-inlinesvg": "^2.3.0",
     "react-moment": "0.9.7",
-    "react-pure-loaders": "^3.0.1",
     "react-svg-pan-zoom": "^3.12.1",
     "react-svg-pan-zoom-loader": "^1.4.2",
     "uuid": "^14.0.0"
