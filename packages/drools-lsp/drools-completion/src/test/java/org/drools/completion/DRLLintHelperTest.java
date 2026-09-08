@@ -31,6 +31,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DRLLintHelperTest {
 
+    /**
+     * A constant on a type known only from source. Reflection would report it
+     * through Class#getFields, so once compiled the reference verifies; the
+     * source view has to answer the same, or every Type.CONSTANT in the project
+     * is flagged as an unknown member until a build has run.
+     */
+    @Test
+    void aStaticConstantOnASourceOnlyTypeIsNotAnUnknownMember(@org.junit.jupiter.api.io.TempDir java.nio.file.Path dir)
+            throws Exception {
+        java.nio.file.Path src = dir.resolve("src/main/java/com/example");
+        java.nio.file.Files.createDirectories(src);
+        java.nio.file.Files.writeString(src.resolve("NumberFact.java"),
+                "package com.example;\npublic class NumberFact {\n"
+                + "  public static final String ONE_HUNDRED = \"100\";\n}\n");
+
+        ClassMemberIndex memberIndex = ClassMemberIndex.of(java.util.Set.of());
+        memberIndex.setSourceFallback(
+                JavaSourceTypeIndex.build(java.util.Set.of(dir.resolve("src/main/java")), java.util.List.of()));
+
+        String text = "package demo;\n\ndeclare Fact\n  value : String\nend\n\n"
+                + "rule R\n  when\n    Fact( value == NumberFact.ONE_HUNDRED )\n  then\nend\n";
+
+        assertThat(DRLLintHelper.lintUnknownTypes(text, ParsedDrl.of(text).compilationUnit, null,
+                java.util.Map.of(),
+                ClassIndex.of(java.util.Map.of("NumberFact", java.util.List.of("com.example.NumberFact"))),
+                memberIndex, true)).isEmpty();
+    }
+
     @AfterEach
     void clearLintProperties() {
         System.clearProperty("drools.lsp.lint.missingEnd");

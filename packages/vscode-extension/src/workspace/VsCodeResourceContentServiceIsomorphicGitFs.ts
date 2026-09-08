@@ -92,4 +92,18 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
       return false;
     }
   }
+
+  // isomorphic-git 1.36.0 added discoverGitdir(), which calls these internals that the flag above stops it from creating.
+  async _stat(path: string) {
+    const stat = await vscode.workspace.fs.stat(vscode.Uri.file(path));
+    return {
+      isDirectory: () => (stat.type & vscode.FileType.Directory) !== 0,
+      isFile: () => (stat.type & vscode.FileType.File) !== 0,
+    };
+  }
+
+  async _readFile(path: string, encoding?: BufferEncoding) {
+    const buffer = Buffer.from(await vscode.workspace.fs.readFile(vscode.Uri.file(path)));
+    return encoding ? buffer.toString(encoding) : buffer;
+  }
 }

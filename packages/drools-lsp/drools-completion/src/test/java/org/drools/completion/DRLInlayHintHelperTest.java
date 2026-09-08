@@ -38,6 +38,37 @@ class DRLInlayHintHelperTest {
         assertThat(DRLInlayHintHelper.getHints(null, null)).isEmpty();
     }
 
+    /**
+     * A declare may extend a Java class, and a binding on one of the supertype's
+     * fields has no type unless the host's member lookup is consulted — the
+     * declared-type index knows nothing beyond the DRL.
+     */
+    @Test
+    void emitsHintForFieldInheritedFromAJavaSupertype() {
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+        ClasspathTypeMembers.install(name -> "Pet".equals(name)
+                ? memberIndex.membersOf("org.drools.completion.fixtures.Pet")
+                : List.of());
+        try {
+            String drl =
+                "declare SpecialPet extends Pet\n" +
+                "  nickname : String\n" +
+                "end\n" +
+                "rule \"r\" when\n" +
+                "  SpecialPet( $l : legs )\n" +
+                "  SpecialPet( legs == $l )\n" +
+                "then\n" +
+                "end\n";
+
+            List<InlayHint> hints = DRLInlayHintHelper.getHints(drl, null);
+
+            // Both the binding declaration and the later naked usage carry the type.
+            assertThat(hints).filteredOn(h -> ": int".equals(labelOf(h))).hasSize(2);
+        } finally {
+            ClasspathTypeMembers.install(null);
+        }
+    }
+
     @Test
     void emitsAccumulateResultBindingHint() {
         AccumulateFunctionTypes.set(java.util.Map.of("count", "Long"));
@@ -370,6 +401,34 @@ class DRLInlayHintHelperTest {
 
         assertThat(hints).extracting(DRLInlayHintHelperTest::labelOf)
             .containsExactlyInAnyOrder(": int", ": int");
+    }
+
+    @Test
+    void emitsHintsForBindingsAfterAConditionCommentSayingThen() {
+        String drl = """
+                package demo;
+
+                global java.util.List results;
+
+                declare Fact
+                  code : String
+                end
+
+                rule R
+                  when
+                    Fact( $first : code )
+                    // match this and then the other
+                    Fact( $second : code )
+                  then
+                    results.add($second);
+                end
+                """;
+
+        List<InlayHint> hints = DRLInlayHintHelper.getHints(drl, null);
+
+        // Both declarations, plus the consequence usage.
+        assertThat(hints).extracting(DRLInlayHintHelperTest::labelOf)
+            .containsExactlyInAnyOrder(": String", ": String", ": String");
     }
 
     private static String labelOf(InlayHint hint) {

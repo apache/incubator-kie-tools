@@ -36,7 +36,10 @@ import java.util.logging.Logger;
 
 import org.drools.completion.ClassIndex;
 import org.drools.completion.ClassMemberIndex;
+import org.drools.completion.ClasspathTypeMembers;
 import org.drools.completion.DRLDeclaredTypeParser;
+import org.drools.completion.JavaSourceRoots;
+import org.drools.completion.JavaSourceTypeIndex;
 import org.drools.completion.WorkspaceSiblingResolver;
 import org.drools.completion.WorkspaceSiblingResolvers;
 import org.eclipse.lsp4j.jsonrpc.Endpoint;
@@ -71,6 +74,22 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     private volatile Set<Path> buildOutputDirs = Set.of();
     private volatile ClassIndex jarClassIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
+    private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
+
+    /** The LSP workspace root, once {@code initialize} has parsed a usable {@code rootUri}. */
+    private volatile Path workspaceRootPath;
+
+    /** {@code drools.lsp.java.sourcePaths}, parsed once at {@code initialize}. */
+    private volatile List<String> javaSourcePathsSetting = List.of();
+
+    /** {@code drools.lsp.java.packageFilters}, parsed once at {@code initialize}. */
+    private volatile List<String> javaPackageFiltersSetting = List.of();
+
+    /**
+     * Set once the Maven resolve returns, whether or not it found anything. Not
+     * inferred from the class index, which also carries source-derived names.
+     */
+    private volatile boolean dependencyClasspathResolved = false;
 
     /** Tracks whether {@code shutdown} preceded {@code exit} (LSP spec). */
     private volatile boolean shutdownReceived = false;
@@ -99,13 +118,20 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     }
 
     public void rebuildClassIndex() {
-        Set<Path> dirs = buildOutputDirs;
-        if (dirs.isEmpty() && jarClassIndex.size() == 0) {
-            return;
-        }
         try {
-            ClassIndex outputIndex = ClassIndex.build(dirs);
-            textService.setClassIndex(ClassIndex.merge(jarClassIndex, outputIndex));
+            // Refreshed inside the try: an escaped exception here (e.g. an
+            // unreadable source root) must not silently abort the rebuild
+            // with no log — the debounce executor never inspects the
+            // resulting future.
+            if (workspaceRootPath != null) {
+                refreshJavaSourceIndex(workspaceRootPath);
+            }
+            // Published unconditionally. Having nothing to index is itself a
+            // result the consumers need: the source index reaches them only
+            // through publishClassIndex and swapMemberIndex, so returning early
+            // on an empty workspace would leave them answering from the previous
+            // snapshot — for types whose files have just been deleted.
+            publishClassIndex();
             // Fresh loader so recompiled classes aren't served from the old one's cache.
             swapMemberIndex(ClassMemberIndex.of(classpathEntries));
             // Drop the declared-type parse cache so edited sibling files re-parse
@@ -116,8 +142,59 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         }
     }
 
+    /**
+     * Recomputes {@link #javaSourceIndex} from {@code root} using the
+     * current {@link #javaSourcePathsSetting}/{@link #javaPackageFiltersSetting}.
+     * The single choke point for the discover+build pair — every site that
+     * (re)builds the source index (initialize's fast path,
+     * {@link #rebuildClassIndex}, the test hook) calls this rather than
+     * repeating it inline.
+     */
+    private void refreshJavaSourceIndex(Path root) {
+        List<Path> roots = JavaSourceRoots.discover(root, javaSourcePathsSetting);
+        javaSourceIndex = JavaSourceTypeIndex.build(new LinkedHashSet<>(roots), javaPackageFiltersSetting);
+    }
+
+    /**
+     * Publishes the merged class index — compiled classpath classes, this
+     * workspace's own build output, and Java-source-derived type names —
+     * to the document service. The single choke point for every publish
+     * site (initialize's fast/post-mvn phases, {@link #rebuildClassIndex}),
+     * so source names are never missing from one path but not another.
+     * Nudges the client to re-pull diagnostics afterward (same pull-model
+     * nudge the build-diagnostics tier uses) so unknown-type squiggles
+     * against a type this publish just resolved clear promptly rather than
+     * waiting for the next edit/save.
+     */
+    private void publishClassIndex() {
+        ClassIndex outputIndex = ClassIndex.build(buildOutputDirs);
+        ClassIndex merged = ClassIndex.merge(ClassIndex.merge(jarClassIndex, outputIndex),
+                ClassIndex.of(javaSourceIndex.classNames()));
+        textService.setClassIndex(merged);
+        textService.setJavaSourceIndex(javaSourceIndex);
+        if (client != null) {
+            try {
+                // Pull model: nudge the client to re-request diagnostics, same
+                // as the build-diagnostics tier's refresh — some clients (and
+                // test doubles) don't implement this LSP4J capability method.
+                client.refreshDiagnostics();
+            } catch (Exception e) {
+                logger.log(Level.FINE, "Failed to refresh diagnostics after publishing class index", e);
+            }
+        }
+    }
+
+    /**
+     * The unknown-type lint waits on this: it cannot call a type unknown while
+     * part of the classpath is still missing.
+     */
+    boolean isDependencyClasspathResolved() {
+        return dependencyClasspathResolved;
+    }
+
     private void setResolvedClasspath(Set<Path> entries) {
         this.classpathEntries = entries;
+        this.dependencyClasspathResolved = true;
         this.buildOutputDirs = filterDirectories(entries);
         Set<Path> jars = filterJars(entries);
         this.jarClassIndex = jars.isEmpty() ? ClassIndex.empty() : ClassIndex.build(jars);
@@ -138,6 +215,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     private synchronized void swapMemberIndex(ClassMemberIndex next) {
         ClassMemberIndex previous = this.classMemberIndex;
         this.classMemberIndex = next;
+        next.setSourceFallback(javaSourceIndex);
         textService.setClassMemberIndex(next);
         if (previous != next) {
             try {
@@ -150,6 +228,45 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
 
     void setClasspathEntriesForTest(Set<Path> entries) {
         setResolvedClasspath(entries);
+    }
+
+    /**
+     * Test-only entry point: runs the same fast-path source-typing steps
+     * {@code initialize} runs before the mvn phase (re-read the
+     * {@code drools.lsp.java.*} settings, refresh the source index via
+     * {@link #refreshJavaSourceIndex}, install it as the member-index
+     * fallback, publish the merged class index) without the async plumbing
+     * or a real LSP client — so a test exercising the settings path doesn't
+     * need to duplicate {@code initialize}'s sys-prop parsing.
+     */
+    void initializeJavaSourceTypingForTest(Path workspaceRoot) {
+        this.workspaceRootPath = workspaceRoot;
+        this.javaSourcePathsSetting = parseSemicolonSetting(
+                System.getProperty("drools.lsp.java.sourcePaths"));
+        this.javaPackageFiltersSetting = parseSemicolonSetting(
+                System.getProperty("drools.lsp.java.packageFilters"));
+        refreshJavaSourceIndex(workspaceRoot);
+        swapMemberIndex(ClassMemberIndex.of(classpathEntries));
+        publishClassIndex();
+    }
+
+    /**
+     * Splits a {@code drools.lsp.java.*} system property on {@code ;},
+     * trimming and dropping empty entries. {@code null}/blank yields an
+     * empty list.
+     */
+    private static List<String> parseSemicolonSetting(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return List.of();
+        }
+        List<String> out = new ArrayList<>();
+        for (String part : raw.split(";")) {
+            String trimmed = part.trim();
+            if (!trimmed.isEmpty()) {
+                out.add(trimmed);
+            }
+        }
+        return out;
     }
 
     private static Set<Path> filterDirectories(Set<Path> entries) {
@@ -228,6 +345,20 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         if (rootUri != null) {
             WorkspaceSiblingResolver resolver = WorkspaceSiblingResolvers.active();
 
+            // Java source typing needs the root and its settings before either
+            // async block runs: a rebuild triggered by a watch event reads them
+            // to refresh the source index. Guarded, because a non-file rootUri
+            // must not fail initialize.
+            try {
+                this.workspaceRootPath = Paths.get(URI.create(rootUri));
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Failed to read the workspace root for Java source typing", e);
+            }
+            this.javaSourcePathsSetting = parseSemicolonSetting(
+                    System.getProperty("drools.lsp.java.sourcePaths"));
+            this.javaPackageFiltersSetting = parseSemicolonSetting(
+                    System.getProperty("drools.lsp.java.packageFilters"));
+
             // Applied before returning, so that a notification the client sends
             // once initialize completes is necessarily the newer value. Deferring
             // these would let a startup value captured here land afterwards and
@@ -259,6 +390,18 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
                 try {
                     Path rootPath = Paths.get(URI.create(rootUri));
 
+                    // Build the Java-source type index first. Like the build-output
+                    // scan below, this only touches the filesystem (no mvn), so
+                    // source-derived type and member data is available within
+                    // milliseconds — the works-before-build case for a fresh
+                    // checkout with no compiled output yet.
+                    refreshJavaSourceIndex(rootPath);
+                    // classpathEntries is still Set.of() here (setResolvedClasspath
+                    // hasn't run yet) — of() yields a loader-less but
+                    // fallback-capable index, so member data from sources works
+                    // even before the classpath resolves below.
+                    swapMemberIndex(ClassMemberIndex.of(classpathEntries));
+
                     // Resolve against the configured custom POM root(s) when set,
                     // otherwise the workspace root.
                     String pomPathProp = System.getProperty("drools.lsp.maven.pomPath");
@@ -281,7 +424,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
                         outputDirs.addAll(MavenClasspathResolver.resolveBuildOutputDirs(mavenRoot));
                     }
                     buildOutputDirs = outputDirs;
-                    textService.setClassIndex(ClassIndex.build(outputDirs));
+                    publishClassIndex();
 
                     // Then resolve the full classpath (dependency JARs via mvn) and
                     // merge, so member hover and field completion over dependencies
@@ -291,8 +434,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
                         resolved.addAll(MavenClasspathResolver.resolve(mavenRoot));
                     }
                     setResolvedClasspath(resolved);
-                    ClassIndex outputIndex = ClassIndex.build(buildOutputDirs);
-                    textService.setClassIndex(ClassIndex.merge(jarClassIndex, outputIndex));
+                    publishClassIndex();
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Failed to build class index at startup", e);
                 }
@@ -478,6 +620,10 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
             logger.log(Level.FINE, "Failed to close class member index on shutdown", e);
         }
         DRLDeclaredTypeParser.clearCache();
+        JavaSourceTypeIndex.clearCache();
+        // The lookup closes over the document service, so leaving it installed
+        // keeps a stopped server — and its indexes — reachable and answering.
+        ClasspathTypeMembers.install(null);
         return CompletableFuture.completedFuture(null);
     }
 

@@ -22,6 +22,9 @@ package org.drools.completion;
 /** A field, bean property, or enum constant of a {@link DeclaredType} or Java class. */
 public class Field {
 
+    /** Where a member came from, so hover can group fields, getters, and enum constants separately. */
+    public enum Origin { FIELD, GETTER, ENUM_CONSTANT }
+
     public final String name;
     public final String type;
     /**
@@ -31,14 +34,20 @@ public class Field {
      * and for enum constants without arguments.
      */
     public final String args;
+    public final Origin origin;
 
     Field(String name, String type) {
-        this(name, type, null);
+        this(name, type, null, Origin.FIELD);
     }
 
     Field(String name, String type, String args) {
+        this(name, type, args, Origin.FIELD);
+    }
+
+    Field(String name, String type, String args, Origin origin) {
         this.name = name;
         this.type = type;
         this.args = args;
+        this.origin = origin;
     }
 }

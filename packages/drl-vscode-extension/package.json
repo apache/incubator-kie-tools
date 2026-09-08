@@ -182,6 +182,22 @@
           "markdownDescription": "Show inline type hints for DRL rule bindings (e.g. `$count : count()` → `: Long`). VSCode's global `#editor.inlayHints.enabled#` still governs whether inlay hints are displayed at all.",
           "type": "boolean"
         },
+        "drools.lsp.java.packageFilters": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Package prefixes limiting which Java source types are indexed, e.g. `com.example.*`. Empty means all packages. Applied when the language server next starts.",
+          "type": "array"
+        },
+        "drools.lsp.java.sourcePaths": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Additional Java source roots used to resolve the project's own types before a build. Every `src/main/java` under the workspace is found automatically, so this is only for roots that sit elsewhere. Each entry is a literal directory path, absolute or workspace-relative — not a glob. Applied when the language server next starts.",
+          "type": "array"
+        },
         "drools.lsp.lint.missingEnd": {
           "default": "warning",
           "description": "Severity for the missing 'end' keyword lint check.",

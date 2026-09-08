@@ -158,11 +158,69 @@ public final class LhsBindingResolver {
         if (text == null || text.isEmpty()) {
             return bindings;
         }
-        Matcher rule = RULE_WHEN.matcher(text);
+        Matcher rule = RULE_WHEN.matcher(maskCommentsAndStrings(text));
         while (rule.find()) {
             bindings.putAll(collect(rule.group(1), typesByName, accumResultTypes).types);
         }
         return bindings;
+    }
+
+    /**
+     * Replaces the contents of comments and string literals with spaces, keeping
+     * the text the same length so every offset into it still refers to the same
+     * character.
+     *
+     * <p>The section patterns here match bare keywords, and a rule's condition
+     * ends at the first {@code then}. Left unmasked, a comment reading
+     * "…if X then Y" or a constraint comparing against {@code "then"} ends the
+     * condition where it appears, hiding every binding past that point — and,
+     * when it lands inside a pattern, unbalancing that pattern's parentheses so
+     * even the bindings before it are lost. Quote characters themselves survive,
+     * so a masked literal is still a literal.
+     */
+    static String maskCommentsAndStrings(String text) {
+        char[] chars = text.toCharArray();
+        int i = 0;
+        while (i < chars.length) {
+            char c = chars[i];
+            if (c == '/' && i + 1 < chars.length && chars[i + 1] == '/') {
+                while (i < chars.length && chars[i] != '\n') {
+                    chars[i++] = ' ';
+                }
+            } else if (c == '/' && i + 1 < chars.length && chars[i + 1] == '*') {
+                chars[i++] = ' ';
+                chars[i++] = ' ';
+                while (i < chars.length
+                        && !(chars[i] == '*' && i + 1 < chars.length && chars[i + 1] == '/')) {
+                    blankUnlessNewline(chars, i++);
+                }
+                if (i < chars.length) {
+                    chars[i++] = ' ';
+                    chars[i++] = ' ';
+                }
+            } else if (c == '"' || c == '\'') {
+                i++;
+                while (i < chars.length && chars[i] != c) {
+                    if (chars[i] == '\\' && i + 1 < chars.length) {
+                        chars[i++] = ' ';
+                    }
+                    blankUnlessNewline(chars, i++);
+                }
+                if (i < chars.length) {
+                    i++;
+                }
+            } else {
+                i++;
+            }
+        }
+        return new String(chars);
+    }
+
+    /** Newlines stay, so masking never joins two lines into one. */
+    private static void blankUnlessNewline(char[] chars, int index) {
+        if (index < chars.length && chars[index] != '\n') {
+            chars[index] = ' ';
+        }
     }
 
     /**
@@ -189,7 +247,7 @@ public final class LhsBindingResolver {
         if (text == null || text.isEmpty()) {
             return new HashMap<>();
         }
-        Matcher block = RULE_BLOCK.matcher(text);
+        Matcher block = RULE_BLOCK.matcher(maskCommentsAndStrings(text));
         while (block.find()) {
             if (offset >= block.start() && offset < block.end()) {
                 return collect(block.group(1), typesByName, accumResultTypes).types;
@@ -237,7 +295,7 @@ public final class LhsBindingResolver {
 
             int bodyStart = openParen + 1;
             String body = whenSection.substring(bodyStart, closeParen);
-            DeclaredType declared = typesByName.get(typeName);
+            DeclaredType declared = typeOrClasspath(typeName, typesByName);
 
             Matcher fb = FIELD_BINDING.matcher(body);
             while (fb.find()) {
@@ -306,7 +364,9 @@ public final class LhsBindingResolver {
             if (current.extendsName == null) {
                 return null;
             }
-            current = typesByName.get(current.extendsName);
+            // The supertype may be a Java class rather than another declare, in
+            // which case only the host can describe it.
+            current = typeOrClasspath(current.extendsName, typesByName);
         }
         return null;
     }
@@ -316,8 +376,11 @@ public final class LhsBindingResolver {
      * resolving each segment's field type via {@link #lookupFieldType} and
      * advancing through {@code typesByName}. Returns the final segment's (simple)
      * type name, or {@code null} if any segment can't be resolved.
+     *
+     * <p>Also used by member completion after a dot, so that the path a caret
+     * sits at the end of resolves exactly as a binding on the same path would.
      */
-    private static String resolvePath(DeclaredType type, String path,
+    static String resolvePath(DeclaredType type, String path,
                                       Map<String, DeclaredType> typesByName) {
         DeclaredType current = type;
         String resolved = null;
@@ -329,9 +392,20 @@ public final class LhsBindingResolver {
             if (resolved == null) {
                 return null;
             }
-            current = typesByName.get(resolved);
+            current = typeOrClasspath(resolved, typesByName);
         }
         return resolved;
+    }
+
+    /**
+     * The DRL-declared type named {@code name}, or — when none is declared — a
+     * stand-in built from the host's member lookup so bindings on classpath and
+     * workspace-source types resolve too.
+     */
+    static DeclaredType typeOrClasspath(String name,
+                                        Map<String, DeclaredType> typesByName) {
+        DeclaredType declared = typesByName.get(name);
+        return declared != null ? declared : ClasspathTypeMembers.asDeclaredType(name);
     }
 
     private static String simpleName(String type) {

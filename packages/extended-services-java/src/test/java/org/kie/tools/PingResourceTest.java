@@ -35,6 +35,7 @@
            .then()
                  .statusCode(200)
                  .contentType(ContentType.JSON)
+                 .header("X-Content-Type-Options", "nosniff")
                  .body("version", equalTo(expectedVersion))
                  .body("started", equalTo(expectedStarted));
      }

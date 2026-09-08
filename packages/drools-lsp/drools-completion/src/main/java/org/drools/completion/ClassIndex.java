@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,15 @@ public class ClassIndex {
         return new ClassIndex(new HashMap<>());
     }
 
+    /** Builds an index directly from a simple-name → FQCNs map (defensively copied). */
+    public static ClassIndex of(Map<String, List<String>> nameToFqcns) {
+        Map<String, List<String>> index = new HashMap<>();
+        for (Map.Entry<String, List<String>> e : nameToFqcns.entrySet()) {
+            index.put(e.getKey(), new ArrayList<>(e.getValue()));
+        }
+        return new ClassIndex(index);
+    }
+
     public static ClassIndex build(Set<Path> classpathEntries) {
         Map<String, List<String>> index = new HashMap<>();
         for (Path entry : classpathEntries) {
@@ -63,9 +73,9 @@ public class ClassIndex {
         Map<String, List<String>> merged = new HashMap<>(base.index);
         for (Map.Entry<String, List<String>> entry : overlay.index.entrySet()) {
             merged.merge(entry.getKey(), entry.getValue(), (a, b) -> {
-                List<String> combined = new ArrayList<>(a);
+                java.util.LinkedHashSet<String> combined = new java.util.LinkedHashSet<>(a);
                 combined.addAll(b);
-                return combined;
+                return new ArrayList<>(combined);
             });
         }
         return new ClassIndex(merged);
@@ -83,6 +93,18 @@ public class ClassIndex {
      */
     public Set<String> simpleNames() {
         return java.util.Collections.unmodifiableSet(index.keySet());
+    }
+
+    /**
+     * The FQCNs carrying exactly {@code simpleName}, or empty. The index is
+     * keyed by simple name, so this is a lookup — unlike {@link #getMatching},
+     * which is a prefix search over every entry and answers for longer names
+     * too. Callers confirming one name should prefer this: they run per pattern
+     * per request, where a scan of the whole index is felt.
+     */
+    public List<String> forSimpleName(String simpleName) {
+        List<String> fqcns = simpleName == null ? null : index.get(simpleName);
+        return fqcns == null ? List.of() : Collections.unmodifiableList(fqcns);
     }
 
     public List<String> getMatching(String prefix) {

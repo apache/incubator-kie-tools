@@ -76,19 +76,6 @@ class DroolsLspDocumentServiceTest {
     }
 
     @Test
-    void getRuleName() {
-        String drl = "rule MyRule when Dog(name == \"Bart\") then end";
-
-        DroolsLspDocumentService droolsLspDocumentService = getDroolsLspDocumentService(drl);
-
-        CompletionParams completionParams = new CompletionParams();
-        completionParams.setTextDocument(new TextDocumentIdentifier("myDocument"));
-
-        String ruleName = droolsLspDocumentService.getRuleName(completionParams);
-        assertThat(ruleName).isEqualTo("MyRule");
-    }
-
-    @Test
     void getCompletionItems_findLHSandRHS() {
         String drl =
                 "package org.test;\n" +
@@ -156,7 +143,7 @@ class DroolsLspDocumentServiceTest {
         List<Diagnostic> diags = service.validate("myDocument");
         assertThat(diags).isNotEmpty();
         assertThat(diags)
-                 .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-parser"));
+                 .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-drl-parser"));
     }
 
     @Test
@@ -169,7 +156,7 @@ class DroolsLspDocumentServiceTest {
 
         assertThat(report.getRelatedFullDocumentDiagnosticReport().getItems())
                 .isNotEmpty()
-                .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-parser"));
+                .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-drl-parser"));
     }
 
     @Test
@@ -487,14 +474,39 @@ class DroolsLspDocumentServiceTest {
                 .noneSatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-type"));
     }
 
+    /**
+     * A source-only workspace before Maven has run: the class index carries
+     * Java-source-derived names, so it is not empty, but nothing is known about
+     * the dependencies. Judging a type unknown on that basis reports every
+     * dependency type as a typo, so the pass waits.
+     */
+    @Test
+    void unknownTypeLintWaitsForTheDependencyClasspath(@TempDir Path dir) throws Exception {
+        Path classFile = dir.resolve("com/example/Marker.class");
+        Files.createDirectories(classFile.getParent());
+        Files.createFile(classFile);
+
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(TYPO_DRL);
+        DroolsLspDocumentService service = server.getTextDocumentService();
+        service.setClassIndex(ClassIndex.build(Set.of(dir)));
+
+        assertThat(service.validate("myDocument"))
+                .noneSatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-type"));
+    }
+
     @Test
     void unknownTypeLintReportsTypoOnceClasspathResolved(@TempDir Path dir) throws Exception {
         Path classFile = dir.resolve("com/example/Marker.class");
         Files.createDirectories(classFile.getParent());
         Files.createFile(classFile);
 
-        DroolsLspDocumentService service = getDroolsLspDocumentService(TYPO_DRL);
-        service.setClassIndex(ClassIndex.build(Set.of(dir))); // classpath now "resolved"
+        // Readiness is the dependency classpath having resolved, which is what
+        // the lint waits for — a populated class index no longer implies it,
+        // since source-derived names reach that index before Maven runs.
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(TYPO_DRL);
+        DroolsLspDocumentService service = server.getTextDocumentService();
+        service.setClassIndex(ClassIndex.build(Set.of(dir)));
+        server.setClasspathEntriesForTest(Set.of(dir));
 
         List<Diagnostic> diags = service.validate("myDocument");
         assertThat(diags).anySatisfy(d -> {

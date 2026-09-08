@@ -384,6 +384,297 @@ class DRLCompletionHelperTest {
         assertThat(fieldLabels).contains("name", "friendly", "legs");
     }
 
+    /**
+     * A caret after a dot can only be followed by a member of the path's type.
+     * The grammar predicts the constraint operators there (it cannot see the path
+     * is unfinished), so that position is answered from the type walk alone.
+     */
+    @Test
+    void memberCompletionAfterADotOnAPatternField() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                  ref : Fact
+                end
+
+                rule R
+                  when
+                    Fact( ref. )
+                  then
+                end
+                """;
+
+        Position caretPosition = new Position(9, 14); // right after 'ref.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("order", "ref");
+        assertThat(result).allSatisfy(item ->
+                assertThat(item.getKind()).isEqualTo(CompletionItemKind.Field));
+    }
+
+    /** Mid-edit the constraint is unfinished; the members must still resolve. */
+    @Test
+    void memberCompletionAfterADotWithTheConstraintStillUnclosed() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                  ref : Fact
+                end
+
+                rule R
+                  when
+                    Fact( ref.""";
+
+        Position caretPosition = new Position(9, 14);
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("order", "ref");
+    }
+
+    @Test
+    void memberCompletionAfterADotWalksEveryHopOfTheChain() {
+        String text = """
+                package demo;
+
+                declare Inner
+                  depth : int
+                end
+
+                declare Fact
+                  inner : Inner
+                end
+
+                rule R
+                  when
+                    Fact( inner.depth. )
+                  then
+                end
+                """;
+
+        // After 'inner.' — one hop, then after 'inner.depth.' — two hops onto an int.
+        List<CompletionItem> oneHop = DRLCompletionHelper.getCompletionItems(
+                text, new Position(12, 16), getLanguageClient(), ClassIndex.empty());
+        assertThat(oneHop).extracting(CompletionItem::getLabel).containsExactly("depth");
+
+        List<CompletionItem> twoHops = DRLCompletionHelper.getCompletionItems(
+                text, new Position(12, 22), getLanguageClient(), ClassIndex.empty());
+        assertThat(twoHops).as("int has no DRL-visible members").isEmpty();
+    }
+
+    @Test
+    void memberCompletionAfterADotOnABinding() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                end
+
+                rule R
+                  when
+                    $f : Fact( order > 0 )
+                    Fact( order > $f. )
+                  then
+                end
+                """;
+
+        Position caretPosition = new Position(9, 21); // right after '$f.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel).containsExactly("order");
+    }
+
+    /**
+     * Writing the pattern head fully qualified is how an author disambiguates a
+     * simple name that collides on the classpath. So the head has to reach member
+     * resolution still qualified: reduced to its simple name it runs into the very
+     * ambiguity it was written to avoid.
+     */
+    @Test
+    void aFullyQualifiedPatternHeadResolvesWhenItsSimpleNameIsAmbiguous() {
+        String text = """
+                package demo;
+
+                rule R
+                  when
+                    org.drools.completion.fixtures.Pet( name. )
+                  then
+                end
+                """;
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+        // Stands in for the ambiguous case: the host can answer for a qualified
+        // name and refuses a bare one, as it does when two classes share a
+        // simple name.
+        ClasspathTypeMembers.install(n -> n != null && n.indexOf('.') >= 0
+                ? memberIndex.membersOf(n) : List.of());
+        try {
+            // Line 4 is the pattern; the caret sits right after 'name.' at col 45.
+            List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                    text, new Position(4, 45), getLanguageClient(), ClassIndex.empty(), memberIndex);
+
+            assertThat(result).as("members of the field's type").isNotEmpty();
+        } finally {
+            ClasspathTypeMembers.install(null);
+        }
+    }
+
+    /**
+     * The scan back to the enclosing pattern counts parentheses, so a paren
+     * inside a string literal would unbalance it and find the wrong pattern —
+     * or none. The same mask the binding resolver uses keeps the count honest.
+     */
+    @Test
+    void memberCompletionSurvivesAParenInsideAStringConstraint() {
+        String text = """
+                package demo;
+
+                declare Inner
+                  depth : int
+                end
+
+                declare Fact
+                  note : String
+                  ref : Inner
+                end
+
+                rule R
+                  when
+                    Fact( note == ")", ref. )
+                  then
+                end
+                """;
+
+        int col = text.split("\n")[13].indexOf("ref.") + "ref.".length();
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, new Position(13, col), getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getLabel).containsExactly("depth");
+    }
+
+    /**
+     * A dot is not only a member access: it also separates the segments of a
+     * qualified name. The head of such a name resolves to no type, so the member
+     * walk finds nothing and must leave the position to the grammar's own
+     * candidates rather than answering with an empty list.
+     */
+    @Test
+    void aDotInAQualifiedNameStillOffersTheGrammarCandidates() {
+        String text = "package demo;\n\nimport com.example.\n";
+
+        Position caretPosition = new Position(2, 19); // right after 'com.example.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).isNotEmpty();
+    }
+
+    @Test
+    void memberCompletionAfterADotOnAClasspathType() {
+        String text = """
+                package demo;
+
+                import org.drools.completion.fixtures.Pet;
+
+                declare Owner
+                  pet : Pet
+                end
+
+                rule R
+                  when
+                    Owner( pet. )
+                  then
+                end
+                """;
+
+        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+        Position caretPosition = new Position(10, 15); // right after 'pet.'
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretPosition, getLanguageClient(), ClassIndex.empty(), memberIndex);
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("name", "friendly", "legs");
+    }
+
+    /** A decimal literal being typed is not a member position. */
+    @Test
+    void aTrailingDotOnANumberIsNotAMemberPosition() {
+        String text = """
+                package demo;
+
+                declare Fact
+                  order : int
+                end
+
+                rule R
+                  when
+                    Fact( order > 1. )
+                  then
+                end
+                """;
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, new Position(9, 20), getLanguageClient(), ClassIndex.empty());
+
+        assertThat(result).extracting(CompletionItem::getKind)
+                .doesNotContain(CompletionItemKind.Field);
+    }
+
+    /**
+     * Rule attributes are legal only in a rule/query header. c3 predicts them at a
+     * statement boundary too, where they cannot be typed.
+     */
+    @Test
+    void statementBoundaryOmitsRuleAttributes() {
+        String text = """
+                package demo;
+
+                rule R
+                  when
+                  then
+                end
+
+                """;
+
+        List<String> labels = DRLCompletionHelper.getCompletionItems(
+                        text, new Position(6, 0), getLanguageClient())
+                .stream().map(CompletionItem::getLabel).toList();
+
+        assertThat(labels).contains("import", "global", "rule", "declare", "function", "query");
+        assertThat(labels).doesNotContain(
+                "salience", "no-loop", "dialect", "ruleflow-group", "agenda-group",
+                "auto-focus", "lock-on-active", "activation-group", "date-effective",
+                "date-expires", "calendars", "timer", "duration", "attributes", "enabled");
+    }
+
+    /** The same attributes stay available where they belong. */
+    @Test
+    void ruleHeaderKeepsOfferingRuleAttributes() {
+        String text = """
+                package demo;
+
+                rule R
+                 \s
+                  when
+                  then
+                end
+                """;
+
+        List<String> labels = DRLCompletionHelper.getCompletionItems(
+                        text, new Position(3, 2), getLanguageClient())
+                .stream().map(CompletionItem::getLabel).toList();
+
+        assertThat(labels).contains("salience", "no-loop", "dialect", "when");
+    }
+
     @Test
     void constraintPositionOmitsPrimitiveKeywordNoise() {
         // Inside a pattern's parens c3 also predicts Java expression starters

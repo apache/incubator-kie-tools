@@ -151,6 +151,22 @@ export async function activate(context: vscode.ExtensionContext) {
       args.push(`-Ddrools.lsp.maven.pomPath=${resolved.join(path.delimiter)}`);
     }
 
+    // Java source roots and package filters for resolving the project's own
+    // types before a build. Joined with ';' regardless of platform, since the
+    // server splits on that; read at spawn, so a change needs a restart.
+    const javaSourcePaths = (config.get<string[]>("drools.lsp.java.sourcePaths") ?? [])
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+    if (javaSourcePaths.length > 0) {
+      args.push(`-Ddrools.lsp.java.sourcePaths=${javaSourcePaths.join(";")}`);
+    }
+    const javaPackageFilters = (config.get<string[]>("drools.lsp.java.packageFilters") ?? [])
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+    if (javaPackageFilters.length > 0) {
+      args.push(`-Ddrools.lsp.java.packageFilters=${javaPackageFilters.join(";")}`);
+    }
+
     args.push("-jar", serverJar);
 
     serverOptions = {
@@ -165,7 +181,12 @@ export async function activate(context: vscode.ExtensionContext) {
     const clientOptions: LanguageClientOptions = {
       documentSelector: [{ scheme: "file", language: "drools" }],
       synchronize: {
-        fileEvents: vscode.workspace.createFileSystemWatcher("**/target/classes/**/*.class"),
+        fileEvents: [
+          vscode.workspace.createFileSystemWatcher("**/target/classes/**/*.class"),
+          // Feeds .java edits into the server's watched-files debounce, so the
+          // source type index tracks them without waiting for a build.
+          vscode.workspace.createFileSystemWatcher("**/*.java"),
+        ],
       },
       outputChannel: channel,
       // Sent with `initialize`, so the server has both the grouping and the file
