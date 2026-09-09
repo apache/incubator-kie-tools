@@ -313,11 +313,13 @@ public class DRLCompletionHelper {
         String head = chain[0];
         String rootType;
         int firstFieldSegment = 1;
+        boolean typeReference = false;
         if (head.startsWith("$")) {
             rootType = LhsBindingResolver.resolveAt(text, DRLHoverHelper.positionToOffset(text, caret), typeIndex)
                     .get(head.substring(1));
         } else if (!head.isEmpty() && Character.isUpperCase(head.charAt(0))) {
             rootType = head;
+            typeReference = true;
         } else {
             // A bare lower-case head is a field of the pattern the caret is in.
             rootType = enclosingPatternTypeFromText(text, DRLHoverHelper.positionToOffset(text, caret));
@@ -327,6 +329,28 @@ public class DRLCompletionHelper {
             // The head names no type the document knows, so this dot is not a
             // member access at all — a qualified name, most likely.
             return null;
+        }
+
+        // After a type name Java permits only statics — the one set the instance
+        // view cannot legally offer. A DRL declare is exempt: it has no statics,
+        // and its enum constants are already members, which the walk below
+        // offers. Only the first hop is static; past it, instance members
+        // resume, because a constant is an ordinary value of its own type.
+        if (typeReference && typeIndex.get(simpleNameOf(rootType)) == null) {
+            String fqcn = resolveFqcn(rootType, simpleNameOf(rootType), compilationUnit, classIndex);
+            if (fqcn == null) {
+                return List.of();
+            }
+            List<Field> statics = memberIndex.staticFieldsOf(fqcn);
+            if (firstFieldSegment >= chain.length) {
+                return staticItems(statics, memberIndex.staticMethodsOf(fqcn));
+            }
+            String hopType = typeOfStatic(statics, chain[firstFieldSegment]);
+            if (hopType == null) {
+                return List.of();
+            }
+            rootType = hopType;
+            firstFieldSegment++;
         }
 
         // Kept qualified. A pattern head written as a fully-qualified name is
@@ -393,11 +417,46 @@ public class DRLCompletionHelper {
         return null;
     }
 
+    /** Simple name of a possibly-qualified type name. */
+    private static String simpleNameOf(String typeName) {
+        return typeName.substring(typeName.lastIndexOf('.') + 1);
+    }
+
+    /** The declared type of the static field named {@code name}, or {@code null}. */
+    private static String typeOfStatic(List<Field> statics, String name) {
+        for (Field candidate : statics) {
+            if (candidate.name.equals(name)) {
+                return candidate.type;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Items for the {@code Type.NAME} position: static fields carrying their
+     * type, then static methods carrying their signature. A method's label is
+     * its bare name so it completes to something callable, with the signature in
+     * the detail — two overloads therefore share a label and differ in detail.
+     */
+    private static List<CompletionItem> staticItems(List<Field> staticFields, List<String> staticMethods) {
+        List<CompletionItem> items = new ArrayList<>(fieldItems(staticFields));
+        for (String signature : staticMethods) {
+            int paren = signature.indexOf('(');
+            CompletionItem item = new CompletionItem();
+            item.setLabel(paren < 0 ? signature : signature.substring(0, paren));
+            item.setInsertText(item.getLabel());
+            item.setDetail(signature);
+            item.setKind(CompletionItemKind.Method);
+            items.add(item);
+        }
+        return items;
+    }
+
     /** Field items for a type name: DRL declares win, then the classpath. */
     private static List<CompletionItem> memberItemsOfType(String typeName, Map<String, DeclaredType> typeIndex,
                                                           DRL10Parser.CompilationUnitContext compilationUnit,
                                                           ClassIndex classIndex, ClassMemberIndex memberIndex) {
-        String simple = typeName.substring(typeName.lastIndexOf('.') + 1);
+        String simple = simpleNameOf(typeName);
         DeclaredType declared = typeIndex.get(simple);
         if (declared != null) {
             return fieldItems(DRLDeclaredTypeParser.fieldsIncludingInherited(declared, typeIndex));

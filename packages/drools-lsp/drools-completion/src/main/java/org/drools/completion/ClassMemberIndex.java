@@ -264,6 +264,87 @@ public final class ClassMemberIndex implements AutoCloseable {
     }
 
     /**
+     * Public static fields of {@code fqcn} as name and type — enum constants
+     * included, since they are public static fields of their own enum — or the
+     * {@link #fallback} source's when the class can't load, or empty when
+     * neither knows the type.
+     *
+     * <p>Answers for the {@code Type.NAME} position, so it is deliberately
+     * disjoint from {@link #membersOf}: that view is instance members only.
+     * Only a field's declared type is read, never its value, so this cannot
+     * run a static initializer. Not cached, matching
+     * {@link #constructorsOf} — the static view is consulted on hover and on
+     * completion after a dot, not per pattern per request.
+     */
+    public List<Field> staticFieldsOf(String fqcn) {
+        if (fqcn == null || fqcn.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            JavaMemberSource f = fallback;
+            return f != null ? f.staticFieldsOf(fqcn) : Collections.emptyList();
+        }
+        try {
+            List<Field> out = new ArrayList<>();
+            for (java.lang.reflect.Field field : clazz.getFields()) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    out.add(new Field(field.getName(), field.getType().getSimpleName(), null,
+                                      field.isEnumConstant() ? Field.Origin.ENUM_CONSTANT
+                                                             : Field.Origin.FIELD));
+                }
+            }
+            return Collections.unmodifiableList(out);
+        } catch (Throwable t) {
+            logger.log(Level.FINE, "Failed to reflect static fields of " + fqcn, t);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Public static method signatures of {@code fqcn} —
+     * {@code name(ParamSimple, ParamSimple) : Return}, the shape
+     * {@link #constructorsOf} uses plus the return type a constructor has no
+     * need of — or the {@link #fallback} source's when the
+     * class can't load, or empty when neither knows the type. Inherited public
+     * statics are included, matching {@code getFields()} above and Java itself,
+     * which permits reaching an inherited static through a subtype's name. Not
+     * cached, as above.
+     */
+    public List<String> staticMethodsOf(String fqcn) {
+        if (fqcn == null || fqcn.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            JavaMemberSource f = fallback;
+            return f != null ? f.staticMethodsOf(fqcn) : Collections.emptyList();
+        }
+        try {
+            List<String> out = new ArrayList<>();
+            for (Method m : clazz.getMethods()) {
+                if (!Modifier.isStatic(m.getModifiers()) || !Modifier.isPublic(m.getModifiers())) {
+                    continue;
+                }
+                StringBuilder signature = new StringBuilder(m.getName()).append('(');
+                Class<?>[] params = m.getParameterTypes();
+                for (int i = 0; i < params.length; i++) {
+                    if (i > 0) {
+                        signature.append(", ");
+                    }
+                    signature.append(params[i].getSimpleName());
+                }
+                signature.append(") : ").append(m.getReturnType().getSimpleName());
+                out.add(signature.toString());
+            }
+            return Collections.unmodifiableList(out);
+        } catch (Throwable t) {
+            logger.log(Level.FINE, "Failed to reflect static methods of " + fqcn, t);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
      * Attempts to load {@code fqcn} without running static initializers.
      * Returns {@code null} (rather than throwing) when the loader is absent
      * or the class can't be loaded — the signal callers use to fall back to

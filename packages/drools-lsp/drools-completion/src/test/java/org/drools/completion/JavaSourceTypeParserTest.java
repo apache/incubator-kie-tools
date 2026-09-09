@@ -64,6 +64,55 @@ class JavaSourceTypeParserTest {
             () -> "nor is a static getter: " + t.members);
     }
 
+    /** The other half of that split: what {@code Type.NAME} can reach. */
+    @Test
+    void staticFieldsAndMethodsAreCapturedWithTypes() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String VERSION = \"1\";\n"
+            + "  public static final int LIMIT = 10;\n"
+            + "  public int id;\n"
+            + "  public static Order of(String code, int qty) { return null; }\n"
+            + "  public String getCode() { return \"c\"; }\n"
+            + "}\n");
+
+        assertEquals(List.of("VERSION", "LIMIT"),
+            t.staticFields.stream().map(f -> f.name).toList());
+        assertEquals("String", t.staticFields.get(0).type);
+        assertEquals("int", t.staticFields.get(1).type);
+        assertEquals(List.of("of(String, int) : Order"), t.staticMethods);
+    }
+
+    /**
+     * An interface field is implicitly {@code public static final}, so it is a
+     * constant rather than a fact property — which is how reflection reports it
+     * once the interface is compiled.
+     */
+    @Test
+    void interfaceConstantsAreStaticsNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public interface Limits {\n"
+            + "  int MAX = 10;\n"
+            + "  String getName();\n"
+            + "}\n");
+
+        assertEquals(List.of("MAX"), t.staticFields.stream().map(f -> f.name).toList());
+        assertTrue(member(t, "MAX").isEmpty(), () -> "members=" + t.members);
+        assertTrue(member(t, "name").isPresent(), () -> "members=" + t.members);
+    }
+
+    /** A constant is reachable as a member of its enum and as {@code Enum.NAME}. */
+    @Test
+    void enumConstantsAppearInBothViews() {
+        JavaSourceType t = only(
+            "package com.example;\npublic enum Severity { LOW, HIGH }\n");
+
+        assertEquals(List.of("LOW", "HIGH"), t.staticFields.stream().map(f -> f.name).toList());
+        assertTrue(member(t, "LOW").isPresent(), () -> "members=" + t.members);
+    }
+
     /**
      * Reflection reports public methods and public constructors only, so the
      * source view must not offer more than the compiled view will: a member that

@@ -54,6 +54,90 @@ class DRLHoverHelperTest {
         return hover.getContents().getRight().getValue();
     }
 
+    // ── statics after a type name (issue 3966) ───────────────────────────
+
+    /** Caret one character into {@code needle}'s first occurrence. */
+    private static Position caretIn(String text, String needle) {
+        int idx = text.indexOf(needle) + 1;
+        int line = (int) text.substring(0, idx).chars().filter(c -> c == '\n').count();
+        int lineStart = text.lastIndexOf('\n', idx - 1) + 1;
+        return new Position(line, idx - lineStart);
+    }
+
+    private static String usingRounding(String constraint) {
+        return "package demo;\n"
+                + "import org.drools.completion.fixtures.Rounding;\n"
+                + "rule R\n  when\n    Order( " + constraint + " )\n  then\nend\n";
+    }
+
+    private ClassMemberIndex reflecting() {
+        return new ClassMemberIndex(getClass().getClassLoader());
+    }
+
+    @Test
+    void hoverOnAStaticFieldShowsItsType() {
+        String drl = usingRounding("total > Rounding.SCALE");
+
+        String md = content(DRLHoverHelper.hover(drl, caretIn(drl, "SCALE"),
+                ClassIndex.empty(), reflecting(), null));
+
+        assertThat(md).contains("**SCALE** : `int`");
+        assertThat(md).contains("Static field of `Rounding`");
+    }
+
+    @Test
+    void hoverOnAStaticMethodShowsItsSignature() {
+        String drl = usingRounding("x > Rounding.describe");
+
+        String md = content(DRLHoverHelper.hover(drl, caretIn(drl, "describe"),
+                ClassIndex.empty(), reflecting(), null));
+
+        assertThat(md).contains("describe(int, String) : String");
+        assertThat(md).contains("Static method of `Rounding`");
+    }
+
+    /** Past the first hop a constant is an ordinary value of its own type. */
+    @Test
+    void hoverPastAStaticRevertsToInstanceMembers() {
+        String drl = usingRounding("x > Rounding.MODE.empty");
+
+        String md = content(DRLHoverHelper.hover(drl, caretIn(drl, "empty"),
+                ClassIndex.empty(), reflecting(), null));
+
+        assertThat(md).contains("Field of `String`");
+        assertThat(md).doesNotContain("Static");
+    }
+
+    /**
+     * A fully-qualified type name is still a type name, so the same rule holds
+     * past it — which is what keeps {@code Rounding.SCALE} and
+     * {@code org...Rounding.SCALE} describing the same thing.
+     */
+    @Test
+    void aQualifiedTypeNameAlsoTakesTheStaticView() {
+        String drl = "package demo;\n"
+                + "rule R\n  when\n"
+                + "    Order( x > org.drools.completion.fixtures.Rounding.SCALE )\n"
+                + "  then\nend\n";
+        ClassIndex classIndex = ClassIndex.of(
+                Map.of("Rounding", List.of("org.drools.completion.fixtures.Rounding")));
+
+        String md = content(DRLHoverHelper.hover(drl, caretIn(drl, "SCALE"),
+                classIndex, reflecting(), null));
+
+        assertThat(md).contains("**SCALE** : `int`");
+        assertThat(md).contains("Static field of `Rounding`");
+    }
+
+    /** An instance property is not reachable through the type name. */
+    @Test
+    void hoverOnAnInstancePropertyAfterATypeNameIsNotDescribed() {
+        String drl = usingRounding("x > Rounding.applied");
+
+        assertThat(DRLHoverHelper.hover(drl, caretIn(drl, "applied"),
+                ClassIndex.empty(), reflecting(), null)).isNull();
+    }
+
     @Test
     void hoverParsesTheCurrentDocumentOnce() {
         // Declared-type hover (the path that also reads doc + link targets).
@@ -294,29 +378,45 @@ class DRLHoverHelperTest {
         assertThat(md).contains("- `Pet()`");
     }
 
+    private static final String MATH_DRL = """
+            package demo;
+
+            rule R
+              when
+                Math()
+              then
+            end
+            """;
+
+    /**
+     * A type whose whole API is static used to render as a bare header, which
+     * is the least useful thing hover can say about it.
+     */
     @Test
-    void hoverOnClasspathTypeWithNoMembersOrConstructorsRendersHeaderOnly() {
-        // java.lang.Math: only static fields/methods, so membersOf is empty,
-        // and its sole constructor is private, so constructorsOf is empty too.
-        String drl = """
-                package demo;
+    void hoverOnAnAllStaticTypeShowsItsStatics() {
+        Hover hover = DRLHoverHelper.hover(MATH_DRL, new Position(4, 4),
+                ClassIndex.empty(), new ClassMemberIndex(getClass().getClassLoader()), null);
 
-                rule R
-                  when
-                    Math()
-                  then
-                end
-                """;
-        ClassMemberIndex memberIndex = new ClassMemberIndex(getClass().getClassLoader());
+        String md = content(hover);
+        assertThat(md).contains("java.lang.Math");
+        assertThat(md).contains("**Constants**").contains("- PI : double");
+        assertThat(md).contains("**Static methods**");
+        // Math's only constructor is private, so that section stays absent.
+        assertThat(md).doesNotContain("**Constructors**").doesNotContain("**Fields**");
+    }
 
-        Hover hover = DRLHoverHelper.hover(drl, new Position(4, 4),
-                ClassIndex.empty(), memberIndex, null);
+    /** With nothing resolvable, the header is still worth showing on its own. */
+    @Test
+    void hoverOnATypeWithNothingResolvableRendersHeaderOnly() {
+        Hover hover = DRLHoverHelper.hover(MATH_DRL, new Position(4, 4),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null);
 
         String md = content(hover);
         assertThat(md).contains("java.lang.Math");
         assertThat(md).doesNotContain("**Fields**")
                 .doesNotContain("**Getters**")
                 .doesNotContain("**Constructors**")
+                .doesNotContain("**Static methods**")
                 .doesNotContain("**Constants**");
     }
 
