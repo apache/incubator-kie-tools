@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { usePathForEdgeWithWaypoints } from "./usePathForEdgeWithWaypoints";
 import { PositionalNodeHandleId } from "../nodes/PositionalNodeHandles";
 import { getBoundsCenterPoint, getPositionalHandlePosition } from "../maths/Maths";
@@ -81,8 +81,8 @@ export function ConnectionLine<N extends string, E extends string>({
   const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(snapGrid, { "@_x": toX, "@_y": toY });
 
   const { "@_x": fromX, "@_y": fromY } = getBoundsCenterPoint({
-    x: fromNode?.positionAbsolute?.x,
-    y: fromNode?.positionAbsolute?.y,
+    x: fromNode?.internals?.positionAbsolute?.x,
+    y: fromNode?.internals?.positionAbsolute?.y,
     width: fromNode?.width,
     height: fromNode?.height,
   });

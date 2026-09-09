@@ -21,7 +21,7 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { addNamespaceToHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import ELK, * as Elk from "elkjs/lib/elk.bundled.js";
-import { Edge, Node } from "reactflow";
+import { Edge, Node } from "@xyflow/react";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { DrgEdge, getAdjMatrix, traverse } from "../diagram/graph/graph";

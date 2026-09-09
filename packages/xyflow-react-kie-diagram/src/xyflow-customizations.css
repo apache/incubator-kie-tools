@@ -133,7 +133,7 @@
 
 /* controls */
 .react-flow__controls {
-  border-radius: 20px;
+  border-radius: 40px;
   border: 1px solid black;
   background: white;
   margin-bottom: 24px;
@@ -142,7 +142,7 @@
   box-shadow: -4px -4px 2px 0px rgb(127 127 127);
 }
 .react-flow__controls > button {
-  border-radius: 20px;
+  border-radius: 40px;
 }
 .react-flow__controls > button:hover {
   filter: brightness(95%);
@@ -150,14 +150,15 @@
 .react-flow__controls > button:active {
   filter: brightness(90%);
 }
-.react-flow__controls {
-  border-radius: 1000px;
-}
 .react-flow__controls-button {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border: 0;
-  border-radius: 1000px;
+  border-radius: 40px;
+}
+.react-flow__controls-button svg {
+  max-width: 16px;
+  max-height: 16px;
 }
 .react-flow__resize-control {
   z-index: 10000;

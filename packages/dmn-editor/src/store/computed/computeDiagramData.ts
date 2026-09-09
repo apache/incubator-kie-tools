@@ -19,7 +19,7 @@
 
 import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
@@ -222,9 +222,6 @@ export function computeDiagramData(
       // them. We always know the dimensions here, so we can simply provide them.
       width: dimensions.width,
       height: dimensions.height,
-      style: {
-        ...dimensions,
-      },
     };
 
     if (dmnObject?.__$$element === "decisionService") {
@@ -239,10 +236,6 @@ export function computeDiagramData(
           parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
         }
       } else {
-        newNode.style = {
-          ...newNode.style,
-          ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
-        };
         newNode.width = DECISION_SERVICE_COLLAPSED_DIMENSIONS.width;
         newNode.height = DECISION_SERVICE_COLLAPSED_DIMENSIONS.height;
       }

@@ -18,7 +18,7 @@
  */
 
 import { DC__Point } from "./model";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 
 export type Bounds = {
   width: number | undefined | null;

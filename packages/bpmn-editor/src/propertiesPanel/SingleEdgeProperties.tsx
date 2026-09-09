@@ -23,7 +23,7 @@ import { Form, FormSection } from "@patternfly/react-core/dist/js/components/For
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useMemo, useState } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { BpmnDiagramEdgeData } from "../diagram/BpmnDiagramDomain";
 import { AssociationPath, SequenceFlowPath } from "../diagram/edges/EdgeSvgs";
 import { UnknownNodeIcon } from "../diagram/nodes/NodeIcons";

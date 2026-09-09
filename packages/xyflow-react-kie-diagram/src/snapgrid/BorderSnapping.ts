@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { getCenter } from "../maths/Maths";
 import { DC__Bounds } from "../maths/model";
 import { NodeSizes } from "../nodes/NodeSizes";
@@ -44,7 +44,7 @@ export function snapToDropTargetsBorder<
   const dropTargetDimensions = snapShapeDimensions(
     snapGrid,
     dropTarget.node.data.shape,
-    minNodeSizes[dropTarget.node.type!]({ snapGrid })
+    minNodeSizes[dropTarget.node.type! as N]({ snapGrid })
   );
 
   const shapeDimensions = snapBoundsDimensions(snapGrid, shapeBounds, minNodeSizes[nodeType!]({ snapGrid }));

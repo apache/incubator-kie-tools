@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 
 export enum PositionalNodeHandleId {
   Left = "positional-handle-left",
