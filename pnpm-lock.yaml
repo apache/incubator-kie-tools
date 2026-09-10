@@ -7106,9 +7106,6 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
-      react-pure-loaders:
-        specifier: ^3.0.1
-        version: 3.0.1(@emotion/core@11.0.0)(react@18.3.1)
       react-svg-pan-zoom:
         specifier: ^3.12.1
         version: 3.13.1
@@ -10334,9 +10331,6 @@ packages:
   '@discoveryjs/json-ext@1.1.0':
     resolution: {integrity: sha512-Xc3VhU02wqZ1HvHRJUwL09HkZSTvidqY5Ya0NXBSYOxAp+Ln9dcJr9fySI+CkONzP3PekQo9WdzCv0PGER/mOA==}
     engines: {node: '>=14.17.0'}
-
-  '@emotion/core@11.0.0':
-    resolution: {integrity: sha512-w4sE3AmHmyG6RDKf6mIbtHpgJUSJ2uGvPQb8VXFL7hFjMPibE8IiehG8cMX3Ztm4svfCQV6KqusQbeIOkurBcA==}
 
   '@emotion/use-insertion-effect-with-fallbacks@1.2.0':
     resolution: {integrity: sha512-yJMtVdH59sxi/aVJBpk9FQq+OR8ll5GT8oWd57UpeaKEVGab41JWaCFA7FRLoMLloOZF/c/wsPoe+bfGmRKgDg==}
@@ -21077,12 +21071,6 @@ packages:
       monaco-editor: ^0.33.0
       react: '>=17 <= 18'
 
-  react-pure-loaders@3.0.1:
-    resolution: {integrity: sha512-FwJy+NNCGS0ojtslaY0ubhzayw1zgYCY3nGKLEAMjNhIH5p/ld+MOe/JIdh50dUaYf3rqH4TNlJLPl/iy9UOLA==}
-    peerDependencies:
-      '@emotion/core': '>=10.0.17'
-      react: '>=16'
-
   react-redux@9.3.0:
     resolution: {integrity: sha512-KQopgqFo/p/fgmAs5qz6p5RWaNAzq40WAu7fJIXnQpYxFPbJYtsJPWvGeF2rOBaY/kEuV77AVsX8TsQzKm+A/g==}
     peerDependencies:
@@ -25716,8 +25704,6 @@ snapshots:
   '@discoveryjs/json-ext@0.6.3': {}
 
   '@discoveryjs/json-ext@1.1.0': {}
-
-  '@emotion/core@11.0.0': {}
 
   '@emotion/use-insertion-effect-with-fallbacks@1.2.0(react@18.3.1)':
     dependencies:
@@ -39701,11 +39687,6 @@ snapshots:
       '@types/react': 18.3.31
       monaco-editor: 0.39.0
       prop-types: 15.8.1
-      react: 18.3.1
-
-  react-pure-loaders@3.0.1(@emotion/core@11.0.0)(react@18.3.1):
-    dependencies:
-      '@emotion/core': 11.0.0
       react: 18.3.1
 
   react-redux@9.3.0(@types/react@18.3.31)(react@18.3.1)(redux@4.2.1):
