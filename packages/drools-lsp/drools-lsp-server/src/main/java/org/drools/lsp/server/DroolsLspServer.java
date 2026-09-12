@@ -42,21 +42,30 @@ import org.drools.completion.JavaSourceRoots;
 import org.drools.completion.JavaSourceTypeIndex;
 import org.drools.completion.WorkspaceSiblingResolver;
 import org.drools.completion.WorkspaceSiblingResolvers;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.jsonrpc.Endpoint;
 import org.eclipse.lsp4j.jsonrpc.services.JsonNotification;
 import org.eclipse.lsp4j.jsonrpc.services.JsonRequest;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.eclipse.lsp4j.ClientCapabilities;
 import org.eclipse.lsp4j.CodeLensOptions;
 import org.eclipse.lsp4j.CompletionOptions;
+import org.eclipse.lsp4j.ConfigurationItem;
+import org.eclipse.lsp4j.ConfigurationParams;
 import org.eclipse.lsp4j.DiagnosticRegistrationOptions;
+import org.eclipse.lsp4j.DidChangeConfigurationCapabilities;
 import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.InitializeResult;
+import org.eclipse.lsp4j.InitializedParams;
+import org.eclipse.lsp4j.Registration;
+import org.eclipse.lsp4j.RegistrationParams;
 import org.eclipse.lsp4j.RenameOptions;
 import org.eclipse.lsp4j.ServerCapabilities;
 import org.eclipse.lsp4j.SetTraceParams;
 import org.eclipse.lsp4j.TextDocumentSyncKind;
+import org.eclipse.lsp4j.WorkspaceClientCapabilities;
 import org.eclipse.lsp4j.services.LanguageClient;
 import org.eclipse.lsp4j.services.LanguageClientAware;
 import org.eclipse.lsp4j.services.LanguageServer;
@@ -93,6 +102,10 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
 
     /** Tracks whether {@code shutdown} preceded {@code exit} (LSP spec). */
     private volatile boolean shutdownReceived = false;
+
+    private volatile boolean clientSupportsConfigurationRegistration = false;
+
+    private volatile boolean clientProvidesConfiguration = false;
 
     public DroolsLspServer() {
         textService = new DroolsLspDocumentService(this);
@@ -340,6 +353,12 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         initializeResult.getCapabilities().setDiagnosticProvider(
                 new DiagnosticRegistrationOptions(false, false));
         initializeResult.getCapabilities().setTypeHierarchyProvider(true);
+        initializeResult.getCapabilities().setDocumentFormattingProvider(true);
+        initializeResult.getCapabilities().setDocumentRangeFormattingProvider(true);
+
+        this.clientSupportsConfigurationRegistration =
+                supportsConfigurationRegistration(params.getCapabilities());
+        this.clientProvidesConfiguration = providesConfiguration(params.getCapabilities());
 
         final String rootUri = params.getRootUri();
         if (rootUri != null) {
@@ -441,7 +460,83 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
             });
         }
 
+        textService.setFormatterOptions(formatterOptionsOf(params.getInitializationOptions()));
+
         return CompletableFuture.supplyAsync(() -> initializeResult);
+    }
+
+    /**
+     * Pulls {@code drools.lsp.formatter} through {@code workspace/configuration} and
+     * registers for an empty configuration change, the pattern LSP 3.17 prescribes:
+     * "If the server still needs to react to configuration changes (since the server
+     * caches the result of {@code workspace/configuration} requests) the server should
+     * register for an empty configuration change using the following registration
+     * pattern" (LSP 3.17, workspace/configuration).
+     */
+    @Override
+    public void initialized(InitializedParams params) {
+        pullFormatterOptions();
+        LanguageClient target = client;
+        if (!clientSupportsConfigurationRegistration || target == null) {
+            return;
+        }
+        Registration registration = new Registration("drools.lsp.didChangeConfiguration",
+                "workspace/didChangeConfiguration");
+        try {
+            target.registerCapability(new RegistrationParams(List.of(registration)))
+                    .exceptionally(e -> {
+                        logger.log(Level.WARNING, "Client refused to register for configuration "
+                                + "changes — formatter settings will need a restart", e);
+                        return null;
+                    });
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Client does not implement client/registerCapability", e);
+        }
+    }
+
+    CompletableFuture<Void> pullFormatterOptions() {
+        LanguageClient target = client;
+        if (!clientProvidesConfiguration || target == null) {
+            return CompletableFuture.completedFuture(null);
+        }
+        ConfigurationItem item = new ConfigurationItem();
+        item.setSection("drools.lsp.formatter");
+        try {
+            return target.configuration(new ConfigurationParams(List.of(item)))
+                    .thenAccept(this::applyPulledFormatterOptions)
+                    .exceptionally(e -> {
+                        logger.log(Level.WARNING, "Failed to pull the formatter settings "
+                                + "through workspace/configuration", e);
+                        return null;
+                    });
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "workspace/configuration request could not be sent", e);
+            return CompletableFuture.completedFuture(null);
+        }
+    }
+
+    private void applyPulledFormatterOptions(List<Object> answer) {
+        Object section = (answer == null || answer.isEmpty()) ? null : answer.get(0);
+        if (section instanceof JsonObject formatter) {
+            textService.setFormatterOptions(FormatterOptions.fromJson(formatter));
+        }
+    }
+
+    boolean clientProvidesConfiguration() {
+        return clientProvidesConfiguration;
+    }
+
+    private static boolean supportsConfigurationRegistration(ClientCapabilities capabilities) {
+        WorkspaceClientCapabilities workspace = (capabilities == null) ? null : capabilities.getWorkspace();
+        DidChangeConfigurationCapabilities didChangeConfiguration =
+                (workspace == null) ? null : workspace.getDidChangeConfiguration();
+        return didChangeConfiguration != null
+                && Boolean.TRUE.equals(didChangeConfiguration.getDynamicRegistration());
+    }
+
+    private static boolean providesConfiguration(ClientCapabilities capabilities) {
+        WorkspaceClientCapabilities workspace = (capabilities == null) ? null : capabilities.getWorkspace();
+        return workspace != null && Boolean.TRUE.equals(workspace.getConfiguration());
     }
 
     /**
@@ -602,6 +697,19 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         // Only an object is meaningful; toString() on anything else would yield
         // a quoted literal that no longer parses as the config.
         return (grouping == null || !grouping.isJsonObject()) ? null : grouping.toString();
+    }
+
+    /**
+     * The {@code formatter} object of the client's initializationOptions, or the
+     * defaults. Same JSON contract as the drools.lsp.formatter settings and the
+     * CLI's --config.
+     */
+    static FormatterOptions formatterOptionsOf(Object initializationOptions) {
+        if (initializationOptions instanceof JsonObject options
+                && options.get("formatter") instanceof JsonObject formatter) {
+            return FormatterOptions.fromJson(formatter);
+        }
+        return FormatterOptions.DEFAULTS;
     }
 
     @Override

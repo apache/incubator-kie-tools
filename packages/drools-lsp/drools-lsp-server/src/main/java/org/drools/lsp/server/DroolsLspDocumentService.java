@@ -52,6 +52,8 @@ import org.drools.completion.DRLInlayHintHelper;
 import org.drools.completion.DRLLintHelper;
 import org.drools.completion.DRLTypeHierarchyHelper;
 import org.drools.completion.JavaSourceTypeIndex;
+import org.drools.formatter.DRLFormatter;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.CodeActionKind;
 import org.eclipse.lsp4j.CodeActionParams;
@@ -72,10 +74,13 @@ import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.DidSaveTextDocumentParams;
 import org.eclipse.lsp4j.DocumentDiagnosticParams;
 import org.eclipse.lsp4j.DocumentDiagnosticReport;
+import org.eclipse.lsp4j.DocumentFormattingParams;
+import org.eclipse.lsp4j.DocumentRangeFormattingParams;
 import org.eclipse.lsp4j.DocumentSymbol;
 import org.eclipse.lsp4j.DocumentSymbolParams;
 import org.eclipse.lsp4j.FoldingRange;
 import org.eclipse.lsp4j.FoldingRangeRequestParams;
+import org.eclipse.lsp4j.FormattingOptions;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.HoverParams;
 import org.eclipse.lsp4j.InlayHint;
@@ -109,6 +114,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
     private volatile ClassIndex classIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
     private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
+    private volatile FormatterOptions formatterOptions = FormatterOptions.DEFAULTS;
 
     private final DroolsLspServer server;
 
@@ -168,6 +174,14 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     public void setJavaSourceIndex(JavaSourceTypeIndex javaSourceIndex) {
         this.javaSourceIndex = javaSourceIndex;
+    }
+
+    public void setFormatterOptions(FormatterOptions options) {
+        this.formatterOptions = options == null ? FormatterOptions.DEFAULTS : options;
+    }
+
+    FormatterOptions formatterOptions() {
+        return formatterOptions;
     }
 
     ClassIndex getClassIndexForTest() {
@@ -408,6 +422,68 @@ public class DroolsLspDocumentService implements TextDocumentService {
             String text = sourcesMap.get(params.getTextDocument().getUri());
             return DRLFoldingRangeHelper.foldingRanges(text);
         });
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams params) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<TextEdit> edits = attempt(() -> computeFormattingEdits(params));
+            return edits == null ? Collections.<TextEdit>emptyList() : edits;
+        });
+    }
+
+    private List<TextEdit> computeFormattingEdits(DocumentFormattingParams params) {
+        String text = sourcesMap.get(params.getTextDocument().getUri());
+        if (text == null) {
+            return Collections.emptyList();
+        }
+        FormatterOptions options = withRequestIndent(params.getOptions());
+        DRLFormatter.FormatResult result = DRLFormatter.formatChecked(text, options);
+        if (result.refused()) {
+            // Never hand the editor questionable output; the log is the only trace
+            // of why a Format Document did nothing.
+            logger.info(() -> "Not formatting " + params.getTextDocument().getUri() + ": " + result.refusalReason());
+            return Collections.emptyList();
+        }
+        Range whole = new Range(new Position(0, 0), new Position(Integer.MAX_VALUE, 0));
+        return List.of(new TextEdit(whole, result.formatted()));
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> rangeFormatting(DocumentRangeFormattingParams params) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<TextEdit> edits = attempt(() -> computeRangeFormattingEdits(params));
+            return edits == null ? Collections.<TextEdit>emptyList() : edits;
+        });
+    }
+
+    private List<TextEdit> computeRangeFormattingEdits(DocumentRangeFormattingParams params) {
+        String text = sourcesMap.get(params.getTextDocument().getUri());
+        if (text == null) {
+            return Collections.emptyList();
+        }
+        FormatterOptions options = withRequestIndent(params.getOptions());
+        DRLFormatter.FormatResult gate = DRLFormatter.formatChecked(text, options);
+        if (gate.refused()) {
+            logger.info(() -> "Not formatting " + params.getTextDocument().getUri() + ": " + gate.refusalReason());
+            return Collections.emptyList();
+        }
+        DRLFormatter.RangeResult r = DRLFormatter.formatRange(text,
+                params.getRange().getStart().getLine(), params.getRange().getEnd().getLine(), options);
+        if (r == null || r.text() == null || r.text().isEmpty()) {
+            return Collections.emptyList(); // selection covers no whole statement
+        }
+        Range replaced = new Range(new Position(r.startLine(), 0), new Position(r.endLine() + 1, 0));
+        return List.of(new TextEdit(replaced, r.text()));
+    }
+
+    /** The editor's tabSize/insertSpaces override the configured indent; nothing else. */
+    private FormatterOptions withRequestIndent(FormattingOptions request) {
+        FormatterOptions configured = formatterOptions;
+        if (request == null) {
+            return configured;
+        }
+        return configured.withIndent(request.getTabSize(), request.isInsertSpaces());
     }
 
     @Override
