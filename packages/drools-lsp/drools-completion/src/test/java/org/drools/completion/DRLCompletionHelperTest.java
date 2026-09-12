@@ -717,6 +717,113 @@ class DRLCompletionHelperTest {
         assertThat(result).isNotNull();
     }
 
+    // ── statics after a type name (issue 3966) ───────────────────────────
+
+    /** Caret immediately after {@code marker}, so no column is counted by hand. */
+    private static Position caretAfter(String text, String marker) {
+        int idx = text.indexOf(marker) + marker.length();
+        int line = (int) text.substring(0, idx).chars().filter(c -> c == '\n').count();
+        int lineStart = text.lastIndexOf('\n', idx - 1) + 1;
+        return new Position(line, idx - lineStart);
+    }
+
+    private static final String IMPORTS_ROUNDING =
+            "package demo;\n"
+            + "import org.drools.completion.fixtures.Rounding;\n"
+            + "rule R\nwhen\n";
+
+    /**
+     * Instance properties are the one set that cannot follow a type name, so
+     * after {@code Rounding.} only its statics are legal.
+     */
+    @Test
+    void afterATypeNameOnlyStaticsAreOffered() {
+        String text = IMPORTS_ROUNDING + "    Order( total > Rounding.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Rounding."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("SCALE", "MODE", "roundHalfUp", "describe")
+                .doesNotContain("applied", "label");
+        assertThat(result)
+                .anySatisfy(i -> {
+                    assertThat(i.getLabel()).isEqualTo("SCALE");
+                    assertThat(i.getDetail()).isEqualTo("int");
+                })
+                .anySatisfy(i -> {
+                    assertThat(i.getLabel()).isEqualTo("describe");
+                    assertThat(i.getDetail()).isEqualTo("describe(int, String) : String");
+                });
+    }
+
+    /**
+     * The reported case: {@code Pet} has three bean properties and no statics,
+     * and all three were offered after {@code Pet.} — the one set that cannot
+     * legally follow a type name. Nothing is the right answer here.
+     */
+    @Test
+    void aTypeWithNoStaticsOffersNoInstancePropertiesAfterTheDot() {
+        String text = "package demo;\n"
+                + "import org.drools.completion.fixtures.Pet;\n"
+                + "rule R\nwhen\n    Order( x > Pet.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Pet."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .doesNotContain("name", "friendly", "legs");
+    }
+
+    /** Only the first hop is static: a constant is an ordinary value of its type. */
+    @Test
+    void theHopAfterAStaticRevertsToInstanceMembers() {
+        String text = IMPORTS_ROUNDING + "    Order( total > Rounding.MODE.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Rounding.MODE."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        // MODE is a String, so String's bean properties resume.
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("empty", "blank")
+                .doesNotContain("SCALE", "MODE", "roundHalfUp");
+    }
+
+    /** A lower-case head is a value, not a type reference — instance members stand. */
+    @Test
+    void instancePositionIsUnchangedByTheStaticView() {
+        String text = "package demo;\n"
+                + "declare Pet\n  name : String\n  legs : int\nend\n"
+                + "rule R\nwhen\n    $p : Pet( )\n    Order( x > $p.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "$p."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel).contains("name", "legs");
+    }
+
+    /**
+     * A DRL declare has no statics, and its enum constants are already members,
+     * so the static view must not shadow them.
+     */
+    @Test
+    void declaredEnumConstantsStillFollowTheTypeName() {
+        String text = "package demo;\n"
+                + "declare enum Color\n  RED, GREEN, BLUE;\nend\n"
+                + "rule R\nwhen\n    Order( c == Color.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("RED", "GREEN", "BLUE");
+    }
+
     private List<String> completionItemStrings(List<CompletionItem> result) {
         return result.stream().map(CompletionItem::getInsertText).toList();
     }

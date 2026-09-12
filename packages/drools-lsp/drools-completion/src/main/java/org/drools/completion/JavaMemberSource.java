@@ -36,6 +36,12 @@ import java.util.Set;
  * supertypes as fully-qualified names where resolvable within the source
  * index — unresolvable supertypes are omitted, never guessed at — empty when
  * unknown; {@link #constructorsOf} returns signatures, empty when unknown.
+ *
+ * <p>{@link #staticFieldsOf} and {@link #staticMethodsOf} answer for the
+ * {@code Type.NAME} position, where Java permits only statics. They are
+ * disjoint from {@link #membersOf}, which is the instance (fact-property)
+ * view — a static is not a fact property, and the two are never mixed. Both
+ * are empty when the type is unknown.
  */
 public interface JavaMemberSource {
 
@@ -46,4 +52,8 @@ public interface JavaMemberSource {
     List<String> supertypesOf(String fqcn);
 
     List<String> constructorsOf(String fqcn);
+
+    List<Field> staticFieldsOf(String fqcn);
+
+    List<String> staticMethodsOf(String fqcn);
 }

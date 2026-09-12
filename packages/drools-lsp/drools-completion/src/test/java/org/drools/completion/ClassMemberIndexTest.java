@@ -152,8 +152,81 @@ class ClassMemberIndexTest {
         ClassMemberIndex.empty().close(); // must not throw
     }
 
+    // ── static view (Type.NAME position) ─────────────────────────────────
+
+    private static final String ROUNDING = "org.drools.completion.fixtures.Rounding";
+
+    @Test
+    void staticFieldsCarryTheirTypes() {
+        List<Field> statics = index.staticFieldsOf(ROUNDING);
+
+        assertThat(statics).extracting(f -> f.name).contains("SCALE", "MODE");
+        assertThat(statics).anySatisfy(f -> {
+            assertThat(f.name).isEqualTo("SCALE");
+            assertThat(f.type).isEqualTo("int");
+        });
+    }
+
+    /** The two views are disjoint: a static is not a fact property, and vice versa. */
+    @Test
+    void staticAndInstanceViewsDoNotLeakIntoEachOther() {
+        assertThat(index.staticFieldsOf(ROUNDING)).extracting(f -> f.name)
+                .doesNotContain("applied", "label", "getLabel");
+        assertThat(index.membersOf(ROUNDING)).extracting(f -> f.name)
+                .contains("applied", "label")
+                .doesNotContain("SCALE", "MODE");
+    }
+
+    @Test
+    void staticMethodsAreReportedAsSignatures() {
+        List<String> methods = index.staticMethodsOf(ROUNDING);
+
+        assertThat(methods).contains("roundHalfUp(double) : int", "describe(int, String) : String");
+        assertThat(methods).noneMatch(m -> m.startsWith("getLabel"));
+    }
+
+    /** Enum constants are public static fields, so they belong to the static view too. */
+    @Test
+    void enumConstantsAppearAsStaticFields() {
+        assertThat(index.staticFieldsOf("org.drools.completion.fixtures.PetKind"))
+                .extracting(f -> f.name).contains("CAT", "DOG");
+    }
+
+    @Test
+    void staticViewOfUnknownTypeIsEmpty() {
+        assertThat(index.staticFieldsOf("does.not.Exist")).isEmpty();
+        assertThat(index.staticMethodsOf("does.not.Exist")).isEmpty();
+        assertThat(ClassMemberIndex.empty().staticFieldsOf(ROUNDING)).isEmpty();
+    }
+
+    @Test
+    void staticViewFallsBackToSourceWhenClassNotLoadable() {
+        ClassMemberIndex idx = new ClassMemberIndex(getClass().getClassLoader());
+        idx.setSourceFallback(fakeSource());
+
+        assertEquals(List.of("LIMIT"),
+                idx.staticFieldsOf("com.example.Only").stream().map(f -> f.name).toList());
+        assertEquals(List.of("of(String) : Only"), idx.staticMethodsOf("com.example.Only"));
+    }
+
+    /** Reading a static's type must not initialize the class. */
+    @Test
+    void staticViewDoesNotRunStaticInitializers() {
+        index.staticFieldsOf("org.drools.completion.fixtures.Pet");
+        index.staticMethodsOf("org.drools.completion.fixtures.Pet");
+        assertThat(InitProbe.petInitialized).isFalse();
+    }
+
     private JavaMemberSource fakeSource() {
         return new JavaMemberSource() {
+            public List<Field> staticFieldsOf(String fqcn) {
+                return "com.example.Only".equals(fqcn)
+                    ? List.of(new Field("LIMIT", "int", null, Field.Origin.FIELD))
+                    : List.of();
+            }
+            public List<String> staticMethodsOf(String fqcn) {
+                return "com.example.Only".equals(fqcn) ? List.of("of(String) : Only") : List.of();
+            }
             public List<Field> membersOf(String fqcn) {
                 return "com.example.Only".equals(fqcn)
                     ? List.of(new Field("code", "String", null, Field.Origin.FIELD),

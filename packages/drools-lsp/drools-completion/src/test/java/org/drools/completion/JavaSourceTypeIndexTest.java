@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -55,6 +56,39 @@ class JavaSourceTypeIndexTest {
         assertTrue(idx.membersOf("com.example.Patient").stream().anyMatch(f -> f.name.equals("name")));
         assertTrue(idx.memberNames("com.example.Severity").contains("LOW"));
         assertNull(idx.memberNames("com.example.DoesNotExist"));
+    }
+
+    private static Set<String> nameAndType(List<Field> fields) {
+        return fields.stream().map(f -> f.name + ":" + f.type).collect(Collectors.toSet());
+    }
+
+    /**
+     * The source and compiled views must describe the same type identically, or
+     * a static offered before a build would change shape after it. Compared
+     * against the reflected fixture rather than a hand-written expectation, so
+     * the two implementations are held to each other.
+     */
+    @Test
+    void sourceAndCompiledStaticViewsAgree(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        // Mirrors the compiled fixture org.drools.completion.fixtures.Rounding.
+        write(src, "com/example/Rounding.java",
+            "package com.example;\npublic class Rounding {\n"
+            + "  public static final int SCALE = 2;\n"
+            + "  public static final String MODE = \"HALF_EVEN\";\n"
+            + "  public int applied;\n"
+            + "  public static int roundHalfUp(double value) { return 0; }\n"
+            + "  public static String describe(int scale, String mode) { return null; }\n"
+            + "  public String getLabel() { return null; }\n}\n");
+
+        JavaSourceTypeIndex source = JavaSourceTypeIndex.build(Set.of(src), List.of());
+        ClassMemberIndex compiled = new ClassMemberIndex(getClass().getClassLoader());
+        String fixture = "org.drools.completion.fixtures.Rounding";
+
+        assertEquals(nameAndType(compiled.staticFieldsOf(fixture)),
+                nameAndType(source.staticFieldsOf("com.example.Rounding")));
+        assertEquals(Set.copyOf(compiled.staticMethodsOf(fixture)),
+                Set.copyOf(source.staticMethodsOf("com.example.Rounding")));
     }
 
     /**
