@@ -25,9 +25,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.drools.drl.parser.antlr4.DRL10Parser;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionItemKind;
 import org.eclipse.lsp4j.Diagnostic;
@@ -715,6 +717,44 @@ class DRLCompletionHelperTest {
                 text, caretPosition, getLanguageClient());
 
         assertThat(result).isNotNull();
+    }
+
+    /**
+     * A simple name shared by two classpath types is ambiguous on the class
+     * index alone, but a wildcard import picks one package — as it does for the
+     * compiler. This works only if the extractor keeps the {@code .*} suffix,
+     * which the grammar carries outside {@code drlQualifiedName}.
+     */
+    @Test
+    void localWildcardImportResolvesAmbiguousSimpleName() {
+        String text = """
+                package org.example;
+
+                import com.acme.model.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.acme.model.Order", "com.other.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex))
+                .isEqualTo("com.acme.model.Order");
+    }
+
+    /** A wildcard import must not resolve a type its package does not provide. */
+    @Test
+    void localWildcardImportDoesNotReachOutsideItsPackage() {
+        String text = """
+                package org.example;
+
+                import com.acme.model.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.other.Order", "com.third.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex)).isNull();
     }
 
     private List<String> completionItemStrings(List<CompletionItem> result) {

@@ -19,13 +19,19 @@
 
 package org.drools.completion;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.lsp4j.Diagnostic;
 import org.eclipse.lsp4j.DiagnosticSeverity;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -67,6 +73,20 @@ class DRLLintHelperTest {
         System.clearProperty("drools.lsp.lint.unbalancedParens");
         System.clearProperty("drools.lsp.lint.unknownTypes");
         System.clearProperty("drools.lsp.lint.mvelPropertyAccess");
+    }
+
+    // Sibling-import tests pin the active resolver to same-directory grouping so
+    // they never depend on an ambient ServiceLoader-discovered provider; the
+    // default is restored afterwards. Tests that pass a null document path are
+    // unaffected either way.
+    @BeforeEach
+    void useSameDirectoryResolver() {
+        WorkspaceSiblingResolvers.setActive(WorkspaceSiblingResolvers::sameDirectorySiblings);
+    }
+
+    @AfterEach
+    void restoreDefaultResolver() {
+        WorkspaceSiblingResolvers.setActive(null);
     }
 
     // ── missing 'end' ────────────────────────────────────────────────────
@@ -798,5 +818,145 @@ class DRLLintHelperTest {
                 + "declare Animal\n  legs : int\nend\n"
                 + "rule R\n  when\n    Animal( legs == PetKind.CAT.ordinal )\n  then\nend\n";
         assertThat(lintUnknownTypes(text)).isEmpty();
+    }
+
+    // ── sibling imports (same-package) ───────────────────────────────────
+
+    private static final String USES_ORDER =
+            "package demo;\nrule R\n  when\n    Order( )\n  then\nend\n";
+
+    /** Builds a class index from empty {@code .class} files for {@code fqcns}. */
+    private static ClassIndex classIndexOf(Path tempDir, String... fqcns) throws IOException {
+        Path classesDir = tempDir.resolve("classes");
+        Files.createDirectories(classesDir);
+        for (String fqcn : fqcns) {
+            Path classFile = classesDir.resolve(fqcn.replace('.', '/') + ".class");
+            Files.createDirectories(classFile.getParent());
+            Files.createFile(classFile);
+        }
+        return ClassIndex.build(Set.of(classesDir));
+    }
+
+    @Test
+    void siblingImportLegalizesPatternType(@TempDir Path tempDir) throws IOException {
+        // A same-package sibling imports Order; the current file uses it as a
+        // pattern type without importing it itself. The exact sibling import
+        // makes it resolvable, so no unknown-type diagnostic fires.
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Files.writeString(tempDir.resolve("sibling.drl"),
+                "package demo;\nimport com.example.model.Order;\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, Map.of(), ClassIndex.empty(), members, true);
+
+        assertThat(diags).isEmpty();
+    }
+
+    @Test
+    void siblingWildcardImportLegalizesThroughClassIndex(@TempDir Path tempDir) throws IOException {
+        // A wildcard sibling import (com.example.model.*) legalizes Order only
+        // when the class index confirms that package provides it. Two Order
+        // classes make the bare simple name ambiguous, so only the wildcard's
+        // package can disambiguate it — a path local wildcard imports never
+        // exercise (their extraction yields the bare package name).
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Files.writeString(tempDir.resolve("sibling.drl"),
+                "package demo;\nimport com.example.model.*;\n");
+        ClassIndex classIndex = classIndexOf(tempDir, "com.example.model.Order", "com.other.Order");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, Map.of(), classIndex, members, true);
+
+        assertThat(diags).isEmpty();
+    }
+
+    @Test
+    void differentPackageSiblingContributesNothing(@TempDir Path tempDir) throws IOException {
+        // The sibling imports Order but declares a different package, so Drools
+        // does not merge it with the current file: the import is out of scope
+        // and the unknown-type diagnostic still fires.
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Files.writeString(tempDir.resolve("sibling.drl"),
+                "package other;\nimport com.example.model.Order;\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, Map.of(), ClassIndex.empty(), members, true);
+
+        assertThat(diags)
+                .singleElement()
+                .satisfies(d -> assertThat(d.getMessage()).contains("Unknown type 'Order'"));
+    }
+
+    @Test
+    void unsavedSiblingBufferImportCounts(@TempDir Path tempDir) throws IOException {
+        // The on-disk sibling lacks the import, but an open unsaved buffer for it
+        // adds one. The buffer shadows disk, so the import is honored immediately.
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Path sibling = tempDir.resolve("sibling.drl");
+        Files.writeString(sibling, "package demo;\n");
+        Map<Path, String> openFiles =
+                Map.of(sibling, "package demo;\nimport com.example.model.Order;\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, openFiles, ClassIndex.empty(), members, true);
+
+        assertThat(diags).isEmpty();
+    }
+
+    @Test
+    void unsavedSiblingBufferShadowsTheOnDiskImport(@TempDir Path tempDir) throws IOException {
+        // The discriminating direction: the on-disk sibling HAS the import,
+        // but the open unsaved buffer removed it. If disk were (wrongly) read
+        // alongside the buffer, the import would still count — it must not.
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Path sibling = tempDir.resolve("sibling.drl");
+        Files.writeString(sibling, "package demo;\nimport com.example.model.Order;\n");
+        Map<Path, String> openFiles = Map.of(sibling, "package demo;\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, openFiles, ClassIndex.empty(), members, true);
+
+        assertThat(diags).isNotEmpty();
+    }
+
+    @Test
+    void siblingImportDoesNotBypassClasspathGating(@TempDir Path tempDir) throws IOException {
+        // Same exact sibling import as the positive case, but the classpath has
+        // not resolved and the class index is empty. The exact import resolves
+        // Order without the classpath, so no diagnostic fires — and the pass's
+        // gating (never confirming non-declared names as unknown without a
+        // resolved classpath) is left unchanged.
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Files.writeString(tempDir.resolve("sibling.drl"),
+                "package demo;\nimport com.example.model.Order;\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, Map.of(), ClassIndex.empty(), members, false);
+
+        assertThat(diags).isEmpty();
+    }
+
+    @Test
+    void noPackageDocumentGetsNoSiblingImports(@TempDir Path tempDir) throws IOException {
+        // The current document has no package declaration, so it merges with
+        // nothing — a same-package sibling's imports do not apply and the
+        // unknown-type diagnostic fires.
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, "rule R\n  when\n    Order( )\n  then\nend\n");
+        Files.writeString(tempDir.resolve("sibling.drl"),
+                "package demo;\nimport com.example.model.Order;\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, Map.of(), ClassIndex.empty(), members, true);
+
+        assertThat(diags)
+                .singleElement()
+                .satisfies(d -> assertThat(d.getMessage()).contains("Unknown type 'Order'"));
     }
 }

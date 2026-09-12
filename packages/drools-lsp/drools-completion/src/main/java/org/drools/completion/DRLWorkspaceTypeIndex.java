@@ -21,6 +21,7 @@ package org.drools.completion;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -254,6 +255,58 @@ public final class DRLWorkspaceTypeIndex {
                 sink.accept(sibling.toUri().toString(), content);
             }
         }
+    }
+
+    /**
+     * Returns the imports contributed by sibling files that declare the
+     * <em>same</em> Drools package as the current document. Drools merges every
+     * file sharing a package into one namespace, so an import declared in any
+     * same-package sibling is in scope here — a consumer that would otherwise
+     * flag such a type (the unknown-type lint) must honor them.
+     *
+     * <p>Siblings come from the active {@link WorkspaceSiblingResolver} alone, so
+     * grouping stays whatever the workspace configured; open unsaved buffers
+     * shadow their on-disk counterpart, matching {@link #forEachSiblingType}.
+     * A null/blank {@code ownPackage} contributes nothing — a package-less file
+     * merges with no other file. Wildcard imports keep their {@code .*} suffix.
+     */
+    public static List<String> siblingImports(Path documentPath, String ownPackage,
+                                              Map<Path, String> openFiles) {
+        if (documentPath == null || ownPackage == null || ownPackage.isBlank()) {
+            return List.of();
+        }
+        String pkg = ownPackage.trim();
+        Path docNorm = documentPath.toAbsolutePath().normalize();
+        Path dir = docNorm.getParent();
+        Set<Path> shadowed = new HashSet<>();
+        List<String> imports = new ArrayList<>();
+
+        // Layer 2: open unsaved siblings (buffer content shadows disk).
+        if (openFiles != null) {
+            for (Map.Entry<Path, String> e : openFiles.entrySet()) {
+                Path p = normalizedSibling(e.getKey(), docNorm, dir);
+                if (p == null) {
+                    continue;
+                }
+                shadowed.add(p);
+                DRLDeclaredTypeParser.FileInfo info = DRLDeclaredTypeParser.parseFileInfo(e.getValue());
+                if (pkg.equals(info.packageName)) {
+                    imports.addAll(info.imports);
+                }
+            }
+        }
+
+        // Layer 3: on-disk siblings not shadowed by an open buffer.
+        for (Path sibling : WorkspaceSiblingResolvers.active().resolveSiblings(documentPath)) {
+            if (shadowed.contains(sibling.toAbsolutePath().normalize())) {
+                continue;
+            }
+            DRLDeclaredTypeParser.FileInfo info = DRLDeclaredTypeParser.cachedFileInfo(sibling);
+            if (pkg.equals(info.packageName)) {
+                imports.addAll(info.imports);
+            }
+        }
+        return imports;
     }
 
     /**
