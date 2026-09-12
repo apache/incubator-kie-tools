@@ -23,11 +23,32 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.drools.completion.ClassIndex;
+import org.drools.formatter.FormatterOptions;
+import org.eclipse.lsp4j.ClientCapabilities;
+import org.eclipse.lsp4j.ConfigurationItem;
+import org.eclipse.lsp4j.ConfigurationParams;
+import org.eclipse.lsp4j.DidChangeConfigurationCapabilities;
+import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
+import org.eclipse.lsp4j.InitializeParams;
+import org.eclipse.lsp4j.InitializedParams;
+import org.eclipse.lsp4j.MessageActionItem;
+import org.eclipse.lsp4j.MessageParams;
+import org.eclipse.lsp4j.PublishDiagnosticsParams;
+import org.eclipse.lsp4j.Registration;
+import org.eclipse.lsp4j.RegistrationParams;
+import org.eclipse.lsp4j.ShowMessageRequestParams;
+import org.eclipse.lsp4j.WorkspaceClientCapabilities;
+import org.eclipse.lsp4j.services.LanguageClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -171,10 +192,158 @@ class DroolsLspServerTest {
         assertThat(roots).containsExactly(module);
     }
 
+    @Test
+    void initializedPullsFormatterOptionsAndRegistersForEmptyConfigurationChanges() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":80}"));
+        server.connect(client);
+
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+        server.initialized(new InitializedParams());
+
+        assertThat(client.configurationRequests).hasSize(1);
+        List<ConfigurationItem> items = client.configurationRequests.get(0).getItems();
+        assertThat(items).hasSize(1);
+        assertThat(items.get(0).getSection()).isEqualTo("drools.lsp.formatter");
+        assertThat(items.get(0).getScopeUri()).isNull();
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(80);
+
+        assertThat(client.registrations).hasSize(1);
+        List<Registration> registrations = client.registrations.get(0).getRegistrations();
+        assertThat(registrations).hasSize(1);
+        assertThat(registrations.get(0).getMethod()).isEqualTo("workspace/didChangeConfiguration");
+        assertThat(registrations.get(0).getRegisterOptions()).isNull();
+    }
+
+    @Test
+    void didChangeConfigurationPullsAgainWhenTheClientProvidesConfiguration() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":80}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+        server.initialized(new InitializedParams());
+
+        client.configurationAnswer = List.of(jsonObject("{\"parenPadding\":false}"));
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(JsonNull.INSTANCE));
+
+        assertThat(client.configurationRequests).hasSize(2);
+        assertThat(server.getTextDocumentService().formatterOptions().parenPadding()).isFalse();
+    }
+
+    @Test
+    void nullConfigurationAnswerLeavesOptionsUntouched() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":80}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+        server.pullFormatterOptions().join();
+
+        client.configurationAnswer = List.of(JsonNull.INSTANCE);
+        server.pullFormatterOptions().join();
+        client.configurationAnswer = List.of();
+        server.pullFormatterOptions().join();
+
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(80);
+    }
+
+    @Test
+    void clientWithoutConfigurationSupportGetsThePushFallback() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        server.connect(client);
+
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), false)).get();
+        server.initialized(new InitializedParams());
+
+        assertThat(client.configurationRequests).isEmpty();
+
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(
+                jsonObject("{\"drools\":{\"lsp\":{\"formatter\":{\"parenPadding\":false}}}}")));
+
+        assertThat(server.getTextDocumentService().formatterOptions().parenPadding()).isFalse();
+    }
+
+    @Test
+    void initializedRegistersNothingWithoutDynamicRegistration() throws Exception {
+        CapturingClient client = new CapturingClient();
+
+        DroolsLspServer serverWithoutCapabilities = new DroolsLspServer();
+        serverWithoutCapabilities.connect(client);
+        serverWithoutCapabilities.initialize(new InitializeParams()).get();
+        serverWithoutCapabilities.initialized(new InitializedParams());
+
+        DroolsLspServer serverWithRegistrationOff = new DroolsLspServer();
+        serverWithRegistrationOff.connect(client);
+        serverWithRegistrationOff.initialize(
+                initializeParams(new DidChangeConfigurationCapabilities(false), null)).get();
+        serverWithRegistrationOff.initialized(new InitializedParams());
+
+        assertThat(client.registrations).isEmpty();
+    }
+
     private Path createClassDir(String classFilePath) throws IOException {
         Path classFile = tempDir.resolve(classFilePath);
         Files.createDirectories(classFile.getParent());
         Files.createFile(classFile);
         return tempDir;
+    }
+
+    private static JsonObject jsonObject(String json) {
+        return JsonParser.parseString(json).getAsJsonObject();
+    }
+
+    private static InitializeParams initializeParams(DidChangeConfigurationCapabilities didChangeConfiguration,
+                                                     Boolean configuration) {
+        WorkspaceClientCapabilities workspace = new WorkspaceClientCapabilities();
+        workspace.setDidChangeConfiguration(didChangeConfiguration);
+        workspace.setConfiguration(configuration);
+        ClientCapabilities capabilities = new ClientCapabilities();
+        capabilities.setWorkspace(workspace);
+        InitializeParams params = new InitializeParams();
+        params.setCapabilities(capabilities);
+        return params;
+    }
+
+    private static class CapturingClient implements LanguageClient {
+
+        final List<RegistrationParams> registrations = new ArrayList<>();
+        final List<ConfigurationParams> configurationRequests = new ArrayList<>();
+        volatile List<Object> configurationAnswer = List.of(jsonObject("{}"));
+
+        @Override
+        public CompletableFuture<Void> registerCapability(RegistrationParams params) {
+            registrations.add(params);
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override
+        public CompletableFuture<List<Object>> configuration(ConfigurationParams params) {
+            configurationRequests.add(params);
+            return CompletableFuture.completedFuture(configurationAnswer);
+        }
+
+        @Override
+        public void telemetryEvent(Object object) {
+        }
+
+        @Override
+        public CompletableFuture<MessageActionItem> showMessageRequest(ShowMessageRequestParams requestParams) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override
+        public void showMessage(MessageParams messageParams) {
+        }
+
+        @Override
+        public void publishDiagnostics(PublishDiagnosticsParams diagnostics) {
+        }
+
+        @Override
+        public void logMessage(MessageParams message) {
+        }
     }
 }

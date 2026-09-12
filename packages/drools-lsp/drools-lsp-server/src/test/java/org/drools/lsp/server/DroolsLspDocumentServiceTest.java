@@ -24,16 +24,24 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.drools.completion.ClassIndex;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.Command;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionParams;
 import org.eclipse.lsp4j.DefinitionParams;
+import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DocumentDiagnosticParams;
 import org.eclipse.lsp4j.DocumentDiagnosticReport;
+import org.eclipse.lsp4j.DocumentFormattingParams;
+import org.eclipse.lsp4j.DocumentRangeFormattingParams;
+import org.eclipse.lsp4j.FormattingOptions;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.HoverParams;
+import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.InlayHint;
 import org.eclipse.lsp4j.InlayHintParams;
 import org.eclipse.lsp4j.Location;
@@ -531,5 +539,120 @@ class DroolsLspDocumentServiceTest {
         assertThat(ca.getEdit().getChanges().get("myDocument"))
                 .singleElement()
                 .satisfies(e -> assertThat(e.getNewText()).isEqualTo("Person"));
+    }
+
+    private static final String MESSY = "package p;\nrule R\n  when\n    $p:Person(age>18)\n  then\nend\n";
+
+    private static DocumentFormattingParams formattingParams(int tabSize, boolean insertSpaces) {
+        DocumentFormattingParams params = new DocumentFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(tabSize, insertSpaces));
+        return params;
+    }
+
+    @Test
+    void formattingReplacesTheWholeDocumentWithTheFormattedText() throws Exception {
+        DroolsLspDocumentService service = getDroolsLspDocumentService(MESSY);
+
+        List<? extends TextEdit> edits = service.formatting(formattingParams(2, true)).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getRange().getStart()).isEqualTo(new Position(0, 0));
+        assertThat(edits.get(0).getNewText()).contains("    $p: Person( age > 18 )");
+        assertThat(edits.get(0).getNewText()).endsWith("\n");
+    }
+
+    /** The editor's tabSize/insertSpaces win over the configured indent. */
+    @Test
+    void formattingHonoursTheRequestsIndentOptions() throws Exception {
+        DroolsLspDocumentService service = getDroolsLspDocumentService(MESSY);
+
+        String text = service.formatting(formattingParams(4, false)).get().get(0).getNewText();
+
+        assertThat(text).contains("\n\twhen\n\t\t$p:");
+    }
+
+    @Test
+    void formattingRefusesUnparseableInputWithNoEdits() throws Exception {
+        DroolsLspDocumentService service = getDroolsLspDocumentService("rule R when Person( then end");
+
+        assertThat(service.formatting(formattingParams(2, true)).get()).isEmpty();
+    }
+
+    @Test
+    void rangeFormattingEditsOnlyTheTouchedStatements() throws Exception {
+        String two = MESSY + "\nrule S\n  when\n    Order(  )\n  then\nend\n";
+        DroolsLspDocumentService service = getDroolsLspDocumentService(two);
+
+        DocumentRangeFormattingParams params = new DocumentRangeFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(2, true));
+        params.setRange(new Range(new Position(7, 0), new Position(7, 0))); // inside rule S only
+
+        List<? extends TextEdit> edits = service.rangeFormatting(params).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getRange().getStart().getLine()).isEqualTo(7);
+        assertThat(edits.get(0).getNewText()).contains("Order()").doesNotContain("Person");
+    }
+
+    /** The comment sits inside the replaced range, so Format Selection must carry it. */
+    @Test
+    void rangeFormattingKeepsACommentTrailingTheRulesEnd() throws Exception {
+        String two = "package p;\nrule R\n  when\n    $p:Person(age>18)\n  then\nend // done\n"
+                + "rule S\n  when\n    Order(  )\n  then\nend\n";
+        DroolsLspDocumentService service = getDroolsLspDocumentService(two);
+
+        DocumentRangeFormattingParams params = new DocumentRangeFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(2, true));
+        params.setRange(new Range(new Position(3, 0), new Position(3, 0)));
+
+        List<? extends TextEdit> edits = service.rangeFormatting(params).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getNewText()).contains("// done").doesNotContain("rule S");
+    }
+
+    @Test
+    void configuredOptionsApplyAndChangeLive() throws Exception {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(MESSY);
+        DroolsLspDocumentService service = server.getTextDocumentService();
+        JsonObject settings = JsonParser.parseString(
+                "{\"drools\":{\"lsp\":{\"formatter\":{\"parenPadding\":false}}}}").getAsJsonObject();
+
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(settings));
+
+        assertThat(service.formatterOptions().parenPadding()).isFalse();
+        assertThat(service.formatting(formattingParams(2, true)).get().get(0).getNewText())
+                .contains("Person(age > 18)");
+
+        // an unrelated settings push leaves the options alone
+        server.getWorkspaceService().didChangeConfiguration(
+                new DidChangeConfigurationParams(JsonParser.parseString("{\"editor\":{}}").getAsJsonObject()));
+        assertThat(service.formatterOptions().parenPadding()).isFalse();
+    }
+
+    @Test
+    void initializationOptionsSeedTheFormatterOptions() {
+        JsonObject init = JsonParser.parseString(
+                "{\"formatter\":{\"lineLength\":80},\"grouping\":{}}").getAsJsonObject();
+
+        assertThat(DroolsLspServer.formatterOptionsOf(init).lineLength()).isEqualTo(80);
+        assertThat(DroolsLspServer.formatterOptionsOf(null)).isEqualTo(FormatterOptions.DEFAULTS);
+        assertThat(DroolsLspServer.formatterOptionsOf(JsonParser.parseString("{\"grouping\":{}}")))
+                .isEqualTo(FormatterOptions.DEFAULTS);
+    }
+
+    /** A single-file client sends no rootUri; its options must still be applied. */
+    @Test
+    void initializationOptionsSeedEvenWithoutAWorkspaceRoot() throws Exception {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(MESSY);
+        InitializeParams params = new InitializeParams();
+        params.setInitializationOptions(JsonParser.parseString("{\"formatter\":{\"lineLength\":80}}").getAsJsonObject());
+
+        server.initialize(params).get();
+
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(80);
     }
 }
