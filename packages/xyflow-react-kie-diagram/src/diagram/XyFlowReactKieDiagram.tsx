@@ -298,6 +298,7 @@ export function XyFlowReactKieDiagram<
   React.useImperativeHandle(diagramRef, () => ({ getReactFlowInstance: () => reactFlowInstance }), [reactFlowInstance]);
 
   const nodeIdBeingDraggedRef = useRef<string | null>(null);
+  const nodeActuallyMovedRef = useRef<boolean>(false);
 
   // Memos
 
@@ -520,7 +521,7 @@ export function XyFlowReactKieDiagram<
               console.debug(`XYFLOW KIE DIAGRAM: 'onNodesChange' --> position '${change.id}'`);
               state.dispatch(state).setNodeStatus(change.id, { dragging: change.dragging });
 
-              const pos = change.positionAbsolute ?? change.position;
+              const pos = change.position;
               if (pos) {
                 const allNodes = state.computed(state).getDiagramData().nodes;
 
@@ -632,7 +633,8 @@ export function XyFlowReactKieDiagram<
                 const newPosition =
                   dropTarget?.containmentMode === ContainmentMode.BORDER
                     ? snapToDropTargetsBorder(
-                        dropTarget,
+                        dropTarget.node,
+                        dropTarget.node.type as N,
                         {
                           ...(node ?? state.xyFlowReactKieDiagram.newNodeProjection).data.shape["dc:Bounds"],
                           "@_x": pos.x,
@@ -702,6 +704,7 @@ export function XyFlowReactKieDiagram<
   const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>(
     (e: MouseEvent | TouchEvent, nodeBeingDragged: RF.Node<NData, N>) => {
       nodeIdBeingDraggedRef.current = nodeBeingDragged.id;
+      nodeActuallyMovedRef.current = true;
     },
     []
   );
@@ -709,6 +712,7 @@ export function XyFlowReactKieDiagram<
   const onNodeDragStart = useCallback<RF.OnNodeDrag<RF.Node<NData, N>>>(
     (e: MouseEvent | TouchEvent, node: RF.Node<NData, N>, nodes: RF.Node<NData, N>[]) => {
       modelBeforeEditingRef.current = model;
+      nodeActuallyMovedRef.current = false;
       onNodeDrag(e, node, nodes);
     },
     [modelBeforeEditingRef, onNodeDrag, model]
@@ -721,6 +725,8 @@ export function XyFlowReactKieDiagram<
           console.debug("XYFLOW KIE DIAGRAM: `onNodeDragStop`");
           const nodeBeingDragged = state.computed(state).getDiagramData().nodesById.get(nodeIdBeingDraggedRef.current!);
           nodeIdBeingDraggedRef.current = null;
+          const actuallyMoved = nodeActuallyMovedRef.current;
+          nodeActuallyMovedRef.current = false;
           if (!nodeBeingDragged) {
             return;
           }
@@ -748,7 +754,7 @@ export function XyFlowReactKieDiagram<
 
           const selectedNodes = [...state.computed(state).getDiagramData().selectedNodesById.values()];
 
-          if (!node.dragging) {
+          if (!actuallyMoved) {
             return;
           }
 
@@ -971,7 +977,7 @@ export function XyFlowReactKieDiagram<
         onNodesChange([
           {
             type: "position",
-            positionAbsolute: {
+            position: {
               x: position.x,
               y: position.y,
             },
@@ -1092,7 +1098,6 @@ export function XyFlowReactKieDiagram<
             defaultViewport={DEFAULT_VIEWPORT}
             fitView={false}
             fitViewOptions={FIT_VIEW_OPTIONS}
-            proOptions={{ hideAttribution: true }}
             attributionPosition={"bottom-right"}
             onInit={setReactFlowInstance}
             deleteKeyCode={DELETE_NODE_KEY_CODES}

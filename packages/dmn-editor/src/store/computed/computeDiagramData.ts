@@ -222,6 +222,9 @@ export function computeDiagramData(
       // them. We always know the dimensions here, so we can simply provide them.
       width: dimensions.width,
       height: dimensions.height,
+      style: {
+        ...dimensions,
+      },
     };
 
     if (dmnObject?.__$$element === "decisionService") {
@@ -236,6 +239,10 @@ export function computeDiagramData(
           parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
         }
       } else {
+        newNode.style = {
+          ...newNode.style,
+          ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
+        };
         newNode.width = DECISION_SERVICE_COLLAPSED_DIMENSIONS.width;
         newNode.height = DECISION_SERVICE_COLLAPSED_DIMENSIONS.height;
       }

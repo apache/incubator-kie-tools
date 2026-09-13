@@ -266,8 +266,7 @@ export const DmnEditorInternal = ({
           return undefined;
         }
 
-        const reactFlowInstance = diagramRef.current?.getReactFlowInstance();
-        const bounds = reactFlowInstance?.getNodesBounds(nodes) ?? RF.getNodesBounds(nodes);
+        const bounds = RF.getNodesBounds(nodes);
         const state = dmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

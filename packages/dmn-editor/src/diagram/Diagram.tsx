@@ -199,6 +199,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     );
 
     const nodeIdBeingDraggedRef = useRef<string | null>(null);
+    const nodeActuallyMovedRef = useRef<boolean>(false);
 
     // Memos
 
@@ -823,7 +824,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               case "position":
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> position '${change.id}'`);
                 state.dispatch(state).diagram.setNodeStatus(change.id, { dragging: change.dragging });
-                const pos = change.positionAbsolute ?? change.position;
+                const pos = change.position;
                 if (pos) {
                   const node = state
                     .computed(state)
@@ -1008,6 +1009,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const onNodeDrag = useCallback<RF.OnNodeDrag<RF.Node<DmnDiagramNodeData>>>(
       (e: MouseEvent | TouchEvent, node: RF.Node<DmnDiagramNodeData>) => {
         nodeIdBeingDraggedRef.current = node.id;
+        nodeActuallyMovedRef.current = true;
         dmnEditorStoreApi.setState((state) => {
           state.diagram.dropTargetNode = getFirstNodeFittingBounds(
             node.id,
@@ -1015,8 +1017,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               // We can't use node.data.dmnObject because it hasn't been updated at this point yet.
               "@_x": node.position.x,
               "@_y": node.position.y,
-              "@_width": node.width ?? 0,
-              "@_height": node.height ?? 0,
+              "@_width": node.measured?.width ?? 0,
+              "@_height": node.measured?.height ?? 0,
             },
             MIN_NODE_SIZES[node.type as NodeType],
             state.diagram.snapGrid
@@ -1029,6 +1031,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const onNodeDragStart = useCallback<RF.OnNodeDrag<RF.Node<DmnDiagramNodeData>>>(
       (e: MouseEvent | TouchEvent, node: RF.Node<DmnDiagramNodeData>, nodes: RF.Node<DmnDiagramNodeData>[]) => {
         dmnModelBeforeEditingRef.current = thisDmn.model;
+        nodeActuallyMovedRef.current = false;
         onNodeDrag(e, node, nodes);
       },
       [thisDmn.model, dmnModelBeforeEditingRef, onNodeDrag]
@@ -1044,6 +1047,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               .getDiagramData(externalModelsByNamespace)
               .nodesById.get(nodeIdBeingDraggedRef.current!);
             nodeIdBeingDraggedRef.current = null;
+            const actuallyMoved = nodeActuallyMovedRef.current;
+            nodeActuallyMovedRef.current = false;
             if (!nodeBeingDragged) {
               return;
             }
@@ -1070,7 +1075,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
             state.diagram.dropTargetNode = undefined;
 
-            if (!node.dragging) {
+            if (!actuallyMoved) {
               return;
             }
 
@@ -1403,7 +1408,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             defaultViewport={viewport}
             fitView={previewMode ? true : false}
             fitViewOptions={previewMode ? FIT_VIEW_OPTIONS_PREVIEW : FIT_VIEW_OPTIONS}
-            proOptions={{ hideAttribution: true }}
             attributionPosition={"bottom-right"}
             onInit={setReactFlowInstance as RF.OnInit<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>}
             deleteKeyCode={settings.isReadOnly ? [] : DELETE_NODE_KEY_CODES}

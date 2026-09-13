@@ -126,8 +126,8 @@ export function DmnDiagramSvg({
           {node.type === NODE_TYPES.inputData &&
             (isAlternativeInputDataShape ? (
               <AlternativeInputDataNodeSvg
-                width={node.width ?? 0}
-                height={node.height ?? 0}
+                width={node.width!}
+                height={node.height!}
                 x={node.position.x}
                 y={node.position.y}
                 {...style}
@@ -137,8 +137,8 @@ export function DmnDiagramSvg({
               />
             ) : (
               <InputDataNodeSvg
-                width={node.width ?? 0}
-                height={node.height ?? 0}
+                width={node.width!}
+                height={node.height!}
                 x={node.position.x}
                 y={node.position.y}
                 {...style}
@@ -148,8 +148,8 @@ export function DmnDiagramSvg({
             ))}
           {node.type === NODE_TYPES.decision && (
             <DecisionNodeSvg
-              width={node.width ?? 0}
-              height={node.height ?? 0}
+              width={node.width!}
+              height={node.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -160,8 +160,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.bkm && (
             <BkmNodeSvg
-              width={node.width ?? 0}
-              height={node.height ?? 0}
+              width={node.width!}
+              height={node.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -171,8 +171,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.knowledgeSource && (
             <KnowledgeSourceNodeSvg
-              width={node.width ?? 0}
-              height={node.height ?? 0}
+              width={node.width!}
+              height={node.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -182,8 +182,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.decisionService && (
             <DecisionServiceNodeSvg
-              width={node.width ?? 0}
-              height={node.height ?? 0}
+              width={node.width!}
+              height={node.height!}
               x={node.position.x}
               y={node.position.y}
               showSectionLabels={false}
@@ -194,8 +194,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.group && (
             <GroupNodeSvg
-              width={node.width ?? 0}
-              height={node.height ?? 0}
+              width={node.width!}
+              height={node.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -204,8 +204,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.textAnnotation && (
             <TextAnnotationNodeSvg
-              width={node.width ?? 0}
-              height={node.height ?? 0}
+              width={node.width!}
+              height={node.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -214,8 +214,8 @@ export function DmnDiagramSvg({
           )}
           {node.type === NODE_TYPES.unknown && (
             <UnknownNodeSvg
-              width={node.width ?? 0}
-              height={node.height ?? 0}
+              width={node.width!}
+              height={node.height!}
               x={node.position.x}
               y={node.position.y}
               {...style}
@@ -298,9 +298,9 @@ const SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT = 8;
 export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>, labelPosition: NodeLabelPosition) {
   switch (labelPosition) {
     case "center-bottom":
-      const cbTx = n.position.x! + n.width! / 2;
-      const cbTy = n.position.y! + n.height! + 4;
-      const cbWidth = n.width!;
+      const cbTx = n.position.x! + (n.width ?? 0) / 2;
+      const cbTy = n.position.y! + (n.height ?? 0) + 4;
+      const cbWidth = n.width ?? 0;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -309,9 +309,9 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "center-center":
-      const ccTx = n.position.x! + n.width! / 2;
-      const ccTy = n.position.y! + n.height! / 2;
-      const ccWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const ccTx = n.position.x! + (n.width ?? 0) / 2;
+      const ccTy = n.position.y! + (n.height ?? 0) / 2;
+      const ccWidth = (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "middle",
@@ -320,9 +320,9 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "top-center":
-      const tcTx = n.position.x! + n.width! / 2;
+      const tcTx = n.position.x! + (n.width ?? 0) / 2;
       const tcTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const tcWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const tcWidth = (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -332,8 +332,8 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
 
     case "center-left":
       const clTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const clTy = n.position.y! + n.height! / 2;
-      const clWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const clTy = n.position.y! + (n.height ?? 0) / 2;
+      const clWidth = (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "start",
@@ -345,7 +345,7 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       const tlTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlWidth =
-        n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
+        (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       return {
         verticalAnchor: "start",
         textAnchor: "start",

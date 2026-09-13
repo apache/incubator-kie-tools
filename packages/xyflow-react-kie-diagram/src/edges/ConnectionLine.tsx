@@ -107,12 +107,12 @@ export function ConnectionLine<N extends string, E extends string>({
     const defaultSize = defaultNodeSizes[nodeType]({ snapGrid });
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
-      { ...fromNode!.position, width: fromNode!.width, height: fromNode!.height },
+      { ...fromNode!.internals.positionAbsolute, width: fromNode!.width, height: fromNode!.height },
       undefined
     );
 
     const [fromXauto, fromYauto] = getPositionalHandlePosition(
-      { ...fromNode!.position, width: fromNode!.width, height: fromNode!.height },
+      { ...fromNode!.internals.positionAbsolute, width: fromNode!.width, height: fromNode!.height },
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       undefined
     );

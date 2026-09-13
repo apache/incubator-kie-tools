@@ -91,7 +91,6 @@ export class Nodes {
     return await from.getByTitle(this.getAddEdgeTitle(args.type)).dragTo(to, {
       targetPosition,
       noWaitAfter: true,
-      force: true,
     });
   }
 

@@ -21,33 +21,33 @@ import * as RF from "@xyflow/react";
 import { getCenter } from "../maths/Maths";
 import { DC__Bounds } from "../maths/model";
 import { NodeSizes } from "../nodes/NodeSizes";
-import { XyFlowDiagramState, XyFlowReactKieDiagramEdgeData, XyFlowReactKieDiagramNodeData } from "../store/State";
+import { XyFlowReactKieDiagramEdgeData, XyFlowReactKieDiagramNodeData } from "../store/State";
 import { SnapGrid, snapBoundsDimensions, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 
 export const DEFAULT_BORDER_ALLOWANCE_IN_PX = 14;
 export const OFFSET_IN_PX_TO_MAKE_BORDER_SNAPPING_LOOK_CENTRALIZED_BASED_ON_STYLING_ON_BORDER_OF_CONTAINER = 5;
 
 export function snapToDropTargetsBorder<
-  S extends XyFlowDiagramState<S, N, NData, EData>,
   N extends string,
   NData extends XyFlowReactKieDiagramNodeData<N, NData>,
   EData extends XyFlowReactKieDiagramEdgeData,
 >(
-  dropTarget: NonNullable<S["xyFlowReactKieDiagram"]["dropTarget"]>,
+  dropTargetNode: RF.Node<NData, N>,
+  dropTargetNodeType: N,
   shapeBounds: DC__Bounds,
   nodeType: N,
   snapGrid: SnapGrid,
   minNodeSizes: NodeSizes<N>,
   borderAllowanceInPx: number
 ): RF.XYPosition {
-  const dropTargetPosition = snapShapePosition(snapGrid, dropTarget.node.data.shape);
+  const dropTargetPosition = snapShapePosition(snapGrid, dropTargetNode.data.shape);
   const dropTargetDimensions = snapShapeDimensions(
     snapGrid,
-    dropTarget.node.data.shape,
-    minNodeSizes[dropTarget.node.type! as N]({ snapGrid })
+    dropTargetNode.data.shape,
+    minNodeSizes[dropTargetNodeType]({ snapGrid })
   );
 
-  const shapeDimensions = snapBoundsDimensions(snapGrid, shapeBounds, minNodeSizes[nodeType!]({ snapGrid }));
+  const shapeDimensions = snapBoundsDimensions(snapGrid, shapeBounds, minNodeSizes[nodeType]({ snapGrid }));
   const shapeCenterPoint = getCenter(
     shapeBounds["@_x"],
     shapeBounds["@_y"],
