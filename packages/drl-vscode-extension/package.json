@@ -19,7 +19,9 @@
     "build:prod": "rimraf dist && webpack && pnpm pack:prod",
     "compile": "webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/drl_vscode_extension_$npm_package_version.vsix",
+    "pack:prod": "run-script-os",
+    "pack:prod:darwin:linux": "vsce package --githubBranch main --no-dependencies -o ./dist/drl_vscode_extension_$npm_package_version.vsix",
+    "pack:prod:win32": "vsce package --githubBranch main --no-dependencies -o ./dist/drl_vscode_extension_%npm_package_version%.vsix",
     "pretest": "pnpm build:dev && mvn -f src/testFixture/pom.xml -ntp compile && tsc -p tsconfig.test.json",
     "test": "node ./out-test/test/runTest.js",
     "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
