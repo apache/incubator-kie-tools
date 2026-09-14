@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -756,6 +757,23 @@ class DRLCompletionHelperTest {
                     assertThat(i.getLabel()).isEqualTo("describe");
                     assertThat(i.getDetail()).isEqualTo("describe(int, String) : String");
                 });
+    }
+
+    /** A fully-qualified type name is a type name too, so the same statics follow it. */
+    @Test
+    void aQualifiedTypeNameOffersItsStatics() {
+        String text = "package demo;\nrule R\nwhen\n"
+                + "    Order( total > org.drools.completion.fixtures.Rounding.\nthen\nend\n";
+        ClassIndex classIndex = ClassIndex.of(
+                Map.of("Rounding", List.of("org.drools.completion.fixtures.Rounding")));
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Rounding."), getLanguageClient(), classIndex,
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("SCALE", "MODE", "roundHalfUp", "describe")
+                .doesNotContain("applied", "label");
     }
 
     /**

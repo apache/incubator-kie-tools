@@ -314,7 +314,12 @@ public class DRLCompletionHelper {
         String rootType;
         int firstFieldSegment = 1;
         boolean typeReference = false;
-        if (head.startsWith("$")) {
+        int fqcnEnd = DRLHoverHelper.fqcnPrefixEnd(chain, classIndex);
+        if (fqcnEnd >= 1) {
+            rootType = String.join(".", Arrays.copyOfRange(chain, 0, fqcnEnd + 1));
+            firstFieldSegment = fqcnEnd + 1;
+            typeReference = true;
+        } else if (head.startsWith("$")) {
             rootType = LhsBindingResolver.resolveAt(text, DRLHoverHelper.positionToOffset(text, caret), typeIndex)
                     .get(head.substring(1));
         } else if (!head.isEmpty() && Character.isUpperCase(head.charAt(0))) {

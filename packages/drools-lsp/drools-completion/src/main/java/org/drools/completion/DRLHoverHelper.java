@@ -391,7 +391,7 @@ public final class DRLHoverHelper {
      * {@code com.example.Order.status} prefers the type {@code com.example.Order}
      * over a shorter accidental match.
      */
-    private static int fqcnPrefixEnd(String[] segments, ClassIndex classIndex) {
+    static int fqcnPrefixEnd(String[] segments, ClassIndex classIndex) {
         for (int end = segments.length - 1; end >= 1; end--) {
             String simple = segments[end];
             if (simple.isEmpty()) {
