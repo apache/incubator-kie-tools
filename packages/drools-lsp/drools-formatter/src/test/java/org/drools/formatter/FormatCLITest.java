@@ -373,6 +373,42 @@ class FormatCLITest {
     assertThat(runCli("--check", "--lines", "4:4", f.toString())).isEqualTo(1);
   }
 
+  /** A statement-limited write must not touch the end of a file it did not reach. */
+  @Test
+  void linesWriteLeavesAMissingFinalNewlineAloneWhenTheLastLineIsUntouched(@TempDir Path dir)
+      throws Exception {
+    Path f = dir.resolve("no_final_newline.drl");
+    Files.writeString(f, MIXED.stripTrailing());
+
+    assertThat(runCli("--write", "--lines", "9:9", f.toString())).isZero();
+
+    String written = Files.readString(f);
+    assertThat(written).contains("    $q: Person( age > 21 )");
+    assertThat(written).endsWith("end");
+    assertThat(runCli("--check", "--lines", "9:9", f.toString())).isZero();
+  }
+
+  @Test
+  void linesWriteReachingTheLastLineEndsTheFileWithANewline(@TempDir Path dir) throws Exception {
+    Path f = dir.resolve("messy_last_rule.drl");
+    Files.writeString(f, String.join("\n",
+        "package p;",
+        "rule \"A\"",
+        "  when",
+        "    $p: Person( age > 18 )",
+        "  then",
+        "end",
+        "rule \"B\"",
+        "when",
+        "$q : Person(  age>21 )",
+        "then",
+        "end"));
+
+    assertThat(runCli("--write", "--lines", "9:9", f.toString())).isZero();
+
+    assertThat(Files.readString(f)).endsWith("end\n");
+  }
+
   /** Splicing must not rewrite an untouched line's ending — the point of --lines. */
   @Test
   void linesWritePreservesTheFilesLineEndings(@TempDir Path dir) throws Exception {

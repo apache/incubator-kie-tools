@@ -410,12 +410,16 @@ public class FormatCLI {
    * untouched lines are re-joined with that same ending: under PRESERVE that is
    * the file's own, so a two-rule fix stays a two-rule diff — what
    * {@code --lines} exists for — and under an explicit {@code lf}/{@code crlf}
-   * the whole file gets the ending the user asked for.
+   * the whole file gets the ending the user asked for. A file that ended without
+   * a newline still does, unless an edit reached its last line: the slices always
+   * end with one.
    */
   static String applyRangeEdits(
       String text, List<DRLFormatter.RangeResult> edits, FormatterOptions options) {
     String eol = options.lineEnding(text);
     List<String> lines = new ArrayList<>(Arrays.asList(splitLines(text)));
+    int lastLine = lines.size() - 2;
+    boolean lastLineEdited = false;
     List<DRLFormatter.RangeResult> ordered = new ArrayList<>(edits);
     ordered.sort((a, b) -> Integer.compare(b.startLine(), a.startLine()));
 
@@ -427,6 +431,7 @@ public class FormatCLI {
       if (edit.startLine() > end) {
         continue;
       }
+      lastLineEdited |= end >= lastLine;
       // edit.text() ends with one line ending by contract
       String[] pieces = edit.text().replace("\r\n", "\n").replace("\r", "\n").split("\n", -1);
       List<String> replacement = Arrays.asList(pieces).subList(0, pieces.length - 1);
@@ -434,7 +439,11 @@ public class FormatCLI {
       lines.addAll(edit.startLine(), replacement);
     }
 
-    return String.join(eol, lines);
+    String joined = String.join(eol, lines);
+    boolean hadFinalNewline = text.endsWith("\n") || text.endsWith("\r");
+    return hadFinalNewline || lastLineEdited
+        ? joined
+        : joined.substring(0, joined.length() - eol.length());
   }
 
   /** Renders the affected spans as 1-based inclusive {@code "lines 12-40, 88-96"}. */
