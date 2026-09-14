@@ -430,7 +430,8 @@ public class DRLCompletionHelper {
      * <ol>
      *   <li>Already qualified — returned as-is.</li>
      *   <li>Exact (non-wildcard) import match.</li>
-     *   <li>Wildcard import match verified through the class index.</li>
+     *   <li>Wildcard import match verified through the class index — the named
+     *       package only, and skipped when two wildcards provide the name.</li>
      *   <li>Class index match for the simple name (skipped when ambiguous).</li>
      *   <li>{@code java.lang.*} — implicitly available in DRL without an import,
      *       resolved via the platform class loader.</li>
@@ -468,18 +469,26 @@ public class DRLCompletionHelper {
                 return imported;
             }
         }
-        // 2. Wildcard import — verify the package actually provides the type via
-        //    the class index.
+        // 2. Wildcard imports: the named package's own types only (JLS 7.5.2),
+        //    confirmed by the class index. A name that two wildcards both
+        //    provide is ambiguous (JLS 6.5.5.1), so it resolves to nothing, as
+        //    step 3 does for the bare class index.
+        Set<String> wildcardMatches = new HashSet<>();
         for (String imported : imports) {
             if (imported.endsWith(".*")) {
-                String pkg = imported.substring(0, imported.length() - 1); // keep the dot
-                for (String fqcn : classIndex.getMatching(simpleName)) {
-                    if (fqcn.startsWith(pkg)
-                            && (fqcn.endsWith("." + simpleName) || fqcn.equals(simpleName))) {
-                        return fqcn;
-                    }
+                String candidate = imported.substring(0, imported.length() - 1) + simpleName;
+                if (classIndex.forSimpleName(simpleName).contains(candidate)) {
+                    wildcardMatches.add(candidate);
                 }
             }
+        }
+        if (wildcardMatches.size() == 1) {
+            return wildcardMatches.iterator().next();
+        }
+        if (wildcardMatches.size() > 1) {
+            logger.log(Level.FINE, () -> "Ambiguous simple name '" + simpleName
+                    + "' under wildcard imports " + wildcardMatches);
+            return null;
         }
         // 3. Class index (any package). An unqualified name with two classpath
         //    classes sharing a simple name is ambiguous, so it is skipped.

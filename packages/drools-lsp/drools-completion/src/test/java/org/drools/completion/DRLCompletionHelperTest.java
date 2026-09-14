@@ -757,6 +757,47 @@ class DRLCompletionHelperTest {
         assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex)).isNull();
     }
 
+    /**
+     * JLS 7.5.2: an on-demand import makes available the classes "declared in
+     * the package", not those of its subpackages. The second Order keeps the
+     * bare-name fallback ambiguous, so only the wildcard branch could answer.
+     */
+    @Test
+    void localWildcardImportDoesNotReachIntoSubpackages() {
+        String text = """
+                package org.example;
+
+                import com.acme.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.acme.model.Order", "com.other.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex)).isNull();
+    }
+
+    /**
+     * JLS 6.5.5.1: "If multiple type-import-on-demand declarations import types
+     * with the same name ... the simple type name is ambiguous, and a
+     * compile-time error occurs." Resolving to either would be a guess.
+     */
+    @Test
+    void twoWildcardImportsProvidingTheSameNameResolveToNothing() {
+        String text = """
+                package org.example;
+
+                import com.acme.*;
+                import com.other.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.acme.Order", "com.other.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex)).isNull();
+    }
+
     private List<String> completionItemStrings(List<CompletionItem> result) {
         return result.stream().map(CompletionItem::getInsertText).toList();
     }

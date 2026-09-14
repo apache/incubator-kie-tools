@@ -871,6 +871,27 @@ class DRLLintHelperTest {
         assertThat(diags).isEmpty();
     }
 
+    /**
+     * JLS 7.5.2: an on-demand import makes available the classes "declared in
+     * the package", not those of its subpackages. A sibling's wildcard must not
+     * legalize a type that lives one package down.
+     */
+    @Test
+    void siblingWildcardImportDoesNotReachIntoSubpackages(@TempDir Path tempDir) throws IOException {
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Files.writeString(tempDir.resolve("sibling.drl"),
+                "package demo;\nimport com.example.*;\n");
+        ClassIndex classIndex = classIndexOf(tempDir, "com.example.model.Order", "com.other.Order");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, Map.of(), classIndex, members, true);
+
+        assertThat(diags)
+                .singleElement()
+                .satisfies(d -> assertThat(d.getMessage()).contains("Unknown type 'Order'"));
+    }
+
     @Test
     void differentPackageSiblingContributesNothing(@TempDir Path tempDir) throws IOException {
         // The sibling imports Order but declares a different package, so Drools
