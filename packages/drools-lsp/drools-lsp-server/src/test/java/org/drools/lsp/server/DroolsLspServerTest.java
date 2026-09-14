@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.completion.ClassIndex;
+import org.drools.completion.CustomOperators;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -55,6 +56,37 @@ class DroolsLspServerTest {
 
         ClassIndex index = server.getTextDocumentService().getClassIndexForTest();
         assertThat(index.getMatching("Foo")).contains("com.example.Foo");
+    }
+
+    @Test
+    void rebuildClassIndexRegistersTheProjectsCustomOperators() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        Path conf = tempDir.resolve("META-INF/kie.properties.conf");
+        Files.createDirectories(conf.getParent());
+        Files.writeString(conf, "drools.evaluator.nearlyEquals=com.example.NearlyEqualsDefinition\n");
+        server.setClasspathEntriesForTest(Set.of(tempDir));
+
+        server.rebuildClassIndex();
+
+        assertThat(CustomOperators.isRegistered("nearlyEquals")).isTrue();
+    }
+
+    /**
+     * The project's own declaration lives in its build output, which the
+     * dependency classpath never lists, and it must be known from the first
+     * publish at startup rather than from a later rebuild.
+     */
+    @Test
+    void startupPublishRegistersOperatorsDeclaredInTheProjectsBuildOutput() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        Files.writeString(tempDir.resolve("pom.xml"), "<project/>");
+        Path conf = tempDir.resolve("target/classes/META-INF/kie.properties.conf");
+        Files.createDirectories(conf.getParent());
+        Files.writeString(conf, "drools.evaluator.roughlyEquals=com.example.RoughlyEqualsDefinition\n");
+
+        server.initializeJavaSourceTypingForTest(tempDir);
+
+        assertThat(CustomOperators.isRegistered("roughlyEquals")).isTrue();
     }
 
     @Test
