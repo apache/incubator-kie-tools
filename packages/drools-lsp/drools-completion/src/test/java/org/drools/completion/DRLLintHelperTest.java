@@ -962,9 +962,9 @@ class DRLLintHelperTest {
     }
 
     @Test
-    void noPackageDocumentGetsNoSiblingImports(@TempDir Path tempDir) throws IOException {
-        // The current document has no package declaration, so it merges with
-        // nothing — a same-package sibling's imports do not apply and the
+    void noPackageDocumentIgnoresSiblingsThatDeclareOne(@TempDir Path tempDir) throws IOException {
+        // The current document has no package declaration, so a sibling that
+        // declares one is a different package: its imports do not apply and the
         // unknown-type diagnostic fires.
         Path current = tempDir.resolve("current.drl");
         Files.writeString(current, "rule R\n  when\n    Order( )\n  then\nend\n");
@@ -977,5 +977,17 @@ class DRLLintHelperTest {
         assertThat(diags)
                 .singleElement()
                 .satisfies(d -> assertThat(d.getMessage()).contains("Unknown type 'Order'"));
+    }
+
+    @Test
+    void packageLessFilesShareTheDefaultPackage(@TempDir Path tempDir) throws IOException {
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, "rule R\n  when\n    Order( )\n  then\nend\n");
+        Files.writeString(tempDir.resolve("sibling.drl"), "import com.example.model.Order;\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, Map.of(), ClassIndex.empty(), members, true);
+
+        assertThat(diags).isEmpty();
     }
 }

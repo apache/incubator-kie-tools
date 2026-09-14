@@ -808,7 +808,10 @@ public final class DRLLintHelper {
         }
         // Imports declared in same-package sibling files are in scope here too
         // (Drools merges files by package), so resolution must see them. Computed
-        // once and threaded through all three scan paths.
+        // once and threaded through all three scan paths. Files without a package
+        // declaration all compile into the builder's default package
+        // (drools-compiler's CompositePackageCompilationPhase), so two
+        // package-less files merge as well.
         String ownPackage = DRLDeclaredTypeParser.extractPackageName(cu);
         List<String> siblingImports = new ArrayList<>();
         DRLWorkspaceTypeIndex.forEachSiblingInfo(documentPath, openFiles, (info, uri) -> {
@@ -817,7 +820,7 @@ public final class DRLLintHelper {
                     declared.putIfAbsent(dt.name, dt);
                 }
             }
-            if (!ownPackage.isEmpty() && ownPackage.equals(info.packageName)) {
+            if (ownPackage.equals(info.packageName)) {
                 siblingImports.addAll(info.imports);
             }
         });
