@@ -275,9 +275,7 @@ export const handleProcessVariableUpdate = async (
       },
       fetchPolicy: "no-cache",
     })
-    .then((value) => {
-      throw JSON.parse(value.data.ProcessInstanceUpdateVariables);
-    });
+    .then((value) => JSON.parse(value.data.ProcessInstanceUpdateVariables));
 };
 
 export const handleNodeInstanceCancel = async (
