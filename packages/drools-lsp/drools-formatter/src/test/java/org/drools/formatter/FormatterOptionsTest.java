@@ -239,6 +239,17 @@ class FormatterOptionsTest {
     }
 
     @Test
+    void headerMetadataInlineKeepsCommentsBetweenItemsBelowTheHeader() {
+        FormatterOptions o = FormatterOptions.fromJson(JsonParser.parseString("{\"headerMetadata\":\"inline\"}").getAsJsonObject());
+        String drl = "package p;\nrule R\n  @Foo // about Foo\n  salience 10 // why ten\n  when\n    X()\n  then\nend\n";
+
+        String out = with(o, drl);
+
+        assertThat(out).contains("rule R @Foo salience 10\n  // about Foo\n  // why ten\n  when");
+        assertThat(with(o, out)).isEqualTo(out);
+    }
+
+    @Test
     void headerMetadataInlineRidesTheHeaderLineAndWrapsAtLineLength() {
         FormatterOptions o = FormatterOptions.fromJson(JsonParser.parseString("{\"headerMetadata\":\"inline\"}").getAsJsonObject());
         assertThat(with(o, HEADERS))

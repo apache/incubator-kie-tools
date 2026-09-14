@@ -142,7 +142,9 @@ final class Emitter {
     FormatterOptions.HeaderMetadata mode = options.headerMetadata();
     if (mode == FormatterOptions.HeaderMetadata.INLINE) {
       StringBuilder line = new StringBuilder(header);
+      List<Token> deferredComments = new ArrayList<>();
       for (ParserRuleContext item : items) {
+        collectCommentsUpTo(item.getStart().getTokenIndex(), deferredComments);
         String text = styledText(item);
         if (line.length() + 1 + text.length() > options.lineLength() && line.length() > header.length()) {
           emit(line.toString());
@@ -155,8 +157,8 @@ final class Emitter {
       emit(line.toString());
       newline();
       depth++;
-      for (ParserRuleContext item : items) {
-        emitHiddenTokensBefore(item);
+      for (Token comment : deferredComments) {
+        emitCommentToken(comment);
       }
       return;
     }
@@ -172,6 +174,15 @@ final class Emitter {
     }
     if (mode == FormatterOptions.HeaderMetadata.FLUSH) {
       depth++;
+    }
+  }
+
+  private void collectCommentsUpTo(int targetIndex, List<Token> into) {
+    for (int i = lastEmittedTokenIndex + 1; i < targetIndex; i++) {
+      Token t = tokens.get(i);
+      if (isComment(t)) {
+        into.add(t);
+      }
     }
   }
 
