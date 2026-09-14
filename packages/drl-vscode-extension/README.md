@@ -171,9 +171,13 @@ Line comments keep their text and are re-indented. Javadoc-shaped block comments
 
 A line comment reading exactly `@formatter:off` suspends formatting and `@formatter:on` resumes it; an unmatched `off` runs to end of file. Freezing works per top-level statement: any statement overlapping the region is emitted verbatim in full. Inside a frozen region only line endings are normalized.
 
+### Which parser
+
+Drools 10 ships two DRL parsers: the legacy `DRL6` parser it compiles with by default, and the ANTLR4 `DRL10` parser, enabled with `-Ddrools.drl.antlr4.parser.enabled=true`. The formatter uses the ANTLR4 parser, which accepts a slimmer syntax; the differences are tracked in [apache/incubator-kie#6220](https://github.com/apache/incubator-kie/issues/6220). A construct only the legacy parser accepts can read differently here. Where the grammar reports an error, the file is refused. Where it reads the construct as something else without an error — a constraint written as `size >= 0 && <=20`, with no left operand on its second comparison, makes that rule the annotation payload of the rule before it — the parse looks clean while the affected rules have become payload text, and the formatter refuses the file, naming the first such rule's line, rather than flattening them onto one line. Before the first format of a rule set, make sure it compiles with the ANTLR4 parser enabled, and review the diff.
+
 ### What it refuses
 
-It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block could not be read as one, when its own output fails to re-parse, or when a comment would not survive formatting (see the limitations below; the refusal names the comment's line). A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
+It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block, or a whole rule or query, was not read as one, when its own output fails to re-parse, or when a comment would not survive formatting (see the limitations below; the refusal names the comment's line). A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
 
 ### Command line
 

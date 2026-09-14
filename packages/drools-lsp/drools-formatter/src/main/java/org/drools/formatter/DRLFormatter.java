@@ -29,6 +29,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.parser.antlr4.DRL10Lexer;
 import org.drools.drl.parser.antlr4.DRL10Parser;
 import org.drools.drl.parser.antlr4.DRL10ParserHelper;
@@ -102,6 +103,12 @@ public class DRLFormatter {
    * {@link #rulesMissingLhs}). They exist because an error count cannot see that
    * failure mode — the mis-derivation that causes it reports zero errors.
    *
+   * <p>{@code misreadStatements} / {@code outputMisreadStatements} extend that
+   * tier to statement keywords: {@code rule} or {@code query} tokens the parser
+   * read as neither the start of a statement nor an identifier (see
+   * {@link #misreadStatements}), with {@code misreadStatementLine} the 1-based
+   * input line of the first.
+   *
    * <p>{@code commentsLost} is the comment tier: how many comment tokens the
    * re-parsed output holds fewer than the input (negative when it holds more),
    * with {@code lostCommentLine} the 1-based input line of the first comment no
@@ -110,11 +117,13 @@ public class DRLFormatter {
    * being silent.
    *
    * <p>The output tier is only computed when the input was non-blank and clean on
-   * BOTH input counts; otherwise the output figures stay 0 (not meaningful — we
+   * every input count; otherwise the output figures stay 0 (not meaningful — we
    * already refuse).
    */
   public record FormatResult(String formatted, int syntaxErrors, int outputSyntaxErrors,
                              int rulesMissingLhs, int outputRulesMissingLhs,
+                             int misreadStatements, int misreadStatementLine,
+                             int outputMisreadStatements,
                              int commentsLost, int lostCommentLine) {
 
     /** Whether a caller must refuse to write or emit over this document. */
@@ -134,11 +143,17 @@ public class DRLFormatter {
       if (rulesMissingLhs > 0) {
         return rulesMissingLhs + " rule(s) whose when-block the parser could not read";
       }
+      if (misreadStatements > 0) {
+        return "the rule or query at line " + misreadStatementLine + " was not read as one";
+      }
       if (outputSyntaxErrors > 0) {
         return "output fails to re-parse - formatter bug";
       }
       if (outputRulesMissingLhs > 0) {
         return "output loses a rule's when-block - formatter bug";
+      }
+      if (outputMisreadStatements > 0) {
+        return "output loses a rule or query - formatter bug";
       }
       if (commentsLost > 0) {
         return lostCommentLine > 0
@@ -152,7 +167,7 @@ public class DRLFormatter {
     }
   }
 
-  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0);
+  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
   public static FormatResult formatChecked(String text) {
     return formatChecked(text, FormatterOptions.DEFAULTS);
@@ -164,7 +179,7 @@ public class DRLFormatter {
     }
     if (text.isBlank()) {
       // nothing to format; never truncate a whitespace-only file
-      return new FormatResult(text, 0, 0, 0, 0, 0, 0);
+      return new FormatResult(text, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     String normalized = text.replace("\r\n", "\n").replace("\r", "\n");
     String eol = options.lineEnding(text);
@@ -179,19 +194,23 @@ public class DRLFormatter {
     // The input tier reads the very tree the emission was built from, not a fresh
     // parse: the question is what the formatter acted on.
     int rulesMissingLhs = rulesMissingLhs(formatter.compilationUnit, e.tokens);
-    ParseHealth output = syntaxErrors == 0 && rulesMissingLhs == 0
+    Misread misread = misreadStatements(formatter.compilationUnit);
+    ParseHealth output = syntaxErrors == 0 && rulesMissingLhs == 0 && misread.count() == 0
         ? parseHealth(out)
         : ParseHealth.NOT_CHECKED;
     CommentLoss comments = output.tokens() == null
         ? CommentLoss.NONE
         : commentLoss(e.tokens, output.tokens());
     return new FormatResult(out, syntaxErrors, output.syntaxErrors(),
-        rulesMissingLhs, output.rulesMissingLhs(), comments.count(), comments.firstLine());
+        rulesMissingLhs, output.rulesMissingLhs(),
+        misread.count(), misread.firstLine(), output.misreadStatements(),
+        comments.count(), comments.firstLine());
   }
 
-  /** Both gate figures for one text, from a single parse, plus that parse's tokens. */
-  private record ParseHealth(int syntaxErrors, int rulesMissingLhs, CommonTokenStream tokens) {
-    static final ParseHealth NOT_CHECKED = new ParseHealth(0, 0, null);
+  /** The gate figures for one text, from a single parse, plus that parse's tokens. */
+  private record ParseHealth(int syntaxErrors, int rulesMissingLhs, int misreadStatements,
+                             CommonTokenStream tokens) {
+    static final ParseHealth NOT_CHECKED = new ParseHealth(0, 0, 0, null);
   }
 
   /** Re-parses {@code text} (any EOL style) and reports what the output gates need. */
@@ -200,7 +219,8 @@ public class DRLFormatter {
     DRL10Parser parser = DRL10ParserHelper.createDrlParser(normalized);
     DRL10Parser.CompilationUnitContext cu = parser.compilationUnit();
     CommonTokenStream tokens = (CommonTokenStream) parser.getTokenStream();
-    return new ParseHealth(parser.getNumberOfSyntaxErrors(), rulesMissingLhs(cu, tokens), tokens);
+    return new ParseHealth(parser.getNumberOfSyntaxErrors(), rulesMissingLhs(cu, tokens),
+        misreadStatements(cu).count(), tokens);
   }
 
   /**
@@ -254,6 +274,47 @@ public class DRLFormatter {
       }
     }
     return false;
+  }
+
+  private record Misread(int count, int firstLine) {}
+
+  /**
+   * How many {@code rule}/{@code query} keyword tokens the parser read as neither
+   * the start of a statement nor an identifier ({@code drlKeywords} lets both
+   * keywords name a field), and the 1-based line of the first. Such a token sits
+   * inside some other construct's payload — an annotation's chunk that ran on
+   * past its own rule, which happens without a syntax error when a rule holds a
+   * construct the grammar does not know. The when-block guard misses it whenever
+   * the payload stops at a later rule's {@code when}, since the swallowing rule
+   * then has a when-block after all.
+   */
+  private static Misread misreadStatements(ParseTree tree) {
+    List<TerminalNode> misread = new ArrayList<>();
+    collectMisreadKeywords(tree, misread);
+    return new Misread(misread.size(), misread.isEmpty() ? 0 : misread.get(0).getSymbol().getLine());
+  }
+
+  private static void collectMisreadKeywords(ParseTree tree, List<TerminalNode> into) {
+    if (tree == null) {
+      return;
+    }
+    if (tree instanceof TerminalNode terminal) {
+      int type = terminal.getSymbol().getType();
+      if (type != DRL10Lexer.DRL_RULE && type != DRL10Lexer.DRL_QUERY) {
+        return;
+      }
+      ParseTree parent = terminal.getParent();
+      boolean startsStatement = type == DRL10Lexer.DRL_RULE
+          ? parent instanceof DRL10Parser.RuledefContext
+          : parent instanceof DRL10Parser.QuerydefContext;
+      if (!startsStatement && !(parent instanceof DRL10Parser.DrlKeywordsContext)) {
+        into.add(terminal);
+      }
+      return;
+    }
+    for (int i = 0; i < tree.getChildCount(); i++) {
+      collectMisreadKeywords(tree.getChild(i), into);
+    }
   }
 
   private record CommentLoss(int count, int firstLine) {
