@@ -842,6 +842,48 @@ class DRLCompletionHelperTest {
                 .contains("RED", "GREEN", "BLUE");
     }
 
+    /** A declare has no statics, so nothing can legally follow its name. */
+    @Test
+    void aDeclaredTypeOffersNothingAfterItsName() {
+        String text = "package demo;\n"
+                + "declare Pet\n  name : String\n  legs : int\nend\n"
+                + "rule R\nwhen\n    Order( x > Pet.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Pet."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).isEmpty();
+    }
+
+    private static final String DECLARED_ENUM_WITH_FIELD =
+            "package demo;\n"
+            + "declare enum Color\n  RED(\"r\"), GREEN(\"g\");\n  code : String\nend\n"
+            + "rule R\nwhen\n";
+
+    @Test
+    void aDeclaredEnumOffersOnlyItsConstantsAfterItsName() {
+        String text = DECLARED_ENUM_WITH_FIELD + "    Order( c == Color.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("RED", "GREEN");
+    }
+
+    @Test
+    void theHopAfterADeclaredEnumConstantRevertsToItsFields() {
+        String text = DECLARED_ENUM_WITH_FIELD + "    Order( c == Color.RED.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color.RED."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel).contains("code");
+    }
+
     private List<String> completionItemStrings(List<CompletionItem> result) {
         return result.stream().map(CompletionItem::getInsertText).toList();
     }

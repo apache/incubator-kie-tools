@@ -306,6 +306,7 @@ public final class DRLHoverHelper {
                                 currentDocTypes, text, documentPath, openFiles));
                     }
                     runningType = segment;
+                    fromTypeRef = true;
                 } else {
                     String fqcn = DRLCompletionHelper.resolveFqcn(
                             segment, segment, parsed.compilationUnit, classIndex);
@@ -338,17 +339,22 @@ public final class DRLHoverHelper {
                 }
             } else {
                 DeclaredType declared = typeIndex.get(simpleName(runningType));
-                if (declared != null && declared.isEnum && isEnumConstant(declared, segment)) {
+                if (declared != null && isEnumConstant(declared, segment)) {
                     if (hovered) {
                         return markdown(fencedHeader(declared.name + "." + segment)
                                 + renderDeclaredHover(declared, typeIndex, currentDocTypes,
                                                       text, documentPath, openFiles));
                     }
                     // Running type stays the enum: the constant is an instance of it.
-                } else if (fromTypeRef) {
-                    // Directly after a type name, so the segment is a static.
-                    // runningType is the resolved FQCN at this point.
                     fromTypeRef = false;
+                } else if (fromTypeRef) {
+                    fromTypeRef = false;
+                    if (declared != null) {
+                        // A declare's only statics are its enum constants, handled above.
+                        return null;
+                    }
+                    // Directly after a classpath type name, so the segment is a static.
+                    // runningType is the resolved FQCN at this point.
                     Field staticField = findByName(memberIndex.staticFieldsOf(runningType), segment);
                     if (staticField != null) {
                         if (hovered) {
@@ -414,10 +420,8 @@ public final class DRLHoverHelper {
         return sb.toString();
     }
 
-    /** True when {@code name} is a constant of {@code enumType} (a field typed as the enum). */
-    private static boolean isEnumConstant(DeclaredType enumType, String name) {
-        return enumType.fields.stream()
-                .anyMatch(field -> name.equals(field.name) && enumType.name.equals(field.type));
+    private static boolean isEnumConstant(DeclaredType declared, String name) {
+        return declared.enumConstants().stream().anyMatch(field -> name.equals(field.name));
     }
 
     /** Header {@code $x : Type} followed by the bound type's details. */

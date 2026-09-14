@@ -337,18 +337,26 @@ public class DRLCompletionHelper {
         }
 
         // After a type name Java permits only statics — the one set the instance
-        // view cannot legally offer. A DRL declare is exempt: it has no statics,
-        // and its enum constants are already members, which the walk below
-        // offers. Only the first hop is static; past it, instance members
+        // view cannot legally offer. A DRL declare's only statics are its enum
+        // constants. Only the first hop is static; past it, instance members
         // resume, because a constant is an ordinary value of its own type.
-        if (typeReference && typeIndex.get(simpleNameOf(rootType)) == null) {
-            String fqcn = resolveFqcn(rootType, simpleNameOf(rootType), compilationUnit, classIndex);
-            if (fqcn == null) {
-                return List.of();
+        if (typeReference) {
+            List<Field> statics;
+            List<String> staticMethods;
+            DeclaredType declared = typeIndex.get(rootType);
+            if (declared != null) {
+                statics = declared.enumConstants();
+                staticMethods = List.of();
+            } else {
+                String fqcn = resolveFqcn(rootType, simpleNameOf(rootType), compilationUnit, classIndex);
+                if (fqcn == null) {
+                    return List.of();
+                }
+                statics = memberIndex.staticFieldsOf(fqcn);
+                staticMethods = memberIndex.staticMethodsOf(fqcn);
             }
-            List<Field> statics = memberIndex.staticFieldsOf(fqcn);
             if (firstFieldSegment >= chain.length) {
-                return staticItems(statics, memberIndex.staticMethodsOf(fqcn));
+                return staticItems(statics, staticMethods);
             }
             String hopType = typeOfStatic(statics, chain[firstFieldSegment]);
             if (hopType == null) {

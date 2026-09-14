@@ -138,6 +138,30 @@ class DRLHoverHelperTest {
                 ClassIndex.empty(), reflecting(), null)).isNull();
     }
 
+    /** A declare has no statics, so a field after its name is not reachable either. */
+    @Test
+    void hoverOnAFieldAfterADeclaredTypeNameIsNotDescribed() {
+        String drl = "package demo;\n"
+                + "declare Person\n  name : String\n  age : int\nend\n"
+                + "rule R\n  when\n    Person( age > Person.age )\n  then\nend\n";
+
+        assertThat(DRLHoverHelper.hover(drl, caretIn(drl, ".age"),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null)).isNull();
+    }
+
+    @Test
+    void hoverPastADeclaredEnumConstantRevertsToItsFields() {
+        String drl = "package demo;\n"
+                + "declare enum Color\n  RED(\"r\"), GREEN(\"g\");\n  code : String\nend\n"
+                + "rule R\n  when\n    Widget( c == Color.RED.code )\n  then\nend\n";
+
+        String md = content(DRLHoverHelper.hover(drl, caretIn(drl, ".code"),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null));
+
+        assertThat(md).contains("**code** : `String`");
+        assertThat(md).contains("Field of `Color`");
+    }
+
     @Test
     void hoverParsesTheCurrentDocumentOnce() {
         // Declared-type hover (the path that also reads doc + link targets).
