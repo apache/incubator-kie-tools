@@ -250,6 +250,24 @@ class DroolsLspServerTest {
     }
 
     @Test
+    void aStaleConfigurationAnswerDoesNotOverwriteANewerOne() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.deferAnswers = true;
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+
+        CompletableFuture<Void> first = server.pullFormatterOptions();
+        CompletableFuture<Void> second = server.pullFormatterOptions();
+        assertThat(client.pendingAnswers).hasSize(2);
+        client.pendingAnswers.get(1).complete(List.of(jsonObject("{\"lineLength\":90}")));
+        client.pendingAnswers.get(0).complete(List.of(jsonObject("{\"lineLength\":80}")));
+        CompletableFuture.allOf(first, second).join();
+
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(90);
+    }
+
+    @Test
     void clientWithoutConfigurationSupportGetsThePushFallback() throws Exception {
         DroolsLspServer server = new DroolsLspServer();
         CapturingClient client = new CapturingClient();
@@ -311,7 +329,9 @@ class DroolsLspServerTest {
 
         final List<RegistrationParams> registrations = new ArrayList<>();
         final List<ConfigurationParams> configurationRequests = new ArrayList<>();
+        final List<CompletableFuture<List<Object>>> pendingAnswers = new ArrayList<>();
         volatile List<Object> configurationAnswer = List.of(jsonObject("{}"));
+        volatile boolean deferAnswers;
 
         @Override
         public CompletableFuture<Void> registerCapability(RegistrationParams params) {
@@ -322,6 +342,11 @@ class DroolsLspServerTest {
         @Override
         public CompletableFuture<List<Object>> configuration(ConfigurationParams params) {
             configurationRequests.add(params);
+            if (deferAnswers) {
+                CompletableFuture<List<Object>> pending = new CompletableFuture<>();
+                pendingAnswers.add(pending);
+                return pending;
+            }
             return CompletableFuture.completedFuture(configurationAnswer);
         }
 

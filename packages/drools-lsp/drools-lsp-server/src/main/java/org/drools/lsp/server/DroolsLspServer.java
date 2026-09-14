@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -106,6 +107,8 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     private volatile boolean clientSupportsConfigurationRegistration = false;
 
     private volatile boolean clientProvidesConfiguration = false;
+
+    private final AtomicInteger formatterPullGeneration = new AtomicInteger();
 
     public DroolsLspServer() {
         textService = new DroolsLspDocumentService(this);
@@ -501,9 +504,14 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         }
         ConfigurationItem item = new ConfigurationItem();
         item.setSection("drools.lsp.formatter");
+        int generation = formatterPullGeneration.incrementAndGet();
         try {
             return target.configuration(new ConfigurationParams(List.of(item)))
-                    .thenAccept(this::applyPulledFormatterOptions)
+                    .thenAccept(answer -> {
+                        if (generation == formatterPullGeneration.get()) {
+                            applyPulledFormatterOptions(answer);
+                        }
+                    })
                     .exceptionally(e -> {
                         logger.log(Level.WARNING, "Failed to pull the formatter settings "
                                 + "through workspace/configuration", e);
