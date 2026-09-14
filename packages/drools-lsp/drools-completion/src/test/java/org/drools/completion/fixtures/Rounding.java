@@ -32,6 +32,14 @@ public class Rounding {
     public int applied;
     private String label;
 
+    public Rounding(String... labels) {
+        this.label = String.join(",", labels);
+    }
+
+    public static String join(String separator, String... parts) {
+        return String.join(separator, parts);
+    }
+
     public static int roundHalfUp(double value) {
         return (int) Math.round(value);
     }

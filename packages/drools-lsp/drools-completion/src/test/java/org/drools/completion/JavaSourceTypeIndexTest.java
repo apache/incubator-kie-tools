@@ -78,6 +78,8 @@ class JavaSourceTypeIndexTest {
             + "  public static final String MODE = \"HALF_EVEN\";\n"
             + "  public static final String[] MODES = {};\n"
             + "  public int applied;\n"
+            + "  public Rounding(String... labels) { }\n"
+            + "  public static String join(String separator, String... parts) { return null; }\n"
             + "  public static int roundHalfUp(double value) { return 0; }\n"
             + "  public static String describe(int scale, String mode) { return null; }\n"
             + "  public static int[] scales(String[] modes) { return null; }\n"
@@ -91,6 +93,8 @@ class JavaSourceTypeIndexTest {
                 nameAndType(source.staticFieldsOf("com.example.Rounding")));
         assertEquals(Set.copyOf(compiled.staticMethodsOf(fixture)),
                 Set.copyOf(source.staticMethodsOf("com.example.Rounding")));
+        assertEquals(Set.copyOf(compiled.constructorsOf(fixture)),
+                Set.copyOf(source.constructorsOf("com.example.Rounding")));
     }
 
     @Test

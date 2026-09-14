@@ -245,22 +245,34 @@ public final class ClassMemberIndex implements AutoCloseable {
                 if (!Modifier.isPublic(ctor.getModifiers())) {
                     continue;
                 }
-                StringBuilder signature = new StringBuilder(clazz.getSimpleName()).append('(');
-                Class<?>[] params = ctor.getParameterTypes();
-                for (int i = 0; i < params.length; i++) {
-                    if (i > 0) {
-                        signature.append(", ");
-                    }
-                    signature.append(params[i].getSimpleName());
-                }
-                signature.append(')');
-                out.add(signature.toString());
+                out.add(clazz.getSimpleName() + "("
+                        + parameterList(ctor.getParameterTypes(), ctor.isVarArgs()) + ")");
             }
             return Collections.unmodifiableList(out);
         } catch (Throwable t) {
             logger.log(Level.FINE, "Failed to reflect constructors of " + fqcn, t);
             return Collections.emptyList();
         }
+    }
+
+    /**
+     * Parameter types as simple names, a varargs tail as {@code T...} — the
+     * shape the source parser reports, so a signature reads the same before and
+     * after a build.
+     */
+    private static String parameterList(Class<?>[] params, boolean varArgs) {
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < params.length; i++) {
+            if (i > 0) {
+                out.append(", ");
+            }
+            if (varArgs && i == params.length - 1) {
+                out.append(params[i].getComponentType().getSimpleName()).append("...");
+            } else {
+                out.append(params[i].getSimpleName());
+            }
+        }
+        return out.toString();
     }
 
     /**
@@ -326,16 +338,8 @@ public final class ClassMemberIndex implements AutoCloseable {
                 if (!Modifier.isStatic(m.getModifiers()) || !Modifier.isPublic(m.getModifiers())) {
                     continue;
                 }
-                StringBuilder signature = new StringBuilder(m.getName()).append('(');
-                Class<?>[] params = m.getParameterTypes();
-                for (int i = 0; i < params.length; i++) {
-                    if (i > 0) {
-                        signature.append(", ");
-                    }
-                    signature.append(params[i].getSimpleName());
-                }
-                signature.append(") : ").append(m.getReturnType().getSimpleName());
-                out.add(signature.toString());
+                out.add(m.getName() + "(" + parameterList(m.getParameterTypes(), m.isVarArgs())
+                        + ") : " + m.getReturnType().getSimpleName());
             }
             return Collections.unmodifiableList(out);
         } catch (Throwable t) {

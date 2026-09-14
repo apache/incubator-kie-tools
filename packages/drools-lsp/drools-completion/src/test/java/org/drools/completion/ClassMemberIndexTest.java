@@ -181,8 +181,10 @@ class ClassMemberIndexTest {
     void staticMethodsAreReportedAsSignatures() {
         List<String> methods = index.staticMethodsOf(ROUNDING);
 
-        assertThat(methods).contains("roundHalfUp(double) : int", "describe(int, String) : String");
+        assertThat(methods).contains("roundHalfUp(double) : int", "describe(int, String) : String",
+                "join(String, String...) : String");
         assertThat(methods).noneMatch(m -> m.startsWith("getLabel"));
+        assertThat(index.constructorsOf(ROUNDING)).containsExactly("Rounding(String...)");
     }
 
     /** Enum constants are public static fields, so they belong to the static view too. */
