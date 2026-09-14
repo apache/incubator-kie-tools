@@ -162,6 +162,17 @@ class DRLHoverHelperTest {
         assertThat(md).contains("Field of `Color`");
     }
 
+    /** A field typed as its own enum is not a constant, so the type name does not reach it. */
+    @Test
+    void hoverOnASelfTypedEnumFieldAfterTheTypeNameIsNotDescribed() {
+        String drl = "package demo;\n"
+                + "declare enum Color\n  RED(\"r\"), GREEN(\"g\");\n  code : String\n  next : Color\nend\n"
+                + "rule R\n  when\n    Widget( c == Color.next )\n  then\nend\n";
+
+        assertThat(DRLHoverHelper.hover(drl, caretIn(drl, ".next"),
+                ClassIndex.empty(), ClassMemberIndex.empty(), null)).isNull();
+    }
+
     @Test
     void hoverParsesTheCurrentDocumentOnce() {
         // Declared-type hover (the path that also reads doc + link targets).

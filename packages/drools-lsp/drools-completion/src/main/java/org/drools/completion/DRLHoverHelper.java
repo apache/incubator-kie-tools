@@ -635,7 +635,7 @@ public final class DRLHoverHelper {
         }
         sb.append('\n');
         for (Field field : dt.fields) {
-            if (dt.isEnum && dt.name.equals(field.type)) {
+            if (field.origin == Field.Origin.ENUM_CONSTANT) {
                 sb.append("  ").append(field.name);
                 if (field.args != null) {
                     sb.append('(').append(field.args).append(')');

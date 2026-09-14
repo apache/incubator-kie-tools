@@ -873,6 +873,21 @@ class DRLCompletionHelperTest {
                 .containsExactlyInAnyOrder("RED", "GREEN");
     }
 
+    /** A field typed as its own enum is not a constant, so the type name does not reach it. */
+    @Test
+    void aSelfTypedEnumFieldIsNotOfferedAsAConstant() {
+        String text = "package demo;\n"
+                + "declare enum Color\n  RED(\"r\"), GREEN(\"g\");\n  code : String\n  next : Color\nend\n"
+                + "rule R\nwhen\n    Order( c == Color.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("RED", "GREEN");
+    }
+
     @Test
     void theHopAfterADeclaredEnumConstantRevertsToItsFields() {
         String text = DECLARED_ENUM_WITH_FIELD + "    Order( c == Color.RED.\nthen\nend\n";

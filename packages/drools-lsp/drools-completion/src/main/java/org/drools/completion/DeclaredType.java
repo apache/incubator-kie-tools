@@ -53,17 +53,11 @@ public class DeclaredType {
         this.extendsName = extendsName;
     }
 
-    /**
-     * The constants of a declared enum — the fields carrying the enum's own
-     * name as their type — or an empty list for a non-enum declare.
-     */
+    /** The constants of a declared enum, or an empty list for a non-enum declare. */
     List<Field> enumConstants() {
-        if (!isEnum) {
-            return List.of();
-        }
         List<Field> constants = new ArrayList<>();
         for (Field field : fields) {
-            if (name.equals(field.type)) {
+            if (field.origin == Field.Origin.ENUM_CONSTANT) {
                 constants.add(field);
             }
         }
