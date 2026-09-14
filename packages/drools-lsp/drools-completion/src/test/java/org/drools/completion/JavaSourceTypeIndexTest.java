@@ -76,9 +76,11 @@ class JavaSourceTypeIndexTest {
             "package com.example;\npublic class Rounding {\n"
             + "  public static final int SCALE = 2;\n"
             + "  public static final String MODE = \"HALF_EVEN\";\n"
+            + "  public static final String[] MODES = {};\n"
             + "  public int applied;\n"
             + "  public static int roundHalfUp(double value) { return 0; }\n"
             + "  public static String describe(int scale, String mode) { return null; }\n"
+            + "  public static int[] scales(String[] modes) { return null; }\n"
             + "  public String getLabel() { return null; }\n}\n");
 
         JavaSourceTypeIndex source = JavaSourceTypeIndex.build(Set.of(src), List.of());

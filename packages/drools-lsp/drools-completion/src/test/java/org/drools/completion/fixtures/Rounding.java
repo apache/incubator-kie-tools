@@ -27,6 +27,7 @@ public class Rounding {
 
     public static final int SCALE = 2;
     public static final String MODE = "HALF_EVEN";
+    public static final String[] MODES = {"HALF_UP", "HALF_EVEN"};
 
     public int applied;
     private String label;
@@ -37,6 +38,10 @@ public class Rounding {
 
     public static String describe(int scale, String mode) {
         return scale + mode;
+    }
+
+    public static int[] scales(String[] modes) {
+        return new int[modes.length];
     }
 
     public String getLabel() {

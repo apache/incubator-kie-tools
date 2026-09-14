@@ -144,6 +144,24 @@ class JavaSourceTypeParserTest {
         assertTrue(member(t, "ORIGIN").isEmpty(), () -> "members=" + t.members);
     }
 
+    /** Reflection renders an array type as {@code String[]}, so the source view must as well. */
+    @Test
+    void arrayTypesKeepTheirDimensions() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String[] NAMES = {};\n"
+            + "  public int[][] grid;\n"
+            + "  public static java.util.List<String>[] buckets(int[] sizes, String[] tags) { return null; }\n"
+            + "  public String[] getTags() { return null; }\n"
+            + "}\n");
+
+        assertEquals("String[]", t.staticFields.get(0).type);
+        assertEquals("int[][]", member(t, "grid").orElseThrow().type);
+        assertEquals("String[]", member(t, "tags").orElseThrow().type);
+        assertEquals(List.of("buckets(int[], String[]) : List[]"), t.staticMethods);
+    }
+
     /** A constant is reachable as a member of its enum and as {@code Enum.NAME}. */
     @Test
     void enumConstantsAppearInBothViews() {

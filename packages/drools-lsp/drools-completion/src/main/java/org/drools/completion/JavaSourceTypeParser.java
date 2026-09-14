@@ -490,21 +490,27 @@ public final class JavaSourceTypeParser {
         return typeType == null ? null : simplify(typeType.getText());
     }
 
-    /** Strips generic type arguments and array brackets, then takes the last dotted segment. */
+    /**
+     * Strips generic type arguments and the package prefix while keeping array
+     * dimensions — the shape {@link Class#getSimpleName()} reports, so the
+     * source and compiled views render a type identically.
+     */
     private static String simplify(String rawType) {
         if (rawType == null) {
             return null;
         }
         String t = rawType;
+        StringBuilder dimensions = new StringBuilder();
+        while (t.endsWith("[]")) {
+            t = t.substring(0, t.length() - 2);
+            dimensions.append("[]");
+        }
         int generics = t.indexOf('<');
         if (generics >= 0) {
             t = t.substring(0, generics);
         }
-        while (t.endsWith("[]")) {
-            t = t.substring(0, t.length() - 2);
-        }
         int dot = t.lastIndexOf('.');
-        return dot >= 0 ? t.substring(dot + 1) : t;
+        return (dot >= 0 ? t.substring(dot + 1) : t) + dimensions;
     }
 
     /** The raw text between an {@code arguments()} node's parentheses. */
