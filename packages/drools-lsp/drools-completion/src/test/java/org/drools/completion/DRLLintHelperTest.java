@@ -858,8 +858,7 @@ class DRLLintHelperTest {
         // A wildcard sibling import (com.example.model.*) legalizes Order only
         // when the class index confirms that package provides it. Two Order
         // classes make the bare simple name ambiguous, so only the wildcard's
-        // package can disambiguate it — a path local wildcard imports never
-        // exercise (their extraction yields the bare package name).
+        // package can disambiguate it.
         Path current = tempDir.resolve("current.drl");
         Files.writeString(current, USES_ORDER);
         Files.writeString(tempDir.resolve("sibling.drl"),
@@ -922,6 +921,26 @@ class DRLLintHelperTest {
                 Files.readString(current), current, openFiles, ClassIndex.empty(), members, true);
 
         assertThat(diags).isNotEmpty();
+    }
+
+    @Test
+    void openBufferOutsideTheResolverGroupingContributesNoImport(@TempDir Path tempDir) throws IOException {
+        // The same-directory buffer would legalize Order, but the active resolver
+        // groups nothing with the current file, so the buffer is out of scope too.
+        Path current = tempDir.resolve("current.drl");
+        Files.writeString(current, USES_ORDER);
+        Path sibling = tempDir.resolve("sibling.drl");
+        Files.writeString(sibling, "package demo;\n");
+        Map<Path, String> openFiles =
+                Map.of(sibling, "package demo;\nimport com.example.model.Order;\n");
+        WorkspaceSiblingResolvers.setActive(file -> List.of());
+
+        List<Diagnostic> diags = DRLLintHelper.lintUnknownTypes(
+                Files.readString(current), current, openFiles, ClassIndex.empty(), members, true);
+
+        assertThat(diags)
+                .singleElement()
+                .satisfies(d -> assertThat(d.getMessage()).contains("Unknown type 'Order'"));
     }
 
     @Test

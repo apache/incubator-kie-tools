@@ -806,21 +806,25 @@ public final class DRLLintHelper {
                 declared.putIfAbsent(dt.name, dt);
             }
         }
-        DRLWorkspaceTypeIndex.forEachSiblingType(documentPath, openFiles, (dt, uri) -> {
-            if (dt.name != null) {
-                declared.putIfAbsent(dt.name, dt);
+        // Imports declared in same-package sibling files are in scope here too
+        // (Drools merges files by package), so resolution must see them. Computed
+        // once and threaded through all three scan paths.
+        String ownPackage = DRLDeclaredTypeParser.extractPackageName(cu);
+        List<String> siblingImports = new ArrayList<>();
+        DRLWorkspaceTypeIndex.forEachSiblingInfo(documentPath, openFiles, (info, uri) -> {
+            for (DeclaredType dt : info.types) {
+                if (dt.name != null) {
+                    declared.putIfAbsent(dt.name, dt);
+                }
+            }
+            if (!ownPackage.isEmpty() && ownPackage.equals(info.packageName)) {
+                siblingImports.addAll(info.imports);
             }
         });
         Set<String> known = declared.keySet();
         // Typo suggestions are drawn from declared types plus classpath simple names.
         Set<String> suggestions = new HashSet<>(known);
         suggestions.addAll(classIndex.simpleNames());
-
-        // Imports declared in same-package sibling files are in scope here too
-        // (Drools merges files by package), so resolution must see them. Computed
-        // once and threaded through all three scan paths.
-        Collection<String> siblingImports = DRLWorkspaceTypeIndex.siblingImports(
-                documentPath, DRLDeclaredTypeParser.extractPackageName(cu), openFiles);
 
         List<Diagnostic> out = new ArrayList<>();
         collectPatternTypes(cu, cu, known, suggestions, classIndex, siblingImports,
