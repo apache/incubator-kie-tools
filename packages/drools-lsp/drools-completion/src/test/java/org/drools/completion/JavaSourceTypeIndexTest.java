@@ -91,6 +91,25 @@ class JavaSourceTypeIndexTest {
                 Set.copyOf(source.staticMethodsOf("com.example.Rounding")));
     }
 
+    @Test
+    void sourceAndCompiledInterfaceStaticViewsAgree(@TempDir Path root) throws Exception {
+        Path src = root.resolve("src/main/java");
+        // Mirrors the compiled fixture org.drools.completion.fixtures.Limits.
+        write(src, "com/example/Limits.java",
+            "package com.example;\npublic interface Limits {\n"
+            + "  int MAX = 10;\n"
+            + "  static String describe(int value) { return null; }\n}\n");
+
+        JavaSourceTypeIndex source = JavaSourceTypeIndex.build(Set.of(src), List.of());
+        ClassMemberIndex compiled = new ClassMemberIndex(getClass().getClassLoader());
+        String fixture = "org.drools.completion.fixtures.Limits";
+
+        assertEquals(nameAndType(compiled.staticFieldsOf(fixture)),
+                nameAndType(source.staticFieldsOf("com.example.Limits")));
+        assertEquals(Set.copyOf(compiled.staticMethodsOf(fixture)),
+                Set.copyOf(source.staticMethodsOf("com.example.Limits")));
+    }
+
     /**
      * A public static field is not a fact property, so it stays out of the
      * member list — but it is still written as Type.NAME, so it has to be in the

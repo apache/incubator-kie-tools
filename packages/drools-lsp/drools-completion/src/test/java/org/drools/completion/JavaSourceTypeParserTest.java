@@ -103,6 +103,47 @@ class JavaSourceTypeParserTest {
         assertTrue(member(t, "name").isPresent(), () -> "members=" + t.members);
     }
 
+    /**
+     * A static interface method is implicitly public and reachable as
+     * {@code Type.name()}, which is how reflection reports it; a private one is
+     * neither, and a static getter is not a property.
+     */
+    @Test
+    void interfaceStaticMethodsAreCapturedAndAreNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public interface Limits {\n"
+            + "  int MAX = 10;\n"
+            + "  static Limits of(int max) { return null; }\n"
+            + "  static String getLabel() { return \"l\"; }\n"
+            + "  private static int hidden() { return 0; }\n"
+            + "  String getName();\n"
+            + "}\n");
+
+        assertEquals(List.of("of(int) : Limits", "getLabel() : String"), t.staticMethods);
+        assertTrue(member(t, "label").isEmpty(), () -> "a static getter is not a member: " + t.members);
+        assertTrue(member(t, "name").isPresent(), () -> "members=" + t.members);
+    }
+
+    /** A record body may declare statics and extra constructors beside the canonical one. */
+    @Test
+    void recordStaticsAndConstructorsAreCapturedBesideItsComponents() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public record Point(int x, int y) {\n"
+            + "  public static final Point ORIGIN = new Point(0, 0);\n"
+            + "  public static Point of(int x, int y) { return new Point(x, y); }\n"
+            + "  public Point(int both) { this(both, both); }\n"
+            + "}\n");
+
+        assertEquals(List.of("ORIGIN"), t.staticFields.stream().map(f -> f.name).toList());
+        assertEquals("Point", t.staticFields.get(0).type);
+        assertEquals(List.of("of(int, int) : Point"), t.staticMethods);
+        assertEquals(List.of("Point(int, int)", "Point(int)"), t.constructors);
+        assertTrue(member(t, "x").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "ORIGIN").isEmpty(), () -> "members=" + t.members);
+    }
+
     /** A constant is reachable as a member of its enum and as {@code Enum.NAME}. */
     @Test
     void enumConstantsAppearInBothViews() {

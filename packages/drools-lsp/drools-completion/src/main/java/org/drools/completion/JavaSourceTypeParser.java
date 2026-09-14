@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -31,6 +32,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.parser.antlr4.JavaLexer;
 import org.drools.drl.parser.antlr4.JavaParser;
 
@@ -184,10 +186,11 @@ public final class JavaSourceTypeParser {
         // reports once the interface is compiled.
         List<Field> constants = new ArrayList<>();
         List<Field> getters = new ArrayList<>();
+        List<String> staticMethods = new ArrayList<>();
         if (id.interfaceBody() != null) {
             for (JavaParser.InterfaceBodyDeclarationContext ibd : id.interfaceBody().interfaceBodyDeclaration()) {
                 try {
-                    collectInterfaceMember(ibd, constants, getters);
+                    collectInterfaceMember(ibd, constants, getters, staticMethods);
                 } catch (Exception e) {
                     logger.fine(() -> "Skipping interface member in " + simpleName + ": " + e.getMessage());
                 }
@@ -197,7 +200,7 @@ public final class JavaSourceTypeParser {
         mergeGettersThenFields(members, getters, List.of());
 
         return new JavaSourceType(fqcn(pkg, simpleName), simpleName, false, null, interfaces,
-                new ArrayList<>(members.values()), List.of(), constants, List.of(),
+                new ArrayList<>(members.values()), List.of(), constants, staticMethods,
                 declLine(id.identifier()), declColumn(id.identifier()));
     }
 
@@ -221,10 +224,28 @@ public final class JavaSourceTypeParser {
             members.putIfAbsent(name, new Field(name, type, null, Field.Origin.GETTER));
             ctorTypes.add(type);
         }
-        String canonicalCtor = simpleName + "(" + String.join(", ", ctorTypes) + ")";
+        List<String> ctors = new ArrayList<>();
+        ctors.add(simpleName + "(" + String.join(", ", ctorTypes) + ")");
+
+        List<Field> fields = new ArrayList<>();
+        List<Field> getters = new ArrayList<>();
+        List<String> bodyCtors = new ArrayList<>();
+        List<Field> staticFields = new ArrayList<>();
+        List<String> staticMethods = new ArrayList<>();
+        if (rd.recordBody() != null) {
+            collectBodyMembers(rd.recordBody().classBodyDeclaration(), fields, getters, bodyCtors,
+                    staticFields, staticMethods, simpleName);
+        }
+        mergeGettersThenFields(members, getters, fields);
+        // An explicitly written canonical constructor repeats the one derived above.
+        for (String ctor : bodyCtors) {
+            if (!ctors.contains(ctor)) {
+                ctors.add(ctor);
+            }
+        }
 
         return new JavaSourceType(fqcn(pkg, simpleName), simpleName, false, null, interfaces,
-                new ArrayList<>(members.values()), List.of(canonicalCtor), List.of(), List.of(),
+                new ArrayList<>(members.values()), ctors, staticFields, staticMethods,
                 declLine(rd.identifier()), declColumn(rd.identifier()));
     }
 
@@ -293,29 +314,32 @@ public final class JavaSourceTypeParser {
     }
 
     private static boolean hasStaticModifier(List<JavaParser.ModifierContext> modifiers) {
-        for (JavaParser.ModifierContext modifier : modifiers) {
-            JavaParser.ClassOrInterfaceModifierContext coim = modifier.classOrInterfaceModifier();
-            if (coim != null && coim.STATIC() != null) {
-                return true;
-            }
-        }
-        return false;
+        return hasModifier(modifiers, JavaParser.ClassOrInterfaceModifierContext::STATIC);
     }
 
-    /** True when {@code modifiers} includes {@code public}. */
     private static boolean hasPublicModifier(List<JavaParser.ModifierContext> modifiers) {
+        return hasModifier(modifiers, JavaParser.ClassOrInterfaceModifierContext::PUBLIC);
+    }
+
+    private static boolean hasModifier(List<JavaParser.ModifierContext> modifiers,
+                                       Function<JavaParser.ClassOrInterfaceModifierContext, TerminalNode> token) {
         for (JavaParser.ModifierContext modifier : modifiers) {
             JavaParser.ClassOrInterfaceModifierContext coim = modifier.classOrInterfaceModifier();
-            if (coim != null && coim.PUBLIC() != null) {
+            if (coim != null && token.apply(coim) != null) {
                 return true;
             }
         }
         return false;
     }
 
-    /** Extracts a {@code constDeclaration} or no-arg getter from one interface body member, if any. */
+    /**
+     * Sorts one interface body member into a constant, a no-arg getter, or a
+     * static method signature. A static interface method is implicitly public
+     * unless declared {@code private}, in which case reflection omits it.
+     */
     private static void collectInterfaceMember(JavaParser.InterfaceBodyDeclarationContext ibd,
-                                                List<Field> fieldsOut, List<Field> gettersOut) {
+                                                List<Field> fieldsOut, List<Field> gettersOut,
+                                                List<String> staticMethodsOut) {
         JavaParser.InterfaceMemberDeclarationContext imd = ibd.interfaceMemberDeclaration();
         if (imd == null) {
             return; // bare ';'
@@ -328,14 +352,39 @@ public final class JavaSourceTypeParser {
                 fieldsOut.add(new Field(name, type, null, Field.Origin.FIELD));
             }
         } else if (imd.interfaceMethodDeclaration() != null) {
-            JavaParser.InterfaceCommonBodyDeclarationContext body =
-                    imd.interfaceMethodDeclaration().interfaceCommonBodyDeclaration();
+            JavaParser.InterfaceMethodDeclarationContext method = imd.interfaceMethodDeclaration();
+            JavaParser.InterfaceCommonBodyDeclarationContext body = method.interfaceCommonBodyDeclaration();
+            if (isStaticInterfaceMethod(ibd, method)) {
+                if (!hasModifier(ibd.modifier(), JavaParser.ClassOrInterfaceModifierContext::PRIVATE)) {
+                    staticMethodsOut.add(signatureOf(body.identifier().getText(), body.formalParameters())
+                            + " : " + returnTypeOf(body.typeTypeOrVoid()));
+                }
+                return;
+            }
             String property = getterPropertyOf(body.typeTypeOrVoid(), body.identifier(), body.formalParameters());
             if (property != null) {
                 gettersOut.add(new Field(property, simplify(body.typeTypeOrVoid().typeType()), null,
                         Field.Origin.GETTER));
             }
         }
+    }
+
+    /**
+     * The grammar accepts {@code static} on an interface method both as a
+     * general {@code modifier} and as an {@code interfaceMethodModifier}, so
+     * both are checked.
+     */
+    private static boolean isStaticInterfaceMethod(JavaParser.InterfaceBodyDeclarationContext ibd,
+                                                   JavaParser.InterfaceMethodDeclarationContext method) {
+        if (hasStaticModifier(ibd.modifier())) {
+            return true;
+        }
+        for (JavaParser.InterfaceMethodModifierContext modifier : method.interfaceMethodModifier()) {
+            if (modifier.STATIC() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
