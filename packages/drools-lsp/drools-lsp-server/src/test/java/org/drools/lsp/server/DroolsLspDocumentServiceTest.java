@@ -532,4 +532,45 @@ class DroolsLspDocumentServiceTest {
                 .singleElement()
                 .satisfies(e -> assertThat(e.getNewText()).isEqualTo("Person"));
     }
+
+    // ── deprecated constructs ────────────────────────────────────────────
+
+    @Test
+    void deprecatedConstructsReachTheDocumentDiagnostics() {
+        DroolsLspDocumentService service = getDroolsLspDocumentService(
+                "package p;\nrule R when Person( age > 18 && < 65 ) then end\n");
+
+        assertThat(service.validate("myDocument"))
+                .isNotEmpty()
+                .allSatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-deprecated"));
+    }
+
+    @Test
+    void buildDeprecatedConstructActionsOffersTheMigrationEdit() {
+        Diagnostic d = new Diagnostic();
+        d.setSource("drools-deprecated");
+        d.setData("&& person.name");
+        d.setRange(new Range(new Position(4, 30), new Position(4, 32)));
+
+        List<Either<Command, CodeAction>> actions =
+                DroolsLspDocumentService.buildDeprecatedConstructActions("myDocument", List.of(d));
+
+        assertThat(actions).hasSize(1);
+        CodeAction ca = actions.get(0).getRight();
+        assertThat(ca.getTitle()).isEqualTo("Replace with '&& person.name'");
+        assertThat(ca.getEdit().getChanges().get("myDocument"))
+                .singleElement()
+                .satisfies(e -> assertThat(e.getNewText()).isEqualTo("&& person.name"));
+    }
+
+    /** Constructs with no mechanical migration carry no data, so offer no fix. */
+    @Test
+    void buildDeprecatedConstructActionsSkipsDiagnosticsWithoutAReplacement() {
+        Diagnostic d = new Diagnostic();
+        d.setSource("drools-deprecated");
+        d.setRange(new Range(new Position(2, 4), new Position(2, 5)));
+
+        assertThat(DroolsLspDocumentService.buildDeprecatedConstructActions("myDocument", List.of(d)))
+                .isEmpty();
+    }
 }
