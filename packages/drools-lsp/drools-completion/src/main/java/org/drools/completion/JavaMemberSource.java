@@ -38,10 +38,12 @@ import java.util.Set;
  * unknown; {@link #constructorsOf} returns signatures, empty when unknown.
  *
  * <p>{@link #staticFieldsOf} and {@link #staticMethodsOf} answer for the
- * {@code Type.NAME} position, where Java permits only statics. They are
- * disjoint from {@link #membersOf}, which is the instance (fact-property)
- * view — a static is not a fact property, and the two are never mixed. Both
- * are empty when the type is unknown.
+ * {@code Type.NAME} position, where Java permits only statics, while
+ * {@link #membersOf} is the instance (fact-property) view. A static is not a
+ * fact property, so the two share nothing — except an enum's constants, which
+ * are public static fields of their enum and also how a rule names its values,
+ * so they appear in both, as reflection reports them. Both are empty when the
+ * type is unknown.
  */
 public interface JavaMemberSource {
 
