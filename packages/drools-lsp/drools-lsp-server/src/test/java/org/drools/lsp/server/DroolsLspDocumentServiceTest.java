@@ -614,6 +614,30 @@ class DroolsLspDocumentServiceTest {
         assertThat(edits.get(0).getNewText()).contains("// done").doesNotContain("rule S");
     }
 
+    /**
+     * LSP 3.17, Range: "the end position is exclusive. If you want to specify a
+     * range that contains a line including the line ending character(s) then use
+     * an end position denoting the start of the next line." A whole-line
+     * selection therefore ends on a line it does not include.
+     */
+    @Test
+    void rangeFormattingTreatsAnEndAtColumnZeroAsExclusive() throws Exception {
+        String two = "package p;\nrule R\n  when\n    $p:Person(age>18)\n  then\nend\n"
+                + "rule S\n  when\n    Order(  )\n  then\nend\n";
+        DroolsLspDocumentService service = getDroolsLspDocumentService(two);
+
+        DocumentRangeFormattingParams params = new DocumentRangeFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(2, true));
+        params.setRange(new Range(new Position(1, 0), new Position(6, 0)));
+
+        List<? extends TextEdit> edits = service.rangeFormatting(params).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getNewText()).contains("Person").doesNotContain("rule S");
+        assertThat(edits.get(0).getRange().getEnd().getLine()).isEqualTo(6);
+    }
+
     @Test
     void configuredOptionsApplyAndChangeLive() throws Exception {
         DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(MESSY);

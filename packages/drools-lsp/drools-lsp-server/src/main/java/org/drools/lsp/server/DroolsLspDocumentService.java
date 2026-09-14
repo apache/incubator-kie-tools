@@ -468,8 +468,14 @@ public class DroolsLspDocumentService implements TextDocumentService {
             logger.info(() -> "Not formatting " + params.getTextDocument().getUri() + ": " + gate.refusalReason());
             return Collections.emptyList();
         }
-        DRLFormatter.RangeResult r = DRLFormatter.formatRange(text,
-                params.getRange().getStart().getLine(), params.getRange().getEnd().getLine(), options);
+        Range selection = params.getRange();
+        int endLine = selection.getEnd().getLine();
+        // LSP 3.17, Range: "the end position is exclusive", so a selection ending
+        // at the first column of a line does not include that line.
+        if (selection.getEnd().getCharacter() == 0 && endLine > selection.getStart().getLine()) {
+            endLine--;
+        }
+        DRLFormatter.RangeResult r = DRLFormatter.formatRange(text, selection.getStart().getLine(), endLine, options);
         if (r == null || r.text() == null || r.text().isEmpty()) {
             return Collections.emptyList(); // selection covers no whole statement
         }
