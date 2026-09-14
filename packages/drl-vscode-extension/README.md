@@ -173,7 +173,7 @@ A line comment reading exactly `@formatter:off` suspends formatting and `@format
 
 ### What it refuses
 
-It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block could not be read as one, or when its own output fails to re-parse. A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
+It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block could not be read as one, when its own output fails to re-parse, or when a comment would not survive formatting (see the limitations below; the refusal names the comment's line). A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
 
 ### Command line
 
@@ -188,8 +188,8 @@ java -jar packages/drools-lsp/drools-formatter/target/drools-formatter-jar-with-
 
 ### Known limitations
 
-- Comments inside `accumulate(…)`/`groupby(…)` parentheses are dropped; put notes above the element.
-- A block comment between a pattern's `(` and its first constraint is dropped; one between constraints is kept.
+- Comments in some positions are not carried through formatting, so a file containing one is refused rather than formatted without it: inside `accumulate(…)`/`groupby(…)` parentheses, a block comment between a pattern's `(` and its first constraint (one between constraints is kept), between an enum constant's arguments, inside a field initializer, and between a function's signature and its body. Move the comment above the element.
+- A comment inside a multi-line call in a consequence is moved above the statement.
 - `default:` with its statement on the same line is not split, while `case N:` is.
 - Long lines are not guaranteed to fit — see the wrap-trigger note above.
 

@@ -21,7 +21,9 @@ package org.drools.formatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -89,7 +91,7 @@ public class DRLFormatter {
   // ───────────────────────── public API ─────────────────────────
 
   /**
-   * Formatted text plus the four counts the refusal gates read.
+   * Formatted text plus the counts the refusal gates read.
    *
    * <p>{@code syntaxErrors} is the parser's count for the input;
    * {@code outputSyntaxErrors} the count from re-parsing the FORMATTED OUTPUT —
@@ -100,12 +102,20 @@ public class DRLFormatter {
    * {@link #rulesMissingLhs}). They exist because an error count cannot see that
    * failure mode — the mis-derivation that causes it reports zero errors.
    *
+   * <p>{@code commentsLost} is the comment tier: how many comment tokens the
+   * re-parsed output holds fewer than the input (negative when it holds more),
+   * with {@code lostCommentLine} the 1-based input line of the first comment no
+   * longer found there, or 0. Some comment positions are not carried through
+   * formatting (see {@link #commentLoss}); refusing is what keeps that from
+   * being silent.
+   *
    * <p>The output tier is only computed when the input was non-blank and clean on
    * BOTH input counts; otherwise the output figures stay 0 (not meaningful — we
    * already refuse).
    */
   public record FormatResult(String formatted, int syntaxErrors, int outputSyntaxErrors,
-                             int rulesMissingLhs, int outputRulesMissingLhs) {
+                             int rulesMissingLhs, int outputRulesMissingLhs,
+                             int commentsLost, int lostCommentLine) {
 
     /** Whether a caller must refuse to write or emit over this document. */
     public boolean refused() {
@@ -130,11 +140,19 @@ public class DRLFormatter {
       if (outputRulesMissingLhs > 0) {
         return "output loses a rule's when-block - formatter bug";
       }
+      if (commentsLost > 0) {
+        return lostCommentLine > 0
+            ? "the comment at line " + lostCommentLine + " would be lost"
+            : commentsLost + " comment(s) would be lost";
+      }
+      if (commentsLost < 0) {
+        return "output gains comments - formatter bug";
+      }
       return null;
     }
   }
 
-  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0);
+  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0);
 
   public static FormatResult formatChecked(String text) {
     return formatChecked(text, FormatterOptions.DEFAULTS);
@@ -146,7 +164,7 @@ public class DRLFormatter {
     }
     if (text.isBlank()) {
       // nothing to format; never truncate a whitespace-only file
-      return new FormatResult(text, 0, 0, 0, 0);
+      return new FormatResult(text, 0, 0, 0, 0, 0, 0);
     }
     String normalized = text.replace("\r\n", "\n").replace("\r", "\n");
     String eol = options.lineEnding(text);
@@ -164,23 +182,25 @@ public class DRLFormatter {
     ParseHealth output = syntaxErrors == 0 && rulesMissingLhs == 0
         ? parseHealth(out)
         : ParseHealth.NOT_CHECKED;
+    CommentLoss comments = output.tokens() == null
+        ? CommentLoss.NONE
+        : commentLoss(e.tokens, output.tokens());
     return new FormatResult(out, syntaxErrors, output.syntaxErrors(),
-        rulesMissingLhs, output.rulesMissingLhs());
+        rulesMissingLhs, output.rulesMissingLhs(), comments.count(), comments.firstLine());
   }
 
-  /** Both gate figures for one text, from a single parse. */
-  private record ParseHealth(int syntaxErrors, int rulesMissingLhs) {
-    static final ParseHealth NOT_CHECKED = new ParseHealth(0, 0);
+  /** Both gate figures for one text, from a single parse, plus that parse's tokens. */
+  private record ParseHealth(int syntaxErrors, int rulesMissingLhs, CommonTokenStream tokens) {
+    static final ParseHealth NOT_CHECKED = new ParseHealth(0, 0, null);
   }
 
-  /** Re-parses {@code text} (any EOL style) and reports what both gates need. */
+  /** Re-parses {@code text} (any EOL style) and reports what the output gates need. */
   private static ParseHealth parseHealth(String text) {
     String normalized = text.replace("\r\n", "\n").replace("\r", "\n");
     DRL10Parser parser = DRL10ParserHelper.createDrlParser(normalized);
     DRL10Parser.CompilationUnitContext cu = parser.compilationUnit();
-    return new ParseHealth(
-        parser.getNumberOfSyntaxErrors(),
-        rulesMissingLhs(cu, (CommonTokenStream) parser.getTokenStream()));
+    CommonTokenStream tokens = (CommonTokenStream) parser.getTokenStream();
+    return new ParseHealth(parser.getNumberOfSyntaxErrors(), rulesMissingLhs(cu, tokens), tokens);
   }
 
   /**
@@ -234,6 +254,60 @@ public class DRLFormatter {
       }
     }
     return false;
+  }
+
+  private record CommentLoss(int count, int firstLine) {
+    static final CommentLoss NONE = new CommentLoss(0, 0);
+  }
+
+  /**
+   * How many comment tokens {@code output} holds fewer than {@code input}, and
+   * the 1-based line of the first input comment whose text is absent from the
+   * output. Only the count decides a refusal; the text points at the culprit.
+   * Texts are compared line by line after trimming, the one change emission
+   * makes to a comment it keeps (re-indenting a block comment's rows, dropping
+   * trailing whitespace).
+   */
+  private static CommentLoss commentLoss(CommonTokenStream input, CommonTokenStream output) {
+    Map<String, Integer> remaining = new HashMap<>();
+    int outputCount = 0;
+    for (Token comment : comments(output)) {
+      remaining.merge(normalizeComment(comment.getText()), 1, Integer::sum);
+      outputCount++;
+    }
+    int firstLostLine = 0;
+    List<Token> inputComments = comments(input);
+    for (Token comment : inputComments) {
+      String text = normalizeComment(comment.getText());
+      int left = remaining.getOrDefault(text, 0);
+      if (left == 0) {
+        if (firstLostLine == 0) {
+          firstLostLine = comment.getLine();
+        }
+      } else {
+        remaining.put(text, left - 1);
+      }
+    }
+    return new CommentLoss(inputComments.size() - outputCount, firstLostLine);
+  }
+
+  private static List<Token> comments(CommonTokenStream tokens) {
+    tokens.fill();
+    List<Token> comments = new ArrayList<>();
+    for (int i = 0; i < tokens.size(); i++) {
+      if (Emitter.isComment(tokens.get(i))) {
+        comments.add(tokens.get(i));
+      }
+    }
+    return comments;
+  }
+
+  private static String normalizeComment(String text) {
+    StringBuilder normalized = new StringBuilder();
+    for (String line : text.split("\n", -1)) {
+      normalized.append(line.trim()).append('\n');
+    }
+    return normalized.toString();
   }
 
   public static String format(String text) {
