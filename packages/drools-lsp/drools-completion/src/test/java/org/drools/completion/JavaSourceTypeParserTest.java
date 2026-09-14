@@ -162,6 +162,33 @@ class JavaSourceTypeParserTest {
         assertEquals(List.of("buckets(int[], String[]) : List[]"), t.staticMethods);
     }
 
+    /** Java also lets the brackets follow the name; reflection reports the same array type. */
+    @Test
+    void declaratorLevelBracketsCountTowardTheType() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static String NAMES[] = {};\n"
+            + "  public int a[], b[][];\n"
+            + "  public static int grid(String rows[])[] { return null; }\n"
+            + "  public String getTags()[] { return null; }\n"
+            + "}\n");
+
+        assertEquals("String[]", t.staticFields.get(0).type);
+        assertEquals("int[]", member(t, "a").orElseThrow().type);
+        assertEquals("int[][]", member(t, "b").orElseThrow().type);
+        assertEquals(List.of("grid(String[]) : int[]"), t.staticMethods);
+        assertEquals("String[]", member(t, "tags").orElseThrow().type);
+    }
+
+    @Test
+    void interfaceConstantBracketsCountTowardTheType() {
+        JavaSourceType t = only(
+            "package com.example;\npublic interface Limits {\n  int LIMITS[] = {};\n}\n");
+
+        assertEquals("int[]", t.staticFields.get(0).type);
+    }
+
     /** A constant is reachable as a member of its enum and as {@code Enum.NAME}. */
     @Test
     void enumConstantsAppearInBothViews() {

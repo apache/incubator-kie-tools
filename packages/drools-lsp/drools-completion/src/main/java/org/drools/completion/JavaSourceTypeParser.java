@@ -46,8 +46,8 @@ import org.drools.drl.parser.antlr4.JavaParser;
  *
  * <p>Known limits (acceptable for typing/hover/lint): nested types are not
  * indexed; interface member extraction is name-first (fields/constants may be
- * partial); generic type arguments and array dimensions are erased to the raw
- * simple name.
+ * partial); generic type arguments and package prefixes are erased to the raw
+ * simple name, while array dimensions are kept.
  */
 public final class JavaSourceTypeParser {
 
@@ -285,22 +285,23 @@ public final class JavaSourceTypeParser {
                     String type = simplify(fd.typeType());
                     boolean isStatic = hasStaticModifier(cbd.modifier());
                     for (JavaParser.VariableDeclaratorContext vd : fd.variableDeclarators().variableDeclarator()) {
-                        String name = vd.variableDeclaratorId().identifier().getText();
+                        JavaParser.VariableDeclaratorIdContext id = vd.variableDeclaratorId();
                         // A static is reachable as Type.NAME but is not a property
                         // of a fact, so the two views stay disjoint.
-                        (isStatic ? staticFieldsOut : fieldsOut)
-                                .add(new Field(name, type, null, Field.Origin.FIELD));
+                        (isStatic ? staticFieldsOut : fieldsOut).add(new Field(id.identifier().getText(),
+                                type + dimensions(id.LBRACK()), null, Field.Origin.FIELD));
                     }
                 } else if (md.methodDeclaration() != null && hasPublicModifier(cbd.modifier())) {
                     JavaParser.MethodDeclarationContext mt = md.methodDeclaration();
                     if (hasStaticModifier(cbd.modifier())) {
-                        staticMethodsOut.add(signatureOf(mt.identifier().getText(),
-                                mt.formalParameters()) + " : " + returnTypeOf(mt.typeTypeOrVoid()));
+                        staticMethodsOut.add(signatureOf(mt.identifier().getText(), mt.formalParameters())
+                                + " : " + returnTypeOf(mt.typeTypeOrVoid()) + dimensions(mt.LBRACK()));
                     } else {
                         String property =
                                 getterPropertyOf(mt.typeTypeOrVoid(), mt.identifier(), mt.formalParameters());
                         if (property != null) {
-                            gettersOut.add(new Field(property, simplify(mt.typeTypeOrVoid().typeType()), null,
+                            gettersOut.add(new Field(property,
+                                    simplify(mt.typeTypeOrVoid().typeType()) + dimensions(mt.LBRACK()), null,
                                     Field.Origin.GETTER));
                         }
                     }
@@ -348,8 +349,8 @@ public final class JavaSourceTypeParser {
             JavaParser.ConstDeclarationContext cdecl = imd.constDeclaration();
             String type = simplify(cdecl.typeType());
             for (JavaParser.ConstantDeclaratorContext decl : cdecl.constantDeclarator()) {
-                String name = decl.identifier().getText();
-                fieldsOut.add(new Field(name, type, null, Field.Origin.FIELD));
+                fieldsOut.add(new Field(decl.identifier().getText(), type + dimensions(decl.LBRACK()), null,
+                        Field.Origin.FIELD));
             }
         } else if (imd.interfaceMethodDeclaration() != null) {
             JavaParser.InterfaceMethodDeclarationContext method = imd.interfaceMethodDeclaration();
@@ -357,16 +358,22 @@ public final class JavaSourceTypeParser {
             if (isStaticInterfaceMethod(ibd, method)) {
                 if (!hasModifier(ibd.modifier(), JavaParser.ClassOrInterfaceModifierContext::PRIVATE)) {
                     staticMethodsOut.add(signatureOf(body.identifier().getText(), body.formalParameters())
-                            + " : " + returnTypeOf(body.typeTypeOrVoid()));
+                            + " : " + returnTypeOf(body.typeTypeOrVoid()) + dimensions(body.LBRACK()));
                 }
                 return;
             }
             String property = getterPropertyOf(body.typeTypeOrVoid(), body.identifier(), body.formalParameters());
             if (property != null) {
-                gettersOut.add(new Field(property, simplify(body.typeTypeOrVoid().typeType()), null,
+                gettersOut.add(new Field(property,
+                        simplify(body.typeTypeOrVoid().typeType()) + dimensions(body.LBRACK()), null,
                         Field.Origin.GETTER));
             }
         }
+    }
+
+    /** The {@code []} pairs a declarator carries after its name, which Java adds to the declared type. */
+    private static String dimensions(List<TerminalNode> brackets) {
+        return "[]".repeat(brackets.size());
     }
 
     /**
@@ -449,10 +456,11 @@ public final class JavaSourceTypeParser {
         JavaParser.FormalParameterListContext list = params == null ? null : params.formalParameterList();
         if (list != null) {
             for (JavaParser.FormalParameterContext fp : list.formalParameter()) {
-                types.add(simplify(fp.typeType()));
+                types.add(simplify(fp.typeType()) + dimensions(fp.variableDeclaratorId().LBRACK()));
             }
-            if (list.lastFormalParameter() != null) {
-                types.add(simplify(list.lastFormalParameter().typeType()) + "...");
+            JavaParser.LastFormalParameterContext last = list.lastFormalParameter();
+            if (last != null) {
+                types.add(simplify(last.typeType()) + dimensions(last.variableDeclaratorId().LBRACK()) + "...");
             }
         }
         return name + "(" + String.join(", ", types) + ")";
