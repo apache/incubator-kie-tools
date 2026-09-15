@@ -35,35 +35,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 class FormatterMisreadStatementGuardTest {
 
     /**
-     * Reduced from a rule set written for the legacy parser: {@code size >= 0 &&
-     * <=20} has no left operand on its second comparison, which the DRL10 grammar
-     * does not accept. The second rule's annotation is what the first rule's
-     * payload needs to close on, so the shape needs both rules.
+     * A rule set written for the legacy parser, reduced to two rules:
+     * {@code weight >= 0 && <=20} has no left operand on its second comparison,
+     * which the DRL10 grammar does not accept. The second rule's annotation is
+     * what the first rule's payload needs to close on, so the shape needs both.
      */
     private static final String SWALLOWED = String.join("\n",
             "package p;",
             "",
-            "rule \"Alpha T1 Test\"",
-            "\t@Ref_(41)",
+            "rule \"Shipping Tier 1\"",
+            "\t@Tier(1)",
             "\twhen",
-            "\t\t$input: Answer($order: ref.order, ref.group in( \"staging\", \"restaging\" ))",
-            "\t\t$primary: Finding($ref: ref, ref.order == $order, size >= 0 && <=20, confirmed == true)",
-            "\t\t$response: Response(ref == $input.ref, value == \"t1\", $explanationList: explanations)",
-            "\t\tExplanation( explId== \"E1\" ) from $response.explanations",
+            "\t\t$order: Order($id: key.id, key.region in( \"north\", \"south\" ))",
+            "\t\t$parcel: Parcel($key: key, key.id == $id, weight >= 0 && <=20, sealed == true)",
+            "\t\t$quote: Quote(key == $order.key, tier == \"t1\", $notes: notes)",
+            "\t\tNote( code== \"N1\" ) from $quote.notes",
             "\tthen",
-            "\t\tinsertLogical( new TestOutputFact( \"Ref_\" + drools.getRule().getName(), $input.getRef(), true ) );",
+            "\t\tinsertLogical( new Shipment( \"Tier_\" + drools.getRule().getName(), $order.getKey(), true ) );",
             "end",
             "",
-            "rule \"Alpha T4a-1 Test\"",
-            "\t@Ref_(46)",
+            "rule \"Shipping Tier 4\"",
+            "\t@Tier(4)",
             "\twhen",
-            "\t\t$input: Answer($order: ref.order, ref.group in( \"staging\", \"restaging\" ))",
-            "\t\t$primary: Finding($ref: ref, ref.order == $order, size >= 0, confirmed == true)",
-            "\t\t$bone: Answer(ref.order == $ref.order, ref.group == \"bone\", value == \"invasion\")",
-            "\t\t$response: Response(ref == $input.ref, value == \"t4a\", $explanationList: explanations)",
-            "\t\tExplanation( explId== \"EInfiltration\", question ==  $bone.ref.question) from $response.explanations",
+            "\t\t$order: Order($id: key.id, key.region in( \"north\", \"south\" ))",
+            "\t\t$parcel: Parcel($key: key, key.id == $id, weight >= 0, sealed == true)",
+            "\t\t$hold: Order(key.id == $key.id, key.region == \"customs\", tier == \"hold\")",
+            "\t\t$quote: Quote(key == $order.key, tier == \"t4\", $notes: notes)",
+            "\t\tNote( code== \"N4\", region ==  $hold.key.region) from $quote.notes",
             "\tthen",
-            "\t\tinsertLogical( new TestOutputFact( \"Ref_\" + drools.getRule().getName(), $input.getRef(), true ) );",
+            "\t\tinsertLogical( new Shipment( \"Tier_\" + drools.getRule().getName(), $order.getKey(), true ) );",
             "end",
             "");
 
