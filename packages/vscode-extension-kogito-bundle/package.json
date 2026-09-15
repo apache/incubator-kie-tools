@@ -1,7 +1,7 @@
 {
   "name": "vscode-extension-kogito-bundle",
   "version": "0.0.0",
-  "description": "Edit BPMN, DMN and Test Scenario files",
+  "description": "Edit BPMN, DMN, DRL and Test Scenario files",
   "license": "Apache-2.0",
   "publisher": "kie-group",
   "keywords": [],
@@ -27,7 +27,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/vscode": "1.67.0",
+    "@types/vscode": "1.103.0",
     "@vscode/vsce": "^3.7.1",
     "rimraf": "^3.0.2",
     "webpack": "^5.108.4",
@@ -36,7 +36,7 @@
     "webpack-merge": "^5.9.0"
   },
   "engines": {
-    "vscode": "^1.67.0"
+    "vscode": "^1.103.0"
   },
   "displayName": "Apache KIE™ Kogito Bundle",
   "categories": [
@@ -46,7 +46,8 @@
   "extensionDependencies": [
     "kie-group.bpmn-vscode-extension",
     "kie-group.dmn-vscode-extension",
-    "kie-group.extended-services-vscode-extension"
+    "kie-group.extended-services-vscode-extension",
+    "kie-group.drl-vscode-extension"
   ],
   "icon": "icon.png",
   "capabilities": {
