@@ -26,4 +26,3 @@ Please refer to:
 - https://marketplace.visualstudio.com/items/kie-group.dmn-vscode-extension/changelog
 - https://marketplace.visualstudio.com/items/kie-group.drl-vscode-extension/changelog
 - https://marketplace.visualstudio.com/items/kie-group.extended-services-vscode-extension/changelog
-- https://marketplace.visualstudio.com/items/kie-group.pmml-vscode-extension/changelog
