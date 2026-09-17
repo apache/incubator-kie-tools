@@ -536,7 +536,7 @@ export class BpmnEditorRoot extends React.Component<BpmnEditorRootProps, BpmnEdi
     return (
       <>
         {this.state.error && <DmnMarshallerFallbackError error={this.state.error} i18n={this.props.i18n} />}
-        {this.model && (
+        {!this.state.error && this.model && (
           <>
             <BpmnEditor.BpmnEditor
               ref={this.bpmnEditorRef}
