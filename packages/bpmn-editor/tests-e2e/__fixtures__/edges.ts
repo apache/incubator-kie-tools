@@ -55,4 +55,20 @@ export class Edges {
     await edge.click();
     await this.diagram.get().press("Delete");
   }
+
+  public getLabel(args: { name: string }): Locator {
+    return this.diagram.get().getByText(args.name, { exact: true });
+  }
+
+  public async moveLabel(args: { name: string; offset: { x: number; y: number } }) {
+    const box = await this.getLabel({ name: args.name }).boundingBox();
+    expect(box).not.toBeNull();
+
+    const x = box!.x + box!.width / 2;
+    const y = box!.y + box!.height / 2;
+    await this.page.mouse.move(x, y);
+    await this.page.mouse.down();
+    await this.page.mouse.move(x + args.offset.x, y + args.offset.y, { steps: 10 });
+    await this.page.mouse.up();
+  }
 }
