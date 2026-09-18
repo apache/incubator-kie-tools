@@ -18,7 +18,6 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { JsonModel } from "../__fixtures__/jsonModel";
 import { NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
@@ -46,23 +45,27 @@ test.describe("Move Sequence Flow label", () => {
   });
 
   test("should move the label and save its position", async ({ edges, jsonModel }) => {
-    expect(await getLabelBounds(jsonModel, "Approved")).toBeUndefined();
+    const bpmnElementId = (await jsonModel.getSequenceFlows())[0]["@_id"]!;
+    expect(await jsonModel.getEdgeLabelBounds({ bpmnElementId })).toBeUndefined();
 
-    const labelBoxBeforeMove = await edges.getLabel({ name: "Approved" }).boundingBox();
+    const labelCenterBeforeMove = await edges.getLabelCenterPosition({ name: "Approved" });
     await edges.moveLabel({ name: "Approved", offset: { x: 60, y: 40 } });
 
-    await expect.poll(async () => await getLabelBounds(jsonModel, "Approved")).toBeDefined();
-    const labelBoxAfterMove = await edges.getLabel({ name: "Approved" }).boundingBox();
-    expect(getBoxCenter(labelBoxAfterMove!).x - getBoxCenter(labelBoxBeforeMove!).x).toBeCloseTo(60, 0);
-    expect(getBoxCenter(labelBoxAfterMove!).y - getBoxCenter(labelBoxBeforeMove!).y).toBeCloseTo(40, 0);
+    await expect.poll(() => jsonModel.getEdgeLabelBounds({ bpmnElementId })).toBeDefined();
+    const labelCenterAfterMove = await edges.getLabelCenterPosition({ name: "Approved" });
+    expect(labelCenterAfterMove.x - labelCenterBeforeMove.x).toBeCloseTo(60, 0);
+    expect(labelCenterAfterMove.y - labelCenterBeforeMove.y).toBeCloseTo(40, 0);
 
-    const boundsBeforeSecondMove = (await getLabelBounds(jsonModel, "Approved"))!;
+    const boundsBeforeSecondMove = (await jsonModel.getEdgeLabelBounds({ bpmnElementId }))!;
     await edges.moveLabel({ name: "Approved", offset: { x: -30, y: 20 } });
 
     await expect
-      .poll(async () => (await getLabelBounds(jsonModel, "Approved"))?.["@_x"])
+      .poll(async () => (await jsonModel.getEdgeLabelBounds({ bpmnElementId }))?.["@_x"])
       .toBeCloseTo(boundsBeforeSecondMove["@_x"] - 30, 0);
-    expect((await getLabelBounds(jsonModel, "Approved"))?.["@_y"]).toBeCloseTo(boundsBeforeSecondMove["@_y"] + 20, 0);
+    expect((await jsonModel.getEdgeLabelBounds({ bpmnElementId }))?.["@_y"]).toBeCloseTo(
+      boundsBeforeSecondMove["@_y"] + 20,
+      0
+    );
   });
 
   test("should keep the moved label next to its Sequence Flow when a connected node moves", async ({
@@ -70,60 +73,23 @@ test.describe("Move Sequence Flow label", () => {
     nodes,
     jsonModel,
   }) => {
+    const bpmnElementId = (await jsonModel.getSequenceFlows())[0]["@_id"]!;
     await edges.moveLabel({ name: "Approved", offset: { x: 40, y: 40 } });
-    await expect.poll(async () => await getLabelBounds(jsonModel, "Approved")).toBeDefined();
-    const edgeBeforeNodeMove = await getEdge(jsonModel, "Approved");
+    await expect.poll(() => jsonModel.getEdgeLabelBounds({ bpmnElementId })).toBeDefined();
+    const edgeBeforeNodeMove = (await jsonModel.getEdge({ bpmnElementId }))!;
 
     const taskBCenter = await nodes.getNodeCenterPosition({ name: "Task B" });
     await nodes.dragNodeToPosition({ name: "Task B", toPosition: { x: taskBCenter.x + 200, y: taskBCenter.y } });
 
     await expect
-      .poll(async () => JSON.stringify((await getEdge(jsonModel, "Approved"))?.["di:waypoint"]))
-      .not.toBe(JSON.stringify(edgeBeforeNodeMove?.["di:waypoint"]));
-    const edgeAfterNodeMove = await getEdge(jsonModel, "Approved");
+      .poll(async () => (await jsonModel.getEdge({ bpmnElementId }))?.["di:waypoint"])
+      .not.toEqual(edgeBeforeNodeMove["di:waypoint"]);
+    const edgeAfterNodeMove = (await jsonModel.getEdge({ bpmnElementId }))!;
 
-    const boundsBeforeNodeMove = edgeBeforeNodeMove!["bpmndi:BPMNLabel"]!["dc:Bounds"]!;
-    const boundsAfterNodeMove = edgeAfterNodeMove!["bpmndi:BPMNLabel"]!["dc:Bounds"]!;
-    expect(boundsAfterNodeMove).not.toEqual(boundsBeforeNodeMove);
-    expect(getDistanceToPath(getBoundsCenter(boundsAfterNodeMove), edgeAfterNodeMove!["di:waypoint"]!)).toBeCloseTo(
-      getDistanceToPath(getBoundsCenter(boundsBeforeNodeMove), edgeBeforeNodeMove!["di:waypoint"]!),
+    expect(edgeAfterNodeMove["bpmndi:BPMNLabel"]).not.toEqual(edgeBeforeNodeMove["bpmndi:BPMNLabel"]);
+    expect(edges.getLabelDistanceToEdge(edgeAfterNodeMove)).toBeCloseTo(
+      edges.getLabelDistanceToEdge(edgeBeforeNodeMove),
       0
     );
   });
 });
-
-type Point = { x: number; y: number };
-type Bounds = { "@_x": number; "@_y": number; "@_width": number; "@_height": number };
-type Waypoint = { "@_x": number; "@_y": number };
-
-async function getEdge(jsonModel: JsonModel, sequenceFlowName: string) {
-  const sequenceFlow = (await jsonModel.getSequenceFlows()).find((flow) => flow["@_name"] === sequenceFlowName);
-  return jsonModel.getEdge({ bpmnElementId: sequenceFlow!["@_id"]! });
-}
-
-async function getLabelBounds(jsonModel: JsonModel, sequenceFlowName: string) {
-  return (await getEdge(jsonModel, sequenceFlowName))?.["bpmndi:BPMNLabel"]?.["dc:Bounds"];
-}
-
-function getBoxCenter(box: { x: number; y: number; width: number; height: number }): Point {
-  return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-}
-
-function getBoundsCenter(bounds: Bounds): Point {
-  return { x: bounds["@_x"] + bounds["@_width"] / 2, y: bounds["@_y"] + bounds["@_height"] / 2 };
-}
-
-function getDistanceToPath(point: Point, waypoints: Waypoint[]) {
-  let distance = Infinity;
-  for (let i = 0; i < waypoints.length - 1; i++) {
-    const a = { x: waypoints[i]["@_x"], y: waypoints[i]["@_y"] };
-    const b = { x: waypoints[i + 1]["@_x"], y: waypoints[i + 1]["@_y"] };
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
-    const squaredLength = dx * dx + dy * dy;
-    const t =
-      squaredLength === 0 ? 0 : Math.min(1, Math.max(0, ((point.x - a.x) * dx + (point.y - a.y) * dy) / squaredLength));
-    distance = Math.min(distance, Math.hypot(point.x - (a.x + t * dx), point.y - (a.y + t * dy)));
-  }
-  return distance;
-}

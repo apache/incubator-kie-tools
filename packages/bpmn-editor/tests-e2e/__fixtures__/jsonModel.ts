@@ -258,4 +258,8 @@ export class JsonModel {
     }
     return undefined;
   }
+
+  public async getEdgeLabelBounds(args: { diagramIndex?: number; bpmnElementId: string }) {
+    return (await this.getEdge(args))?.["bpmndi:BPMNLabel"]?.["dc:Bounds"];
+  }
 }
