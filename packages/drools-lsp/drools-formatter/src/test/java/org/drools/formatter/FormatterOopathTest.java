@@ -85,4 +85,57 @@ class FormatterOopathTest {
         assertThat(out).contains("/totals[ $v: value ]").contains("/orders[ amount > $v ]");
         assertStable(out);
     }
+
+    @Test
+    void aSlidingWindowOnAnOopathIsKept() {
+        String out = DRLFormatter.format(rule(
+                "    $t : /ticks[ price > 10 ] over window:length(5)\n    /ticks over window:time( 10s )"));
+
+        assertThat(out)
+                .contains("    $t: /ticks[ price > 10 ] over window:length( 5 )\n")
+                .contains("    /ticks over window:time( 10s )\n");
+        assertStable(out);
+    }
+
+    @Test
+    void anOopathInsideAConstraintIsWrittenAsAPath() {
+        String out = DRLFormatter.format(rule(
+                "    $s : Student( / addresses[street == \"Main\"] )\n"
+                + "    $e : /students/plan/exams[ /grades[result > 20] ]\n"
+                + "    $g : /students/plan/exams/grades[ result > ../averageResult ]"));
+
+        assertThat(out)
+                .contains("    $s: Student( /addresses[ street == \"Main\" ] )\n")
+                .contains("    $e: /students/plan/exams[ /grades[ result > 20 ] ]\n")
+                .contains("    $g: /students/plan/exams/grades[ result > ../averageResult ]\n");
+        assertStable(out);
+    }
+
+    @Test
+    void anIndexIsNotAConstraintList() {
+        String out = DRLFormatter.format(rule("    $g : /students/plan/exams[ 0 ]/grades"));
+
+        assertThat(out).contains("    $g: /students/plan/exams[0]/grades\n");
+        assertStable(out);
+    }
+
+    @Test
+    void aTerminatingSemicolonIsKept() {
+        String out = DRLFormatter.format(rule("    /persons[ age == 10 ];\n    /addresses[ city == \"London\" ];"));
+
+        assertThat(out).contains("    /persons[ age == 10 ];\n    /addresses[ city == \"London\" ];\n");
+        assertStable(out);
+    }
+
+    @Test
+    void anOopathLongerThanTheLineLengthIsStillNormalised() {
+        String out = DRLFormatter.format(rule(
+                "    $o : /orders[ amount > 100, customer.name == \"Alexander Hamilton Junior\", status == \"OPEN\" ]"
+                + "/lines[ quantity > 10, product.genre.name == \"Books\" ] over window:length(3)"));
+
+        assertThat(out).contains(
+                "    $o: /orders[ amount > 100, customer.name == \"Alexander Hamilton Junior\", status == \"OPEN\" ]"
+                + "/lines[ quantity > 10, product.genre.name == \"Books\" ] over window:length( 3 )\n");
+        assertStable(out);
+    }
 }

@@ -389,11 +389,11 @@ class DRLFormatterTest {
     @Test
     void overWindowGetsStyledSpacing() {
         // Emission is style-enforcing, not byte-preserving: the patternFilter is
-        // re-spaced per the house token-spacing rules (needsSpaceBetween) — space
-        // after the label colon, padding inside the call parens.
-        String drl = "package p;\nrule R\n  when\n    Foo() over window:time(30s)\n  then\nend\n";
+        // re-spaced per the house rules — "window:" stays one glyph, the call
+        // parens are padded.
+        String drl = "package p;\nrule R\n  when\n    Foo() over window : time(30s)\n  then\nend\n";
         String out = DRLFormatter.format(drl).replace("\r\n", "\n");
-        assertThat(out).contains("over window: time( 30s )");
+        assertThat(out).contains("over window:time( 30s )");
         assertThat(out).contains("Foo()");  // an empty pair is not padded
     }
 

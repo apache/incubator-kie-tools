@@ -22,8 +22,6 @@ package org.drools.formatter;
 import java.util.List;
 
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.parser.antlr4.DRL10Lexer;
 import org.drools.drl.parser.antlr4.DRL10Parser;
 
@@ -108,13 +106,27 @@ final class LhsFormatter {
 
   private void visitLhsUnary(DRL10Parser.LhsUnaryContext ctx) {
     e.emitHiddenTokensBefore(ctx);
-    // Consume any pending prefix (e.g. "and ") for non-pattern nodes.
-    // visitPatternBind consumes it itself; other handlers need it here.
     if (ctx.lhsPatternBind() != null) {
       visitPatternBind(ctx.lhsPatternBind());
-      emitTrailingInvocations(ctx);
-      return;
+    } else {
+      visitConditionalElement(ctx);
     }
+    emitTrailingInvocations(ctx);
+    if (ctx.SEMI() != null && isOopath(ctx.lhsPatternBind())) {
+      // Before Drools 10 two OOPath lines without a ";" between them were read
+      // as one path, so this one terminator is the author's to keep.
+      e.appendToLastLine(";");
+      e.newline();
+    }
+  }
+
+  private static boolean isOopath(DRL10Parser.LhsPatternBindContext bind) {
+    return bind != null && bind.lhsPattern().stream().anyMatch(p -> p.xpathPrimary() != null);
+  }
+
+  private void visitConditionalElement(DRL10Parser.LhsUnaryContext ctx) {
+    // Consume any pending prefix (e.g. "and "): visitPatternBind does this
+    // itself, the other handlers need it here.
     String prefix = consumePatternPrefix();
     if (ctx.lhsExists() != null) {
       visitLhsExists(ctx.lhsExists(), prefix);
@@ -144,9 +156,6 @@ final class LhsFormatter {
       e.emit(e.indent() + prefix + e.styledText(ctx.conditionalBranch()));
       e.newline();
     }
-    // exists/not/eval and a parenthesised group can each carry a trailing
-    // invocation too; the pattern-bind path above appends its own.
-    emitTrailingInvocations(ctx);
   }
 
   /**
@@ -435,34 +444,6 @@ final class LhsFormatter {
     return e.options.bindingColonSpace() ? " : " : ": ";
   }
 
-  /**
-   * An OOPath pattern, chunk by chunk: the {@code /} or {@code ?/} separator,
-   * the dotted path and any {@code #Cast} are path syntax and stay tight; the
-   * bracketed constraint list is the pattern's constraint list and is padded
-   * the way a classic pattern's parentheses are.
-   */
-  private String formatOopath(DRL10Parser.XpathPrimaryContext ctx) {
-    StringBuilder sb = new StringBuilder();
-    for (DRL10Parser.XpathChunkContext chunk : ctx.xpathChunk()) {
-      for (ParseTree child : chunk.children) {
-        if (child instanceof DRL10Parser.XpathExpressionListContext constraints) {
-          String inner = e.styledText(constraints);
-          sb.append(e.options.parenPadding() ? "[ " + inner + " ]" : "[" + inner + "]");
-        } else if (!isBracket(child)) {
-          sb.append(child.getText());
-        }
-      }
-    }
-    e.lastEmittedTokenIndex = Math.max(e.lastEmittedTokenIndex, ctx.getStop().getTokenIndex());
-    return sb.toString();
-  }
-
-  private static boolean isBracket(ParseTree node) {
-    return node instanceof TerminalNode terminal
-        && (terminal.getSymbol().getType() == DRL10Lexer.LBRACK
-            || terminal.getSymbol().getType() == DRL10Lexer.RBRACK);
-  }
-
   private String formatPatternBind(DRL10Parser.LhsPatternBindContext ctx) {
     StringBuilder sb = new StringBuilder();
     if (ctx.label() != null) {
@@ -481,7 +462,7 @@ final class LhsFormatter {
 
   private String formatPattern(DRL10Parser.LhsPatternContext ctx) {
     if (ctx.xpathPrimary() != null) {
-      return formatOopath(ctx.xpathPrimary());
+      return e.styledText(ctx.xpathPrimary()) + overClause(ctx);
     }
     StringBuilder sb = new StringBuilder();
     if (ctx.QUESTION() != null) {
@@ -515,13 +496,17 @@ final class LhsFormatter {
       sb.append(" ").append(e.styledText(ann));
     }
 
-    if (ctx.DRL_OVER() != null && ctx.patternFilter() != null) {
-      sb.append(" over ").append(e.styledText(ctx.patternFilter()));
-    }
+    sb.append(overClause(ctx));
     if (ctx.DRL_FROM() != null && ctx.patternSource() != null) {
       sb.append(" from ").append(formatPatternSource(ctx.patternSource()));
     }
     return sb.toString();
+  }
+
+  private String overClause(DRL10Parser.LhsPatternContext ctx) {
+    return ctx.DRL_OVER() != null && ctx.patternFilter() != null
+        ? " over " + e.styledText(ctx.patternFilter())
+        : "";
   }
 
   /**
@@ -565,6 +550,13 @@ final class LhsFormatter {
     }
 
     DRL10Parser.LhsPatternContext pat = bindCtx.lhsPattern(0);
+    if (pat != null && pat.xpathPrimary() != null) {
+      // An OOPath stays on one line however long: to the parser a chunk that
+      // starts on a new line begins a new pattern.
+      e.emit(e.indent() + prefix + formatPattern(pat));
+      e.newline();
+      return;
+    }
     if (pat == null || pat.objectType == null) {
       // Fallback: emit the original source verbatim (multi-line context).
       // linePrefix (not prefix): any label/unif is already inside the slice.
@@ -644,9 +636,7 @@ final class LhsFormatter {
     for (DRL10Parser.DrlAnnotationContext ann : pat.drlAnnotation()) {
       suffix.append(" ").append(e.styledText(ann));
     }
-    if (pat.DRL_OVER() != null && pat.patternFilter() != null) {
-      suffix.append(" over ").append(e.styledText(pat.patternFilter()));
-    }
+    suffix.append(overClause(pat));
     if (pat.DRL_FROM() != null && pat.patternSource() != null) {
       suffix.append(" from ").append(formatPatternSource(pat.patternSource()));
     }

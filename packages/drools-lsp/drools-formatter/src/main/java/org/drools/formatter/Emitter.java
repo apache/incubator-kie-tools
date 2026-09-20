@@ -78,6 +78,10 @@ final class Emitter {
   // Populated once the token stream is filled, via computeSkipRegions().
   List<int[]> skipRegions = List.of();
 
+  // Tree-derived token roles for the spacing decisions a token pair alone
+  // cannot make; populated once the compilation unit is parsed.
+  TokenRoles roles = TokenRoles.NONE;
+
   Emitter(String text, FormatterOptions options) {
     parser = DRL10ParserHelper.createDrlParser(text);
     tokens = (CommonTokenStream) parser.getTokenStream();
@@ -255,7 +259,7 @@ final class Emitter {
       if (afterComment) {
         sb.append(' ');
         afterComment = false;
-      } else if (prev != null && spacing.needsSpaceBetween(prev, t)) {
+      } else if (prev != null && needsSpace(prev, t)) {
         sb.append(' ');
       }
       sb.append(t.getText());
@@ -263,6 +267,11 @@ final class Emitter {
     }
     lastEmittedTokenIndex = Math.max(lastEmittedTokenIndex, stop.getTokenIndex());
     return sb.toString();
+  }
+
+  private boolean needsSpace(Token left, Token right) {
+    Boolean byRole = roles.spaceBetween(left, right, options.parenPadding());
+    return byRole != null ? byRole : spacing.needsSpaceBetween(left, right);
   }
 
   /**

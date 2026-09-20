@@ -56,6 +56,7 @@ final class StatementFormatter {
 
     DRL10Parser.CompilationUnitContext cu = e.parser.compilationUnit();
     compilationUnit = cu;
+    e.roles = TokenRoles.of(cu);
 
     if (cu.packagedef() != null) {
       e.visitTopLevel(cu.packagedef(), () -> visitPackage(cu.packagedef()));
