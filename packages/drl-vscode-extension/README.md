@@ -133,7 +133,7 @@ The defaults are proposed. They are open for discussion in [kie-tools#3709](http
 
 Top-level constructs start at column 0 and their `end` returns to column 0. Statements are never reordered. Trailing whitespace is never emitted, a run of two or more blank lines collapses to one, and trailing blank lines are removed — the file ends with exactly one newline.
 
-Between tokens: `(` and its contents are padded (or not, per `parenPadding`), and so are the `[ ]` of an OOPath constraint list; other brackets stay tight (`list[0]`, `do[x]`, `int[]`); no space before `,` or `;`, one after `,`; none around `.`, `!.`, `#`; one around operators and between words; `)` followed by a word gets one (`) from`, `) do[x]`). In a consequence, `{ }` are padded: `modify( $p ) { setAge( 1 ) }`.
+Between tokens: `(` and its contents are padded (or not, per `parenPadding`), and so are the `[ ]` of an OOPath constraint list; other brackets stay tight (`list[0]`, `do[x]`, `int[]`, the index in `exams[0]`); no space before `,` or `;`, one after `,`; none around `.`, `!.`, `#`, `/`, `?/` or after `window:`; one around binary operators (`:=` included) and between words, none after a unary one (`!adult`, `-5`); `)` or `]` followed by a word gets one (`) from`, `after[5s, 8s] $a`). In a consequence, `{ }` are padded: `modify( $p ) { setAge( 1 ) }`.
 
 ### `declare` blocks
 
@@ -157,7 +157,7 @@ end
 
 ### Conditions
 
-A pattern is `$binding: Type( constraints )`, one line if it fits in `lineLength`, otherwise one constraint per line with the closing parenthesis back at the pattern's indent. An OOPath pattern is `$binding: /source[ constraints ]/segment[ constraints ]`: the `/`, `?/` and `#Cast` are written tight, and each `[ ]` is padded per `parenPadding` like a pattern's parentheses. An explicit `and` is kept as a leading `and ` on the next condition; an `or` between conditions goes on its own line; a parenthesized group puts `(` and `)` on their own lines. `accumulate` and `groupby` are always blocks: source pattern, `;`, functions, then any constraints.
+A pattern is `$binding: Type( constraints )`, one line if it fits in `lineLength`, otherwise one constraint per line with the closing parenthesis back at the pattern's indent. An OOPath pattern is `$binding: /source[ constraints ]/segment[ constraints ]`: the `/`, `?/` and `#Cast` are written tight, and each `[ ]` is padded per `parenPadding` like a pattern's parentheses. An OOPath inside a constraint (`Person( /addresses[ city == "London" ] )`) is written the same way, and an OOPath never wraps, however long: to the parser a segment that starts on a new line is a new pattern. A `;` ending a condition is dropped, except after an OOPath, where the pre-Drools-10 parser needs it to keep two lines apart. An explicit `and` is kept as a leading `and ` on the next condition; an `or` between conditions goes on its own line; a parenthesized group puts `(` and `)` on their own lines. `accumulate` and `groupby` are always blocks: source pattern, `;`, functions, then any constraints.
 
 ### Consequences
 
@@ -177,7 +177,7 @@ Drools 10 ships two DRL parsers: the legacy `DRL6` parser it compiles with by de
 
 ### What it refuses
 
-It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block, or a whole rule or query, was not read as one, when its own output fails to re-parse, or when a comment would not survive formatting (see the limitations below; the refusal names the comment's line). A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
+It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block, or a whole rule or query, was not read as one, when its own output fails to re-parse or differs from the input in anything but spacing and separators (the refusal names the line), or when a comment would not survive formatting (see the limitations below; the refusal names the comment's line). A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
 
 ### Command line
 
