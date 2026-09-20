@@ -109,6 +109,12 @@ public class DRLFormatter {
    * {@link #misreadStatements}), with {@code misreadStatementLine} the 1-based
    * input line of the first.
    *
+   * <p>{@code contentChangedLine} / {@code outputGainsContent} are the content
+   * tier: the output's tokens compared with the input's, whitespace and the
+   * separators emission may normalise aside (see {@link #contentLoss}). A clause
+   * the formatter forgot to emit passes every other output gate — what is left
+   * is shorter but valid — and this is the gate that sees it.
+   *
    * <p>{@code commentsLost} is the comment tier: how many comment tokens the
    * re-parsed output holds fewer than the input (negative when it holds more),
    * with {@code lostCommentLine} the 1-based input line of the first comment no
@@ -124,6 +130,7 @@ public class DRLFormatter {
                              int rulesMissingLhs, int outputRulesMissingLhs,
                              int misreadStatements, int misreadStatementLine,
                              int outputMisreadStatements,
+                             int contentChangedLine, boolean outputGainsContent,
                              int commentsLost, int lostCommentLine) {
 
     /** Whether a caller must refuse to write or emit over this document. */
@@ -155,6 +162,12 @@ public class DRLFormatter {
       if (outputMisreadStatements > 0) {
         return "output loses a rule or query - formatter bug";
       }
+      if (contentChangedLine > 0) {
+        return "the content at line " + contentChangedLine + " would be changed";
+      }
+      if (outputGainsContent) {
+        return "output gains content - formatter bug";
+      }
       if (commentsLost > 0) {
         return lostCommentLine > 0
             ? "the comment at line " + lostCommentLine + " would be lost"
@@ -167,7 +180,7 @@ public class DRLFormatter {
     }
   }
 
-  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
 
   public static FormatResult formatChecked(String text) {
     return formatChecked(text, FormatterOptions.DEFAULTS);
@@ -179,7 +192,7 @@ public class DRLFormatter {
     }
     if (text.isBlank()) {
       // nothing to format; never truncate a whitespace-only file
-      return new FormatResult(text, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return new FormatResult(text, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
     }
     String normalized = text.replace("\r\n", "\n").replace("\r", "\n");
     String eol = options.lineEnding(text);
@@ -198,12 +211,16 @@ public class DRLFormatter {
     ParseHealth output = syntaxErrors == 0 && rulesMissingLhs == 0 && misread.count() == 0
         ? parseHealth(out)
         : ParseHealth.NOT_CHECKED;
+    ContentLoss content = output.tokens() == null
+        ? ContentLoss.NONE
+        : contentLoss(e.tokens, output.tokens());
     CommentLoss comments = output.tokens() == null
         ? CommentLoss.NONE
         : commentLoss(e.tokens, output.tokens());
     return new FormatResult(out, syntaxErrors, output.syntaxErrors(),
         rulesMissingLhs, output.rulesMissingLhs(),
         misread.count(), misread.firstLine(), output.misreadStatements(),
+        content.changedLine(), content.gained(),
         comments.count(), comments.firstLine());
   }
 
@@ -361,6 +378,65 @@ public class DRLFormatter {
       }
     }
     return comments;
+  }
+
+  /**
+   * {@code changedLine} is the 1-based input line of the first content the
+   * output does not reproduce, or 0; {@code gained} whether the output carries
+   * content past the end of the input's.
+   */
+  record ContentLoss(int changedLine, boolean gained) {
+    static final ContentLoss NONE = new ContentLoss(0, false);
+  }
+
+  static ContentLoss contentLoss(String input, String output) {
+    return contentLoss(
+        (CommonTokenStream) DRL10ParserHelper.createDrlParser(input).getTokenStream(),
+        (CommonTokenStream) DRL10ParserHelper.createDrlParser(output).getTokenStream());
+  }
+
+  /**
+   * Compares what the two token streams say, character by character, once
+   * everything emission is allowed to change is removed: whitespace (spacing
+   * comes from the rules, and the RHS lexer splits its chunks on it), the
+   * {@code ;} and {@code ,} separators it normalises, and comments, which
+   * {@link #commentLoss} judges with their own line numbers.
+   */
+  private static ContentLoss contentLoss(CommonTokenStream input, CommonTokenStream output) {
+    Content in = Content.of(input);
+    Content out = Content.of(output);
+    int shared = Math.min(in.text.length(), out.text.length());
+    for (int i = 0; i < shared; i++) {
+      if (in.text.charAt(i) != out.text.charAt(i)) {
+        return new ContentLoss(in.lines[i], false);
+      }
+    }
+    if (in.text.length() > shared) {
+      return new ContentLoss(in.lines[shared], false);
+    }
+    return new ContentLoss(0, out.text.length() > shared);
+  }
+
+  /** The compared characters of a token stream, each with the line it came from. */
+  private record Content(String text, int[] lines) {
+    static Content of(CommonTokenStream tokens) {
+      tokens.fill();
+      StringBuilder text = new StringBuilder();
+      List<Integer> lines = new ArrayList<>();
+      for (int i = 0; i < tokens.size(); i++) {
+        Token t = tokens.get(i);
+        if (t.getType() == Token.EOF || t.getChannel() != Token.DEFAULT_CHANNEL || Emitter.isComment(t)) {
+          continue;
+        }
+        for (char c : t.getText().toCharArray()) {
+          if (!Character.isWhitespace(c) && c != ';' && c != ',') {
+            text.append(c);
+            lines.add(t.getLine());
+          }
+        }
+      }
+      return new Content(text.toString(), lines.stream().mapToInt(Integer::intValue).toArray());
+    }
   }
 
   private static String normalizeComment(String text) {
