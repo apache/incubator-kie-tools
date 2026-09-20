@@ -46,6 +46,10 @@ final class TokenSpacing {
     // Brackets and braces stay tight: list[0], do[label], @ann{...}
     if (lt == DRL10Lexer.LBRACK || lt == DRL10Lexer.LBRACE) return false;
     if (rt == DRL10Lexer.RBRACK || rt == DRL10Lexer.RBRACE) return false;
+    // ... but an operand after one starts something new: "after[5s, 8s] $a",
+    // "str[startsWith] "R1"", "str[startsWith] ( a + b )", "int[] counts"
+    if (lt == DRL10Lexer.RBRACK
+        && (isWordToken(right) || rt == DRL10Lexer.DRL_STRING_LITERAL || rt == DRL10Lexer.LPAREN)) return true;
 
     // No space before comma or semicolon
     if (rt == DRL10Lexer.COMMA || rt == DRL10Lexer.SEMI) return false;
@@ -112,7 +116,7 @@ final class TokenSpacing {
         || type == DRL10Lexer.LT || type == DRL10Lexer.AND
         || type == DRL10Lexer.OR || type == DRL10Lexer.ADD
         || type == DRL10Lexer.SUB || type == DRL10Lexer.MUL
-        || type == DRL10Lexer.DIV || type == DRL10Lexer.BANG
+        || type == DRL10Lexer.DIV || type == DRL10Lexer.DRL_UNIFY
         || type == DRL10Lexer.DRL_AND || type == DRL10Lexer.DRL_OR
         || type == DRL10Lexer.DRL_IN || type == DRL10Lexer.DRL_NOT;
   }
