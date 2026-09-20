@@ -94,6 +94,8 @@ final class TokenSpacing {
     if (lc == ',') return true;
     if (lc == '(' && rc == ')') return false;
     if (lc == '(' || rc == ')') return options.parenPadding();
+    // Java brackets hug what they index: int[], counts[0], parts[i][j]
+    if (rc == '[' || lc == '[' || rc == ']') return false;
     if (rc == ',' || rc == ';') return false;
     if (lc == '.' || rc == '.') return false;
     // No space between identifier and opening paren (method calls)
