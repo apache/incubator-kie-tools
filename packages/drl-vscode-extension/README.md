@@ -133,7 +133,7 @@ The defaults are proposed. They are open for discussion in [kie-tools#3709](http
 
 Top-level constructs start at column 0 and their `end` returns to column 0. Statements are never reordered. Trailing whitespace is never emitted, a run of two or more blank lines collapses to one, and trailing blank lines are removed — the file ends with exactly one newline.
 
-Between tokens: `(` and its contents are padded (or not, per `parenPadding`); `[ ]` and `{ }` stay tight; no space before `,` or `;`, one after `,`; none around `.`, `!.`, `#`; one around operators and between words; `)` followed by a word gets one (`) from`, `) do[x]`).
+Between tokens: `(` and its contents are padded (or not, per `parenPadding`), and so are the `[ ]` of an OOPath constraint list; other brackets stay tight (`list[0]`, `do[x]`, `int[]`); no space before `,` or `;`, one after `,`; none around `.`, `!.`, `#`; one around operators and between words; `)` followed by a word gets one (`) from`, `) do[x]`). In a consequence, `{ }` are padded: `modify( $p ) { setAge( 1 ) }`.
 
 ### `declare` blocks
 
@@ -157,7 +157,7 @@ end
 
 ### Conditions
 
-A pattern is `$binding: Type( constraints )`, one line if it fits in `lineLength`, otherwise one constraint per line with the closing parenthesis back at the pattern's indent. An explicit `and` is kept as a leading `and ` on the next condition; an `or` between conditions goes on its own line; a parenthesized group puts `(` and `)` on their own lines. `accumulate` and `groupby` are always blocks: source pattern, `;`, functions, then any constraints.
+A pattern is `$binding: Type( constraints )`, one line if it fits in `lineLength`, otherwise one constraint per line with the closing parenthesis back at the pattern's indent. An OOPath pattern is `$binding: /source[ constraints ]/segment[ constraints ]`: the `/`, `?/` and `#Cast` are written tight, and each `[ ]` is padded per `parenPadding` like a pattern's parentheses. An explicit `and` is kept as a leading `and ` on the next condition; an `or` between conditions goes on its own line; a parenthesized group puts `(` and `)` on their own lines. `accumulate` and `groupby` are always blocks: source pattern, `;`, functions, then any constraints.
 
 ### Consequences
 

@@ -22,6 +22,8 @@ package org.drools.formatter;
 import java.util.List;
 
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.parser.antlr4.DRL10Lexer;
 import org.drools.drl.parser.antlr4.DRL10Parser;
 
@@ -433,6 +435,34 @@ final class LhsFormatter {
     return e.options.bindingColonSpace() ? " : " : ": ";
   }
 
+  /**
+   * An OOPath pattern, chunk by chunk: the {@code /} or {@code ?/} separator,
+   * the dotted path and any {@code #Cast} are path syntax and stay tight; the
+   * bracketed constraint list is the pattern's constraint list and is padded
+   * the way a classic pattern's parentheses are.
+   */
+  private String formatOopath(DRL10Parser.XpathPrimaryContext ctx) {
+    StringBuilder sb = new StringBuilder();
+    for (DRL10Parser.XpathChunkContext chunk : ctx.xpathChunk()) {
+      for (ParseTree child : chunk.children) {
+        if (child instanceof DRL10Parser.XpathExpressionListContext constraints) {
+          String inner = e.styledText(constraints);
+          sb.append(e.options.parenPadding() ? "[ " + inner + " ]" : "[" + inner + "]");
+        } else if (!isBracket(child)) {
+          sb.append(child.getText());
+        }
+      }
+    }
+    e.lastEmittedTokenIndex = Math.max(e.lastEmittedTokenIndex, ctx.getStop().getTokenIndex());
+    return sb.toString();
+  }
+
+  private static boolean isBracket(ParseTree node) {
+    return node instanceof TerminalNode terminal
+        && (terminal.getSymbol().getType() == DRL10Lexer.LBRACK
+            || terminal.getSymbol().getType() == DRL10Lexer.RBRACK);
+  }
+
   private String formatPatternBind(DRL10Parser.LhsPatternBindContext ctx) {
     StringBuilder sb = new StringBuilder();
     if (ctx.label() != null) {
@@ -451,7 +481,7 @@ final class LhsFormatter {
 
   private String formatPattern(DRL10Parser.LhsPatternContext ctx) {
     if (ctx.xpathPrimary() != null) {
-      return e.styledText(ctx.xpathPrimary());
+      return formatOopath(ctx.xpathPrimary());
     }
     StringBuilder sb = new StringBuilder();
     if (ctx.QUESTION() != null) {
