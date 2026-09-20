@@ -20,6 +20,7 @@
 package org.drools.formatter;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +38,16 @@ import com.google.gson.JsonParser;
 
 public class FormatCLI {
   public static void main(String[] args) throws Exception {
-    System.exit(run(args, System.out, System.err));
+    System.exit(run(args, utf8(System.out), utf8(System.err)));
+  }
+
+  /**
+   * Files are read and written as UTF-8 ({@link Files#readString(Path)}), so
+   * the console streams encode the same way rather than in the platform
+   * charset the JVM gives {@code System.out}.
+   */
+  static PrintStream utf8(OutputStream stream) {
+    return new PrintStream(stream, true, StandardCharsets.UTF_8);
   }
 
   static int run(String[] args, PrintStream out, PrintStream err) throws Exception {

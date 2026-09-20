@@ -628,4 +628,24 @@ class FormatCLITest {
     assertThat(reversed.exit()).isEqualTo(1);
     assertThat(reversed.stderr()).contains("--write-dir");
   }
+
+  /**
+   * Files are read as UTF-8, so what goes to standard output must be UTF-8 too,
+   * whatever the platform charset; the JVM's default stdout on a Windows console
+   * is not.
+   */
+  @Test
+  void standardOutputIsUtf8WhateverThePlatformCharset(@TempDir Path dir) throws Exception {
+    Path drl = dir.resolve("degrees.drl");
+    Files.writeString(drl,
+        "package p;\n\nrule R\n  when\n    // above 30 °C\n    Reading( value > 30 )\n  then\nend\n");
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+    int exit = FormatCLI.run(new String[] {drl.toString()},
+        FormatCLI.utf8(bytes), FormatCLI.utf8(new ByteArrayOutputStream()));
+
+    assertThat(exit).isZero();
+    assertThat(bytes.toString(StandardCharsets.UTF_8)).contains("30 °C");
+    assertThat(bytes.toByteArray()).containsSequence((byte) 0xC2, (byte) 0xB0);
+  }
 }
