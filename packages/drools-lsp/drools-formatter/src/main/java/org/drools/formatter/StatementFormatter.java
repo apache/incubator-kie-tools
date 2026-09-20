@@ -159,7 +159,7 @@ final class StatementFormatter {
 
     List<ParserRuleContext> items = new ArrayList<>(ctx.drlAnnotation());
     if (ctx.attributes() != null) {
-      items.addAll(ctx.attributes().attribute());
+      items.addAll(attributeItems(ctx.attributes()));
     }
     e.emitHeader(headerLine, items);
 
@@ -248,10 +248,18 @@ final class StatementFormatter {
   // ── attributes ────────────────────────────────────────────────────────
 
   private void visitAttributes(DRL10Parser.AttributesContext ctx) {
-    for (DRL10Parser.AttributeContext attr : ctx.attribute()) {
+    for (ParserRuleContext attr : attributeItems(ctx)) {
       e.emitHiddenTokensBefore(attr);
       e.emit(e.styledText(attr));
       e.newline();
     }
+  }
+
+  /**
+   * One item per attribute, or the whole list as one item when the legacy
+   * {@code attributes:} keyword introduces it, so the keyword is kept.
+   */
+  private static List<? extends ParserRuleContext> attributeItems(DRL10Parser.AttributesContext ctx) {
+    return ctx.DRL_ATTRIBUTES() != null ? List.of(ctx) : ctx.attribute();
   }
 }

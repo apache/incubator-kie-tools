@@ -75,13 +75,13 @@ final class LhsFormatter {
   void visitLhsExpression(DRL10Parser.LhsExpressionContext ctx) {
     e.emitHiddenTokensBefore(ctx);
     if (ctx instanceof DRL10Parser.LhsExpressionEnclosedContext enclosed) {
-      e.emit(e.indent() + consumePatternPrefix() + "(");
+      emitGroup(consumePatternPrefix(), enclosed.lhsExpression());
+    } else if (!prefixKeyword(ctx).isEmpty()) {
+      e.emit(e.indent() + consumePatternPrefix() + prefixKeyword(ctx));
       e.newline();
       e.depth++;
-      visitLhsExpression(enclosed.lhsExpression());
+      visitOperands(ctx);
       e.depth--;
-      e.emit(e.indent() + ")");
-      e.newline();
     } else if (ctx instanceof DRL10Parser.LhsOrContext orCtx) {
       List<DRL10Parser.LhsExpressionContext> exprs = orCtx.lhsExpression();
       for (int i = 0; i < exprs.size(); i++) {
@@ -102,6 +102,47 @@ final class LhsFormatter {
     } else if (ctx instanceof DRL10Parser.LhsUnarySingleContext unary) {
       visitLhsUnary(unary.lhsUnary());
     }
+  }
+
+  /**
+   * {@code or} or {@code and} when the element is written in prefix form,
+   * {@code (or A B)}, which is kept rather than rewritten as {@code A or B};
+   * empty otherwise.
+   */
+  private static String prefixKeyword(DRL10Parser.LhsExpressionContext ctx) {
+    int type = ctx.getStart().getType();
+    boolean prefix = (ctx instanceof DRL10Parser.LhsOrContext && type == DRL10Lexer.DRL_OR)
+        || (ctx instanceof DRL10Parser.LhsAndContext && type == DRL10Lexer.DRL_AND);
+    return prefix ? ctx.getStart().getText() : "";
+  }
+
+  private void visitOperands(DRL10Parser.LhsExpressionContext ctx) {
+    List<DRL10Parser.LhsExpressionContext> operands = ctx instanceof DRL10Parser.LhsOrContext orCtx
+        ? orCtx.lhsExpression()
+        : ((DRL10Parser.LhsAndContext) ctx).lhsExpression();
+    for (DRL10Parser.LhsExpressionContext operand : operands) {
+      visitLhsExpression(operand);
+    }
+  }
+
+  /**
+   * {@code head(} and {@code )} on their own lines with the element between
+   * them indented; a prefix-form element keeps its keyword on the opening
+   * line — {@code (or}, {@code not(and} — with its operands beneath.
+   */
+  private void emitGroup(String head, DRL10Parser.LhsExpressionContext inner) {
+    String keyword = prefixKeyword(inner);
+    e.emit(e.indent() + head + "(" + keyword);
+    e.newline();
+    e.depth++;
+    if (keyword.isEmpty()) {
+      visitLhsExpression(inner);
+    } else {
+      visitOperands(inner);
+    }
+    e.depth--;
+    e.emit(e.indent() + ")");
+    e.newline();
   }
 
   private void visitLhsUnary(DRL10Parser.LhsUnaryContext ctx) {
@@ -144,14 +185,7 @@ final class LhsFormatter {
     } else if (ctx.lhsGroupBy() != null) {
       visitLhsGroupBy(ctx.lhsGroupBy());
     } else if (ctx.lhsExpression() != null) {
-      // parenthesized lhsExpression
-      e.emit(e.indent() + prefix + "(");
-      e.newline();
-      e.depth++;
-      visitLhsExpression(ctx.lhsExpression());
-      e.depth--;
-      e.emit(e.indent() + ")");
-      e.newline();
+      emitGroup(prefix, ctx.lhsExpression());
     } else if (ctx.conditionalBranch() != null) {
       e.emit(e.indent() + prefix + e.styledText(ctx.conditionalBranch()));
       e.newline();
@@ -210,13 +244,7 @@ final class LhsFormatter {
         emitReflowedPattern(ctx.lhsPatternBind(), prefix + "exists ");
       }
     } else if (ctx.lhsExpression() != null) {
-      e.emit(e.indent() + prefix + "exists(");
-      e.newline();
-      e.depth++;
-      visitLhsExpression(ctx.lhsExpression());
-      e.depth--;
-      e.emit(e.indent() + ")");
-      e.newline();
+      emitGroup(prefix + "exists", ctx.lhsExpression());
     }
   }
 
@@ -234,13 +262,7 @@ final class LhsFormatter {
         emitReflowedPattern(ctx.lhsPatternBind(), prefix + "not ");
       }
     } else if (ctx.lhsExpression() != null) {
-      e.emit(e.indent() + prefix + "not(");
-      e.newline();
-      e.depth++;
-      visitLhsExpression(ctx.lhsExpression());
-      e.depth--;
-      e.emit(e.indent() + ")");
-      e.newline();
+      emitGroup(prefix + "not", ctx.lhsExpression());
     }
   }
 
@@ -452,10 +474,19 @@ final class LhsFormatter {
       sb.append(ctx.unif().drlIdentifier().getText()).append(" := ");
     }
 
+    // "$c: ( A() or B() )": the parentheses scope the binding over every
+    // alternative; without them it would bind the first alone.
+    boolean grouped = ctx.LPAREN() != null;
+    if (grouped) {
+      sb.append(e.options.parenPadding() ? "( " : "(");
+    }
     List<DRL10Parser.LhsPatternContext> patterns = ctx.lhsPattern();
     for (int i = 0; i < patterns.size(); i++) {
       if (i > 0) sb.append(" or ");
       sb.append(formatPattern(patterns.get(i)));
+    }
+    if (grouped) {
+      sb.append(e.options.parenPadding() ? " )" : ")");
     }
     return sb.toString();
   }
@@ -550,10 +581,11 @@ final class LhsFormatter {
     }
 
     DRL10Parser.LhsPatternContext pat = bindCtx.lhsPattern(0);
-    if (pat != null && pat.xpathPrimary() != null) {
-      // An OOPath stays on one line however long: to the parser a chunk that
-      // starts on a new line begins a new pattern.
-      e.emit(e.indent() + prefix + formatPattern(pat));
+    if (pat != null && (pat.xpathPrimary() != null || bindCtx.lhsPattern().size() > 1)) {
+      // One line however long: to the parser an OOPath chunk that starts on a
+      // new line begins a new pattern, and an or-group has no constraint list
+      // of its own to spread.
+      e.emit(e.indent() + linePrefix + formatPatternBind(bindCtx));
       e.newline();
       return;
     }
