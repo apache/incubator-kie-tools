@@ -146,9 +146,10 @@ final class StatementFormatter {
     if (ctx.EXTENDS() != null && ctx.parentName != null) {
       String extendsClause = " extends " + ruleNameText(ctx.parentName);
       if (header.length() + extendsClause.length() > e.options.lineLength()) {
-        e.emit(header.toString());
-        e.newline();
-        headerLine = "extends " + ruleNameText(ctx.parentName);
+        // The clause continues the header on its own line, placed like the
+        // header's metadata.
+        boolean flush = e.options.headerMetadata() == FormatterOptions.HeaderMetadata.FLUSH;
+        headerLine = header + "\n" + (flush ? "" : e.indent(1)) + extendsClause.trim();
       } else {
         header.append(extendsClause);
         headerLine = header.toString();

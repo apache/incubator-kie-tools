@@ -153,7 +153,7 @@ rule <name> [extends <parent>]
 end
 ```
 
-`extends` rides on the header line unless that exceeds `lineLength`. A rule that introduces its attributes with the legacy `attributes:` keyword keeps the keyword and its comma-separated list on one line. `query` has the same shape without `when`. `function` gets its signature normalized and its body emitted verbatim — Java inside a function is never touched.
+`extends` rides on the header line unless that exceeds `lineLength`, in which case it continues on the next line, placed like the header's metadata. A rule that introduces its attributes with the legacy `attributes:` keyword keeps the keyword and its comma-separated list on one line. `query` has the same shape without `when`. `function` gets its signature normalized and its body emitted verbatim — Java inside a function is never touched.
 
 ### Conditions
 

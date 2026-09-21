@@ -148,11 +148,15 @@ final class Emitter {
     FormatterOptions.HeaderMetadata mode = options.headerMetadata();
     if (mode == FormatterOptions.HeaderMetadata.INLINE) {
       StringBuilder line = new StringBuilder(header);
+      // A header may already span two lines (a wrapped "extends"); items ride
+      // on its last line, so widths are measured from that line's start.
+      int headerColumn = column(header);
       List<Token> deferredComments = new ArrayList<>();
       for (ParserRuleContext item : items) {
         collectCommentsUpTo(item.getStart().getTokenIndex(), deferredComments);
         String text = styledText(item);
-        if (line.length() + 1 + text.length() > options.lineLength() && line.length() > header.length()) {
+        int column = column(line);
+        if (column + 1 + text.length() > options.lineLength() && column > headerColumn) {
           emit(line.toString());
           newline();
           line = new StringBuilder(indent(1)).append(text);
@@ -181,6 +185,12 @@ final class Emitter {
     if (mode == FormatterOptions.HeaderMetadata.FLUSH) {
       depth++;
     }
+  }
+
+  /** The length of {@code text}'s last line. */
+  private static int column(CharSequence text) {
+    String s = text.toString();
+    return s.length() - s.lastIndexOf('\n') - 1;
   }
 
   private void collectCommentsUpTo(int targetIndex, List<Token> into) {
