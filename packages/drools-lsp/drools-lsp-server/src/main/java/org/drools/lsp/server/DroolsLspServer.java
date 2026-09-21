@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,7 +107,8 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
 
     private volatile boolean clientProvidesConfiguration = false;
 
-    private final AtomicInteger formatterPullGeneration = new AtomicInteger();
+    private final Object formatterPullLock = new Object();
+    private int formatterPullGeneration; // guarded by formatterPullLock
 
     public DroolsLspServer() {
         textService = new DroolsLspDocumentService(this);
@@ -504,12 +504,20 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         }
         ConfigurationItem item = new ConfigurationItem();
         item.setSection("drools.lsp.formatter");
-        int generation = formatterPullGeneration.incrementAndGet();
+        int generation;
+        synchronized (formatterPullLock) {
+            generation = ++formatterPullGeneration;
+        }
         try {
             return target.configuration(new ConfigurationParams(List.of(item)))
                     .thenAccept(answer -> {
-                        if (generation == formatterPullGeneration.get()) {
-                            applyPulledFormatterOptions(answer);
+                        // Check and apply are one step under the lock: an older
+                        // answer cannot pass the check, lose the CPU to a newer
+                        // one, and then overwrite it.
+                        synchronized (formatterPullLock) {
+                            if (generation == formatterPullGeneration) {
+                                applyPulledFormatterOptions(answer);
+                            }
                         }
                     })
                     .exceptionally(e -> {
