@@ -19,7 +19,9 @@
 
 package org.drools.formatter;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import org.antlr.v4.runtime.Token;
@@ -48,10 +50,11 @@ import org.drools.drl.parser.antlr4.DRL10Parser;
 final class RhsFormatter {
   private final Emitter e;
 
-  // Extra depth added when a case/default label is emitted without an inline
-  // consequence (consequence follows on subsequent lines). Reset to 0 when
-  // the next case/default label or closing '}' is encountered.
-  private int caseLabelDepthBump = 0;
+  // One entry per "{" open in the consequence being emitted: the extra depth
+  // (0 or 1) a label-only case/default added inside that block, unwound at the
+  // next label in the same block or at the block's own "}" — never by a "}"
+  // that closes a nested if, loop or switch.
+  private final Deque<Integer> caseBumps = new ArrayDeque<>();
 
   RhsFormatter(Emitter e) {
     this.e = e;
@@ -80,6 +83,7 @@ final class RhsFormatter {
 
   private void emitConsequenceBody(DRL10Parser.ConsequenceBodyContext ctx) {
     if (ctx == null || ctx.getChildCount() == 0) return;
+    caseBumps.clear();
 
     int startIdx = ctx.getStart().getTokenIndex();
     int stopIdx = ctx.getStop().getTokenIndex();
@@ -169,11 +173,15 @@ final class RhsFormatter {
    * </pre>
    * Rules:
    * <ul>
-   *   <li>Statement starting with {@code }} → decrement depth before emit.</li>
-   *   <li>Statement ending with {@code {} → increment depth after emit.</li>
-   *   <li>Statement starting with {@code case} or {@code default} → split at
-   *       the first top-level {@code :}, emit label at current depth, bump
-   *       depth by 1, emit consequence, restore depth.</li>
+   *   <li>Statement starting with {@code }} → unwind the case bump of the block
+   *       being closed, then decrement depth before emit.</li>
+   *   <li>Statement ending with {@code {} → increment depth after emit and open
+   *       a block with no case bump yet.</li>
+   *   <li>Statement starting with {@code case} or {@code default} → unwind the
+   *       enclosing block's case bump, then split at the first top-level
+   *       {@code :}: a label with its consequence on the same line is emitted
+   *       label, consequence one level deeper, depth restored; a label alone
+   *       bumps the block by 1 for the statements that follow.</li>
    * </ul>
    */
   private void emitRhsStatementInBlock(List<String> toks) {
@@ -182,19 +190,16 @@ final class RhsFormatter {
     String first = toks.get(0);
     String last  = toks.get(toks.size() - 1);
 
-    // Closing brace: undo any case-consequence depth bump, then decrease brace indent.
     if (first.equals("}")) {
-      e.depth -= caseLabelDepthBump;
-      caseLabelDepthBump = 0;
+      e.depth -= caseBumps.isEmpty() ? 0 : caseBumps.pop();
       e.depth--;
     }
 
     // case / default label splitting.
     // Handles: "case", "default" (separate tokens) and "default:" (fused token).
     if (isCaseLabelStart(first)) {
-      // Undo any previous case-consequence indent before emitting the new label.
-      e.depth -= caseLabelDepthBump;
-      caseLabelDepthBump = 0;
+      e.depth -= currentCaseBump();
+      setCurrentCaseBump(0);
 
       // In RHS mode the colon is often fused with the preceding token (e.g. "1:",
       // "default:") because RHS_CHUNK matches all non-delimiter chars greedily.
@@ -202,29 +207,40 @@ final class RhsFormatter {
       int colonIdx = findCaseLabelColon(toks);
 
       if (colonIdx >= 0 && colonIdx < toks.size() - 1) {
-        // Consequence is on the same line as the label: emit label, then
-        // consequence one indent level deeper, then restore depth.
         emitRhsStatement(new ArrayList<>(toks.subList(0, colonIdx + 1)));
         e.depth++;
         emitRhsStatement(new ArrayList<>(toks.subList(colonIdx + 1, toks.size())));
         e.depth--;
       } else {
-        // Label only – consequence comes as subsequent statements.
-        // Bump depth so those statements are indented past the label.
         emitRhsStatement(toks);
         e.depth++;
-        caseLabelDepthBump++;
+        setCurrentCaseBump(1);
       }
-      if (last.equals("{")) e.depth++;
+      if (last.equals("{")) openBlock();
       return;
     }
 
     emitRhsStatement(toks);
 
-    // Opening brace: increase indent after emitting
     if (last.equals("{")) {
-      e.depth++;
+      openBlock();
     }
+  }
+
+  private void openBlock() {
+    e.depth++;
+    caseBumps.push(0);
+  }
+
+  private int currentCaseBump() {
+    return caseBumps.isEmpty() ? 0 : caseBumps.peek();
+  }
+
+  private void setCurrentCaseBump(int bump) {
+    if (!caseBumps.isEmpty()) {
+      caseBumps.pop();
+    }
+    caseBumps.push(bump);
   }
 
   /** Returns true if {@code first} is the opening token of a case/default label. */
