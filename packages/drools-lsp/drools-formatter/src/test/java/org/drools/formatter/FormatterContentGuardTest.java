@@ -88,7 +88,7 @@ class FormatterContentGuardTest {
 
     @Test
     void theRefusalNamesTheInputLine() {
-        DRLFormatter.FormatResult r = new DRLFormatter.FormatResult("", 0, 0, 0, 0, 0, 0, 0, 6, false, 0, 0);
+        DRLFormatter.FormatResult r = new DRLFormatter.FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, 6, false, 0, 0);
 
         assertThat(r.refused()).isTrue();
         assertThat(r.refusalReason()).contains("line 6");

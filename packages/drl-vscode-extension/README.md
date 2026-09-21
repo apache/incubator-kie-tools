@@ -177,7 +177,7 @@ Drools 10 ships two DRL parsers: the legacy `DRL6` parser it compiles with by de
 
 ### What it refuses
 
-It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block, or a whole rule or query, was not read as one, when its own output fails to re-parse or differs from the input in anything but spacing and separators (the refusal names the line), or when a comment would not survive formatting (see the limitations below; the refusal names the comment's line). A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
+It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block, or a whole rule or query, was not read as one (the refusal names the first such rule's line), when its own output fails to re-parse or differs from the input in anything but spacing and separators (the refusal names the line), or when a comment would not survive formatting (see the limitations below; the refusal names the comment's line). A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
 
 ### Command line
 

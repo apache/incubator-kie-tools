@@ -100,7 +100,8 @@ public class DRLFormatter {
    *
    * <p>{@code rulesMissingLhs} / {@code outputRulesMissingLhs} are the
    * structural tier: rules the parser did not read as rules at all (see
-   * {@link #rulesMissingLhs}). They exist because an error count cannot see that
+   * {@link #rulesMissingLhs}), with {@code missingLhsLine} the 1-based input
+   * line of the first. They exist because an error count cannot see that
    * failure mode — the mis-derivation that causes it reports zero errors.
    *
    * <p>{@code misreadStatements} / {@code outputMisreadStatements} extend that
@@ -127,7 +128,7 @@ public class DRLFormatter {
    * already refuse).
    */
   public record FormatResult(String formatted, int syntaxErrors, int outputSyntaxErrors,
-                             int rulesMissingLhs, int outputRulesMissingLhs,
+                             int rulesMissingLhs, int missingLhsLine, int outputRulesMissingLhs,
                              int misreadStatements, int misreadStatementLine,
                              int outputMisreadStatements,
                              int contentChangedLine, boolean outputGainsContent,
@@ -148,7 +149,8 @@ public class DRLFormatter {
         return syntaxErrors + " parse errors";
       }
       if (rulesMissingLhs > 0) {
-        return rulesMissingLhs + " rule(s) whose when-block the parser could not read";
+        return rulesMissingLhs + " rule(s) whose when-block the parser could not read"
+            + (missingLhsLine > 0 ? ", the first at line " + missingLhsLine : "");
       }
       if (misreadStatements > 0) {
         return "the rule or query at line " + misreadStatementLine + " was not read as one";
@@ -180,7 +182,7 @@ public class DRLFormatter {
     }
   }
 
-  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
+  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
 
   public static FormatResult formatChecked(String text) {
     return formatChecked(text, FormatterOptions.DEFAULTS);
@@ -192,7 +194,7 @@ public class DRLFormatter {
     }
     if (text.isBlank()) {
       // nothing to format; never truncate a whitespace-only file
-      return new FormatResult(text, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
+      return new FormatResult(text, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
     }
     String normalized = text.replace("\r\n", "\n").replace("\r", "\n");
     String eol = options.lineEnding(text);
@@ -206,9 +208,9 @@ public class DRLFormatter {
     int syntaxErrors = e.parser.getNumberOfSyntaxErrors();
     // The input tier reads the very tree the emission was built from, not a fresh
     // parse: the question is what the formatter acted on.
-    int rulesMissingLhs = rulesMissingLhs(formatter.compilationUnit, e.tokens);
+    MissingLhs missing = rulesMissingLhs(formatter.compilationUnit, e.tokens);
     Misread misread = misreadStatements(formatter.compilationUnit);
-    ParseHealth output = syntaxErrors == 0 && rulesMissingLhs == 0 && misread.count() == 0
+    ParseHealth output = syntaxErrors == 0 && missing.count() == 0 && misread.count() == 0
         ? parseHealth(out)
         : ParseHealth.NOT_CHECKED;
     ContentLoss content = output.tokens() == null
@@ -218,7 +220,7 @@ public class DRLFormatter {
         ? CommentLoss.NONE
         : commentLoss(e.tokens, output.tokens());
     return new FormatResult(out, syntaxErrors, output.syntaxErrors(),
-        rulesMissingLhs, output.rulesMissingLhs(),
+        missing.count(), missing.firstLine(), output.rulesMissingLhs(),
         misread.count(), misread.firstLine(), output.misreadStatements(),
         content.changedLine(), content.gained(),
         comments.count(), comments.firstLine());
@@ -236,7 +238,7 @@ public class DRLFormatter {
     DRL10Parser parser = DRL10ParserHelper.createDrlParser(normalized);
     DRL10Parser.CompilationUnitContext cu = parser.compilationUnit();
     CommonTokenStream tokens = (CommonTokenStream) parser.getTokenStream();
-    return new ParseHealth(parser.getNumberOfSyntaxErrors(), rulesMissingLhs(cu, tokens),
+    return new ParseHealth(parser.getNumberOfSyntaxErrors(), rulesMissingLhs(cu, tokens).count(),
         misreadStatements(cu).count(), tokens);
   }
 
@@ -260,20 +262,27 @@ public class DRLFormatter {
    * syntax error, so this count is the only thing standing between such a document
    * and a silent overwrite.
    */
-  private static int rulesMissingLhs(ParseTree tree, CommonTokenStream tokens) {
+  private record MissingLhs(int count, int firstLine) {}
+
+  private static MissingLhs rulesMissingLhs(ParseTree tree, CommonTokenStream tokens) {
+    List<DRL10Parser.RuledefContext> rules = new ArrayList<>();
+    collectRulesMissingLhs(tree, tokens, rules);
+    return new MissingLhs(rules.size(), rules.isEmpty() ? 0 : rules.get(0).getStart().getLine());
+  }
+
+  private static void collectRulesMissingLhs(ParseTree tree, CommonTokenStream tokens,
+                                             List<DRL10Parser.RuledefContext> into) {
     if (tree == null) {
-      return 0;
+      return;
     }
-    int found = 0;
     if (tree instanceof DRL10Parser.RuledefContext rule
         && rule.lhs() == null
         && spansWhenKeyword(rule, tokens)) {
-      found++;
+      into.add(rule);
     }
     for (int i = 0; i < tree.getChildCount(); i++) {
-      found += rulesMissingLhs(tree.getChild(i), tokens);
+      collectRulesMissingLhs(tree.getChild(i), tokens, into);
     }
-    return found;
   }
 
   /**

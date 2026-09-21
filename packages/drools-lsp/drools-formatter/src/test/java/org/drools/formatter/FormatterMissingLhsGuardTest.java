@@ -89,8 +89,9 @@ class FormatterMissingLhsGuardTest {
         assertThat(r.outputSyntaxErrors()).as("nor does re-parsing the output").isZero();
 
         assertThat(r.rulesMissingLhs()).isEqualTo(1);
+        assertThat(r.missingLhsLine()).as("the line of rule R1, the one whose when-block was swallowed").isEqualTo(3);
         assertThat(r.refused()).isTrue();
-        assertThat(r.refusalReason()).contains("when");
+        assertThat(r.refusalReason()).contains("when").contains("line 3");
     }
 
     /**
