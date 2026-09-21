@@ -82,6 +82,31 @@ class FormatterConditionFormsTest {
         assertStable(out);
     }
 
+    /**
+     * Inside an accumulate source the {@code and} between elements is
+     * grammar-mandatory; dropping the one before a nested {@code accumulate}
+     * or {@code forall} makes the DRL10 parser swallow the whole when block.
+     */
+    @Test
+    void theAndBeforeANestedConditionalElementIsKept() {
+        String out = DRLFormatter.format(rule(
+                "    accumulate(\n"
+                + "      $p : Parcel( $w : weight ) and not Fragile( parcel == $p )\n"
+                + "      and accumulate( Scan( parcel == $p, $t : thickness ); $maxT : max( $t ) )\n"
+                + "      and forall( Label( parcel == $p ) Label( parcel == $p, printed == true ) );\n"
+                + "      $total : sum( $w )\n"
+                + "    )\n"
+                + "    Truck( capacity > $total ) and accumulate( Parcel( $v : volume ); $space : sum( $v ) )"));
+
+        assertThat(out)
+                .contains("      and not Fragile( parcel == $p )\n")
+                .contains("      and accumulate(\n")
+                .contains("      and forall(\n")
+                .contains("    and accumulate(\n");
+        assertThat(DRLFormatter.formatChecked(out).refused()).isFalse();
+        assertStable(out);
+    }
+
     @Test
     void theAttributesKeywordIsKept() {
         String out = DRLFormatter.format(

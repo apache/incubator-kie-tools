@@ -179,11 +179,11 @@ final class LhsFormatter {
           + (e.options.parenPadding() ? "eval( " + inner + " )" : "eval(" + inner + ")"));
       e.newline();
     } else if (ctx.lhsForall() != null) {
-      visitLhsForall(ctx.lhsForall());
+      visitLhsForall(ctx.lhsForall(), prefix);
     } else if (ctx.lhsAccumulate() != null) {
-      visitLhsAccumulate(ctx.lhsAccumulate());
+      visitLhsAccumulate(ctx.lhsAccumulate(), prefix);
     } else if (ctx.lhsGroupBy() != null) {
-      visitLhsGroupBy(ctx.lhsGroupBy());
+      visitLhsGroupBy(ctx.lhsGroupBy(), prefix);
     } else if (ctx.lhsExpression() != null) {
       emitGroup(prefix, ctx.lhsExpression());
     } else if (ctx.conditionalBranch() != null) {
@@ -266,8 +266,8 @@ final class LhsFormatter {
     }
   }
 
-  private void visitLhsForall(DRL10Parser.LhsForallContext ctx) {
-    e.emit(e.indent() + "forall(");
+  private void visitLhsForall(DRL10Parser.LhsForallContext ctx, String prefix) {
+    e.emit(e.indent() + prefix + "forall(");
     e.newline();
     e.depth++;
     for (DRL10Parser.LhsPatternBindContext pb : ctx.lhsPatternBind()) {
@@ -278,9 +278,9 @@ final class LhsFormatter {
     e.newline();
   }
 
-  private void visitLhsAccumulate(DRL10Parser.LhsAccumulateContext ctx) {
+  private void visitLhsAccumulate(DRL10Parser.LhsAccumulateContext ctx, String prefix) {
     String keyword = ctx.DRL_ACC() != null ? "acc" : "accumulate";
-    e.emit(e.indent() + keyword + "(");
+    e.emit(e.indent() + prefix + keyword + "(");
     e.newline();
     e.depth++;
     // The grammar accepts "," or ";" after the source pattern, but the DRL
@@ -309,8 +309,8 @@ final class LhsFormatter {
     e.newline();
   }
 
-  private void visitLhsGroupBy(DRL10Parser.LhsGroupByContext ctx) {
-    e.emit(e.indent() + "groupby(");
+  private void visitLhsGroupBy(DRL10Parser.LhsGroupByContext ctx, String prefix) {
+    e.emit(e.indent() + prefix + "groupby(");
     e.newline();
     e.depth++;
     // The grammar accepts "," or ";" after the source pattern; the ";" form
