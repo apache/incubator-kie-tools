@@ -123,14 +123,21 @@ public class DRLFormatter {
    * formatting (see {@link #commentLoss}); refusing is what keeps that from
    * being silent.
    *
+   * <p>{@code syntaxErrorLine} is the 1-based input line of the first parse error.
+   * {@code outputDefectLine} is the 1-based INPUT line of the rule or query whose
+   * formatted output the output tier found defective, located by name since the
+   * user never sees the output: the rule to fence off with the skip markers, or
+   * to send with a report.
+   *
    * <p>The output tier is only computed when the input was non-blank and clean on
    * every input count; otherwise the output figures stay 0 (not meaningful — we
    * already refuse).
    */
-  public record FormatResult(String formatted, int syntaxErrors, int outputSyntaxErrors,
+  public record FormatResult(String formatted, int syntaxErrors, int syntaxErrorLine,
+                             int outputSyntaxErrors,
                              int rulesMissingLhs, int missingLhsLine, int outputRulesMissingLhs,
                              int misreadStatements, int misreadStatementLine,
-                             int outputMisreadStatements,
+                             int outputMisreadStatements, int outputDefectLine,
                              int contentChangedLine, boolean outputGainsContent,
                              int commentsLost, int lostCommentLine) {
 
@@ -146,7 +153,8 @@ public class DRLFormatter {
      */
     public String refusalReason() {
       if (syntaxErrors > 0) {
-        return syntaxErrors + " parse errors";
+        return syntaxErrors + " parse errors"
+            + (syntaxErrorLine > 0 ? ", the first at line " + syntaxErrorLine : "");
       }
       if (rulesMissingLhs > 0) {
         return rulesMissingLhs + " rule(s) whose when-block the parser could not read"
@@ -156,13 +164,15 @@ public class DRLFormatter {
         return "the rule or query at line " + misreadStatementLine + " was not read as one";
       }
       if (outputSyntaxErrors > 0) {
-        return "output fails to re-parse - formatter bug";
+        return "output fails to re-parse" + insideRule() + " - formatter bug";
       }
       if (outputRulesMissingLhs > 0) {
-        return "output loses a rule's when-block - formatter bug";
+        return (outputDefectLine > 0
+            ? "output loses the when-block of the rule at line " + outputDefectLine
+            : "output loses a rule's when-block") + " - formatter bug";
       }
       if (outputMisreadStatements > 0) {
-        return "output loses a rule or query - formatter bug";
+        return "output loses a rule or query" + insideRule() + " - formatter bug";
       }
       if (contentChangedLine > 0) {
         return "the content at line " + contentChangedLine + " would be changed";
@@ -180,9 +190,14 @@ public class DRLFormatter {
       }
       return null;
     }
+
+    private String insideRule() {
+      return outputDefectLine > 0 ? " inside the rule at line " + outputDefectLine : "";
+    }
   }
 
-  private static final FormatResult BLANK_OK = new FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
+  private static final FormatResult BLANK_OK =
+      new FormatResult("", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
 
   public static FormatResult formatChecked(String text) {
     return formatChecked(text, FormatterOptions.DEFAULTS);
@@ -194,7 +209,7 @@ public class DRLFormatter {
     }
     if (text.isBlank()) {
       // nothing to format; never truncate a whitespace-only file
-      return new FormatResult(text, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
+      return new FormatResult(text, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0);
     }
     String normalized = text.replace("\r\n", "\n").replace("\r", "\n");
     String eol = options.lineEnding(text);
@@ -219,27 +234,92 @@ public class DRLFormatter {
     CommentLoss comments = output.tokens() == null
         ? CommentLoss.NONE
         : commentLoss(e.tokens, output.tokens());
-    return new FormatResult(out, syntaxErrors, output.syntaxErrors(),
+    return new FormatResult(out, syntaxErrors, e.syntaxErrors.firstLine, output.syntaxErrors(),
         missing.count(), missing.firstLine(), output.rulesMissingLhs(),
         misread.count(), misread.firstLine(), output.misreadStatements(),
+        inputLineOf(formatter.compilationUnit, output.defectStatement()),
         content.changedLine(), content.gained(),
         comments.count(), comments.firstLine());
   }
 
-  /** The gate figures for one text, from a single parse, plus that parse's tokens. */
+  /**
+   * The gate figures for one text, from a single parse, plus that parse's tokens
+   * and the name of the rule or query holding the first defect found, or null.
+   */
   private record ParseHealth(int syntaxErrors, int rulesMissingLhs, int misreadStatements,
-                             CommonTokenStream tokens) {
-    static final ParseHealth NOT_CHECKED = new ParseHealth(0, 0, 0, null);
+                             String defectStatement, CommonTokenStream tokens) {
+    static final ParseHealth NOT_CHECKED = new ParseHealth(0, 0, 0, null, null);
   }
 
   /** Re-parses {@code text} (any EOL style) and reports what the output gates need. */
   private static ParseHealth parseHealth(String text) {
     String normalized = text.replace("\r\n", "\n").replace("\r", "\n");
     DRL10Parser parser = DRL10ParserHelper.createDrlParser(normalized);
+    SyntaxErrors errors = new SyntaxErrors();
+    parser.addErrorListener(errors);
     DRL10Parser.CompilationUnitContext cu = parser.compilationUnit();
     CommonTokenStream tokens = (CommonTokenStream) parser.getTokenStream();
-    return new ParseHealth(parser.getNumberOfSyntaxErrors(), rulesMissingLhs(cu, tokens).count(),
-        misreadStatements(cu).count(), tokens);
+    MissingLhs missing = rulesMissingLhs(cu, tokens);
+    Misread misread = misreadStatements(cu);
+    ParserRuleContext defect = errors.count > 0 ? statementAtLine(cu, errors.firstLine)
+        : missing.count() > 0 ? missing.first()
+        : misread.count() > 0 ? enclosingStatement(misread.first())
+        : null;
+    return new ParseHealth(parser.getNumberOfSyntaxErrors(), missing.count(), misread.count(),
+        statementName(defect), tokens);
+  }
+
+  /** The input line of the rule or query whose formatted {@code output} is defective, or 0. */
+  static int outputDefectLine(String input, String output) {
+    DRL10Parser parser = DRL10ParserHelper.createDrlParser(input);
+    return inputLineOf(parser.compilationUnit(), parseHealth(output).defectStatement());
+  }
+
+  private static String statementName(ParserRuleContext statement) {
+    if (statement instanceof DRL10Parser.RuledefContext rule && rule.name != null) {
+      return rule.name.getText();
+    }
+    if (statement instanceof DRL10Parser.QuerydefContext query && query.name != null) {
+      return query.name.getText();
+    }
+    return null;
+  }
+
+  private static ParserRuleContext namedStatement(DRL10Parser.DrlStatementdefContext statement) {
+    return statement.ruledef() != null ? statement.ruledef() : statement.querydef();
+  }
+
+  private static ParserRuleContext statementAtLine(DRL10Parser.CompilationUnitContext cu, int line) {
+    for (DRL10Parser.DrlStatementdefContext statement : cu.drlStatementdef()) {
+      ParserRuleContext named = namedStatement(statement);
+      if (named != null && named.getStop() != null
+          && named.getStart().getLine() <= line && line <= named.getStop().getLine()) {
+        return named;
+      }
+    }
+    return null;
+  }
+
+  private static ParserRuleContext enclosingStatement(ParseTree node) {
+    for (ParseTree p = node; p != null; p = p.getParent()) {
+      if (p instanceof DRL10Parser.RuledefContext || p instanceof DRL10Parser.QuerydefContext) {
+        return (ParserRuleContext) p;
+      }
+    }
+    return null;
+  }
+
+  private static int inputLineOf(DRL10Parser.CompilationUnitContext cu, String name) {
+    if (cu == null || name == null) {
+      return 0;
+    }
+    for (DRL10Parser.DrlStatementdefContext statement : cu.drlStatementdef()) {
+      ParserRuleContext named = namedStatement(statement);
+      if (named != null && name.equals(statementName(named))) {
+        return named.getStart().getLine();
+      }
+    }
+    return 0;
   }
 
   /**
@@ -262,12 +342,16 @@ public class DRLFormatter {
    * syntax error, so this count is the only thing standing between such a document
    * and a silent overwrite.
    */
-  private record MissingLhs(int count, int firstLine) {}
+  private record MissingLhs(int count, DRL10Parser.RuledefContext first) {
+    int firstLine() {
+      return first == null ? 0 : first.getStart().getLine();
+    }
+  }
 
   private static MissingLhs rulesMissingLhs(ParseTree tree, CommonTokenStream tokens) {
     List<DRL10Parser.RuledefContext> rules = new ArrayList<>();
     collectRulesMissingLhs(tree, tokens, rules);
-    return new MissingLhs(rules.size(), rules.isEmpty() ? 0 : rules.get(0).getStart().getLine());
+    return new MissingLhs(rules.size(), rules.isEmpty() ? null : rules.get(0));
   }
 
   private static void collectRulesMissingLhs(ParseTree tree, CommonTokenStream tokens,
@@ -302,7 +386,11 @@ public class DRLFormatter {
     return false;
   }
 
-  private record Misread(int count, int firstLine) {}
+  private record Misread(int count, TerminalNode first) {
+    int firstLine() {
+      return first == null ? 0 : first.getSymbol().getLine();
+    }
+  }
 
   /**
    * How many {@code rule}/{@code query} keyword tokens the parser read as neither
@@ -317,7 +405,7 @@ public class DRLFormatter {
   private static Misread misreadStatements(ParseTree tree) {
     List<TerminalNode> misread = new ArrayList<>();
     collectMisreadKeywords(tree, misread);
-    return new Misread(misread.size(), misread.isEmpty() ? 0 : misread.get(0).getSymbol().getLine());
+    return new Misread(misread.size(), misread.isEmpty() ? null : misread.get(0));
   }
 
   private static void collectMisreadKeywords(ParseTree tree, List<TerminalNode> into) {

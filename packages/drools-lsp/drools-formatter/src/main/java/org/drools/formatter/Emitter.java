@@ -65,6 +65,7 @@ import org.drools.drl.parser.antlr4.DRL10ParserHelper;
 final class Emitter {
 
   final DRL10Parser parser;
+  final SyntaxErrors syntaxErrors = new SyntaxErrors();
   final CommonTokenStream tokens;
   final StringBuilder out = new StringBuilder();
   final FormatterOptions options;
@@ -84,6 +85,7 @@ final class Emitter {
 
   Emitter(String text, FormatterOptions options) {
     parser = DRL10ParserHelper.createDrlParser(text);
+    parser.addErrorListener(syntaxErrors);
     tokens = (CommonTokenStream) parser.getTokenStream();
     this.options = options;
     this.spacing = new TokenSpacing(options);
