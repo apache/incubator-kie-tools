@@ -112,6 +112,16 @@ class FormatterOopathTest {
     }
 
     @Test
+    void aBoundPathInsideAConstraintKeepsTheBindingSpace() {
+        String out = DRLFormatter.format(rule(
+                "    Manifest( $toy : /crates/parcels[ weight > 10 ]/items, $first : /crates[0], $n : name )"));
+
+        assertThat(out).contains(
+                "    Manifest( $toy: /crates/parcels[ weight > 10 ]/items, $first: /crates[0], $n: name )\n");
+        assertStable(out);
+    }
+
+    @Test
     void anIndexIsNotAConstraintList() {
         String out = DRLFormatter.format(rule("    $g : /students/plan/exams[ 0 ]/grades"));
 

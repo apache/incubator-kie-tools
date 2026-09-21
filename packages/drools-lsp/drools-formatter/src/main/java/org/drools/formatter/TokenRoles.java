@@ -20,6 +20,7 @@
 package org.drools.formatter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.antlr.v4.runtime.Token;
@@ -71,11 +72,22 @@ final class TokenRoles {
   }
 
   private void collect(ParseTree node) {
-    if (node instanceof DRL10Parser.XpathSeparatorContext separator) {
-      int index = separator.getStart().getTokenIndex();
-      tightAfter.add(index);
-      tightBefore.add(index);
-    } else if (node instanceof DRL10Parser.XpathChunkContext chunk
+    if (node instanceof DRL10Parser.XpathPrimaryContext path) {
+      // The path's first separator starts an operand — "$toy: /crates",
+      // "( /crates" — and is spaced by what precedes it; the later ones join
+      // segments and are tight on both sides.
+      List<DRL10Parser.XpathChunkContext> chunks = path.xpathChunk();
+      for (int i = 0; i < chunks.size(); i++) {
+        int separator = chunks.get(i).xpathSeparator().getStart().getTokenIndex();
+        tightAfter.add(separator);
+        if (i == 0) {
+          operandStarts.add(separator);
+        } else {
+          tightBefore.add(separator);
+        }
+      }
+    }
+    if (node instanceof DRL10Parser.XpathChunkContext chunk
         && chunk.LBRACK() != null && !isIndex(chunk.xpathExpressionList())) {
       paddedOpens.add(chunk.LBRACK().getSymbol().getTokenIndex());
       paddedCloses.add(chunk.RBRACK().getSymbol().getTokenIndex());
