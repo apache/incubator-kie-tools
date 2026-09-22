@@ -1,0 +1,238 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+// PHASE 1: Create Release Candidate for Apache Voting
+// This job builds artifacts, signs them, and publishes to Apache SVN for community vote
+// Does NOT publish to npm, VSCode Marketplace, or Chrome Web Store
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 480, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(
+            name: 'RELEASE_VERSION',
+            description: 'Release version (e.g., 1.0.0)',
+            defaultValue: '0.0.0'
+        )
+        string(
+            name: 'RELEASE_CANDIDATE_VERSION',
+            description: 'Release candidate version (e.g., rc1)',
+            defaultValue: 'rc1'
+        )
+        string(
+            name: 'BASE_REF',
+            description: 'Git branch or tag to release from',
+            defaultValue: 'main'
+        )
+        choice(
+            name: 'COMPONENT',
+            choices: ['all', 'npm-packages', 'chrome-extensions', 'vscode', 'container-images', 'helm-charts', 'github-pages', 'dev-deployment-upload-service', 'source-tarball'],
+            description: 'Component to release (all = everything; matches script names in scripts/release/)'
+        )
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
+        CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.RELEASE_VERSION}"
+        CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
+        CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    sh '''#!/bin/bash -el
+                    pnpm bootstrap
+                    '''
+                }
+            }
+        }
+
+        stage('Update versions') {
+            steps {
+                dir('kie-tools') {
+                    sh """#!/bin/bash -el
+                    pnpm update-version-to ${params.RELEASE_VERSION}
+                    pnpm update-kogito-version-to --maven ${params.RELEASE_VERSION}
+                    pnpm update-stream-name-to ${params.RELEASE_VERSION}
+                    """
+                }
+            }
+        }
+
+        stage('Build Release Candidate Artifacts') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        def scriptName = params.COMPONENT == 'all' ? 'release-all.sh' : "release-${params.COMPONENT}.sh"
+                        // Note: component names match script names exactly, e.g. 'npm-packages' -> release-npm-packages.sh
+                        
+                        echo "Building release candidate artifacts..."
+                        echo "Component: ${params.COMPONENT}"
+                        echo "Version: ${params.RELEASE_VERSION}"
+                        echo "RC: ${params.RELEASE_CANDIDATE_VERSION}"
+                        
+                        // Build artifacts WITHOUT publishing (no --publish flag)
+                        // The --rc flag creates signed artifacts for Apache SVN
+                        sh """#!/bin/bash -el
+                        ./scripts/release/${scriptName} ${params.RELEASE_VERSION} --rc
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Sign Release Candidate Artifacts') {
+            steps {
+                dir('kie-tools/release-artifacts') {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        
+                        sh """#!/bin/bash -el
+                        echo "Signing all artifacts..."
+                        for file in *.zip *.vsix *.tar.gz; do
+                            if [ -f "\$file" ]; then
+                                echo "Signing \$file"
+                                gpg --no-tty --batch --sign --pinentry-mode loopback --output "\$file.asc" --detach-sig "\$file"
+                                shasum -a 512 "\$file" > "\$file.sha512"
+                            fi
+                        done
+
+                        echo "Artifacts signed:"
+                        ls -lh
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Publish to Apache SVN (for voting)') {
+            steps {
+                dir('kie-tools/release-artifacts') {
+                    script {
+                        echo "Publishing to Apache SVN staging repository..."
+                        echo "Repository: ${pipelineVars.asfReleaseStagingRepository}"
+                        echo "RC Version: ${params.RELEASE_CANDIDATE_VERSION}"
+                        
+                        releaseUtils.publishArtifacts(
+                            "${WORKSPACE}/kie-tools/release-artifacts",
+                            "${pipelineVars.asfReleaseStagingRepository}",
+                            "${params.RELEASE_CANDIDATE_VERSION}",
+                            "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                        )
+                        
+                        echo "✅ Release candidate published to:"
+                        echo "   ${pipelineVars.asfReleaseStagingRepository}/${params.RELEASE_CANDIDATE_VERSION}/"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "=========================================="
+            echo "✅ Release Candidate Created Successfully!"
+            echo "=========================================="
+            echo "Version: ${params.RELEASE_VERSION}"
+            echo "RC: ${params.RELEASE_CANDIDATE_VERSION}"
+            echo "Component: ${params.COMPONENT}"
+            echo ""
+            echo "Artifacts published to:"
+            echo "${pipelineVars.asfReleaseStagingRepository}/${params.RELEASE_CANDIDATE_VERSION}/"
+            echo ""
+            echo "Next steps:"
+            echo "1. Start a vote thread on dev@kie.apache.org"
+            echo "2. Wait for vote to pass (72 hours, 3 +1 votes)"
+            echo "3. Run Jenkinsfile.release-publish to publish to registries"
+            echo "=========================================="
+        }
+        failure {
+            echo "❌ Release candidate creation failed!"
+        }
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

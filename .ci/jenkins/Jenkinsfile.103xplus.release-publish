@@ -1,0 +1,307 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+// PHASE 2: Publish Release After Vote Passes
+// This job publishes the approved release candidate to public registries
+// Publishes to: npm, VSCode Marketplace, Chrome Web Store, GitHub Releases
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 480, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(
+            name: 'RELEASE_VERSION',
+            description: 'Release version (e.g., 1.0.0) - must match the voted RC',
+            defaultValue: '0.0.0'
+        )
+        string(
+            name: 'BASE_REF',
+            description: 'Git tag to release from (should be the RC tag)',
+            defaultValue: '0.0.0-rc1'
+        )
+        choice(
+            name: 'COMPONENT',
+            choices: ['all', 'npm-packages', 'chrome-extensions', 'vscode', 'container-images', 'helm-charts', 'github-pages', 'dev-deployment-upload-service', 'source-tarball'],
+            description: 'Component to publish (all = everything; matches script names in scripts/release/)'
+        )
+        string(
+            name: 'GITHUB_RELEASE_TAG',
+            description: 'GitHub release tag (for uploading assets)',
+            defaultValue: ''
+        )
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
+        CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.RELEASE_VERSION}"
+        CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
+        CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Verify version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        def packageVersion = sh(
+                            returnStdout: true,
+                            script: "node -p \"require('./package.json').version\""
+                        ).trim()
+                        
+                        if (packageVersion != params.RELEASE_VERSION) {
+                            error("Version mismatch! package.json has ${packageVersion} but RELEASE_VERSION is ${params.RELEASE_VERSION}")
+                        }
+                        
+                        echo "✅ Version verified: ${packageVersion}"
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    sh '''#!/bin/bash -el
+                    pnpm bootstrap
+                    '''
+                }
+            }
+        }
+
+        stage('Build and Publish to Registries') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        def scriptName = params.COMPONENT == 'all' ? 'release-all.sh' : "release-${params.COMPONENT}.sh"
+                        
+                        echo "Publishing release to public registries..."
+                        echo "Component: ${params.COMPONENT}"
+                        echo "Version: ${params.RELEASE_VERSION}"
+                        
+                        // Set up credentials based on component
+                        def credentialsNeeded = []
+                        
+                        if (params.COMPONENT == 'npm-packages' || params.COMPONENT == 'all') {
+                            credentialsNeeded.add([
+                                $class: 'StringBinding',
+                                credentialsId: "${pipelineVars.npmTokenCredentialsId}",
+                                variable: 'NPM_TOKEN'
+                            ])
+                        }
+                        
+                        if (params.COMPONENT == 'vscode' || params.COMPONENT == 'all') {  // 'vscode' kept as-is — script is release-vscode.sh
+                            credentialsNeeded.add([
+                                $class: 'StringBinding',
+                                credentialsId: "${pipelineVars.vscePatCredentialsId}",
+                                variable: 'VSCE_PAT'
+                            ])
+                        }
+                        
+                        if (params.COMPONENT == 'chrome-extensions' || params.COMPONENT == 'all') {
+                            credentialsNeeded.addAll([
+                                [
+                                    $class: 'UsernamePasswordMultiBinding',
+                                    credentialsId: "${pipelineVars.chromeStoreCredentialsId}",
+                                    usernameVariable: 'CHROME_CLIENT_ID',
+                                    passwordVariable: 'CHROME_CLIENT_SECRET'
+                                ],
+                                [
+                                    $class: 'StringBinding',
+                                    credentialsId: "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
+                                    variable: 'CHROME_REFRESH_TOKEN'
+                                ],
+                                [
+                                    $class: 'StringBinding',
+                                    credentialsId: "${pipelineVars.chromeExtensionIdCredentialsId}",
+                                    variable: 'CHROME_KIE_EDITORS_EXTENSION_ID'
+                                ]
+                            ])
+                        }
+                        
+                        // Run with credentials
+                        withCredentials(credentialsNeeded) {
+                            sh """#!/bin/bash -el
+                            # Publish to registries (--publish flag enables actual publishing)
+                            ./scripts/release/${scriptName} ${params.RELEASE_VERSION} --publish
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Upload to GitHub Release') {
+            when {
+                expression { params.GITHUB_RELEASE_TAG != '' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        withCredentials([
+                            string(credentialsId: "${pipelineVars.kieToolsBotGithubTokenCredentialsId}", variable: 'GITHUB_TOKEN')
+                        ]) {
+                            // Fetch the upload URL for this release
+                            def releaseJson = sh(
+                                returnStdout: true,
+                                script: """
+                                    curl -sSf -H "Authorization: token \${GITHUB_TOKEN}" \
+                                        "https://api.github.com/repos/${pipelineVars.githubRepositorySlug}/releases/tags/${params.GITHUB_RELEASE_TAG}"
+                                """
+                            ).trim()
+                            def releaseInfo = readJSON text: releaseJson
+                            // upload_url is e.g. https://uploads.github.com/repos/.../releases/123/assets{?name,label}
+                            def uploadUrl = releaseInfo.upload_url.replaceAll('\\{.*\\}', '')
+
+                            // Upload VSCode .vsix files
+                            sh """#!/bin/bash -el
+                            find packages -maxdepth 3 -name "*.vsix" | while read -r file; do
+                                filename=\$(basename "\$file")
+                                echo "Uploading \$filename ..."
+                                curl -sSf \\
+                                    -H "Authorization: token \${GITHUB_TOKEN}" \\
+                                    -H "Content-Type: application/octet-stream" \\
+                                    --data-binary "@\$file" \\
+                                    "${uploadUrl}?name=\$filename"
+                            done
+                            """
+
+                            // Upload dev-deployment-upload-service binaries
+                            // (these are produced by their respective release scripts into release-artifacts/)
+                            sh """#!/bin/bash -el
+                            if [ -d release-artifacts ]; then
+                                find release-artifacts -maxdepth 1 -name "*.zip" -o -name "*.tar.gz" | while read -r file; do
+                                    filename=\$(basename "\$file")
+                                    echo "Uploading \$filename ..."
+                                    curl -sSf \\
+                                        -H "Authorization: token \${GITHUB_TOKEN}" \\
+                                        -H "Content-Type: application/octet-stream" \\
+                                        --data-binary "@\$file" \\
+                                        "${uploadUrl}?name=\$filename"
+                                done
+                            fi
+                            """
+
+                            echo "✅ Artifacts uploaded to GitHub Release: ${params.GITHUB_RELEASE_TAG}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "=========================================="
+            echo "✅ Release Published Successfully!"
+            echo "=========================================="
+            echo "Version: ${params.RELEASE_VERSION}"
+            echo "Component: ${params.COMPONENT}"
+            echo ""
+            echo "Published to:"
+            if (params.COMPONENT == 'npm-packages' || params.COMPONENT == 'all') {
+                echo "  ✅ npm registry"
+            }
+            if (params.COMPONENT == 'vscode' || params.COMPONENT == 'all') {
+                echo "  ✅ VSCode Marketplace"
+            }
+            if (params.COMPONENT == 'chrome-extensions' || params.COMPONENT == 'all') {
+                echo "  ✅ Chrome Web Store"
+            }
+            if (params.GITHUB_RELEASE_TAG != '') {
+                echo "  ✅ GitHub Release: ${params.GITHUB_RELEASE_TAG}"
+            }
+            echo ""
+            echo "Next steps:"
+            echo "1. Verify packages are available in registries"
+            echo "2. Move artifacts from dev/ to release/ in Apache SVN"
+            echo "3. Announce the release"
+            echo "=========================================="
+        }
+        failure {
+            echo "❌ Release publishing failed!"
+            echo "Check logs above for details"
+        }
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}
