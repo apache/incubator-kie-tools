@@ -64,6 +64,141 @@ class JavaSourceTypeParserTest {
             () -> "nor is a static getter: " + t.members);
     }
 
+    /** The other half of that split: what {@code Type.NAME} can reach. */
+    @Test
+    void staticFieldsAndMethodsAreCapturedWithTypes() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String VERSION = \"1\";\n"
+            + "  public static final int LIMIT = 10;\n"
+            + "  public int id;\n"
+            + "  public static Order of(String code, int qty) { return null; }\n"
+            + "  public String getCode() { return \"c\"; }\n"
+            + "}\n");
+
+        assertEquals(List.of("VERSION", "LIMIT"),
+            t.staticFields.stream().map(f -> f.name).toList());
+        assertEquals("String", t.staticFields.get(0).type);
+        assertEquals("int", t.staticFields.get(1).type);
+        assertEquals(List.of("of(String, int) : Order"), t.staticMethods);
+    }
+
+    /**
+     * An interface field is implicitly {@code public static final}, so it is a
+     * constant rather than a fact property — which is how reflection reports it
+     * once the interface is compiled.
+     */
+    @Test
+    void interfaceConstantsAreStaticsNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public interface Limits {\n"
+            + "  int MAX = 10;\n"
+            + "  String getName();\n"
+            + "}\n");
+
+        assertEquals(List.of("MAX"), t.staticFields.stream().map(f -> f.name).toList());
+        assertTrue(member(t, "MAX").isEmpty(), () -> "members=" + t.members);
+        assertTrue(member(t, "name").isPresent(), () -> "members=" + t.members);
+    }
+
+    /**
+     * A static interface method is implicitly public and reachable as
+     * {@code Type.name()}, which is how reflection reports it; a private one is
+     * neither, and a static getter is not a property.
+     */
+    @Test
+    void interfaceStaticMethodsAreCapturedAndAreNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public interface Limits {\n"
+            + "  int MAX = 10;\n"
+            + "  static Limits of(int max) { return null; }\n"
+            + "  static String getLabel() { return \"l\"; }\n"
+            + "  private static int hidden() { return 0; }\n"
+            + "  String getName();\n"
+            + "}\n");
+
+        assertEquals(List.of("of(int) : Limits", "getLabel() : String"), t.staticMethods);
+        assertTrue(member(t, "label").isEmpty(), () -> "a static getter is not a member: " + t.members);
+        assertTrue(member(t, "name").isPresent(), () -> "members=" + t.members);
+    }
+
+    /** A record body may declare statics and extra constructors beside the canonical one. */
+    @Test
+    void recordStaticsAndConstructorsAreCapturedBesideItsComponents() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public record Point(int x, int y) {\n"
+            + "  public static final Point ORIGIN = new Point(0, 0);\n"
+            + "  public static Point of(int x, int y) { return new Point(x, y); }\n"
+            + "  public Point(int both) { this(both, both); }\n"
+            + "}\n");
+
+        assertEquals(List.of("ORIGIN"), t.staticFields.stream().map(f -> f.name).toList());
+        assertEquals("Point", t.staticFields.get(0).type);
+        assertEquals(List.of("of(int, int) : Point"), t.staticMethods);
+        assertEquals(List.of("Point(int, int)", "Point(int)"), t.constructors);
+        assertTrue(member(t, "x").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "ORIGIN").isEmpty(), () -> "members=" + t.members);
+    }
+
+    /** Reflection renders an array type as {@code String[]}, so the source view must as well. */
+    @Test
+    void arrayTypesKeepTheirDimensions() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String[] NAMES = {};\n"
+            + "  public int[][] grid;\n"
+            + "  public static java.util.List<String>[] buckets(int[] sizes, String[] tags) { return null; }\n"
+            + "  public String[] getTags() { return null; }\n"
+            + "}\n");
+
+        assertEquals("String[]", t.staticFields.get(0).type);
+        assertEquals("int[][]", member(t, "grid").orElseThrow().type);
+        assertEquals("String[]", member(t, "tags").orElseThrow().type);
+        assertEquals(List.of("buckets(int[], String[]) : List[]"), t.staticMethods);
+    }
+
+    /** Java also lets the brackets follow the name; reflection reports the same array type. */
+    @Test
+    void declaratorLevelBracketsCountTowardTheType() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static String NAMES[] = {};\n"
+            + "  public int a[], b[][];\n"
+            + "  public static int grid(String rows[])[] { return null; }\n"
+            + "  public String getTags()[] { return null; }\n"
+            + "}\n");
+
+        assertEquals("String[]", t.staticFields.get(0).type);
+        assertEquals("int[]", member(t, "a").orElseThrow().type);
+        assertEquals("int[][]", member(t, "b").orElseThrow().type);
+        assertEquals(List.of("grid(String[]) : int[]"), t.staticMethods);
+        assertEquals("String[]", member(t, "tags").orElseThrow().type);
+    }
+
+    @Test
+    void interfaceConstantBracketsCountTowardTheType() {
+        JavaSourceType t = only(
+            "package com.example;\npublic interface Limits {\n  int LIMITS[] = {};\n}\n");
+
+        assertEquals("int[]", t.staticFields.get(0).type);
+    }
+
+    /** A constant is reachable as a member of its enum and as {@code Enum.NAME}. */
+    @Test
+    void enumConstantsAppearInBothViews() {
+        JavaSourceType t = only(
+            "package com.example;\npublic enum Severity { LOW, HIGH }\n");
+
+        assertEquals(List.of("LOW", "HIGH"), t.staticFields.stream().map(f -> f.name).toList());
+        assertTrue(member(t, "LOW").isPresent(), () -> "members=" + t.members);
+    }
+
     /**
      * Reflection reports public methods and public constructors only, so the
      * source view must not offer more than the compiled view will: a member that

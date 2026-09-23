@@ -19,6 +19,7 @@
 
 package org.drools.completion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** A type declared in DRL via a {@code declare} block. */
@@ -50,5 +51,16 @@ public class DeclaredType {
         this.nameLine = nameLine;
         this.nameCol = nameCol;
         this.extendsName = extendsName;
+    }
+
+    /** The constants of a declared enum, or an empty list for a non-enum declare. */
+    List<Field> enumConstants() {
+        List<Field> constants = new ArrayList<>();
+        for (Field field : fields) {
+            if (field.origin == Field.Origin.ENUM_CONSTANT) {
+                constants.add(field);
+            }
+        }
+        return constants;
     }
 }
