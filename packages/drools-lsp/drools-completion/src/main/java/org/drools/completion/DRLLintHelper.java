@@ -1156,9 +1156,10 @@ public final class DRLLintHelper {
     /**
      * Resolves the severity for a pass from its system property: {@code off}
      * returns null (pass disabled), unknown values fall back to
-     * {@code defaultValue}.
+     * {@code defaultValue}. Package-visible so {@link DeprecatedConstructs}
+     * reads its severity the same way.
      */
-    private static DiagnosticSeverity severityFor(String property, String defaultValue) {
+    static DiagnosticSeverity severityFor(String property, String defaultValue) {
         String value = System.getProperty(property, defaultValue)
                 .trim().toLowerCase();
         switch (value) {

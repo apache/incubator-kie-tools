@@ -128,6 +128,7 @@ export async function activate(context: vscode.ExtensionContext) {
       "drools.lsp.lint.unbalancedParens",
       "drools.lsp.lint.unknownTypes",
       "drools.lsp.lint.mvelPropertyAccess",
+      "drools.lsp.lint.deprecated",
     ];
     for (const prop of lintProps) {
       const value: string | undefined = config.get(prop);

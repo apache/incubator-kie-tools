@@ -60,8 +60,10 @@ public final class DRLDiagnosticHelper {
 
     /**
      * Parses {@code text} once, returning both the compilation unit and the
-     * syntax diagnostics. Callers that also need the tree (e.g. the unknown-type
-     * lint) can reuse it instead of re-parsing.
+     * syntax diagnostics, with the errors that mark a deprecated construct
+     * reported as deprecations instead (see {@link DeprecatedConstructs}).
+     * Callers that also need the tree (e.g. the unknown-type lint) can reuse it
+     * instead of re-parsing.
      */
     public static Parsed parse(String text) {
         if (text == null || text.isEmpty()) {
@@ -83,7 +85,8 @@ public final class DRLDiagnosticHelper {
         parser.removeErrorListeners();
         parser.addErrorListener(listener);
 
-        return new Parsed(parser.compilationUnit(), diagnostics);
+        DRL10Parser.CompilationUnitContext compilationUnit = parser.compilationUnit();
+        return new Parsed(compilationUnit, DeprecatedConstructs.reclassify(text, diagnostics));
     }
 
     /**

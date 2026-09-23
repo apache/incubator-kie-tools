@@ -47,6 +47,7 @@ Language support for [DRL (Drools Rule Language)](https://kie.apache.org/docs/10
 - Syntax error reporting
 - Lint diagnostics (missing `end`, missing separators, unbalanced parentheses, etc.)
 - Unknown-type lint with typo quick-fix for DRL-declared types
+- Deprecated-syntax lint for constructs the DRL10 parser no longer supports, with migration quick-fixes
 
 ### Information
 
@@ -116,20 +117,21 @@ Same-named groups from several files are merged, with a warning.
 
 ## Extension Settings
 
-| Setting                              | Default   | Description                                                   |
-| ------------------------------------ | --------- | ------------------------------------------------------------- |
-| `drools.lsp.logLevel`                | `INFO`    | Server-side log level                                         |
-| `drools.lsp.grouping`                | `{}`      | DRL file grouping, declared inline (see above)                |
-| `drools.lsp.lint.missingEnd`         | `warning` | Severity for missing `end` keyword                            |
-| `drools.lsp.lint.missingSeparator`   | `warning` | Severity for missing constraint separator                     |
-| `drools.lsp.lint.missingSemicolon`   | `warning` | Severity for missing semicolon in consequence                 |
-| `drools.lsp.lint.unbalancedParens`   | `warning` | Severity for unbalanced parentheses                           |
-| `drools.lsp.lint.unknownTypes`       | `warning` | Severity for unrecognized type references                     |
-| `drools.lsp.lint.mvelPropertyAccess` | `off`     | Hint to prefer property-access style over getter calls in LHS |
-| `drools.lsp.inlayHints.enabled`      | `true`    | Show inline type hints for bound variables                    |
-| `drools.lsp.maven.pomPath`           | `""`      | Maven POM path(s) for classpath resolution                    |
-| `drools.lsp.java.sourcePaths`        | `[]`      | Extra Java source roots, beyond those found automatically     |
-| `drools.lsp.java.packageFilters`     | `[]`      | Package prefixes limiting which Java source types are indexed |
+| Setting                              | Default   | Description                                                      |
+| ------------------------------------ | --------- | ---------------------------------------------------------------- |
+| `drools.lsp.logLevel`                | `INFO`    | Server-side log level                                            |
+| `drools.lsp.grouping`                | `{}`      | DRL file grouping, declared inline (see above)                   |
+| `drools.lsp.lint.missingEnd`         | `warning` | Severity for missing `end` keyword                               |
+| `drools.lsp.lint.missingSeparator`   | `warning` | Severity for missing constraint separator                        |
+| `drools.lsp.lint.missingSemicolon`   | `warning` | Severity for missing semicolon in consequence                    |
+| `drools.lsp.lint.unbalancedParens`   | `warning` | Severity for unbalanced parentheses                              |
+| `drools.lsp.lint.unknownTypes`       | `warning` | Severity for unrecognized type references                        |
+| `drools.lsp.lint.mvelPropertyAccess` | `off`     | Hint to prefer property-access style over getter calls in LHS    |
+| `drools.lsp.lint.deprecated`         | `warning` | Severity for syntax deprecated with the DRL10 parser (see below) |
+| `drools.lsp.inlayHints.enabled`      | `true`    | Show inline type hints for bound variables                       |
+| `drools.lsp.maven.pomPath`           | `""`      | Maven POM path(s) for classpath resolution                       |
+| `drools.lsp.java.sourcePaths`        | `[]`      | Extra Java source roots, beyond those found automatically        |
+| `drools.lsp.java.packageFilters`     | `[]`      | Package prefixes limiting which Java source types are indexed    |
 
 All lint settings accept: `off`, `hint`, `info`, `warning`, `error`.
 
@@ -141,6 +143,22 @@ automatically, so `drools.lsp.java.sourcePaths` is only needed for source roots
 that sit elsewhere; each entry is a literal directory path, absolute or
 workspace-relative, not a glob. Both settings are read when the language server
 starts, so changing either needs a restart.
+
+## Deprecated syntax
+
+Drools 10 ships two DRL parsers: the legacy `DRL6` parser it compiles with by default, and the ANTLR4 `DRL10` parser, enabled with `-Ddrools.drl.antlr4.parser.enabled=true`, which accepts a slimmer syntax ([apache/incubator-kie#6220](https://github.com/apache/incubator-kie/issues/6220)). The language server parses with the `DRL10` grammar, so a rule set that still uses the dropped syntax shows `no viable alternative` errors where the engine merely logs a deprecation. The lint names the construct instead, at its position:
+
+| Construct                          | Example                         | Quick fix                    |
+| ---------------------------------- | ------------------------------- | ---------------------------- |
+| Half constraint                    | `age > 18 && < 65`              | Repeat the left operand      |
+| Patterns joined with `&&`/`\|\|`   | `Person( ) && Account( )`       | `and` / `or`                 |
+| Annotation inside an LHS pattern   | `Person( @watch(age) age > 1 )` | none — move or drop it       |
+| `agenda-group`                     | `agenda-group "g"`              | none — migrate rulebase-wide |
+| Custom operator without its prefix | `name supersetOf "x"`           | `##supersetOf`               |
+
+A recognized construct replaces the parse errors on its line. `drools.lsp.lint.deprecated` sets the severity; `off` leaves the raw parse errors in place.
+
+Custom operators are the `drools.evaluator.<id>` entries of `META-INF/kie.properties.conf` on the project classpath, read where the engine reads them. The server registers those ids with its parser, so `##id` is accepted in the editor as it is by the engine; an identifier no configuration declares stays a parse error. Operators registered from Java code are not seen.
 
 ## Known Issues
 

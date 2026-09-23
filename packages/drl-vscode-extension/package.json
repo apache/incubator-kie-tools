@@ -200,6 +200,18 @@
           "markdownDescription": "Additional Java source roots used to resolve the project's own types before a build. Every `src/main/java` under the workspace is found automatically, so this is only for roots that sit elsewhere. Each entry is a literal directory path, absolute or workspace-relative — not a glob. Applied when the language server next starts.",
           "type": "array"
         },
+        "drools.lsp.lint.deprecated": {
+          "default": "warning",
+          "enum": [
+            "off",
+            "hint",
+            "info",
+            "warning",
+            "error"
+          ],
+          "markdownDescription": "Severity for DRL syntax deprecated for removal with the DRL10 parser (apache/incubator-kie#6220): half constraints (`age > 18 && < 65`), patterns joined with `&&`/`||` instead of `and`/`or`, annotations inside LHS patterns, `agenda-group`, and custom operators without a `##` prefix. `off` leaves the raw parse errors in place.",
+          "type": "string"
+        },
         "drools.lsp.lint.missingEnd": {
           "default": "warning",
           "description": "Severity for the missing 'end' keyword lint check.",

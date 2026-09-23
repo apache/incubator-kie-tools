@@ -563,6 +563,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
             }
             List<Either<Command, CodeAction>> actions =
                     new ArrayList<>(buildUnknownTypeActions(uri, inRange));
+            actions.addAll(buildDeprecatedConstructActions(uri, inRange));
             if (mvelOn) {
                 actions.addAll(buildPropertyAccessActions(uri, text, requested));
             }
@@ -579,9 +580,26 @@ public class DroolsLspDocumentService implements TextDocumentService {
      */
     static List<Either<Command, CodeAction>> buildUnknownTypeActions(
             String uri, List<Diagnostic> diagnostics) {
+        return replacementActions(uri, diagnostics, "drools-type");
+    }
+
+    /**
+     * Builds the migration quick-fixes for deprecated-construct
+     * ({@code drools-deprecated}) diagnostics, whose replacement rides in
+     * {@code data} the same way. A construct whose migration is not mechanical
+     * — an annotation that must move, {@code agenda-group}, which is migrated
+     * rulebase-wide — carries none and so offers no fix.
+     */
+    static List<Either<Command, CodeAction>> buildDeprecatedConstructActions(
+            String uri, List<Diagnostic> diagnostics) {
+        return replacementActions(uri, diagnostics, "drools-deprecated");
+    }
+
+    private static List<Either<Command, CodeAction>> replacementActions(
+            String uri, List<Diagnostic> diagnostics, String source) {
         List<Either<Command, CodeAction>> actions = new ArrayList<>();
         for (Diagnostic d : diagnostics) {
-            if (!"drools-type".equals(d.getSource())) {
+            if (!source.equals(d.getSource())) {
                 continue;
             }
             String suggestion = suggestionOf(d.getData());
