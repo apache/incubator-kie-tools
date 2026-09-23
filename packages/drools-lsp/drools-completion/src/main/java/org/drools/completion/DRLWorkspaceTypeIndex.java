@@ -21,12 +21,12 @@ package org.drools.completion;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Central, layered view of the declared types reachable from a DRL document.
@@ -38,10 +38,10 @@ import java.util.function.BiConsumer;
  * <p>Layers, highest priority first:
  * <ol>
  *   <li>the current document;</li>
- *   <li>open <em>unsaved</em> sibling buffers (same directory) — their editor
- *       content is newer than disk, so it shadows the on-disk version;</li>
- *   <li>on-disk sibling {@code .drl} files from the active
- *       {@link WorkspaceSiblingResolver}.</li>
+ *   <li>open <em>unsaved</em> buffers of the sibling files the active
+ *       {@link WorkspaceSiblingResolver} yields — their editor content is
+ *       newer than disk, so it shadows the on-disk version;</li>
+ *   <li>the remaining sibling files, read from disk.</li>
  * </ol>
  *
  * <p>The earliest layer to provide a given name wins. All on-disk reads go
@@ -139,37 +139,20 @@ public final class DRLWorkspaceTypeIndex {
         if (containsName(currentDocTypes, name)) {
             return DRLDocCommentParser.docFor(text, name);
         }
-        if (documentPath == null) {
-            return null;
-        }
-        Path docNorm = documentPath.toAbsolutePath().normalize();
-        Path dir = docNorm.getParent();
-        Set<Path> shadowed = new HashSet<>();
-        // Layer 2: open unsaved siblings.
-        if (openFiles != null) {
-            for (Map.Entry<Path, String> e : openFiles.entrySet()) {
-                Path p = normalizedSibling(e.getKey(), docNorm, dir);
-                if (p == null) {
-                    continue;
-                }
-                shadowed.add(p);
-                if (declaresType(e.getValue(), name)) {
-                    return DRLDocCommentParser.docFor(e.getValue(), name);
-                }
-            }
-        }
-        // Layer 3: on-disk siblings.
-        for (Path sibling : WorkspaceSiblingResolvers.active().resolveSiblings(documentPath)) {
-            if (shadowed.contains(sibling.toAbsolutePath().normalize())) {
-                continue;
-            }
-            for (DeclaredType t : DRLDeclaredTypeParser.parseDeclaredTypesCached(sibling)) {
-                if (name.equals(t.name)) {
-                    return DRLDocCommentParser.docFor(readFileSilently(sibling), name);
-                }
-            }
-        }
-        return null;
+        String[] declaring = {null};
+        forEachSibling(documentPath, openFiles,
+                (sibling, bufferText) -> {
+                    if (declaring[0] == null && declaresType(bufferText, name)) {
+                        declaring[0] = bufferText;
+                    }
+                },
+                sibling -> {
+                    if (declaring[0] == null
+                            && containsName(DRLDeclaredTypeParser.parseDeclaredTypesCached(sibling), name)) {
+                        declaring[0] = readFileSilently(sibling);
+                    }
+                });
+        return declaring[0] == null ? null : DRLDocCommentParser.docFor(declaring[0], name);
     }
 
     /**
@@ -180,38 +163,28 @@ public final class DRLWorkspaceTypeIndex {
      */
     static void forEachSiblingType(Path documentPath, Map<Path, String> openFiles,
                                    BiConsumer<DeclaredType, String> sink) {
-        if (documentPath == null) {
-            return;
-        }
-        Path docNorm = documentPath.toAbsolutePath().normalize();
-        Path dir = docNorm.getParent();
-        Set<Path> shadowed = new HashSet<>();
-
-        // Layer 2: open unsaved siblings (same directory, not the current file).
-        if (openFiles != null) {
-            for (Map.Entry<Path, String> e : openFiles.entrySet()) {
-                Path p = normalizedSibling(e.getKey(), docNorm, dir);
-                if (p == null) {
-                    continue;
-                }
-                shadowed.add(p);
-                String uri = p.toUri().toString();
-                for (DeclaredType t : DRLDeclaredTypeParser.parseDeclaredTypes(e.getValue())) {
-                    sink.accept(t, uri);
-                }
-            }
-        }
-
-        // Layer 3: on-disk siblings not shadowed by an open buffer.
-        for (Path sibling : WorkspaceSiblingResolvers.active().resolveSiblings(documentPath)) {
-            if (shadowed.contains(sibling.toAbsolutePath().normalize())) {
-                continue;
-            }
-            String uri = sibling.toUri().toString();
-            for (DeclaredType t : DRLDeclaredTypeParser.parseDeclaredTypesCached(sibling)) {
+        forEachSiblingInfo(documentPath, openFiles, (info, uri) -> {
+            for (DeclaredType t : info.types) {
                 sink.accept(t, uri);
             }
-        }
+        });
+    }
+
+    /**
+     * Visits each sibling once — open unsaved buffers first, then on-disk
+     * siblings not shadowed by a buffer — passing its package, imports and
+     * declared types together with its file URI to {@code sink}, so a consumer
+     * needing more than one of them (the unknown-type lint wants both declares
+     * and same-package imports) parses each sibling a single time. The current
+     * document is <em>not</em> included.
+     */
+    static void forEachSiblingInfo(Path documentPath, Map<Path, String> openFiles,
+                                   BiConsumer<DRLDeclaredTypeParser.FileInfo, String> sink) {
+        forEachSibling(documentPath, openFiles,
+                (sibling, bufferText) -> sink.accept(
+                        DRLDeclaredTypeParser.parseFileInfo(bufferText), sibling.toUri().toString()),
+                sibling -> sink.accept(
+                        DRLDeclaredTypeParser.cachedFileInfo(sibling), sibling.toUri().toString()));
     }
 
     /**
@@ -225,50 +198,51 @@ public final class DRLWorkspaceTypeIndex {
      */
     static void forEachSiblingFile(Path documentPath, Map<Path, String> openFiles,
                                    BiConsumer<String, String> sink) {
-        if (documentPath == null) {
-            return;
-        }
-        Path docNorm = documentPath.toAbsolutePath().normalize();
-        Path dir = docNorm.getParent();
-        Set<Path> shadowed = new HashSet<>();
-
-        // Layer 2: open unsaved siblings (same directory, not the current file).
-        if (openFiles != null) {
-            for (Map.Entry<Path, String> e : openFiles.entrySet()) {
-                Path p = normalizedSibling(e.getKey(), docNorm, dir);
-                if (p == null) {
-                    continue;
-                }
-                shadowed.add(p);
-                sink.accept(p.toUri().toString(), e.getValue());
-            }
-        }
-
-        // Layer 3: on-disk siblings not shadowed by an open buffer.
-        for (Path sibling : WorkspaceSiblingResolvers.active().resolveSiblings(documentPath)) {
-            if (shadowed.contains(sibling.toAbsolutePath().normalize())) {
-                continue;
-            }
-            String content = readFileSilently(sibling);
-            if (content != null) {
-                sink.accept(sibling.toUri().toString(), content);
-            }
-        }
+        forEachSibling(documentPath, openFiles,
+                (sibling, bufferText) -> sink.accept(sibling.toUri().toString(), bufferText),
+                sibling -> {
+                    String content = readFileSilently(sibling);
+                    if (content != null) {
+                        sink.accept(sibling.toUri().toString(), content);
+                    }
+                });
     }
 
     /**
-     * Returns the normalized form of {@code candidate} when it is a same-directory
-     * sibling of {@code docNorm} (and not the document itself), else {@code null}.
+     * Visits each sibling the active {@link WorkspaceSiblingResolver} yields for
+     * {@code documentPath} exactly once, by normalized absolute path: those with
+     * an open buffer go to {@code openBuffer} with their editor text, in
+     * resolver order; the rest then go to {@code onDisk}. Membership is the
+     * resolver's alone — an open buffer outside its grouping is not a sibling.
      */
-    private static Path normalizedSibling(Path candidate, Path docNorm, Path dir) {
-        if (candidate == null || dir == null) {
-            return null;
+    private static void forEachSibling(Path documentPath, Map<Path, String> openFiles,
+                                       BiConsumer<Path, String> openBuffer, Consumer<Path> onDisk) {
+        if (documentPath == null) {
+            return;
         }
-        Path norm = candidate.toAbsolutePath().normalize();
-        if (norm.equals(docNorm) || !dir.equals(norm.getParent())) {
-            return null;
+        Map<Path, String> buffers = new HashMap<>();
+        if (openFiles != null) {
+            for (Map.Entry<Path, String> e : openFiles.entrySet()) {
+                if (e.getKey() != null && e.getValue() != null) {
+                    buffers.put(e.getKey().toAbsolutePath().normalize(), e.getValue());
+                }
+            }
         }
-        return norm;
+        List<Path> siblings = new ArrayList<>();
+        for (Path sibling : WorkspaceSiblingResolvers.active().resolveSiblings(documentPath)) {
+            siblings.add(sibling.toAbsolutePath().normalize());
+        }
+        for (Path sibling : siblings) {
+            String bufferText = buffers.get(sibling);
+            if (bufferText != null) {
+                openBuffer.accept(sibling, bufferText);
+            }
+        }
+        for (Path sibling : siblings) {
+            if (!buffers.containsKey(sibling)) {
+                onDisk.accept(sibling);
+            }
+        }
     }
 
     private static void putType(Map<String, DeclaredType> byName, DeclaredType t) {
