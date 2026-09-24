@@ -90,6 +90,13 @@ echo "Registry:   ${REGISTRY}"
 echo "=========================================="
 
 cd "${REPO_ROOT}"
+if [[ "${SKIP_BUILD}" == "false" ]]; then
+    echo ""
+    echo "--- Bumping workspace version to ${VERSION} ---"
+    pnpm update-version-to "${VERSION}"
+    pnpm update-kogito-version-to --maven "${VERSION}"
+    pnpm update-stream-name-to "${VERSION}"
+fi
 
 # ---------------------------------------------------------------------------
 # Helper: sign and upload a single asset to a GitHub Release
@@ -636,7 +643,7 @@ release_dev_deployment_upload_service() {
 
     if [[ "${SKIP_BUILD}" == "false" ]]; then
         echo "Building dev-deployment-upload-service..."
-        pnpm -F "@kie-tools/dev-deployment-upload-service..." build:prod
+        DDUS_VERSION="${VERSION}" pnpm -F "@kie-tools/dev-deployment-upload-service..." build:prod
     fi
 
     local dist="${REPO_ROOT}/packages/dev-deployment-upload-service/dist"
