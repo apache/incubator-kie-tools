@@ -15,6 +15,10 @@
    under the License.
 -->
 
+# 10.3.0
+
+- Bump minimum supported VS Code version (`engines.vscode`) to `^1.103.0`.
+
 # 10.2.0
 
 - DMN Editor (classic), and Test Scenario Editor (classic) removed.
