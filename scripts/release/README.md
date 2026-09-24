@@ -23,15 +23,15 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 
 | Script                     | What it does                                                                 |
 | -------------------------- | ---------------------------------------------------------------------------- |
-| `release.sh`               | **The** release script — builds all components and optionally publishes them |
+| `release-all.sh`           | **The** release script — builds all components and optionally publishes them |
 | `create-source-tarball.sh` | Utility: creates an Apache-compliant source zip from the current `HEAD`      |
 
 ## Usage
 
 ```bash
-./scripts/release/release.sh <version>             # build all components (dry run — nothing published)
-./scripts/release/release.sh <version> --rc        # build + collect Apache RC artifacts
-./scripts/release/release.sh <version> --publish   # build + publish to all public registries
+./scripts/release/release-all.sh <version>             # build all components (dry run — nothing published)
+./scripts/release/release-all.sh <version> --rc        # build + collect Apache RC artifacts
+./scripts/release/release-all.sh <version> --publish   # build + publish to all public registries
 ```
 
 ### Optional flags
@@ -47,7 +47,7 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 
 ## What is released
 
-`release.sh` covers all KIE Tools components in one build:
+`release-all.sh` covers all KIE Tools components in one build:
 
 1. **NPM packages** — all public packages under `packages/`
 2. **Chrome extensions** — `chrome-extension-pack-kogito-kie-editors`
@@ -74,7 +74,7 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 pnpm bootstrap
 
 # 2. Build and collect all RC artifacts (linters/tests/e2e suppressed automatically)
-./scripts/release/release.sh 10.3.0 --rc
+./scripts/release/release-all.sh 10.3.0 --rc
 
 # 3. Inspect
 ls -lh release-artifacts/
@@ -86,7 +86,7 @@ If you have already run a full build and just want to re-collect artifacts:
 
 ```bash
 rm -rf release-artifacts/
-./scripts/release/release.sh 10.3.0 --rc --skip-build
+./scripts/release/release-all.sh 10.3.0 --rc --skip-build
 ```
 
 `--skip-build` skips the `pnpm build:prod` step and goes straight to zipping/copying
@@ -160,7 +160,7 @@ pnpm update-stream-name-to 10.3.0
 
 ## Troubleshooting
 
-**Permission denied** — `chmod +x scripts/release/release.sh`
+**Permission denied** — `chmod +x scripts/release/release-all.sh`
 
 **pnpm not found** — `npm install -g pnpm`
 

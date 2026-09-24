@@ -169,7 +169,7 @@ pipeline {
                         // Build artifacts WITHOUT publishing (no --publish flag)
                         // The --rc flag creates signed artifacts for Apache SVN
                         sh """#!/bin/bash -el
-                        ./scripts/release/release.sh ${params.RELEASE_VERSION} --rc
+                        ./scripts/release/release-all.sh ${params.RELEASE_VERSION} --rc
                         """
                     }
                 }

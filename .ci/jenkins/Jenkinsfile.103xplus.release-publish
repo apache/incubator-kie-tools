@@ -204,7 +204,7 @@ pipeline {
                                 }
 
                                 sh """#!/bin/bash -el
-                                ./scripts/release/release.sh ${params.RELEASE_VERSION} --publish ${uploadUrlFlag}
+                                ./scripts/release/release-all.sh ${params.RELEASE_VERSION} --publish ${uploadUrlFlag}
                                 """
                             }
                         }

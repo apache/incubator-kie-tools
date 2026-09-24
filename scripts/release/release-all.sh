@@ -22,9 +22,9 @@ set -euo pipefail
 # under a single unified build.
 #
 # Usage:
-#   ./release.sh <version>            # dry run (build only, nothing published)
-#   ./release.sh <version> --rc       # build + collect Apache RC artifacts
-#   ./release.sh <version> --publish  # build + publish to all public registries
+#   ./release-all.sh <version>            # dry run (build only, nothing published)
+#   ./release-all.sh <version> --rc       # build + collect Apache RC artifacts
+#   ./release-all.sh <version> --publish  # build + publish to all public registries
 #
 # Optional flags:
 #   --skip-build           Skip pnpm build:prod (use existing dist/ output)

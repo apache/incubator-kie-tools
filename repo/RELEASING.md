@@ -30,7 +30,7 @@ The canonical release documentation and single source of truth for the Apache KI
 This repository (`incubator-kie-tools`) provides a single unified release script in [`scripts/release/`](../scripts/release/):
 
 - **[`scripts/release/README.md`](../scripts/release/README.md)**: Detailed documentation for the release script.
-- **[`scripts/release/release.sh`](../scripts/release/release.sh)**: The release script — builds all components and optionally publishes them.
+- **[`scripts/release/release-all.sh`](../scripts/release/release-all.sh)**: The release script — builds all components and optionally publishes them.
 
 All components are built and released together in one script under one build. There are no separate per-component release scripts.
 
@@ -47,10 +47,10 @@ pnpm update-kogito-version-to --maven <version>
 pnpm update-stream-name-to <stream-name>
 
 # 4. Generate all release candidate artifacts
-./scripts/release/release.sh 10.3.0 --rc
+./scripts/release/release-all.sh 10.3.0 --rc
 
 # 5. Publish artifacts to registries (after vote passes)
-./scripts/release/release.sh 10.3.0 --publish
+./scripts/release/release-all.sh 10.3.0 --publish
 ```
 
 For Jenkins CI pipelines, see [`.ci/jenkins/Jenkinsfile.103xplus.release-candidate`](../.ci/jenkins/Jenkinsfile.103xplus.release-candidate) (Phase 1: build RC and publish to Apache SVN) and [`.ci/jenkins/Jenkinsfile.103xplus.release-publish`](../.ci/jenkins/Jenkinsfile.103xplus.release-publish) (Phase 2: publish to public registries after vote).
