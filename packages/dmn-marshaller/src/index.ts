@@ -17,6 +17,8 @@
  * under the License.
  */
 
+// kie-tools#4018: trigger E2E tests for dmn-editor, boxed-expression-component, dmn-editor-standalone
+
 import {
   Meta,
   XmlParserTs,
