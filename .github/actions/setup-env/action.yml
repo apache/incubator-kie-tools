@@ -64,7 +64,7 @@ runs:
     - name: "Setup Node"
       uses: actions/setup-node@v4
       with:
-        node-version: 24.13.0
+        node-version: 24.21.0
 
     - name: "Setup pnpm"
       shell: bash
