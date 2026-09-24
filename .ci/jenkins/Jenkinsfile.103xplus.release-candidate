@@ -20,6 +20,12 @@
 // PHASE 1: Create Release Candidate for Apache Voting
 // This job builds artifacts, signs them, and publishes to Apache SVN for community vote
 // Does NOT publish to npm, VSCode Marketplace, or Chrome Web Store
+//
+// NOTE: kogito-data-index-ephemeral is NOT included in this pipeline because the
+// packages/kogito-data-index-ephemeral-image package no longer exists in this repo.
+// Its presence in older Jenkinsfiles (Jenkinsfile.release-candidate RUNNERS list and
+// release-jobs/Jenkinsfile.kogito-data-index-ephemeral-image) is a historical artifact
+// from pre-10.3 automation and can be cleaned up in a follow-up PR.
 
 pipeline {
     agent {
@@ -50,11 +56,6 @@ pipeline {
             description: 'Git branch or tag to release from',
             defaultValue: 'main'
         )
-        choice(
-            name: 'COMPONENT',
-            choices: ['all', 'npm-packages', 'chrome-extensions', 'vscode', 'container-images', 'helm-charts', 'github-pages', 'dev-deployment-upload-service', 'source-tarball'],
-            description: 'Component to release (all = everything; matches script names in scripts/release/)'
-        )
     }
 
     environment {
@@ -67,6 +68,22 @@ pipeline {
         CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.RELEASE_VERSION}"
         CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
         CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
+
+        ONLINE_EDITOR__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
+        ONLINE_EDITOR__buildInfo = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'incubator-kie-sandbox-dev-deployment-base'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag = "${params.RELEASE_VERSION}"
     }
 
     stages {
@@ -145,18 +162,14 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        def scriptName = params.COMPONENT == 'all' ? 'release-all.sh' : "release-${params.COMPONENT}.sh"
-                        // Note: component names match script names exactly, e.g. 'npm-packages' -> release-npm-packages.sh
-                        
                         echo "Building release candidate artifacts..."
-                        echo "Component: ${params.COMPONENT}"
                         echo "Version: ${params.RELEASE_VERSION}"
                         echo "RC: ${params.RELEASE_CANDIDATE_VERSION}"
-                        
+
                         // Build artifacts WITHOUT publishing (no --publish flag)
                         // The --rc flag creates signed artifacts for Apache SVN
                         sh """#!/bin/bash -el
-                        ./scripts/release/${scriptName} ${params.RELEASE_VERSION} --rc
+                        ./scripts/release/release.sh ${params.RELEASE_VERSION} --rc
                         """
                     }
                 }
@@ -217,7 +230,6 @@ pipeline {
             echo "=========================================="
             echo "Version: ${params.RELEASE_VERSION}"
             echo "RC: ${params.RELEASE_CANDIDATE_VERSION}"
-            echo "Component: ${params.COMPONENT}"
             echo ""
             echo "Artifacts published to:"
             echo "${pipelineVars.asfReleaseStagingRepository}/${params.RELEASE_CANDIDATE_VERSION}/"
@@ -225,7 +237,7 @@ pipeline {
             echo "Next steps:"
             echo "1. Start a vote thread on dev@kie.apache.org"
             echo "2. Wait for vote to pass (72 hours, 3 +1 votes)"
-            echo "3. Run Jenkinsfile.release-publish to publish to registries"
+            echo "3. Run Jenkinsfile.103xplus.release-publish to publish to registries"
             echo "=========================================="
         }
         failure {

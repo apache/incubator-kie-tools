@@ -53,4 +53,4 @@ pnpm update-stream-name-to <stream-name>
 ./scripts/release/release.sh 10.3.0 --publish
 ```
 
-For Jenkins release jobs, see [`.ci/jenkins/release-jobs/`](../.ci/jenkins/release-jobs/).
+For Jenkins CI pipelines, see [`.ci/jenkins/Jenkinsfile.103xplus.release-candidate`](../.ci/jenkins/Jenkinsfile.103xplus.release-candidate) (Phase 1: build RC and publish to Apache SVN) and [`.ci/jenkins/Jenkinsfile.103xplus.release-publish`](../.ci/jenkins/Jenkinsfile.103xplus.release-publish) (Phase 2: publish to public registries after vote).
