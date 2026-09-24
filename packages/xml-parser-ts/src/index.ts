@@ -74,195 +74,9 @@ export const domParser = {
     }
     // console.timeEnd("parsing dom took (DOMParser) parsererror");
 
-    registerAttributesSourceOrder(domdoc, xml.toString());
-
     return domdoc;
   },
 };
-
-/**
- * The DOM standard doesn't guarantee that `Element.attributes` follows the order of the attributes on the XML source.
- * `DOMParser` implementations do differ: Chrome and WebKit move `xmlns` declarations to the front, Chrome 153+
- * additionally sorts them alphabetically, while jsdom keeps the source order. Since the JSON produced by `parse` (and
- * thus the XML produced by `build`) follows the order of `Element.attributes`, the serialized XML would depend on where
- * it was parsed, breaking round-trip fidelity. To avoid that, the order of the attributes of each element is recovered
- * from the XML text, the only place where it is actually defined, and kept here keyed by the Document parsed from it.
- */
-const attributesSourceOrderByDocument = new WeakMap<Document, Map<Element, string[]>>();
-
-function isXmlWhitespace(c: string) {
-  return c === " " || c === "\n" || c === "\t" || c === "\r";
-}
-
-/**
- * Scans the XML text and returns, for each start tag in document order, the names of its attributes in the order they
- * appear in the source. The returned array has one entry per element (possibly empty), so it can be aligned with the
- * elements of the parsed Document. Comments, CDATA sections, processing instructions and the DOCTYPE are skipped.
- * Attribute values may contain `>`.
- */
-export function scanAttributeNamesInSourceOrder(xml: string): string[][] {
-  const result: string[][] = [];
-  const len = xml.length;
-  let i = 0;
-  while (i < len) {
-    const lt = xml.indexOf("<", i);
-    if (lt < 0) {
-      break;
-    }
-
-    if (xml.startsWith("<!--", lt)) {
-      const end = xml.indexOf("-->", lt + 4);
-      i = end < 0 ? len : end + 3;
-      continue;
-    }
-    if (xml.startsWith("<![CDATA[", lt)) {
-      const end = xml.indexOf("]]>", lt + 9);
-      i = end < 0 ? len : end + 3;
-      continue;
-    }
-    if (xml.startsWith("<?", lt)) {
-      const end = xml.indexOf("?>", lt + 2);
-      i = end < 0 ? len : end + 2;
-      continue;
-    }
-    if (xml.startsWith("<!", lt)) {
-      // DOCTYPE, possibly with an internal subset (`[ ... ]`) that contains `>`.
-      let j = lt + 2;
-      let depth = 0;
-      while (j < len) {
-        const c = xml[j];
-        if (c === "[") {
-          depth++;
-        } else if (c === "]") {
-          depth--;
-        } else if (c === ">" && depth <= 0) {
-          break;
-        }
-        j++;
-      }
-      i = j + 1;
-      continue;
-    }
-    if (xml.startsWith("</", lt)) {
-      const end = xml.indexOf(">", lt + 2);
-      i = end < 0 ? len : end + 1;
-      continue;
-    }
-
-    // Start tag (or empty-element tag). Skip the element name.
-    let j = lt + 1;
-    while (j < len && !isXmlWhitespace(xml[j]) && xml[j] !== ">" && xml[j] !== "/") {
-      j++;
-    }
-
-    const attributeNames: string[] = [];
-    while (j < len) {
-      while (j < len && isXmlWhitespace(xml[j])) {
-        j++;
-      }
-      if (j >= len) {
-        break;
-      }
-      const c = xml[j];
-      if (c === ">") {
-        j++;
-        break;
-      }
-      if (c === "/") {
-        j++;
-        continue;
-      }
-
-      const nameStart = j;
-      while (j < len && !isXmlWhitespace(xml[j]) && xml[j] !== "=" && xml[j] !== ">" && xml[j] !== "/") {
-        j++;
-      }
-      const attrName = xml.slice(nameStart, j);
-
-      while (j < len && isXmlWhitespace(xml[j])) {
-        j++;
-      }
-      if (xml[j] === "=") {
-        j++;
-        while (j < len && isXmlWhitespace(xml[j])) {
-          j++;
-        }
-        const quote = xml[j];
-        if (quote === '"' || quote === "'") {
-          const end = xml.indexOf(quote, j + 1);
-          j = end < 0 ? len : end + 1;
-        } else {
-          // Not well-formed (unquoted value). Consume it anyway to keep going.
-          while (j < len && !isXmlWhitespace(xml[j]) && xml[j] !== ">") {
-            j++;
-          }
-        }
-      }
-
-      if (attrName) {
-        attributeNames.push(attrName);
-      }
-    }
-
-    result.push(attributeNames);
-    i = j;
-  }
-  return result;
-}
-
-/**
- * Associates `domdoc` with the order of the attributes found on `xml`, the text it was parsed from. Only elements with
- * more than one attribute are recorded, since order is irrelevant otherwise. If the scanned start tags can't be
- * aligned with the Document's elements (e.g., the XML is not well-formed), nothing is recorded and the order given by
- * the DOM is used.
- */
-export function registerAttributesSourceOrder(domdoc: Document, xml: string) {
-  const scanned = scanAttributeNamesInSourceOrder(xml);
-  const elements = domdoc.getElementsByTagName("*");
-  if (elements.length !== scanned.length) {
-    return;
-  }
-
-  const byElement = new Map<Element, string[]>();
-  for (let i = 0; i < elements.length; i++) {
-    if (scanned[i].length > 1) {
-      byElement.set(elements[i], scanned[i]);
-    }
-  }
-
-  if (byElement.size > 0) {
-    attributesSourceOrderByDocument.set(domdoc, byElement);
-  }
-}
-
-/**
- * Returns the attributes of `element` in the order they have on the XML source, if known (see
- * `registerAttributesSourceOrder`). Otherwise, or if the source can't be matched with the DOM, in the DOM's order.
- */
-export function getAttributesInSourceOrder(element: Element): Attr[] {
-  const attrs = element.attributes;
-  const domOrder: Attr[] = [];
-  for (let i = 0; i < attrs.length; i++) {
-    domOrder.push(attrs[i]);
-  }
-
-  const sourceOrder = attributesSourceOrderByDocument.get(element.ownerDocument)?.get(element);
-  if (!sourceOrder || sourceOrder.length !== domOrder.length) {
-    return domOrder;
-  }
-
-  const result: Attr[] = [];
-  const seen = new Set<Attr>();
-  for (const attrName of sourceOrder) {
-    const attr = attrs.getNamedItem(attrName);
-    if (!attr || seen.has(attr)) {
-      return domOrder; // The source and the DOM don't match. Keep the DOM order.
-    }
-    seen.add(attr);
-    result.push(attr);
-  }
-  return result;
-}
 
 /**
  * Returns a bi-directional map with the namespace aliases declared at the root element of a XML document pointing to their URIs and vice-versa. In this map, namespace aliases are suffixed with `:`.
@@ -273,7 +87,7 @@ export function getInstanceNs(domdoc: Document): Map<string, string> {
   // console.time("instanceNs took");
 
   const nsMap = new Map<string, string>(
-    getAttributesInSourceOrder(domdoc.documentElement).flatMap((attr) => {
+    [...domdoc.documentElement.attributes].flatMap((attr) => {
       if (!attr.name.startsWith("xmlns")) {
         return [];
       }
@@ -463,7 +277,7 @@ export function parse(args: {
       }
 
       const argsForAttrs = { ns: args.ns, instanceNs: args.instanceNs, subs: {} }; // Attributes can't use substitution groups.
-      const attrs = getAttributesInSourceOrder(elemNode as Element);
+      const attrs = (elemNode as Element).attributes;
       for (let i = 0; i < attrs.length; i++) {
         const attr = attrs[i];
         const resolvedAttrQName = resolveQName(attr.name, args.nodeMetaType, argsForAttrs);

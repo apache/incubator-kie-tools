@@ -46,8 +46,6 @@ index.domParser.getDomDocument = (xml: string | Buffer) => {
     }
   }
 
-  index.registerAttributesSourceOrder(domdoc, xml.toString());
-
   return domdoc;
 };
 
