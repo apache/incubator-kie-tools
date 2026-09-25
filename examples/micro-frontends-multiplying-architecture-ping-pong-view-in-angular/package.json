@@ -27,7 +27,7 @@
     "build:wc-lib": "tsc --project tsconfig.lib.json"
   },
   "dependencies": {
-    "@angular/common": "^20.3.27",
+    "@angular/common": "^20.3.28",
     "@angular/compiler": "^20.3.27",
     "@angular/core": "^20.3.27",
     "@angular/elements": "^20.3.25",
