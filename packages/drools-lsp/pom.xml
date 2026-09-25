@@ -38,5 +38,6 @@
   <modules>
     <module>drools-lsp-server</module>
     <module>drools-completion</module>
+    <module>drools-formatter</module>
   </modules>
 </project>

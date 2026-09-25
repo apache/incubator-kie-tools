@@ -112,6 +112,7 @@ packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmn.test.t
 packages/dmn-uniforms-patternfly-form-wrapper/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
 packages/drl-vscode-extension/.vscodeignore
 packages/drools-and-kogito/.gitignore
+packages/drools-lsp/drools-formatter/src/test/resources/order_rules.drl
 packages/drools-lsp/drools-lsp-server/.gitignore
 packages/editor/tests/embedded/embedded/__snapshots__/EmbeddedEditor.test.tsx.snap
 packages/editor/tests/embedded/embedded/__snapshots__/EmbeddedViewer.test.tsx.snap

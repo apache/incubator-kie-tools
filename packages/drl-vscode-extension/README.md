@@ -107,6 +107,96 @@ Paths listed explicitly under `files` are taken as given — build output is fil
 
 Same-named groups from several files are merged, with a warning.
 
+## Formatting
+
+_Format Document_ and _Format Selection_ rewrite a `.drl` file into one canonical shape. The formatter is a style enforcer, not a byte-preserving pretty-printer: it replaces your spacing rather than echoing it. Token content and comments survive; layout is the formatter's to decide. Formatting is idempotent, and the formatter refuses to write at all rather than risk damaging a file.
+
+Three changes go beyond layout, and are together governed by `normalizeTerminators`: `import` gains a `;` and `global` loses one, and the `accumulate`/`groupby` source separator `,` becomes `;`. A positional constraint list always gets its closing `;` — that one is grammar, not style.
+
+### Options
+
+Each `drools.lsp.formatter.*` setting applies without a restart. Indentation is not among them: it follows the editor's `tabSize` and `insertSpaces`, which VS Code sends with every format request and which you can set per language under `[drools]`.
+
+| Setting                | Default    | Effect                                                                                                                                                                                              |
+| ---------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lineLength`           | `110`      | Wrap trigger, not a cap — it decides when a construct breaks; a line with nothing breakable runs past it                                                                                            |
+| `lineEndings`          | `preserve` | `preserve` keeps the file's own ending; `lf` or `crlf` forces one                                                                                                                                   |
+| `parenPadding`         | `true`     | `Person( age > 18 )`; off gives `Person(age > 18)`. An empty pair is always `()`                                                                                                                    |
+| `bindingColonSpace`    | `false`    | `$p: Person(…)` and `a: int`; on gives `$p : Person(…)` and `a : int`                                                                                                                               |
+| `normalizeTerminators` | `true`     | The three normalizations above; off keeps the source's choice                                                                                                                                       |
+| `alignDeclarations`    | `true`     | `declare` fields and enum constants as aligned columns; off is one per line, single-spaced                                                                                                          |
+| `headerMetadata`       | `indented` | Annotations and attributes of rule/query/declare headers: `indented` on their own lines one level in, `flush` on their own lines at column 0, `inline` on the header line, wrapping at `lineLength` |
+
+The defaults are proposed. They are open for discussion in [kie-tools#3709](https://github.com/apache/incubator-kie-tools/issues/3709).
+
+### Layout
+
+Top-level constructs start at column 0 and their `end` returns to column 0. Statements are never reordered. Trailing whitespace is never emitted, a run of two or more blank lines collapses to one, and trailing blank lines are removed — the file ends with exactly one newline.
+
+Between tokens: `(` and its contents are padded (or not, per `parenPadding`), and so are the `[ ]` of an OOPath constraint list; other brackets stay tight (`list[0]`, `do[x]`, `int[]`, the index in `exams[0]`); no space before `,` or `;`, one after `,`; none around `.`, `!.`, `#`, `/`, `?/` or after `window:`; one around binary operators (`:=` included) and between words, none after a unary one (`!adult`, `-5`); `)` or `]` followed by a word gets one (`) from`, `after[5s, 8s] $a`). In a consequence, `{ }` are padded: `modify( $p ) { setAge( 1 ) }`.
+
+### `declare` blocks
+
+The header is one line — `declare Name`, `declare trait|type Name`, `declare enum Name`, `declare entry-point Name`, `declare window Name` — with `extends` supertypes comma-separated. Fields and enum constants are laid out as tables when `alignDeclarations` is on: field rows align label-with-colon then type; constant rows align cell by cell. Column widths are the widest cell in the group plus one.
+
+A blank line in your source ends an alignment group, so a short group is never stretched to match a long one. A comment on its own line does not end the group.
+
+### Rules, queries, functions
+
+```
+rule <name> [extends <parent>]
+  <annotations and attributes, per headerMetadata>
+  when
+    <conditions>
+  then
+    <consequence>
+end
+```
+
+`extends` rides on the header line unless that exceeds `lineLength`, in which case it continues on the next line, placed like the header's metadata. A rule that introduces its attributes with the legacy `attributes:` keyword keeps the keyword and its comma-separated list on one line. `query` has the same shape without `when`. `function` gets its signature normalized and its body emitted verbatim — Java inside a function is never touched.
+
+### Conditions
+
+A pattern is `$binding: Type( constraints )`, one line if it fits in `lineLength`, otherwise one constraint per line with the closing parenthesis back at the pattern's indent. An OOPath pattern is `$binding: /source[ constraints ]/segment[ constraints ]`: the `/`, `?/` and `#Cast` are written tight, and each `[ ]` is padded per `parenPadding` like a pattern's parentheses. An OOPath inside a constraint (`Person( /addresses[ city == "London" ] )`) is written the same way, and an OOPath never wraps, however long: to the parser a segment that starts on a new line is a new pattern. A `;` ending a condition is dropped, except after an OOPath, where the pre-Drools-10 parser needs it to keep two lines apart. A labelled or-group keeps its parentheses (`$c: ( A() or B() )`), and the prefix forms `(or …)` and `(and …)` are kept as written, their operands indented beneath. An explicit `and` is kept as a leading `and ` on the next condition; an `or` between conditions goes on its own line; a parenthesized group puts `(` and `)` on their own lines. `accumulate` and `groupby` are always blocks: source pattern, `;`, functions, then any constraints.
+
+### Consequences
+
+Statements split at line breaks where parentheses balance, so a call already spread over several lines stays one statement. Each statement is one line if it fits, otherwise every parenthesized group that would overflow expands to one argument per line with `)` aligned to the line that opened it. Braces drive indentation; blank lines between statements are kept, collapsed to one.
+
+### Comments
+
+Line comments keep their text and are re-indented. Javadoc-shaped block comments have their `*` column squared up; a drawn banner (a run of four or more `*`) moves as a whole and keeps its columns. A trailing comment after a condition moves to its own line; one in a consequence stays. A `//` comment inside a pattern's parentheses forces that pattern multi-line.
+
+### Turning the formatter off
+
+A line comment reading exactly `@formatter:off` suspends formatting and `@formatter:on` resumes it; an unmatched `off` runs to end of file. Freezing works per top-level statement: any statement overlapping the region is emitted verbatim in full. Inside a frozen region only line endings are normalized.
+
+### Which parser
+
+Drools 10 ships two DRL parsers: the legacy `DRL6` parser it compiles with by default, and the ANTLR4 `DRL10` parser, enabled with `-Ddrools.drl.antlr4.parser.enabled=true`. The formatter uses the ANTLR4 parser, which accepts a slimmer syntax; the differences are tracked in [apache/incubator-kie#6220](https://github.com/apache/incubator-kie/issues/6220). A construct only the legacy parser accepts can read differently here. Where the grammar reports an error, the file is refused. Where it reads the construct as something else without an error, the parse looks clean while the affected rules have become the annotation payload of the rule before them, and the formatter refuses the file, naming the first such rule's line, rather than flattening them onto one line. Three spellings are known to do this: a constraint with no left operand on its second comparison (`size >= 0 && <=20`) and a comma between the patterns of a `forall( A() , B() )`, both of which the legacy parser accepts, and two patterns with no `and` between them inside an `accumulate( A() B(); … )` source, which the legacy parser rejects with a syntax error. Before the first format of a rule set, make sure it compiles with the ANTLR4 parser enabled, and review the diff.
+
+### What it refuses
+
+It writes nothing at all — never a partial file — when the input does not parse, when a rule's `when` block, or a whole rule or query, was not read as one, when its own output fails to re-parse or differs from the input in anything but spacing and separators, or when a comment would not survive formatting (see the limitations below). The refusal names the first affected line wherever one can be determined; for a defect in the formatter's own output that is the input line of the rule it sits in, so the rule can be fenced with `@formatter:off` or sent with a bug report. A refusal is logged at INFO in the _Drools LSP_ output channel; the editor sees no edits.
+
+### Command line
+
+The same engine is available as a CLI for hooks, CI and tooling. It is not published; build it locally:
+
+```
+mvn -f packages/drools-lsp/pom.xml -pl drools-formatter -am package
+java -jar packages/drools-lsp/drools-formatter/target/drools-formatter-jar-with-dependencies.jar --help
+```
+
+`--check` exits 1 if any file would change; `--write` rewrites in place; `--write-dir` walks a directory; `--lines a:b` limits `--check`/`--write` to the statements overlapping those lines; `--stdin` formats standard input; `--config file.json` reads the options above (same keys, plus `tabSize` and `insertSpaces`). Exit 2 means at least one file was refused; a refused file is never written, but other files in the same run may have been.
+
+### Known limitations
+
+- Comments in some positions are not carried through formatting, so a file containing one is refused rather than formatted without it: inside `accumulate(…)`/`groupby(…)` parentheses, a block comment between a pattern's `(` and its first constraint (one between constraints is kept), between an enum constant's arguments, inside a field initializer, and between a function's signature and its body. Move the comment above the element.
+- A comment inside a multi-line call in a consequence is moved above the statement.
+- `default:` with its statement on the same line is not split, while `case N:` is.
+- Long lines are not guaranteed to fit — see the wrap-trigger note above.
+
 ## Commands
 
 | Command                   | Description                                               |
@@ -116,22 +206,31 @@ Same-named groups from several files are merged, with a warning.
 
 ## Extension Settings
 
-| Setting                              | Default   | Description                                                   |
-| ------------------------------------ | --------- | ------------------------------------------------------------- |
-| `drools.lsp.logLevel`                | `INFO`    | Server-side log level                                         |
-| `drools.lsp.grouping`                | `{}`      | DRL file grouping, declared inline (see above)                |
-| `drools.lsp.lint.missingEnd`         | `warning` | Severity for missing `end` keyword                            |
-| `drools.lsp.lint.missingSeparator`   | `warning` | Severity for missing constraint separator                     |
-| `drools.lsp.lint.missingSemicolon`   | `warning` | Severity for missing semicolon in consequence                 |
-| `drools.lsp.lint.unbalancedParens`   | `warning` | Severity for unbalanced parentheses                           |
-| `drools.lsp.lint.unknownTypes`       | `warning` | Severity for unrecognized type references                     |
-| `drools.lsp.lint.mvelPropertyAccess` | `off`     | Hint to prefer property-access style over getter calls in LHS |
-| `drools.lsp.inlayHints.enabled`      | `true`    | Show inline type hints for bound variables                    |
-| `drools.lsp.maven.pomPath`           | `""`      | Maven POM path(s) for classpath resolution                    |
-| `drools.lsp.java.sourcePaths`        | `[]`      | Extra Java source roots, beyond those found automatically     |
-| `drools.lsp.java.packageFilters`     | `[]`      | Package prefixes limiting which Java source types are indexed |
+| Setting                                     | Default    | Description                                                   |
+| ------------------------------------------- | ---------- | ------------------------------------------------------------- |
+| `drools.lsp.logLevel`                       | `INFO`     | Server-side log level                                         |
+| `drools.lsp.grouping`                       | `{}`       | DRL file grouping, declared inline (see above)                |
+| `drools.lsp.lint.missingEnd`                | `warning`  | Severity for missing `end` keyword                            |
+| `drools.lsp.lint.missingSeparator`          | `warning`  | Severity for missing constraint separator                     |
+| `drools.lsp.lint.missingSemicolon`          | `warning`  | Severity for missing semicolon in consequence                 |
+| `drools.lsp.lint.unbalancedParens`          | `warning`  | Severity for unbalanced parentheses                           |
+| `drools.lsp.lint.unknownTypes`              | `warning`  | Severity for unrecognized type references                     |
+| `drools.lsp.lint.mvelPropertyAccess`        | `off`      | Hint to prefer property-access style over getter calls in LHS |
+| `drools.lsp.inlayHints.enabled`             | `true`     | Show inline type hints for bound variables                    |
+| `drools.lsp.maven.pomPath`                  | `""`       | Maven POM path(s) for classpath resolution                    |
+| `drools.lsp.java.sourcePaths`               | `[]`       | Extra Java source roots, beyond those found automatically     |
+| `drools.lsp.java.packageFilters`            | `[]`       | Package prefixes limiting which Java source types are indexed |
+| `drools.lsp.formatter.lineLength`           | `110`      | Formatter wrap trigger (see Formatting)                       |
+| `drools.lsp.formatter.lineEndings`          | `preserve` | `preserve`, `lf` or `crlf`                                    |
+| `drools.lsp.formatter.parenPadding`         | `true`     | Space inside non-empty parentheses                            |
+| `drools.lsp.formatter.bindingColonSpace`    | `false`    | Space before a binding's or declare field's colon             |
+| `drools.lsp.formatter.normalizeTerminators` | `true`     | Normalize `import`/`global` `;` and the accumulate separator  |
+| `drools.lsp.formatter.alignDeclarations`    | `true`     | Column-align `declare` fields and enum constants              |
+| `drools.lsp.formatter.headerMetadata`       | `indented` | `indented`, `flush` or `inline` header annotations/attributes |
 
 All lint settings accept: `off`, `hint`, `info`, `warning`, `error`.
+
+Formatter settings apply without a restart.
 
 The project's own Java types resolve from `.java` sources, so completion, hover,
 navigation and the unknown-type lint work on a fresh checkout, before Maven has
@@ -144,4 +243,4 @@ starts, so changing either needs a restart.
 
 ## Known Issues
 
-If you find any issues, please report them in [GitHub Issues](https://github.com/apache/incubator-kie-issues/issues).
+If you find any issues, please report them in [GitHub Issues](https://github.com/apache/incubator-kie-tools/issues).
