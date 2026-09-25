@@ -1,0 +1,249 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+// PHASE 2: Publish Release After Vote Passes
+// This job publishes the approved release candidate to public registries
+// Publishes to: npm, VSCode Marketplace, Chrome Web Store, GitHub Releases
+//
+// NOTE: kogito-data-index-ephemeral is NOT included in this pipeline because the
+// packages/kogito-data-index-ephemeral-image package no longer exists in this repo.
+// Its presence in older Jenkinsfiles (Jenkinsfile.release-candidate RUNNERS list and
+// release-jobs/Jenkinsfile.kogito-data-index-ephemeral-image) is a historical artifact
+// from pre-10.3 automation and can be cleaned up in a follow-up PR.
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 480, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(
+            name: 'RELEASE_VERSION',
+            description: 'Release version (e.g., 1.0.0) - must match the voted RC',
+            defaultValue: '0.0.0'
+        )
+        string(
+            name: 'BASE_REF',
+            description: 'Git tag to release from (should be the RC tag)',
+            defaultValue: '0.0.0-rc1'
+        )
+        string(
+            name: 'GITHUB_RELEASE_TAG',
+            description: 'GitHub release tag (for uploading assets to the GitHub Release)',
+            defaultValue: ''
+        )
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
+        CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.RELEASE_VERSION}"
+        CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
+        CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
+
+        ONLINE_EDITOR__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
+        ONLINE_EDITOR__buildInfo = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'incubator-kie-sandbox-dev-deployment-base'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag = "${params.RELEASE_VERSION}"
+
+        DOCKER_CONFIG = "${WORKSPACE}/.docker"
+        HELM_REGISTRY = 'docker.io'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Verify version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        def packageVersion = sh(
+                            returnStdout: true,
+                            script: "node -p \"require('./package.json').version\""
+                        ).trim()
+                        
+                        if (packageVersion != params.RELEASE_VERSION) {
+                            error("Version mismatch! package.json has ${packageVersion} but RELEASE_VERSION is ${params.RELEASE_VERSION}")
+                        }
+                        
+                        echo "✅ Version verified: ${packageVersion}"
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    sh '''#!/bin/bash -el
+                    pnpm bootstrap
+                    '''
+                }
+            }
+        }
+
+        stage('Build and Publish to Registries') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        echo "Publishing release to public registries..."
+                        echo "Version: ${params.RELEASE_VERSION}"
+
+                        withCredentials([
+                            string(credentialsId: "${pipelineVars.npmTokenCredentialsId}",                  variable: 'NPM_TOKEN'),
+                            string(credentialsId: "${pipelineVars.vscePatCredentialsId}",                   variable: 'VSCE_PAT'),
+                            usernamePassword(credentialsId: "${pipelineVars.chromeStoreCredentialsId}",
+                                             usernameVariable: 'CHROME_CLIENT_ID',
+                                             passwordVariable: 'CHROME_CLIENT_SECRET'),
+                            string(credentialsId: "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",   variable: 'CHROME_REFRESH_TOKEN'),
+                            string(credentialsId: "${pipelineVars.chromeExtensionIdCredentialsId}",         variable: 'CHROME_KIE_EDITORS_EXTENSION_ID'),
+                            string(credentialsId: "${pipelineVars.dockerHubUserCredentialsId}",             variable: 'DOCKER_USERNAME'),
+                            string(credentialsId: "${pipelineVars.dockerHubTokenCredentialsId}",            variable: 'DOCKER_PASSWORD'),
+                            // Helm charts use the same Docker Hub credentials as the old helm jobs
+                            string(credentialsId: "${pipelineVars.dockerHubUserCredentialsId}",             variable: 'HELM_USERNAME'),
+                            string(credentialsId: "${pipelineVars.dockerHubTokenCredentialsId}",            variable: 'HELM_PASSWORD'),
+                            string(credentialsId: "${pipelineVars.kieToolsBotGithubTokenCredentialsId}",    variable: 'GITHUB_TOKEN')
+                        ]) {
+                            script {
+                                def uploadUrlFlag = ''
+                                if (params.GITHUB_RELEASE_TAG != '') {
+                                    def releaseJson = sh(
+                                        returnStdout: true,
+                                        script: """
+                                            curl -sSf -H "Authorization: token \${GITHUB_TOKEN}" \
+                                                "https://api.github.com/repos/${pipelineVars.githubRepositorySlug}/releases/tags/${params.GITHUB_RELEASE_TAG}"
+                                        """
+                                    ).trim()
+                                    def releaseInfo = readJSON text: releaseJson
+                                    uploadUrlFlag = "--upload-url '${releaseInfo.upload_url.replaceAll('\\{.*\\}', '')}'"
+                                }
+
+                                sh """#!/bin/bash -el
+                                ./scripts/release/release-all.sh ${params.RELEASE_VERSION} --publish ${uploadUrlFlag}
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "=========================================="
+            echo "✅ Release Published Successfully!"
+            echo "=========================================="
+            echo "Version: ${params.RELEASE_VERSION}"
+            echo ""
+            echo "Published to:"
+            echo "  ✅ npm registry"
+            echo "  ✅ VSCode Marketplace"
+            echo "  ✅ Chrome Web Store"
+            echo "  ✅ Container registry"
+            echo "  ✅ Helm registry"
+            echo "  ✅ GitHub Pages"
+            if (params.GITHUB_RELEASE_TAG != '') {
+                echo "  ✅ GitHub Release: ${params.GITHUB_RELEASE_TAG}"
+            }
+            echo ""
+            echo "Next steps:"
+            echo "1. Verify packages are available in registries"
+            echo "2. Move artifacts from dev/ to release/ in Apache SVN"
+            echo "3. Announce the release"
+            echo "=========================================="
+        }
+        failure {
+            echo "❌ Release publishing failed!"
+            echo "Check logs above for details"
+        }
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}
