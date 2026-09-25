@@ -21,7 +21,7 @@ import { SnapGrid } from "../snapgrid/SnapGrid";
 import { snapBoundsDimensions, snapBoundsPosition } from "../snapgrid/SnapGrid";
 import { PositionalNodeHandleId } from "../nodes/PositionalNodeHandles";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
-import { getCenter } from "./Maths";
+import { Bounds, getCenter, getPositionalHandlePosition } from "./Maths";
 import { DC__Point, DC__Bounds, DC__Dimension } from "./model";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
@@ -56,6 +56,12 @@ export function getPointForHandle({
   } else {
     throw new Error(`Invalid target handle id '${handle}'.`);
   }
+}
+
+/** Midpoint of `node`'s border on the side facing `towards`, by the same dominant-axis rule as auto-positioned edges. */
+export function getBorderMidpointTowards(node: Bounds, towards: DC__Point): DC__Point {
+  const [x, y] = getPositionalHandlePosition(node, node, towards);
+  return { "@_x": x, "@_y": y };
 }
 
 export function getHandlePosition({

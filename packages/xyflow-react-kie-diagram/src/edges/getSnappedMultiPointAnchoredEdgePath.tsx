@@ -21,7 +21,7 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DC__Point, DC__Shape } from "../maths/model";
 import { SnapGrid, snapPoint } from "../snapgrid/SnapGrid";
 import { PositionalNodeHandleId } from "../nodes/PositionalNodeHandles";
-import { getHandlePosition, getLineRectangleIntersectionPoint, pointsToPath } from "../maths/DcMaths";
+import { getBorderMidpointTowards, getHandlePosition, pointsToPath } from "../maths/DcMaths";
 import { Bounds, getBoundsCenterPoint, getDiscretelyAutoPositionedEdgeParams } from "../maths/Maths";
 import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";
 
@@ -142,7 +142,6 @@ export function getSnappedHandlePosition(
   snappedSecondWaypoint: DC__Point,
   handlePosition: PositionalNodeHandleId
 ): DC__Point {
-  const centerHandleWaypoint = getBoundsCenterPoint(snappedNode);
   const nodeRectangle = {
     x: snappedNode.x ?? 0,
     y: snappedNode.y ?? 0,
@@ -161,10 +160,7 @@ export function getSnappedHandlePosition(
       "@_y": nodeRectangle.y + nodeRectangle.height,
     },
     [PositionalNodeHandleId.Left]: { "@_x": nodeRectangle.x, "@_y": nodeRectangle.y + nodeRectangle.height / 2 },
-    [PositionalNodeHandleId.Center]: getLineRectangleIntersectionPoint(
-      snappedSecondWaypoint,
-      centerHandleWaypoint,
-      nodeRectangle
-    ),
+    // Auto-anchored end: attach to the border midpoint facing the connected node.
+    [PositionalNodeHandleId.Center]: getBorderMidpointTowards(nodeRectangle, snappedSecondWaypoint),
   });
 }

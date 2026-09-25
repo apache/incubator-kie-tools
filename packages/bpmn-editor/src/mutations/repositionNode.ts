@@ -20,9 +20,26 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { BPMN20__tDefinitions, BPMNDI__BPMNEdge } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { DC__Shape } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/model";
+import {
+  Bounds,
+  getBoundsCenterPoint,
+  getPositionalHandlePosition,
+} from "@kie-tools/xyflow-react-kie-diagram/dist/maths/Maths";
 import { BpmnNodeType } from "../diagram/BpmnDiagramDomain";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+
+function getShapeBoundsById(diagramElements: { "@_id"?: string }[], shapeId: string | undefined): Bounds | undefined {
+  if (!shapeId) {
+    return undefined;
+  }
+  const bounds = (diagramElements.find((e) => e["@_id"] === shapeId) as Normalized<DC__Shape> | undefined)?.[
+    "dc:Bounds"
+  ];
+  return bounds
+    ? { x: bounds["@_x"], y: bounds["@_y"], width: bounds["@_width"], height: bounds["@_height"] }
+    : undefined;
+}
 
 export function repositionNode({
   definitions,
@@ -76,6 +93,19 @@ export function repositionNode({
     throw new Error(`BPMN MUTATION: Unknown type of node position change '${(__readonly_change as any).type}'.`);
   }
 
+  const movedNodeBoundsNew: Bounds = {
+    x: shapeBounds["@_x"],
+    y: shapeBounds["@_y"],
+    width: shapeBounds["@_width"],
+    height: shapeBounds["@_height"],
+  };
+  const movedNodeBoundsOld: Bounds = {
+    ...movedNodeBoundsNew,
+    x: (movedNodeBoundsNew.x ?? 0) - deltaX,
+    y: (movedNodeBoundsNew.y ?? 0) - deltaY,
+  };
+  const movedNodeCenterNew = getBoundsCenterPoint(movedNodeBoundsNew);
+
   const offsetEdges = (args: { edgeIndexes: number[]; waypoint: "last" | "first" }) => {
     for (const edgeIndex of args.edgeIndexes) {
       const edge = diagramElements[edgeIndex] as Normalized<BPMNDI__BPMNEdge> | undefined;
@@ -84,6 +114,21 @@ export function repositionNode({
       }
 
       const isEdgeSelected = __readonly_change.selectedEdges.indexOf(edge["@_bpmnElement"]!) >= 0;
+
+      const endpointIndex = args.waypoint === "first" ? 0 : edge["di:waypoint"].length - 1;
+
+      // Reset the anchor to auto (node center) only when the node crossed into a different zone
+      // relative to the connected node. Same side/zone -> keep the (possibly pinned) anchor.
+      const otherNodeBounds = getShapeBoundsById(
+        diagramElements,
+        args.waypoint === "first" ? edge["@_targetElement"] : edge["@_sourceElement"]
+      );
+      let shouldResetEndpointToAuto = false;
+      if (otherNodeBounds) {
+        const [, , zoneBefore] = getPositionalHandlePosition(movedNodeBoundsOld, otherNodeBounds, undefined);
+        const [, , zoneAfter] = getPositionalHandlePosition(movedNodeBoundsNew, otherNodeBounds, undefined);
+        shouldResetEndpointToAuto = zoneBefore !== zoneAfter;
+      }
 
       const waypointIndexes = switchExpression(args.waypoint, {
         first: isEdgeSelected
@@ -104,8 +149,13 @@ export function repositionNode({
         }
 
         const w = edge["di:waypoint"][wi];
-        w["@_x"] += deltaX;
-        w["@_y"] += deltaY;
+        if (wi === endpointIndex && shouldResetEndpointToAuto) {
+          w["@_x"] = movedNodeCenterNew["@_x"];
+          w["@_y"] = movedNodeCenterNew["@_y"];
+        } else {
+          w["@_x"] += deltaX;
+          w["@_y"] += deltaY;
+        }
       }
     }
   };
