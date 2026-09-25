@@ -33,7 +33,7 @@ spec:
       args:
         - -c
         - >-
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')/kubectl" &&
           chmod +x kubectl &&
           ./kubectl proxy --address 0.0.0.0 --port 8051 --accept-hosts '^*$'
       ports:
