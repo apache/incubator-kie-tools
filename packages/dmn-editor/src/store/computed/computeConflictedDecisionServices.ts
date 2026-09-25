@@ -20,7 +20,7 @@
 import { DmnDiagramNodeData } from "../../diagram/nodes/Nodes";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
 import { Computed, State } from "../Store";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 
 export function computeConflictedDecisionServices(
   definitions: State["dmn"]["model"]["definitions"],

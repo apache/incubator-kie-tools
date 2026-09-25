@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import "./NodeSvgs.css";
 
 export type NodeLabelPosition =

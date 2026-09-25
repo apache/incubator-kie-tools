@@ -19,7 +19,7 @@
 
 import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
