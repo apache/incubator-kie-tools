@@ -23,13 +23,16 @@ import { DC__Shape } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/model"
 import { BpmnNodeType } from "../diagram/BpmnDiagramDomain";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { updateEdgeWaypointsKeepingLabelAttached } from "./repositionEdgeLabel";
 
 export function repositionNode({
   definitions,
+  __readonly_labelReferenceDefinitions,
   controlWaypointsByEdge,
   __readonly_change,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
+  __readonly_labelReferenceDefinitions?: BPMN20__tDefinitions;
   /**
    * This will keep track of all waypoints that were updated, in the case where multiple nodes move together.
    * This will make sure we only move edges once, even though they might be source/target edges for multiple nodes.
@@ -53,6 +56,8 @@ export function repositionNode({
   );
 }) {
   const { diagramElements } = addOrGetProcessAndDiagramElements({ definitions });
+  const referenceElements =
+    __readonly_labelReferenceDefinitions?.["bpmndi:BPMNDiagram"]?.[0]?.["bpmndi:BPMNPlane"]["di:DiagramElement"];
 
   const shape = diagramElements?.[__readonly_change.shapeIndex] as Normalized<DC__Shape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
@@ -95,18 +100,26 @@ export function repositionNode({
       });
 
       controlWaypointsByEdge.set(edgeIndex, controlWaypointsByEdge.get(edgeIndex) ?? new Set());
-      for (const wi of waypointIndexes) {
-        const waypointsControl = controlWaypointsByEdge.get(edgeIndex)!;
-        if (waypointsControl.has(wi)) {
-          continue;
-        } else {
-          waypointsControl.add(wi);
-        }
+      updateEdgeWaypointsKeepingLabelAttached(
+        edge,
+        () => {
+          for (const wi of waypointIndexes) {
+            const waypointsControl = controlWaypointsByEdge.get(edgeIndex)!;
+            if (waypointsControl.has(wi)) {
+              continue;
+            } else {
+              waypointsControl.add(wi);
+            }
 
-        const w = edge["di:waypoint"][wi];
-        w["@_x"] += deltaX;
-        w["@_y"] += deltaY;
-      }
+            const w = edge["di:waypoint"][wi];
+            w["@_x"] += deltaX;
+            w["@_y"] += deltaY;
+          }
+        },
+        referenceElements?.find((e) => e.__$$element === "bpmndi:BPMNEdge" && e["@_id"] === edge["@_id"]) as
+          | typeof edge
+          | undefined
+      );
     }
   };
 
