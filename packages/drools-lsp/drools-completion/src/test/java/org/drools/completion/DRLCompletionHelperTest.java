@@ -25,9 +25,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.drools.drl.parser.antlr4.DRL10Parser;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionItemKind;
 import org.eclipse.lsp4j.Diagnostic;
@@ -715,6 +717,266 @@ class DRLCompletionHelperTest {
                 text, caretPosition, getLanguageClient());
 
         assertThat(result).isNotNull();
+    }
+
+    // ── statics after a type name (issue 3966) ───────────────────────────
+
+    /** Caret immediately after {@code marker}, so no column is counted by hand. */
+    private static Position caretAfter(String text, String marker) {
+        int idx = text.indexOf(marker) + marker.length();
+        int line = (int) text.substring(0, idx).chars().filter(c -> c == '\n').count();
+        int lineStart = text.lastIndexOf('\n', idx - 1) + 1;
+        return new Position(line, idx - lineStart);
+    }
+
+    private static final String IMPORTS_ROUNDING =
+            "package demo;\n"
+            + "import org.drools.completion.fixtures.Rounding;\n"
+            + "rule R\nwhen\n";
+
+    /**
+     * Instance properties are the one set that cannot follow a type name, so
+     * after {@code Rounding.} only its statics are legal.
+     */
+    @Test
+    void afterATypeNameOnlyStaticsAreOffered() {
+        String text = IMPORTS_ROUNDING + "    Order( total > Rounding.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Rounding."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("SCALE", "MODE", "roundHalfUp", "describe")
+                .doesNotContain("applied", "label");
+        assertThat(result)
+                .anySatisfy(i -> {
+                    assertThat(i.getLabel()).isEqualTo("SCALE");
+                    assertThat(i.getDetail()).isEqualTo("int");
+                })
+                .anySatisfy(i -> {
+                    assertThat(i.getLabel()).isEqualTo("describe");
+                    assertThat(i.getDetail()).isEqualTo("describe(int, String) : String");
+                });
+    }
+
+    /** A fully-qualified type name is a type name too, so the same statics follow it. */
+    @Test
+    void aQualifiedTypeNameOffersItsStatics() {
+        String text = "package demo;\nrule R\nwhen\n"
+                + "    Order( total > org.drools.completion.fixtures.Rounding.\nthen\nend\n";
+        ClassIndex classIndex = ClassIndex.of(
+                Map.of("Rounding", List.of("org.drools.completion.fixtures.Rounding")));
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Rounding."), getLanguageClient(), classIndex,
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("SCALE", "MODE", "roundHalfUp", "describe")
+                .doesNotContain("applied", "label");
+    }
+
+    /**
+     * The reported case: {@code Pet} has three bean properties and no statics,
+     * and all three were offered after {@code Pet.} — the one set that cannot
+     * legally follow a type name. Nothing is the right answer here.
+     */
+    @Test
+    void aTypeWithNoStaticsOffersNoInstancePropertiesAfterTheDot() {
+        String text = "package demo;\n"
+                + "import org.drools.completion.fixtures.Pet;\n"
+                + "rule R\nwhen\n    Order( x > Pet.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Pet."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .doesNotContain("name", "friendly", "legs");
+    }
+
+    /** Only the first hop is static: a constant is an ordinary value of its type. */
+    @Test
+    void theHopAfterAStaticRevertsToInstanceMembers() {
+        String text = IMPORTS_ROUNDING + "    Order( total > Rounding.MODE.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Rounding.MODE."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        // MODE is a String, so String's bean properties resume.
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("empty", "blank")
+                .doesNotContain("SCALE", "MODE", "roundHalfUp");
+    }
+
+    /** A lower-case head is a value, not a type reference — instance members stand. */
+    @Test
+    void instancePositionIsUnchangedByTheStaticView() {
+        String text = "package demo;\n"
+                + "declare Pet\n  name : String\n  legs : int\nend\n"
+                + "rule R\nwhen\n    $p : Pet( )\n    Order( x > $p.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "$p."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel).contains("name", "legs");
+    }
+
+    /**
+     * A DRL declare has no statics, and its enum constants are already members,
+     * so the static view must not shadow them.
+     */
+    @Test
+    void declaredEnumConstantsStillFollowTheTypeName() {
+        String text = "package demo;\n"
+                + "declare enum Color\n  RED, GREEN, BLUE;\nend\n"
+                + "rule R\nwhen\n    Order( c == Color.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .contains("RED", "GREEN", "BLUE");
+    }
+
+    /** A declare has no statics, so nothing can legally follow its name. */
+    @Test
+    void aDeclaredTypeOffersNothingAfterItsName() {
+        String text = "package demo;\n"
+                + "declare Pet\n  name : String\n  legs : int\nend\n"
+                + "rule R\nwhen\n    Order( x > Pet.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Pet."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).isEmpty();
+    }
+
+    private static final String DECLARED_ENUM_WITH_FIELD =
+            "package demo;\n"
+            + "declare enum Color\n  RED(\"r\"), GREEN(\"g\");\n  code : String\nend\n"
+            + "rule R\nwhen\n";
+
+    @Test
+    void aDeclaredEnumOffersOnlyItsConstantsAfterItsName() {
+        String text = DECLARED_ENUM_WITH_FIELD + "    Order( c == Color.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("RED", "GREEN");
+    }
+
+    /** A field typed as its own enum is not a constant, so the type name does not reach it. */
+    @Test
+    void aSelfTypedEnumFieldIsNotOfferedAsAConstant() {
+        String text = "package demo;\n"
+                + "declare enum Color\n  RED(\"r\"), GREEN(\"g\");\n  code : String\n  next : Color\nend\n"
+                + "rule R\nwhen\n    Order( c == Color.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel)
+                .containsExactlyInAnyOrder("RED", "GREEN");
+    }
+
+    @Test
+    void theHopAfterADeclaredEnumConstantRevertsToItsFields() {
+        String text = DECLARED_ENUM_WITH_FIELD + "    Order( c == Color.RED.\nthen\nend\n";
+
+        List<CompletionItem> result = DRLCompletionHelper.getCompletionItems(
+                text, caretAfter(text, "Color.RED."), getLanguageClient(), ClassIndex.empty(),
+                new ClassMemberIndex(getClass().getClassLoader()));
+
+        assertThat(result).extracting(CompletionItem::getLabel).contains("code");
+    }
+
+    /**
+     * A simple name shared by two classpath types is ambiguous on the class
+     * index alone, but a wildcard import picks one package — as it does for the
+     * compiler. This works only if the extractor keeps the {@code .*} suffix,
+     * which the grammar carries outside {@code drlQualifiedName}.
+     */
+    @Test
+    void localWildcardImportResolvesAmbiguousSimpleName() {
+        String text = """
+                package org.example;
+
+                import com.acme.model.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.acme.model.Order", "com.other.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex))
+                .isEqualTo("com.acme.model.Order");
+    }
+
+    /** A wildcard import must not resolve a type its package does not provide. */
+    @Test
+    void localWildcardImportDoesNotReachOutsideItsPackage() {
+        String text = """
+                package org.example;
+
+                import com.acme.model.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.other.Order", "com.third.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex)).isNull();
+    }
+
+    /**
+     * JLS 7.5.2: an on-demand import makes available the classes "declared in
+     * the package", not those of its subpackages. The second Order keeps the
+     * bare-name fallback ambiguous, so only the wildcard branch could answer.
+     */
+    @Test
+    void localWildcardImportDoesNotReachIntoSubpackages() {
+        String text = """
+                package org.example;
+
+                import com.acme.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.acme.model.Order", "com.other.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex)).isNull();
+    }
+
+    /**
+     * JLS 6.5.5.1: "If multiple type-import-on-demand declarations import types
+     * with the same name ... the simple type name is ambiguous, and a
+     * compile-time error occurs." Resolving to either would be a guess.
+     */
+    @Test
+    void twoWildcardImportsProvidingTheSameNameResolveToNothing() {
+        String text = """
+                package org.example;
+
+                import com.acme.*;
+                import com.other.*;
+                """;
+
+        ClassIndex classIndex = ClassIndex.of(Map.of(
+                "Order", List.of("com.acme.Order", "com.other.Order")));
+        DRL10Parser.CompilationUnitContext cu = ParsedDrl.of(text).compilationUnit;
+
+        assertThat(DRLCompletionHelper.resolveFqcn("Order", "Order", cu, classIndex)).isNull();
     }
 
     private List<String> completionItemStrings(List<CompletionItem> result) {

@@ -24,6 +24,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
 import org.eclipse.lsp4j.services.WorkspaceService;
@@ -47,6 +50,38 @@ public class DroolsLspWorkspaceService implements WorkspaceService {
 
     @Override
     public void didChangeConfiguration(DidChangeConfigurationParams params) {
+        if (server.clientProvidesConfiguration()) {
+            server.pullFormatterOptions();
+            return;
+        }
+        FormatterOptions options = formatterOptionsIn(params == null ? null : params.getSettings());
+        if (options != null) {
+            server.getTextDocumentService().setFormatterOptions(options);
+        }
+    }
+
+    /**
+     * The formatter object inside a pushed didChangeConfiguration payload, or null
+     * when it carries none — the fallback for a client that does not answer
+     * workspace/configuration. The walk is drools → lsp → formatter because that is
+     * how vscode-languageclient nests a pushed section
+     * ({@code SyncConfigurationFeature.extractSettingsInformation}); any other shape
+     * leaves the current options untouched.
+     */
+    static FormatterOptions formatterOptionsIn(Object settings) {
+        if (!(settings instanceof JsonObject root)) {
+            return null;
+        }
+        JsonElement drools = root.get("drools");
+        if (!(drools instanceof JsonObject d)) {
+            return null;
+        }
+        JsonElement lsp = d.get("lsp");
+        if (!(lsp instanceof JsonObject l)) {
+            return null;
+        }
+        JsonElement formatter = l.get("formatter");
+        return formatter instanceof JsonObject f ? FormatterOptions.fromJson(f) : null;
     }
 
     @Override

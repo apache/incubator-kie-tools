@@ -1,0 +1,106 @@
+package com.example.orders
+import com.example.model.Order;
+import   com.example.model.Customer
+global java.util.List audit;
+global com.example.pricing.PriceBook   prices
+
+declare enum Priority
+LOW("l",1),   HIGH("h",3);
+label : String
+  rank:int
+end
+
+declare Flag
+    order : Order  @key
+   reason:String
+end
+
+declare Rush   extends   Flag
+eta:int
+     courier : String  @key
+end
+
+declare entry-point "orders"   @Foo
+end
+
+declare window RecentOrders  @Bar
+  Order(total>10) over window:time(30s)
+end
+
+function String describe(Order o) {
+    return o.getId() + "/" + o.getTotal();
+}
+
+rule "flag large orders"  salience 10
+when
+$o:Order(total>1000,   customer!=null )
+   not Flag( order == $o )
+then
+  insert(new Flag($o, "large"));
+    audit.add( $o.getId() );
+end
+
+rule "review stalled orders"   @Deprecated  salience 5 no-loop
+when
+  $o : Order( status=="STALLED" )
+then
+   audit.add("stalled");
+end   // revisit once the courier feed lands
+
+rule "hold on many open constraints"
+when
+  $o:Order(total>1000,customer!=null,status=="OPEN",shippingRegion=="EMEA",courier!=null,weight<25)
+then
+end
+
+rule "escalate with the whole order on the wire"
+when
+  $o : Order()
+then
+   Notifications.escalate(describe($o),$o.getCustomer().getName(),$o.getShippingRegion(),"large order",audit);
+end
+
+rule "escalate or hold"
+when
+  $c:Customer()
+exists Order(customer==$c,total>5000)
+   not Flag( reason=="held" )
+  (
+Order(customer==$c,status=="OPEN")
+     or
+  Order( customer==$c, status=="STALLED" )
+  )
+then
+   audit.add($c.getName());
+end
+
+query   ordersOverFloor(String region,int floor)  @Deprecated
+$c:Customer( shippingRegion==region )
+   $o : Order(customer==$c,total>floor)
+end
+
+rule "sum per customer"
+when
+  $c : Customer()
+  accumulate( Order( customer == $c, $t : total ), $sum : sum( $t ), $n : count( $t ) )
+then
+  System.out.println( $c.getName() + ": " + $sum + " over " + $n );
+end
+
+rule "revenue by region"
+when
+  groupby(  Order( $c:customer, $t:total ),
+   $region : $c.getShippingRegion();
+  $revenue : sum( $t ) )
+then
+   audit.add($region + "=" + $revenue);
+end
+
+// @formatter:off
+rule "hand-aligned, leave alone"
+    when
+  $o:Order(  total>1 )
+    then
+        audit.add( "frozen" );
+end
+// @formatter:on

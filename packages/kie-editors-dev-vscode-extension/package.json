@@ -60,7 +60,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^10.0.7",
-    "@types/vscode": "1.67.0",
+    "@types/vscode": "1.103.0",
     "@vscode/test-electron": "^2.3.6",
     "@vscode/test-web": "^0.0.66",
     "@vscode/vsce": "^3.7.1",
@@ -83,7 +83,7 @@
     "webpack-merge": "^5.9.0"
   },
   "engines": {
-    "vscode": "^1.67.0"
+    "vscode": "^1.103.0"
   },
   "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
   "categories": [
