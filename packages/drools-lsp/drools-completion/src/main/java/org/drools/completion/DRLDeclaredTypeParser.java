@@ -200,7 +200,7 @@ public final class DRLDeclaredTypeParser {
             for (DRL10Parser.EnumerativeContext enumerative : ctx.enumeratives().enumerative()) {
                 if (enumerative.drlIdentifier() != null) {
                     fields.add(new Field(enumerative.drlIdentifier().getText(), name,
-                                         extractEnumArgs(enumerative)));
+                                         extractEnumArgs(enumerative), Field.Origin.ENUM_CONSTANT));
                 }
             }
         }

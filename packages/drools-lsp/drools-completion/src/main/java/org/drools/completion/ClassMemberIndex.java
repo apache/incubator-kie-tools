@@ -245,20 +245,105 @@ public final class ClassMemberIndex implements AutoCloseable {
                 if (!Modifier.isPublic(ctor.getModifiers())) {
                     continue;
                 }
-                StringBuilder signature = new StringBuilder(clazz.getSimpleName()).append('(');
-                Class<?>[] params = ctor.getParameterTypes();
-                for (int i = 0; i < params.length; i++) {
-                    if (i > 0) {
-                        signature.append(", ");
-                    }
-                    signature.append(params[i].getSimpleName());
-                }
-                signature.append(')');
-                out.add(signature.toString());
+                out.add(clazz.getSimpleName() + "("
+                        + parameterList(ctor.getParameterTypes(), ctor.isVarArgs()) + ")");
             }
             return Collections.unmodifiableList(out);
         } catch (Throwable t) {
             logger.log(Level.FINE, "Failed to reflect constructors of " + fqcn, t);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Parameter types as simple names, a varargs tail as {@code T...} — the
+     * shape the source parser reports, so a signature reads the same before and
+     * after a build.
+     */
+    private static String parameterList(Class<?>[] params, boolean varArgs) {
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < params.length; i++) {
+            if (i > 0) {
+                out.append(", ");
+            }
+            if (varArgs && i == params.length - 1) {
+                out.append(params[i].getComponentType().getSimpleName()).append("...");
+            } else {
+                out.append(params[i].getSimpleName());
+            }
+        }
+        return out.toString();
+    }
+
+    /**
+     * Public static fields of {@code fqcn} as name and type — enum constants
+     * included, since they are public static fields of their own enum — or the
+     * {@link #fallback} source's when the class can't load, or empty when
+     * neither knows the type.
+     *
+     * <p>Answers for the {@code Type.NAME} position, so it is deliberately
+     * disjoint from {@link #membersOf}: that view is instance members only.
+     * Only a field's declared type is read, never its value, so this cannot
+     * run a static initializer. Not cached, matching
+     * {@link #constructorsOf} — the static view is consulted on hover and on
+     * completion after a dot, not per pattern per request.
+     */
+    public List<Field> staticFieldsOf(String fqcn) {
+        if (fqcn == null || fqcn.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            JavaMemberSource f = fallback;
+            return f != null ? f.staticFieldsOf(fqcn) : Collections.emptyList();
+        }
+        try {
+            List<Field> out = new ArrayList<>();
+            for (java.lang.reflect.Field field : clazz.getFields()) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    out.add(new Field(field.getName(), field.getType().getSimpleName(), null,
+                                      field.isEnumConstant() ? Field.Origin.ENUM_CONSTANT
+                                                             : Field.Origin.FIELD));
+                }
+            }
+            return Collections.unmodifiableList(out);
+        } catch (Throwable t) {
+            logger.log(Level.FINE, "Failed to reflect static fields of " + fqcn, t);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Public static method signatures of {@code fqcn} —
+     * {@code name(ParamSimple, ParamSimple) : Return}, the shape
+     * {@link #constructorsOf} uses plus the return type a constructor has no
+     * need of — or the {@link #fallback} source's when the
+     * class can't load, or empty when neither knows the type. Inherited public
+     * statics are included, matching {@code getFields()} above and Java itself,
+     * which permits reaching an inherited static through a subtype's name. Not
+     * cached, as above.
+     */
+    public List<String> staticMethodsOf(String fqcn) {
+        if (fqcn == null || fqcn.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Class<?> clazz = tryLoad(fqcn);
+        if (clazz == null) {
+            JavaMemberSource f = fallback;
+            return f != null ? f.staticMethodsOf(fqcn) : Collections.emptyList();
+        }
+        try {
+            List<String> out = new ArrayList<>();
+            for (Method m : clazz.getMethods()) {
+                if (!Modifier.isStatic(m.getModifiers()) || !Modifier.isPublic(m.getModifiers())) {
+                    continue;
+                }
+                out.add(m.getName() + "(" + parameterList(m.getParameterTypes(), m.isVarArgs())
+                        + ") : " + m.getReturnType().getSimpleName());
+            }
+            return Collections.unmodifiableList(out);
+        } catch (Throwable t) {
+            logger.log(Level.FINE, "Failed to reflect static methods of " + fqcn, t);
             return Collections.emptyList();
         }
     }
