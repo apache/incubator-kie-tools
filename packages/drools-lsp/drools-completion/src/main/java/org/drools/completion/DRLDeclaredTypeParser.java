@@ -48,9 +48,36 @@ public final class DRLDeclaredTypeParser {
     private static final class CachedEntry {
         final long modMillis;
         final List<DeclaredType> types;
+        final String packageName;
+        final List<String> imports;
 
-        CachedEntry(long modMillis, List<DeclaredType> types) {
+        CachedEntry(long modMillis, List<DeclaredType> types, String packageName,
+                    List<String> imports) {
             this.modMillis = modMillis;
+            this.types = types;
+            this.packageName = packageName;
+            this.imports = imports;
+        }
+    }
+
+    /**
+     * A file's package name, imports, and declared types, all read from a single
+     * parse. The package name is the empty string when the file declares none;
+     * imports keep any {@code .*} wildcard suffix so they can drive
+     * class-index-verified wildcard resolution, matching what
+     * {@code DRLCompletionHelper} extracts for the current document. All lists
+     * are unmodifiable.
+     */
+    public static final class FileInfo {
+        static final FileInfo EMPTY = new FileInfo("", List.of(), List.of());
+
+        final String packageName;
+        final List<String> imports;
+        final List<DeclaredType> types;
+
+        FileInfo(String packageName, List<String> imports, List<DeclaredType> types) {
+            this.packageName = packageName == null ? "" : packageName;
+            this.imports = imports;
             this.types = types;
         }
     }
@@ -74,23 +101,53 @@ public final class DRLDeclaredTypeParser {
      * an empty list.
      */
     public static List<DeclaredType> parseDeclaredTypesCached(Path file) {
+        return cachedFileInfo(file).types;
+    }
+
+    /**
+     * Returns the package name, imports, and declared types of {@code file},
+     * serving a cached result while the file's modification time is unchanged.
+     * Missing/unreadable files yield {@link FileInfo#EMPTY}. Shares the one
+     * mtime-keyed cache with {@link #parseDeclaredTypesCached}, so a sibling is
+     * parsed once for both its declares and its imports.
+     */
+    public static FileInfo cachedFileInfo(Path file) {
         if (file == null || !Files.isRegularFile(file)) {
-            return Collections.emptyList();
+            return FileInfo.EMPTY;
         }
         try {
             Path key = file.toAbsolutePath().normalize();
             long modMillis = Files.getLastModifiedTime(file).toMillis();
             CachedEntry cached = FILE_CACHE.get(key);
             if (cached != null && cached.modMillis == modMillis) {
-                return cached.types;
+                return new FileInfo(cached.packageName, cached.imports, cached.types);
             }
-            List<DeclaredType> types =
-                    Collections.unmodifiableList(parseDeclaredTypes(Files.readString(file)));
-            FILE_CACHE.put(key, new CachedEntry(modMillis, types));
-            return types;
+            FileInfo info = parseFileInfo(Files.readString(file));
+            FILE_CACHE.put(key, new CachedEntry(modMillis, info.types, info.packageName, info.imports));
+            return info;
         } catch (Exception e) {
             logger.fine(() -> "Failed to read/parse " + file + ": " + e.getMessage());
-            return Collections.emptyList();
+            return FileInfo.EMPTY;
+        }
+    }
+
+    /**
+     * Parses the package name, imports, and declared types from {@code text}
+     * (uncached — for open unsaved buffers). Parser errors are swallowed so a
+     * partial file still yields partial results.
+     */
+    public static FileInfo parseFileInfo(String text) {
+        try {
+            DRL10Parser.CompilationUnitContext cu = DRLParsers.silent(text).compilationUnit();
+            if (cu == null) {
+                return FileInfo.EMPTY;
+            }
+            return new FileInfo(extractPackageName(cu),
+                    Collections.unmodifiableList(extractImports(cu)),
+                    Collections.unmodifiableList(extractFromCompilationUnit(cu)));
+        } catch (Exception e) {
+            logger.fine(() -> "Failed to parse DRL for file info: " + e.getMessage());
+            return FileInfo.EMPTY;
         }
     }
 
@@ -168,6 +225,40 @@ public final class DRLDeclaredTypeParser {
             }
         }
         return types;
+    }
+
+    /**
+     * The compilation unit's declared package, or the empty string when it
+     * declares none. Grammar: {@code packagedef : PACKAGE name=drlQualifiedName SEMI?}.
+     */
+    static String extractPackageName(DRL10Parser.CompilationUnitContext cu) {
+        if (cu == null || cu.packagedef() == null || cu.packagedef().drlQualifiedName() == null) {
+            return "";
+        }
+        return cu.packagedef().drlQualifiedName().getText();
+    }
+
+    /**
+     * The compilation unit's standard imports (excluding {@code import function}
+     * and {@code import static}), each as its qualified name. A wildcard import
+     * keeps its {@code .*} suffix, which the grammar carries as a separate
+     * {@code (DOT MUL)} outside {@code drlQualifiedName} — reconstructed here so
+     * wildcard imports read the same way local ones do downstream.
+     */
+    private static List<String> extractImports(DRL10Parser.CompilationUnitContext cu) {
+        List<String> imports = new ArrayList<>();
+        for (DRL10Parser.DrlStatementdefContext stmt : cu.drlStatementdef()) {
+            if (stmt.importdef() instanceof DRL10Parser.ImportStandardDefContext importDef
+                    && importDef.DRL_FUNCTION() == null && importDef.STATIC() == null
+                    && importDef.drlQualifiedName() != null) {
+                String name = importDef.drlQualifiedName().getText();
+                if (importDef.MUL() != null) {
+                    name = name + ".*";
+                }
+                imports.add(name);
+            }
+        }
+        return imports;
     }
 
     private static DeclaredType extractTypeDeclaration(DRL10Parser.TypeDeclarationContext ctx) {
