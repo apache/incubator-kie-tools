@@ -20,36 +20,36 @@
 <project
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <groupId>org.kie.tools</groupId>
     <artifactId>drools-lsp</artifactId>
+    <groupId>org.kie.tools</groupId>
     <version>${revision}</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>drools-lsp-server</artifactId>
-
-  <name>Drools :: LSP :: Server</name>
+  <artifactId>drools-formatter</artifactId>
+  <name>Drools :: Formatter</name>
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.tools</groupId>
-      <artifactId>drools-completion</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-drl-parser</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-io</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.tools</groupId>
-      <artifactId>drools-formatter</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <!-- External dependencies -->
-    <dependency>
-      <groupId>org.eclipse.lsp4j</groupId>
-      <artifactId>org.eclipse.lsp4j</artifactId>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -66,8 +66,11 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!-- Tests -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -75,19 +78,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-
         <configuration>
-          <finalName>drools-lsp-server</finalName>
+          <finalName>drools-formatter</finalName>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>org.drools.lsp.server.Main</mainClass>
+              <mainClass>org.drools.formatter.FormatCLI</mainClass>
             </manifest>
           </archive>
         </configuration>
-
         <executions>
           <execution>
             <id>make-assembly</id>
