@@ -37,3 +37,31 @@ export async function prettierFormat(content: string) {
     parser: "xml",
   });
 }
+
+/**
+ * Returns `xml` with the attributes of every start tag sorted by name.
+ *
+ * Attribute order carries no meaning in XML, and the marshaller does not preserve it: it builds its JSON by iterating
+ * `Element.attributes`, and `build()` then serializes them in that same order. Engines disagree on what that order is.
+ * Parsing `<e id="1" xmlns:zz="urn:zz" name="n" xmlns:aa="urn:aa"/>` gives:
+ *
+ *   - Firefox and jsdom      -> `id xmlns:zz name xmlns:aa`  (the source order)
+ *   - WebKit and Chromium    -> `xmlns:zz xmlns:aa id name`  (namespace declarations hoisted to the front)
+ *   - Chrome 153+            -> `xmlns:aa xmlns:zz id name`  (hoisted AND sorted alphabetically)
+ *
+ * Chrome 153 changed the last of these, which is what made this test start failing. Normalizing both sides keeps the
+ * comparison on what the test is actually about — that every element, attribute, value and text node survives the
+ * round-trip — while ignoring an ordering the library never promised to preserve. A missing or altered attribute
+ * still fails, because sorting changes the order of the attributes and nothing else.
+ */
+export function withSortedAttributes(xml: string) {
+  return xml.replace(
+    /<([A-Za-z_][\w.:-]*)((?:\s+[A-Za-z_][\w.:-]*\s*=\s*"[^"]*")+)(\s*\/)?\s*>/g,
+    (_match, tagName: string, rawAttributes: string, selfClosing: string | undefined) => {
+      const attributes = [...rawAttributes.matchAll(/([A-Za-z_][\w.:-]*)\s*=\s*"([^"]*)"/g)]
+        .map(([, name, value]) => `${name}="${value}"`)
+        .sort();
+      return `<${tagName} ${attributes.join(" ")}${selfClosing ? " /" : ""}>`;
+    }
+  );
+}

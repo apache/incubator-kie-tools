@@ -277,8 +277,22 @@ public final class JavaSourceTypeIndex implements JavaMemberSource {
             return null;
         }
         Set<String> names = new LinkedHashSet<>(membersIncludingInherited(fqcn, type).keySet());
-        names.addAll(type.staticFieldNames);
+        for (Field staticField : type.staticFields) {
+            names.add(staticField.name);
+        }
         return names;
+    }
+
+    @Override
+    public List<Field> staticFieldsOf(String fqcn) {
+        JavaSourceType type = byFqcn(fqcn);
+        return type == null ? List.of() : type.staticFields;
+    }
+
+    @Override
+    public List<String> staticMethodsOf(String fqcn) {
+        JavaSourceType type = byFqcn(fqcn);
+        return type == null ? List.of() : type.staticMethods;
     }
 
     /**
