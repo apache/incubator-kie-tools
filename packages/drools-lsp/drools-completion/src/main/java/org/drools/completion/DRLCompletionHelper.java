@@ -21,6 +21,7 @@ package org.drools.completion;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -313,11 +314,18 @@ public class DRLCompletionHelper {
         String head = chain[0];
         String rootType;
         int firstFieldSegment = 1;
-        if (head.startsWith("$")) {
+        boolean typeReference = false;
+        int fqcnEnd = DRLHoverHelper.fqcnPrefixEnd(chain, classIndex);
+        if (fqcnEnd >= 1) {
+            rootType = String.join(".", Arrays.copyOfRange(chain, 0, fqcnEnd + 1));
+            firstFieldSegment = fqcnEnd + 1;
+            typeReference = true;
+        } else if (head.startsWith("$")) {
             rootType = LhsBindingResolver.resolveAt(text, DRLHoverHelper.positionToOffset(text, caret), typeIndex)
                     .get(head.substring(1));
         } else if (!head.isEmpty() && Character.isUpperCase(head.charAt(0))) {
             rootType = head;
+            typeReference = true;
         } else {
             // A bare lower-case head is a field of the pattern the caret is in.
             rootType = enclosingPatternTypeFromText(text, DRLHoverHelper.positionToOffset(text, caret));
@@ -327,6 +335,36 @@ public class DRLCompletionHelper {
             // The head names no type the document knows, so this dot is not a
             // member access at all — a qualified name, most likely.
             return null;
+        }
+
+        // After a type name Java permits only statics — the one set the instance
+        // view cannot legally offer. A DRL declare's only statics are its enum
+        // constants. Only the first hop is static; past it, instance members
+        // resume, because a constant is an ordinary value of its own type.
+        if (typeReference) {
+            List<Field> statics;
+            List<String> staticMethods;
+            DeclaredType declared = typeIndex.get(rootType);
+            if (declared != null) {
+                statics = declared.enumConstants();
+                staticMethods = List.of();
+            } else {
+                String fqcn = resolveFqcn(rootType, simpleNameOf(rootType), compilationUnit, classIndex);
+                if (fqcn == null) {
+                    return List.of();
+                }
+                statics = memberIndex.staticFieldsOf(fqcn);
+                staticMethods = memberIndex.staticMethodsOf(fqcn);
+            }
+            if (firstFieldSegment >= chain.length) {
+                return staticItems(statics, staticMethods);
+            }
+            String hopType = typeOfStatic(statics, chain[firstFieldSegment]);
+            if (hopType == null) {
+                return List.of();
+            }
+            rootType = hopType;
+            firstFieldSegment++;
         }
 
         // Kept qualified. A pattern head written as a fully-qualified name is
@@ -393,11 +431,46 @@ public class DRLCompletionHelper {
         return null;
     }
 
+    /** Simple name of a possibly-qualified type name. */
+    private static String simpleNameOf(String typeName) {
+        return typeName.substring(typeName.lastIndexOf('.') + 1);
+    }
+
+    /** The declared type of the static field named {@code name}, or {@code null}. */
+    private static String typeOfStatic(List<Field> statics, String name) {
+        for (Field candidate : statics) {
+            if (candidate.name.equals(name)) {
+                return candidate.type;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Items for the {@code Type.NAME} position: static fields carrying their
+     * type, then static methods carrying their signature. A method's label is
+     * its bare name so it completes to something callable, with the signature in
+     * the detail — two overloads therefore share a label and differ in detail.
+     */
+    private static List<CompletionItem> staticItems(List<Field> staticFields, List<String> staticMethods) {
+        List<CompletionItem> items = new ArrayList<>(fieldItems(staticFields));
+        for (String signature : staticMethods) {
+            int paren = signature.indexOf('(');
+            CompletionItem item = new CompletionItem();
+            item.setLabel(paren < 0 ? signature : signature.substring(0, paren));
+            item.setInsertText(item.getLabel());
+            item.setDetail(signature);
+            item.setKind(CompletionItemKind.Method);
+            items.add(item);
+        }
+        return items;
+    }
+
     /** Field items for a type name: DRL declares win, then the classpath. */
     private static List<CompletionItem> memberItemsOfType(String typeName, Map<String, DeclaredType> typeIndex,
                                                           DRL10Parser.CompilationUnitContext compilationUnit,
                                                           ClassIndex classIndex, ClassMemberIndex memberIndex) {
-        String simple = typeName.substring(typeName.lastIndexOf('.') + 1);
+        String simple = simpleNameOf(typeName);
         DeclaredType declared = typeIndex.get(simple);
         if (declared != null) {
             return fieldItems(DRLDeclaredTypeParser.fieldsIncludingInherited(declared, typeIndex));
@@ -429,7 +502,8 @@ public class DRLCompletionHelper {
      * <ol>
      *   <li>Already qualified — returned as-is.</li>
      *   <li>Exact (non-wildcard) import match.</li>
-     *   <li>Wildcard import match verified through the class index.</li>
+     *   <li>Wildcard import match verified through the class index — the named
+     *       package only, and skipped when two wildcards provide the name.</li>
      *   <li>Class index match for the simple name (skipped when ambiguous).</li>
      *   <li>{@code java.lang.*} — implicitly available in DRL without an import,
      *       resolved via the platform class loader.</li>
@@ -440,28 +514,53 @@ public class DRLCompletionHelper {
     static String resolveFqcn(String patternType, String simpleName,
                               DRL10Parser.CompilationUnitContext compilationUnit,
                               ClassIndex classIndex) {
+        return resolveFqcn(patternType, simpleName, compilationUnit, classIndex, List.of());
+    }
+
+    /**
+     * As {@link #resolveFqcn(String, String, DRL10Parser.CompilationUnitContext, ClassIndex)},
+     * but with {@code extraImports} unioned onto the document's own imports before
+     * resolution — both the exact and the wildcard branch see the union. Lets the
+     * unknown-type lint honor imports declared in same-package sibling files (which
+     * Drools merges into one namespace) without re-resolving. The four-argument
+     * overload delegates here with an empty collection, so its behavior is unchanged.
+     */
+    static String resolveFqcn(String patternType, String simpleName,
+                              DRL10Parser.CompilationUnitContext compilationUnit,
+                              ClassIndex classIndex, Collection<String> extraImports) {
         if (patternType.indexOf('.') >= 0) {
             return patternType;
         }
-        Set<String> imports = extractImports(compilationUnit);
+        Set<String> imports = new HashSet<>(extractImports(compilationUnit));
+        if (extraImports != null) {
+            imports.addAll(extraImports);
+        }
         // 1. Exact import.
         for (String imported : imports) {
             if (imported.endsWith("." + simpleName)) {
                 return imported;
             }
         }
-        // 2. Wildcard import — verify the package actually provides the type via
-        //    the class index.
+        // 2. Wildcard imports: the named package's own types only (JLS 7.5.2),
+        //    confirmed by the class index. A name that two wildcards both
+        //    provide is ambiguous (JLS 6.5.5.1), so it resolves to nothing, as
+        //    step 3 does for the bare class index.
+        Set<String> wildcardMatches = new HashSet<>();
         for (String imported : imports) {
             if (imported.endsWith(".*")) {
-                String pkg = imported.substring(0, imported.length() - 1); // keep the dot
-                for (String fqcn : classIndex.getMatching(simpleName)) {
-                    if (fqcn.startsWith(pkg)
-                            && (fqcn.endsWith("." + simpleName) || fqcn.equals(simpleName))) {
-                        return fqcn;
-                    }
+                String candidate = imported.substring(0, imported.length() - 1) + simpleName;
+                if (classIndex.forSimpleName(simpleName).contains(candidate)) {
+                    wildcardMatches.add(candidate);
                 }
             }
+        }
+        if (wildcardMatches.size() == 1) {
+            return wildcardMatches.iterator().next();
+        }
+        if (wildcardMatches.size() > 1) {
+            logger.log(Level.FINE, () -> "Ambiguous simple name '" + simpleName
+                    + "' under wildcard imports " + wildcardMatches);
+            return null;
         }
         // 3. Class index (any package). An unqualified name with two classpath
         //    classes sharing a simple name is ambiguous, so it is skipped.
@@ -554,12 +653,22 @@ public class DRLCompletionHelper {
         return items;
     }
 
+    /**
+     * Non-static type imports as qualified names. A wildcard import keeps its
+     * {@code .*} suffix, which the grammar carries as a separate
+     * {@code (DOT MUL)} outside {@code drlQualifiedName} — reconstructed here so
+     * the wildcard branch of {@link #resolveFqcn} sees local wildcards the same
+     * way it sees the sibling-file ones from
+     * {@link DRLDeclaredTypeParser#cachedFileInfo}.
+     */
     private static Set<String> extractImports(DRL10Parser.CompilationUnitContext compilationUnit) {
         Set<String> imports = new HashSet<>();
         for (DRL10Parser.DrlStatementdefContext stmt : compilationUnit.drlStatementdef()) {
             if (stmt.importdef() instanceof DRL10Parser.ImportStandardDefContext importDef) {
-                if (importDef.DRL_FUNCTION() == null && importDef.STATIC() == null) {
-                    imports.add(importDef.drlQualifiedName().getText());
+                if (importDef.DRL_FUNCTION() == null && importDef.STATIC() == null
+                        && importDef.drlQualifiedName() != null) {
+                    String name = importDef.drlQualifiedName().getText();
+                    imports.add(importDef.MUL() != null ? name + ".*" : name);
                 }
             }
         }

@@ -21,14 +21,23 @@ package org.drools.completion;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DRLWorkspaceTypeIndexTest {
+
+    @AfterEach
+    void restoreDefaultResolver() {
+        WorkspaceSiblingResolvers.setActive(null);
+    }
 
     // ---- buildLinkTargets ----
 
@@ -112,6 +121,88 @@ class DRLWorkspaceTypeIndexTest {
 
         assertThat(DRLWorkspaceTypeIndex.docFor("Address", "declare Foo\nend\n", current, open))
                 .isEqualTo("New doc.");
+    }
+
+    // ---- resolver-defined membership for open buffers ----
+
+    @Test
+    void openBufferOutsideTheResolverGroupingIsIgnored(@TempDir Path dir) throws Exception {
+        Path member = dir.resolve("member.drl");
+        Files.writeString(member, "declare Member\nend\n");
+        Path excluded = dir.resolve("excluded.drl");
+        Files.writeString(excluded, "declare Excluded\nend\n");
+        Path current = dir.resolve("rules.drl");
+        WorkspaceSiblingResolvers.setActive(file -> List.of(member));
+        Map<Path, String> open = Map.of(excluded, "declare Excluded\nend\n");
+
+        Map<String, DeclaredType> index =
+                DRLWorkspaceTypeIndex.build("declare Foo\nend\n", current, open);
+
+        assertThat(index).containsKeys("Foo", "Member").doesNotContainKey("Excluded");
+    }
+
+    @Test
+    void openBufferOfACrossDirectorySiblingShadowsDisk(@TempDir Path dir) throws Exception {
+        Path sibling = Files.createDirectories(dir.resolve("other")).resolve("types.drl");
+        Files.writeString(sibling, "declare Address\n  code : String\nend\n");
+        Path current = dir.resolve("rules.drl");
+        WorkspaceSiblingResolvers.setActive(file -> List.of(sibling));
+        Map<Path, String> open = Map.of(sibling,
+                "declare Address\n  code : String\n  zip : String\nend\n");
+
+        Map<String, DeclaredType> index =
+                DRLWorkspaceTypeIndex.build("declare Foo\nend\n", current, open);
+
+        assertThat(index.get("Address").fields).extracting(f -> f.name)
+                .containsExactly("code", "zip");
+    }
+
+    @Test
+    void forEachSiblingFileYieldsBufferTextForResolverSiblingsOnly(@TempDir Path dir) throws Exception {
+        Path sibling = Files.createDirectories(dir.resolve("other")).resolve("types.drl");
+        Files.writeString(sibling, "declare Address\nend\n");
+        Path excluded = dir.resolve("excluded.drl");
+        Files.writeString(excluded, "declare Excluded\nend\n");
+        Path current = dir.resolve("rules.drl");
+        WorkspaceSiblingResolvers.setActive(file -> List.of(sibling));
+        Map<Path, String> open = Map.of(sibling, "declare Address\n  zip : String\nend\n",
+                excluded, "declare Excluded\n  x : int\nend\n");
+        Map<String, String> visited = new LinkedHashMap<>();
+
+        DRLWorkspaceTypeIndex.forEachSiblingFile(current, open, visited::put);
+
+        assertThat(visited).containsOnly(
+                Map.entry(sibling.toUri().toString(), "declare Address\n  zip : String\nend\n"));
+    }
+
+    // ---- forEachSiblingInfo: one visit per sibling carrying types and imports ----
+
+    @Test
+    void forEachSiblingInfoVisitsEachSiblingOnceWithTypesAndImports(@TempDir Path dir) throws Exception {
+        Path onDisk = dir.resolve("disk.drl");
+        Files.writeString(onDisk, "package demo;\nimport com.example.A;\ndeclare FromDisk\nend\n");
+        Path buffered = dir.resolve("buffer.drl");
+        Files.writeString(buffered, "package old;\n");
+        Path current = dir.resolve("rules.drl");
+        Map<Path, String> open = Map.of(buffered,
+                "package demo;\nimport com.example.B;\ndeclare FromBuffer\nend\n");
+        List<String> visitedUris = new ArrayList<>();
+        Map<String, DRLDeclaredTypeParser.FileInfo> visited = new LinkedHashMap<>();
+
+        DRLWorkspaceTypeIndex.forEachSiblingInfo(current, open, (info, uri) -> {
+            visitedUris.add(uri);
+            visited.put(uri, info);
+        });
+
+        assertThat(visitedUris).containsExactly(buffered.toUri().toString(), onDisk.toUri().toString());
+        DRLDeclaredTypeParser.FileInfo fromBuffer = visited.get(buffered.toUri().toString());
+        assertThat(fromBuffer.packageName).isEqualTo("demo");
+        assertThat(fromBuffer.imports).containsExactly("com.example.B");
+        assertThat(fromBuffer.types).extracting(t -> t.name).containsExactly("FromBuffer");
+        DRLDeclaredTypeParser.FileInfo fromDisk = visited.get(onDisk.toUri().toString());
+        assertThat(fromDisk.packageName).isEqualTo("demo");
+        assertThat(fromDisk.imports).containsExactly("com.example.A");
+        assertThat(fromDisk.types).extracting(t -> t.name).containsExactly("FromDisk");
     }
 
     @Test
