@@ -40,6 +40,11 @@
       <artifactId>drools-completion</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.kie.tools</groupId>
+      <artifactId>drools-formatter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>

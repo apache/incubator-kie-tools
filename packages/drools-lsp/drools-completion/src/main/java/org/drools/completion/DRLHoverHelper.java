@@ -136,8 +136,7 @@ public final class DRLHoverHelper {
                 String boundFqcn = DRLCompletionHelper.resolveFqcn(
                         boundType, boundType, compilationUnit, classIndex);
                 if (boundFqcn != null) {
-                    return markdown(renderJavaType(boundType, boundFqcn, memberIndex.membersOf(boundFqcn),
-                            memberIndex.constructorsOf(boundFqcn)));
+                    return markdown(renderJavaType(boundType, boundFqcn, memberIndex));
                 }
                 // Nothing to describe beyond the name: a primitive has no class
                 // to load and no members, and the type is the useful part anyway.
@@ -162,8 +161,7 @@ public final class DRLHoverHelper {
         //    members — knowing the FQN (e.g. java.lang.Object) is still useful.
         String fqcn = DRLCompletionHelper.resolveFqcn(word, word, compilationUnit, classIndex);
         if (fqcn != null) {
-            return markdown(renderJavaType(word, fqcn, memberIndex.membersOf(fqcn),
-                    memberIndex.constructorsOf(fqcn)));
+            return markdown(renderJavaType(word, fqcn, memberIndex));
         }
 
         // 6. Documented function/query/global, last of all. The doc-comment
@@ -258,6 +256,10 @@ public final class DRLHoverHelper {
                                     Path documentPath, Map<Path, String> openFiles) {
         String runningType = null;
         int start = 0;
+        // True while the running type came from a type *name* rather than a
+        // value — the only position where Java permits statics. Cleared after
+        // one hop, since a constant is an ordinary value of its own type.
+        boolean fromTypeRef = false;
 
         // A chain can open with a fully-qualified type name, whose leading
         // segments are package names that resolve to nothing on their own
@@ -270,10 +272,10 @@ public final class DRLHoverHelper {
             if (chain.hoveredIndex <= fqcnEnd) {
                 // Anywhere inside the qualified name describes that type.
                 String simple = chain.segments[fqcnEnd];
-                return markdown(renderJavaType(simple, fqcn, memberIndex.membersOf(fqcn),
-                        memberIndex.constructorsOf(fqcn)));
+                return markdown(renderJavaType(simple, fqcn, memberIndex));
             }
             runningType = fqcn;
+            fromTypeRef = true;
             start = fqcnEnd + 1;
         }
 
@@ -304,15 +306,16 @@ public final class DRLHoverHelper {
                                 currentDocTypes, text, documentPath, openFiles));
                     }
                     runningType = segment;
+                    fromTypeRef = true;
                 } else {
                     String fqcn = DRLCompletionHelper.resolveFqcn(
                             segment, segment, parsed.compilationUnit, classIndex);
                     if (fqcn != null) {
                         if (hovered) {
-                            return markdown(renderJavaType(segment, fqcn, memberIndex.membersOf(fqcn),
-                                    memberIndex.constructorsOf(fqcn)));
+                            return markdown(renderJavaType(segment, fqcn, memberIndex));
                         }
                         runningType = fqcn;
+                        fromTypeRef = true;
                     } else {
                         Integer nodeIndex = parsed.tokenIndexAt(position);
                         String patternType = nodeIndex == null ? null
@@ -336,13 +339,41 @@ public final class DRLHoverHelper {
                 }
             } else {
                 DeclaredType declared = typeIndex.get(simpleName(runningType));
-                if (declared != null && declared.isEnum && isEnumConstant(declared, segment)) {
+                if (declared != null && isEnumConstant(declared, segment)) {
                     if (hovered) {
                         return markdown(fencedHeader(declared.name + "." + segment)
                                 + renderDeclaredHover(declared, typeIndex, currentDocTypes,
                                                       text, documentPath, openFiles));
                     }
                     // Running type stays the enum: the constant is an instance of it.
+                    fromTypeRef = false;
+                } else if (fromTypeRef) {
+                    fromTypeRef = false;
+                    if (declared != null) {
+                        // A declare's only statics are its enum constants, handled above.
+                        return null;
+                    }
+                    // Directly after a classpath type name, so the segment is a static.
+                    // runningType is the resolved FQCN at this point.
+                    Field staticField = findByName(memberIndex.staticFieldsOf(runningType), segment);
+                    if (staticField != null) {
+                        if (hovered) {
+                            return markdown(renderStatic(staticField.name, staticField.type,
+                                    "field", simpleName(runningType)));
+                        }
+                        runningType = staticField.type;
+                    } else {
+                        String signature = findSignature(memberIndex.staticMethodsOf(runningType), segment);
+                        if (signature == null) {
+                            return null;
+                        }
+                        if (hovered) {
+                            return markdown(renderStatic(signature, null, "method",
+                                    simpleName(runningType)));
+                        }
+                        // A call's result type is not modelled, so the walk stops.
+                        return null;
+                    }
                 } else {
                     Field field = findField(runningType, segment, typeIndex,
                                             parsed.compilationUnit, classIndex, memberIndex);
@@ -366,7 +397,7 @@ public final class DRLHoverHelper {
      * {@code com.example.Order.status} prefers the type {@code com.example.Order}
      * over a shorter accidental match.
      */
-    private static int fqcnPrefixEnd(String[] segments, ClassIndex classIndex) {
+    static int fqcnPrefixEnd(String[] segments, ClassIndex classIndex) {
         for (int end = segments.length - 1; end >= 1; end--) {
             String simple = segments[end];
             if (simple.isEmpty()) {
@@ -389,10 +420,8 @@ public final class DRLHoverHelper {
         return sb.toString();
     }
 
-    /** True when {@code name} is a constant of {@code enumType} (a field typed as the enum). */
-    private static boolean isEnumConstant(DeclaredType enumType, String name) {
-        return enumType.fields.stream()
-                .anyMatch(field -> name.equals(field.name) && enumType.name.equals(field.type));
+    private static boolean isEnumConstant(DeclaredType declared, String name) {
+        return declared.enumConstants().stream().anyMatch(field -> name.equals(field.name));
     }
 
     /** Header {@code $x : Type} followed by the bound type's details. */
@@ -410,8 +439,7 @@ public final class DRLHoverHelper {
         String fqcn = DRLCompletionHelper.resolveFqcn(
                 typeName, typeName, parsed.compilationUnit, classIndex);
         if (fqcn != null) {
-            return header + renderJavaType(typeName, fqcn, memberIndex.membersOf(fqcn),
-                    memberIndex.constructorsOf(fqcn));
+            return header + renderJavaType(typeName, fqcn, memberIndex);
         }
         return header.stripTrailing();
     }
@@ -488,6 +516,41 @@ public final class DRLHoverHelper {
 
     private static String renderField(Field field, String owner) {
         return "**" + field.name + "** : `" + field.type + "`\n\nField of `" + owner + "`";
+    }
+
+    /**
+     * Hover body for a static, named as such so it reads apart from a fact
+     * property. {@code type} is {@code null} for a method, whose {@code name}
+     * already carries its signature.
+     */
+    private static String renderStatic(String name, String type, String kind, String owner) {
+        return "**" + name + "**" + (type == null ? "" : " : `" + type + "`")
+                + "\n\nStatic " + kind + " of `" + owner + "`";
+    }
+
+    /** The member of {@code fields} called {@code name}, or {@code null}. */
+    private static Field findByName(List<Field> fields, String name) {
+        for (Field field : fields) {
+            if (name.equals(field.name)) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The first signature in {@code signatures} whose method name is
+     * {@code name}, or {@code null}. Overloads are not distinguished — the
+     * chain carries no argument list to select by.
+     */
+    private static String findSignature(List<String> signatures, String name) {
+        for (String signature : signatures) {
+            int paren = signature.indexOf('(');
+            if (paren > 0 && signature.regionMatches(0, name, 0, paren) && paren == name.length()) {
+                return signature;
+            }
+        }
+        return null;
     }
 
     private static String simpleName(String typeName) {
@@ -572,7 +635,7 @@ public final class DRLHoverHelper {
         }
         sb.append('\n');
         for (Field field : dt.fields) {
-            if (dt.isEnum && dt.name.equals(field.type)) {
+            if (field.origin == Field.Origin.ENUM_CONSTANT) {
                 sb.append("  ").append(field.name);
                 if (field.args != null) {
                     sb.append('(').append(field.args).append(')');
@@ -594,35 +657,63 @@ public final class DRLHoverHelper {
         return sb.toString();
     }
 
+    /**
+     * The type's own hover. {@code statics} feeds the Constants section — its
+     * enum constants and its {@code public static} fields alike, since
+     * {@code membersOf} carries neither: an instance view cannot describe what
+     * is reachable as {@code Type.NAME}. A type whose whole API is static
+     * (a constants holder, {@code java.lang.Math}) would otherwise render as a
+     * bare header.
+     */
+    private static String renderJavaType(String simpleName, String fqcn, ClassMemberIndex memberIndex) {
+        return renderJavaType(simpleName, fqcn, memberIndex.membersOf(fqcn),
+                memberIndex.staticFieldsOf(fqcn), memberIndex.staticMethodsOf(fqcn),
+                memberIndex.constructorsOf(fqcn));
+    }
+
     private static String renderJavaType(String simpleName, String fqcn, List<Field> members,
+                                         List<Field> statics, List<String> staticMethods,
                                          List<String> constructors) {
         StringBuilder sb = new StringBuilder();
         sb.append("**").append(simpleName).append("** — `").append(fqcn).append("`\n");
-        appendMemberSection(sb, "Constants", members, Field.Origin.ENUM_CONSTANT);
+        appendMemberSection(sb, "Constants", statics, null);
         appendMemberSection(sb, "Fields", members, Field.Origin.FIELD);
         appendMemberSection(sb, "Getters", members, Field.Origin.GETTER);
-        if (!constructors.isEmpty()) {
-            sb.append("\n\n**Constructors**");
-            for (String signature : constructors) {
-                sb.append("\n- `").append(signature).append('`');
-            }
-        }
+        appendSignatureSection(sb, "Static methods", staticMethods);
+        appendSignatureSection(sb, "Constructors", constructors);
         return sb.toString();
     }
 
-    /** Appends {@code title}'s section for {@code members} of the given {@code origin}, or nothing when none match. */
+    /** Appends {@code title}'s section of signature strings, or nothing when empty. */
+    private static void appendSignatureSection(StringBuilder sb, String title,
+                                               List<String> signatures) {
+        if (signatures.isEmpty()) {
+            return;
+        }
+        sb.append("\n\n**").append(title).append("**");
+        for (String signature : signatures) {
+            sb.append("\n- `").append(signature).append('`');
+        }
+    }
+
+    /**
+     * Appends {@code title}'s section for the members of {@code origin} — or for
+     * every member when {@code origin} is {@code null} — writing nothing when
+     * none match. An enum constant renders bare, everything else as
+     * {@code name : type}.
+     */
     private static void appendMemberSection(StringBuilder sb, String title, List<Field> members,
                                             Field.Origin origin) {
         boolean headerWritten = false;
         for (Field member : members) {
-            if (member.origin != origin) {
+            if (origin != null && member.origin != origin) {
                 continue;
             }
             if (!headerWritten) {
                 sb.append("\n\n**").append(title).append("**");
                 headerWritten = true;
             }
-            if (origin == Field.Origin.ENUM_CONSTANT) {
+            if (member.origin == Field.Origin.ENUM_CONSTANT) {
                 sb.append("\n- ").append(member.name);
                 if (member.args != null) {
                     sb.append(" (").append(member.args).append(')');

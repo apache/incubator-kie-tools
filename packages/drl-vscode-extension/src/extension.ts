@@ -195,6 +195,7 @@ export async function activate(context: vscode.ExtensionContext) {
       // decide what the server sees, instead of a hardcoded skip-list.
       initializationOptions: {
         grouping: groupingSetting(),
+        formatter: vscode.workspace.getConfiguration().get("drools.lsp.formatter") ?? {},
         workspaceFiles: await enumerateWorkspaceFiles(),
       },
     };

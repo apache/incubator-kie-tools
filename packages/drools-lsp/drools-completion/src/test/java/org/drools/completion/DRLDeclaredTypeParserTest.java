@@ -70,6 +70,8 @@ class DRLDeclaredTypeParserTest {
                 .contains("LOW", "HIGH", "level");
         assertThat(severity.fields.get(0).type).isEqualTo("Severity");
         assertThat(severity.fields.get(0).args).isEqualTo("1");
+        assertThat(severity.fields).extracting(f -> f.origin)
+                .containsExactly(Field.Origin.ENUM_CONSTANT, Field.Origin.ENUM_CONSTANT, Field.Origin.FIELD);
     }
 
     @Test

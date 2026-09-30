@@ -20,3 +20,4 @@
 - Initial release of the DRL Editor extension, migrated from [kiegroup/drools-lsp](https://github.com/kiegroup/drools-lsp).
 - Syntax highlighting for `.drl` files.
 - LSP features: code completion (keywords, Java classes, fields, DRL declared types), go-to-definition, find references, rename, diagnostics with quick-fixes, hover tooltips, document symbols, type hierarchy, inlay hints, folding ranges, and code lens.
+- Configurable DRL code formatting (by file or selection).

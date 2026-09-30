@@ -21,6 +21,7 @@ package org.drools.completion;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -805,9 +806,22 @@ public final class DRLLintHelper {
                 declared.putIfAbsent(dt.name, dt);
             }
         }
-        DRLWorkspaceTypeIndex.forEachSiblingType(documentPath, openFiles, (dt, uri) -> {
-            if (dt.name != null) {
-                declared.putIfAbsent(dt.name, dt);
+        // Imports declared in same-package sibling files are in scope here too
+        // (Drools merges files by package), so resolution must see them. Computed
+        // once and threaded through all three scan paths. Files without a package
+        // declaration all compile into the builder's default package
+        // (drools-compiler's CompositePackageCompilationPhase), so two
+        // package-less files merge as well.
+        String ownPackage = DRLDeclaredTypeParser.extractPackageName(cu);
+        List<String> siblingImports = new ArrayList<>();
+        DRLWorkspaceTypeIndex.forEachSiblingInfo(documentPath, openFiles, (info, uri) -> {
+            for (DeclaredType dt : info.types) {
+                if (dt.name != null) {
+                    declared.putIfAbsent(dt.name, dt);
+                }
+            }
+            if (ownPackage.equals(info.packageName)) {
+                siblingImports.addAll(info.imports);
             }
         });
         Set<String> known = declared.keySet();
@@ -816,9 +830,10 @@ public final class DRLLintHelper {
         suggestions.addAll(classIndex.simpleNames());
 
         List<Diagnostic> out = new ArrayList<>();
-        collectPatternTypes(cu, cu, known, suggestions, classIndex, classpathResolved, severity, out);
+        collectPatternTypes(cu, cu, known, suggestions, classIndex, siblingImports,
+                            classpathResolved, severity, out);
         scanQualifiedRefs(cu, sanitized, declared, suggestions, cu, classIndex, memberIndex,
-                          classpathResolved, severity, out);
+                          siblingImports, classpathResolved, severity, out);
 
         Matcher then = THEN_END_BLOCK.matcher(sanitized);
         while (then.find() && out.size() < MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
@@ -827,7 +842,7 @@ public final class DRLLintHelper {
             while (newType.find() && out.size() < MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
                 Range range = rangeOf(sanitized, base + newType.start(1), base + newType.end(1));
                 addUnknown(newType.group(1), range, known, suggestions, cu, classIndex,
-                           classpathResolved, severity, out);
+                           siblingImports, classpathResolved, severity, out);
             }
         }
         return out;
@@ -836,7 +851,8 @@ public final class DRLLintHelper {
     /** Walks {@code node}, checking each pattern's object type against {@code cu}'s resolution. */
     private static void collectPatternTypes(ParseTree node, DRL10Parser.CompilationUnitContext cu,
                                             Set<String> known, Set<String> suggestions,
-                                            ClassIndex classIndex, boolean classpathResolved,
+                                            ClassIndex classIndex, Collection<String> extraImports,
+                                            boolean classpathResolved,
                                             DiagnosticSeverity severity, List<Diagnostic> out) {
         if (out.size() >= MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
             return;
@@ -850,12 +866,12 @@ public final class DRLLintHelper {
                         new Position(stop.getLine() - 1,
                                      stop.getCharPositionInLine() + stop.getText().length()));
                 addUnknown(pattern.objectType.getText(), range, known, suggestions, cu, classIndex,
-                           classpathResolved, severity, out);
+                           extraImports, classpathResolved, severity, out);
             }
         }
         for (int i = 0; i < node.getChildCount(); i++) {
-            collectPatternTypes(node.getChild(i), cu, known, suggestions, classIndex, classpathResolved,
-                                severity, out);
+            collectPatternTypes(node.getChild(i), cu, known, suggestions, classIndex, extraImports,
+                                classpathResolved, severity, out);
         }
     }
 
@@ -869,7 +885,8 @@ public final class DRLLintHelper {
     private static void scanQualifiedRefs(ParseTree node, String sanitized,
                                           Map<String, DeclaredType> declared, Set<String> suggestions,
                                           DRL10Parser.CompilationUnitContext cu, ClassIndex classIndex,
-                                          ClassMemberIndex memberIndex, boolean classpathResolved,
+                                          ClassMemberIndex memberIndex, Collection<String> extraImports,
+                                          boolean classpathResolved,
                                           DiagnosticSeverity severity, List<Diagnostic> out) {
         if (out.size() >= MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
             return;
@@ -881,14 +898,14 @@ public final class DRLLintHelper {
                 Matcher m = QUALIFIED_REF.matcher(sanitized.substring(start, stop + 1));
                 while (m.find() && out.size() < MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
                     checkChain(m.group(1), start + m.start(1), sanitized, declared, suggestions,
-                               cu, classIndex, memberIndex, classpathResolved, severity, out);
+                               cu, classIndex, memberIndex, extraImports, classpathResolved, severity, out);
                 }
             }
             return; // the section's whole text is covered; no nested when-sections
         }
         for (int i = 0; i < node.getChildCount(); i++) {
             scanQualifiedRefs(node.getChild(i), sanitized, declared, suggestions, cu, classIndex,
-                              memberIndex, classpathResolved, severity, out);
+                              memberIndex, extraImports, classpathResolved, severity, out);
         }
     }
 
@@ -903,7 +920,8 @@ public final class DRLLintHelper {
     private static void checkChain(String chain, int chainStart, String sanitized,
                                    Map<String, DeclaredType> declared, Set<String> suggestions,
                                    DRL10Parser.CompilationUnitContext cu, ClassIndex classIndex,
-                                   ClassMemberIndex memberIndex, boolean classpathResolved,
+                                   ClassMemberIndex memberIndex, Collection<String> extraImports,
+                                   boolean classpathResolved,
                                    DiagnosticSeverity severity, List<Diagnostic> out) {
         int dot = chain.indexOf('.');
         String head = chain.substring(0, dot);
@@ -927,7 +945,7 @@ public final class DRLLintHelper {
         }
 
         // Classpath head.
-        String headFqcn = DRLCompletionHelper.resolveFqcn(head, head, cu, classIndex);
+        String headFqcn = DRLCompletionHelper.resolveFqcn(head, head, cu, classIndex, extraImports);
         if (headFqcn == null) {
             // Can't be sure it's a typo vs an unresolved real classpath type.
             if (classpathResolved) {
@@ -973,7 +991,8 @@ public final class DRLLintHelper {
      */
     private static void addUnknown(String candidate, Range range, Set<String> known,
                                    Set<String> suggestions, DRL10Parser.CompilationUnitContext cu,
-                                   ClassIndex classIndex, boolean classpathResolved,
+                                   ClassIndex classIndex, Collection<String> extraImports,
+                                   boolean classpathResolved,
                                    DiagnosticSeverity severity, List<Diagnostic> out) {
         if (candidate == null) {
             return;
@@ -984,7 +1003,7 @@ public final class DRLLintHelper {
         }
         String simple = toSimpleTypeName(trimmed);
         if (known.contains(simple)
-                || DRLCompletionHelper.resolveFqcn(trimmed, simple, cu, classIndex) != null) {
+                || DRLCompletionHelper.resolveFqcn(trimmed, simple, cu, classIndex, extraImports) != null) {
             return;
         }
         if (!classpathResolved) {
