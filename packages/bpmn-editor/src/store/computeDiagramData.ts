@@ -20,7 +20,7 @@
 import { GraphStructureAdjacencyList, GraphStructureEdge } from "@kie-tools/xyflow-react-kie-diagram/dist/graph/graph";
 import { snapShapeDimensions, snapShapePosition } from "@kie-tools/xyflow-react-kie-diagram/dist/snapgrid/SnapGrid";
 import { XyFlowDiagramData } from "@kie-tools/xyflow-react-kie-diagram/dist/store/State";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   BPMN_CONTAINMENT_MAP,
   BpmnDiagramEdgeData,
@@ -228,7 +228,6 @@ export function computeDiagramData(
         width: snappedShapeDimensions.width,
         height: snappedShapeDimensions.height,
         type: nodeType,
-        style: { ...snappedShapeDimensions },
       };
 
       return n;

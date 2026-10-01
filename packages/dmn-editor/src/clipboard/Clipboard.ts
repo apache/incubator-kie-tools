@@ -29,7 +29,7 @@ import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normali
 import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import { Unpacked } from "../tsExt/tsExt";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { State } from "../store/Store";
 import { NodeNature, nodeNatures } from "../mutations/NodeNature";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
@@ -61,18 +61,20 @@ export type DmnEditorDiagramClipboard = {
   edges: Normalized<DMN_LATEST__DMNEdge>[];
 };
 
-export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorState: State) {
+export function buildClipboardFromDiagram(
+  rfState: RF.ReactFlowState<RF.Node<DmnDiagramNodeData>, RF.Edge<DmnDiagramEdgeData>>,
+  dmnEditorState: State
+) {
   const copiedEdgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
   const copiedNodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
   const danglingEdgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
 
-  const nodesById = rfState
-    .getNodes()
-    .reduce((acc, n) => acc.set(n.id, n), new Map<string, RF.Node<DmnDiagramNodeData>>());
+  const nodesById = rfState.nodes.reduce((acc, n) => acc.set(n.id, n), new Map<string, RF.Node<DmnDiagramNodeData>>());
 
-  const selectedNodesById = rfState
-    .getNodes()
-    .reduce((acc, n) => (n.selected ? acc.set(n.id, n) : acc), new Map<string, RF.Node<DmnDiagramNodeData>>());
+  const selectedNodesById = rfState.nodes.reduce(
+    (acc, n) => (n.selected ? acc.set(n.id, n) : acc),
+    new Map<string, RF.Node<DmnDiagramNodeData>>()
+  );
 
   const clipboard = [...selectedNodesById.values()].reduce<DmnEditorDiagramClipboard>(
     (acc, _node: RF.Node<DmnDiagramNodeData>) => {

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   AssociationPath,
   AuthorityRequirementPath,
@@ -95,7 +95,7 @@ export function DmnDiagramSvg({
 
       nodesById.set(node.id, node);
 
-      const { height, width, ...style } = node.style!;
+      const { height, width, ...style } = node.style ?? {};
 
       const isCollection =
         node.data?.dmnObject?.__$$element === "inputData"
@@ -128,8 +128,8 @@ export function DmnDiagramSvg({
               <AlternativeInputDataNodeSvg
                 width={node.width!}
                 height={node.height!}
-                x={node.positionAbsolute!.x}
-                y={node.positionAbsolute!.y}
+                x={node.position.x}
+                y={node.position.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isIcon={false}
@@ -139,8 +139,8 @@ export function DmnDiagramSvg({
               <InputDataNodeSvg
                 width={node.width!}
                 height={node.height!}
-                x={node.positionAbsolute!.x}
-                y={node.positionAbsolute!.y}
+                x={node.position.x}
+                y={node.position.y}
                 {...style}
                 {...(shapeStyle as any)}
                 isCollection={isCollection}
@@ -150,8 +150,8 @@ export function DmnDiagramSvg({
             <DecisionNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               isCollection={isCollection}
@@ -162,8 +162,8 @@ export function DmnDiagramSvg({
             <BkmNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -173,8 +173,8 @@ export function DmnDiagramSvg({
             <KnowledgeSourceNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
               hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
@@ -184,8 +184,8 @@ export function DmnDiagramSvg({
             <DecisionServiceNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               showSectionLabels={false}
               isReadOnly={true}
               {...style}
@@ -196,8 +196,8 @@ export function DmnDiagramSvg({
             <GroupNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -206,8 +206,8 @@ export function DmnDiagramSvg({
             <TextAnnotationNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -216,8 +216,8 @@ export function DmnDiagramSvg({
             <UnknownNodeSvg
               width={node.width!}
               height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
+              x={node.position.x}
+              y={node.position.y}
               {...style}
               {...(shapeStyle as any)}
             />
@@ -264,14 +264,14 @@ export function DmnDiagramSvg({
           dmnShapeSource: e.data?.dmnShapeSource,
           dmnShapeTarget: e.data?.dmnShapeTarget,
           sourceNodeBounds: {
-            x: s?.positionAbsolute?.x,
-            y: s?.positionAbsolute?.y,
+            x: s?.position?.x,
+            y: s?.position?.y,
             width: s?.width,
             height: s?.height,
           },
           targetNodeBounds: {
-            x: t?.positionAbsolute?.x,
-            y: t?.positionAbsolute?.y,
+            x: t?.position?.x,
+            y: t?.position?.y,
             width: t?.width,
             height: t?.height,
           },
@@ -298,9 +298,9 @@ const SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT = 8;
 export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>, labelPosition: NodeLabelPosition) {
   switch (labelPosition) {
     case "center-bottom":
-      const cbTx = n.position.x! + n.width! / 2;
-      const cbTy = n.position.y! + n.height! + 4;
-      const cbWidth = n.width!;
+      const cbTx = n.position.x! + (n.width ?? 0) / 2;
+      const cbTy = n.position.y! + (n.height ?? 0) + 4;
+      const cbWidth = n.width ?? 0;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -309,9 +309,9 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "center-center":
-      const ccTx = n.position.x! + n.width! / 2;
-      const ccTy = n.position.y! + n.height! / 2;
-      const ccWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const ccTx = n.position.x! + (n.width ?? 0) / 2;
+      const ccTy = n.position.y! + (n.height ?? 0) / 2;
+      const ccWidth = (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "middle",
@@ -320,9 +320,9 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       } as const;
 
     case "top-center":
-      const tcTx = n.position.x! + n.width! / 2;
+      const tcTx = n.position.x! + (n.width ?? 0) / 2;
       const tcTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const tcWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const tcWidth = (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "start",
         textAnchor: "middle",
@@ -332,8 +332,8 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
 
     case "center-left":
       const clTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL;
-      const clTy = n.position.y! + n.height! / 2;
-      const clWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const clTy = n.position.y! + (n.height ?? 0) / 2;
+      const clWidth = (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",
         textAnchor: "start",
@@ -345,7 +345,7 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
       const tlTx = n.position.x! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlTy = n.position.y! + SVG_NODE_LABEL_TEXT_PADDING_ALL + SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       const tlWidth =
-        n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
+        (n.width ?? 0) - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL - 2 * SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT;
       return {
         verticalAnchor: "start",
         textAnchor: "start",

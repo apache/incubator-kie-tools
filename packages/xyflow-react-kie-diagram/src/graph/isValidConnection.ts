@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { GraphStructure } from "../graph/graphStructure";
 
-export function checkIsValidConnection<N extends string, E extends string, NData>(
+export function checkIsValidConnection<N extends string, E extends string, NData extends Record<string, unknown>>(
   graphStructure: GraphStructure<N, E>,
   nodesById: Map<string, RF.Node<NData, N>>,
   edgeOrConnection: RF.Edge | RF.Connection,

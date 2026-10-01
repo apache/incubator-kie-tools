@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { useXyFlowReactKieDiagramStore, useXyFlowReactKieDiagramStoreApi } from "../store/Store";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useKieDiagramI18n } from "../i18n";
