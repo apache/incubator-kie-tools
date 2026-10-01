@@ -93,7 +93,7 @@ RUN source $HOME/.nvm/nvm.sh && \
 # Maven setup
 RUN curl -s "https://get.sdkman.io" | bash && \
     source "$HOME/.sdkman/bin/sdkman-init.sh" && \
-    sdk install java 17.0.11-tem && \
+    sdk install java 21.0.7-tem && \
     sudo update-alternatives --install /usr/local/bin/java java $(which java) 1 && \
     sdk install maven 3.9.16 && \
     sudo update-alternatives --install /usr/local/bin/mvn mvn $(which mvn) 1 && \

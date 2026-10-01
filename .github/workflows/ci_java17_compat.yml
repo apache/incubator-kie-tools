@@ -1,0 +1,106 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: "CI :: Java 17 Compatibility"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["**"]
+    types: [opened, reopened, ready_for_review, synchronize]
+
+concurrency:
+  group: ${{ github.event.pull_request && format('ci-java17-compat-pr-{0}', github.event.pull_request.number) || format('ci-java17-compat-push-main-{0}', github.sha) }}
+  cancel-in-progress: true
+
+env:
+  TMPDIR: "/tmp"
+  BUILD_ENV__accessErrorsLogFileAbsolutePath: "/tmp/build-env-access-errors.log"
+
+jobs:
+  java17-compat:
+    name: "Java 17 Compatibility Check"
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        id: checkout_pr
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+
+      - name: "Setup pnpm"
+        shell: bash
+        run: npm -g install pnpm@10.34.4
+
+      - name: "Setup JDK 17 (Compatibility Check)"
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: "temurin"
+
+      - name: "Set up Maven"
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.16
+
+      - name: "Setup CI patterns"
+        id: ci_patterns
+        uses: ./.github/actions/setup-ci-patterns
+
+      - name: "Bootstrap"
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
+          MAVEN_OPTS: "-Xmx3g"
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: "-r"
+
+      - name: "Build (Java 17 Compatibility)"
+        shell: bash
+        env:
+          WEBPACK__minimize: "false"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          KIE_TOOLS_BUILD__runLinters: "false"
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "false"
+          KIE_TOOLS_BUILD__buildContainerImages: "false"
+          KIE_TOOLS_BUILD__buildExamples: "false"
+          KIE_TOOLS_BUILD__ignoreTestFailures: "false"
+          NODE_OPTIONS: "--max_old_space_size=6144"
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
+          MAVEN_OPTS: "-Xmx2g"
+        run: pnpm -r --workspace-concurrency=1 build:prod
+
+      - name: "Check build-env access errors log"
+        if: always() && !cancelled()
+        shell: bash
+        run: |
+          touch "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          [ "0" == "$(cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath" | wc -l | tr -d ' ')" ]
