@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import org.drools.completion.ClassIndex;
 import org.drools.completion.ClassMemberIndex;
 import org.drools.completion.ClasspathTypeMembers;
+import org.drools.completion.CustomOperators;
 import org.drools.completion.DRLDeclaredTypeParser;
 import org.drools.completion.JavaSourceRoots;
 import org.drools.completion.JavaSourceTypeIndex;
@@ -81,6 +82,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     private LanguageClient client;
     private volatile Set<Path> classpathEntries = Set.of();
     private volatile Set<Path> buildOutputDirs = Set.of();
+    private volatile Set<String> registeredCustomOperators = Set.of();
     private volatile ClassIndex jarClassIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
     private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
@@ -183,6 +185,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
      * waiting for the next edit/save.
      */
     private void publishClassIndex() {
+        registerCustomOperators();
         ClassIndex outputIndex = ClassIndex.build(buildOutputDirs);
         ClassIndex merged = ClassIndex.merge(ClassIndex.merge(jarClassIndex, outputIndex),
                 ClassIndex.of(javaSourceIndex.classNames()));
@@ -206,6 +209,23 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
      */
     boolean isDependencyClasspathResolved() {
         return dependencyClasspathResolved;
+    }
+
+    /**
+     * Registers the custom operators declared on the project's own build output
+     * and on its dependencies, whenever either set may have changed. The
+     * dependency list from {@code mvn dependency:build-classpath} does not carry
+     * the project's own {@code target/classes}, which is where its
+     * {@code META-INF/kie.properties.conf} lives, so both sets are scanned.
+     */
+    private void registerCustomOperators() {
+        Set<Path> scanned = new LinkedHashSet<>(classpathEntries);
+        scanned.addAll(buildOutputDirs);
+        Set<String> operators = CustomOperators.register(scanned);
+        if (!operators.equals(registeredCustomOperators)) {
+            registeredCustomOperators = operators;
+            logger.info(() -> "Custom DRL operators: " + operators);
+        }
     }
 
     private void setResolvedClasspath(Set<Path> entries) {
@@ -247,13 +267,13 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     }
 
     /**
-     * Test-only entry point: runs the same fast-path source-typing steps
-     * {@code initialize} runs before the mvn phase (re-read the
-     * {@code drools.lsp.java.*} settings, refresh the source index via
-     * {@link #refreshJavaSourceIndex}, install it as the member-index
-     * fallback, publish the merged class index) without the async plumbing
-     * or a real LSP client — so a test exercising the settings path doesn't
-     * need to duplicate {@code initialize}'s sys-prop parsing.
+     * Test-only entry point: runs the same fast-path steps {@code initialize}
+     * runs before the mvn phase (re-read the {@code drools.lsp.java.*}
+     * settings, refresh the source index via {@link #refreshJavaSourceIndex},
+     * install it as the member-index fallback, locate the build output
+     * directories, publish the merged class index) without the async plumbing
+     * or a real LSP client — so a test exercising that path doesn't need to
+     * duplicate {@code initialize}'s sys-prop parsing.
      */
     void initializeJavaSourceTypingForTest(Path workspaceRoot) {
         this.workspaceRootPath = workspaceRoot;
@@ -263,6 +283,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
                 System.getProperty("drools.lsp.java.packageFilters"));
         refreshJavaSourceIndex(workspaceRoot);
         swapMemberIndex(ClassMemberIndex.of(classpathEntries));
+        buildOutputDirs = MavenClasspathResolver.resolveBuildOutputDirs(workspaceRoot);
         publishClassIndex();
     }
 
