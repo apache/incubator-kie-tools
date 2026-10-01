@@ -115,11 +115,13 @@ public class DroolsLspDocumentService implements TextDocumentService {
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
     private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
     private volatile FormatterOptions formatterOptions = FormatterOptions.DEFAULTS;
+    private final CompileDiagnostics compileDiagnostics;
 
     private final DroolsLspServer server;
 
     public DroolsLspDocumentService(DroolsLspServer server) {
         this.server = server;
+        this.compileDiagnostics = new CompileDiagnostics(server, this::openTextAt);
         // Lets binding resolution describe types the DRL does not declare, so
         // hover and inlay hints work on Java fact classes. The closure reads the
         // live indexes on every call, so a rebuilt classpath needs no re-install.
@@ -184,6 +186,21 @@ public class DroolsLspDocumentService implements TextDocumentService {
         return formatterOptions;
     }
 
+    CompileDiagnostics compileDiagnostics() {
+        return compileDiagnostics;
+    }
+
+    /** The open buffer for {@code path}, whatever URI spelling the client used for it. */
+    private String openTextAt(Path path) {
+        for (Map.Entry<String, String> entry : sourcesMap.entrySet()) {
+            Path open = toPath(entry.getKey());
+            if (open != null && open.toAbsolutePath().normalize().equals(path)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
     ClassIndex getClassIndexForTest() {
         return classIndex;
     }
@@ -245,7 +262,9 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
-        sourcesMap.put(params.getTextDocument().getUri(), params.getContentChanges().get(0).getText());
+        String uri = params.getTextDocument().getUri();
+        sourcesMap.put(uri, params.getContentChanges().get(0).getText());
+        compileDiagnostics.invalidate(toPath(uri));
     }
 
     @Override
@@ -404,11 +423,12 @@ public class DroolsLspDocumentService implements TextDocumentService {
     @Override
     public CompletableFuture<DocumentDiagnosticReport> diagnostic(DocumentDiagnosticParams params) {
         return CompletableFuture.supplyAsync(() -> {
-            List<Diagnostic> items =
-                    (params != null && params.getTextDocument() != null
-                            && sourcesMap.containsKey(params.getTextDocument().getUri()))
-                            ? validate(params.getTextDocument().getUri())
-                            : Collections.emptyList();
+            List<Diagnostic> items = Collections.emptyList();
+            if (params != null && params.getTextDocument() != null
+                    && sourcesMap.containsKey(params.getTextDocument().getUri())) {
+                String uri = params.getTextDocument().getUri();
+                items = CompileDiagnostics.merge(validate(uri), compileDiagnostics.cachedFor(toPath(uri)));
+            }
             return new DocumentDiagnosticReport(new RelatedFullDocumentDiagnosticReport(items));
         });
     }
@@ -766,10 +786,25 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didClose(DidCloseTextDocumentParams params) {
-        sourcesMap.remove(params.getTextDocument().getUri());
+        String uri = params.getTextDocument().getUri();
+        sourcesMap.remove(uri);
+        compileDiagnostics.invalidate(toPath(uri));
     }
 
     @Override
     public void didSave(DidSaveTextDocumentParams params) {
+        if (params == null || params.getTextDocument() == null) {
+            return;
+        }
+        String uri = params.getTextDocument().getUri();
+        if (!sourcesMap.containsKey(uri)) {
+            return;
+        }
+        String text = params.getText() != null ? params.getText() : sourcesMap.get(uri);
+        if (text == null) {
+            return;
+        }
+        sourcesMap.put(uri, text);
+        compileDiagnostics.onDidSave(toPath(uri), text);
     }
 }

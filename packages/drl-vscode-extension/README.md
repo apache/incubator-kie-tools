@@ -23,6 +23,7 @@ Language support for [DRL (Drools Rule Language)](https://kie.apache.org/docs/10
 
 - Java 17 or later (`JAVA_HOME` must be set or `java` must be on your `PATH`)
 - Maven (for classpath resolution of Java types used in rules)
+- Drools (`drools-compiler` and `drools-mvel`) on the project's classpath, for compile diagnostics (optional; without them the editor works and nothing compiles)
 
 ## Features
 
@@ -47,6 +48,7 @@ Language support for [DRL (Drools Rule Language)](https://kie.apache.org/docs/10
 - Syntax error reporting
 - Lint diagnostics (missing `end`, missing separators, unbalanced parentheses, etc.)
 - Unknown-type lint with typo quick-fix for DRL-declared types
+- Compile diagnostics from the project's own Drools engine on save (see Compile Diagnostics)
 
 ### Information
 
@@ -197,40 +199,54 @@ java -jar packages/drools-lsp/drools-formatter/target/drools-formatter-jar-with-
 - `default:` with its statement on the same line is not split, while `case N:` is.
 - Long lines are not guaranteed to fit — see the wrap-trigger note above.
 
+## Compile Diagnostics
+
+Saving a `.drl` file compiles it together with the other files of its group (see File Grouping) using the Drools engine on the project's own classpath, and shows the compiler's messages in the editor with the source `drools`: fields that do not exist, expressions the engine cannot analyse, consequences that do not compile, duplicate rule names. The parser and lint diagnostics keep working as before; the compile adds what only the engine knows.
+
+- Trigger: save. Nothing compiles while you type, and a file with syntax errors is not compiled until they are fixed.
+- Scope: the saved file's group, so the result matches what the build compiles together. `DRL: Rebuild Workspace` compiles every DRL file under the workspace root, for checks that cross groups.
+- Requirement: `drools-compiler` and `drools-mvel` on the project's classpath, which a project that compiles rules at runtime with the classic build already has. Nothing is bundled with the extension; a workspace without them gets no compile diagnostics, and so does a project on the executable model alone (`drools-engine` without `drools-mvel`) for now. The messages come from the engine version the project uses.
+- Build first: the compile also needs the project's own compiled classes. A workspace with Java sources but no build output skips the compile and says so once; a class still missing from the build is named in a warning on the saved file.
+- Lifecycle: a compile result stays until you edit the file, save again, or change the grouping. One compile runs at a time; a save during a compile queues one more.
+- A file's compile messages appear in the Problems panel while the file is open; the rebuild summary names the files that have errors.
+- `drools.lsp.compile.onSave` turns the save trigger off for projects where a group compile takes too long; the command still works.
+
 ## Commands
 
-| Command                   | Description                                               |
-| ------------------------- | --------------------------------------------------------- |
-| `DRL: Select File Group…` | Pin the current file to a group, or clear an existing pin |
-| `DRL: Reload File Groups` | Re-read grouping configuration from disk                  |
+| Command                   | Description                                                               |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `DRL: Select File Group…` | Pin the current file to a group, or clear an existing pin                 |
+| `DRL: Reload File Groups` | Re-read grouping configuration from disk                                  |
+| `DRL: Rebuild Workspace`  | Compile every DRL file under the workspace root with the project's engine |
 
 ## Extension Settings
 
-| Setting                                     | Default    | Description                                                   |
-| ------------------------------------------- | ---------- | ------------------------------------------------------------- |
-| `drools.lsp.logLevel`                       | `INFO`     | Server-side log level                                         |
-| `drools.lsp.grouping`                       | `{}`       | DRL file grouping, declared inline (see above)                |
-| `drools.lsp.lint.missingEnd`                | `warning`  | Severity for missing `end` keyword                            |
-| `drools.lsp.lint.missingSeparator`          | `warning`  | Severity for missing constraint separator                     |
-| `drools.lsp.lint.missingSemicolon`          | `warning`  | Severity for missing semicolon in consequence                 |
-| `drools.lsp.lint.unbalancedParens`          | `warning`  | Severity for unbalanced parentheses                           |
-| `drools.lsp.lint.unknownTypes`              | `warning`  | Severity for unrecognized type references                     |
-| `drools.lsp.lint.mvelPropertyAccess`        | `off`      | Hint to prefer property-access style over getter calls in LHS |
-| `drools.lsp.inlayHints.enabled`             | `true`     | Show inline type hints for bound variables                    |
-| `drools.lsp.maven.pomPath`                  | `""`       | Maven POM path(s) for classpath resolution                    |
-| `drools.lsp.java.sourcePaths`               | `[]`       | Extra Java source roots, beyond those found automatically     |
-| `drools.lsp.java.packageFilters`            | `[]`       | Package prefixes limiting which Java source types are indexed |
-| `drools.lsp.formatter.lineLength`           | `110`      | Formatter wrap trigger (see Formatting)                       |
-| `drools.lsp.formatter.lineEndings`          | `preserve` | `preserve`, `lf` or `crlf`                                    |
-| `drools.lsp.formatter.parenPadding`         | `true`     | Space inside non-empty parentheses                            |
-| `drools.lsp.formatter.bindingColonSpace`    | `false`    | Space before a binding's or declare field's colon             |
-| `drools.lsp.formatter.normalizeTerminators` | `true`     | Normalize `import`/`global` `;` and the accumulate separator  |
-| `drools.lsp.formatter.alignDeclarations`    | `true`     | Column-align `declare` fields and enum constants              |
-| `drools.lsp.formatter.headerMetadata`       | `indented` | `indented`, `flush` or `inline` header annotations/attributes |
+| Setting                                     | Default    | Description                                                     |
+| ------------------------------------------- | ---------- | --------------------------------------------------------------- |
+| `drools.lsp.logLevel`                       | `INFO`     | Server-side log level                                           |
+| `drools.lsp.compile.onSave`                 | `true`     | Compile the saved file's group with the project's Drools engine |
+| `drools.lsp.grouping`                       | `{}`       | DRL file grouping, declared inline (see above)                  |
+| `drools.lsp.lint.missingEnd`                | `warning`  | Severity for missing `end` keyword                              |
+| `drools.lsp.lint.missingSeparator`          | `warning`  | Severity for missing constraint separator                       |
+| `drools.lsp.lint.missingSemicolon`          | `warning`  | Severity for missing semicolon in consequence                   |
+| `drools.lsp.lint.unbalancedParens`          | `warning`  | Severity for unbalanced parentheses                             |
+| `drools.lsp.lint.unknownTypes`              | `warning`  | Severity for unrecognized type references                       |
+| `drools.lsp.lint.mvelPropertyAccess`        | `off`      | Hint to prefer property-access style over getter calls in LHS   |
+| `drools.lsp.inlayHints.enabled`             | `true`     | Show inline type hints for bound variables                      |
+| `drools.lsp.maven.pomPath`                  | `""`       | Maven POM path(s) for classpath resolution                      |
+| `drools.lsp.java.sourcePaths`               | `[]`       | Extra Java source roots, beyond those found automatically       |
+| `drools.lsp.java.packageFilters`            | `[]`       | Package prefixes limiting which Java source types are indexed   |
+| `drools.lsp.formatter.lineLength`           | `110`      | Formatter wrap trigger (see Formatting)                         |
+| `drools.lsp.formatter.lineEndings`          | `preserve` | `preserve`, `lf` or `crlf`                                      |
+| `drools.lsp.formatter.parenPadding`         | `true`     | Space inside non-empty parentheses                              |
+| `drools.lsp.formatter.bindingColonSpace`    | `false`    | Space before a binding's or declare field's colon               |
+| `drools.lsp.formatter.normalizeTerminators` | `true`     | Normalize `import`/`global` `;` and the accumulate separator    |
+| `drools.lsp.formatter.alignDeclarations`    | `true`     | Column-align `declare` fields and enum constants                |
+| `drools.lsp.formatter.headerMetadata`       | `indented` | `indented`, `flush` or `inline` header annotations/attributes   |
 
 All lint settings accept: `off`, `hint`, `info`, `warning`, `error`.
 
-Formatter settings apply without a restart.
+Formatter and compile settings apply without a restart.
 
 The project's own Java types resolve from `.java` sources, so completion, hover,
 navigation and the unknown-type lint work on a fresh checkout, before Maven has

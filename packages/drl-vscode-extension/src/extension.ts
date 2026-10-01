@@ -76,6 +76,21 @@ export async function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand("drools.rebuildWorkspace", () => {
+      const document = vscode.window.activeTextEditor?.document;
+      if (!document || document.languageId !== "drools") {
+        vscode.window.showInformationMessage("Open a DRL file to rebuild its workspace.");
+        return;
+      }
+      if (!languageClient) {
+        vscode.window.showInformationMessage("The DRL language server is still starting. Try again in a moment.");
+        return;
+      }
+      languageClient.sendNotification("drools/rebuildWorkspace", { uri: document.uri.toString() });
+    })
+  );
+
   let serverOptions: ServerOptions | undefined = undefined;
 
   if (DEBUG_MODE) {
@@ -196,6 +211,7 @@ export async function activate(context: vscode.ExtensionContext) {
       initializationOptions: {
         grouping: groupingSetting(),
         formatter: vscode.workspace.getConfiguration().get("drools.lsp.formatter") ?? {},
+        compile: vscode.workspace.getConfiguration().get("drools.lsp.compile") ?? {},
         workspaceFiles: await enumerateWorkspaceFiles(),
       },
     };
