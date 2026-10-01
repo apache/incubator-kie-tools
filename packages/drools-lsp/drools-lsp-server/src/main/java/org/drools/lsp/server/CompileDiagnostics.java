@@ -400,14 +400,35 @@ final class CompileDiagnostics {
     }
 
     private List<Path> scope(Path current, boolean fullScope) {
+        List<Path> files;
         if (!fullScope) {
-            return WorkspaceSiblingResolvers.active().resolveSiblings(current);
+            files = WorkspaceSiblingResolvers.active().resolveSiblings(current);
+        } else {
+            files = WorkspaceSiblingResolvers.active().workspaceDrlFiles();
+            if (files.isEmpty()) {
+                files = WorkspaceScan.of(rootFor(current)).drlFiles();
+            }
         }
-        List<Path> known = WorkspaceSiblingResolvers.active().workspaceDrlFiles();
-        if (!known.isEmpty()) {
-            return known;
+        return withoutBuildOutput(files);
+    }
+
+    /** Build output holds copies of the rules; compiling them next to their sources only duplicates every rule. */
+    private List<Path> withoutBuildOutput(List<Path> files) {
+        List<Path> outputDirs = new ArrayList<>();
+        for (Path dir : server.getBuildOutputDirs()) {
+            outputDirs.add(normalize(dir));
         }
-        return WorkspaceScan.of(rootFor(current)).drlFiles();
+        if (outputDirs.isEmpty()) {
+            return files;
+        }
+        List<Path> kept = new ArrayList<>(files.size());
+        for (Path file : files) {
+            Path normalized = normalize(file);
+            if (outputDirs.stream().noneMatch(normalized::startsWith)) {
+                kept.add(file);
+            }
+        }
+        return kept;
     }
 
     private Path rootFor(Path current) {

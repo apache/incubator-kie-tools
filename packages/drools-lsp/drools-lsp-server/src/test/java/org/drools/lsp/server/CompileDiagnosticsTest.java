@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -589,6 +590,40 @@ class CompileDiagnosticsTest {
         awaitUntil(() -> f.client().messages.stream()
                 .anyMatch(m -> m.getMessage().startsWith("Workspace compile finished")));
         assertThat(f.compile().cachedFor(usage)).isEmpty();
+    }
+
+    @Test
+    void copiesInADetectedBuildOutputDirectoryAreNotCompiled(@TempDir Path tmp) throws Exception {
+        Path source = write(Files.createDirectories(tmp.resolve("src/main/resources/rules")), "A.drl", VALID);
+        Path output = Files.createDirectories(tmp.resolve("out-of-tree/app/classes"));
+        Path copy = write(Files.createDirectories(output.resolve("rules")), "A.drl", VALID);
+        WorkspaceSiblingResolvers.setActive(new WorkspaceSiblingResolver() {
+            @Override
+            public List<Path> resolveSiblings(Path currentFile) {
+                return List.of(copy);
+            }
+
+            @Override
+            public List<Path> workspaceDrlFiles() {
+                return List.of(source, copy);
+            }
+        });
+        List<Integer> compiledFileCounts = new CopyOnWriteArrayList<>();
+        FakeEngine engine = new FakeEngine(sources -> {
+            compiledFileCounts.add(sources.size());
+            return List.of();
+        });
+        Fixture f = fixture(new FakeEngine(sources -> List.of()));
+        f.server().setClasspathEntriesForTest(Set.of(output));
+        f.compile().setEngine(engine);
+        open(f.service(), source, VALID);
+
+        f.service().didSave(new DidSaveTextDocumentParams(new TextDocumentIdentifier(uri(source))));
+        awaitUntil(() -> compiledFileCounts.size() == 1);
+        f.compile().rebuildWorkspace(source);
+        awaitUntil(() -> compiledFileCounts.size() == 2);
+
+        assertThat(compiledFileCounts).containsExactly(1, 1);
     }
 
     @Test
