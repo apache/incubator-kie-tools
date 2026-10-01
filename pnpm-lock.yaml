@@ -5760,8 +5760,8 @@ importers:
         specifier: ^1.1.9
         version: 1.1.9
       isomorphic-git:
-        specifier: ^1.30.1
-        version: 1.38.10
+        specifier: ^1.42.3
+        version: 1.42.6
       js-yaml:
         specifier: ^4.3.2
         version: 4.3.2
@@ -8377,8 +8377,8 @@ importers:
         specifier: 1.103.0
         version: 1.103.0
       isomorphic-git:
-        specifier: ^1.30.1
-        version: 1.38.10
+        specifier: ^1.42.3
+        version: 1.42.6
       minimatch:
         specifier: 5.1.9
         version: 5.1.9
@@ -8690,8 +8690,8 @@ importers:
         specifier: ^2.3.1
         version: 2.5.0
       isomorphic-git:
-        specifier: ^1.30.1
-        version: 1.38.10
+        specifier: ^1.42.3
+        version: 1.42.6
       minimatch:
         specifier: 5.1.9
         version: 5.1.9
@@ -18289,8 +18289,8 @@ packages:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
 
-  isomorphic-git@1.38.10:
-    resolution: {integrity: sha512-nJSSq7ypu97vM33rSdxXyPzSWksCberjKspzXhFEcBHdVyxdNkWByAzJ/AURV1jIlfv8pLq37lGdIEt7ORj17Q==}
+  isomorphic-git@1.42.6:
+    resolution: {integrity: sha512-MJpYjxITU0k0CNzSE3hXmrsHEIyPO8puRf69cNg5Xim7uhRMU0wh+5VkxpJonhKdAqiy+KTDTQWxgAuTxySqeg==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -36277,7 +36277,7 @@ snapshots:
 
   isobject@3.0.1: {}
 
-  isomorphic-git@1.38.10:
+  isomorphic-git@1.42.6:
     dependencies:
       async-lock: 1.4.1
       clean-git-ref: 2.0.1
