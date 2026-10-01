@@ -41,3 +41,7 @@ overrides:
   # All other dependents (axios, superagent, @vscode/vsce, jsdom, @types/node-fetch) use ^4.x
   # which naturally resolves to 4.0.6, so only @cypress/request needs a targeted override.
   "@cypress/request>form-data": "4.0.6"
+  # CVE-2026-90711 (CVSS 9.1): IP spoofing via IPv4-mapped IPv6 trust subnet in proxy-addr.
+  # express@4.x pins ~2.0.7 and express@5.x pins ^2.0.7 — both ranges allow 2.0.8.
+  # Overriding transitive dependency until express ships proxy-addr >= 2.0.8 natively.
+  "proxy-addr": "2.0.8"
