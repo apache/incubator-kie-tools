@@ -144,6 +144,16 @@ class BuildMessageRangesTest {
     }
 
     @Test
+    void aTokenInACommentIsSkippedForTheCodeAfterIt() {
+        String text = "package p;\n// totl is wrong here\nrule R\n  when\n    Order( totl > 1 )\n  then\nend\n";
+
+        Range range = BuildMessageRanges.rangeFor("Field 'totl' is not on the type", 0, 0, text);
+
+        assertThat(range.getStart().getLine()).isEqualTo(4);
+        assertThat(range.getStart().getCharacter()).isEqualTo(11);
+    }
+
+    @Test
     void aParenthesisInsideAStringLiteralDoesNotEndThePattern() {
         String text = "package p;\nrule R\n  when\n    Order( note == \")\", totl > 1 )\n  then\nend\n";
 

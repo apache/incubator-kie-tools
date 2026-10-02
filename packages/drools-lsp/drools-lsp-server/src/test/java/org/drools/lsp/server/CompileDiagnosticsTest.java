@@ -140,8 +140,9 @@ class CompileDiagnosticsTest {
             }
 
             @Override
-            public List<Map<String, Object>> build(Map<String, String> drlByPath) throws Exception {
-                return realEngine.build(drlByPath);
+            public List<Map<String, Object>> build(Map<String, String> drlByPath, java.time.Duration timeout)
+                    throws Exception {
+                return realEngine.build(drlByPath, timeout);
             }
 
             @Override
@@ -350,6 +351,93 @@ class CompileDiagnosticsTest {
         f.compile().setEngine(shared());
         f.service().didSave(new DidSaveTextDocumentParams(new TextDocumentIdentifier(uri(drl))));
         awaitUntil(() -> f.compile().cachedFor(drl).isEmpty());
+    }
+
+    private static final String TWO_RULES = """
+            package com.example;
+            declare Order
+                total : int
+            end
+            rule "First"
+                when
+                    Order( total > 1 )
+                then
+            end
+            rule "Second"
+                when
+                    Order( total > 2 )
+                then
+            end
+            """;
+
+    @Test
+    void anUnresolvedTypeInAnotherRuleThanTheRootErrorIsKept(@TempDir Path tmp) throws Exception {
+        Path drl = write(tmp, "A.drl", TWO_RULES);
+        FakeEngine engine = new FakeEngine(sources -> List.of(
+                message("src/main/resources/A.drl", "ERROR", 7, 0, "Rule Compilation error in the consequence"),
+                message("src/main/resources/A.drl", "ERROR", 12, 0, "Unable to resolve type 'Nope'")));
+        Fixture f = fixture(engine);
+        open(f.service(), drl, TWO_RULES);
+
+        f.service().didSave(new DidSaveTextDocumentParams(new TextDocumentIdentifier(uri(drl))));
+
+        awaitUntil(() -> !f.compile().cachedFor(drl).isEmpty());
+        assertThat(f.compile().cachedFor(drl)).hasSize(2);
+    }
+
+    @Test
+    void anUnresolvedTypeInTheSameRuleAsTheRootErrorIsDropped(@TempDir Path tmp) throws Exception {
+        Path drl = write(tmp, "A.drl", TWO_RULES);
+        FakeEngine engine = new FakeEngine(sources -> List.of(
+                message("src/main/resources/A.drl", "ERROR", 7, 0, "Rule Compilation error in the consequence"),
+                message("src/main/resources/A.drl", "ERROR", 8, 0, "Unable to resolve type 'Nope'")));
+        Fixture f = fixture(engine);
+        open(f.service(), drl, TWO_RULES);
+
+        f.service().didSave(new DidSaveTextDocumentParams(new TextDocumentIdentifier(uri(drl))));
+
+        awaitUntil(() -> !f.compile().cachedFor(drl).isEmpty());
+        assertThat(f.compile().cachedFor(drl)).singleElement()
+                .satisfies(d -> assertThat(d.getMessage()).startsWith("Rule Compilation error"));
+    }
+
+    @Test
+    void aRegroupDuringABuildDiscardsItsResult(@TempDir Path tmp) throws Exception {
+        Path drl = write(tmp, "A.drl", VALID);
+        CountDownLatch release = new CountDownLatch(1);
+        AtomicInteger call = new AtomicInteger();
+        FakeEngine engine = new FakeEngine(sources -> {
+            if (call.incrementAndGet() == 1) {
+                release.await(10, TimeUnit.SECONDS);
+                return List.of(message(null, "ERROR", 0, 0, "built under the old grouping"));
+            }
+            return List.of();
+        });
+        Fixture f = fixture(engine);
+        open(f.service(), drl, VALID);
+
+        f.service().didSave(new DidSaveTextDocumentParams(new TextDocumentIdentifier(uri(drl))));
+        awaitUntil(() -> call.get() == 1);
+        f.compile().invalidateAll();
+        release.countDown();
+        f.service().didSave(new DidSaveTextDocumentParams(new TextDocumentIdentifier(uri(drl))));
+        awaitUntil(() -> f.client().refreshes.get() >= 1);
+
+        assertThat(f.client().refreshes.get()).isEqualTo(1);
+        assertThat(f.compile().cachedFor(drl)).isEmpty();
+    }
+
+    @Test
+    void anAmbiguousEngineFileNameFallsBackInsteadOfGuessing() {
+        Path shallow = Path.of("shallow");
+        Path deep = Path.of("deep");
+        Path fallback = Path.of("saved");
+        Map<String, Path> files = new LinkedHashMap<>();
+        files.put("src/main/resources/b/a/Rules.drl", deep);
+        files.put("src/main/resources/a/Rules.drl", shallow);
+
+        assertThat(CompileDiagnostics.fileFor("a/Rules.drl", files, fallback)).isEqualTo(shallow);
+        assertThat(CompileDiagnostics.fileFor("Rules.drl", files, fallback)).isEqualTo(fallback);
     }
 
     @Test
@@ -732,7 +820,8 @@ class CompileDiagnosticsTest {
         }
 
         @Override
-        public List<Map<String, Object>> build(Map<String, String> drlByPath) throws Exception {
+        public List<Map<String, Object>> build(Map<String, String> drlByPath, java.time.Duration timeout)
+                throws Exception {
             calls.incrementAndGet();
             return answer.apply(drlByPath);
         }

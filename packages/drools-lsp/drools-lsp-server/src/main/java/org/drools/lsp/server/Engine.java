@@ -19,6 +19,7 @@
 
 package org.drools.lsp.server;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -29,9 +30,10 @@ interface Engine extends AutoCloseable {
 
     /**
      * Compiles the given sources, keyed by their KieFileSystem path, and returns
-     * the engine's messages in the shape {@code EngineBridge} produces.
+     * the engine's messages in the shape {@code EngineBridge} produces; a build
+     * still running after {@code timeout} fails with a {@code TimeoutException}.
      */
-    List<Map<String, Object>> build(Map<String, String> drlByPath) throws Exception;
+    List<Map<String, Object>> build(Map<String, String> drlByPath, Duration timeout) throws Exception;
 
     @Override
     void close();

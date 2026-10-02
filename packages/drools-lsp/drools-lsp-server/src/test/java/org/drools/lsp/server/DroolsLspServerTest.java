@@ -343,6 +343,40 @@ class DroolsLspServerTest {
     }
 
     @Test
+    void pulledCompileSectionSetsTheBuildTimeout() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{}"), jsonObject("{\"timeoutSeconds\":300}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+
+        server.pullSettings().join();
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().timeout()).isEqualTo(java.time.Duration.ofSeconds(300));
+    }
+
+    @Test
+    void anInvalidBuildTimeoutFallsBackToTheDefaultAndATinyOneToTheMinimum() {
+        assertThat(DroolsLspServer.compileTimeoutIn(jsonObject("{\"timeoutSeconds\":\"soon\"}")))
+                .isEqualTo(CompileDiagnostics.DEFAULT_TIMEOUT);
+        assertThat(DroolsLspServer.compileTimeoutIn(jsonObject("{}"))).isEqualTo(CompileDiagnostics.DEFAULT_TIMEOUT);
+        assertThat(DroolsLspServer.compileTimeoutIn(jsonObject("{\"timeoutSeconds\":3}")))
+                .isEqualTo(CompileDiagnostics.MINIMUM_TIMEOUT);
+    }
+
+    @Test
+    void pushedCompileSectionSetsTheBuildTimeout() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        server.connect(new CapturingClient());
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), false)).get();
+
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(
+                jsonObject("{\"drools\":{\"lsp\":{\"compile\":{\"timeoutSeconds\":200}}}}")));
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().timeout()).isEqualTo(java.time.Duration.ofSeconds(200));
+    }
+
+    @Test
     void aOneElementAnswerLeavesSaveCompilesOn() throws Exception {
         DroolsLspServer server = new DroolsLspServer();
         CapturingClient client = new CapturingClient();

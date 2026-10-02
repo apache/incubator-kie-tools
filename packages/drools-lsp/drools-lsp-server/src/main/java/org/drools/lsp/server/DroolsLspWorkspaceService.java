@@ -61,7 +61,7 @@ public class DroolsLspWorkspaceService implements WorkspaceService {
         }
         JsonObject compile = lspSectionIn(settings, "compile");
         if (compile != null) {
-            server.getTextDocumentService().compileDiagnostics().setOnSave(DroolsLspServer.compileOnSaveIn(compile));
+            server.applyCompileSettings(compile);
         }
     }
 

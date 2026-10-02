@@ -210,6 +210,7 @@ Saving a `.drl` file compiles it together with the other files of its group (see
 - Lifecycle: a compile result stays until you edit the file, save again, or change the grouping. One compile runs at a time; a save during a compile queues one more.
 - A file's compile messages appear in the Problems panel while the file is open; the rebuild summary names the files that have errors.
 - `drools.lsp.compile.onSave` turns the save trigger off for projects where a group compile takes too long; the command still works.
+- `drools.lsp.compile.timeoutSeconds` (default 120, minimum 10) is how long one compile may run before it is abandoned and reported as failed; raise it for large groups or slower machines.
 
 ## Commands
 
@@ -225,6 +226,7 @@ Saving a `.drl` file compiles it together with the other files of its group (see
 | ------------------------------------------- | ---------- | --------------------------------------------------------------- |
 | `drools.lsp.logLevel`                       | `INFO`     | Server-side log level                                           |
 | `drools.lsp.compile.onSave`                 | `true`     | Compile the saved file's group with the project's Drools engine |
+| `drools.lsp.compile.timeoutSeconds`         | `120`      | Seconds one compile may run before it is reported as failed     |
 | `drools.lsp.grouping`                       | `{}`       | DRL file grouping, declared inline (see above)                  |
 | `drools.lsp.lint.missingEnd`                | `warning`  | Severity for missing `end` keyword                              |
 | `drools.lsp.lint.missingSeparator`          | `warning`  | Severity for missing constraint separator                       |

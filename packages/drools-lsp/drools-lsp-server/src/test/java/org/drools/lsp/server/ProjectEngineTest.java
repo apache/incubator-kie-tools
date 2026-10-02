@@ -19,10 +19,13 @@
 
 package org.drools.lsp.server;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -32,6 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ProjectEngineTest {
+
+    private static final Duration TIMEOUT = Duration.ofMinutes(2);
 
     private static final String BROKEN = """
             package com.example;
@@ -66,7 +71,7 @@ class ProjectEngineTest {
     @Test
     void bridgeCompilesThroughTheProjectLoader() throws Exception {
         try (ProjectEngine engine = ProjectEngine.over(TestClasspath.withoutTheBridge())) {
-            List<Map<String, Object>> messages = engine.build(Map.of("src/main/resources/rules/A.drl", BROKEN));
+            List<Map<String, Object>> messages = engine.build(Map.of("src/main/resources/rules/A.drl", BROKEN), TIMEOUT);
 
             assertThat(messages).anySatisfy(m -> assertThat(m.get("level")).isEqualTo("ERROR"));
         }
@@ -94,7 +99,7 @@ class ProjectEngineTest {
 
         assertThat(engine.isClosed()).isTrue();
         assertThat(engine.available()).isFalse();
-        assertThatThrownBy(() -> engine.build(Map.of())).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> engine.build(Map.of(), TIMEOUT)).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -105,9 +110,23 @@ class ProjectEngineTest {
                     .append(" )\n    then\nend\n");
         }
         try (ProjectEngine engine = ProjectEngine.over(TestClasspath.withoutTheBridge())) {
-            List<Map<String, Object>> messages = engine.build(Map.of("src/main/resources/rules/A.drl", drl.toString()));
+            List<Map<String, Object>> messages = engine.build(Map.of("src/main/resources/rules/A.drl", drl.toString()), TIMEOUT);
 
             assertThat(messages).isEmpty();
+        }
+    }
+
+    @Test
+    void aBuildPastTheTimeoutFailsInsteadOfBlocking() {
+        StringBuilder drl = new StringBuilder("package com.example;\ndeclare Order\n    total : int\nend\n");
+        for (int i = 0; i < 30; i++) {
+            drl.append("rule \"R").append(i).append("\"\n    when\n        Order( total > ").append(i)
+                    .append(" )\n    then\nend\n");
+        }
+        try (ProjectEngine engine = ProjectEngine.over(TestClasspath.withoutTheBridge())) {
+            assertThatThrownBy(() -> engine.build(Map.of("src/main/resources/rules/A.drl", drl.toString()),
+                    Duration.ofMillis(1)))
+                    .isInstanceOf(TimeoutException.class);
         }
     }
 
@@ -120,9 +139,20 @@ class ProjectEngineTest {
                     .append(i).append(" )\n    then\nend\n");
         }
         try (ProjectEngine engine = ProjectEngine.over(TestClasspath.withoutTheBridge())) {
-            List<Map<String, Object>> messages = engine.build(Map.of("src/main/resources/rules/A.drl", drl.toString()));
+            List<Map<String, Object>> messages = engine.build(Map.of("src/main/resources/rules/A.drl", drl.toString()), TIMEOUT);
 
             assertThat(messages).anySatisfy(m -> assertThat((String) m.get("text")).contains("totl"));
+        }
+    }
+
+    @Test
+    void aProbeClassThatFailsToLinkMeansNoEngine(@TempDir Path tmp) throws Exception {
+        Path classFile = tmp.resolve("org/kie/api/KieServices.class");
+        Files.createDirectories(classFile.getParent());
+        Files.write(classFile, new byte[] {(byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE, 0, 0, 0, 99, 0, 0});
+
+        try (ProjectEngine engine = ProjectEngine.over(List.of(tmp))) {
+            assertThat(engine.available()).isFalse();
         }
     }
 

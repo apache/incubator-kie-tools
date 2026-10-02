@@ -93,11 +93,11 @@ final class BuildMessageRanges {
         String masked = LhsBindingResolver.maskCommentsAndStrings(text);
 
         for (String token : tokens) {
-            int hit = findTokenInWindow(text, token, searchStart, searchEnd);
+            int hit = findTokenInWindow(text, masked, token, searchStart, searchEnd);
             String matched = token;
             if (hit < 0 && token.startsWith("$") && token.length() > 1) {
                 matched = token.substring(1);
-                hit = findTokenInWindow(text, matched, searchStart, searchEnd);
+                hit = findTokenInWindow(text, masked, matched, searchStart, searchEnd);
             }
             if (hit < 0) {
                 continue;
@@ -186,13 +186,24 @@ final class BuildMessageRanges {
         return false;
     }
 
-    private static int findTokenInWindow(String text, String token, int searchStart, int searchEnd) {
+    /**
+     * The first occurrence of {@code token} that starts in code. The original text is searched,
+     * because the token may contain a string literal that the masked text blanks out.
+     */
+    private static int findTokenInWindow(String text, String masked, String token, int searchStart, int searchEnd) {
         int end = Math.min(searchEnd, text.length());
-        if (searchStart >= end) {
-            return -1;
+        int from = searchStart;
+        while (from < end) {
+            int hit = text.indexOf(token, from);
+            if (hit < 0 || hit >= end) {
+                return -1;
+            }
+            if (masked.charAt(hit) == text.charAt(hit)) {
+                return hit;
+            }
+            from = hit + 1;
         }
-        int hit = text.indexOf(token, searchStart);
-        return hit < 0 || hit >= end ? -1 : hit;
+        return -1;
     }
 
     private static int endOfClause(String text, int startOffset) {

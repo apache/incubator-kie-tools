@@ -27,12 +27,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,7 +111,7 @@ final class ProjectEngine implements Engine {
     }
 
     @Override
-    public List<Map<String, Object>> build(Map<String, String> drlByPath) throws Exception {
+    public List<Map<String, Object>> build(Map<String, String> drlByPath, Duration timeout) throws Exception {
         if (!available()) {
             throw new IllegalStateException("No Drools engine available");
         }
@@ -124,7 +126,12 @@ final class ProjectEngine implements Engine {
         }, "drools-lsp-engine-build");
         worker.setDaemon(true);
         worker.start();
-        worker.join();
+        worker.join(Math.max(1, timeout.toMillis()));
+        if (worker.isAlive()) {
+            worker.interrupt();
+            throw new TimeoutException("The Drools engine did not finish the build within " + timeout.toSeconds()
+                    + " seconds; raise drools.lsp.compile.timeoutSeconds if the group needs longer");
+        }
         Object result = outcome.get();
         if (result instanceof InvocationTargetException e) {
             Throwable cause = e.getCause();
@@ -167,26 +174,27 @@ final class ProjectEngine implements Engine {
     }
 
     private static boolean hasCompiler(ClassLoader projectLoader) {
+        return loads("org.kie.api.KieServices", projectLoader,
+                        "No Drools engine on the project classpath; compile diagnostics stay off until the classpath changes")
+                && loads(COMPILER_CLASS, projectLoader,
+                        "kie-api is on the project classpath but drools-compiler is not; compile diagnostics stay off until the classpath changes")
+                && loads(MVEL_CLASS, projectLoader,
+                        "drools-compiler is on the project classpath but drools-mvel is not; the classic build cannot "
+                                + "compile constraints, compile diagnostics stay off until the classpath changes");
+    }
+
+    private static boolean loads(String className, ClassLoader projectLoader, String absentMessage) {
         try {
-            Class.forName("org.kie.api.KieServices", false, projectLoader);
+            Class.forName(className, false, projectLoader);
+            return true;
         } catch (ClassNotFoundException e) {
-            logger.fine("No Drools engine on the project classpath; compile diagnostics stay off until it changes");
+            logger.fine(absentMessage);
+            return false;
+        } catch (LinkageError e) {
+            logger.log(Level.WARNING, className + " is on the project classpath but this Java runtime cannot load it; "
+                    + "compile diagnostics stay off until the classpath changes", e);
             return false;
         }
-        try {
-            Class.forName(COMPILER_CLASS, false, projectLoader);
-        } catch (ClassNotFoundException e) {
-            logger.fine("kie-api is on the project classpath but drools-compiler is not; compile diagnostics stay off until it changes");
-            return false;
-        }
-        try {
-            Class.forName(MVEL_CLASS, false, projectLoader);
-        } catch (ClassNotFoundException e) {
-            logger.fine("drools-compiler is on the project classpath but drools-mvel is not; the classic build cannot "
-                    + "compile constraints, compile diagnostics stay off until it changes");
-            return false;
-        }
-        return true;
     }
 
     /** Defines the bridge classes from this server's jar, everything else comes from the project. */

@@ -111,6 +111,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
     private static final Logger logger = Logger.getLogger(DroolsLspDocumentService.class.getName());
 
     private final Map<String, String> sourcesMap = new ConcurrentHashMap<>();
+    private final Map<Path, String> openTextByPath = new ConcurrentHashMap<>();
     private volatile ClassIndex classIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
     private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
@@ -192,13 +193,23 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     /** The open buffer for {@code path}, whatever URI spelling the client used for it. */
     private String openTextAt(Path path) {
-        for (Map.Entry<String, String> entry : sourcesMap.entrySet()) {
-            Path open = toPath(entry.getKey());
-            if (open != null && open.toAbsolutePath().normalize().equals(path)) {
-                return entry.getValue();
-            }
+        return openTextByPath.get(path);
+    }
+
+    private void putSource(String uri, String text) {
+        sourcesMap.put(uri, text);
+        Path path = toPath(uri);
+        if (path != null) {
+            openTextByPath.put(path.toAbsolutePath().normalize(), text);
         }
-        return null;
+    }
+
+    private void removeSource(String uri) {
+        sourcesMap.remove(uri);
+        Path path = toPath(uri);
+        if (path != null) {
+            openTextByPath.remove(path.toAbsolutePath().normalize());
+        }
     }
 
     ClassIndex getClassIndexForTest() {
@@ -211,7 +222,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didOpen(DidOpenTextDocumentParams params) {
-        sourcesMap.put(params.getTextDocument().getUri(), params.getTextDocument().getText());
+        putSource(params.getTextDocument().getUri(), params.getTextDocument().getText());
     }
 
     /**
@@ -263,7 +274,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
         String uri = params.getTextDocument().getUri();
-        sourcesMap.put(uri, params.getContentChanges().get(0).getText());
+        putSource(uri, params.getContentChanges().get(0).getText());
         compileDiagnostics.invalidate(toPath(uri));
     }
 
@@ -787,7 +798,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
     @Override
     public void didClose(DidCloseTextDocumentParams params) {
         String uri = params.getTextDocument().getUri();
-        sourcesMap.remove(uri);
+        removeSource(uri);
         compileDiagnostics.invalidate(toPath(uri));
     }
 
@@ -804,7 +815,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
         if (text == null) {
             return;
         }
-        sourcesMap.put(uri, text);
+        putSource(uri, text);
         compileDiagnostics.onDidSave(toPath(uri), text);
     }
 }

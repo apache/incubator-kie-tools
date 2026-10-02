@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -39,6 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -46,12 +48,15 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.drools.completion.DRLDiagnosticHelper;
+import org.drools.completion.DRLDocumentSymbolHelper;
 import org.drools.completion.WorkspaceScan;
 import org.drools.completion.WorkspaceSiblingResolvers;
 import org.eclipse.lsp4j.Diagnostic;
 import org.eclipse.lsp4j.DiagnosticSeverity;
+import org.eclipse.lsp4j.DocumentSymbol;
 import org.eclipse.lsp4j.MessageType;
 import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.SymbolKind;
 
 /**
  * Compiles a saved DRL file together with its group through the project's own
@@ -64,6 +69,8 @@ final class CompileDiagnostics {
     static final String SOURCE = "drools";
     static final String KFS_PREFIX = "src/main/resources/";
     static final int MAX_DIAGNOSTICS_PER_FILE = 500;
+    static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(120);
+    static final Duration MINIMUM_TIMEOUT = Duration.ofSeconds(10);
     static final String NOT_BUILT =
             "Compile diagnostics need the project's compiled classes. Build the project, then save again.";
 
@@ -79,8 +86,10 @@ final class CompileDiagnostics {
     private final ExecutorService gateExecutor = Executors.newSingleThreadExecutor(daemon("drools-lsp-compile-gate"));
     private final ExecutorService buildExecutor = Executors.newSingleThreadExecutor(daemon("drools-lsp-compile"));
     private volatile boolean onSave = true;
+    private volatile Duration timeout = DEFAULT_TIMEOUT;
     private final AtomicReference<Engine> engine = new AtomicReference<>();
     private final AtomicBoolean notBuiltNoticeShown = new AtomicBoolean(false);
+    private final AtomicLong regroupGeneration = new AtomicLong();
 
     CompileDiagnostics(DroolsLspServer server, Function<Path, String> openText) {
         this.server = server;
@@ -93,6 +102,14 @@ final class CompileDiagnostics {
 
     void setOnSave(boolean onSave) {
         this.onSave = onSave;
+    }
+
+    Duration timeout() {
+        return timeout;
+    }
+
+    void setTimeout(Duration timeout) {
+        this.timeout = timeout;
     }
 
     Engine engine() {
@@ -138,6 +155,7 @@ final class CompileDiagnostics {
     }
 
     void invalidateAll() {
+        regroupGeneration.incrementAndGet();
         cached.clear();
     }
 
@@ -219,6 +237,7 @@ final class CompileDiagnostics {
     private void submit(Path path, String text, boolean fullScope) {
         buildExecutor.submit(() -> {
             Engine target = engine.get();
+            long generation = regroupGeneration.get();
             boolean updated = false;
             boolean ran = false;
             boolean noEngine = false;
@@ -235,14 +254,14 @@ final class CompileDiagnostics {
                     server.showMessage(MessageType.Info, "Compiling every DRL file in the workspace");
                 }
                 result = compile(normalize(path), text, fullScope, target);
-                updated = commit(result);
+                updated = commit(result, generation);
                 errors = result.count(DiagnosticSeverity.Error);
                 warnings = result.count(DiagnosticSeverity.Warning);
                 ran = true;
             } catch (Throwable t) {
                 logger.log(Level.WARNING, "Drools compile failed for " + path, t);
                 result = failure(normalize(path), text, t);
-                updated = commit(result);
+                updated = commit(result, generation);
                 errors = 1;
                 ran = true;
             } finally {
@@ -331,7 +350,7 @@ final class CompileDiagnostics {
         logger.info(() -> "Compiling " + sources.size() + " DRL file(s) for " + saved
                 + (fullScope ? " (whole workspace)" : ""));
 
-        List<Map<String, Object>> messages = target.build(drlByKfsPath);
+        List<Map<String, Object>> messages = target.build(drlByKfsPath, timeout);
 
         Map<Path, List<Diagnostic>> perFile = new LinkedHashMap<>();
         for (Path file : sources.keySet()) {
@@ -356,7 +375,7 @@ final class CompileDiagnostics {
                 bucket.add(d);
             }
         }
-        perFile.replaceAll((file, list) -> cap(dedupe(dropCascades(list))));
+        perFile.replaceAll((file, list) -> cap(dedupe(dropCascades(list, sources.get(file)))));
         return new Compilation(sources, perFile, skipped);
     }
 
@@ -378,7 +397,11 @@ final class CompileDiagnostics {
         return new Compilation(Map.of(current, text), perFile, Set.of());
     }
 
-    private boolean commit(Compilation result) {
+    private boolean commit(Compilation result, long generation) {
+        if (regroupGeneration.get() != generation) {
+            logger.fine("Discarding a compile result built under a grouping that has since changed");
+            return false;
+        }
         boolean[] updated = {false};
         result.perFile.forEach((file, list) -> {
             String compiled = result.sources.get(file);
@@ -447,7 +470,7 @@ final class CompileDiagnostics {
         return KFS_PREFIX + "external/" + index + "/" + abs.getFileName();
     }
 
-    private static Path fileFor(Object pathValue, Map<String, Path> fileByKfsPath, Path fallback) {
+    static Path fileFor(Object pathValue, Map<String, Path> fileByKfsPath, Path fallback) {
         if (pathValue == null) {
             return fallback;
         }
@@ -456,16 +479,23 @@ final class CompileDiagnostics {
             return fallback;
         }
         Path exact = fileByKfsPath.get(p);
+        if (exact == null) {
+            exact = fileByKfsPath.get(KFS_PREFIX + p);
+        }
         if (exact != null) {
             return exact;
         }
+        Path matched = null;
         for (Map.Entry<String, Path> entry : fileByKfsPath.entrySet()) {
             String key = entry.getKey();
-            if (p.endsWith("/" + key) || key.endsWith("/" + p) || p.equals(key)) {
-                return entry.getValue();
+            if (p.endsWith("/" + key) || key.endsWith("/" + p)) {
+                if (matched != null) {
+                    return fallback;
+                }
+                matched = entry.getValue();
             }
         }
-        return fallback;
+        return matched != null ? matched : fallback;
     }
 
     static List<Diagnostic> merge(List<Diagnostic> fast, List<Diagnostic> compiled) {
@@ -495,19 +525,59 @@ final class CompileDiagnostics {
         return where + "|" + d.getSeverity() + "|" + d.getMessage();
     }
 
-    private static List<Diagnostic> dropCascades(List<Diagnostic> in) {
-        boolean hasRootError = in.stream().anyMatch(d -> d.getSeverity() == DiagnosticSeverity.Error
-                && (d.getMessage() == null || !NOISY_CASCADE.matcher(d.getMessage()).find()));
-        if (!hasRootError) {
+    /**
+     * Drops a follow-on type message when a root error sits in the same rule; one outside every
+     * rule is weighed against the whole file.
+     */
+    private static List<Diagnostic> dropCascades(List<Diagnostic> in, String text) {
+        if (in.stream().noneMatch(CompileDiagnostics::isNoise)) {
             return in;
+        }
+        List<Range> rules = new ArrayList<>();
+        for (DocumentSymbol symbol : DRLDocumentSymbolHelper.symbols(text)) {
+            if (symbol.getKind() == SymbolKind.Method) {
+                rules.add(symbol.getRange());
+            }
+        }
+        Set<Integer> rulesWithRoot = new HashSet<>();
+        boolean fileHasRoot = false;
+        for (Diagnostic d : in) {
+            if (d.getSeverity() == DiagnosticSeverity.Error && !isNoise(d)) {
+                fileHasRoot = true;
+                rulesWithRoot.add(ruleOf(d, rules));
+            }
         }
         List<Diagnostic> out = new ArrayList<>(in.size());
         for (Diagnostic d : in) {
-            if (d.getMessage() == null || !NOISY_CASCADE.matcher(d.getMessage()).find()) {
+            if (!isNoise(d)) {
+                out.add(d);
+                continue;
+            }
+            int rule = ruleOf(d, rules);
+            boolean caused = rule < 0 ? fileHasRoot : rulesWithRoot.contains(rule);
+            if (!caused) {
                 out.add(d);
             }
         }
         return out;
+    }
+
+    private static boolean isNoise(Diagnostic d) {
+        return d.getMessage() != null && NOISY_CASCADE.matcher(d.getMessage()).find();
+    }
+
+    private static int ruleOf(Diagnostic d, List<Range> rules) {
+        if (d.getRange() == null) {
+            return -1;
+        }
+        int line = d.getRange().getStart().getLine();
+        for (int i = 0; i < rules.size(); i++) {
+            Range rule = rules.get(i);
+            if (line >= rule.getStart().getLine() && line <= rule.getEnd().getLine()) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private static List<Diagnostic> dedupe(List<Diagnostic> in) {

@@ -24,6 +24,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -254,9 +255,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         // Member lookup reflects over the full classpath (jars + class dirs)
         // lazily — building the index itself loads no classes.
         swapMemberIndex(ClassMemberIndex.of(entries));
-        Set<Path> engineClasspath = new LinkedHashSet<>(classpathEntries);
-        engineClasspath.addAll(buildOutputDirs);
-        textService.compileDiagnostics().setEngine(ProjectEngine.over(engineClasspath));
+        textService.compileDiagnostics().setEngine(ProjectEngine.over(classpathEntries));
 
         if (entries.isEmpty()) {
             logger.warning("Classpath resolution returned 0 entries — type member hover "
@@ -510,7 +509,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         }
 
         textService.setFormatterOptions(formatterOptionsOf(params.getInitializationOptions()));
-        textService.compileDiagnostics().setOnSave(compileOnSaveOf(params.getInitializationOptions()));
+        applyCompileSettings(compileSectionOf(params.getInitializationOptions()));
 
         return CompletableFuture.supplyAsync(() -> initializeResult);
     }
@@ -587,15 +586,28 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
             textService.setFormatterOptions(FormatterOptions.fromJson(formatter));
         }
         if (answer.size() > 1 && answer.get(1) instanceof JsonObject compile) {
-            textService.compileDiagnostics().setOnSave(compileOnSaveIn(compile));
+            applyCompileSettings(compile);
         }
     }
 
-    static boolean compileOnSaveOf(Object initializationOptions) {
+    void applyCompileSettings(JsonObject compile) {
+        textService.compileDiagnostics().setOnSave(compileOnSaveIn(compile));
+        textService.compileDiagnostics().setTimeout(compileTimeoutIn(compile));
+    }
+
+    static JsonObject compileSectionOf(Object initializationOptions) {
         if (initializationOptions instanceof JsonObject root && root.get("compile") instanceof JsonObject compile) {
-            return compileOnSaveIn(compile);
+            return compile;
         }
-        return true;
+        return null;
+    }
+
+    static Duration compileTimeoutIn(JsonObject compile) {
+        JsonElement seconds = compile == null ? null : compile.get("timeoutSeconds");
+        if (seconds == null || !seconds.isJsonPrimitive() || !seconds.getAsJsonPrimitive().isNumber()) {
+            return CompileDiagnostics.DEFAULT_TIMEOUT;
+        }
+        return Duration.ofSeconds(Math.max(seconds.getAsLong(), CompileDiagnostics.MINIMUM_TIMEOUT.toSeconds()));
     }
 
     static boolean compileOnSaveIn(JsonObject compile) {
