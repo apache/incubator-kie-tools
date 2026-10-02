@@ -36,6 +36,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>drools-lsp-engine-bridge</module>
     <module>drools-lsp-server</module>
     <module>drools-completion</module>
     <module>drools-formatter</module>

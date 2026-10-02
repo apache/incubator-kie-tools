@@ -74,6 +74,7 @@ export function groupingSetting(): object | undefined {
 
 /** Files the grouping layer needs to know about. */
 const WORKSPACE_FILE_GLOB = "**/{*.drl,kmodule.xml,drl-lsp-kbases.json}";
+const FILE_EVENT_DEBOUNCE_MS = 500;
 
 /**
  * Enumerates the workspace files the server should consider, as URIs.
@@ -389,25 +390,25 @@ export function registerFileGrouping(
 
   // Editing a config file re-groups the workspace without a restart.
   const configWatcher = vscode.workspace.createFileSystemWatcher(CONFIG_FILE_GLOB);
-  const reload = async () => {
+  const reload = debounced(async () => {
     const client = getClient();
     client?.sendNotification("drools/reloadFileGroups");
     await refreshFileGroups(client);
-  };
-  configWatcher.onDidCreate(reload);
-  configWatcher.onDidChange(reload);
-  configWatcher.onDidDelete(reload);
-  context.subscriptions.push(configWatcher);
+  }, FILE_EVENT_DEBOUNCE_MS);
+  configWatcher.onDidCreate(reload.trigger);
+  configWatcher.onDidChange(reload.trigger);
+  configWatcher.onDidDelete(reload.trigger);
+  context.subscriptions.push(configWatcher, reload);
 
   // Adding or removing a file changes what the server should consider, and only
   // the client knows which files the user counts as part of the project.
   const fileWatcher = vscode.workspace.createFileSystemWatcher(WORKSPACE_FILE_GLOB, false, true, false);
-  const resend = async () => {
+  const resend = debounced(async () => {
     getClient()?.sendNotification("drools/setWorkspaceFiles", { uris: await enumerateWorkspaceFiles() });
-  };
-  fileWatcher.onDidCreate(resend);
-  fileWatcher.onDidDelete(resend);
-  context.subscriptions.push(fileWatcher);
+  }, FILE_EVENT_DEBOUNCE_MS);
+  fileWatcher.onDidCreate(resend.trigger);
+  fileWatcher.onDidDelete(resend.trigger);
+  context.subscriptions.push(fileWatcher, resend);
 
   context.subscriptions.push({
     dispose: () => {
@@ -417,4 +418,26 @@ export function registerFileGrouping(
   });
 
   updateStatusItem();
+}
+
+/** A build writes many files at once; one call after the burst settles replaces a call per file. */
+function debounced(action: () => Promise<void>, delayMs: number): { trigger: () => void; dispose: () => void } {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return {
+    trigger: () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        timer = undefined;
+        void action();
+      }, delayMs);
+    },
+    dispose: () => {
+      if (timer) {
+        clearTimeout(timer);
+        timer = undefined;
+      }
+    },
+  };
 }
