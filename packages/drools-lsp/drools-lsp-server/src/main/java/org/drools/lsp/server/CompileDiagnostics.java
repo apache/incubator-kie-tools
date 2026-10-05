@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -277,13 +278,28 @@ final class CompileDiagnostics {
                                 summaryMessage(errors, warnings, result));
                     }
                 }
+                handOffOnGate();
+            }
+        });
+    }
+
+    /**
+     * Releases the gate and starts the queued save as one step on the gate thread, where every
+     * trigger runs, so a save cannot claim the free gate between the two and run ahead of an
+     * older queued one.
+     */
+    private void handOffOnGate() {
+        try {
+            gateExecutor.submit(() -> {
                 buildInFlight.set(false);
                 PendingBuild queued = pending.getAndSet(null);
                 if (queued != null) {
-                    trigger(queued.path, queued.text, queued.fullScope);
+                    triggerNow(queued.path, queued.text, queued.fullScope);
                 }
-            }
-        });
+            });
+        } catch (RejectedExecutionException e) {
+            buildInFlight.set(false);
+        }
     }
 
     private static String summaryMessage(int errors, int warnings, Compilation result) {
