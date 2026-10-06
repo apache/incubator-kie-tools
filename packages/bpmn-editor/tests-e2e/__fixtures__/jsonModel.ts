@@ -248,4 +248,18 @@ export class JsonModel {
     }
     return undefined;
   }
+
+  public async getEdge(args: { diagramIndex?: number; bpmnElementId: string }) {
+    const edge = (await this.getPlane(args.diagramIndex ?? 0))?.["di:DiagramElement"]?.find(
+      (e) => e.__$$element === "bpmndi:BPMNEdge" && e["@_bpmnElement"] === args.bpmnElementId
+    );
+    if (edge?.__$$element === "bpmndi:BPMNEdge") {
+      return edge;
+    }
+    return undefined;
+  }
+
+  public async getEdgeLabelBounds(args: { diagramIndex?: number; bpmnElementId: string }) {
+    return (await this.getEdge(args))?.["bpmndi:BPMNLabel"]?.["dc:Bounds"];
+  }
 }
