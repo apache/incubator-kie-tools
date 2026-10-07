@@ -112,6 +112,7 @@ interface BpmnEditorDictionary extends ReferenceDictionary<{
     noDataMappingsYet: (entryTitle: string) => string;
     addDataMapping: (entryTitle: string) => string;
     messageInfoIconHelperText: string;
+    reservedInputName: string;
   };
   eventDefinitionProperties: {
     message: string;
