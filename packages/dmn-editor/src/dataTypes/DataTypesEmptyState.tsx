@@ -67,7 +67,7 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
                   <br />
                 </>
               )}
-              or
+              {i18n.dataTypes.or}
               <EmptyStateActions>
                 <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
                   {i18n.dataTypes.pasteDataType}

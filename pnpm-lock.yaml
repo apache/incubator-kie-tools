@@ -23,11 +23,12 @@ overrides:
   minimatch@^10: 10.2.1
   minimatch@^5: 5.1.9
   minimatch@^4: 5.1.9
-  undici: ^6.28.0
+  undici: ^6.29.0
   uuid: ^11.1.1
   picomatch@3: 3.0.2
   picomatch@4: 4.0.4
   '@cypress/request>form-data': 4.0.6
+  proxy-addr: 2.0.8
 
 packageExtensionsChecksum: sha256-oxPwESKKSHRelJQnCQTHzgtG1xkcQOHjfgjFdIfqMfg=
 
@@ -1410,8 +1411,8 @@ importers:
         specifier: ^10.0.3
         version: 10.2.0
       moment:
-        specifier: ^2.29.4
-        version: 2.30.1
+        specifier: ^2.31.0
+        version: 2.31.0
       react:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1
@@ -2691,8 +2692,8 @@ importers:
         specifier: ^10.0.3
         version: 10.2.0
       moment:
-        specifier: ^2.29.4
-        version: 2.30.1
+        specifier: ^2.31.0
+        version: 2.31.0
       react:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1
@@ -3366,8 +3367,8 @@ importers:
         specifier: ^4.18.1
         version: 4.18.1
       moment:
-        specifier: ^2.29.4
-        version: 2.30.1
+        specifier: ^2.31.0
+        version: 2.31.0
       react:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1
@@ -5759,8 +5760,8 @@ importers:
         specifier: ^1.1.9
         version: 1.1.9
       isomorphic-git:
-        specifier: ^1.30.1
-        version: 1.38.10
+        specifier: ^1.42.3
+        version: 1.42.6
       js-yaml:
         specifier: ^4.3.2
         version: 4.3.2
@@ -5771,8 +5772,8 @@ importers:
         specifier: ^4.18.1
         version: 4.18.1
       moment:
-        specifier: ^2.29.4
-        version: 2.30.1
+        specifier: ^2.31.0
+        version: 2.31.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -6459,7 +6460,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-moment:
         specifier: 0.9.7
-        version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
+        version: 0.9.7(moment@2.31.0)(prop-types@15.8.1)(react@18.3.1)
       react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -6867,7 +6868,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-moment:
         specifier: 0.9.7
-        version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
+        version: 0.9.7(moment@2.31.0)(prop-types@15.8.1)(react@18.3.1)
       react-router:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -7105,7 +7106,7 @@ importers:
         version: 2.3.0(react@18.3.1)
       react-moment:
         specifier: 0.9.7
-        version: 0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1)
+        version: 0.9.7(moment@2.31.0)(prop-types@15.8.1)(react@18.3.1)
       react-svg-pan-zoom:
         specifier: ^3.12.1
         version: 3.13.1
@@ -8203,8 +8204,8 @@ importers:
         specifier: ^4.18.1
         version: 4.18.1
       moment:
-        specifier: ^2.29.4
-        version: 2.30.1
+        specifier: ^2.31.0
+        version: 2.31.0
       react:
         specifier: '>=18.3.1 <19.0.0'
         version: 18.3.1
@@ -8376,8 +8377,8 @@ importers:
         specifier: 1.103.0
         version: 1.103.0
       isomorphic-git:
-        specifier: ^1.30.1
-        version: 1.38.10
+        specifier: ^1.42.3
+        version: 1.42.6
       minimatch:
         specifier: 5.1.9
         version: 5.1.9
@@ -8689,8 +8690,8 @@ importers:
         specifier: ^2.3.1
         version: 2.5.0
       isomorphic-git:
-        specifier: ^1.30.1
-        version: 1.38.10
+        specifier: ^1.42.3
+        version: 1.42.6
       minimatch:
         specifier: 5.1.9
         version: 5.1.9
@@ -16969,8 +16970,8 @@ packages:
   fast-text-encoding@1.0.6:
     resolution: {integrity: sha512-VhXlQgj9ioXCqGstD37E/HBeqEGV/qOD/kmbVG8h5xKBYvM1L3lR1Zn4555cQ8GkYbJa8aJSipLPndE1k6zK2w==}
 
-  fast-uri@3.1.7:
-    resolution: {integrity: sha512-dOvZVzjdZdz7phd9v6jCbwxrBW3fK6n8Rc0CtdmM4bumzMnxywBYhuph6J819RRw/ku+rLbelwfMunktuzVVHg==}
+  fast-uri@3.1.8:
+    resolution: {integrity: sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==}
 
   fast-url-parser@1.1.3:
     resolution: {integrity: sha512-5jOCVXADYNuRkKFzNJ0dCCewsZiYo0dz8QNYljkOpFC6r2U4OBmKtvm/Tsuh4w1YYdDqDb31a8TVhBJ2OJKdqQ==}
@@ -18288,8 +18289,8 @@ packages:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
 
-  isomorphic-git@1.38.10:
-    resolution: {integrity: sha512-nJSSq7ypu97vM33rSdxXyPzSWksCberjKspzXhFEcBHdVyxdNkWByAzJ/AURV1jIlfv8pLq37lGdIEt7ORj17Q==}
+  isomorphic-git@1.42.6:
+    resolution: {integrity: sha512-MJpYjxITU0k0CNzSE3hXmrsHEIyPO8puRf69cNg5Xim7uhRMU0wh+5VkxpJonhKdAqiy+KTDTQWxgAuTxySqeg==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -19521,8 +19522,8 @@ packages:
     engines: {node: '>= 14.0.0'}
     hasBin: true
 
-  moment@2.30.1:
-    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
+  moment@2.31.0:
+    resolution: {integrity: sha512-0acOTfMiWOheYS4eoWb80yYMb/JLvVv9SHbs2PehaDzfUG0Bw855SKyk0IKTnPGa5+U2bmi3W68l1+sGLX/pvw==}
 
   monaco-editor-webpack-plugin@7.1.1:
     resolution: {integrity: sha512-WxdbFHS3Wtz4V9hzhe/Xog5hQRSMxmDLkEEYZwqMDHgJlkZo00HVFZR0j5d0nKypjTUkkygH3dDSXERLG4757A==}
@@ -20746,8 +20747,8 @@ packages:
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
 
-  proxy-addr@2.0.7:
-    resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
+  proxy-addr@2.0.8:
+    resolution: {integrity: sha512-5nnx0yGyVUcY6t9RnWcARWtwT9F1D8O9rt08htPvnd49W1IgZtmLkhu9WfMzQj1cFxjHIO6connUNVW5k7AVyQ==}
     engines: {node: '>= 0.10'}
 
   proxy-from-env@1.0.0:
@@ -22790,8 +22791,8 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
-  undici@6.28.0:
-    resolution: {integrity: sha512-LIY910g9TI13YS95lrMFrs8Rm/u/irgHeTWoKCoteeJ04CUJ92eEfj0rVn+7VKMPBpUPiUoBKfhNyLI23EE/KA==}
+  undici@6.29.0:
+    resolution: {integrity: sha512-R+RODBqp6i2pPflGdq+xIOUkl+RNfGgHwoinecKu/JCuf2uO06cOKoDbI2P7Dn6KcswdKwrczbU6IYJ6K8X+wg==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -24203,7 +24204,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
       js-yaml: 5.2.3
-      undici: 6.28.0
+      undici: 6.29.0
 
   '@apidevtools/openapi-schemas@2.1.0': {}
 
@@ -31653,14 +31654,14 @@ snapshots:
   ajv@8.18.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.7
+      fast-uri: 3.1.8
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.7
+      fast-uri: 3.1.8
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -32872,7 +32873,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 6.28.0
+      undici: 6.29.0
       whatwg-mimetype: 4.0.0
 
   chevrotain@7.1.1:
@@ -34847,7 +34848,7 @@ snapshots:
       on-finished: 2.4.1
       parseurl: 1.3.3
       path-to-regexp: 0.1.13
-      proxy-addr: 2.0.7
+      proxy-addr: 2.0.8
       qs: 6.16.0
       range-parser: 1.2.1
       safe-buffer: 5.2.1
@@ -34882,7 +34883,7 @@ snapshots:
       on-finished: 2.4.1
       once: 1.4.0
       parseurl: 1.3.3
-      proxy-addr: 2.0.7
+      proxy-addr: 2.0.8
       qs: 6.16.0
       range-parser: 1.3.0
       router: 2.2.0
@@ -34957,7 +34958,7 @@ snapshots:
 
   fast-text-encoding@1.0.6: {}
 
-  fast-uri@3.1.7: {}
+  fast-uri@3.1.8: {}
 
   fast-url-parser@1.1.3:
     dependencies:
@@ -36408,7 +36409,7 @@ snapshots:
 
   isobject@3.0.1: {}
 
-  isomorphic-git@1.38.10:
+  isomorphic-git@1.42.6:
     dependencies:
       async-lock: 1.4.1
       clean-git-ref: 2.0.1
@@ -38095,7 +38096,7 @@ snapshots:
       yargs-parser: 20.2.9
       yargs-unparser: 2.0.0
 
-  moment@2.30.1: {}
+  moment@2.31.0: {}
 
   monaco-editor-webpack-plugin@7.1.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.108.4):
     dependencies:
@@ -38310,7 +38311,7 @@ snapshots:
       semver: 7.8.5
       tar: 7.5.21
       tinyglobby: 0.2.17
-      undici: 6.28.0
+      undici: 6.29.0
       which: 6.0.1
 
   node-gyp@9.4.1:
@@ -38635,7 +38636,7 @@ snapshots:
       mime: 3.0.0
       prettier: 2.8.8
       tiny-glob: 0.2.9
-      undici: 6.28.0
+      undici: 6.29.0
       yargs-parser: 21.1.1
 
   opener@1.5.2: {}
@@ -39418,7 +39419,7 @@ snapshots:
 
   proto-list@1.2.4: {}
 
-  proxy-addr@2.0.7:
+  proxy-addr@2.0.8:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
@@ -39811,9 +39812,9 @@ snapshots:
 
   react-lifecycles-compat@3.0.4: {}
 
-  react-moment@0.9.7(moment@2.30.1)(prop-types@15.8.1)(react@18.3.1):
+  react-moment@0.9.7(moment@2.31.0)(prop-types@15.8.1)(react@18.3.1):
     dependencies:
-      moment: 2.30.1
+      moment: 2.31.0
       prop-types: 15.8.1
       react: 18.3.1
 
@@ -41883,7 +41884,7 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  undici@6.28.0: {}
+  undici@6.29.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 

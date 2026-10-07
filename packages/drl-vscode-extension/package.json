@@ -69,10 +69,26 @@
         "category": "DRL",
         "command": "drools.reloadFileGroups",
         "title": "Reload File Groups"
+      },
+      {
+        "category": "DRL",
+        "command": "drools.rebuildWorkspace",
+        "title": "Rebuild Workspace"
       }
     ],
     "configuration": {
       "properties": {
+        "drools.lsp.compile.onSave": {
+          "default": true,
+          "markdownDescription": "Compile the saved file's group with the Drools engine on the project's classpath and show the compiler's messages. Turn off for projects where a group compile takes too long; `DRL: Rebuild Workspace` still compiles on demand. Applies without a restart.",
+          "type": "boolean"
+        },
+        "drools.lsp.compile.timeoutSeconds": {
+          "default": 120,
+          "markdownDescription": "How long one compile may run before it is abandoned and reported as failed. Raise it for large file groups or slower machines. Applies without a restart.",
+          "minimum": 10,
+          "type": "integer"
+        },
         "drools.lsp.formatter.alignDeclarations": {
           "default": true,
           "markdownDescription": "Lay out `declare` fields and enum constants as aligned columns. Off emits one field per line with single spaces.",

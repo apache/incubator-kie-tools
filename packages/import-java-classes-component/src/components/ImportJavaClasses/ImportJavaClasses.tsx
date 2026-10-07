@@ -40,6 +40,7 @@ interface ImportJavaClassesProps {
   javaCodeCompletionService: JavaCodeCompletionService;
   /** Callback function used to load Java classes into the data type editor.*/
   loadJavaClassesInDataTypeEditor?: (javaClasses: JavaClass[]) => void;
+  locale?: string;
 }
 
 export type ImportJavaClassesI18nDictionariesProviderProps = Omit<
@@ -62,7 +63,11 @@ const ImportJavaClassesI18nDictionariesProvider = (props: ImportJavaClassesI18nD
   );
 };
 
-const ImportJavaClasses = ({ javaCodeCompletionService, loadJavaClassesInDataTypeEditor }: ImportJavaClassesProps) => {
+const ImportJavaClasses = ({
+  javaCodeCompletionService,
+  loadJavaClassesInDataTypeEditor,
+  locale,
+}: ImportJavaClassesProps) => {
   const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
   const handleButtonClick = useCallback(() => setOpenImportJavaClassesWizard((prevState) => !prevState), []);
   const handleWizardSave = useCallback(
@@ -72,7 +77,7 @@ const ImportJavaClasses = ({ javaCodeCompletionService, loadJavaClassesInDataTyp
     [loadJavaClassesInDataTypeEditor]
   );
   return (
-    <ImportJavaClassesI18nDictionariesProvider>
+    <ImportJavaClassesI18nDictionariesProvider locale={locale}>
       <ImportJavaClassesButton
         handleButtonClick={handleButtonClick}
         javaCodeCompletionService={javaCodeCompletionService}

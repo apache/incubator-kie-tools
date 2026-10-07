@@ -111,15 +111,18 @@ public class DroolsLspDocumentService implements TextDocumentService {
     private static final Logger logger = Logger.getLogger(DroolsLspDocumentService.class.getName());
 
     private final Map<String, String> sourcesMap = new ConcurrentHashMap<>();
+    private final Map<Path, String> openTextByPath = new ConcurrentHashMap<>();
     private volatile ClassIndex classIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
     private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
     private volatile FormatterOptions formatterOptions = FormatterOptions.DEFAULTS;
+    private final CompileDiagnostics compileDiagnostics;
 
     private final DroolsLspServer server;
 
     public DroolsLspDocumentService(DroolsLspServer server) {
         this.server = server;
+        this.compileDiagnostics = new CompileDiagnostics(server, this::openTextAt);
         // Lets binding resolution describe types the DRL does not declare, so
         // hover and inlay hints work on Java fact classes. The closure reads the
         // live indexes on every call, so a rebuilt classpath needs no re-install.
@@ -184,6 +187,31 @@ public class DroolsLspDocumentService implements TextDocumentService {
         return formatterOptions;
     }
 
+    CompileDiagnostics compileDiagnostics() {
+        return compileDiagnostics;
+    }
+
+    /** The open buffer for {@code path}, whatever URI spelling the client used for it. */
+    private String openTextAt(Path path) {
+        return openTextByPath.get(path);
+    }
+
+    private void putSource(String uri, String text) {
+        sourcesMap.put(uri, text);
+        Path path = toPath(uri);
+        if (path != null) {
+            openTextByPath.put(path.toAbsolutePath().normalize(), text);
+        }
+    }
+
+    private void removeSource(String uri) {
+        sourcesMap.remove(uri);
+        Path path = toPath(uri);
+        if (path != null) {
+            openTextByPath.remove(path.toAbsolutePath().normalize());
+        }
+    }
+
     ClassIndex getClassIndexForTest() {
         return classIndex;
     }
@@ -194,7 +222,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didOpen(DidOpenTextDocumentParams params) {
-        sourcesMap.put(params.getTextDocument().getUri(), params.getTextDocument().getText());
+        putSource(params.getTextDocument().getUri(), params.getTextDocument().getText());
     }
 
     /**
@@ -245,7 +273,9 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
-        sourcesMap.put(params.getTextDocument().getUri(), params.getContentChanges().get(0).getText());
+        String uri = params.getTextDocument().getUri();
+        putSource(uri, params.getContentChanges().get(0).getText());
+        compileDiagnostics.invalidate(toPath(uri));
     }
 
     @Override
@@ -404,11 +434,12 @@ public class DroolsLspDocumentService implements TextDocumentService {
     @Override
     public CompletableFuture<DocumentDiagnosticReport> diagnostic(DocumentDiagnosticParams params) {
         return CompletableFuture.supplyAsync(() -> {
-            List<Diagnostic> items =
-                    (params != null && params.getTextDocument() != null
-                            && sourcesMap.containsKey(params.getTextDocument().getUri()))
-                            ? validate(params.getTextDocument().getUri())
-                            : Collections.emptyList();
+            List<Diagnostic> items = Collections.emptyList();
+            if (params != null && params.getTextDocument() != null
+                    && sourcesMap.containsKey(params.getTextDocument().getUri())) {
+                String uri = params.getTextDocument().getUri();
+                items = CompileDiagnostics.merge(validate(uri), compileDiagnostics.cachedFor(toPath(uri)));
+            }
             return new DocumentDiagnosticReport(new RelatedFullDocumentDiagnosticReport(items));
         });
     }
@@ -784,10 +815,25 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didClose(DidCloseTextDocumentParams params) {
-        sourcesMap.remove(params.getTextDocument().getUri());
+        String uri = params.getTextDocument().getUri();
+        removeSource(uri);
+        compileDiagnostics.invalidate(toPath(uri));
     }
 
     @Override
     public void didSave(DidSaveTextDocumentParams params) {
+        if (params == null || params.getTextDocument() == null) {
+            return;
+        }
+        String uri = params.getTextDocument().getUri();
+        if (!sourcesMap.containsKey(uri)) {
+            return;
+        }
+        String text = params.getText() != null ? params.getText() : sourcesMap.get(uri);
+        if (text == null) {
+            return;
+        }
+        putSource(uri, text);
+        compileDiagnostics.onDidSave(toPath(uri), text);
     }
 }

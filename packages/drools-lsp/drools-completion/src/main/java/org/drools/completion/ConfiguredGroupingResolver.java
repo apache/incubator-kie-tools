@@ -63,6 +63,7 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
     private final Map<Path, String> overrides = new ConcurrentHashMap<>();
 
     private volatile DrlFileGrouping grouping = DrlFileGrouping.EMPTY;
+    private volatile WorkspaceScan lastScan = WorkspaceScan.empty();
     private volatile Path workspaceRoot;
 
     /**
@@ -126,10 +127,11 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
     @Override
     public synchronized void reload() {
         Path root = workspaceRoot;
-        DrlFileGrouping loaded = load(root, settingsConfig, providedFiles);
-        grouping = loaded;
-        if (!loaded.isEmpty()) {
-            logger.info("DRL file grouping active: " + loaded.asMap().size() + " group(s) under " + root);
+        Loaded loaded = load(root, settingsConfig, providedFiles);
+        grouping = loaded.grouping();
+        lastScan = loaded.scan();
+        if (!loaded.grouping().isEmpty()) {
+            logger.info("DRL file grouping active: " + loaded.grouping().asMap().size() + " group(s) under " + root);
         }
     }
 
@@ -167,6 +169,11 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
     }
 
     @Override
+    public List<Path> workspaceDrlFiles() {
+        return lastScan.drlFiles();
+    }
+
+    @Override
     public void setGroupOverride(Path file, String groupName) {
         if (file == null) {
             return;
@@ -182,10 +189,13 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
 
     // ── loading ──────────────────────────────────────────────────────────────
 
+    private record Loaded(DrlFileGrouping grouping, WorkspaceScan scan) {
+    }
+
     /** Resolves the workspace's groups. Never {@code null}. */
-    private static DrlFileGrouping load(Path workspaceRoot, String settingsConfig, List<Path> providedFiles) {
+    private static Loaded load(Path workspaceRoot, String settingsConfig, List<Path> providedFiles) {
         if (workspaceRoot == null) {
-            return DrlFileGrouping.EMPTY;
+            return new Loaded(DrlFileGrouping.EMPTY, WorkspaceScan.empty());
         }
         // Use the client's file list when it gave one; walking is the fallback.
         WorkspaceScan scan = (providedFiles == null)
@@ -214,9 +224,9 @@ public final class ConfiguredGroupingResolver implements WorkspaceSiblingResolve
         if (declarations.isEmpty()) {
             logger.fine(() -> "No DRL file grouping declared under " + workspaceRoot
                     + "; falling back to same-directory grouping");
-            return DrlFileGrouping.EMPTY;
+            return new Loaded(DrlFileGrouping.EMPTY, scan);
         }
-        return DrlFileGrouping.resolve(declarations, scan.drlFiles(), workspaceRoot);
+        return new Loaded(DrlFileGrouping.resolve(declarations, scan.drlFiles(), workspaceRoot), scan);
     }
 
     /**

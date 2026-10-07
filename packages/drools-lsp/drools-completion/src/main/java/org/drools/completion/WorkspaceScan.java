@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  * ({@code node_modules}, {@code .git}, build output) are pruned rather than
  * filtered, so their subtrees are never entered at all.
  */
-final class WorkspaceScan {
+public final class WorkspaceScan {
 
     private static final Logger logger = Logger.getLogger(WorkspaceScan.class.getName());
 
@@ -94,7 +94,7 @@ final class WorkspaceScan {
         return new WorkspaceScan(List.of(), List.of(), List.of());
     }
 
-    List<Path> drlFiles() {
+    public List<Path> drlFiles() {
         return drlFiles;
     }
 
@@ -135,7 +135,7 @@ final class WorkspaceScan {
      * than failing the scan: partial grouping beats none, and the
      * same-directory fallback still covers whatever is missed.
      */
-    static WorkspaceScan of(Path workspaceRoot) {
+    public static WorkspaceScan of(Path workspaceRoot) {
         if (workspaceRoot == null || !Files.isDirectory(workspaceRoot)) {
             return empty();
         }

@@ -28,7 +28,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Git repository URL for Kie",
     },
     DROOLS_AND_KOGITO__droolsRepoGitRef: {
-      default: "62a85e764753372593f9bb5ba487ed6d0b68a174",
+      default: "f9893c7e6f7d6ac590b5e64e5b4f6b0b2b785453",
       description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
