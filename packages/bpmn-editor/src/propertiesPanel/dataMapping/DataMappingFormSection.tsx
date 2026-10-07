@@ -19,7 +19,8 @@
 
 import * as React from "react";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../../store/StoreContext";
-import { ActionGroup, Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormHelperText, FormSection } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import { SectionHeader } from "@kie-tools/xyflow-react-kie-diagram/dist/propertiesPanel/SectionHeader";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EditIcon } from "@patternfly/react-icons/dist/js/icons/edit-icon";
@@ -114,21 +115,22 @@ function flaggedDataInputs<T extends { name?: string; "@_name"?: string }>(
   element: WithDataMapping,
   array: undefined | T[],
   customTasks: CustomTask[]
-): undefined | { dataMapping: T; hide: boolean }[] {
-  return array?.map((dataInput) => ({
-    dataMapping: dataInput,
-    hide:
+): undefined | { dataMapping: T; hide: boolean; reserved: boolean }[] {
+  return array?.map((dataInput) => {
+    const dataInputName = dataInput["@_name"] ?? dataInput.name;
+
+    const isMultiInstanceHidden =
       (element.loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics" &&
-        element.loopCharacteristics.inputDataItem?.["@_name"] === (dataInput["@_name"] ?? dataInput.name)) ||
-      (dataInput["@_name"] ?? dataInput.name) ===
-        MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.IN_COLLECTION ||
-      (DATA_INPUT_RESERVED_NAMES.get(element.__$$element) ?? new Set()).has((dataInput["@_name"] ?? dataInput.name)!) ||
+        element.loopCharacteristics.inputDataItem?.["@_name"] === dataInputName) ||
+      dataInputName === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.IN_COLLECTION;
+
+    const isReserved =
+      (DATA_INPUT_RESERVED_NAMES.get(element.__$$element) ?? new Set()).has(dataInputName!) ||
       (element.__$$element === "task" &&
         !!customTasks.find((c) => {
           if (!c.matches(element)) {
             return false;
           }
-          const dataInputName = dataInput["@_name"] ?? dataInput.name;
           return !!c.dataInputReservedNames.find((n) => {
             if (n.startsWith("*")) {
               const suffix = n.slice(1);
@@ -140,8 +142,14 @@ function flaggedDataInputs<T extends { name?: string; "@_name"?: string }>(
               return n === dataInputName;
             }
           });
-        })),
-  }));
+        }));
+
+    return {
+      dataMapping: dataInput,
+      hide: isMultiInstanceHidden,
+      reserved: isReserved,
+    };
+  });
 }
 
 function flaggedDataOutputs<T extends { name?: string; "@_name"?: string }>(
@@ -170,7 +178,7 @@ export function BidirectionalDataMappingFormSection({ element }: { element: With
   const { customTasks } = useCustomTasks();
   const isReadOnly = useBpmnEditorStore((s) => s.settings.isReadOnly);
   const inputCount = flaggedDataInputs(element, element.ioSpecification?.dataInput, customTasks ?? [])?.filter(
-    (s) => !s.hide
+    (s) => !s.hide && !s.reserved
   ).length;
   const outputCount = flaggedDataOutputs(element, element.ioSpecification?.dataOutput, customTasks ?? [])?.filter(
     (s) => !s.hide
@@ -461,7 +469,7 @@ export function DataMappingsList({
           </div>
           {section === "input" &&
             flaggedDataInputs(flowElement as any, inputDataMapping, customTasks ?? [])?.flatMap(
-              ({ hide, dataMapping: entry }, i) =>
+              ({ hide, reserved, dataMapping: entry }, i) =>
                 hide ? (
                   []
                 ) : (
@@ -483,6 +491,7 @@ export function DataMappingsList({
                           isRequired={true}
                           placeholder={i18n.dataMapping.namePlaceholder}
                           value={entry.name}
+                          validated={reserved ? "error" : "default"}
                           onChange={(e, value) => handleInputChange(i, "name", value, "input", { isExpression: false })}
                         />
                       </GridItem>
@@ -530,6 +539,15 @@ export function DataMappingsList({
                         )}
                       </GridItem>
                     </Grid>
+                    {reserved && (
+                      <FormHelperText style={{ padding: "0 8px 4px" }}>
+                        <HelperText>
+                          <HelperTextItem variant="error" icon={<InfoCircleIcon />}>
+                            {i18n.dataMapping.reservedInputName}
+                          </HelperTextItem>
+                        </HelperText>
+                      </FormHelperText>
+                    )}
                   </div>
                 )
             )}
@@ -761,15 +779,19 @@ export function useDataMapping(
     [inputDataMapping, outputDataMapping]
   );
 
-  // populates intermediary data mapping state from the model
+  // populates intermediary data mapping state from the model,
+  // stripping reserved entries so they never appear in the editable list.
   useEffect(() => {
     if (!element) {
       return;
     }
 
     const { inputDataMapping, outputDataMapping } = getDataMapping(element);
+    const reservedNamesForElement =
+      DATA_INPUT_RESERVED_NAMES.get(element.__$$element as Parameters<typeof DATA_INPUT_RESERVED_NAMES.get>[0]) ??
+      new Set<string>();
 
-    setInputDataMapping(inputDataMapping);
+    setInputDataMapping(inputDataMapping.filter((d) => !reservedNamesForElement.has(d.name)));
     setOutputDataMapping(outputDataMapping);
   }, [element]);
 
@@ -782,9 +804,21 @@ export function useDataMapping(
       }
 
       bpmnEditorStoreApi.setState((s) => {
+        // Re-read the reserved entries that were stripped from the editable state
+        // so they are preserved through the save cycle.
+        const { inputDataMapping: modelInputDataMapping } = getDataMapping(element);
+        const reservedNamesForElement =
+          DATA_INPUT_RESERVED_NAMES.get(element.__$$element as Parameters<typeof DATA_INPUT_RESERVED_NAMES.get>[0]) ??
+          new Set<string>();
+        const reservedEntries = modelInputDataMapping.filter((d) => reservedNamesForElement.has(d.name));
+
+        // Exclude user-typed entries whose names match reserved names — they would
+        // collide with internal task inputs and must not be saved as user data mappings.
+        const userEntries = inputDataMapping.filter((d) => !reservedNamesForElement.has(d.name));
+
         setDataMappingForElement({
           definitions: s.bpmn.model.definitions,
-          inputDataMapping,
+          inputDataMapping: [...reservedEntries, ...userEntries],
           outputDataMapping,
           elementId: element["@_id"],
           element: element.__$$element,
