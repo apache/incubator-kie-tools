@@ -86,7 +86,7 @@ pipeline {
         ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag = "${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-        HELM_REGISTRY = 'docker.io'
+        HELM_REGISTRY = 'docker.io/apache'
     }
 
     stages {

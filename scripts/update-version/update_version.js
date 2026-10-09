@@ -22,7 +22,7 @@ const execSync = require("child_process").execSync;
 const newVersion = process.argv[2];
 if (!newVersion) {
   console.error("Usage 'node update_version.js [version] [pnpm-filter...]'");
-  return 1;
+  process.exit(1);
 }
 
 const pnpmFilterString = process.argv.slice(3).join(" ");
@@ -54,4 +54,5 @@ try {
   console.error(error);
   console.error("");
   console.error(`[update-version] Error updating versions. There might be undesired unstaged changes.`);
+  process.exit(1);
 }

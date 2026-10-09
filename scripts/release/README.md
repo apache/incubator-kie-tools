@@ -55,9 +55,8 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 4. **Container images** — all Kogito / sandbox images
 5. **Helm charts** — sandbox and runtime-tools-consoles charts
 6. **GitHub Pages / webapp** — online-editor, standalone editors, Quarkus accelerator
-7. **kn-plugin-workflow** — cross-platform CLI binaries
-8. **dev-deployment-upload-service** — cross-platform binaries
-9. **Source tarball** — Apache-compliant source zip
+7. **dev-deployment-upload-service** — cross-platform binaries
+8. **Source tarball** — Apache-compliant source zip
 
 ## Prerequisites
 
@@ -114,10 +113,6 @@ apache-kie-<version>-incubating-sandbox-accelerator-quarkus.zip
 apache-kie-<version>-incubating-sandbox-helm-chart.tar.gz
 apache-kie-<version>-incubating-runtime-tools-console-helm-chart.tar.gz
 apache-kie-<version>-incubating-<image-name>-image.tar.gz  (one per container image)
-apache-kie-<version>-incubating-sonataflow-knative-plugin-linux-x86.zip
-apache-kie-<version>-incubating-sonataflow-knative-plugin-macOS-arm64.zip
-apache-kie-<version>-incubating-sonataflow-knative-plugin-macOS-x86.zip
-apache-kie-<version>-incubating-sonataflow-knative-plugin-windows-x86.zip
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-arm64.tar.gz
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-linux-x86.tar.gz
@@ -126,12 +121,9 @@ apache-kie-<version>-incubating-sources.zip  (source zip — always created)
 ```
 
 Container image names (`<image-name>`):
-`kogito-base-builder`, `kogito-data-index-ephemeral`, `kogito-data-index-postgresql`,
-`kogito-jit-runner`, `kogito-jobs-service-allinone`, `kogito-jobs-service-ephemeral`,
-`kogito-jobs-service-postgresql`, `kogito-management-console`, `kogito-db-migrator-tool`,
 `cors-proxy`, `sandbox-webapp`, `sandbox-extended-services`,
 `sandbox-dev-deployment-base`, `sandbox-dev-deployment-dmn-form-webapp`,
-`sandbox-dev-deployment-quarkus-blank-app`
+`sandbox-dev-deployment-quarkus-blank-app`, `kogito-management-console`
 
 ## Credentials (for `--publish`)
 
@@ -141,9 +133,8 @@ Container image names (`<image-name>`):
 | VSCode extensions             | `VSCE_PAT`                                                                                            |
 | Chrome extensions             | `CHROME_CLIENT_ID`, `CHROME_CLIENT_SECRET`, `CHROME_REFRESH_TOKEN`, `CHROME_KIE_EDITORS_EXTENSION_ID` |
 | Container images              | `DOCKER_USERNAME`, `DOCKER_PASSWORD`                                                                  |
-| Helm charts                   | `HELM_REGISTRY`, optionally `HELM_USERNAME` / `HELM_PASSWORD`                                         |
+| Helm charts                   | `HELM_REGISTRY` (default: `docker.io/apache`), optionally `HELM_USERNAME` / `HELM_PASSWORD`           |
 | GitHub Pages / webapp         | `GITHUB_TOKEN`                                                                                        |
-| kn-plugin-workflow binaries   | `GITHUB_TOKEN`, `--upload-url`                                                                        |
 | dev-deployment-upload-service | `GITHUB_TOKEN`, `--upload-url`                                                                        |
 
 See [`CHROME_STORE_SETUP.md`](CHROME_STORE_SETUP.md) for Chrome Web Store credential setup.

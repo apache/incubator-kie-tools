@@ -30,12 +30,13 @@ set -euo pipefail
 #   --skip-build           Skip pnpm build:prod (use existing dist/ output)
 #   --upload-url <url>     GitHub Release upload URL (required by --publish for binary assets)
 #   --registry <url>       Container registry (default: docker.io/apache)
+#   --git-ref <ref>        Git reference for source tarball (default: HEAD)
 #
 # Credentials (required only for --publish, sourced from env):
 #   NPM_TOKEN, VSCE_PAT,
 #   CHROME_CLIENT_ID, CHROME_CLIENT_SECRET, CHROME_REFRESH_TOKEN, CHROME_KIE_EDITORS_EXTENSION_ID,
 #   DOCKER_USERNAME, DOCKER_PASSWORD,
-#   HELM_REGISTRY, HELM_USERNAME (optional), HELM_PASSWORD (optional),
+#   HELM_REGISTRY (default: docker.io/apache), HELM_USERNAME (optional), HELM_PASSWORD (optional),
 #   GITHUB_TOKEN
 
 export KIE_TOOLS_BUILD__runLinters=false
@@ -54,18 +55,20 @@ RC_MODE=false
 SKIP_BUILD=false
 UPLOAD_URL=""
 REGISTRY="docker.io/apache"
+GIT_REF="HEAD"
 
 shift || true
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --publish)     PUBLISH=true;       shift ;;
-        --rc)          RC_MODE=true;       shift ;;
-        --skip-build)  SKIP_BUILD=true;    shift ;;
-        --upload-url)  UPLOAD_URL="${2:-}"; shift 2 ;;
-        --registry)    REGISTRY="${2:-}";  shift 2 ;;
+        --publish)     PUBLISH=true;        shift ;;
+        --rc)          RC_MODE=true;        shift ;;
+        --skip-build)  SKIP_BUILD=true;     shift ;;
+        --upload-url)  UPLOAD_URL="${2:-}";  shift 2 ;;
+        --registry)    REGISTRY="${2:-}";   shift 2 ;;
+        --git-ref)     GIT_REF="${2:-}";    shift 2 ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 <version> [--publish] [--rc] [--skip-build] [--upload-url <url>] [--registry <url>]"
+            echo "Usage: $0 <version> [--publish] [--rc] [--skip-build] [--upload-url <url>] [--registry <url>] [--git-ref <ref>]"
             exit 1
             ;;
     esac
@@ -150,19 +153,26 @@ release_npm_packages() {
             echo "ERROR: NPM_TOKEN is required for publishing npm packages"
             return 1
         fi
-        echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+        local npmrc_tmp
+        npmrc_tmp=$(mktemp)
+        trap "rm -f '${npmrc_tmp}'" EXIT
+        echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "${npmrc_tmp}"
+        export NPM_CONFIG_USERCONFIG="${npmrc_tmp}"
+
         local pub_filter
         pub_filter=$(pnpm -r exec bash -c \
             'if [[ $(jq -r ".private" package.json) != "true" ]]; then echo "-F $(jq -r ".name" package.json)"; fi')
         pnpm ${pub_filter} exec bash -c '
             PKG_NAME=$(jq -r ".name" package.json)
-            if ! npm view ${PKG_NAME}@'"${VERSION}"' name &>/dev/null; then
+            if ! npm view ${PKG_NAME}@'"${VERSION}"' name --userconfig "'"${npmrc_tmp}"'" &>/dev/null; then
                 echo "Publishing ${PKG_NAME}@'"${VERSION}"'"
-                pnpm publish --no-git-checks --access public
+                pnpm publish --no-git-checks --access public --userconfig "'"${npmrc_tmp}"'"
             else
                 echo "Skipping ${PKG_NAME}@'"${VERSION}"' (already published)"
             fi
         '
+        rm -f "${npmrc_tmp}"
+        trap - EXIT
         echo "NPM packages published."
     fi
 }
@@ -207,36 +217,47 @@ release_chrome_extensions() {
             return 1
         fi
 
-        local access_token
-        access_token=$(curl -sS -X POST "https://oauth2.googleapis.com/token" \
+        local token_res
+        token_res=$(curl -sSf -X POST "https://oauth2.googleapis.com/token" \
             -d "client_id=${CHROME_CLIENT_ID}" \
             -d "client_secret=${CHROME_CLIENT_SECRET}" \
             -d "refresh_token=${CHROME_REFRESH_TOKEN}" \
-            -d "grant_type=refresh_token" \
-            | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+            -d "grant_type=refresh_token")
+        local access_token
+        access_token=$(echo "${token_res}" | jq -r '.access_token // empty')
 
         if [[ -z "${access_token}" ]]; then
-            echo "ERROR: Failed to obtain Chrome Web Store OAuth token"
+            echo "ERROR: Failed to obtain Chrome Web Store OAuth token: ${token_res}"
             return 1
         fi
 
         _chrome_upload() {
             local ext_id="$1" zip="$2"
-            local state
-            state=$(curl -sS -X PUT \
+            local res state
+            res=$(curl -sSf -X PUT \
                 "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${ext_id}" \
                 -H "Authorization: Bearer ${access_token}" \
                 -H "x-goog-api-version:2" \
-                -T "${zip}" | grep -o '"uploadState":"[^"]*"' | cut -d'"' -f4)
-            [[ "${state}" == "SUCCESS" ]] || { echo "ERROR: upload failed for ${ext_id}"; return 1; }
+                -T "${zip}")
+            state=$(echo "${res}" | jq -r '.uploadState // empty')
+            if [[ "${state}" != "SUCCESS" ]]; then
+                echo "ERROR: Chrome Web Store upload failed for ${ext_id}: ${res}"
+                return 1
+            fi
         }
         _chrome_publish() {
             local ext_id="$1"
-            curl -sS -X POST \
+            local res pub_status
+            res=$(curl -sSf -X POST \
                 "https://www.googleapis.com/chromewebstore/v1.1/items/${ext_id}/publish" \
                 -H "Authorization: Bearer ${access_token}" \
                 -H "x-goog-api-version:2" \
-                -H "Content-Length:0" > /dev/null
+                -H "Content-Length: 0")
+            pub_status=$(echo "${res}" | jq -r '.status[0] // .status // empty')
+            if [[ "${pub_status}" != "OK" && "${pub_status}" != "PUBLISHED_WITH_FRICTION_WARNING" ]]; then
+                echo "ERROR: Chrome Web Store publish failed for ${ext_id}: ${res}"
+                return 1
+            fi
         }
 
         if [[ -n "${CHROME_KIE_EDITORS_EXTENSION_ID:-}" ]]; then
@@ -323,21 +344,13 @@ release_container_images() {
     echo "--- Container images ---"
 
     declare -A IMAGES=(
-        ["kogito-base-builder"]="packages/kogito-base-builder-image"
-        ["kogito-data-index-ephemeral"]="packages/kogito-data-index-ephemeral-image"
-        ["kogito-data-index-postgresql"]="packages/kogito-data-index-postgresql-image"
-        ["kogito-jit-runner"]="packages/kogito-jit-runner-image"
-        ["kogito-jobs-service-allinone"]="packages/kogito-jobs-service-allinone-image"
-        ["kogito-jobs-service-ephemeral"]="packages/kogito-jobs-service-ephemeral-image"
-        ["kogito-jobs-service-postgresql"]="packages/kogito-jobs-service-postgresql-image"
-        ["kogito-management-console"]="packages/kogito-management-console"
-        ["kogito-db-migrator-tool"]="packages/kogito-db-migrator-tool-image"
-        ["cors-proxy"]="packages/cors-proxy-image"
-        ["sandbox-webapp"]="packages/kie-sandbox-webapp-image"
-        ["sandbox-extended-services"]="packages/kie-sandbox-extended-services-image"
-        ["sandbox-dev-deployment-base"]="packages/dev-deployment-base-image"
-        ["sandbox-dev-deployment-dmn-form-webapp"]="packages/dev-deployment-dmn-form-webapp-image"
-        ["sandbox-dev-deployment-quarkus-blank-app"]="packages/dev-deployment-quarkus-blank-app-image"
+        ["cors-proxy"]="packages/cors-proxy-image:incubator-kie-cors-proxy"
+        ["sandbox-webapp"]="packages/kie-sandbox-webapp-image:incubator-kie-sandbox-webapp"
+        ["sandbox-extended-services"]="packages/kie-sandbox-extended-services-image:incubator-kie-sandbox-extended-services"
+        ["sandbox-dev-deployment-base"]="packages/dev-deployment-base-image:incubator-kie-sandbox-dev-deployment-base"
+        ["sandbox-dev-deployment-dmn-form-webapp"]="packages/dev-deployment-dmn-form-webapp-image:incubator-kie-sandbox-dev-deployment-dmn-form-webapp"
+        ["sandbox-dev-deployment-quarkus-blank-app"]="packages/dev-deployment-quarkus-blank-app-image:incubator-kie-sandbox-dev-deployment-quarkus-blank-app"
+        ["kogito-management-console"]="packages/kogito-management-console:incubator-kie-kogito-management-console"
     )
 
     export KIE_TOOLS_BUILD__buildContainerImages=true
@@ -349,8 +362,12 @@ release_container_images() {
         fi
         echo "Building container images..."
         for artifact_name in "${!IMAGES[@]}"; do
-            local pkg_path="${IMAGES[$artifact_name]}"
-            [[ -d "${pkg_path}" ]] || { echo "  SKIP  ${artifact_name} (${pkg_path} not found)"; continue; }
+            local mapping="${IMAGES[$artifact_name]}"
+            local pkg_path="${mapping%%:*}"
+            if [[ ! -d "${pkg_path}" ]]; then
+                echo "ERROR: Image package directory ${pkg_path} not found"
+                return 1
+            fi
             local pkg_name
             pkg_name=$(node -p "require('./${pkg_path}/package.json').name" 2>/dev/null || basename "${pkg_path}")
             echo "  BUILD  ${artifact_name} (${pkg_name})"
@@ -363,26 +380,49 @@ release_container_images() {
         fi
     fi
 
-    local output_dir="${ARTIFACTS_DIR}/container-images"
+    local output_dir="${ARTIFACTS_DIR}"
     [[ "${RC_MODE}" == "true" ]] && mkdir -p "${output_dir}"
 
     echo "Tagging images..."
     for artifact_name in "${!IMAGES[@]}"; do
-        local pkg_path="${IMAGES[$artifact_name]}"
-        [[ -d "${pkg_path}" ]] || continue
-        local full_image="${REGISTRY}/incubator-kie-${artifact_name}:${VERSION}"
-        docker tag "$(node -p "require('./${pkg_path}/package.json').name" 2>/dev/null | sed 's|@kie-tools/||')" "${full_image}" 2>/dev/null \
-            || docker tag "incubator-kie-${artifact_name}:latest" "${full_image}" 2>/dev/null \
-            || docker tag "apache/incubator-kie-${artifact_name}:main" "${full_image}" 2>/dev/null \
-            || echo "  WARN  could not tag ${artifact_name}"
+        local mapping="${IMAGES[$artifact_name]}"
+        local pkg_path="${mapping%%:*}"
+        local image_name="${mapping##*:}"
+        if [[ ! -d "${pkg_path}" ]]; then
+            echo "ERROR: Image package directory ${pkg_path} not found"
+            return 1
+        fi
+        local target_image="${REGISTRY}/${image_name}:${VERSION}"
+
+        # Resolve built image from local docker daemon
+        local source_image=""
+        for candidate in \
+            "docker.io/apache/${image_name}:${VERSION}" \
+            "apache/${image_name}:${VERSION}" \
+            "${image_name}:${VERSION}" \
+            "docker.io/apache/${image_name}:latest" \
+            "apache/${image_name}:latest" \
+            "${image_name}:latest"; do
+            if docker image inspect "${candidate}" &>/dev/null; then
+                source_image="${candidate}"
+                break
+            fi
+        done
+
+        if [[ -n "${source_image}" ]]; then
+            docker tag "${source_image}" "${target_image}"
+        else
+            echo "  WARN  could not find local image for ${artifact_name} (${image_name})"
+        fi
 
         if [[ "${RC_MODE}" == "true" ]]; then
-            if docker image inspect "${full_image}" &>/dev/null; then
+            if docker image inspect "${target_image}" &>/dev/null; then
                 local tarball="${output_dir}/apache-kie-${VERSION}-incubating-${artifact_name}-image.tar.gz"
                 echo "  SAVE  ${tarball}"
-                docker save "${full_image}" | gzip > "${tarball}"
+                docker save "${target_image}" | gzip > "${tarball}"
             else
-                echo "  SKIP  ${artifact_name} (image not found locally)"
+                echo "ERROR: Image ${target_image} not found locally for RC export"
+                return 1
             fi
         fi
     done
@@ -396,9 +436,9 @@ release_container_images() {
         echo "${DOCKER_PASSWORD}" | docker login "$(echo "${REGISTRY}" | cut -d/ -f1)" \
             -u "${DOCKER_USERNAME}" --password-stdin
         for artifact_name in "${!IMAGES[@]}"; do
-            local pkg_path="${IMAGES[$artifact_name]}"
-            [[ -d "${pkg_path}" ]] || continue
-            local full_image="${REGISTRY}/incubator-kie-${artifact_name}:${VERSION}"
+            local mapping="${IMAGES[$artifact_name]}"
+            local image_name="${mapping##*:}"
+            local full_image="${REGISTRY}/${image_name}:${VERSION}"
             echo "  PUSH  ${full_image}"
             docker push "${full_image}"
         done
@@ -424,51 +464,66 @@ release_helm_charts() {
         ["runtime-tools-console-helm-chart"]="packages/runtime-tools-consoles-helm-chart"
     )
 
-    local output_dir="${ARTIFACTS_DIR}/helm-charts"
+    local output_dir="${ARTIFACTS_DIR}"
     mkdir -p "${output_dir}"
+
+    local helm_tmp_pkg
+    helm_tmp_pkg=$(mktemp -d)
+    trap "rm -rf ${helm_tmp_pkg}" EXIT
 
     echo "Packaging Helm charts..."
     for slug in "${!CHARTS[@]}"; do
         local chart_pkg="${CHARTS[$slug]}"
-        [[ -d "${chart_pkg}" ]] || { echo "  SKIP  ${slug} (${chart_pkg} not found)"; continue; }
+        [[ -d "${chart_pkg}" ]] || { echo "ERROR: Helm chart directory ${chart_pkg} not found"; return 1; }
 
         local chart_yaml=""
         for candidate in "${chart_pkg}/src/Chart.yaml" "${chart_pkg}/Chart.yaml"; do
             [[ -f "${candidate}" ]] && { chart_yaml="${candidate}"; break; }
         done
-        [[ -z "${chart_yaml}" ]] && { echo "  SKIP  ${slug} (Chart.yaml not found)"; continue; }
+        [[ -z "${chart_yaml}" ]] && { echo "ERROR: Chart.yaml not found in ${chart_pkg}"; return 1; }
 
         local chart_dir
         chart_dir="$(dirname "${chart_yaml}")"
         local tmp_dir
         tmp_dir=$(mktemp -d)
-        trap "rm -rf ${tmp_dir}" EXIT
         cp -r "${chart_dir}/." "${tmp_dir}/chart"
         sed -i.bak "s/^version:.*/version: ${VERSION}/" "${tmp_dir}/chart/Chart.yaml"
         sed -i.bak "s/^appVersion:.*/appVersion: \"${VERSION}\"/" "${tmp_dir}/chart/Chart.yaml"
         rm -f "${tmp_dir}/chart/Chart.yaml.bak"
-        helm package "${tmp_dir}/chart" --destination "${output_dir}"
+        helm package "${tmp_dir}/chart" --destination "${helm_tmp_pkg}"
+        rm -rf "${tmp_dir}"
+
         local found
-        found=$(find "${output_dir}" -maxdepth 1 -name "*-${VERSION}.tgz" | head -1)
-        [[ -n "${found}" ]] && mv "${found}" "${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz" \
-            && echo "  DONE  ${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
+        found=$(find "${helm_tmp_pkg}" -maxdepth 1 -name "*-${VERSION}.tgz" | head -1)
+        if [[ -n "${found}" ]]; then
+            cp "${found}" "${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
+            echo "  DONE  ${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
+        else
+            echo "ERROR: Failed to package helm chart for ${slug}"
+            return 1
+        fi
     done
 
     if [[ "${PUBLISH}" == "true" ]]; then
-        if [[ -z "${HELM_REGISTRY:-}" ]]; then
+        local helm_reg="${HELM_REGISTRY:-docker.io/apache}"
+        if [[ -z "${helm_reg}" ]]; then
             echo "ERROR: HELM_REGISTRY is required for publishing Helm charts"
             return 1
         fi
         if [[ -n "${HELM_USERNAME:-}" && -n "${HELM_PASSWORD:-}" ]]; then
-            echo "${HELM_PASSWORD}" | helm registry login "$(echo "${HELM_REGISTRY}" | cut -d/ -f1)" \
+            echo "${HELM_PASSWORD}" | helm registry login "$(echo "${helm_reg}" | cut -d/ -f1)" \
                 --username "${HELM_USERNAME}" --password-stdin
         fi
-        for slug in "${!CHARTS[@]}"; do
-            local tarball="${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
-            [[ -f "${tarball}" ]] && helm push "${tarball}" "oci://${HELM_REGISTRY}" && echo "  PUSH  ${tarball}"
+        for tgz in "${helm_tmp_pkg}"/*-"${VERSION}".tgz; do
+            if [[ -f "${tgz}" ]]; then
+                echo "  PUSH  ${tgz} -> oci://${helm_reg}"
+                helm push "${tgz}" "oci://${helm_reg}"
+            fi
         done
         echo "Helm charts pushed."
     fi
+    rm -rf "${helm_tmp_pkg}"
+    trap - EXIT
 }
 
 # ---------------------------------------------------------------------------
@@ -578,7 +633,7 @@ release_github_pages() {
                 git add .
                 git commit -m "Apache KIE Sandbox Quarkus Accelerator ${VERSION}"
                 git tag "${VERSION}"
-                git push origin "${VERSION}"
+                git push origin "refs/heads/${VERSION}:refs/heads/${VERSION}" "refs/tags/${VERSION}:refs/tags/${VERSION}"
             )
             echo "Pushed accelerator to tag ${VERSION}."
         fi
@@ -586,56 +641,7 @@ release_github_pages() {
 }
 
 # ---------------------------------------------------------------------------
-# 7. kn-plugin-workflow
-# ---------------------------------------------------------------------------
-release_kn_plugin_workflow() {
-    echo ""
-    echo "--- kn-plugin-workflow ---"
-
-    if [[ "${SKIP_BUILD}" == "false" ]]; then
-        echo "Building kn-plugin-workflow..."
-        pnpm -F "@kie-tools/kn-plugin-workflow..." build:prod
-    fi
-
-    local dist="${REPO_ROOT}/packages/kn-plugin-workflow/dist"
-    if [[ ! -d "${dist}" ]]; then
-        echo "SKIP: packages/kn-plugin-workflow/dist not found"
-        return 0
-    fi
-
-    if [[ "${RC_MODE}" == "true" ]]; then
-        mkdir -p "${ARTIFACTS_DIR}"
-        declare -A RC_ZIPS=(
-            ["kn-workflow-linux-amd64"]="apache-kie-${VERSION}-incubating-sonataflow-knative-plugin-linux-x86.zip"
-            ["kn-workflow-darwin-amd64"]="apache-kie-${VERSION}-incubating-sonataflow-knative-plugin-macOS-x86.zip"
-            ["kn-workflow-darwin-arm64"]="apache-kie-${VERSION}-incubating-sonataflow-knative-plugin-macOS-arm64.zip"
-            ["kn-workflow-windows-amd64.exe"]="apache-kie-${VERSION}-incubating-sonataflow-knative-plugin-windows-x86.zip"
-        )
-        (cd "${dist}" && for binary in "${!RC_ZIPS[@]}"; do
-            local zip_name="${RC_ZIPS[$binary]}"
-            [[ -f "${binary}" ]] && zip "${ARTIFACTS_DIR}/${zip_name}" "${binary}" \
-                && echo "  ZIP  ${zip_name}" || echo "  SKIP ${binary} (not found)"
-        done)
-        echo "RC artifacts in: ${ARTIFACTS_DIR}"
-    fi
-
-    if [[ "${PUBLISH}" == "true" ]]; then
-        if [[ -z "${GITHUB_TOKEN:-}" || -z "${UPLOAD_URL:-}" ]]; then
-            echo "ERROR: GITHUB_TOKEN and --upload-url are required for publishing kn-plugin-workflow"
-            return 1
-        fi
-        (cd "${dist}"
-            upload_github_asset "kn-workflow-linux-amd64"       "kn-workflow-linux-amd64-${VERSION}"
-            upload_github_asset "kn-workflow-darwin-amd64"      "kn-workflow-darwin-amd64-${VERSION}"
-            upload_github_asset "kn-workflow-darwin-arm64"      "kn-workflow-darwin-arm64-${VERSION}"
-            upload_github_asset "kn-workflow-windows-amd64.exe" "kn-workflow-windows-amd64-${VERSION}.exe"
-        )
-        echo "kn-plugin-workflow binaries uploaded."
-    fi
-}
-
-# ---------------------------------------------------------------------------
-# 8. dev-deployment-upload-service
+# 7. dev-deployment-upload-service
 # ---------------------------------------------------------------------------
 release_dev_deployment_upload_service() {
     echo ""
@@ -648,8 +654,8 @@ release_dev_deployment_upload_service() {
 
     local dist="${REPO_ROOT}/packages/dev-deployment-upload-service/dist"
     if [[ ! -d "${dist}" ]]; then
-        echo "SKIP: packages/dev-deployment-upload-service/dist not found"
-        return 0
+        echo "ERROR: packages/dev-deployment-upload-service/dist not found"
+        return 1
     fi
 
     declare -A PLATFORM_MAP=(
@@ -663,8 +669,13 @@ release_dev_deployment_upload_service() {
         mkdir -p "${ARTIFACTS_DIR}"
         for src_name in "${!PLATFORM_MAP[@]}"; do
             local rc_name="${PLATFORM_MAP[$src_name]}"
-            [[ -f "${dist}/${src_name}" ]] && cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}" \
-                && echo "  COPY  ${rc_name}" || echo "  SKIP  ${src_name} (not found)"
+            if [[ -f "${dist}/${src_name}" ]]; then
+                cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}"
+                echo "  COPY  ${rc_name}"
+            else
+                echo "ERROR: Artifact ${dist}/${src_name} not found"
+                return 1
+            fi
         done
         echo "RC artifacts in: ${ARTIFACTS_DIR}"
     fi
@@ -682,15 +693,27 @@ release_dev_deployment_upload_service() {
 }
 
 # ---------------------------------------------------------------------------
-# 9. Source tarball (always created; no --publish step)
+# 8. Source tarball (always created; no --publish step)
 # ---------------------------------------------------------------------------
 release_source_tarball() {
     echo ""
     echo "--- Source tarball ---"
     mkdir -p "${ARTIFACTS_DIR}"
     local zipfile="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-sources.zip"
-    echo "Creating git archive..."
-    git archive --format=zip --prefix="apache-kie-${VERSION}-incubating/" HEAD > "${zipfile}"
+    local archive_ref="${GIT_REF}"
+
+    # If archiving HEAD and there are uncommitted working tree modifications (e.g. local version bumps),
+    # create a stash commit to ensure the working tree state is preserved in the archive.
+    if [[ "${archive_ref}" == "HEAD" ]] && ! git diff --quiet HEAD 2>/dev/null; then
+        local stash_sha
+        stash_sha=$(git stash create 2>/dev/null || true)
+        if [[ -n "${stash_sha}" ]]; then
+            archive_ref="${stash_sha}"
+        fi
+    fi
+
+    echo "Creating git archive from ref ${archive_ref}..."
+    git archive --format=zip --prefix="apache-kie-${VERSION}-incubating/" "${archive_ref}" > "${zipfile}"
     if ! unzip -t "${zipfile}" > /dev/null 2>&1; then
         echo "ERROR: Source zip verification failed"
         return 1
@@ -698,8 +721,10 @@ release_source_tarball() {
     local size
     size=$(du -h "${zipfile}" | cut -f1)
     echo "Created: ${zipfile} (${size})"
+    local zip_contents
+    zip_contents=$(unzip -l "${zipfile}")
     for required in LICENSE NOTICE DISCLAIMER-WIP; do
-        unzip -l "${zipfile}" | grep -q "apache-kie-${VERSION}-incubating/${required}" \
+        echo "${zip_contents}" | grep -q "apache-kie-${VERSION}-incubating/${required}" \
             || echo "WARN: ${required} not found in source zip"
     done
 }
@@ -710,10 +735,16 @@ release_source_tarball() {
 FAILED=()
 run_step() {
     local name="$1" fn="$2"
-    if "${fn}"; then
+    local status=0
+    (
+        set -euo pipefail
+        "${fn}"
+    ) || status=$?
+
+    if [[ ${status} -eq 0 ]]; then
         echo "✅ ${name} — OK"
     else
-        echo "❌ ${name} — FAILED"
+        echo "❌ ${name} — FAILED (exit code ${status})"
         FAILED+=("${name}")
     fi
 }
@@ -724,7 +755,6 @@ run_step "vscode"                          release_vscode
 run_step "container-images"               release_container_images
 run_step "helm-charts"                    release_helm_charts
 run_step "github-pages"                   release_github_pages
-run_step "kn-plugin-workflow"             release_kn_plugin_workflow
 run_step "dev-deployment-upload-service"  release_dev_deployment_upload_service
 run_step "source-tarball"                 release_source_tarball
 

@@ -48,8 +48,8 @@ pipeline {
         )
         string(
             name: 'RELEASE_CANDIDATE_VERSION',
-            description: 'Release candidate version (e.g., rc1)',
-            defaultValue: 'rc1'
+            description: 'Release candidate version (e.g., 10.3.0-rc1)',
+            defaultValue: '0.0.0-rc1'
         )
         string(
             name: 'BASE_REF',
@@ -136,6 +136,20 @@ pipeline {
             }
         }
 
+        stage('Setup Git repository') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        git checkout ${params.BASE_REF}
+                        """.trim()
+                    }
+                }
+            }
+        }
+
         stage('Bootstrap') {
             steps {
                 dir('kie-tools') {
@@ -158,6 +172,47 @@ pipeline {
             }
         }
 
+        stage('Commit changes') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git add .
+                        git commit --allow-empty -am "Apache KIE ${params.RELEASE_VERSION} release candidate ${params.RELEASE_CANDIDATE_VERSION}"
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Check release version against package.json') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        def packageVersion = sh(
+                            returnStdout: true,
+                            script: "#!/bin/bash -el \n node -p \"require('./package.json').version\""
+                        ).trim()
+                        if (packageVersion != params.RELEASE_VERSION) {
+                            error("Version mismatch! package.json has ${packageVersion} but RELEASE_VERSION is ${params.RELEASE_VERSION}")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Create and push RC tag') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.createTag("${params.RELEASE_CANDIDATE_VERSION}")
+                        githubUtils.pushObject('origin', "${params.RELEASE_CANDIDATE_VERSION}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        sleep(time: 1, unit: 'MINUTES')
+                    }
+                }
+            }
+        }
+
         stage('Build Release Candidate Artifacts') {
             steps {
                 dir('kie-tools') {
@@ -167,9 +222,9 @@ pipeline {
                         echo "RC: ${params.RELEASE_CANDIDATE_VERSION}"
 
                         // Build artifacts WITHOUT publishing (no --publish flag)
-                        // The --rc flag creates signed artifacts for Apache SVN
+                        // The --rc flag creates artifacts for Apache SVN
                         sh """#!/bin/bash -el
-                        ./scripts/release/release-all.sh ${params.RELEASE_VERSION} --rc
+                        ./scripts/release/release-all.sh ${params.RELEASE_VERSION} --rc --git-ref ${params.RELEASE_CANDIDATE_VERSION}
                         """
                     }
                 }

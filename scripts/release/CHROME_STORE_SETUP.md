@@ -19,11 +19,11 @@
 
 ## Overview
 
-The `release-chrome-extensions.sh` script can now publish extensions to the Chrome Web Store using the Chrome Web Store API.
+The `release-all.sh` script publishes Chrome extensions to the Chrome Web Store using the Chrome Web Store API.
 
 ## Required Credentials
 
-You need 5 environment variables:
+You need 4 environment variables:
 
 ### 1. OAuth Credentials
 
@@ -63,22 +63,21 @@ curl -X POST https://oauth2.googleapis.com/token \
 
 ### 3. Extension IDs
 
-Get these from Chrome Web Store Developer Dashboard:
+Get this from Chrome Web Store Developer Dashboard:
 
 1. Go to https://chrome.google.com/webstore/devconsole
-2. Find your extensions
-3. Copy the extension IDs from the URLs
+2. Find the KIE Editors extension
+3. Copy the extension ID from the URL
 
 ## Environment Variables
 
-Set these before running the script:
+Set these before running the release script with `--publish`:
 
 ```bash
 export CHROME_CLIENT_ID="your-client-id.apps.googleusercontent.com"
 export CHROME_CLIENT_SECRET="your-client-secret"
 export CHROME_REFRESH_TOKEN="your-refresh-token"
 export CHROME_KIE_EDITORS_EXTENSION_ID="kie-editors-extension-id"
-export CHROME_SWF_EDITOR_EXTENSION_ID="swf-editor-extension-id"
 ```
 
 ## Usage
@@ -86,7 +85,7 @@ export CHROME_SWF_EDITOR_EXTENSION_ID="swf-editor-extension-id"
 ### Test Build (No Publishing)
 
 ```bash
-./scripts/release/release-chrome-extensions.sh 1.0.0
+./scripts/release/release-all.sh 10.3.0
 ```
 
 ### Publish to Chrome Web Store
@@ -97,50 +96,26 @@ export CHROME_CLIENT_ID="..."
 export CHROME_CLIENT_SECRET="..."
 export CHROME_REFRESH_TOKEN="..."
 export CHROME_KIE_EDITORS_EXTENSION_ID="..."
-export CHROME_SWF_EDITOR_EXTENSION_ID="..."
 
 # Publish
-./scripts/release/release-chrome-extensions.sh 1.0.0 --publish
+./scripts/release/release-all.sh 10.3.0 --publish
 ```
 
 ## Jenkins Setup
 
-In Jenkins, store credentials securely:
+In Jenkins, credentials are configured in `.ci/jenkins/Jenkinsfile.103xplus.release-publish` using:
 
-1. Go to "Manage Jenkins" → "Manage Credentials"
-2. Add credentials:
-   - `chrome-client-id` (Secret text)
-   - `chrome-client-secret` (Secret text)
-   - `chrome-refresh-token` (Secret text)
-   - `chrome-kie-editors-extension-id` (Secret text)
-   - `chrome-swf-editor-extension-id` (Secret text)
-
-3. Update Jenkinsfile to use credentials:
-
-```groovy
-stage('Publish Chrome Extensions') {
-    steps {
-        withCredentials([
-            string(credentialsId: 'chrome-client-id', variable: 'CHROME_CLIENT_ID'),
-            string(credentialsId: 'chrome-client-secret', variable: 'CHROME_CLIENT_SECRET'),
-            string(credentialsId: 'chrome-refresh-token', variable: 'CHROME_REFRESH_TOKEN'),
-            string(credentialsId: 'chrome-kie-editors-extension-id', variable: 'CHROME_KIE_EDITORS_EXTENSION_ID'),
-            string(credentialsId: 'chrome-swf-editor-extension-id', variable: 'CHROME_SWF_EDITOR_EXTENSION_ID')
-        ]) {
-            sh './scripts/release/release-chrome-extensions.sh ${VERSION} --publish'
-        }
-    }
-}
-```
+- `CHROME_CLIENT_ID` / `CHROME_CLIENT_SECRET`: `chromeStoreCredentialsId`
+- `CHROME_REFRESH_TOKEN`: `chromeStoreRefreshTokenCredentialsId`
+- `CHROME_KIE_EDITORS_EXTENSION_ID`: `chromeExtensionIdCredentialsId`
 
 ## How It Works
 
 The script:
 
-1. **Gets OAuth Token**: Exchanges refresh token for access token
-2. **Uploads Extension**: Uploads the .zip file to Chrome Web Store
-3. **Publishes Extension**: Makes the extension live
-4. **Repeats**: Does this for both extensions (KIE Editors and SWF Editor)
+1. **Gets OAuth Token**: Exchanges refresh token for access token via `https://oauth2.googleapis.com/token`
+2. **Uploads Extension**: Uploads the `.zip` file to Chrome Web Store API
+3. **Publishes Extension**: Publishes the uploaded item and validates API response status (`OK` or `PUBLISHED_WITH_FRICTION_WARNING`)
 
 ## API Endpoints Used
 
@@ -162,8 +137,8 @@ The script will:
 ### Test with Dry Run
 
 ```bash
-# Build only (safe)
-./scripts/release/release-chrome-extensions.sh 0.0.0-test
+# Build only (safe) — builds Chrome extension without publishing
+./scripts/release/release-all.sh 0.0.0-test
 ```
 
 ### Test with Test Extension
@@ -178,9 +153,8 @@ export CHROME_CLIENT_ID="test-client-id"
 export CHROME_CLIENT_SECRET="test-secret"
 export CHROME_REFRESH_TOKEN="test-token"
 export CHROME_KIE_EDITORS_EXTENSION_ID="test-extension-id"
-export CHROME_SWF_EDITOR_EXTENSION_ID="test-extension-id-2"
 
-./scripts/release/release-chrome-extensions.sh 0.0.0-test --publish
+./scripts/release/release-all.sh 0.0.0-test --publish
 ```
 
 ## Troubleshooting
