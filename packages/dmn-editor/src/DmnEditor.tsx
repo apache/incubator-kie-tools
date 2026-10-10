@@ -18,11 +18,11 @@
  */
 
 import "@patternfly/react-core/dist/styles/base.css";
-import "reactflow/dist/style.css";
+import "@xyflow/react/dist/style.css";
 
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { original } from "immer";

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import "./OutgoingStuffNodePanel.css";
 import { useEffect } from "react";
