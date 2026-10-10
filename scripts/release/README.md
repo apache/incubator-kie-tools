@@ -60,6 +60,13 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 
 ## Prerequisites
 
+- **Bash 4+** — `release-all.sh` uses associative arrays (`declare -A`) not available in
+  Bash 3.2 (macOS default). On macOS, install a newer Bash via Homebrew:
+  ```bash
+  brew install bash
+  # Then invoke the script explicitly or set your shell to /opt/homebrew/bin/bash
+  /opt/homebrew/bin/bash ./scripts/release/release-all.sh <version>
+  ```
 - Node.js 22, pnpm, Go, Helm 3, Docker — depending on which components you need
 - Repository bootstrapped: `pnpm bootstrap`
 - Credentials set as environment variables (only needed for `--publish`)

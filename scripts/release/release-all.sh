@@ -18,6 +18,15 @@
 
 set -euo pipefail
 
+# Require Bash 4+ for associative array support (declare -A).
+# macOS ships Bash 3.2 by default; install via: brew install bash
+if [[ "${BASH_VERSINFO[0]}" -lt 4 ]]; then
+    echo "ERROR: Bash 4+ is required. Found: ${BASH_VERSION}"
+    echo "       On macOS, install with: brew install bash"
+    echo "       Then run: /opt/homebrew/bin/bash ${BASH_SOURCE[0]} $*"
+    exit 1
+fi
+
 # Release script for Apache KIE Tools — builds and optionally releases all components
 # under a single unified build.
 #
@@ -394,15 +403,13 @@ release_container_images() {
         fi
         local target_image="${REGISTRY}/${image_name}:${VERSION}"
 
-        # Resolve built image from local docker daemon
+        # Each image package builds docker.io/apache/<image_name>:<VERSION> by default.
+        # Check that canonical tag first, then fall back to unqualified variants.
         local source_image=""
         for candidate in \
             "docker.io/apache/${image_name}:${VERSION}" \
             "apache/${image_name}:${VERSION}" \
-            "${image_name}:${VERSION}" \
-            "docker.io/apache/${image_name}:latest" \
-            "apache/${image_name}:latest" \
-            "${image_name}:latest"; do
+            "${image_name}:${VERSION}"; do
             if docker image inspect "${candidate}" &>/dev/null; then
                 source_image="${candidate}"
                 break
@@ -412,7 +419,8 @@ release_container_images() {
         if [[ -n "${source_image}" ]]; then
             docker tag "${source_image}" "${target_image}"
         else
-            echo "  WARN  could not find local image for ${artifact_name} (${image_name})"
+            echo "ERROR: Could not find local image for ${artifact_name} (expected docker.io/apache/${image_name}:${VERSION})"
+            return 1
         fi
 
         if [[ "${RC_MODE}" == "true" ]]; then
@@ -487,15 +495,21 @@ release_helm_charts() {
         local tmp_dir
         tmp_dir=$(mktemp -d)
         cp -r "${chart_dir}/." "${tmp_dir}/chart"
-        sed -i.bak "s/^version:.*/version: ${VERSION}/" "${tmp_dir}/chart/Chart.yaml"
-        sed -i.bak "s/^appVersion:.*/appVersion: \"${VERSION}\"/" "${tmp_dir}/chart/Chart.yaml"
-        rm -f "${tmp_dir}/chart/Chart.yaml.bak"
+        # Use portable sed: GNU sed on Linux and BSD sed on macOS both accept `sed -i ''`
+        # only on macOS; to handle both, write to a temp file then move.
+        local chart_yaml_tmp
+        chart_yaml_tmp=$(mktemp)
+        sed "s/^version:.*/version: ${VERSION}/" "${tmp_dir}/chart/Chart.yaml" \
+            | sed "s/^appVersion:.*/appVersion: \"${VERSION}\"/" > "${chart_yaml_tmp}"
+        mv "${chart_yaml_tmp}" "${tmp_dir}/chart/Chart.yaml"
         helm package "${tmp_dir}/chart" --destination "${helm_tmp_pkg}"
         rm -rf "${tmp_dir}"
 
         local found
         found=$(find "${helm_tmp_pkg}" -maxdepth 1 -name "*-${VERSION}.tgz" | head -1)
         if [[ -n "${found}" ]]; then
+            # Copy as Apache-named .tar.gz for RC staging (SVN / vote archive).
+            # The original .tgz in helm_tmp_pkg is preserved for `helm push`.
             cp "${found}" "${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
             echo "  DONE  ${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
         else
@@ -514,6 +528,7 @@ release_helm_charts() {
             echo "${HELM_PASSWORD}" | helm registry login "$(echo "${helm_reg}" | cut -d/ -f1)" \
                 --username "${HELM_USERNAME}" --password-stdin
         fi
+        # helm push requires the original .tgz produced by `helm package`.
         for tgz in "${helm_tmp_pkg}"/*-"${VERSION}".tgz; do
             if [[ -f "${tgz}" ]]; then
                 echo "  PUSH  ${tgz} -> oci://${helm_reg}"
@@ -588,13 +603,14 @@ release_github_pages() {
         tmp_dir=$(mktemp -d)
         trap "rm -rf ${tmp_dir}" EXIT
 
-        local auth_url="${kogito_online_repo/https:\/\//https://${GITHUB_TOKEN}@}"
-        git clone --branch gh-pages --depth 1 "${auth_url}" "${tmp_dir}/kogito-online"
+        git clone --branch gh-pages --depth 1 "${kogito_online_repo}" "${tmp_dir}/kogito-online" \
+            --config "http.extraHeader=Authorization: Bearer ${GITHUB_TOKEN}"
         (
             cd "${tmp_dir}/kogito-online"
             git config user.email "asf-ci-kie@jenkins.kie.apache.org"
             git config user.name "Apache KIE Release Bot"
-            find . -maxdepth 1 ! -name '.' ! -name 'dev' ! -name 'editors' ! -name 'standalone' \
+            git config "http.extraHeader" "Authorization: Bearer ${GITHUB_TOKEN}"
+            find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name '.github' ! -name 'dev' ! -name 'editors' ! -name 'standalone' \
                 ! -name 'chrome-extension' ! -name '.nojekyll' ! -name 'CNAME' -exec rm -rf {} +
 
             local online_dist="${REPO_ROOT}/packages/online-editor/dist"
@@ -622,13 +638,18 @@ release_github_pages() {
 
         local accel_content="${REPO_ROOT}/packages/kie-sandbox-accelerator-quarkus/dist/git-repo-content"
         if [[ -d "${accel_content}" ]]; then
-            local auth_accel="${accelerator_repo/https:\/\//https://${GITHUB_TOKEN}@}"
-            git clone --depth 1 "${auth_accel}" "${tmp_dir}/accelerator"
+            git clone --depth 1 "${accelerator_repo}" "${tmp_dir}/accelerator" \
+                --config "http.extraHeader=Authorization: Bearer ${GITHUB_TOKEN}"
             (
                 cd "${tmp_dir}/accelerator"
                 git config user.email "asf-ci-kie@jenkins.kie.apache.org"
                 git config user.name "Apache KIE Release Bot"
+                git config "http.extraHeader" "Authorization: Bearer ${GITHUB_TOKEN}"
                 git checkout --orphan "${VERSION}"
+                # Remove all staged and untracked content from the previous checkout
+                # before populating the orphan branch with the release payload.
+                git rm -rf . 2>/dev/null || true
+                git clean -fdx
                 cp -r "${accel_content}/." .
                 git add .
                 git commit -m "Apache KIE Sandbox Quarkus Accelerator ${VERSION}"
