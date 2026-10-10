@@ -24,6 +24,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -42,21 +43,34 @@ import org.drools.completion.JavaSourceRoots;
 import org.drools.completion.JavaSourceTypeIndex;
 import org.drools.completion.WorkspaceSiblingResolver;
 import org.drools.completion.WorkspaceSiblingResolvers;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.jsonrpc.Endpoint;
 import org.eclipse.lsp4j.jsonrpc.services.JsonNotification;
 import org.eclipse.lsp4j.jsonrpc.services.JsonRequest;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.eclipse.lsp4j.ClientCapabilities;
 import org.eclipse.lsp4j.CodeLensOptions;
 import org.eclipse.lsp4j.CompletionOptions;
+import org.eclipse.lsp4j.ConfigurationItem;
+import org.eclipse.lsp4j.ConfigurationParams;
 import org.eclipse.lsp4j.DiagnosticRegistrationOptions;
+import org.eclipse.lsp4j.DidChangeConfigurationCapabilities;
 import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.InitializeResult;
+import org.eclipse.lsp4j.InitializedParams;
+import org.eclipse.lsp4j.MessageParams;
+import org.eclipse.lsp4j.MessageType;
+import org.eclipse.lsp4j.Registration;
+import org.eclipse.lsp4j.RegistrationParams;
 import org.eclipse.lsp4j.RenameOptions;
+import org.eclipse.lsp4j.SaveOptions;
 import org.eclipse.lsp4j.ServerCapabilities;
 import org.eclipse.lsp4j.SetTraceParams;
 import org.eclipse.lsp4j.TextDocumentSyncKind;
+import org.eclipse.lsp4j.TextDocumentSyncOptions;
+import org.eclipse.lsp4j.WorkspaceClientCapabilities;
 import org.eclipse.lsp4j.services.LanguageClient;
 import org.eclipse.lsp4j.services.LanguageClientAware;
 import org.eclipse.lsp4j.services.LanguageServer;
@@ -72,6 +86,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     private LanguageClient client;
     private volatile Set<Path> classpathEntries = Set.of();
     private volatile Set<Path> buildOutputDirs = Set.of();
+    private volatile List<Path> mavenRoots = List.of();
     private volatile ClassIndex jarClassIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
     private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
@@ -93,6 +108,13 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
 
     /** Tracks whether {@code shutdown} preceded {@code exit} (LSP spec). */
     private volatile boolean shutdownReceived = false;
+
+    private volatile boolean clientSupportsConfigurationRegistration = false;
+
+    private volatile boolean clientProvidesConfiguration = false;
+
+    private final Object settingsPullLock = new Object();
+    private int settingsPullGeneration; // guarded by settingsPullLock
 
     public DroolsLspServer() {
         textService = new DroolsLspDocumentService(this);
@@ -117,6 +139,26 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         return buildOutputDirs;
     }
 
+    boolean projectClassesMissing() {
+        return buildOutputDirs.isEmpty() && !javaSourceIndex.classNames().isEmpty();
+    }
+
+    Path workspaceRoot() {
+        return workspaceRootPath;
+    }
+
+    void showMessage(MessageType type, String text) {
+        LanguageClient target = client;
+        if (target == null) {
+            return;
+        }
+        try {
+            target.showMessage(new MessageParams(type, text));
+        } catch (Exception e) {
+            logger.log(Level.FINE, "Client did not accept a message", e);
+        }
+    }
+
     public void rebuildClassIndex() {
         try {
             // Refreshed inside the try: an escaped exception here (e.g. an
@@ -126,6 +168,13 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
             if (workspaceRootPath != null) {
                 refreshJavaSourceIndex(workspaceRootPath);
             }
+            if (!mavenRoots.isEmpty()) {
+                Set<Path> outputDirs = new LinkedHashSet<>();
+                for (Path mavenRoot : mavenRoots) {
+                    outputDirs.addAll(MavenClasspathResolver.resolveBuildOutputDirs(mavenRoot));
+                }
+                buildOutputDirs = outputDirs;
+            }
             // Published unconditionally. Having nothing to index is itself a
             // result the consumers need: the source index reaches them only
             // through publishClassIndex and swapMemberIndex, so returning early
@@ -134,6 +183,11 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
             publishClassIndex();
             // Fresh loader so recompiled classes aren't served from the old one's cache.
             swapMemberIndex(ClassMemberIndex.of(classpathEntries));
+            if (!classpathEntries.isEmpty()) {
+                Set<Path> engineClasspath = new LinkedHashSet<>(classpathEntries);
+                engineClasspath.addAll(buildOutputDirs);
+                textService.compileDiagnostics().setEngine(ProjectEngine.over(engineClasspath));
+            }
             // Drop the declared-type parse cache so edited sibling files re-parse
             // and the cache doesn't grow unbounded over the server's lifetime.
             DRLDeclaredTypeParser.clearCache();
@@ -201,6 +255,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         // Member lookup reflects over the full classpath (jars + class dirs)
         // lazily — building the index itself loads no classes.
         swapMemberIndex(ClassMemberIndex.of(entries));
+        textService.compileDiagnostics().setEngine(ProjectEngine.over(classpathEntries));
 
         if (entries.isEmpty()) {
             logger.warning("Classpath resolution returned 0 entries — type member hover "
@@ -241,6 +296,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
      */
     void initializeJavaSourceTypingForTest(Path workspaceRoot) {
         this.workspaceRootPath = workspaceRoot;
+        this.mavenRoots = List.of(workspaceRoot);
         this.javaSourcePathsSetting = parseSemicolonSetting(
                 System.getProperty("drools.lsp.java.sourcePaths"));
         this.javaPackageFiltersSetting = parseSemicolonSetting(
@@ -325,7 +381,11 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     public CompletableFuture<InitializeResult> initialize(InitializeParams params) {
         final InitializeResult initializeResult = new InitializeResult(new ServerCapabilities());
 
-        initializeResult.getCapabilities().setTextDocumentSync(TextDocumentSyncKind.Full);
+        TextDocumentSyncOptions syncOptions = new TextDocumentSyncOptions();
+        syncOptions.setOpenClose(true);
+        syncOptions.setChange(TextDocumentSyncKind.Full);
+        syncOptions.setSave(new SaveOptions(false));
+        initializeResult.getCapabilities().setTextDocumentSync(syncOptions);
         CompletionOptions completionOptions = new CompletionOptions();
         initializeResult.getCapabilities().setCompletionProvider(completionOptions);
         initializeResult.getCapabilities().setDefinitionProvider(true);
@@ -340,6 +400,12 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         initializeResult.getCapabilities().setDiagnosticProvider(
                 new DiagnosticRegistrationOptions(false, false));
         initializeResult.getCapabilities().setTypeHierarchyProvider(true);
+        initializeResult.getCapabilities().setDocumentFormattingProvider(true);
+        initializeResult.getCapabilities().setDocumentRangeFormattingProvider(true);
+
+        this.clientSupportsConfigurationRegistration =
+                supportsConfigurationRegistration(params.getCapabilities());
+        this.clientProvidesConfiguration = providesConfiguration(params.getCapabilities());
 
         final String rootUri = params.getRootUri();
         if (rootUri != null) {
@@ -413,6 +479,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
                         logger.fine(() -> "Resolving Maven classpath from: " + rootPath);
                         mavenRoots = List.of(rootPath);
                     }
+                    this.mavenRoots = mavenRoots;
 
                     // Publish the project's own compiled classes first. This only
                     // scans the filesystem (no mvn), so type-name completion is
@@ -441,7 +508,131 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
             });
         }
 
+        textService.setFormatterOptions(formatterOptionsOf(params.getInitializationOptions()));
+        applyCompileSettings(compileSectionOf(params.getInitializationOptions()));
+
         return CompletableFuture.supplyAsync(() -> initializeResult);
+    }
+
+    @Override
+    public void initialized(InitializedParams params) {
+        pullSettings();
+        LanguageClient target = client;
+        if (!clientSupportsConfigurationRegistration || target == null) {
+            return;
+        }
+        Registration registration = new Registration("drools.lsp.didChangeConfiguration",
+                "workspace/didChangeConfiguration");
+        try {
+            target.registerCapability(new RegistrationParams(List.of(registration)))
+                    .exceptionally(e -> {
+                        logger.log(Level.WARNING, "Client refused to register for configuration "
+                                + "changes; settings will need a restart", e);
+                        return null;
+                    });
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Client does not implement client/registerCapability", e);
+        }
+    }
+
+    /**
+     * Pulls {@code drools.lsp.formatter} and {@code drools.lsp.compile} through one
+     * {@code workspace/configuration} request, the pattern LSP 3.17 prescribes:
+     * "If the server still needs to react to configuration changes (since the server
+     * caches the result of workspace/configuration requests) the server should
+     * register for an empty configuration change using the following registration
+     * pattern" (LSP 3.17, workspace/configuration).
+     */
+    CompletableFuture<Void> pullSettings() {
+        LanguageClient target = client;
+        if (!clientProvidesConfiguration || target == null) {
+            return CompletableFuture.completedFuture(null);
+        }
+        ConfigurationItem formatter = new ConfigurationItem();
+        formatter.setSection("drools.lsp.formatter");
+        ConfigurationItem compile = new ConfigurationItem();
+        compile.setSection("drools.lsp.compile");
+        int generation;
+        synchronized (settingsPullLock) {
+            generation = ++settingsPullGeneration;
+        }
+        try {
+            return target.configuration(new ConfigurationParams(List.of(formatter, compile)))
+                    .thenAccept(answer -> {
+                        // Check and apply are one step under the lock: an older
+                        // answer cannot pass the check, lose the CPU to a newer
+                        // one, and then overwrite it.
+                        synchronized (settingsPullLock) {
+                            if (generation == settingsPullGeneration) {
+                                applyPulledSettings(answer);
+                            }
+                        }
+                    })
+                    .exceptionally(e -> {
+                        logger.log(Level.WARNING, "Failed to pull settings through workspace/configuration", e);
+                        return null;
+                    });
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "workspace/configuration request could not be sent", e);
+            return CompletableFuture.completedFuture(null);
+        }
+    }
+
+    private void applyPulledSettings(List<Object> answer) {
+        if (answer == null || answer.isEmpty()) {
+            return;
+        }
+        if (answer.get(0) instanceof JsonObject formatter) {
+            textService.setFormatterOptions(FormatterOptions.fromJson(formatter));
+        }
+        if (answer.size() > 1 && answer.get(1) instanceof JsonObject compile) {
+            applyCompileSettings(compile);
+        }
+    }
+
+    void applyCompileSettings(JsonObject compile) {
+        textService.compileDiagnostics().setOnSave(compileOnSaveIn(compile));
+        textService.compileDiagnostics().setTimeout(compileTimeoutIn(compile));
+    }
+
+    static JsonObject compileSectionOf(Object initializationOptions) {
+        if (initializationOptions instanceof JsonObject root && root.get("compile") instanceof JsonObject compile) {
+            return compile;
+        }
+        return null;
+    }
+
+    static Duration compileTimeoutIn(JsonObject compile) {
+        JsonElement seconds = compile == null ? null : compile.get("timeoutSeconds");
+        if (seconds == null || !seconds.isJsonPrimitive() || !seconds.getAsJsonPrimitive().isNumber()) {
+            return CompileDiagnostics.DEFAULT_TIMEOUT;
+        }
+        return Duration.ofSeconds(Math.max(seconds.getAsLong(), CompileDiagnostics.MINIMUM_TIMEOUT.toSeconds()));
+    }
+
+    static boolean compileOnSaveIn(JsonObject compile) {
+        JsonElement onSave = compile == null ? null : compile.get("onSave");
+        if (onSave == null || !onSave.isJsonPrimitive() || !onSave.getAsJsonPrimitive().isBoolean()) {
+            return true;
+        }
+        return onSave.getAsBoolean();
+    }
+
+    boolean clientProvidesConfiguration() {
+        return clientProvidesConfiguration;
+    }
+
+    private static boolean supportsConfigurationRegistration(ClientCapabilities capabilities) {
+        WorkspaceClientCapabilities workspace = (capabilities == null) ? null : capabilities.getWorkspace();
+        DidChangeConfigurationCapabilities didChangeConfiguration =
+                (workspace == null) ? null : workspace.getDidChangeConfiguration();
+        return didChangeConfiguration != null
+                && Boolean.TRUE.equals(didChangeConfiguration.getDynamicRegistration());
+    }
+
+    private static boolean providesConfiguration(ClientCapabilities capabilities) {
+        WorkspaceClientCapabilities workspace = (capabilities == null) ? null : capabilities.getWorkspace();
+        return workspace != null && Boolean.TRUE.equals(workspace.getConfiguration());
     }
 
     /**
@@ -485,6 +676,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
                     .setGroupOverride(Paths.get(URI.create(params.getUri())), params.getGroup());
             // Pinning changes what is in scope, and diagnostics here are pulled
             // rather than pushed, so nothing would re-ask on its own.
+            textService.compileDiagnostics().invalidateAll();
             refreshDiagnostics();
         } catch (Exception e) {
             logger.log(Level.WARNING, "Failed to pin " + params.getUri() + " to a DRL file group", e);
@@ -520,6 +712,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         if (client instanceof Endpoint endpoint) {
             endpoint.notify("drools/fileGroupsChanged", null);
         }
+        textService.compileDiagnostics().invalidateAll();
         refreshDiagnostics();
     }
 
@@ -530,7 +723,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
      * grouping changes, the set of files in scope changes with it, but nothing
      * would prompt the client to ask again.
      */
-    private void refreshDiagnostics() {
+    void refreshDiagnostics() {
         LanguageClient target = client;
         if (target == null) {
             return;
@@ -551,6 +744,27 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         List<String> uris = (params == null) ? null : params.getUris();
         WorkspaceSiblingResolvers.active().setWorkspaceFiles(uris == null ? null : toPaths(uris));
         notifyFileGroupsChanged();
+    }
+
+    /** Compiles every DRL file under the workspace root, for checks that cross file groups. */
+    @JsonNotification("drools/rebuildWorkspace")
+    public void rebuildWorkspace(CompileProtocol.RebuildWorkspaceParams params) {
+        if (params == null || params.getUri() == null) {
+            return;
+        }
+        Path path;
+        try {
+            path = Paths.get(URI.create(params.getUri()));
+        } catch (Exception e) {
+            showMessage(MessageType.Warning, "Workspace compile skipped: " + params.getUri() + " is not a file URI");
+            return;
+        }
+        try {
+            textService.compileDiagnostics().rebuildWorkspace(path);
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Cannot rebuild the workspace for " + params.getUri(), e);
+            showMessage(MessageType.Warning, "Workspace compile skipped: " + e.getMessage());
+        }
     }
 
     /**
@@ -604,6 +818,19 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         return (grouping == null || !grouping.isJsonObject()) ? null : grouping.toString();
     }
 
+    /**
+     * The {@code formatter} object of the client's initializationOptions, or the
+     * defaults. Same JSON contract as the drools.lsp.formatter settings and the
+     * CLI's --config.
+     */
+    static FormatterOptions formatterOptionsOf(Object initializationOptions) {
+        if (initializationOptions instanceof JsonObject options
+                && options.get("formatter") instanceof JsonObject formatter) {
+            return FormatterOptions.fromJson(formatter);
+        }
+        return FormatterOptions.DEFAULTS;
+    }
+
     @Override
     public void setTrace(SetTraceParams params) {
         // No-op: this server emits no LSP trace notifications. Overriding avoids
@@ -619,6 +846,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         } catch (Exception e) {
             logger.log(Level.FINE, "Failed to close class member index on shutdown", e);
         }
+        textService.compileDiagnostics().shutdown();
         DRLDeclaredTypeParser.clearCache();
         JavaSourceTypeIndex.clearCache();
         // The lookup closes over the document service, so leaving it installed

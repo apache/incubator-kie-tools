@@ -40,6 +40,17 @@
       <artifactId>drools-completion</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.kie.tools</groupId>
+      <artifactId>drools-formatter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.tools</groupId>
+      <artifactId>drools-lsp-engine-bridge</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>
@@ -61,8 +72,24 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!-- Tests -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>${version.org.kie.kogito}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
+      <version>${version.org.kie.kogito}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-io</artifactId>
+      <version>${version.org.kie.kogito}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

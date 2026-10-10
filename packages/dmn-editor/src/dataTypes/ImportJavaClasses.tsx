@@ -43,6 +43,7 @@ const ImportJavaClassesWrapper = ({
 }: {
   javaCodeCompletionService: JavaCodeCompletionService;
 }) => {
+  const { locale } = useDmnEditorI18n();
   const {
     handleConflictAction,
     handleImportJavaClasses,
@@ -53,6 +54,7 @@ const ImportJavaClassesWrapper = ({
   return (
     <>
       <ImportJavaClasses
+        locale={locale}
         loadJavaClassesInDataTypeEditor={handleImportJavaClasses}
         javaCodeCompletionService={javaCodeCompletionService}
       />

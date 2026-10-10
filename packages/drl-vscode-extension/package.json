@@ -37,7 +37,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/mocha": "^10.0.7",
-    "@types/vscode": "1.67.0",
+    "@types/vscode": "1.103.0",
     "@vscode/test-electron": "^2.3.6",
     "@vscode/vsce": "^3.7.1",
     "copy-webpack-plugin": "^11.0.0",
@@ -69,10 +69,82 @@
         "category": "DRL",
         "command": "drools.reloadFileGroups",
         "title": "Reload File Groups"
+      },
+      {
+        "category": "DRL",
+        "command": "drools.rebuildWorkspace",
+        "title": "Rebuild Workspace"
       }
     ],
     "configuration": {
       "properties": {
+        "drools.lsp.compile.onSave": {
+          "default": true,
+          "markdownDescription": "Compile the saved file's group with the Drools engine on the project's classpath and show the compiler's messages. Turn off for projects where a group compile takes too long; `DRL: Rebuild Workspace` still compiles on demand. Applies without a restart.",
+          "type": "boolean"
+        },
+        "drools.lsp.compile.timeoutSeconds": {
+          "default": 120,
+          "markdownDescription": "How long one compile may run before it is abandoned and reported as failed. Raise it for large file groups or slower machines. Applies without a restart.",
+          "minimum": 10,
+          "type": "integer"
+        },
+        "drools.lsp.formatter.alignDeclarations": {
+          "default": true,
+          "markdownDescription": "Lay out `declare` fields and enum constants as aligned columns. Off emits one field per line with single spaces.",
+          "type": "boolean"
+        },
+        "drools.lsp.formatter.bindingColonSpace": {
+          "default": false,
+          "markdownDescription": "Put a space before the colon of a binding and of a `declare` field: `$p : Person(…)` and `a : int` instead of `$p: Person(…)` and `a: int`.",
+          "type": "boolean"
+        },
+        "drools.lsp.formatter.headerMetadata": {
+          "default": "indented",
+          "enum": [
+            "indented",
+            "flush",
+            "inline"
+          ],
+          "enumDescriptions": [
+            "Annotations and attributes on their own lines, indented one level",
+            "Annotations and attributes on their own lines at column 0",
+            "Annotations and attributes on the header line, wrapping at the line length"
+          ],
+          "markdownDescription": "Where a rule, query or declare header's annotations and attributes go.",
+          "type": "string"
+        },
+        "drools.lsp.formatter.lineEndings": {
+          "default": "preserve",
+          "enum": [
+            "preserve",
+            "lf",
+            "crlf"
+          ],
+          "enumDescriptions": [
+            "Keep whatever the file already uses",
+            "Always LF",
+            "Always CRLF"
+          ],
+          "markdownDescription": "Line endings to write. `preserve` keeps whatever the file already uses.",
+          "type": "string"
+        },
+        "drools.lsp.formatter.lineLength": {
+          "default": 110,
+          "markdownDescription": "Column at which constraints, calls and headers start wrapping. A trigger, not a cap: a construct with nothing breakable runs past it.",
+          "minimum": 40,
+          "type": "integer"
+        },
+        "drools.lsp.formatter.normalizeTerminators": {
+          "default": true,
+          "markdownDescription": "Normalize statement terminators: `import` gains `;`, `global` loses it, and the accumulate/groupby source separator becomes `;`. Off keeps whatever the source wrote.",
+          "type": "boolean"
+        },
+        "drools.lsp.formatter.parenPadding": {
+          "default": true,
+          "markdownDescription": "Pad the inside of non-empty parentheses: `Person( age > 18 )`. Off gives `Person(age > 18)`.",
+          "type": "boolean"
+        },
         "drools.lsp.grouping": {
           "additionalProperties": false,
           "default": {},

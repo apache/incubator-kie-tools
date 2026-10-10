@@ -52,6 +52,8 @@ import org.drools.completion.DRLInlayHintHelper;
 import org.drools.completion.DRLLintHelper;
 import org.drools.completion.DRLTypeHierarchyHelper;
 import org.drools.completion.JavaSourceTypeIndex;
+import org.drools.formatter.DRLFormatter;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.CodeActionKind;
 import org.eclipse.lsp4j.CodeActionParams;
@@ -72,10 +74,13 @@ import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.DidSaveTextDocumentParams;
 import org.eclipse.lsp4j.DocumentDiagnosticParams;
 import org.eclipse.lsp4j.DocumentDiagnosticReport;
+import org.eclipse.lsp4j.DocumentFormattingParams;
+import org.eclipse.lsp4j.DocumentRangeFormattingParams;
 import org.eclipse.lsp4j.DocumentSymbol;
 import org.eclipse.lsp4j.DocumentSymbolParams;
 import org.eclipse.lsp4j.FoldingRange;
 import org.eclipse.lsp4j.FoldingRangeRequestParams;
+import org.eclipse.lsp4j.FormattingOptions;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.HoverParams;
 import org.eclipse.lsp4j.InlayHint;
@@ -106,14 +111,18 @@ public class DroolsLspDocumentService implements TextDocumentService {
     private static final Logger logger = Logger.getLogger(DroolsLspDocumentService.class.getName());
 
     private final Map<String, String> sourcesMap = new ConcurrentHashMap<>();
+    private final Map<Path, String> openTextByPath = new ConcurrentHashMap<>();
     private volatile ClassIndex classIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
     private volatile JavaSourceTypeIndex javaSourceIndex = JavaSourceTypeIndex.empty();
+    private volatile FormatterOptions formatterOptions = FormatterOptions.DEFAULTS;
+    private final CompileDiagnostics compileDiagnostics;
 
     private final DroolsLspServer server;
 
     public DroolsLspDocumentService(DroolsLspServer server) {
         this.server = server;
+        this.compileDiagnostics = new CompileDiagnostics(server, this::openTextAt);
         // Lets binding resolution describe types the DRL does not declare, so
         // hover and inlay hints work on Java fact classes. The closure reads the
         // live indexes on every call, so a rebuilt classpath needs no re-install.
@@ -170,6 +179,39 @@ public class DroolsLspDocumentService implements TextDocumentService {
         this.javaSourceIndex = javaSourceIndex;
     }
 
+    public void setFormatterOptions(FormatterOptions options) {
+        this.formatterOptions = options == null ? FormatterOptions.DEFAULTS : options;
+    }
+
+    FormatterOptions formatterOptions() {
+        return formatterOptions;
+    }
+
+    CompileDiagnostics compileDiagnostics() {
+        return compileDiagnostics;
+    }
+
+    /** The open buffer for {@code path}, whatever URI spelling the client used for it. */
+    private String openTextAt(Path path) {
+        return openTextByPath.get(path);
+    }
+
+    private void putSource(String uri, String text) {
+        sourcesMap.put(uri, text);
+        Path path = toPath(uri);
+        if (path != null) {
+            openTextByPath.put(path.toAbsolutePath().normalize(), text);
+        }
+    }
+
+    private void removeSource(String uri) {
+        sourcesMap.remove(uri);
+        Path path = toPath(uri);
+        if (path != null) {
+            openTextByPath.remove(path.toAbsolutePath().normalize());
+        }
+    }
+
     ClassIndex getClassIndexForTest() {
         return classIndex;
     }
@@ -180,7 +222,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didOpen(DidOpenTextDocumentParams params) {
-        sourcesMap.put(params.getTextDocument().getUri(), params.getTextDocument().getText());
+        putSource(params.getTextDocument().getUri(), params.getTextDocument().getText());
     }
 
     /**
@@ -231,7 +273,9 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
-        sourcesMap.put(params.getTextDocument().getUri(), params.getContentChanges().get(0).getText());
+        String uri = params.getTextDocument().getUri();
+        putSource(uri, params.getContentChanges().get(0).getText());
+        compileDiagnostics.invalidate(toPath(uri));
     }
 
     @Override
@@ -390,11 +434,12 @@ public class DroolsLspDocumentService implements TextDocumentService {
     @Override
     public CompletableFuture<DocumentDiagnosticReport> diagnostic(DocumentDiagnosticParams params) {
         return CompletableFuture.supplyAsync(() -> {
-            List<Diagnostic> items =
-                    (params != null && params.getTextDocument() != null
-                            && sourcesMap.containsKey(params.getTextDocument().getUri()))
-                            ? validate(params.getTextDocument().getUri())
-                            : Collections.emptyList();
+            List<Diagnostic> items = Collections.emptyList();
+            if (params != null && params.getTextDocument() != null
+                    && sourcesMap.containsKey(params.getTextDocument().getUri())) {
+                String uri = params.getTextDocument().getUri();
+                items = CompileDiagnostics.merge(validate(uri), compileDiagnostics.cachedFor(toPath(uri)));
+            }
             return new DocumentDiagnosticReport(new RelatedFullDocumentDiagnosticReport(items));
         });
     }
@@ -408,6 +453,74 @@ public class DroolsLspDocumentService implements TextDocumentService {
             String text = sourcesMap.get(params.getTextDocument().getUri());
             return DRLFoldingRangeHelper.foldingRanges(text);
         });
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams params) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<TextEdit> edits = attempt(() -> computeFormattingEdits(params));
+            return edits == null ? Collections.<TextEdit>emptyList() : edits;
+        });
+    }
+
+    private List<TextEdit> computeFormattingEdits(DocumentFormattingParams params) {
+        String text = sourcesMap.get(params.getTextDocument().getUri());
+        if (text == null) {
+            return Collections.emptyList();
+        }
+        FormatterOptions options = withRequestIndent(params.getOptions());
+        DRLFormatter.FormatResult result = DRLFormatter.formatChecked(text, options);
+        if (result.refused()) {
+            // Never hand the editor questionable output; the log is the only trace
+            // of why a Format Document did nothing.
+            logger.info(() -> "Not formatting " + params.getTextDocument().getUri() + ": " + result.refusalReason());
+            return Collections.emptyList();
+        }
+        Range whole = new Range(new Position(0, 0), new Position(Integer.MAX_VALUE, 0));
+        return List.of(new TextEdit(whole, result.formatted()));
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> rangeFormatting(DocumentRangeFormattingParams params) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<TextEdit> edits = attempt(() -> computeRangeFormattingEdits(params));
+            return edits == null ? Collections.<TextEdit>emptyList() : edits;
+        });
+    }
+
+    private List<TextEdit> computeRangeFormattingEdits(DocumentRangeFormattingParams params) {
+        String text = sourcesMap.get(params.getTextDocument().getUri());
+        if (text == null) {
+            return Collections.emptyList();
+        }
+        FormatterOptions options = withRequestIndent(params.getOptions());
+        DRLFormatter.FormatResult gate = DRLFormatter.formatChecked(text, options);
+        if (gate.refused()) {
+            logger.info(() -> "Not formatting " + params.getTextDocument().getUri() + ": " + gate.refusalReason());
+            return Collections.emptyList();
+        }
+        Range selection = params.getRange();
+        int endLine = selection.getEnd().getLine();
+        // LSP 3.17, Range: "the end position is exclusive", so a selection ending
+        // at the first column of a line does not include that line.
+        if (selection.getEnd().getCharacter() == 0 && endLine > selection.getStart().getLine()) {
+            endLine--;
+        }
+        DRLFormatter.RangeResult r = DRLFormatter.formatRange(text, selection.getStart().getLine(), endLine, options);
+        if (r == null || r.text() == null || r.text().isEmpty()) {
+            return Collections.emptyList(); // selection covers no whole statement
+        }
+        Range replaced = new Range(new Position(r.startLine(), 0), new Position(r.endLine() + 1, 0));
+        return List.of(new TextEdit(replaced, r.text()));
+    }
+
+    /** The editor's tabSize/insertSpaces override the configured indent; nothing else. */
+    private FormatterOptions withRequestIndent(FormattingOptions request) {
+        FormatterOptions configured = formatterOptions;
+        if (request == null) {
+            return configured;
+        }
+        return configured.withIndent(request.getTabSize(), request.isInsertSpaces());
     }
 
     @Override
@@ -684,10 +797,25 @@ public class DroolsLspDocumentService implements TextDocumentService {
 
     @Override
     public void didClose(DidCloseTextDocumentParams params) {
-        sourcesMap.remove(params.getTextDocument().getUri());
+        String uri = params.getTextDocument().getUri();
+        removeSource(uri);
+        compileDiagnostics.invalidate(toPath(uri));
     }
 
     @Override
     public void didSave(DidSaveTextDocumentParams params) {
+        if (params == null || params.getTextDocument() == null) {
+            return;
+        }
+        String uri = params.getTextDocument().getUri();
+        if (!sourcesMap.containsKey(uri)) {
+            return;
+        }
+        String text = params.getText() != null ? params.getText() : sourcesMap.get(uri);
+        if (text == null) {
+            return;
+        }
+        putSource(uri, text);
+        compileDiagnostics.onDidSave(toPath(uri), text);
     }
 }

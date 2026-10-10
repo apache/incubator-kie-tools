@@ -23,11 +23,32 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.drools.completion.ClassIndex;
+import org.drools.formatter.FormatterOptions;
+import org.eclipse.lsp4j.ClientCapabilities;
+import org.eclipse.lsp4j.ConfigurationItem;
+import org.eclipse.lsp4j.ConfigurationParams;
+import org.eclipse.lsp4j.DidChangeConfigurationCapabilities;
+import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
+import org.eclipse.lsp4j.InitializeParams;
+import org.eclipse.lsp4j.InitializedParams;
+import org.eclipse.lsp4j.MessageActionItem;
+import org.eclipse.lsp4j.MessageParams;
+import org.eclipse.lsp4j.PublishDiagnosticsParams;
+import org.eclipse.lsp4j.Registration;
+import org.eclipse.lsp4j.RegistrationParams;
+import org.eclipse.lsp4j.ShowMessageRequestParams;
+import org.eclipse.lsp4j.WorkspaceClientCapabilities;
+import org.eclipse.lsp4j.services.LanguageClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -171,10 +192,386 @@ class DroolsLspServerTest {
         assertThat(roots).containsExactly(module);
     }
 
+    @Test
+    void initializedPullsFormatterOptionsAndRegistersForEmptyConfigurationChanges() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":80}"));
+        server.connect(client);
+
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+        server.initialized(new InitializedParams());
+
+        assertThat(client.configurationRequests).hasSize(1);
+        List<ConfigurationItem> items = client.configurationRequests.get(0).getItems();
+        assertThat(items).hasSize(2);
+        assertThat(items.get(0).getSection()).isEqualTo("drools.lsp.formatter");
+        assertThat(items.get(0).getScopeUri()).isNull();
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(80);
+
+        assertThat(client.registrations).hasSize(1);
+        List<Registration> registrations = client.registrations.get(0).getRegistrations();
+        assertThat(registrations).hasSize(1);
+        assertThat(registrations.get(0).getMethod()).isEqualTo("workspace/didChangeConfiguration");
+        assertThat(registrations.get(0).getRegisterOptions()).isNull();
+    }
+
+    @Test
+    void didChangeConfigurationPullsAgainWhenTheClientProvidesConfiguration() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":80}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+        server.initialized(new InitializedParams());
+
+        client.configurationAnswer = List.of(jsonObject("{\"parenPadding\":false}"));
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(JsonNull.INSTANCE));
+
+        assertThat(client.configurationRequests).hasSize(2);
+        assertThat(server.getTextDocumentService().formatterOptions().parenPadding()).isFalse();
+    }
+
+    @Test
+    void nullConfigurationAnswerLeavesOptionsUntouched() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":80}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+        server.pullSettings().join();
+
+        client.configurationAnswer = List.of(JsonNull.INSTANCE);
+        server.pullSettings().join();
+        client.configurationAnswer = List.of();
+        server.pullSettings().join();
+
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(80);
+    }
+
+    @Test
+    void aStaleConfigurationAnswerDoesNotOverwriteANewerOne() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.deferAnswers = true;
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+
+        CompletableFuture<Void> first = server.pullSettings();
+        CompletableFuture<Void> second = server.pullSettings();
+        assertThat(client.pendingAnswers).hasSize(2);
+        client.pendingAnswers.get(1).complete(List.of(jsonObject("{\"lineLength\":90}")));
+        client.pendingAnswers.get(0).complete(List.of(jsonObject("{\"lineLength\":80}")));
+        CompletableFuture.allOf(first, second).join();
+
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(90);
+    }
+
+    @Test
+    void clientWithoutConfigurationSupportGetsThePushFallback() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        server.connect(client);
+
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), false)).get();
+        server.initialized(new InitializedParams());
+
+        assertThat(client.configurationRequests).isEmpty();
+
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(
+                jsonObject("{\"drools\":{\"lsp\":{\"formatter\":{\"parenPadding\":false}}}}")));
+
+        assertThat(server.getTextDocumentService().formatterOptions().parenPadding()).isFalse();
+    }
+
+    @Test
+    void initializedRegistersNothingWithoutDynamicRegistration() throws Exception {
+        CapturingClient client = new CapturingClient();
+
+        DroolsLspServer serverWithoutCapabilities = new DroolsLspServer();
+        serverWithoutCapabilities.connect(client);
+        serverWithoutCapabilities.initialize(new InitializeParams()).get();
+        serverWithoutCapabilities.initialized(new InitializedParams());
+
+        DroolsLspServer serverWithRegistrationOff = new DroolsLspServer();
+        serverWithRegistrationOff.connect(client);
+        serverWithRegistrationOff.initialize(
+                initializeParams(new DidChangeConfigurationCapabilities(false), null)).get();
+        serverWithRegistrationOff.initialized(new InitializedParams());
+
+        assertThat(client.registrations).isEmpty();
+    }
+
+    @Test
+    void initializeAdvertisesSaveNotifications() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        server.connect(new CapturingClient());
+
+        var result = server.initialize(new InitializeParams()).get();
+
+        assertThat(result.getCapabilities().getTextDocumentSync().isRight()).isTrue();
+        assertThat(result.getCapabilities().getTextDocumentSync().getRight().getSave()).isNotNull();
+    }
+
+    @Test
+    void pullAsksForTheFormatterAndTheCompileSections() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+
+        server.pullSettings().join();
+
+        assertThat(client.configurationRequests).hasSize(1);
+        assertThat(client.configurationRequests.get(0).getItems())
+                .extracting(ConfigurationItem::getSection)
+                .containsExactly("drools.lsp.formatter", "drools.lsp.compile");
+    }
+
+    @Test
+    void pulledCompileSectionTurnsSaveCompilesOff() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":90}"), jsonObject("{\"onSave\":false}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+
+        server.pullSettings().join();
+
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(90);
+        assertThat(server.getTextDocumentService().compileDiagnostics().onSave()).isFalse();
+    }
+
+    @Test
+    void pulledCompileSectionSetsTheBuildTimeout() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{}"), jsonObject("{\"timeoutSeconds\":300}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+
+        server.pullSettings().join();
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().timeout()).isEqualTo(java.time.Duration.ofSeconds(300));
+    }
+
+    @Test
+    void anInvalidBuildTimeoutFallsBackToTheDefaultAndATinyOneToTheMinimum() {
+        assertThat(DroolsLspServer.compileTimeoutIn(jsonObject("{\"timeoutSeconds\":\"soon\"}")))
+                .isEqualTo(CompileDiagnostics.DEFAULT_TIMEOUT);
+        assertThat(DroolsLspServer.compileTimeoutIn(jsonObject("{}"))).isEqualTo(CompileDiagnostics.DEFAULT_TIMEOUT);
+        assertThat(DroolsLspServer.compileTimeoutIn(jsonObject("{\"timeoutSeconds\":3}")))
+                .isEqualTo(CompileDiagnostics.MINIMUM_TIMEOUT);
+    }
+
+    @Test
+    void pushedCompileSectionSetsTheBuildTimeout() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        server.connect(new CapturingClient());
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), false)).get();
+
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(
+                jsonObject("{\"drools\":{\"lsp\":{\"compile\":{\"timeoutSeconds\":200}}}}")));
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().timeout()).isEqualTo(java.time.Duration.ofSeconds(200));
+    }
+
+    @Test
+    void aOneElementAnswerLeavesSaveCompilesOn() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        CapturingClient client = new CapturingClient();
+        client.configurationAnswer = List.of(jsonObject("{\"lineLength\":90}"));
+        server.connect(client);
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), true)).get();
+
+        server.pullSettings().join();
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().onSave()).isTrue();
+    }
+
+    @Test
+    void pushedCompileSectionTurnsSaveCompilesOff() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        server.connect(new CapturingClient());
+        server.initialize(initializeParams(new DidChangeConfigurationCapabilities(true), false)).get();
+
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(
+                jsonObject("{\"drools\":{\"lsp\":{\"compile\":{\"onSave\":false}}}}")));
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().onSave()).isFalse();
+    }
+
+    @Test
+    void initializationOptionsCarryTheCompileSection() throws Exception {
+        DroolsLspServer server = new DroolsLspServer();
+        server.connect(new CapturingClient());
+        InitializeParams params = new InitializeParams();
+        params.setInitializationOptions(jsonObject("{\"compile\":{\"onSave\":false}}"));
+
+        server.initialize(params).get();
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().onSave()).isFalse();
+    }
+
+    @Test
+    void aResolvedClasspathWithDroolsInstallsAnAvailableEngine() {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+
+        server.setClasspathEntriesForTest(new java.util.LinkedHashSet<>(TestClasspath.withoutTheBridge()));
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().engine().available()).isTrue();
+    }
+
+    @Test
+    void aResolvedClasspathWithoutDroolsInstallsNoEngine() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+
+        server.setClasspathEntriesForTest(Set.of(createClassDir("com/example/Qux.class")));
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().engine().available()).isFalse();
+    }
+
+    @Test
+    void rebuildingTheClassIndexPicksUpBuildOutputCreatedLater() throws IOException {
+        Files.writeString(tempDir.resolve("pom.xml"), "<project/>");
+        DroolsLspServer server = new DroolsLspServer();
+        server.initializeJavaSourceTypingForTest(tempDir);
+        server.setClasspathEntriesForTest(Set.of(createClassDir("com/example/Later.class")));
+
+        Files.createDirectories(tempDir.resolve("target/classes"));
+        server.rebuildClassIndex();
+
+        ProjectEngine engine = (ProjectEngine) server.getTextDocumentService().compileDiagnostics().engine();
+        assertThat(engine.entries()).contains(tempDir.resolve("target/classes"));
+    }
+
+    @Test
+    void rebuildingTheClassIndexReplacesTheEngine() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        server.setClasspathEntriesForTest(Set.of(createClassDir("com/example/Quux.class")));
+        Engine before = server.getTextDocumentService().compileDiagnostics().engine();
+
+        server.rebuildClassIndex();
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().engine()).isNotSameAs(before);
+    }
+
+    @Test
+    void pinningAGroupDropsCachedCompileResults() throws Exception {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        CompileDiagnostics compile = server.getTextDocumentService().compileDiagnostics();
+        Path drl = tempDir.resolve("A.drl");
+        compile.setEngine(new CompileDiagnosticsTest.FakeEngine(sources -> List.of(
+                java.util.Map.of("path", "src/main/resources/A.drl", "level", "ERROR", "line", 0, "column", 0,
+                        "text", "x"))));
+        Files.writeString(drl, "package p;\n");
+        compile.triggerNow(drl, "package p;\n", false);
+        awaitCached(compile, drl);
+
+        server.setFileGroup(fileGroupParams(drl.toUri().toString(), "any"));
+
+        assertThat(compile.cachedFor(drl)).isEmpty();
+    }
+
+    @Test
+    void shutdownReleasesTheEngine() throws Exception {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        server.setClasspathEntriesForTest(new java.util.LinkedHashSet<>(TestClasspath.withoutTheBridge()));
+        Engine engine = server.getTextDocumentService().compileDiagnostics().engine();
+        assertThat(engine.available()).isTrue();
+
+        server.shutdown().get();
+
+        assertThat(server.getTextDocumentService().compileDiagnostics().engine()).isNull();
+        long deadline = System.currentTimeMillis() + 10_000L;
+        while (System.currentTimeMillis() < deadline && engine.available()) {
+            Thread.sleep(50);
+        }
+        assertThat(engine.available()).isFalse();
+    }
+
+    private static void awaitCached(CompileDiagnostics compile, Path path) throws InterruptedException {
+        long deadline = System.currentTimeMillis() + 10_000L;
+        while (System.currentTimeMillis() < deadline && compile.cachedFor(path).isEmpty()) {
+            Thread.sleep(50);
+        }
+        assertThat(compile.cachedFor(path)).isNotEmpty();
+    }
+
+    private static FileGroupingProtocol.FileGroupParams fileGroupParams(String uri, String group) {
+        FileGroupingProtocol.FileGroupParams params = new FileGroupingProtocol.FileGroupParams();
+        params.setUri(uri);
+        params.setGroup(group);
+        return params;
+    }
+
     private Path createClassDir(String classFilePath) throws IOException {
         Path classFile = tempDir.resolve(classFilePath);
         Files.createDirectories(classFile.getParent());
         Files.createFile(classFile);
         return tempDir;
+    }
+
+    private static JsonObject jsonObject(String json) {
+        return JsonParser.parseString(json).getAsJsonObject();
+    }
+
+    private static InitializeParams initializeParams(DidChangeConfigurationCapabilities didChangeConfiguration,
+                                                     Boolean configuration) {
+        WorkspaceClientCapabilities workspace = new WorkspaceClientCapabilities();
+        workspace.setDidChangeConfiguration(didChangeConfiguration);
+        workspace.setConfiguration(configuration);
+        ClientCapabilities capabilities = new ClientCapabilities();
+        capabilities.setWorkspace(workspace);
+        InitializeParams params = new InitializeParams();
+        params.setCapabilities(capabilities);
+        return params;
+    }
+
+    private static class CapturingClient implements LanguageClient {
+
+        final List<RegistrationParams> registrations = new ArrayList<>();
+        final List<ConfigurationParams> configurationRequests = new ArrayList<>();
+        final List<CompletableFuture<List<Object>>> pendingAnswers = new ArrayList<>();
+        volatile List<Object> configurationAnswer = List.of(jsonObject("{}"));
+        volatile boolean deferAnswers;
+
+        @Override
+        public CompletableFuture<Void> registerCapability(RegistrationParams params) {
+            registrations.add(params);
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override
+        public CompletableFuture<List<Object>> configuration(ConfigurationParams params) {
+            configurationRequests.add(params);
+            if (deferAnswers) {
+                CompletableFuture<List<Object>> pending = new CompletableFuture<>();
+                pendingAnswers.add(pending);
+                return pending;
+            }
+            return CompletableFuture.completedFuture(configurationAnswer);
+        }
+
+        @Override
+        public void telemetryEvent(Object object) {
+        }
+
+        @Override
+        public CompletableFuture<MessageActionItem> showMessageRequest(ShowMessageRequestParams requestParams) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override
+        public void showMessage(MessageParams messageParams) {
+        }
+
+        @Override
+        public void publishDiagnostics(PublishDiagnosticsParams diagnostics) {
+        }
+
+        @Override
+        public void logMessage(MessageParams message) {
+        }
     }
 }

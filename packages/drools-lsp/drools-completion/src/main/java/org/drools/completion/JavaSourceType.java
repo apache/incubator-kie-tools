@@ -23,8 +23,9 @@ import java.util.List;
 
 /**
  * A Java type parsed from {@code .java} source (top-level class, enum, interface,
- * or record). Carries the members, constructor signatures, supertype simple
- * names, and the declaration's source position, so the source-typing layer can
+ * or record). Carries the instance members, the statics, constructor signatures,
+ * supertype simple names, and the declaration's source position, so the
+ * source-typing layer can
  * feed completion/hover/lint/definition before a compile exists. Immutable.
  */
 public final class JavaSourceType {
@@ -41,19 +42,21 @@ public final class JavaSourceType {
     /** Constructor signatures, e.g. {@code "Foo(int, String)"}. */
     public final List<String> constructors;
     /**
-     * Names of the public static fields. Not members — a static is not a fact
-     * property — but nameable through {@code Type.NAME}, which is what
-     * {@link JavaSourceTypeIndex#memberNames} answers for.
+     * The public static fields, with their types. Not members — a static is not
+     * a fact property — but reachable through {@code Type.NAME}, which is what
+     * {@link JavaSourceTypeIndex#staticFieldsOf} and
+     * {@link JavaSourceTypeIndex#memberNames} answer for.
      */
-    public final List<String> staticFieldNames;
+    public final List<Field> staticFields;
+    public final List<String> staticMethods;
     /** 0-based line/column of the type's name token. */
     public final int declLine;
     public final int declColumn;
 
     JavaSourceType(String fqcn, String simpleName, boolean isEnum, String extendsSimpleName,
                    List<String> interfaceSimpleNames, List<Field> members,
-                   List<String> constructors, List<String> staticFieldNames,
-                   int declLine, int declColumn) {
+                   List<String> constructors, List<Field> staticFields,
+                   List<String> staticMethods, int declLine, int declColumn) {
         this.fqcn = fqcn;
         this.simpleName = simpleName;
         this.isEnum = isEnum;
@@ -61,7 +64,8 @@ public final class JavaSourceType {
         this.interfaceSimpleNames = List.copyOf(interfaceSimpleNames);
         this.members = List.copyOf(members);
         this.constructors = List.copyOf(constructors);
-        this.staticFieldNames = List.copyOf(staticFieldNames);
+        this.staticFields = List.copyOf(staticFields);
+        this.staticMethods = List.copyOf(staticMethods);
         this.declLine = declLine;
         this.declColumn = declColumn;
     }

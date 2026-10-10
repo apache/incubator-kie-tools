@@ -84,6 +84,15 @@ public interface WorkspaceSiblingResolver {
     }
 
     /**
+     * Every DRL file the resolver knows in the workspace, or an empty list for a
+     * resolver that keeps no such view; a caller that gets the empty list has to
+     * discover files itself.
+     */
+    default List<Path> workspaceDrlFiles() {
+        return List.of();
+    }
+
+    /**
      * Pins {@code file} to {@code groupName}, overriding whatever the
      * configuration resolves it to, until the workspace root changes. A blank
      * or {@code null} name clears the pin.
