@@ -27,7 +27,7 @@ on:
     types: [opened, reopened, ready_for_review, synchronize]
 
 concurrency:
-  group: ${{ github.event.pull_request && format('ci-build-java17-pr-{0}', github.event.pull_request.number) || format('ci-build-java17-push-main-{0}', github.sha) }}
+  group: ${{ github.event.pull_request && format('ci-build-java17-pr-{0}', github.event.pull_request.number) || format('ci-build-java17-push-main-{0}', github.ref_name) }}
   cancel-in-progress: true
 
 env:
@@ -36,7 +36,7 @@ env:
 
 jobs:
   run:
-    if: github.event.pull_request.draft == false
+    if: ${{ !github.event.pull_request || github.event.pull_request.draft == false }}
     strategy:
       fail-fast: false
       matrix:
@@ -49,7 +49,7 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: "Checkout @ GitHub default"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Checkout @ Simulated squashed-merge if PR"
         id: checkout_pr
@@ -84,7 +84,7 @@ jobs:
           bun ./.github/supporting-files/ci/build-partitioning/build_partitioning.ts \
             --outputPath='/tmp/partitions.json' \
             --tmpPartitionFilterPath='/tmp/partition-filter.txt' \
-            --forceFull='true' \
+            --forceFull='${{ !github.event.pull_request }}' \
             --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
             --headSha='${{steps.checkout_pr.outputs.head_sha }}' \
             --graphJsonPath='./repo/graph.json'
