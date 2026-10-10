@@ -17,7 +17,7 @@
 # under the License.
 #
 
-name: "CI :: Build (Java 21)"
+name: "CI :: Build (Java 17)"
 
 on:
   push:
@@ -27,7 +27,7 @@ on:
     types: [opened, reopened, ready_for_review, synchronize]
 
 concurrency:
-  group: ${{ github.event.pull_request && format('ci-build-full-pr-{0}', github.event.pull_request.number) || format('ci-build-full-push-main-{0}', github.sha) }}
+  group: ${{ github.event.pull_request && format('ci-build-java17-pr-{0}', github.event.pull_request.number) || format('ci-build-java17-push-main-{0}', github.ref_name) }}
   cancel-in-progress: true
 
 env:
@@ -36,7 +36,7 @@ env:
 
 jobs:
   run:
-    if: github.event.pull_request.draft == false
+    if: ${{ !github.event.pull_request || github.event.pull_request.draft == false }}
     strategy:
       fail-fast: false
       matrix:
@@ -49,7 +49,7 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: "Checkout @ GitHub default"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Checkout @ Simulated squashed-merge if PR"
         id: checkout_pr
@@ -96,13 +96,18 @@ jobs:
           echo "mode=$(jq --raw-output '.[${{ matrix.partition }}].mode' /tmp/partitions.json)" >> $GITHUB_OUTPUT
           echo "bootstrapPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].bootstrapPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
           echo "fullBuildPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].fullBuildPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
-          echo "upstreamPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].upstreamPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
-          echo "affectedPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].affectedPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
           echo "Done."
 
       - name: "Setup environment"
         if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
+
+      - name: "Override JDK to Java 17"
+        if: steps.setup_build_mode.outputs.mode != 'none'
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: "temurin"
 
       - name: "Bootstrap"
         if: steps.setup_build_mode.outputs.mode != 'none'
@@ -148,43 +153,6 @@ jobs:
           MAVEN_OPTS: "-Xmx2g"
         run: >-
           eval "pnpm ${{ steps.setup_build_mode.outputs.fullBuildPnpmFilterString }} --workspace-concurrency=1 build:prod"
-
-      - name: "PARTIAL → Build upstream"
-        if: steps.setup_build_mode.outputs.mode == 'partial' && steps.setup_build_mode.outputs.upstreamPnpmFilterString != ''
-        shell: bash
-        env:
-          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildExamples: "true"
-          NODE_OPTIONS: "--max_old_space_size=6144"
-          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
-          MAVEN_OPTS: "-Xmx2g"
-        run: |
-          eval "pnpm ${{ steps.setup_build_mode.outputs.upstreamPnpmFilterString }} --if-present build:dev"
-
-      - name: "PARTIAL → Build changed and downstream"
-        shell: bash
-        if: steps.setup_build_mode.outputs.mode == 'partial'
-        env:
-          WEBPACK__minimize: "false"
-          KIE_TOOLS_BUILD__runLinters: "true"
-          KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildExamples: "true"
-          PLAYWRIGHT_BASE__enableChromiumProject: "true"
-          PLAYWRIGHT_BASE__enableGoogleChromeProject: "true"
-          PLAYWRIGHT_BASE__enableWebkitProject: "true"
-          PLAYWRIGHT_BASE__projectTimeout: "90000"
-          PLAYWRIGHT_BASE__expectTimeout: "30000"
-          PLAYWRIGHT_BASE__retries: "3"
-          PLAYWRIGHT_BASE__workers: "2"
-          DISPLAY: ":99.0"
-          START_SERVER_AND_TEST_INSECURE: "true"
-          NODE_OPTIONS: "--max_old_space_size=6144"
-          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
-          MAVEN_OPTS: "-Xmx2g"
-        run: |
-          eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --if-present --workspace-concurrency=1 build:prod"
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
