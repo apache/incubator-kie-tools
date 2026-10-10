@@ -22,6 +22,7 @@ class PipelineVars implements Serializable {
     String quayPushCredentialsId = 'quay-io-kie-tools-token'
     String dockerHubUserCredentialsId = 'DOCKERHUB_USER'
     String dockerHubTokenCredentialsId = 'DOCKERHUB_TOKEN'
+    String vscePatCredentialsId = 'kie-tools-vsce-pat'
     String openshiftCredentialsId = 'openshift-kie-tools-token'
     String kieToolsBotGithubCredentialsId = 'kie-tools-bot-gh'
     String kieToolsBotGithubTokenCredentialsId = 'kie-tools-bot-gh-token'
