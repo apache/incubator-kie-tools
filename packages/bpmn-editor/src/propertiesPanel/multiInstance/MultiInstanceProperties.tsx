@@ -203,7 +203,13 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                       .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                   );
 
-                  setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, addOrGetIoSpecification(e), e);
+                  setInputDataMapping(
+                    itemDefinitionIdByDataTypes,
+                    inputDataMapping,
+                    addOrGetIoSpecification(e),
+                    e,
+                    s.bpmn.model.definitions
+                  );
 
                   if (newVariableRef) {
                     const ioSpecificationReference = addOrGetIoSpecification(e).dataInput?.find(
@@ -261,7 +267,13 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                         .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                     );
 
-                    setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, addOrGetIoSpecification(e), e);
+                    setInputDataMapping(
+                      itemDefinitionIdByDataTypes,
+                      inputDataMapping,
+                      addOrGetIoSpecification(e),
+                      e,
+                      s.bpmn.model.definitions
+                    );
 
                     const ioSpecificationReference = addOrGetIoSpecification(e).dataInput?.find(
                       (dIn) =>
@@ -351,7 +363,13 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                       .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                   );
 
-                  setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, addOrGetIoSpecification(e), e);
+                  setOutputDataMapping(
+                    itemDefinitionIdByDataTypes,
+                    outputDataMapping,
+                    addOrGetIoSpecification(e),
+                    e,
+                    s.bpmn.model.definitions
+                  );
 
                   if (newVariableRef) {
                     const ioSpecificationReference = addOrGetIoSpecification(e).dataOutput?.find(
@@ -412,7 +430,13 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
                         .map((i) => [i["@_structureRef"]!, i["@_id"]!])
                     );
 
-                    setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, addOrGetIoSpecification(e), e);
+                    setOutputDataMapping(
+                      itemDefinitionIdByDataTypes,
+                      outputDataMapping,
+                      addOrGetIoSpecification(e),
+                      e,
+                      s.bpmn.model.definitions
+                    );
 
                     const ioSpecificationReference = addOrGetIoSpecification(e).dataOutput?.find(
                       (dOut) =>

@@ -225,6 +225,27 @@ import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramEl
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { DEFAULT_DATA_TYPES } from "./addOrGetItemDefinitions";
 
+export const BPMN20_MODEL_NAMESPACE = "http://www.omg.org/spec/BPMN/20100524/MODEL";
+
+export function getBpmnNamespacePrefix(definitions?: Normalized<BPMN20__tDefinitions>): string {
+  if (!definitions) {
+    return "";
+  }
+
+  for (const [key, value] of Object.entries(definitions)) {
+    if (value === BPMN20_MODEL_NAMESPACE) {
+      if (key === "@_xmlns") {
+        return "";
+      }
+      if (key.startsWith("@_xmlns:")) {
+        return `${key.slice("@_xmlns:".length)}:`;
+      }
+    }
+  }
+
+  return "";
+}
+
 export function setInputDataMapping(
   itemDefinitionIdByDataTypes: Map<string, string>,
   inputDataMapping: DataMapping[],
@@ -232,6 +253,7 @@ export function setInputDataMapping(
   elementWithAssociation: WithInputDataMapping | WithDataMapping,
   definitions?: Normalized<BPMN20__tDefinitions>
 ) {
+  const bpmnPrefix = getBpmnNamespacePrefix(definitions);
   elementWithData.dataInput = [];
   elementWithAssociation.dataInputAssociation = [];
 
@@ -256,7 +278,7 @@ export function setInputDataMapping(
                 "@_id": generateUuid(),
                 from: {
                   "@_id": generateUuid(),
-                  "@_xsi:type": "tFormalExpression",
+                  "@_xsi:type": `${bpmnPrefix}tFormalExpression`,
                   __$$text: dataMapping.value,
                 } as any,
                 to: { "@_id": generateUuid(), __$$text: dataInput["@_id"] },
@@ -279,6 +301,7 @@ export function setOutputDataMapping(
   elementWithAssociation: WithOutputDataMapping | WithDataMapping,
   definitions?: Normalized<BPMN20__tDefinitions>
 ) {
+  const bpmnPrefix = getBpmnNamespacePrefix(definitions);
   elementWithData.dataOutput = [];
   elementWithAssociation.dataOutputAssociation = [];
 
@@ -304,7 +327,7 @@ export function setOutputDataMapping(
                 from: { "@_id": generateUuid(), __$$text: dataOutput["@_id"] },
                 to: {
                   "@_id": generateUuid(),
-                  "@_xsi:type": "tFormalExpression",
+                  "@_xsi:type": `${bpmnPrefix}tFormalExpression`,
                   __$$text: dataMapping.value,
                 } as any,
               },
@@ -323,7 +346,8 @@ export function setInputAndOutputDataMapping(
   itemDefinitionIdByDataTypes: Map<string, string>,
   inputDataMapping: DataMapping[],
   outputDataMapping: DataMapping[],
-  e: WithDataMapping
+  e: WithDataMapping,
+  definitions?: Normalized<BPMN20__tDefinitions>
 ) {
   e.ioSpecification = {
     "@_id": generateUuid(),
@@ -334,7 +358,7 @@ export function setInputAndOutputDataMapping(
   };
 
   // input
-  setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e.ioSpecification, e);
+  setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e.ioSpecification, e, definitions);
 
   e.ioSpecification.inputSet[0] ??= {
     "@_id": generateUuid(),
@@ -347,7 +371,7 @@ export function setInputAndOutputDataMapping(
   }
 
   // output
-  setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e.ioSpecification, e);
+  setOutputDataMapping(itemDefinitionIdByDataTypes, outputDataMapping, e.ioSpecification, e, definitions);
 
   e.ioSpecification!.outputSet[0] ??= {
     "@_id": generateUuid(),
@@ -391,7 +415,7 @@ export function setDataMappingForElement({
         e.__$$element === "serviceTask" ||
         e.__$$element === "scriptTask"
       ) {
-        setInputAndOutputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, outputDataMapping, e);
+        setInputAndOutputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, outputDataMapping, e, definitions);
       } else if (e.__$$element === "endEvent" || e.__$$element === "intermediateThrowEvent") {
         setInputDataMapping(itemDefinitionIdByDataTypes, inputDataMapping, e, e, definitions);
       } else if (
