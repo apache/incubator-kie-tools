@@ -396,7 +396,7 @@ export function BpmnPalette({ pulse }: { pulse: boolean }) {
               className={"kie-bpmn-editor--palette-nodes-popover custom-tasks"}
               data-testid="kie-tools--bpmn-editor--custom-tasks-popover"
             >
-              <CustomTasksPalette onDragStart={onDragStart} />
+              <CustomTasksPalette onDragStart={onDragStart} onDragEnd={onDragEnd} />
             </div>
           )}
           <button
