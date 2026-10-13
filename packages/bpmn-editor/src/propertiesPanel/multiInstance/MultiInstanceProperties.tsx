@@ -48,6 +48,7 @@ import {
 import { addOrGetIoSpecification } from "../../mutations/addOrGetIoSpecification";
 import { addOrGetItemDefinitions, DEFAULT_DATA_TYPES } from "../../mutations/addOrGetItemDefinitions";
 import { useBpmnEditorI18n } from "../../i18n";
+import { ScriptLanguage } from "../scriptFormats";
 
 export type WithMultiInstanceProperties = Normalized<
   ElementFilter<
@@ -144,7 +145,7 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
 
       <CodeInput
         label={i18n.propertiesPanel.completionCondition}
-        availableLanguages={["MVEL"]}
+        availableLanguages={[ScriptLanguage.MVEL]}
         value={
           element?.loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics"
             ? (element?.loopCharacteristics?.completionCondition?.__$$text ?? "")
