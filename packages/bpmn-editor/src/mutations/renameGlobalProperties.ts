@@ -39,4 +39,12 @@ export function updateProcessId({
       participant["@_processRef"] = newId;
     }
   }
+
+  // Keep the DI layer in sync, otherwise BPMNPlane.bpmnElement becomes a dangling IDREF.
+  definitions["bpmndi:BPMNDiagram"]?.forEach((diagram) => {
+    const plane = diagram["bpmndi:BPMNPlane"];
+    if (plane["@_bpmnElement"] === oldProcessId) {
+      plane["@_bpmnElement"] = newId;
+    }
+  });
 }
