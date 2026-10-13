@@ -77,7 +77,7 @@ export function ConditionalEventSelector({ element }: { element: WithConditional
         value={currentValue}
         onChange={handleValueChange}
         label={i18n.propertiesPanel.conditionalExpression}
-        languages={["drools"]}
+        availableLanguages={["drools"]}
       />
     </FormSection>
   );

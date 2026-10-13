@@ -144,7 +144,7 @@ export function MultiInstanceProperties({ element }: { element: WithMultiInstanc
 
       <CodeInput
         label={i18n.propertiesPanel.completionCondition}
-        languages={["MVEL"]}
+        availableLanguages={["MVEL"]}
         value={
           element?.loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics"
             ? (element?.loopCharacteristics?.completionCondition?.__$$text ?? "")

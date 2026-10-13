@@ -21,53 +21,92 @@ import * as React from "react";
 import { useBpmnEditorStore } from "../../store/StoreContext";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { MenuToggle } from "@patternfly/react-core/dist/js/components/MenuToggle";
+import { Select, SelectList, SelectOption } from "@patternfly/react-core/dist/js/components/Select";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import "./CodeInput.css";
 import { useBpmnEditorI18n } from "../../i18n";
+import { ScriptLanguage } from "../scriptFormats";
 
 export function CodeInput({
   label,
-  languages,
+  availableLanguages,
+  currentLanguage,
   value,
   onChange,
+  onLanguageChange,
 }: {
   label: string;
-  languages: string[];
+  availableLanguages: string[];
+  /** Currently selected language. Defaults to the first of `languages`. */
+  currentLanguage?: string;
   value: string | undefined;
   onChange: (e: React.FormEvent, newCode: string) => void;
+  /** When provided, a dropdown to select the language is shown instead of a static label. */
+  onLanguageChange?: (newLanguage: ScriptLanguage) => void;
 }) {
   const { i18n } = useBpmnEditorI18n();
   const isReadOnly = useBpmnEditorStore((s) => s.settings.isReadOnly);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = React.useState(false);
 
-  const languageLabel = React.useMemo(() => {
-    return (
-      <Label
-        isCompact={true}
-        style={{
-          margin: "16px",
-          top: "24px",
-          right: "0",
-          position: "absolute",
-        }}
-      >
-        {languages[0]}
-      </Label>
-    );
-  }, [languages]);
+  const selectedLanguage = currentLanguage ?? availableLanguages[0];
+
+  const hasLanguageSelector = !!onLanguageChange && availableLanguages.length > 1;
+  const languageSelectId = `${label}-language-select`;
 
   return (
-    <FormGroup label={`${label}`} style={{ position: "relative" }}>
-      <TextArea
-        aria-label={`${label}`}
-        type={"text"}
-        isDisabled={isReadOnly}
-        value={value}
-        onChange={onChange}
-        placeholder={i18n.propertiesPanel.codePlaceholder}
-        style={{ resize: "vertical", minHeight: "40px", fontFamily: "monospace" }}
-        rows={3}
-      />
-      {languageLabel}
-    </FormGroup>
+    <>
+      <FormGroup label={`${label}`}>
+        <TextArea
+          aria-label={`${label}`}
+          type={"text"}
+          isDisabled={isReadOnly}
+          value={value}
+          onChange={onChange}
+          placeholder={i18n.propertiesPanel.codePlaceholder}
+          style={{ resize: "vertical", minHeight: "40px", fontFamily: "monospace" }}
+          rows={3}
+        />
+        {!hasLanguageSelector && (
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
+            <Label isCompact={true}>{selectedLanguage}</Label>
+          </div>
+        )}
+      </FormGroup>
+      {hasLanguageSelector && (
+        <FormGroup label={i18n.propertiesPanel.language} fieldId={languageSelectId}>
+          <Select
+            id={languageSelectId}
+            isOpen={isLanguageDropdownOpen}
+            selected={selectedLanguage}
+            onOpenChange={setIsLanguageDropdownOpen}
+            onSelect={(_event, selection) => {
+              onLanguageChange(selection as ScriptLanguage);
+              setIsLanguageDropdownOpen(false);
+            }}
+            popperProps={{ appendTo: document.body, width: "trigger" }}
+            toggle={(toggleRef: React.Ref<any>) => (
+              <MenuToggle
+                ref={toggleRef}
+                isFullWidth={true}
+                isExpanded={isLanguageDropdownOpen}
+                isDisabled={isReadOnly}
+                onClick={() => setIsLanguageDropdownOpen((open) => !open)}
+              >
+                {selectedLanguage}
+              </MenuToggle>
+            )}
+          >
+            <SelectList>
+              {availableLanguages.map((l) => (
+                <SelectOption key={l} value={l}>
+                  {l}
+                </SelectOption>
+              ))}
+            </SelectList>
+          </Select>
+        </FormGroup>
+      )}
+    </>
   );
 }

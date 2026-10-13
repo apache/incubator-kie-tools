@@ -34,3 +34,9 @@ const SCRIPT_LANGUAGE_FORMATS: Record<ScriptLanguage, string> = {
 export function getScriptFormat(language: ScriptLanguage): string {
   return SCRIPT_LANGUAGE_FORMATS[language];
 }
+
+export function getScriptLanguage(format: string | undefined): ScriptLanguage | undefined {
+  return (Object.keys(SCRIPT_LANGUAGE_FORMATS) as ScriptLanguage[]).find(
+    (language) => SCRIPT_LANGUAGE_FORMATS[language] === format
+  );
+}

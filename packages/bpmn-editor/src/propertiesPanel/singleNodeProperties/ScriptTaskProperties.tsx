@@ -51,7 +51,7 @@ export function ScriptTaskProperties({
         <Divider inset={{ default: "insetXs" }} />
         <CodeInput
           label={i18n.singleNodeProperties.script}
-          languages={["Java"]}
+          availableLanguages={[ScriptLanguage.Java]}
           value={scriptTask?.script?.__$$text || ""}
           onChange={(e, newScript) => {
             bpmnEditorStoreApi.setState((s) => {

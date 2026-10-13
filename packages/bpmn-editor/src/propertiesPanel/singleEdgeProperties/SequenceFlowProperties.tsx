@@ -29,6 +29,7 @@ import { CodeInput } from "../codeInput/CodeInput";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput/TextInput";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { useBpmnEditorI18n } from "../../i18n";
+import { ScriptLanguage, getScriptFormat, getScriptLanguage } from "../scriptFormats";
 
 export function SequenceFlowProperties({
   sequenceFlow,
@@ -38,6 +39,9 @@ export function SequenceFlowProperties({
   const { i18n } = useBpmnEditorI18n();
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
   const isReadOnly = bpmnEditorStoreApi((s) => s.settings.isReadOnly);
+
+  const currentLanguage =
+    getScriptLanguage((sequenceFlow.conditionExpression as any)?.["@_language"]) ?? ScriptLanguage.Java;
 
   return (
     <FormSection>
@@ -65,9 +69,24 @@ export function SequenceFlowProperties({
       </FormGroup>
       <CodeInput
         label={i18n.propertiesPanel.conditionalExpression}
-        languages={["Java", "MVEL", "DROOLS", "FEEL"]}
+        availableLanguages={[ScriptLanguage.Java, ScriptLanguage.MVEL, ScriptLanguage.Drools, ScriptLanguage.FEEL]}
+        currentLanguage={currentLanguage}
+        onLanguageChange={(newLanguage) =>
+          bpmnEditorStoreApi.setState((s) => {
+            const { process } = addOrGetProcessAndDiagramElements({ definitions: s.bpmn.model.definitions });
+            visitFlowElementsAndArtifacts(process, ({ element: e }) => {
+              if (e["@_id"] === sequenceFlow["@_id"] && e.__$$element === sequenceFlow.__$$element) {
+                e.conditionExpression ??= {
+                  "@_id": generateUuid(),
+                };
+                (e.conditionExpression as any)["@_xsi:type"] = "tFormalExpression";
+                (e.conditionExpression as any)["@_language"] = getScriptFormat(newLanguage);
+              }
+            });
+          })
+        }
         value={sequenceFlow.conditionExpression?.__$$text || ""}
-        onChange={(e, newPriority) =>
+        onChange={(e, newScript) =>
           bpmnEditorStoreApi.setState((s) => {
             const { process } = addOrGetProcessAndDiagramElements({
               definitions: s.bpmn.model.definitions,
@@ -77,7 +96,9 @@ export function SequenceFlowProperties({
                 e.conditionExpression ??= {
                   "@_id": generateUuid(),
                 };
-                e.conditionExpression.__$$text = newPriority;
+                e.conditionExpression.__$$text = newScript;
+                (e.conditionExpression as any)["@_xsi:type"] = "tFormalExpression";
+                (e.conditionExpression as any)["@_language"] ??= getScriptFormat(currentLanguage);
               }
             });
           })
