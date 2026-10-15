@@ -98,12 +98,11 @@ export function SequenceFlowProperties({
                 };
                 e.conditionExpression.__$$text = newScript;
                 (e.conditionExpression as any)["@_xsi:type"] = "tFormalExpression";
-                // Derive the language from the already-mutated element inside the setState callback
-                // so that a language change committed just before this text change is not overwritten
-                // by a stale render-time closure value (currentLanguage).
-                (e.conditionExpression as any)["@_language"] ??= getScriptFormat(
-                  getScriptLanguage((e.conditionExpression as any)["@_language"]) ?? ScriptLanguage.Java
-                );
+                // Derive the language from the element's current state inside the setState callback
+                // rather than the render-time `currentLanguage` closure, so a language change
+                // committed just before this keystroke is not overwritten by a stale captured value.
+                const language = getScriptLanguage((e.conditionExpression as any)["@_language"]) ?? ScriptLanguage.Java;
+                (e.conditionExpression as any)["@_language"] ??= getScriptFormat(language);
               }
             });
           })
