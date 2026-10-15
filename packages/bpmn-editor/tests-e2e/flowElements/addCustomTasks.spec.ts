@@ -134,7 +134,7 @@ test.describe("Add Custom Tasks", () => {
           thenRenameTo: "Reserved Task",
         });
         await expect(nodes.get({ name: "Reserved Task" })).toBeAttached();
-        await nodes.select({ name: "Reserved Task" });
+        await nodes.select({ name: "Reserved Task", position: NodePosition.CENTER });
         await taskPropertiesPanel.open();
       });
 
@@ -158,9 +158,7 @@ test.describe("Add Custom Tasks", () => {
         await expect(visibleNameInputs).toHaveCount(1);
         await expect(visibleNameInputs.first()).toHaveValue("Message");
 
-        // Explicitly verify reserved inputs are not listed in the modal
-        await expect(modal.getByDisplayValue("Url")).toHaveCount(0);
-        await expect(modal.getByDisplayValue("HEADER_Accept")).toHaveCount(0);
+        // Reserved inputs ("Url", "HEADER_Accept") are not listed: the only name input is "Message" (asserted above)
         await expect(page.getByText("This input should be entered as a property for the task.")).toHaveCount(0);
 
         // Saving and closing the modal must keep reserved inputs untouched in the BPMN model
@@ -171,9 +169,14 @@ test.describe("Add Custom Tasks", () => {
       test("should not save user-typed inputs whose names match reserved names/patterns", async ({
         taskPropertiesPanel,
         jsonModel,
+        page,
       }) => {
         await taskPropertiesPanel.openDataMappingModal();
         await taskPropertiesPanel.addDataInputInModal({ name: "HEADER_Other" });
+
+        // The reserved-name validation error is shown while the user types a reserved name/pattern
+        await expect(page.getByText("This input should be entered as a property for the task.")).toBeVisible();
+
         await taskPropertiesPanel.closeDataMappingModal();
 
         const names = (await jsonModel.getTasks())[0].ioSpecification?.dataInput?.map((i) => i["@_name"]);
@@ -196,7 +199,7 @@ test.describe("Add Custom Tasks", () => {
           thenRenameTo: "WID Task",
         });
         await expect(nodes.get({ name: "WID Task" })).toBeAttached();
-        await nodes.select({ name: "WID Task" });
+        await nodes.select({ name: "WID Task", position: NodePosition.CENTER });
         await taskPropertiesPanel.open();
 
         const getModelInputNames = () =>
@@ -212,8 +215,8 @@ test.describe("Add Custom Tasks", () => {
 
         // All parameters are visible and editable in the modal
         await expect(visibleNameInputs).toHaveCount(2);
-        await expect(modal.getByDisplayValue("Param1")).toBeVisible();
-        await expect(modal.getByDisplayValue("Param2")).toBeVisible();
+        await expect(visibleNameInputs.nth(0)).toHaveValue("Param1");
+        await expect(visibleNameInputs.nth(1)).toHaveValue("Param2");
 
         // Adding an extra input in the modal should also succeed
         await taskPropertiesPanel.addDataInputInModal({ name: "Param3" });
