@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { Diagram } from "./diagram";
 import { Nodes, NodeType } from "./nodes";
 
@@ -64,6 +64,13 @@ export class CustomTasks {
         newName: args.thenRenameTo,
         needsSelection: false,
       });
+    }
+
+    // The popover stays open after the drop and overlays the top-left of the canvas,
+    // intercepting hover/click events on nodes placed beneath it.
+    if (await popover.isVisible()) {
+      await this.closePalette();
+      await expect(popover).not.toBeVisible();
     }
   }
 
