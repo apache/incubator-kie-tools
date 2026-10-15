@@ -34,6 +34,7 @@ import { PositionalNodeHandleId } from "@kie-tools/xyflow-react-kie-diagram/dist
 import { AutoPositionedEdgeMarker } from "@kie-tools/xyflow-react-kie-diagram/dist/edges/AutoPositionedEdgeMarker";
 import { _checkIsValidConnection } from "@kie-tools/xyflow-react-kie-diagram/dist/graph/isValidConnection";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { getEdgeLabelBoundsAfterWaypointsChange } from "./repositionEdgeLabel";
 import {
   getDiscreteAutoPositioningEdgeIdMarker,
   getPointForHandle,
@@ -283,6 +284,19 @@ export function addEdge({
     "@_targetElement": __readonly_targetNode.shapeId,
     "di:waypoint": newWaypoints,
   };
+
+  // Keep label with kept waypoints.
+  const removedLabel = removedBpmnEdge?.["bpmndi:BPMNLabel"];
+  if (__readonly_keepWaypoints && removedLabel?.["dc:Bounds"]) {
+    newBpmnEdge["bpmndi:BPMNLabel"] = {
+      ...removedLabel,
+      "dc:Bounds": getEdgeLabelBoundsAfterWaypointsChange({
+        __readonly_labelBounds: removedLabel["dc:Bounds"],
+        __readonly_previousWaypoints: removedBpmnEdge?.["di:waypoint"],
+        __readonly_newWaypoints: newWaypoints,
+      }),
+    };
+  }
 
   // Replace with the new one.
   diagramElements.push(newBpmnEdge);
