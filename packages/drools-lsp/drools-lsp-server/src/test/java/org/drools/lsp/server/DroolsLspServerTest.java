@@ -27,11 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.drools.completion.ClassIndex;
+import org.drools.completion.CustomOperators;
 import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.ClientCapabilities;
 import org.eclipse.lsp4j.ConfigurationItem;
@@ -76,6 +79,60 @@ class DroolsLspServerTest {
 
         ClassIndex index = server.getTextDocumentService().getClassIndexForTest();
         assertThat(index.getMatching("Foo")).contains("com.example.Foo");
+    }
+
+    @Test
+    void rebuildClassIndexRegistersTheProjectsCustomOperators() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        Path conf = tempDir.resolve("META-INF/kie.properties.conf");
+        Files.createDirectories(conf.getParent());
+        Files.writeString(conf, "drools.evaluator.nearlyEquals=com.example.NearlyEqualsDefinition\n");
+        server.setClasspathEntriesForTest(Set.of(tempDir));
+
+        server.rebuildClassIndex();
+
+        assertThat(CustomOperators.isRegistered("nearlyEquals")).isTrue();
+    }
+
+    @Test
+    void dependencyJarsAreScannedForOperatorsOnlyWhenTheClasspathResolves() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        Path jar = tempDir.resolve("dep.jar");
+        writeOperatorJar(jar, "jarDeclaredBefore");
+        server.setClasspathEntriesForTest(Set.of(jar));
+        server.rebuildClassIndex();
+        writeOperatorJar(jar, "jarDeclaredAfter");
+
+        server.rebuildClassIndex();
+
+        assertThat(CustomOperators.isRegistered("jarDeclaredBefore")).isTrue();
+        assertThat(CustomOperators.isRegistered("jarDeclaredAfter")).isFalse();
+    }
+
+    private static void writeOperatorJar(Path jar, String id) throws IOException {
+        try (JarOutputStream out = new JarOutputStream(Files.newOutputStream(jar))) {
+            out.putNextEntry(new JarEntry("META-INF/kie.properties.conf"));
+            out.write(("drools.evaluator." + id + "=com.example.Definition\n").getBytes());
+            out.closeEntry();
+        }
+    }
+
+    /**
+     * The project's own declaration lives in its build output, which the
+     * dependency classpath never lists, and it must be known from the first
+     * publish at startup rather than from a later rebuild.
+     */
+    @Test
+    void startupPublishRegistersOperatorsDeclaredInTheProjectsBuildOutput() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        Files.writeString(tempDir.resolve("pom.xml"), "<project/>");
+        Path conf = tempDir.resolve("target/classes/META-INF/kie.properties.conf");
+        Files.createDirectories(conf.getParent());
+        Files.writeString(conf, "drools.evaluator.roughlyEquals=com.example.RoughlyEqualsDefinition\n");
+
+        server.initializeJavaSourceTypingForTest(tempDir);
+
+        assertThat(CustomOperators.isRegistered("roughlyEquals")).isTrue();
     }
 
     @Test
