@@ -265,13 +265,13 @@ starts, so changing either needs a restart.
 
 Drools 10 ships two DRL parsers: the legacy `DRL6` parser it compiles with by default, and the ANTLR4 `DRL10` parser, enabled with `-Ddrools.drl.antlr4.parser.enabled=true`, which accepts a slimmer syntax ([apache/incubator-kie#6220](https://github.com/apache/incubator-kie/issues/6220)). The language server parses with the `DRL10` grammar, so a rule set that still uses the dropped syntax shows `no viable alternative` errors where the engine merely logs a deprecation. The lint names the construct instead, at its position:
 
-| Construct                          | Example                         | Quick fix                    |
-| ---------------------------------- | ------------------------------- | ---------------------------- |
-| Half constraint                    | `age > 18 && < 65`              | Repeat the left operand      |
-| Patterns joined with `&&`/`\|\|`   | `Person( ) && Account( )`       | `and` / `or`                 |
-| Annotation inside an LHS pattern   | `Person( @watch(age) age > 1 )` | none — move or drop it       |
-| `agenda-group`                     | `agenda-group "g"`              | none — migrate rulebase-wide |
-| Custom operator without its prefix | `name supersetOf "x"`           | `##supersetOf`               |
+| Construct                          | Example                   | Quick fix               |
+| ---------------------------------- | ------------------------- | ----------------------- |
+| Half constraint                    | `age > 18 && < 65`        | Repeat the left operand |
+| Patterns joined with `&&`/`\|\|`   | `not( A( ) && B( ) )`     | `and` / `or`            |
+| Annotation after an LHS `and`/`or` | `A( ) or @Annot B( )`     | none — move or drop it  |
+| `agenda-group`                     | `agenda-group "g"`        | `ruleflow-group`        |
+| Custom operator without its prefix | `name not supersetOf "x"` | `##supersetOf`          |
 
 A recognized construct replaces the parse errors on its line. `drools.lsp.lint.deprecated` sets the severity; `off` leaves the raw parse errors in place.
 

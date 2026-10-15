@@ -700,8 +700,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
      * Builds the migration quick-fixes for deprecated-construct
      * ({@code drools-deprecated}) diagnostics, whose replacement rides in
      * {@code data} the same way. A construct whose migration is not mechanical
-     * — an annotation that must move, {@code agenda-group}, which is migrated
-     * rulebase-wide — carries none and so offers no fix.
+     * — an annotation that must move or go — carries none and so offers no fix.
      */
     static List<Either<Command, CodeAction>> buildDeprecatedConstructActions(
             String uri, List<Diagnostic> diagnostics) {

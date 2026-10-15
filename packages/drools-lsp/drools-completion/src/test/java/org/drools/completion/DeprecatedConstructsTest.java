@@ -99,9 +99,51 @@ class DeprecatedConstructsTest {
     }
 
     @Test
-    void namesAnAnnotationInsideAnLhsPattern() {
-        Diagnostic d = deprecation(HEAD + "rule R when Person( @watch(age) age > 1 ) then end\n");
-        assertThat(d.getMessage()).contains("annotations inside LHS patterns");
+    void namesPatternsConnectedInsideAGroup() {
+        assertThat(deprecation(HEAD
+                + "rule R when ( Person( age > 1 ) && Person( name != null ) ) then end\n")
+                .getData()).isEqualTo("and");
+        assertThat(deprecation(HEAD
+                + "rule R when not( Person( age > 1 ) && Person( age < 1 ) ) then end\n")
+                .getData()).isEqualTo("and");
+        assertThat(deprecation(HEAD
+                + "rule R when exists( Person( age > 1 ) || Person( age < 1 ) ) then end\n")
+                .getData()).isEqualTo("or");
+    }
+
+    @Test
+    void doesNotFlagConnectivesInsideAnEval() {
+        assertThat(diagnose(HEAD + "rule R when eval( 1 > 0 && 2 > 1 ) then end\n"))
+                .allSatisfy(d -> assertThat(d.getSource()).isNotEqualTo("drools-deprecated"));
+    }
+
+    /** The legacy parser warns on an annotation that follows an LHS {@code and}/{@code or}. */
+    @Test
+    void namesAnAnnotationOnAnLhsConnective() {
+        assertThat(deprecation(HEAD
+                + "rule R when Person( age > 1 ) or @A Person( age < 1 ) then end\n").getMessage())
+                .contains("annotation after 'or'");
+        assertThat(deprecation(HEAD
+                + "rule R when ( Person( age > 1 ) and @A Person( age < 1 ) ) then end\n").getMessage())
+                .contains("annotation after 'and'");
+        assertThat(deprecation(HEAD
+                + "rule R when ( or @A Person( age > 1 ) Person( age < 1 ) ) then end\n").getMessage())
+                .contains("annotation after 'or'");
+    }
+
+    /**
+     * DRL10 keeps annotations after {@code &&}/{@code ||} inside a constraint, and
+     * neither parser accepts one at the start of a constraint.
+     */
+    @Test
+    void doesNotFlagAnnotationsInsideAPattern() {
+        for (String fixture : new String[] {
+            "rule R when Person( age > 1 && @A(1) age < 5 ) then end\n",
+            "rule R when Person( @watch(age) age > 1 ) then end\n",
+        }) {
+            assertThat(diagnose(HEAD + fixture)).as(fixture)
+                    .allSatisfy(d -> assertThat(d.getSource()).isNotEqualTo("drools-deprecated"));
+        }
     }
 
     @Test
@@ -136,8 +178,8 @@ class DeprecatedConstructsTest {
                 .contains("half constraint");
         assertThat(deprecation(HEAD + "query q() Person( age > 1 ) && Person( name != null ) end\n")
                 .getMessage()).contains("connecting patterns with '&&'");
-        assertThat(deprecation(HEAD + "query q() Person( @watch(age) age > 1 ) end\n").getMessage())
-                .contains("annotations inside LHS patterns");
+        assertThat(deprecation(HEAD + "query q() Person( age > 1 ) or @A Person( age < 1 ) end\n")
+                .getMessage()).contains("annotation after 'or'");
         assertThat(deprecation(HEAD + "query q() Person( name queryOp \"x\" ) end\n").getMessage())
                 .contains("custom operator 'queryOp'");
     }
@@ -325,13 +367,28 @@ class DeprecatedConstructsTest {
                 .getData()).isEqualTo("##customOp");
     }
 
-    /** Constructs needing a human decision or a rulebase-wide pass offer no fix. */
     @Test
-    void noFixIsOfferedForAnnotationsOrAgendaGroup() {
-        assertThat(deprecation(HEAD + "rule R when Person( @watch(age) age > 1 ) then end\n")
-                .getData()).isNull();
-        assertThat(deprecation(HEAD
-                + "rule R\n  agenda-group \"g\"\n  when Person( age > 1 ) then end\n")
+    void negatedCustomOperatorFixAddsThePrefix(@TempDir Path dir) throws Exception {
+        declareCustomOperator(dir, "negatedOp");
+
+        assertThat(deprecation(HEAD + "rule R when Person( name not negatedOp \"x\" ) then end\n")
+                .getData()).isEqualTo("##negatedOp");
+        assertThat(diagnose(HEAD + "rule R when Person( name not ##negatedOp \"x\" ) then end\n"))
+                .isEmpty();
+    }
+
+    /** Since 6.x the engine aliases ruleflow-group to the agenda group of the same name. */
+    @Test
+    void agendaGroupFixRenamesTheAttribute() {
+        Diagnostic d = deprecation(HEAD + "rule R\n  agenda-group \"g\"\n  when Person( age > 1 ) then end\n");
+        assertThat(d.getData()).isEqualTo("ruleflow-group");
+        assertThat(d.getRange().getStart().getCharacter()).isEqualTo(2);
+        assertThat(d.getRange().getEnd().getCharacter()).isEqualTo(2 + "agenda-group".length());
+    }
+
+    @Test
+    void noFixIsOfferedForAnnotations() {
+        assertThat(deprecation(HEAD + "rule R when Person( age > 1 ) or @A Person( age < 1 ) then end\n")
                 .getData()).isNull();
     }
 
