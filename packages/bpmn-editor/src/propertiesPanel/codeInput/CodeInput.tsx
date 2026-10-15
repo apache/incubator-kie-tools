@@ -37,9 +37,9 @@ export function CodeInput({
   onLanguageChange,
 }: {
   label: string;
-  availableLanguages: string[];
+  availableLanguages: ScriptLanguage[];
   /** Currently selected language. Defaults to the first of `languages`. */
-  currentLanguage?: string;
+  currentLanguage?: ScriptLanguage;
   value: string | undefined;
   onChange: (e: React.FormEvent, newCode: string) => void;
   /** When provided, a dropdown to select the language is shown instead of a static label. */
