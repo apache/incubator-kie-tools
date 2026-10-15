@@ -24,7 +24,7 @@ const execSync = require("child_process").execSync;
 const newStreamName = process.argv[2];
 if (!newStreamName) {
   console.error("Usage 'node update_stream_name.js [new-name]'");
-  return 1;
+  process.exit(1);
 }
 const execOpts = { stdio: "inherit" };
 
@@ -53,4 +53,5 @@ try {
   console.error(error);
   console.error("");
   console.error(`[update-stream-name] Error updating Stream name version. There might be undesired unstaged changes.`);
+  process.exit(1);
 }

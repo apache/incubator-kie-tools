@@ -24,7 +24,7 @@ const execSync = require("child_process").execSync;
 const newMavenVersion = process.argv[3];
 if (!newMavenVersion) {
   console.error("Usage 'node update_kogito_version.js --maven {version} [--droolsGitRef {ref}]");
-  return 1;
+  process.exit(1);
 }
 
 const newDroolsGitRef = process.argv[5] ?? "drools--n/a";
@@ -76,4 +76,5 @@ try {
   console.error(error);
   console.error("");
   console.error(`[update-kogito-version] Error updating Kogito version. There might be undesired unstaged changes.`);
+  process.exit(1);
 }
