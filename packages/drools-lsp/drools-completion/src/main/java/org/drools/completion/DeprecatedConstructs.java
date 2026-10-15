@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.drools.drl.parser.antlr4.DRL10Lexer;
 import org.eclipse.lsp4j.Diagnostic;
@@ -125,10 +123,11 @@ final class DeprecatedConstructs {
     /**
      * Returns {@code syntaxDiagnostics} with every error that marks a deprecated
      * construct replaced by a diagnostic naming it, and the follow-on errors on
-     * those lines removed. Returns the input unchanged when recognition is off
+     * those lines removed. {@code lexed} is the full token stream the parse of
+     * {@code text} produced. Returns the input unchanged when recognition is off
      * or nothing matches.
      */
-    static List<Diagnostic> reclassify(String text, List<Diagnostic> syntaxDiagnostics) {
+    static List<Diagnostic> reclassify(String text, List<Token> lexed, List<Diagnostic> syntaxDiagnostics) {
         List<Diagnostic> syntax = syntaxDiagnostics == null ? List.of() : syntaxDiagnostics;
         if (text == null || text.isEmpty()) {
             return syntax;
@@ -137,7 +136,7 @@ final class DeprecatedConstructs {
         if (severity == null) {
             return syntax;
         }
-        List<Token> tokens = defaultChannelTokens(text);
+        List<Token> tokens = defaultChannel(lexed);
         if (tokens.isEmpty()) {
             return syntax;
         }
@@ -339,20 +338,12 @@ final class DeprecatedConstructs {
     }
 
     /** Tokens on the default channel; comments and whitespace are irrelevant here. */
-    private static List<Token> defaultChannelTokens(String text) {
+    private static List<Token> defaultChannel(List<Token> lexed) {
         List<Token> out = new ArrayList<>();
-        try {
-            DRL10Lexer lexer = new DRL10Lexer(CharStreams.fromString(text));
-            lexer.removeErrorListeners();
-            CommonTokenStream stream = new CommonTokenStream(lexer);
-            stream.fill();
-            for (Token token : stream.getTokens()) {
-                if (token.getChannel() == Token.DEFAULT_CHANNEL && token.getType() != Token.EOF) {
-                    out.add(token);
-                }
+        for (Token token : lexed) {
+            if (token.getChannel() == Token.DEFAULT_CHANNEL && token.getType() != Token.EOF) {
+                out.add(token);
             }
-        } catch (RuntimeException e) {
-            return List.of();
         }
         return out;
     }

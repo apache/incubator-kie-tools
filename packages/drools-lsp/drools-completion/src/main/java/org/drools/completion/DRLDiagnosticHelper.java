@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -86,7 +87,11 @@ public final class DRLDiagnosticHelper {
         parser.addErrorListener(listener);
 
         DRL10Parser.CompilationUnitContext compilationUnit = parser.compilationUnit();
-        return new Parsed(compilationUnit, DeprecatedConstructs.reclassify(text, diagnostics));
+        // The lint scans the whole document, including any tail the parser's
+        // error recovery left unread.
+        CommonTokenStream tokens = (CommonTokenStream) parser.getTokenStream();
+        tokens.fill();
+        return new Parsed(compilationUnit, DeprecatedConstructs.reclassify(text, tokens.getTokens(), diagnostics));
     }
 
     /**
