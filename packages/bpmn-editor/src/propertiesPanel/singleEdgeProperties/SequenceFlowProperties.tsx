@@ -98,7 +98,12 @@ export function SequenceFlowProperties({
                 };
                 e.conditionExpression.__$$text = newScript;
                 (e.conditionExpression as any)["@_xsi:type"] = "tFormalExpression";
-                (e.conditionExpression as any)["@_language"] ??= getScriptFormat(currentLanguage);
+                // Derive the language from the already-mutated element inside the setState callback
+                // so that a language change committed just before this text change is not overwritten
+                // by a stale render-time closure value (currentLanguage).
+                (e.conditionExpression as any)["@_language"] ??= getScriptFormat(
+                  getScriptLanguage((e.conditionExpression as any)["@_language"]) ?? ScriptLanguage.Java
+                );
               }
             });
           })
