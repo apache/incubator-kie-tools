@@ -111,6 +111,82 @@ class DeprecatedConstructsTest {
         assertThat(d.getMessage()).contains("'agenda-group'").contains("ruleflow-group");
     }
 
+    /** DRL10 accepts attributes as top-level statements, applying to every rule in the package. */
+    @Test
+    void namesAPackageLevelAgendaGroup() {
+        Diagnostic d = deprecation(HEAD
+                + "agenda-group \"g\"\nrule R when Person( age > 1 ) then end\n");
+        assertThat(d.getMessage()).contains("'agenda-group'");
+    }
+
+    /** A function body is lexed as code, where {@code agenda - group} is a subtraction. */
+    @Test
+    void doesNotFlagASubtractionInAFunctionBodyAsAgendaGroup() {
+        assertThat(diagnose(HEAD
+                + "function int f(int agenda, int group) { return agenda - group; }\n"))
+                .allSatisfy(d -> assertThat(d.getSource()).isNotEqualTo("drools-deprecated"));
+    }
+
+    /** A query's body is a left-hand side without a {@code when}. */
+    @Test
+    void namesConstructsInsideAQuery(@TempDir Path dir) throws Exception {
+        declareCustomOperator(dir, "queryOp");
+
+        assertThat(deprecation(HEAD + "query q() Person( age > 18 && < 65 ) end\n").getMessage())
+                .contains("half constraint");
+        assertThat(deprecation(HEAD + "query q() Person( age > 1 ) && Person( name != null ) end\n")
+                .getMessage()).contains("connecting patterns with '&&'");
+        assertThat(deprecation(HEAD + "query q() Person( @watch(age) age > 1 ) end\n").getMessage())
+                .contains("annotations inside LHS patterns");
+        assertThat(deprecation(HEAD + "query q() Person( name queryOp \"x\" ) end\n").getMessage())
+                .contains("custom operator 'queryOp'");
+    }
+
+    @Test
+    void doesNotFlagAQuerysParameters() {
+        assertThat(diagnose(HEAD
+                + "query q(String name, int age) Person( this.name == name, this.age == age ) end\n"))
+                .allSatisfy(d -> assertThat(d.getSource()).isNotEqualTo("drools-deprecated"));
+    }
+
+    /** {@code query} used as a field name must not restart the section mid-pattern. */
+    @Test
+    void aQueryKeywordInsideAPatternDoesNotResetTheSection() {
+        assertThat(deprecation(HEAD + "rule R when Person( query > 1 && < 5 ) then end\n").getMessage())
+                .contains("half constraint");
+    }
+
+    @Test
+    void doesNotFlagAgendaGroupInCommentsStringsOrPatterns() {
+        String[] fixtures = {
+            "/* agenda-group \"g\" */\nrule R when Person( age > 1 ) then end\n",
+            "// agenda-group \"g\"\nrule R when Person( age > 1 ) then end\n",
+            "rule R when Person( name == \"agenda-group \\\"g\\\"\" ) then end\n",
+            "rule R when Person( agenda-group \"g\" ) then end\n",
+            "query q() Person( agenda-group \"g\" ) end\n",
+        };
+        for (String fixture : fixtures) {
+            assertThat(diagnose(HEAD + fixture)).as(fixture)
+                    .allSatisfy(d -> assertThat(d.getSource()).isNotEqualTo("drools-deprecated"));
+        }
+    }
+
+    @Test
+    void reportsOneConstructPerLine() {
+        assertThat(deprecation(HEAD + "rule R when Person( age > 1 && < 5 && < 3 ) then end\n")
+                .getRange().getStart().getCharacter()).isEqualTo("rule R when Person( age > 1 ".length());
+    }
+
+    @Test
+    void reportsConstructsOnSeparateLinesSeparately() {
+        assertThat(diagnose(HEAD + "rule R when\n"
+                + "  Person( age > 1 && < 5 )\n"
+                + "  Person( age > 2 && < 6 )\n"
+                + "then end\n"))
+                .filteredOn(d -> "drools-deprecated".equals(d.getSource()))
+                .hasSize(2);
+    }
+
     @Test
     void namesACustomOperatorMissingItsPrefix(@TempDir Path dir) throws Exception {
         declareCustomOperator(dir, "customOp");

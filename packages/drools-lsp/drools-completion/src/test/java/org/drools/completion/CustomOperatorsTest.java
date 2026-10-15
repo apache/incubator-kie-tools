@@ -64,6 +64,21 @@ class CustomOperatorsTest {
     }
 
     @Test
+    void discoversIdsFromBothConfigurationFilesInOneJar(@TempDir Path dir) throws Exception {
+        Path jar = dir.resolve("dep.jar");
+        try (JarOutputStream out = new JarOutputStream(Files.newOutputStream(jar))) {
+            out.putNextEntry(new JarEntry("META-INF/kie.properties.conf"));
+            out.write("drools.evaluator.closeTo=com.example.CloseToDefinition\n".getBytes());
+            out.closeEntry();
+            out.putNextEntry(new JarEntry("META-INF/kie.default.properties.conf"));
+            out.write("drools.evaluator.farFrom=com.example.FarFromDefinition\n".getBytes());
+            out.closeEntry();
+        }
+
+        assertThat(CustomOperators.discover(Set.of(jar))).containsExactly("closeTo", "farFrom");
+    }
+
+    @Test
     void entriesWithoutAConfigurationYieldNothing(@TempDir Path dir) throws Exception {
         Path plainDir = Files.createDirectories(dir.resolve("plain"));
         Path notAJar = Files.writeString(dir.resolve("notes.txt"), "drools.evaluator.x=y\n");

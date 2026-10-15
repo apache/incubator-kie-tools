@@ -84,42 +84,41 @@ public final class CustomOperators {
             return ids;
         }
         for (Path entry : classpathEntries) {
-            for (String confFile : CONF_FILES) {
-                try {
-                    Properties properties = load(entry, confFile);
-                    if (properties != null) {
-                        collectIds(properties, ids);
-                    }
-                } catch (IOException | RuntimeException e) {
-                    logger.log(Level.FINE, "Skipping " + confFile + " in " + entry, e);
+            try {
+                if (Files.isDirectory(entry)) {
+                    collectFromDirectory(entry, ids);
+                } else if (Files.isRegularFile(entry) && entry.toString().endsWith(".jar")) {
+                    collectFromJar(entry, ids);
                 }
+            } catch (IOException | RuntimeException e) {
+                logger.log(Level.FINE, "Skipping operator configuration in " + entry, e);
             }
         }
         return ids;
     }
 
-    private static Properties load(Path entry, String confFile) throws IOException {
-        if (Files.isDirectory(entry)) {
-            Path file = entry.resolve(confFile);
-            if (!Files.isRegularFile(file)) {
-                return null;
-            }
-            try (InputStream in = Files.newInputStream(file)) {
-                return read(in);
+    private static void collectFromDirectory(Path dir, Set<String> into) throws IOException {
+        for (String confFile : CONF_FILES) {
+            Path file = dir.resolve(confFile);
+            if (Files.isRegularFile(file)) {
+                try (InputStream in = Files.newInputStream(file)) {
+                    collectIds(read(in), into);
+                }
             }
         }
-        if (Files.isRegularFile(entry) && entry.toString().endsWith(".jar")) {
-            try (ZipFile jar = new ZipFile(entry.toFile())) {
+    }
+
+    private static void collectFromJar(Path jarPath, Set<String> into) throws IOException {
+        try (ZipFile jar = new ZipFile(jarPath.toFile())) {
+            for (String confFile : CONF_FILES) {
                 ZipEntry zipEntry = jar.getEntry(confFile);
-                if (zipEntry == null) {
-                    return null;
-                }
-                try (InputStream in = jar.getInputStream(zipEntry)) {
-                    return read(in);
+                if (zipEntry != null) {
+                    try (InputStream in = jar.getInputStream(zipEntry)) {
+                        collectIds(read(in), into);
+                    }
                 }
             }
         }
-        return null;
     }
 
     private static Properties read(InputStream in) throws IOException {

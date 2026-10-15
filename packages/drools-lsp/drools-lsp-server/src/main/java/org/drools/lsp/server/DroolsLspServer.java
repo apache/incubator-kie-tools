@@ -31,6 +31,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +89,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
     private volatile Set<Path> classpathEntries = Set.of();
     private volatile Set<Path> buildOutputDirs = Set.of();
     private volatile List<Path> mavenRoots = List.of();
+    private volatile Set<String> jarCustomOperators = Set.of();
     private volatile Set<String> registeredCustomOperators = Set.of();
     private volatile ClassIndex jarClassIndex = ClassIndex.empty();
     private volatile ClassMemberIndex classMemberIndex = ClassMemberIndex.empty();
@@ -255,11 +257,14 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
      * dependency list from {@code mvn dependency:build-classpath} does not carry
      * the project's own {@code target/classes}, which is where its
      * {@code META-INF/kie.properties.conf} lives, so both sets are scanned.
+     * Dependency jars change only when the classpath resolves, so their ids are
+     * read there and only the class directories are rescanned here.
      */
     private void registerCustomOperators() {
-        Set<Path> scanned = new LinkedHashSet<>(classpathEntries);
+        Set<Path> scanned = filterDirectories(classpathEntries);
         scanned.addAll(buildOutputDirs);
-        Set<String> operators = CustomOperators.register(scanned);
+        Set<String> operators = new TreeSet<>(jarCustomOperators);
+        operators.addAll(CustomOperators.register(scanned));
         if (!operators.equals(registeredCustomOperators)) {
             registeredCustomOperators = operators;
             logger.info(() -> "Custom DRL operators: " + operators);
@@ -272,6 +277,7 @@ public class DroolsLspServer implements LanguageServer, LanguageClientAware {
         this.buildOutputDirs = filterDirectories(entries);
         Set<Path> jars = filterJars(entries);
         this.jarClassIndex = jars.isEmpty() ? ClassIndex.empty() : ClassIndex.build(jars);
+        this.jarCustomOperators = CustomOperators.register(jars);
         // Member lookup reflects over the full classpath (jars + class dirs)
         // lazily — building the index itself loads no classes.
         swapMemberIndex(ClassMemberIndex.of(entries));

@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -90,6 +92,29 @@ class DroolsLspServerTest {
         server.rebuildClassIndex();
 
         assertThat(CustomOperators.isRegistered("nearlyEquals")).isTrue();
+    }
+
+    @Test
+    void dependencyJarsAreScannedForOperatorsOnlyWhenTheClasspathResolves() throws IOException {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument("");
+        Path jar = tempDir.resolve("dep.jar");
+        writeOperatorJar(jar, "jarDeclaredBefore");
+        server.setClasspathEntriesForTest(Set.of(jar));
+        server.rebuildClassIndex();
+        writeOperatorJar(jar, "jarDeclaredAfter");
+
+        server.rebuildClassIndex();
+
+        assertThat(CustomOperators.isRegistered("jarDeclaredBefore")).isTrue();
+        assertThat(CustomOperators.isRegistered("jarDeclaredAfter")).isFalse();
+    }
+
+    private static void writeOperatorJar(Path jar, String id) throws IOException {
+        try (JarOutputStream out = new JarOutputStream(Files.newOutputStream(jar))) {
+            out.putNextEntry(new JarEntry("META-INF/kie.properties.conf"));
+            out.write(("drools.evaluator." + id + "=com.example.Definition\n").getBytes());
+            out.closeEntry();
+        }
     }
 
     /**

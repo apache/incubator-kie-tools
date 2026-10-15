@@ -123,22 +123,25 @@ final class DeprecatedConstructs {
 
         List<Diagnostic> found = new ArrayList<>();
         Set<Integer> claimedLines = new HashSet<>();
-        boolean inWhen = false;
+        boolean inLhs = false;
         int parenDepth = 0;
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
             int type = token.getType();
             if (type == DRL10Lexer.DRL_WHEN) {
-                inWhen = true;
+                inLhs = true;
                 parenDepth = 0;
+            } else if (type == DRL10Lexer.DRL_QUERY && !inLhs && parenDepth == 0) {
+                // A query's body is a left-hand side with no `when`; outside
+                // that position `query` is a field name, not a declaration.
+                inLhs = true;
             } else if (type == DRL10Lexer.DRL_THEN || type == DRL10Lexer.DRL_END) {
-                inWhen = false;
+                inLhs = false;
                 parenDepth = 0;
             }
 
-            Finding finding = describe(tokens, i, inWhen, parenDepth, text);
-            if (finding != null) {
-                claimedLines.add(token.getLine() - 1);
+            Finding finding = describe(tokens, i, inLhs, parenDepth, text);
+            if (finding != null && claimedLines.add(token.getLine() - 1)) {
                 Diagnostic d = new Diagnostic();
                 d.setSeverity(severity);
                 d.setSource(SOURCE);
@@ -176,14 +179,14 @@ final class DeprecatedConstructs {
      * before a relational operator is a half constraint, while the same token
      * after a closing paren joins two patterns.
      */
-    private static Finding describe(List<Token> tokens, int index, boolean inWhen,
+    private static Finding describe(List<Token> tokens, int index, boolean inLhs,
                                     int parenDepth, String text) {
         Token token = tokens.get(index);
         int type = token.getType();
         Token next = index + 1 < tokens.size() ? tokens.get(index + 1) : null;
         Token previous = index > 0 ? tokens.get(index - 1) : null;
         boolean connective = type == DRL10Lexer.AND || type == DRL10Lexer.OR;
-        boolean insideConstraint = inWhen && parenDepth >= 1;
+        boolean insideConstraint = inLhs && parenDepth >= 1;
 
         // Half constraint: `age > 18 && < 65`, inside a pattern's constraints.
         // The fix repeats the operand the preceding comparison used, so
@@ -201,7 +204,7 @@ final class DeprecatedConstructs {
         // pattern-level connective sits at depth 0, while the same tokens in
         // `Person( (age > 1) && (age < 5) )` are still inside the constraint
         // list and must not be flagged.
-        if (inWhen && parenDepth == 0 && connective
+        if (inLhs && parenDepth == 0 && connective
                 && previous != null && previous.getType() == DRL10Lexer.RPAREN) {
             String replacement = type == DRL10Lexer.AND ? "and" : "or";
             return new Finding("Deprecated: connecting patterns with '" + token.getText() + "'"
@@ -215,15 +218,17 @@ final class DeprecatedConstructs {
                     + "; annotations elsewhere remain supported.", null);
         }
 
-        // `agenda-group "x"` in a rule's header — lexed as the identifier
-        // `agenda`, `-`, `group` because DRL10 has no such keyword. No fix: the
-        // switch to ruleflow-group changes activation semantics and is
-        // all-or-nothing across a rulebase, so it belongs in one deliberate
-        // pass rather than per-occurrence clicks.
-        if (!inWhen && type == DRL10Lexer.IDENTIFIER && "agenda".equals(token.getText())
+        // `agenda-group "x"` in a rule's header or at package level — lexed as
+        // the identifier `agenda`, `-`, `group` because DRL10 has no such
+        // keyword. The string value tells it apart from `agenda - group` in a
+        // function body. No fix: the switch to ruleflow-group changes
+        // activation semantics and is all-or-nothing across a rulebase, so it
+        // belongs in one deliberate pass rather than per-occurrence clicks.
+        if (!inLhs && type == DRL10Lexer.IDENTIFIER && "agenda".equals(token.getText())
                 && next != null && next.getType() == DRL10Lexer.SUB
-                && index + 2 < tokens.size()
-                && "group".equals(tokens.get(index + 2).getText())) {
+                && index + 3 < tokens.size()
+                && "group".equals(tokens.get(index + 2).getText())
+                && isStringLiteral(tokens.get(index + 3))) {
             return new Finding("Deprecated: 'agenda-group'" + REMOVAL
                     + " — migrate to 'ruleflow-group' across the rulebase.", null);
         }
@@ -299,6 +304,11 @@ final class DeprecatedConstructs {
                 || type == DRL10Lexer.STRING_LITERAL
                 || type == DRL10Lexer.DECIMAL_LITERAL
                 || type == DRL10Lexer.BOOL_LITERAL;
+    }
+
+    private static boolean isStringLiteral(Token token) {
+        int type = token.getType();
+        return type == DRL10Lexer.DRL_STRING_LITERAL || type == DRL10Lexer.STRING_LITERAL;
     }
 
     /** Tokens on the default channel; comments and whitespace are irrelevant here. */
