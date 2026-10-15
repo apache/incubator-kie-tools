@@ -21,7 +21,7 @@ import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { enableMapSet } from "immer";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { ExternalModelsIndex } from "../DmnEditor";

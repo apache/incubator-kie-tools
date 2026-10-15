@@ -68,7 +68,7 @@ import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-righ
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { builtInFeelTypes } from "../dataTypes/BuiltInFeelTypes";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";

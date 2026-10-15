@@ -21,7 +21,7 @@ import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as Elk from "elkjs/lib/elk.bundled.js";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
