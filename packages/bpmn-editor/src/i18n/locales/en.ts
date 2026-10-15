@@ -133,6 +133,7 @@ export const en: BpmnEditorI18n = {
     calledElement: "Called element",
     codePlaceholder: "Enter code...",
     conditionalExpression: "Conditional Expression",
+    language: "Language",
     defaultRoute: "Default route",
     none: "None",
     noneYet: "None yet",
