@@ -125,6 +125,105 @@ test.describe("Add Custom Tasks", () => {
     });
   });
 
+  test.describe("Custom Task Data Mapping inputs", () => {
+    test.describe("Built-in style Custom Task with reserved inputs (e.g. Rest, Milestone)", () => {
+      test.beforeEach(async ({ customTasks, nodes, taskPropertiesPanel }) => {
+        await customTasks.dragCustomTask({
+          customTaskId: "reserved-inputs-task",
+          targetPosition: { x: 300, y: 300 },
+          thenRenameTo: "Reserved Task",
+        });
+        await expect(nodes.get({ name: "Reserved Task" })).toBeAttached();
+        await nodes.select({ name: "Reserved Task" });
+        await taskPropertiesPanel.open();
+      });
+
+      test("should hide reserved inputs from the Data Mapping modal and preserve them in the BPMN model", async ({
+        taskPropertiesPanel,
+        page,
+        jsonModel,
+      }) => {
+        const getModelInputNames = () =>
+          jsonModel.getTasks().then((t) => t[0].ioSpecification?.dataInput?.map((i) => i["@_name"]));
+
+        // Initial task state contains reserved inputs ("Url", "HEADER_Accept") and regular input ("Message")
+        expect(await getModelInputNames()).toEqual(["Url", "HEADER_Accept", "Message"]);
+
+        await taskPropertiesPanel.openDataMappingModal();
+
+        const modal = page.getByRole("dialog");
+        const visibleNameInputs = modal.getByLabel("name");
+
+        // Only the unreserved input ("Message") is shown in the modal
+        await expect(visibleNameInputs).toHaveCount(1);
+        await expect(visibleNameInputs.first()).toHaveValue("Message");
+
+        // Explicitly verify reserved inputs are not listed in the modal
+        await expect(modal.getByDisplayValue("Url")).toHaveCount(0);
+        await expect(modal.getByDisplayValue("HEADER_Accept")).toHaveCount(0);
+        await expect(page.getByText("This input should be entered as a property for the task.")).toHaveCount(0);
+
+        // Saving and closing the modal must keep reserved inputs untouched in the BPMN model
+        await taskPropertiesPanel.closeDataMappingModal();
+        expect((await getModelInputNames())?.sort()).toEqual(["HEADER_Accept", "Message", "Url"]);
+      });
+
+      test("should not save user-typed inputs whose names match reserved names/patterns", async ({
+        taskPropertiesPanel,
+        jsonModel,
+      }) => {
+        await taskPropertiesPanel.openDataMappingModal();
+        await taskPropertiesPanel.addDataInputInModal({ name: "HEADER_Other" });
+        await taskPropertiesPanel.closeDataMappingModal();
+
+        const names = (await jsonModel.getTasks())[0].ioSpecification?.dataInput?.map((i) => i["@_name"]);
+        expect(names?.filter((n) => n === "HEADER_Other")).toEqual([]);
+        expect(names).toEqual(expect.arrayContaining(["Url", "HEADER_Accept", "Message"]));
+      });
+    });
+
+    test.describe("WID-style Custom Task with unreserved inputs", () => {
+      test("should display all parameters in the Data Mapping modal when no inputs are reserved", async ({
+        customTasks,
+        nodes,
+        taskPropertiesPanel,
+        page,
+        jsonModel,
+      }) => {
+        await customTasks.dragCustomTask({
+          customTaskId: "wid-like-task",
+          targetPosition: { x: 300, y: 300 },
+          thenRenameTo: "WID Task",
+        });
+        await expect(nodes.get({ name: "WID Task" })).toBeAttached();
+        await nodes.select({ name: "WID Task" });
+        await taskPropertiesPanel.open();
+
+        const getModelInputNames = () =>
+          jsonModel.getTasks().then((t) => t[0].ioSpecification?.dataInput?.map((i) => i["@_name"]));
+
+        // Initial task model has all WID parameters
+        expect(await getModelInputNames()).toEqual(["Param1", "Param2"]);
+
+        await taskPropertiesPanel.openDataMappingModal();
+
+        const modal = page.getByRole("dialog");
+        const visibleNameInputs = modal.getByLabel("name");
+
+        // All parameters are visible and editable in the modal
+        await expect(visibleNameInputs).toHaveCount(2);
+        await expect(modal.getByDisplayValue("Param1")).toBeVisible();
+        await expect(modal.getByDisplayValue("Param2")).toBeVisible();
+
+        // Adding an extra input in the modal should also succeed
+        await taskPropertiesPanel.addDataInputInModal({ name: "Param3" });
+        await taskPropertiesPanel.closeDataMappingModal();
+
+        expect((await getModelInputNames())?.sort()).toEqual(["Param1", "Param2", "Param3"]);
+      });
+    });
+  });
+
   test("should rename custom task", async ({ customTasks, nodes }) => {
     await customTasks.dragCustomTask({
       customTaskId: "rest-api-call-task",

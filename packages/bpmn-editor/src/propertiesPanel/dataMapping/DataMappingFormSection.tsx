@@ -111,6 +111,29 @@ export function DataMappingFormSection({
   );
 }
 
+function isDataInputReserved(element: WithDataMapping, dataInputName: string | undefined, customTasks: CustomTask[]) {
+  return (
+    (DATA_INPUT_RESERVED_NAMES.get(element.__$$element) ?? new Set()).has(dataInputName!) ||
+    (element.__$$element === "task" &&
+      !!customTasks.find((c) => {
+        if (!c.matches(element)) {
+          return false;
+        }
+        return !!c.dataInputReservedNames.find((n) => {
+          if (n.startsWith("*")) {
+            const suffix = n.slice(1);
+            return dataInputName?.endsWith(suffix);
+          } else if (n.endsWith("*")) {
+            const prefix = n.slice(0, -1);
+            return dataInputName?.startsWith(prefix);
+          } else {
+            return n === dataInputName;
+          }
+        });
+      }))
+  );
+}
+
 function flaggedDataInputs<T extends { name?: string; "@_name"?: string }>(
   element: WithDataMapping,
   array: undefined | T[],
@@ -124,25 +147,7 @@ function flaggedDataInputs<T extends { name?: string; "@_name"?: string }>(
         element.loopCharacteristics.inputDataItem?.["@_name"] === dataInputName) ||
       dataInputName === MULTI_INSTANCE_TASK_IO_SPECIFICATION_DATA_INPUTS_CONSTANTS.IN_COLLECTION;
 
-    const isReserved =
-      (DATA_INPUT_RESERVED_NAMES.get(element.__$$element) ?? new Set()).has(dataInputName!) ||
-      (element.__$$element === "task" &&
-        !!customTasks.find((c) => {
-          if (!c.matches(element)) {
-            return false;
-          }
-          return !!c.dataInputReservedNames.find((n) => {
-            if (n.startsWith("*")) {
-              const suffix = n.slice(1);
-              return dataInputName?.endsWith(suffix);
-            } else if (n.endsWith("*")) {
-              const prefix = n.slice(0, -1);
-              return dataInputName?.startsWith(prefix);
-            } else {
-              return n === dataInputName;
-            }
-          });
-        }));
+    const isReserved = isDataInputReserved(element, dataInputName, customTasks);
 
     return {
       dataMapping: dataInput,
@@ -663,6 +668,7 @@ export function useDataMapping(
   setShowDataMappingModal: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
+  const { customTasks } = useCustomTasks();
 
   const [inputDataMapping, setInputDataMapping] = useState<DataMapping[]>([]);
   const [outputDataMapping, setOutputDataMapping] = useState<DataMapping[]>([]);
@@ -787,13 +793,12 @@ export function useDataMapping(
     }
 
     const { inputDataMapping, outputDataMapping } = getDataMapping(element);
-    const reservedNamesForElement =
-      DATA_INPUT_RESERVED_NAMES.get(element.__$$element as Parameters<typeof DATA_INPUT_RESERVED_NAMES.get>[0]) ??
-      new Set<string>();
 
-    setInputDataMapping(inputDataMapping.filter((d) => !reservedNamesForElement.has(d.name)));
+    setInputDataMapping(
+      inputDataMapping.filter((d) => !isDataInputReserved(element as any, d.name, customTasks ?? []))
+    );
     setOutputDataMapping(outputDataMapping);
-  }, [element]);
+  }, [element, customTasks]);
 
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -807,14 +812,15 @@ export function useDataMapping(
         // Re-read the reserved entries that were stripped from the editable state
         // so they are preserved through the save cycle.
         const { inputDataMapping: modelInputDataMapping } = getDataMapping(element);
-        const reservedNamesForElement =
-          DATA_INPUT_RESERVED_NAMES.get(element.__$$element as Parameters<typeof DATA_INPUT_RESERVED_NAMES.get>[0]) ??
-          new Set<string>();
-        const reservedEntries = modelInputDataMapping.filter((d) => reservedNamesForElement.has(d.name));
+        const reservedEntries = modelInputDataMapping.filter((d) =>
+          isDataInputReserved(element as any, d.name, customTasks ?? [])
+        );
 
         // Exclude user-typed entries whose names match reserved names — they would
         // collide with internal task inputs and must not be saved as user data mappings.
-        const userEntries = inputDataMapping.filter((d) => !reservedNamesForElement.has(d.name));
+        const userEntries = inputDataMapping.filter(
+          (d) => !isDataInputReserved(element as any, d.name, customTasks ?? [])
+        );
 
         setDataMappingForElement({
           definitions: s.bpmn.model.definitions,
@@ -827,7 +833,7 @@ export function useDataMapping(
 
       setShowDataMappingModal(false);
     },
-    [bpmnEditorStoreApi, element, inputDataMapping, outputDataMapping, setShowDataMappingModal]
+    [bpmnEditorStoreApi, element, inputDataMapping, outputDataMapping, setShowDataMappingModal, customTasks]
   );
 
   return {
