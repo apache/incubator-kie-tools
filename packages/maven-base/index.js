@@ -133,7 +133,11 @@ module.exports = {
     fs.mkdirSync(resolvedTmpM2Dir, { recursive: true });
 
     // head
-    cp.execSync(`cp -nal ${DEFAULT_LOCAL_REPO}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
+    try {
+      cp.execSync(`cp -nal ${DEFAULT_LOCAL_REPO}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
+    } catch (e) {
+      cp.execSync(`cp -na ${DEFAULT_LOCAL_REPO}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
+    }
 
     const cwd = path.resolve(".", relativePackagePath);
     const tail = deepResolveMavenLocalRepoTail(cwd, "dependencies");
@@ -141,7 +145,11 @@ module.exports = {
     // tail
     for (const t of tail) {
       if (fs.existsSync(path.resolve(t))) {
-        cp.execSync(`cp -al ${path.resolve(t)}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
+        try {
+          cp.execSync(`cp -al ${path.resolve(t)}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
+        } catch (e) {
+          cp.execSync(`cp -a ${path.resolve(t)}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
+        }
       }
     }
   },
