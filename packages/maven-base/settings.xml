@@ -79,6 +79,17 @@
             <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>
+        <repository>
+          <id>apache-staging</id>
+          <name>Apache Staging Repository</name>
+          <url>https://repository.apache.org/content/groups/staging/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
@@ -93,6 +104,17 @@
           <snapshots>
             <enabled>false</enabled>
             <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>apache-staging</id>
+          <name>Apache Staging Repository</name>
+          <url>https://repository.apache.org/content/groups/staging/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
           </snapshots>
         </pluginRepository>
       </pluginRepositories>
