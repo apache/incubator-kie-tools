@@ -43,6 +43,9 @@ def signArtifact(String artifactFileName) {
 def publishArtifacts(String artifactsDir, String releaseRepository, String releaseVersion, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'ASF_USERNAME', passwordVariable: 'ASF_PASSWORD')]) {
         sh """#!/bin/bash -el
+        if ! svn ls --non-interactive ${releaseRepository}/${releaseVersion} > /dev/null 2>&1; then
+            svn mkdir --parents --non-interactive --no-auth-cache --username \${ASF_USERNAME} --password "\${ASF_PASSWORD}" -m "Create Apache KIE ${releaseVersion} staging directory" ${releaseRepository}/${releaseVersion}
+        fi
         svn co --depth=empty ${releaseRepository}/${releaseVersion} svn-kie
         cp ${artifactsDir}/* svn-kie
         cd svn-kie
