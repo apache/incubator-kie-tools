@@ -53,6 +53,7 @@ jobs:
 
       - name: "Checkout @ Simulated squashed-merge if PR"
         id: checkout_pr
+        if: github.event_name == 'pull_request'
         uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ github.base_ref }}
@@ -85,8 +86,8 @@ jobs:
             --outputPath='/tmp/partitions.json' \
             --tmpPartitionFilterPath='/tmp/partition-filter.txt' \
             --forceFull='${{ !github.event.pull_request }}' \
-            --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
-            --headSha='${{steps.checkout_pr.outputs.head_sha }}' \
+            --baseSha='${{ steps.checkout_pr.outputs.base_sha || github.event.before }}' \
+            --headSha='${{ steps.checkout_pr.outputs.head_sha || github.sha }}' \
             --graphJsonPath='./repo/graph.json'
 
           npm -g uninstall bun turbo
