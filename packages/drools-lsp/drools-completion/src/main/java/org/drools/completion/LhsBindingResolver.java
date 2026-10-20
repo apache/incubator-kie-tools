@@ -178,7 +178,7 @@ public final class LhsBindingResolver {
      * even the bindings before it are lost. Quote characters themselves survive,
      * so a masked literal is still a literal.
      */
-    static String maskCommentsAndStrings(String text) {
+    public static String maskCommentsAndStrings(String text) {
         char[] chars = text.toCharArray();
         int i = 0;
         while (i < chars.length) {

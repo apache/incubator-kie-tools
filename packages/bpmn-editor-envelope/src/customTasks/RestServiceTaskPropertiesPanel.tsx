@@ -25,6 +25,7 @@ import { useKogitoEditorEnvelopeContext, ChannelType, KogitoEditorEnvelopeApi } 
 import { useBpmnEditorChannelType } from "../BpmnMultiplyingArchitectureEditorFactory";
 import { PropertiesPanelHeaderFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/singleNodeProperties/_PropertiesPanelHeaderFormSection";
 import { NameDocumentationAndId } from "@kie-tools/bpmn-editor/dist/propertiesPanel/nameDocumentationAndId/NameDocumentationAndId";
+import { AsyncCheckbox } from "@kie-tools/bpmn-editor/dist/propertiesPanel/asyncCheckbox/AsyncCheckbox";
 import { Select, SelectList, SelectOption } from "@patternfly/react-core/dist/js/components/Select";
 import { MenuToggle, MenuToggleElement } from "@patternfly/react-core/dist/js/components/MenuToggle";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
@@ -43,6 +44,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
@@ -608,6 +610,13 @@ export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponen
         shouldStartExpanded={true}
       >
         <NameDocumentationAndId element={task} />
+
+        <Divider inset={{ default: "insetXs" }} />
+
+        <AsyncCheckbox element={task} />
+
+        <Divider inset={{ default: "insetXs" }} />
+
         <FormSection>
           <FormGroup label={i18n.restService.url} isRequired fieldId="rest-url">
             <InputGroup>

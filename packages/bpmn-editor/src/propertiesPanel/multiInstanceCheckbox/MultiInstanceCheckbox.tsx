@@ -32,7 +32,6 @@ import "./MultiInstanceCheckbox.css";
 import {
   updateDataMappingWithVariableRef,
   setDataMappingForElement,
-  setOutputDataMapping,
   getDataMapping,
 } from "../../mutations/_dataMapping";
 import { useBpmnEditorI18n } from "../../i18n";

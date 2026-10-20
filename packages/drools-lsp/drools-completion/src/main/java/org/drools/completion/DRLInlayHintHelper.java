@@ -176,7 +176,7 @@ public final class DRLInlayHintHelper {
      * {@link Position} (zero-based line + UTF-16 character offset on that line).
      * DRL files are ASCII in practice, so character offset matches code units.
      */
-    static Position offsetToPosition(String text, int offset) {
+    public static Position offsetToPosition(String text, int offset) {
         int safe = Math.max(0, Math.min(offset, text.length()));
         int line = 0;
         int lastNewline = -1;

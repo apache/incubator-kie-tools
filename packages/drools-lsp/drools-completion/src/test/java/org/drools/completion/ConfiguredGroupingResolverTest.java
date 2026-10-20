@@ -569,6 +569,21 @@ class ConfiguredGroupingResolverTest {
     }
 
     @Test
+    void workspaceDrlFilesReflectsTheFilesTheClientSupplied(@TempDir Path ws) throws Exception {
+        Path a = writeDrl(ws, "rules/A.drl", "com.example");
+        Path b = writeDrl(ws, "rules/B.drl", "com.example");
+        Path other = ws.resolve("rules/Other.java");
+        Files.createDirectories(other.getParent());
+        Files.writeString(other, "class Other {}");
+
+        ConfiguredGroupingResolver resolver = new ConfiguredGroupingResolver();
+        resolver.setWorkspaceFiles(List.of(a, b, other.toAbsolutePath().normalize()));
+        resolver.setWorkspaceRoot(ws);
+
+        assertThat(resolver.workspaceDrlFiles()).containsExactlyInAnyOrder(a, b);
+    }
+
+    @Test
     void nullWorkspaceRootIsTolerated() {
         ConfiguredGroupingResolver resolver = new ConfiguredGroupingResolver();
         resolver.setWorkspaceRoot(null);

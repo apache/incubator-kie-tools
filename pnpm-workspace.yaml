@@ -28,9 +28,12 @@ overrides:
   "minimatch@^10": "10.2.1"
   "minimatch@^5": "5.1.9"
   "minimatch@^4": "5.1.9"
-  # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203, CVE-2026-12151, CVE-2026-9679, CVE-2026-11525, CVE-2026-6733, CVE-2026-16729, CVE-2026-15157, CVE-2026-16728: Fix security vulnerability in undici
-  # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version
-  "undici": "^6.28.0"
+  # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203, CVE-2026-12151, CVE-2026-9679, CVE-2026-11525, CVE-2026-6733, CVE-2026-16729, CVE-2026-15157, CVE-2026-16728,
+  # CVE-2026-19534 (DoS via unrequested WebSocket subprotocol), CVE-2026-85024 (DoS via permessage-deflate decompression),
+  # CVE-2026-18540 (response splitting via retry interceptor): Fix security vulnerabilities in undici.
+  # Upgraded from ^6.28.0 to ^6.29.0 (first clean same-major release; 6.28.1+ all clean on deps.dev).
+  # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version.
+  "undici": "^6.29.0"
   # CVE-2026-41907: Fix security vulnerability in uuid
   # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
   "uuid": "^11.1.1"
@@ -41,3 +44,7 @@ overrides:
   # All other dependents (axios, superagent, @vscode/vsce, jsdom, @types/node-fetch) use ^4.x
   # which naturally resolves to 4.0.6, so only @cypress/request needs a targeted override.
   "@cypress/request>form-data": "4.0.6"
+  # CVE-2026-90711 (CVSS 9.1): IP spoofing via IPv4-mapped IPv6 trust subnet in proxy-addr.
+  # express@4.x pins ~2.0.7 and express@5.x pins ^2.0.7 — both ranges allow 2.0.8.
+  # Overriding transitive dependency until express ships proxy-addr >= 2.0.8 natively.
+  "proxy-addr": "2.0.8"

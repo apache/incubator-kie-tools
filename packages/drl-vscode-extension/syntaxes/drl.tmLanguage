@@ -12,9 +12,9 @@
 	<array>
 		<dict>
 			<key>comment</key>
-			<string>Mathmatical operators</string>
+			<string>Comparison and logical operators</string>
 			<key>match</key>
-			<string>[&lt;|&gt;|==|&lt;=|&gt;=|.|!=]</string>
+			<string>(==|!=|&lt;=|&gt;=|&lt;|&gt;|&amp;&amp;|\|\|)</string>
 			<key>name</key>
 			<string>keyword.operator.source.drools</string>
 		</dict>
@@ -39,6 +39,14 @@
 			<string>Drools soft keywords</string>
 			<key>match</key>
 			<string>\b(lock-on-active|date-effective|date-expires|no-loop|auto-focus|activation-group|agenda-group|ruleflow-group|entry-point|duration|package|import|dialect|salience|enabled|attributes|rule|extends|when|then|template|query|declare|function|global|eval|not|in|or|and|exists|forall|accumulate|collect|from|end|over|calendars|init|action|reverse|result|new)\b</string>
+			<key>name</key>
+			<string>keyword.control.source.drools</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Word operators, built in and custom (##supersetOf), colored like the other DRL keywords</string>
+			<key>match</key>
+			<string>##[A-Za-z_][A-Za-z0-9_]*|\b(matches|contains|excludes|memberOf|soundslike|str|after|before|coincides|during|finishes|finishedby|includes|meets|metby|overlaps|overlappedby|starts|startedby)\b</string>
 			<key>name</key>
 			<string>keyword.control.source.drools</string>
 		</dict>
