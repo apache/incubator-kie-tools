@@ -53,7 +53,7 @@ pipeline {
         )
         string(
             name: 'GITHUB_RELEASE_TAG',
-            description: 'GitHub release tag (for uploading assets to the GitHub Release)',
+            description: 'GitHub release tag (required: binary assets are uploaded to this existing GitHub Release)',
             defaultValue: ''
         )
     }
@@ -90,6 +90,24 @@ pipeline {
     }
 
     stages {
+        stage('Validate parameters') {
+            steps {
+                script {
+                    if (params.RELEASE_VERSION == '' || params.RELEASE_VERSION == '0.0.0') {
+                        error("RELEASE_VERSION must be set to the voted release version")
+                    }
+                    if (params.BASE_REF == '' || params.BASE_REF == '0.0.0-rc1') {
+                        error("BASE_REF must be set to the voted RC tag")
+                    }
+                    // release-all.sh --publish uploads binary assets to the GitHub Release and fails without it,
+                    // after other registries would already have been published. Fail fast instead.
+                    if (params.GITHUB_RELEASE_TAG == '') {
+                        error("GITHUB_RELEASE_TAG must be set to an existing GitHub Release tag")
+                    }
+                }
+            }
+        }
+
         stage('Load local shared scripts') {
             steps {
                 script {
@@ -134,7 +152,7 @@ pipeline {
                     script {
                         def packageVersion = sh(
                             returnStdout: true,
-                            script: "node -p \"require('./package.json').version\""
+                            script: "#!/bin/bash -el \n node -p \"require('./package.json').version\""
                         ).trim()
                         
                         if (packageVersion != params.RELEASE_VERSION) {
@@ -189,24 +207,19 @@ pipeline {
                             string(credentialsId: "${pipelineVars.dockerHubTokenCredentialsId}",            variable: 'HELM_PASSWORD'),
                             string(credentialsId: "${pipelineVars.kieToolsBotGithubTokenCredentialsId}",    variable: 'GITHUB_TOKEN')
                         ]) {
-                            script {
-                                def uploadUrlFlag = ''
-                                if (params.GITHUB_RELEASE_TAG != '') {
-                                    def releaseJson = sh(
-                                        returnStdout: true,
-                                        script: """
-                                            curl -sSf -H "Authorization: token \${GITHUB_TOKEN}" \
-                                                "https://api.github.com/repos/${pipelineVars.githubRepositorySlug}/releases/tags/${params.GITHUB_RELEASE_TAG}"
-                                        """
-                                    ).trim()
-                                    def releaseInfo = readJSON text: releaseJson
-                                    uploadUrlFlag = "--upload-url '${releaseInfo.upload_url.replaceAll('\\{.*\\}', '')}'"
-                                }
-
-                                sh """#!/bin/bash -el
-                                ./scripts/release/release-all.sh ${params.RELEASE_VERSION} --publish ${uploadUrlFlag}
+                            def releaseJson = sh(
+                                returnStdout: true,
+                                script: """#!/bin/bash -el
+                                set +x
+                                curl -sSf -H "Authorization: token \${GITHUB_TOKEN}" "https://api.github.com/repos/${pipelineVars.githubRepositorySlug}/releases/tags/${params.GITHUB_RELEASE_TAG}"
                                 """
-                            }
+                            ).trim()
+                            def releaseInfo = readJSON text: releaseJson
+                            def uploadUrl = githubUtils.parseReleaseAssetUploadUrl("${releaseInfo.upload_url}")
+
+                            sh """#!/bin/bash -el
+                            ./scripts/release/release-all.sh ${params.RELEASE_VERSION} --publish --upload-url '${uploadUrl}'
+                            """
                         }
                     }
                 }
@@ -228,9 +241,7 @@ pipeline {
             echo "  ✅ Container registry"
             echo "  ✅ Helm registry"
             echo "  ✅ GitHub Pages"
-            if (params.GITHUB_RELEASE_TAG != '') {
-                echo "  ✅ GitHub Release: ${params.GITHUB_RELEASE_TAG}"
-            }
+            echo "  ✅ GitHub Release: ${params.GITHUB_RELEASE_TAG}"
             echo ""
             echo "Next steps:"
             echo "1. Verify packages are available in registries"

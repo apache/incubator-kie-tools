@@ -44,7 +44,9 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'ASF_USERNAME', passwordVariable: 'ASF_PASSWORD')]) {
         sh """#!/bin/bash -el
         SVN_URL="${releaseRepository}/${releaseVersion}"
-        rm -rf svn-kie
+        # Check out the SVN working copy outside of the artifacts directory, so it is not copied into itself.
+        SVN_WORKDIR=\$(mktemp -d)/svn-kie
+        trap 'rm -rf "\$(dirname "\${SVN_WORKDIR}")"' EXIT
 
         # Create the RC directory in the SVN staging repository when it does not exist yet.
         # Only a "path does not exist" error triggers the creation; any other failure (network, auth, ...) aborts.
@@ -59,12 +61,11 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
             exit 1
         fi
 
-        svn co --depth=empty "\${SVN_URL}" svn-kie
-        cp ${artifactsDir}/* svn-kie
-        cd svn-kie
+        svn co --depth=empty "\${SVN_URL}" "\${SVN_WORKDIR}"
+        find "${artifactsDir}" -maxdepth 1 -type f -exec cp {} "\${SVN_WORKDIR}" \\;
+        cd "\${SVN_WORKDIR}"
         svn add . --force
         svn ci --non-interactive --no-auth-cache --username \${ASF_USERNAME} --password "\${ASF_PASSWORD}" -m "Apache KIE ${releaseVersion} artifacts"
-        rm -rf svn-kie
         """.trim()
     }
 }

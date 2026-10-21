@@ -191,7 +191,7 @@ release_chrome_extensions() {
 
     local kie_editors_zip
     kie_editors_zip=$(find "packages/chrome-extension-pack-kogito-kie-editors/dist" \
-        -maxdepth 1 -name "chrome_extension_kogito_kie_editors_*.zip" 2>/dev/null | head -1)
+        -maxdepth 1 -name "chrome_extension_kogito_kie_editors_*.zip" 2>/dev/null | head -1 || true)
     if [[ -z "${kie_editors_zip}" ]]; then
         echo "ERROR: chrome_extension_kogito_kie_editors_*.zip not found — was the build successful?"
         return 1
@@ -299,7 +299,7 @@ release_vscode() {
         for ext in "${!EXTENSIONS[@]}"; do
             local suffix="${EXTENSIONS[$ext]}"
             local vsix
-            vsix=$(find "packages/${ext}" -maxdepth 2 -name "*.vsix" 2>/dev/null | head -1)
+            vsix=$(find "packages/${ext}" -maxdepth 2 -name "*.vsix" 2>/dev/null | head -1 || true)
             if [[ -n "${vsix}" ]]; then
                 local dest="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-${suffix}.vsix"
                 echo "  COPY  $(basename "${dest}")"
@@ -736,10 +736,15 @@ FAILED=()
 run_step() {
     local name="$1" fn="$2"
     local status=0
+    # Run the step as a standalone command (not as part of an `||`/`&&`/`if` list), otherwise bash
+    # ignores `set -e` inside it and a failed command in the middle of a step would go unnoticed.
+    set +e
     (
         set -euo pipefail
         "${fn}"
-    ) || status=$?
+    )
+    status=$?
+    set -e
 
     if [[ ${status} -eq 0 ]]; then
         echo "✅ ${name} — OK"
