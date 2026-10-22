@@ -58,12 +58,17 @@ pipeline {
         )
         booleanParam(
             name: 'CREATE_STREAM_BRANCH',
-            description: 'Branch cut: create X.Y.x (derived from RELEASE_VERSION) from BASE_REF, set X.Y.999 / X.Y.999-SNAPSHOT / stream name X.Y.x, push it, then build the RC from it. Only for the first RC of a new minor (e.g. 10.3.0-rc1). Fails if X.Y.x already exists',
+            description: 'Branch cut, part 1: create branch X.Y.x (derived from RELEASE_VERSION) from BASE_REF and push it. Only for the first RC of a new minor (e.g. 10.3.0-rc1). Fails if X.Y.x already exists',
+            defaultValue: false
+        )
+        booleanParam(
+            name: 'UPDATE_STREAM_VERSION',
+            description: 'Branch cut, part 2: set the development version in all files on X.Y.x (project version X.Y.999, kogito maven X.Y.999-SNAPSHOT, stream name X.Y.x), commit and push. Use together with CREATE_STREAM_BRANCH for a normal branch cut, or alone if X.Y.x was already created (the stage then checks out the existing X.Y.x)',
             defaultValue: false
         )
         booleanParam(
             name: 'UPDATE_CI_IMAGE_TAG',
-            description: 'Only used with CREATE_STREAM_BRANCH=true. Also point every Jenkinsfile at docker.io/apache/incubator-kie-tools-ci-build:X.Y.999 (as done for 10.2.x). Enable ONLY if that image tag has already been built and pushed; otherwise jobs on the new branch cannot start',
+            description: 'Only used with UPDATE_STREAM_VERSION=true. Also point every Jenkinsfile at docker.io/apache/incubator-kie-tools-ci-build:X.Y.999 (as done for 10.2.x). Enable ONLY if that image tag has already been built and pushed; otherwise jobs on the new branch cannot start',
             defaultValue: false
         )
     }
@@ -172,7 +177,7 @@ pipeline {
 
         stage('Create stream branch') {
             when {
-                expression { return params.CREATE_STREAM_BRANCH }
+                expression { return params.CREATE_STREAM_BRANCH || params.UPDATE_STREAM_VERSION }
             }
             steps {
                 dir('kie-tools') {
@@ -190,25 +195,47 @@ pipeline {
                             returnStatus: true,
                             script: "git ls-remote --exit-code --heads origin ${streamBranch} > /dev/null"
                         ) == 0
-                        if (exists) {
-                            error("Branch '${streamBranch}' already exists on origin. The branch cut is done once per minor; unset CREATE_STREAM_BRANCH for rc2 / patch releases.")
+
+                        // Part 1: create the branch
+                        if (params.CREATE_STREAM_BRANCH) {
+                            if (exists) {
+                                error("Branch '${streamBranch}' already exists on origin. The branch cut is done once per minor; unset CREATE_STREAM_BRANCH for rc2 / patch releases.")
+                            }
+                            withEnv(["STREAM_BRANCH=${streamBranch}"]) {
+                                sh '''#!/bin/bash -el
+                                git checkout -b "$STREAM_BRANCH"
+                                '''
+                            }
+                        } else if (!exists) {
+                            error("Branch '${streamBranch}' does not exist on origin. Set CREATE_STREAM_BRANCH=true as well.")
+                        } else {
+                            // Update-only: continue on the already existing branch
+                            withEnv(["STREAM_BRANCH=${streamBranch}"]) {
+                                sh '''#!/bin/bash -el
+                                git fetch origin "+refs/heads/$STREAM_BRANCH:refs/remotes/origin/$STREAM_BRANCH"
+                                git checkout -B "$STREAM_BRANCH" "origin/$STREAM_BRANCH"
+                                '''
+                            }
                         }
 
+                        // Part 2: update the version in all files
                         // Same set of changes as the 10.2.x branch cut (Jenkinsfile.setup-branch):
                         // project version, kogito maven version, stream name (+ optional CI image tag).
-                        withEnv(["STREAM_BRANCH=${streamBranch}", "DEV_VERSION=${devVersion}", "DEV_MAVEN_VERSION=${devMavenVersion}", "UPDATE_CI_IMAGE_TAG=${params.UPDATE_CI_IMAGE_TAG}"]) {
-                            sh '''#!/bin/bash -el
-                            git checkout -b "$STREAM_BRANCH"
-                            pnpm update-version-to "$DEV_VERSION"
-                            pnpm update-kogito-version-to --maven "$DEV_MAVEN_VERSION"
-                            pnpm update-stream-name-to "$STREAM_BRANCH"
-                            if [ "$UPDATE_CI_IMAGE_TAG" = "true" ]; then
-                              find .ci/jenkins -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(incubator-kie-tools-ci-build:)(main|[$][{]env[.]BRANCH_NAME[}])%\\1${DEV_VERSION}%g" {} +
-                            fi
-                            git add .
-                            git commit --allow-empty -am "Update development version to $DEV_VERSION"
-                            '''
+                        if (params.UPDATE_STREAM_VERSION) {
+                            withEnv(["DEV_VERSION=${devVersion}", "DEV_MAVEN_VERSION=${devMavenVersion}", "STREAM_BRANCH=${streamBranch}", "UPDATE_CI_IMAGE_TAG=${params.UPDATE_CI_IMAGE_TAG}"]) {
+                                sh '''#!/bin/bash -el
+                                pnpm update-version-to "$DEV_VERSION"
+                                pnpm update-kogito-version-to --maven "$DEV_MAVEN_VERSION"
+                                pnpm update-stream-name-to "$STREAM_BRANCH"
+                                if [ "$UPDATE_CI_IMAGE_TAG" = "true" ]; then
+                                  find .ci/jenkins -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(incubator-kie-tools-ci-build:)(main|[$][{]env[.]BRANCH_NAME[}])%\\1${DEV_VERSION}%g" {} +
+                                fi
+                                git add .
+                                git commit --allow-empty -am "Update development version to $DEV_VERSION"
+                                '''
+                            }
                         }
+
                         githubUtils.pushObject('origin', streamBranch, "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
