@@ -20,6 +20,9 @@
 import * as React from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { CustomTask } from "../../../../src/BpmnEditor";
+import { BidirectionalDataMappingFormSection } from "../../../../src/propertiesPanel/dataMapping/DataMappingFormSection";
+import { DataMapping, setInputAndOutputDataMapping } from "../../../../src/mutations/_dataMapping";
+import { DEFAULT_DATA_TYPES } from "../../../../src/mutations/addOrGetItemDefinitions";
 import "@kie-tools/bpmn-marshaller/dist/drools-extension";
 
 export const PropertiesPanelComponent: CustomTask["propertiesPanelComponent"] = ({ task }) => (
@@ -94,4 +97,81 @@ export const GRPC_API_CALL_TASK: CustomTask = {
     "@_drools:taskName": "grpc-api-call-task",
     "@_name": "gRPC API call Task",
   }),
+};
+
+export const RESERVED_INPUTS_TASK_NAME = "reserved-inputs-task";
+
+/**
+ * Simulates a built-in Custom Task (like Rest or Milestone) where specific Data Mapping inputs
+ * are reserved/owned by the task's custom properties panel ("Url", "HEADER_*"),
+ * and one regular unreserved input ("Message") is meant to be edited in the Data Mapping modal.
+ */
+export const RESERVED_INPUTS_TASK: CustomTask = {
+  id: RESERVED_INPUTS_TASK_NAME,
+  displayGroup: "Other",
+  displayName: "Reserved Inputs Task",
+  displayDescription: "",
+  dataInputReservedNames: ["Url", "HEADER_*"],
+  dataOutputReservedNames: [],
+  iconSvgElement: (
+    <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <text x="15" y="25" textAnchor="middle" fontSize="24" fontFamily="Arial" fontWeight={"light"}>
+        🔒
+      </text>
+    </svg>
+  ),
+  propertiesPanelComponent: ({ task }) => <BidirectionalDataMappingFormSection element={task} />,
+  matches: (task) => task["@_drools:taskName"] === RESERVED_INPUTS_TASK_NAME,
+  produce: () => ({
+    __$$element: "task",
+    "@_id": generateUuid(),
+    "@_drools:taskName": RESERVED_INPUTS_TASK_NAME,
+    "@_name": "Reserved Inputs Task",
+  }),
+  onAdded: (_state, task) => {
+    const inputs: DataMapping[] = [
+      { dtype: DEFAULT_DATA_TYPES.STRING, name: "Url", isExpression: true, value: "http://localhost" },
+      { dtype: DEFAULT_DATA_TYPES.STRING, name: "HEADER_Accept", isExpression: true, value: "text/plain" },
+      { dtype: DEFAULT_DATA_TYPES.STRING, name: "Message", isExpression: false, variableRef: undefined },
+    ];
+    setInputAndOutputDataMapping(new Map(), inputs, [], task);
+  },
+};
+
+export const WID_LIKE_TASK_NAME = "wid-like-task";
+
+/**
+ * Simulates a Custom Task generated from a WID file where no inputs are reserved
+ * (`dataInputReservedNames: []`), so all WID parameters must be visible and editable
+ * in the Data Mapping modal.
+ */
+export const WID_LIKE_TASK: CustomTask = {
+  id: WID_LIKE_TASK_NAME,
+  displayGroup: "Other",
+  displayName: "WID Custom Task",
+  displayDescription: "",
+  dataInputReservedNames: [],
+  dataOutputReservedNames: [],
+  iconSvgElement: (
+    <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <text x="15" y="25" textAnchor="middle" fontSize="24" fontFamily="Arial" fontWeight={"light"}>
+        📋
+      </text>
+    </svg>
+  ),
+  propertiesPanelComponent: ({ task }) => <BidirectionalDataMappingFormSection element={task} />,
+  matches: (task) => task["@_drools:taskName"] === WID_LIKE_TASK_NAME,
+  produce: () => ({
+    __$$element: "task",
+    "@_id": generateUuid(),
+    "@_drools:taskName": WID_LIKE_TASK_NAME,
+    "@_name": "WID Custom Task",
+  }),
+  onAdded: (_state, task) => {
+    const inputs: DataMapping[] = [
+      { dtype: DEFAULT_DATA_TYPES.STRING, name: "Param1", isExpression: false, variableRef: undefined },
+      { dtype: DEFAULT_DATA_TYPES.STRING, name: "Param2", isExpression: false, variableRef: undefined },
+    ];
+    setInputAndOutputDataMapping(new Map(), inputs, [], task);
+  },
 };
