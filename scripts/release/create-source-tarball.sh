@@ -62,8 +62,16 @@ mkdir -p "$OUTPUT_DIR"
 ZIPFILE="$OUTPUT_DIR/apache-kie-$VERSION-incubating-sources.zip"
 
 cd "$REPO_ROOT"
-echo "Creating git archive..."
-git archive --format=zip --prefix="apache-kie-$VERSION-incubating/" "$GIT_REF" > "$ZIPFILE"
+local_archive_ref="$GIT_REF"
+if [[ "$local_archive_ref" == "HEAD" ]] && ! git diff --quiet HEAD 2>/dev/null; then
+    stash_sha=$(git stash create 2>/dev/null || true)
+    if [[ -n "$stash_sha" ]]; then
+        local_archive_ref="$stash_sha"
+    fi
+fi
+
+echo "Creating git archive from ref $local_archive_ref..."
+git archive --format=zip --prefix="apache-kie-$VERSION-incubating/" "$local_archive_ref" > "$ZIPFILE"
 
 if ! unzip -t "$ZIPFILE" > /dev/null 2>&1; then
     echo "ERROR: zip verification failed"
@@ -73,8 +81,9 @@ fi
 SIZE=$(du -h "$ZIPFILE" | cut -f1)
 echo "Created: $ZIPFILE ($SIZE)"
 
+zip_contents=$(unzip -l "$ZIPFILE")
 for required in LICENSE NOTICE DISCLAIMER-WIP; do
-    if ! unzip -l "$ZIPFILE" | grep -q "apache-kie-$VERSION-incubating/$required"; then
+    if ! echo "$zip_contents" | grep -q "apache-kie-$VERSION-incubating/$required"; then
         echo "WARN: $required not found in zip"
     fi
 done
