@@ -588,13 +588,21 @@ release_github_pages() {
         tmp_dir=$(mktemp -d)
         trap "rm -rf ${tmp_dir}" EXIT
 
-        local auth_url="${kogito_online_repo/https:\/\//https://${GITHUB_TOKEN}@}"
-        git clone --branch gh-pages --depth 1 "${auth_url}" "${tmp_dir}/kogito-online"
+        # Write a credential store file so the token is never exposed on the
+        # command line (avoids leaking it via process listings or CI log echoing).
+        local git_cred_file="${tmp_dir}/.git-credentials"
+        echo "https://x-token:${GITHUB_TOKEN}@github.com" > "${git_cred_file}"
+        chmod 600 "${git_cred_file}"
+        local git_auth=(-c "credential.helper=store --file=${git_cred_file}")
+
+        git "${git_auth[@]}" clone --branch gh-pages --depth 1 "${kogito_online_repo}" "${tmp_dir}/kogito-online"
         (
             cd "${tmp_dir}/kogito-online"
             git config user.email "asf-ci-kie@jenkins.kie.apache.org"
             git config user.name "Apache KIE Release Bot"
-            find . -maxdepth 1 ! -name '.' ! -name 'dev' ! -name 'editors' ! -name 'standalone' \
+            git config credential.helper "store --file=${git_cred_file}"
+            # Exclude .git so subsequent git operations in this subshell are not broken.
+            find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'dev' ! -name 'editors' ! -name 'standalone' \
                 ! -name 'chrome-extension' ! -name '.nojekyll' ! -name 'CNAME' -exec rm -rf {} +
 
             local online_dist="${REPO_ROOT}/packages/online-editor/dist"
@@ -622,13 +630,16 @@ release_github_pages() {
 
         local accel_content="${REPO_ROOT}/packages/kie-sandbox-accelerator-quarkus/dist/git-repo-content"
         if [[ -d "${accel_content}" ]]; then
-            local auth_accel="${accelerator_repo/https:\/\//https://${GITHUB_TOKEN}@}"
-            git clone --depth 1 "${auth_accel}" "${tmp_dir}/accelerator"
+            git "${git_auth[@]}" clone --depth 1 "${accelerator_repo}" "${tmp_dir}/accelerator"
             (
                 cd "${tmp_dir}/accelerator"
                 git config user.email "asf-ci-kie@jenkins.kie.apache.org"
                 git config user.name "Apache KIE Release Bot"
+                git config credential.helper "store --file=${git_cred_file}"
                 git checkout --orphan "${VERSION}"
+                # Remove all working-tree files carried over from the clone so the
+                # orphan branch contains only the intended accelerator content.
+                git rm -rf . --quiet 2>/dev/null || true
                 cp -r "${accel_content}/." .
                 git add .
                 git commit -m "Apache KIE Sandbox Quarkus Accelerator ${VERSION}"
