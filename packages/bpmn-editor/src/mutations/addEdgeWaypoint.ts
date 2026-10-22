@@ -21,6 +21,7 @@ import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bp
 import { DC__Point } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/model";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { updateEdgeWaypointsKeepingLabelAttached } from "./repositionEdgeLabel";
 
 export function addEdgeWaypoint({
   definitions,
@@ -46,5 +47,7 @@ export function addEdgeWaypoint({
     );
   }
 
-  diagramElement["di:waypoint"]!.splice(__readonly_beforeIndex, 0, __readonly_waypoint);
+  updateEdgeWaypointsKeepingLabelAttached(diagramElement, () => {
+    diagramElement["di:waypoint"]!.splice(__readonly_beforeIndex, 0, __readonly_waypoint);
+  });
 }

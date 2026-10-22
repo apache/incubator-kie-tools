@@ -63,6 +63,8 @@ import { moveNodesOutOfLane } from "../mutations/moveNodesOutOfLane";
 import { moveNodesOutOfSubProcess } from "../mutations/moveNodesOutOfSubProcess";
 import { makeBoundaryEvent } from "../mutations/makeBoundaryEvent";
 import { detachBoundaryEvent } from "../mutations/detachBoundaryEvent";
+import { getEdgeLabelBoundsAfterWaypointsChange } from "../mutations/repositionEdgeLabel";
+import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { repositionEdgeWaypoint } from "../mutations/repositionEdgeWaypoint";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
@@ -199,63 +201,68 @@ export function BpmnDiagram({
 
   const onNodeRepositioned = useCallback<
     OnNodeRepositioned<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>
-  >(({ state, node, controlWaypointsByEdge, newPosition, childNodeIds }) => {
-    console.log("BPMN EDITOR DIAGRAM: onNodeRepositioned");
-    const { delta } = repositionNode({
-      definitions: state.bpmn.model.definitions,
-      controlWaypointsByEdge,
-      __readonly_change: {
-        type: "absolute",
-        nodeType: node.type as BpmnNodeType,
-        selectedEdges: [...state.computed(state).getDiagramData().selectedEdgesById.keys()],
-        shapeIndex: node.data.shapeIndex,
-        sourceEdgeIndexes: state
-          .computed(state)
-          .getDiagramData()
-          .edges.flatMap((e) => (e.source === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
-        targetEdgeIndexes: state
-          .computed(state)
-          .getDiagramData()
-          .edges.flatMap((e) => (e.target === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
-        position: newPosition,
-      },
-    });
-
-    const allEdgeIds = state
-      .computed(state)
-      .getDiagramData()
-      .edges.map((e) => e.id); // Simulate all edges being selected
-
-    for (const nestedId of childNodeIds) {
-      const nestedNode = state.computed(state).getDiagramData().nodesById.get(nestedId);
-      if (!nestedNode) {
-        throw new Error("Can't reposition nested node with id " + nestedId);
-      }
-
-      repositionNode({
+  >(
+    ({ state, node, controlWaypointsByEdge, newPosition, childNodeIds }) => {
+      console.log("BPMN EDITOR DIAGRAM: onNodeRepositioned");
+      const { delta } = repositionNode({
+        __readonly_labelReferenceDefinitions: bpmnModelBeforeEditingRef.current.definitions,
         definitions: state.bpmn.model.definitions,
         controlWaypointsByEdge,
         __readonly_change: {
-          type: "offset",
-          nodeType: nestedNode.type as BpmnNodeType,
-          selectedEdges: allEdgeIds, // Makes sure all internal waypoints move too.
-          shapeIndex: nestedNode.data.shapeIndex,
+          type: "absolute",
+          nodeType: node.type as BpmnNodeType,
+          selectedEdges: [...state.computed(state).getDiagramData().selectedEdgesById.keys()],
+          shapeIndex: node.data.shapeIndex,
           sourceEdgeIndexes: state
             .computed(state)
             .getDiagramData()
-            .edges.flatMap((e) => (e.source === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+            .edges.flatMap((e) => (e.source === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
           targetEdgeIndexes: state
             .computed(state)
             .getDiagramData()
-            .edges.flatMap((e) => (e.target === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
-          offset: {
-            deltaX: delta.x,
-            deltaY: delta.y,
-          },
+            .edges.flatMap((e) => (e.target === node.id && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+          position: newPosition,
         },
       });
-    }
-  }, []);
+
+      const allEdgeIds = state
+        .computed(state)
+        .getDiagramData()
+        .edges.map((e) => e.id); // Simulate all edges being selected
+
+      for (const nestedId of childNodeIds) {
+        const nestedNode = state.computed(state).getDiagramData().nodesById.get(nestedId);
+        if (!nestedNode) {
+          throw new Error("Can't reposition nested node with id " + nestedId);
+        }
+
+        repositionNode({
+          __readonly_labelReferenceDefinitions: bpmnModelBeforeEditingRef.current.definitions,
+          definitions: state.bpmn.model.definitions,
+          controlWaypointsByEdge,
+          __readonly_change: {
+            type: "offset",
+            nodeType: nestedNode.type as BpmnNodeType,
+            selectedEdges: allEdgeIds, // Makes sure all internal waypoints move too.
+            shapeIndex: nestedNode.data.shapeIndex,
+            sourceEdgeIndexes: state
+              .computed(state)
+              .getDiagramData()
+              .edges.flatMap((e) => (e.source === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+            targetEdgeIndexes: state
+              .computed(state)
+              .getDiagramData()
+              .edges.flatMap((e) => (e.target === nestedId && e.data?.bpmnEdge ? [e.data.bpmnEdgeIndex] : [])),
+            offset: {
+              deltaX: delta.x,
+              deltaY: delta.y,
+            },
+          },
+        });
+      }
+    },
+    [bpmnModelBeforeEditingRef]
+  );
 
   const onNodeDeleted = useCallback<OnNodeDeleted<State, BpmnNodeType, BpmnDiagramNodeData, BpmnDiagramEdgeData>>(
     ({ state, node }) => {
@@ -362,6 +369,7 @@ export function BpmnDiagram({
     ({ state, node, newDimensions }) => {
       console.log("BPMN EDITOR DIAGRAM: onNodeResized");
       resizeNode({
+        __readonly_labelReferenceDefinitions: bpmnModelBeforeEditingRef.current.definitions,
         definitions: state.bpmn.model.definitions,
         __readonly_snapGrid: state.xyFlowReactKieDiagram.snapGrid,
         __readonly_change: {
@@ -383,7 +391,7 @@ export function BpmnDiagram({
         },
       });
     },
-    []
+    [bpmnModelBeforeEditingRef]
   );
 
   // edges
@@ -505,6 +513,22 @@ export function BpmnDiagram({
             newBpmnEdge["di:waypoint"]![newBpmnEdge["di:waypoint"]!.length - 1],
           ];
         }
+
+        // Keep the reconnected edge's label.
+        const deletedLabel = deletedBpmnEdge?.["bpmndi:BPMNLabel"];
+        if (deletedLabel?.["dc:Bounds"]) {
+          newBpmnEdge["bpmndi:BPMNLabel"] = {
+            ...deletedLabel,
+            "@_id": deletedLabel["@_id"] ?? generateUuid(),
+            "dc:Bounds": getEdgeLabelBoundsAfterWaypointsChange({
+              __readonly_labelBounds: deletedLabel["dc:Bounds"],
+              __readonly_previousWaypoints: deletedWaypoints,
+              __readonly_newWaypoints: newBpmnEdge["di:waypoint"],
+            }),
+          };
+        } else {
+          delete newBpmnEdge["bpmndi:BPMNLabel"];
+        }
       }
 
       return { id: newBpmnEdge["@_bpmnElement"]! };
@@ -541,6 +565,7 @@ export function BpmnDiagram({
       console.log("BPMN EDITOR DIAGRAM: onWaypointRepositioned");
       bpmnEditorStoreApi.setState((s) => {
         repositionEdgeWaypoint({
+          __readonly_labelReferenceDefinitions: bpmnModelBeforeEditingRef.current.definitions,
           definitions: s.bpmn.model.definitions,
           __readonly_edgeIndex: edgeIndex,
           __readonly_waypoint: waypoint,
@@ -548,7 +573,7 @@ export function BpmnDiagram({
         });
       });
     },
-    [bpmnEditorStoreApi]
+    [bpmnEditorStoreApi, bpmnModelBeforeEditingRef]
   );
 
   const onWaypointDeleted = useCallback<OnWaypointDeleted>(
