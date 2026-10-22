@@ -127,6 +127,7 @@ interface BpmnEditorDictionary extends ReferenceDictionary<{
     calledElement: string;
     codePlaceholder: string;
     conditionalExpression: string;
+    language: string;
     defaultRoute: string;
     none: string;
     noneYet: string;

@@ -76,7 +76,7 @@ export function OnEntryAndExitScriptsFormSection({ element }: { element: WithOnE
             <FormSection style={{ paddingLeft: "20px", marginTop: "20px", gap: 0 }}>
               <CodeInput
                 label={i18n.propertiesPanel.onEntry}
-                languages={["Java"]}
+                availableLanguages={[ScriptLanguage.Java]}
                 value={element?.extensionElements?.["drools:onEntry-script"]?.["drools:script"]?.__$$text || ""}
                 onChange={(e, newValue) => {
                   bpmnEditorStoreApi.setState((s) => {
@@ -99,7 +99,7 @@ export function OnEntryAndExitScriptsFormSection({ element }: { element: WithOnE
               <br />
               <CodeInput
                 label={i18n.propertiesPanel.onExit}
-                languages={["Java"]}
+                availableLanguages={[ScriptLanguage.Java]}
                 value={element?.extensionElements?.["drools:onExit-script"]?.["drools:script"]?.__$$text || ""}
                 onChange={(e, newValue) => {
                   bpmnEditorStoreApi.setState((s) => {

@@ -29,6 +29,7 @@ import { Unpacked } from "@kie-tools/xyflow-react-kie-diagram/dist/tsExt/tsExt";
 import { CodeInput } from "../codeInput/CodeInput";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { useBpmnEditorI18n } from "../../i18n";
+import { ScriptLanguage } from "../scriptFormats";
 
 export type WithConditionalExpression =
   | undefined
@@ -77,7 +78,7 @@ export function ConditionalEventSelector({ element }: { element: WithConditional
         value={currentValue}
         onChange={handleValueChange}
         label={i18n.propertiesPanel.conditionalExpression}
-        languages={["drools"]}
+        availableLanguages={[ScriptLanguage.Drools]}
       />
     </FormSection>
   );
