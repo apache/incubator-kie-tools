@@ -33,6 +33,13 @@ import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
 import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateIcon,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ScesimEditorEnvelopeI18n } from "./i18n";
 
 export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.dmn";
@@ -52,6 +59,7 @@ export type TestScenarioEditorRootProps = {
 };
 
 export type TestScenarioEditorRootState = {
+  error: Error | undefined;
   externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex;
   externalModelsManagerDoneBootstraping: boolean;
   isReadOnly: boolean;
@@ -73,6 +81,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     props.exposing(this);
     this.testScenarioEditorRef = React.createRef();
     this.state = {
+      error: undefined,
       externalModelsByNamespace: new Map(),
       externalModelsManagerDoneBootstraping: false,
       isReadOnly: props.isReadOnly,
@@ -113,8 +122,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
-    const marshaller = getMarshaller(content || EMPTY_ONE_EIGHT);
-    const scesimModel = marshaller.parser.parse();
+    const marshaller = this.getMarshaller(content);
 
     // Save stack
     let savedStackPointer: SceSimModel[] = [];
@@ -123,26 +131,17 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
       return {
-        stack: [scesimModel],
+        error: undefined,
+        stack: [marshaller.parser.parse()],
         openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
         pointer: 0,
       };
     });
 
-    if (
-      !scesimModel ||
-      !scesimModel.ScenarioSimulationModel ||
-      scesimModel.ScenarioSimulationModel["parsererror" as keyof typeof scesimModel.ScenarioSimulationModel]
-    ) {
-      throw new Error(
-        "Impossible to correctly parse the provided SCESIM file. Most likely, the XML structure of the file is invalid."
-      );
-    }
-
     // Wait the external manager models to load.
     await this.externalModelsManagerDoneBootstraping.promise;
 
-    // Set the valeus to render the Test Scenario Editor.
+    // Set the values to render the Test Scenario Editor.
     this.setState((prev) => {
       // External change to the same file.
       if (
@@ -176,6 +175,33 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
 
   public get model(): SceSimModel | undefined {
     return this.state.stack[this.state.pointer];
+  }
+
+  // Internal methods
+
+  private getMarshaller(content: string) {
+    try {
+      const marshaller = getMarshaller(content || EMPTY_ONE_EIGHT);
+      const scesimModel = marshaller.parser.parse();
+
+      if (
+        !scesimModel ||
+        !scesimModel.ScenarioSimulationModel ||
+        scesimModel.ScenarioSimulationModel["parsererror" as keyof typeof scesimModel.ScenarioSimulationModel]
+      ) {
+        throw new Error(
+          "Impossible to correctly parse the provided SCESIM file. Most likely, the XML structure of the file is invalid."
+        );
+      }
+
+      return marshaller;
+    } catch (e) {
+      this.setState((s) => ({
+        ...s,
+        error: e instanceof Error ? e : new Error(String(e)),
+      }));
+      throw e;
+    }
   }
 
   private setExternalModelsByNamespace = (externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex) => {
@@ -305,7 +331,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   public render() {
     return (
       <>
-        {this.model && (
+        {this.state.error && <ScesimFallbackError error={this.state.error} i18n={this.props.i18n} />}
+        {!this.state.error && this.model && (
           <>
             <TestScenarioEditor.TestScenarioEditor
               ref={this.testScenarioEditorRef}
@@ -340,6 +367,24 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       </>
     );
   }
+}
+
+function ScesimFallbackError({ error, i18n }: { error: Error; i18n: ScesimEditorEnvelopeI18n }) {
+  return (
+    <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
+      <EmptyState style={{ maxWidth: "1280px" }}>
+        <EmptyStateHeader
+          titleText={i18n.unableToOpenFile}
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
+        <br />
+        <EmptyStateBody>
+          {i18n.errorMessage} {error.message}
+        </EmptyStateBody>
+      </EmptyState>
+    </Flex>
+  );
 }
 
 function ExternalModelsManager({
