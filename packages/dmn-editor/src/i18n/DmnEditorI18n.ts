@@ -176,6 +176,7 @@ interface DmnEditorDictionary extends ReferenceDictionary<{
     textAnnotation: string;
     externalNodes: string;
     drgnodes: string;
+    moreItems: string;
     unknown: string;
     empty: string;
     input: string;
@@ -227,6 +228,12 @@ interface DmnEditorDictionary extends ReferenceDictionary<{
     enableHighlightingDecisionTable: string;
   };
   propertiesPanel: {
+    informationRequirement: string;
+    knowledgeRequirement: string;
+    authorityRequirement: string;
+    association: string;
+    edge: string;
+    edgeNotFound: (edgeId: string) => string;
     nothingToShow: string;
     inputExpression: string;
     constraint: string;

@@ -42,7 +42,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       },
       mvnw: {
         version: "3.3.0",
-        mavenVersion: "3.9.11",
+        mavenVersion: "3.9.16",
       },
       maven: {
         deploy: {

@@ -1,0 +1,7 @@
+{
+  // Needed by the "Attach to LSP Server (Java)" configuration in launch.json:
+  // `"type": "java"` is contributed by vscode-java-debug, which in turn needs
+  // redhat.java. Without them that configuration fails with an unhelpful
+  // "configuration type 'java' is not supported".
+  "recommendations": ["redhat.java", "vscjava.vscode-java-debug"]
+}

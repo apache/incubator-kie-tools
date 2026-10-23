@@ -30,7 +30,7 @@
     "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/vscode": "1.67.0",
+    "@types/vscode": "1.103.0",
     "@vscode/vsce": "^3.7.1",
     "rimraf": "^3.0.2",
     "typescript": "^5.9.3",
@@ -40,7 +40,7 @@
     "webpack-merge": "^5.9.0"
   },
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.103.0"
   },
   "displayName": "Apache KIE Tools Example :: Base64 PNG Editor",
   "categories": [

@@ -32,7 +32,7 @@
     "stopExample:darwin:linux": "docker compose --profile example down"
   },
   "dependencies": {
-    "@kie-tools/jbpm-addons-springboot-dev-console": "workspace:*",
+    "@kie-tools/jbpm-spring-boot-dev-console": "workspace:*",
     "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/spring-boot-bom": "workspace:*"
   },

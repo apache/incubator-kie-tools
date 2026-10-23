@@ -26,8 +26,8 @@ import java.util.Map;
  * result type), used by {@link LhsBindingResolver} and the inlay-hint helper to
  * resolve accumulate result bindings ({@code $count : count()}).
  *
- * <p>Seeded with the complete set of Drools' built-in accumulate functions. The
- * names and result types are transcribed from the Drools engine itself —
+ * <p>Seeded with Drools 10.2.0's complete set of built-in accumulate functions.
+ * The names and result types are transcribed from the Drools engine itself —
  * {@code META-INF/kie.default.properties.conf} (function name → impl class) and
  * each impl's {@code getResultType()}.
  * Baking them in avoids a runtime dependency on {@code drools-core};
@@ -45,10 +45,14 @@ public final class AccumulateFunctionTypes {
             Map.entry("maxN", "Number"),
             Map.entry("maxI", "Integer"),
             Map.entry("maxL", "Long"),
+            Map.entry("maxBI", "BigInteger"),
+            Map.entry("maxBD", "BigDecimal"),
             Map.entry("min", "Comparable"),
             Map.entry("minN", "Number"),
             Map.entry("minI", "Integer"),
             Map.entry("minL", "Long"),
+            Map.entry("minBI", "BigInteger"),
+            Map.entry("minBD", "BigDecimal"),
             Map.entry("count", "Long"),
             Map.entry("collectList", "List"),
             Map.entry("collectSet", "Set"),

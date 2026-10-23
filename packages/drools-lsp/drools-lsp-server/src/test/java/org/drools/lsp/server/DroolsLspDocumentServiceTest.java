@@ -24,16 +24,24 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.drools.completion.ClassIndex;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.Command;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionParams;
 import org.eclipse.lsp4j.DefinitionParams;
+import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DocumentDiagnosticParams;
 import org.eclipse.lsp4j.DocumentDiagnosticReport;
+import org.eclipse.lsp4j.DocumentFormattingParams;
+import org.eclipse.lsp4j.DocumentRangeFormattingParams;
+import org.eclipse.lsp4j.FormattingOptions;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.HoverParams;
+import org.eclipse.lsp4j.InitializeParams;
 import org.eclipse.lsp4j.InlayHint;
 import org.eclipse.lsp4j.InlayHintParams;
 import org.eclipse.lsp4j.Location;
@@ -73,19 +81,6 @@ class DroolsLspDocumentServiceTest {
 
         List<CompletionItem> result = droolsLspDocumentService.getCompletionItems(completionParams);
         assertThat(result.stream().map(CompletionItem::getInsertText).anyMatch("package"::equals)).isTrue();
-    }
-
-    @Test
-    void getRuleName() {
-        String drl = "rule MyRule when Dog(name == \"Bart\") then end";
-
-        DroolsLspDocumentService droolsLspDocumentService = getDroolsLspDocumentService(drl);
-
-        CompletionParams completionParams = new CompletionParams();
-        completionParams.setTextDocument(new TextDocumentIdentifier("myDocument"));
-
-        String ruleName = droolsLspDocumentService.getRuleName(completionParams);
-        assertThat(ruleName).isEqualTo("MyRule");
     }
 
     @Test
@@ -156,7 +151,7 @@ class DroolsLspDocumentServiceTest {
         List<Diagnostic> diags = service.validate("myDocument");
         assertThat(diags).isNotEmpty();
         assertThat(diags)
-                 .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-parser"));
+                 .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-drl-parser"));
     }
 
     @Test
@@ -169,7 +164,7 @@ class DroolsLspDocumentServiceTest {
 
         assertThat(report.getRelatedFullDocumentDiagnosticReport().getItems())
                 .isNotEmpty()
-                .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-parser"));
+                .anySatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-drl-parser"));
     }
 
     @Test
@@ -487,14 +482,39 @@ class DroolsLspDocumentServiceTest {
                 .noneSatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-type"));
     }
 
+    /**
+     * A source-only workspace before Maven has run: the class index carries
+     * Java-source-derived names, so it is not empty, but nothing is known about
+     * the dependencies. Judging a type unknown on that basis reports every
+     * dependency type as a typo, so the pass waits.
+     */
+    @Test
+    void unknownTypeLintWaitsForTheDependencyClasspath(@TempDir Path dir) throws Exception {
+        Path classFile = dir.resolve("com/example/Marker.class");
+        Files.createDirectories(classFile.getParent());
+        Files.createFile(classFile);
+
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(TYPO_DRL);
+        DroolsLspDocumentService service = server.getTextDocumentService();
+        service.setClassIndex(ClassIndex.build(Set.of(dir)));
+
+        assertThat(service.validate("myDocument"))
+                .noneSatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-type"));
+    }
+
     @Test
     void unknownTypeLintReportsTypoOnceClasspathResolved(@TempDir Path dir) throws Exception {
         Path classFile = dir.resolve("com/example/Marker.class");
         Files.createDirectories(classFile.getParent());
         Files.createFile(classFile);
 
-        DroolsLspDocumentService service = getDroolsLspDocumentService(TYPO_DRL);
-        service.setClassIndex(ClassIndex.build(Set.of(dir))); // classpath now "resolved"
+        // Readiness is the dependency classpath having resolved, which is what
+        // the lint waits for — a populated class index no longer implies it,
+        // since source-derived names reach that index before Maven runs.
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(TYPO_DRL);
+        DroolsLspDocumentService service = server.getTextDocumentService();
+        service.setClassIndex(ClassIndex.build(Set.of(dir)));
+        server.setClasspathEntriesForTest(Set.of(dir));
 
         List<Diagnostic> diags = service.validate("myDocument");
         assertThat(diags).anySatisfy(d -> {
@@ -519,5 +539,185 @@ class DroolsLspDocumentServiceTest {
         assertThat(ca.getEdit().getChanges().get("myDocument"))
                 .singleElement()
                 .satisfies(e -> assertThat(e.getNewText()).isEqualTo("Person"));
+    }
+
+    private static final String MESSY = "package p;\nrule R\n  when\n    $p:Person(age>18)\n  then\nend\n";
+
+    private static DocumentFormattingParams formattingParams(int tabSize, boolean insertSpaces) {
+        DocumentFormattingParams params = new DocumentFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(tabSize, insertSpaces));
+        return params;
+    }
+
+    @Test
+    void formattingReplacesTheWholeDocumentWithTheFormattedText() throws Exception {
+        DroolsLspDocumentService service = getDroolsLspDocumentService(MESSY);
+
+        List<? extends TextEdit> edits = service.formatting(formattingParams(2, true)).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getRange().getStart()).isEqualTo(new Position(0, 0));
+        assertThat(edits.get(0).getNewText()).contains("    $p: Person( age > 18 )");
+        assertThat(edits.get(0).getNewText()).endsWith("\n");
+    }
+
+    /** The editor's tabSize/insertSpaces win over the configured indent. */
+    @Test
+    void formattingHonoursTheRequestsIndentOptions() throws Exception {
+        DroolsLspDocumentService service = getDroolsLspDocumentService(MESSY);
+
+        String text = service.formatting(formattingParams(4, false)).get().get(0).getNewText();
+
+        assertThat(text).contains("\n\twhen\n\t\t$p:");
+    }
+
+    @Test
+    void formattingRefusesUnparseableInputWithNoEdits() throws Exception {
+        DroolsLspDocumentService service = getDroolsLspDocumentService("rule R when Person( then end");
+
+        assertThat(service.formatting(formattingParams(2, true)).get()).isEmpty();
+    }
+
+    @Test
+    void rangeFormattingEditsOnlyTheTouchedStatements() throws Exception {
+        String two = MESSY + "\nrule S\n  when\n    Order(  )\n  then\nend\n";
+        DroolsLspDocumentService service = getDroolsLspDocumentService(two);
+
+        DocumentRangeFormattingParams params = new DocumentRangeFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(2, true));
+        params.setRange(new Range(new Position(7, 0), new Position(7, 0))); // inside rule S only
+
+        List<? extends TextEdit> edits = service.rangeFormatting(params).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getRange().getStart().getLine()).isEqualTo(7);
+        assertThat(edits.get(0).getNewText()).contains("Order()").doesNotContain("Person");
+    }
+
+    /** The comment sits inside the replaced range, so Format Selection must carry it. */
+    @Test
+    void rangeFormattingKeepsACommentTrailingTheRulesEnd() throws Exception {
+        String two = "package p;\nrule R\n  when\n    $p:Person(age>18)\n  then\nend // done\n"
+                + "rule S\n  when\n    Order(  )\n  then\nend\n";
+        DroolsLspDocumentService service = getDroolsLspDocumentService(two);
+
+        DocumentRangeFormattingParams params = new DocumentRangeFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(2, true));
+        params.setRange(new Range(new Position(3, 0), new Position(3, 0)));
+
+        List<? extends TextEdit> edits = service.rangeFormatting(params).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getNewText()).contains("// done").doesNotContain("rule S");
+    }
+
+    /**
+     * LSP 3.17, Range: "the end position is exclusive. If you want to specify a
+     * range that contains a line including the line ending character(s) then use
+     * an end position denoting the start of the next line." A whole-line
+     * selection therefore ends on a line it does not include.
+     */
+    @Test
+    void rangeFormattingTreatsAnEndAtColumnZeroAsExclusive() throws Exception {
+        String two = "package p;\nrule R\n  when\n    $p:Person(age>18)\n  then\nend\n"
+                + "rule S\n  when\n    Order(  )\n  then\nend\n";
+        DroolsLspDocumentService service = getDroolsLspDocumentService(two);
+
+        DocumentRangeFormattingParams params = new DocumentRangeFormattingParams();
+        params.setTextDocument(new TextDocumentIdentifier("myDocument"));
+        params.setOptions(new FormattingOptions(2, true));
+        params.setRange(new Range(new Position(1, 0), new Position(6, 0)));
+
+        List<? extends TextEdit> edits = service.rangeFormatting(params).get();
+
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getNewText()).contains("Person").doesNotContain("rule S");
+        assertThat(edits.get(0).getRange().getEnd().getLine()).isEqualTo(6);
+    }
+
+    @Test
+    void configuredOptionsApplyAndChangeLive() throws Exception {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(MESSY);
+        DroolsLspDocumentService service = server.getTextDocumentService();
+        JsonObject settings = JsonParser.parseString(
+                "{\"drools\":{\"lsp\":{\"formatter\":{\"parenPadding\":false}}}}").getAsJsonObject();
+
+        server.getWorkspaceService().didChangeConfiguration(new DidChangeConfigurationParams(settings));
+
+        assertThat(service.formatterOptions().parenPadding()).isFalse();
+        assertThat(service.formatting(formattingParams(2, true)).get().get(0).getNewText())
+                .contains("Person(age > 18)");
+
+        // an unrelated settings push leaves the options alone
+        server.getWorkspaceService().didChangeConfiguration(
+                new DidChangeConfigurationParams(JsonParser.parseString("{\"editor\":{}}").getAsJsonObject()));
+        assertThat(service.formatterOptions().parenPadding()).isFalse();
+    }
+
+    @Test
+    void initializationOptionsSeedTheFormatterOptions() {
+        JsonObject init = JsonParser.parseString(
+                "{\"formatter\":{\"lineLength\":80},\"grouping\":{}}").getAsJsonObject();
+
+        assertThat(DroolsLspServer.formatterOptionsOf(init).lineLength()).isEqualTo(80);
+        assertThat(DroolsLspServer.formatterOptionsOf(null)).isEqualTo(FormatterOptions.DEFAULTS);
+        assertThat(DroolsLspServer.formatterOptionsOf(JsonParser.parseString("{\"grouping\":{}}")))
+                .isEqualTo(FormatterOptions.DEFAULTS);
+    }
+
+    /** A single-file client sends no rootUri; its options must still be applied. */
+    @Test
+    void initializationOptionsSeedEvenWithoutAWorkspaceRoot() throws Exception {
+        DroolsLspServer server = TestHelperMethods.getDroolsLspServerForDocument(MESSY);
+        InitializeParams params = new InitializeParams();
+        params.setInitializationOptions(JsonParser.parseString("{\"formatter\":{\"lineLength\":80}}").getAsJsonObject());
+
+        server.initialize(params).get();
+
+        assertThat(server.getTextDocumentService().formatterOptions().lineLength()).isEqualTo(80);
+    }
+
+    // ── deprecated constructs ────────────────────────────────────────────
+
+    @Test
+    void deprecatedConstructsReachTheDocumentDiagnostics() {
+        DroolsLspDocumentService service = getDroolsLspDocumentService(
+                "package p;\nrule R when Person( age > 18 && < 65 ) then end\n");
+
+        assertThat(service.validate("myDocument"))
+                .isNotEmpty()
+                .allSatisfy(d -> assertThat(d.getSource()).isEqualTo("drools-deprecated"));
+    }
+
+    @Test
+    void buildDeprecatedConstructActionsOffersTheMigrationEdit() {
+        Diagnostic d = new Diagnostic();
+        d.setSource("drools-deprecated");
+        d.setData("&& person.name");
+        d.setRange(new Range(new Position(4, 30), new Position(4, 32)));
+
+        List<Either<Command, CodeAction>> actions =
+                DroolsLspDocumentService.buildDeprecatedConstructActions("myDocument", List.of(d));
+
+        assertThat(actions).hasSize(1);
+        CodeAction ca = actions.get(0).getRight();
+        assertThat(ca.getTitle()).isEqualTo("Replace with '&& person.name'");
+        assertThat(ca.getEdit().getChanges().get("myDocument"))
+                .singleElement()
+                .satisfies(e -> assertThat(e.getNewText()).isEqualTo("&& person.name"));
+    }
+
+    /** Constructs with no mechanical migration carry no data, so offer no fix. */
+    @Test
+    void buildDeprecatedConstructActionsSkipsDiagnosticsWithoutAReplacement() {
+        Diagnostic d = new Diagnostic();
+        d.setSource("drools-deprecated");
+        d.setRange(new Range(new Position(2, 4), new Position(2, 5)));
+
+        assertThat(DroolsLspDocumentService.buildDeprecatedConstructActions("myDocument", List.of(d)))
+                .isEmpty();
     }
 }

@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
       todoList__potentialNewItem(): SharedValueProvider<string> {
         return { defaultValue: "" };
       },
-      todoList__itemRemoved: (item) => {
+      todoList__itemRemoved: (item: string) => {
         vscode.window.showInformationMessage(`Item '${item}' successfully removed.`);
       },
     }

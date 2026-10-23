@@ -151,3 +151,36 @@ test.describe("Change Properties - Ad-Hoc Sub-Process", () => {
     expect(adHocSubProcess.completionCondition?.__$$text).toBe("${allTasksCompleted}");
   });
 });
+
+test.describe("Change Properties - Call Activity Multi-Instance", () => {
+  test.beforeEach(async ({ palette, nodes, subProcessPropertiesPanel }) => {
+    await palette.addProcessVariable({ name: "varlist", dataType: "Object" });
+
+    await palette.dragNewNode({ type: NodeType.CALL_ACTIVITY, targetPosition: { x: 200, y: 200 } });
+
+    await expect(nodes.get({ name: DefaultNodeName.CALL_ACTIVITY })).toBeAttached();
+
+    await subProcessPropertiesPanel
+      .panel()
+      .getByRole("checkbox", { name: /multi-instance/i })
+      .click();
+  });
+
+  test("should assign a collection variable to a multi-instance call activity with no prior ioSpecification", async ({
+    subProcessPropertiesPanel,
+    jsonModel,
+  }) => {
+    // Enable multi-instance — the callActivity has no ioSpecification
+    await subProcessPropertiesPanel.setMultiInstance({ type: "parallel" });
+    await subProcessPropertiesPanel.setCollectionExpression({ expression: "varlist" });
+
+    await expect(subProcessPropertiesPanel.panel().getByRole("checkbox", { name: /multi-instance/i })).toBeChecked();
+
+    const loopCharacteristics = (await jsonModel.getCallActivities())[0].loopCharacteristics;
+    expect(loopCharacteristics?.__$$element).toBe("multiInstanceLoopCharacteristics");
+
+    const multiInstanceLoop =
+      loopCharacteristics?.__$$element === "multiInstanceLoopCharacteristics" ? loopCharacteristics : undefined;
+    expect(multiInstanceLoop?.loopDataInputRef?.__$$text).toBeDefined();
+  });
+});

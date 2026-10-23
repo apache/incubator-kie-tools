@@ -45,6 +45,7 @@ import { AsyncCheckbox } from "../asyncCheckbox/AsyncCheckbox";
 import { generateUuid } from "@kie-tools/xyflow-react-kie-diagram/dist/uuid/uuid";
 import { useBpmnEditorI18n } from "../../i18n";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
+import { ScriptLanguage } from "../scriptFormats";
 
 export function AdHocSubProcessProperties({
   adHocSubProcess,
@@ -124,7 +125,7 @@ export function AdHocSubProcessProperties({
 
         <CodeInput
           label={i18n.singleNodeProperties.adhocActivationCondition}
-          languages={["Drools"]}
+          availableLanguages={[ScriptLanguage.Drools]}
           value={parseBpmn20Drools10MetaData(adHocSubProcess).get("customActivationCondition") ?? ""}
           onChange={(e, newCode) => {
             bpmnEditorStoreApi.setState((s) => {
@@ -142,7 +143,7 @@ export function AdHocSubProcessProperties({
 
         <CodeInput
           label={i18n.singleNodeProperties.adhocCompletionCondition}
-          languages={["MVEL", "Drools"]}
+          availableLanguages={[ScriptLanguage.MVEL, ScriptLanguage.Drools]}
           value={adHocSubProcess.completionCondition?.__$$text ?? ""}
           onChange={(e, newCompletionConnditionValue) => {
             bpmnEditorStoreApi.setState((s) => {

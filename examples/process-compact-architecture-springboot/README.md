@@ -38,7 +38,7 @@ refer to the [Quarkus example README](../process-compact-architecture/README.md)
 ## The jBPM Dev Console
 
 In development mode this example also includes the **jBPM Dev Console**
-([`jbpm-addons-springboot-dev-console`](../../packages/jbpm-addons-springboot-dev-console)), the Spring Boot counterpart of the
+([`jbpm-spring-boot-dev-console`](../../packages/jbpm-spring-boot-dev-console)), the Spring Boot counterpart of the
 jBPM Quarkus Dev UI. It serves the process development console (Process Instances, Jobs, Tasks and Forms) at:
 
 ```

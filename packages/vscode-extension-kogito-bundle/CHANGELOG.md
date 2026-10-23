@@ -15,8 +15,14 @@
    under the License.
 -->
 
+# 10.3.0
+
+- Added DRL Editor extension (`kie-group.drl-vscode-extension`) to bundle dependencies.
+- Bump minimum supported VS Code version (`engines.vscode`) to `^1.103.0`.
+
 Please refer to:
 
 - https://marketplace.visualstudio.com/items/kie-group.bpmn-vscode-extension/changelog
 - https://marketplace.visualstudio.com/items/kie-group.dmn-vscode-extension/changelog
+- https://marketplace.visualstudio.com/items/kie-group.drl-vscode-extension/changelog
 - https://marketplace.visualstudio.com/items/kie-group.extended-services-vscode-extension/changelog

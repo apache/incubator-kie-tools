@@ -19,14 +19,46 @@
 
 package org.drools.completion;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.completion.fixtures.InitProbe;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassMemberIndexTest {
+
+    /**
+     * A link error can be transient — a dependency jar being rewritten by a
+     * build running alongside the editor is the ordinary case — so it must not
+     * write the name off for the rest of the index's life. Only a genuine "not
+     * on the classpath" answer is worth remembering, because a name that cannot
+     * be loaded also reports "unverifiable" to the unknown-type lint.
+     */
+    @Test
+    void aTransientLinkFailureIsRetried() {
+        String fqcn = "org.drools.completion.fixtures.Pet";
+        AtomicBoolean failNextLoad = new AtomicBoolean(true);
+        ClassLoader flaky = new ClassLoader(getClass().getClassLoader()) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                if (fqcn.equals(name) && failNextLoad.getAndSet(false)) {
+                    throw new NoClassDefFoundError("jar being rewritten");
+                }
+                return super.loadClass(name);
+            }
+        };
+        ClassMemberIndex index = new ClassMemberIndex(flaky);
+
+        assertTrue(index.membersOf(fqcn).isEmpty(), "the failed attempt yields nothing");
+        assertThat(index.membersOf(fqcn)).as("and the name is not written off").isNotEmpty();
+    }
 
     private final ClassMemberIndex index =
             new ClassMemberIndex(getClass().getClassLoader());
@@ -98,7 +130,8 @@ class ClassMemberIndexTest {
     @Test
     void unknownClassYieldsNoMembers() {
         assertThat(index.membersOf("does.not.Exist")).isEmpty();
-        // Negative result is cached and stays consistent.
+        // The failed load is memoized (not the empty result itself); repeated
+        // lookups skip Class.forName but keep returning the same empty list.
         assertThat(index.membersOf("does.not.Exist")).isEmpty();
     }
 
@@ -117,5 +150,160 @@ class ClassMemberIndexTest {
 
         assertThat(borrowed.loadClass("java.lang.String")).isNotNull();
         ClassMemberIndex.empty().close(); // must not throw
+    }
+
+    // ── static view (Type.NAME position) ─────────────────────────────────
+
+    private static final String ROUNDING = "org.drools.completion.fixtures.Rounding";
+
+    @Test
+    void staticFieldsCarryTheirTypes() {
+        List<Field> statics = index.staticFieldsOf(ROUNDING);
+
+        assertThat(statics).extracting(f -> f.name).contains("SCALE", "MODE");
+        assertThat(statics).anySatisfy(f -> {
+            assertThat(f.name).isEqualTo("SCALE");
+            assertThat(f.type).isEqualTo("int");
+        });
+    }
+
+    /** The two views are disjoint: a static is not a fact property, and vice versa. */
+    @Test
+    void staticAndInstanceViewsDoNotLeakIntoEachOther() {
+        assertThat(index.staticFieldsOf(ROUNDING)).extracting(f -> f.name)
+                .doesNotContain("applied", "label", "getLabel");
+        assertThat(index.membersOf(ROUNDING)).extracting(f -> f.name)
+                .contains("applied", "label")
+                .doesNotContain("SCALE", "MODE");
+    }
+
+    @Test
+    void staticMethodsAreReportedAsSignatures() {
+        List<String> methods = index.staticMethodsOf(ROUNDING);
+
+        assertThat(methods).contains("roundHalfUp(double) : int", "describe(int, String) : String",
+                "join(String, String...) : String");
+        assertThat(methods).noneMatch(m -> m.startsWith("getLabel"));
+        assertThat(index.constructorsOf(ROUNDING)).containsExactly("Rounding(String...)");
+    }
+
+    /** Enum constants are public static fields, so they belong to the static view too. */
+    @Test
+    void enumConstantsAppearAsStaticFields() {
+        assertThat(index.staticFieldsOf("org.drools.completion.fixtures.PetKind"))
+                .extracting(f -> f.name).contains("CAT", "DOG");
+    }
+
+    @Test
+    void staticViewOfUnknownTypeIsEmpty() {
+        assertThat(index.staticFieldsOf("does.not.Exist")).isEmpty();
+        assertThat(index.staticMethodsOf("does.not.Exist")).isEmpty();
+        assertThat(ClassMemberIndex.empty().staticFieldsOf(ROUNDING)).isEmpty();
+    }
+
+    @Test
+    void staticViewFallsBackToSourceWhenClassNotLoadable() {
+        ClassMemberIndex idx = new ClassMemberIndex(getClass().getClassLoader());
+        idx.setSourceFallback(fakeSource());
+
+        assertEquals(List.of("LIMIT"),
+                idx.staticFieldsOf("com.example.Only").stream().map(f -> f.name).toList());
+        assertEquals(List.of("of(String) : Only"), idx.staticMethodsOf("com.example.Only"));
+    }
+
+    /** Reading a static's type must not initialize the class. */
+    @Test
+    void staticViewDoesNotRunStaticInitializers() {
+        index.staticFieldsOf("org.drools.completion.fixtures.Pet");
+        index.staticMethodsOf("org.drools.completion.fixtures.Pet");
+        assertThat(InitProbe.petInitialized).isFalse();
+    }
+
+    private JavaMemberSource fakeSource() {
+        return new JavaMemberSource() {
+            public List<Field> staticFieldsOf(String fqcn) {
+                return "com.example.Only".equals(fqcn)
+                    ? List.of(new Field("LIMIT", "int", null, Field.Origin.FIELD))
+                    : List.of();
+            }
+            public List<String> staticMethodsOf(String fqcn) {
+                return "com.example.Only".equals(fqcn) ? List.of("of(String) : Only") : List.of();
+            }
+            public List<Field> membersOf(String fqcn) {
+                return "com.example.Only".equals(fqcn)
+                    ? List.of(new Field("code", "String", null, Field.Origin.FIELD),
+                              new Field("active", "boolean", null, Field.Origin.GETTER))
+                    : List.of();
+            }
+            public Set<String> memberNames(String fqcn) {
+                return "com.example.Only".equals(fqcn) ? Set.of("code", "active") : null;
+            }
+            public List<String> supertypesOf(String fqcn) {
+                // FQCN, per the JavaMemberSource contract: resolvable supertypes only.
+                return "com.example.Only".equals(fqcn) ? List.of("com.example.Base") : List.of();
+            }
+            public List<String> constructorsOf(String fqcn) {
+                return "com.example.Only".equals(fqcn) ? List.of("Only(String)") : List.of();
+            }
+        };
+    }
+
+    @Test
+    void reflectsConstructorsForClasspathType() {
+        ClassMemberIndex idx = new ClassMemberIndex(getClass().getClassLoader());
+        List<String> ctors = idx.constructorsOf("java.lang.String");
+        assertTrue(ctors.stream().anyMatch(c -> c.startsWith("String(")),
+            () -> "ctors=" + ctors);
+    }
+
+    @Test
+    void tagsMemberOrigins() {
+        ClassMemberIndex idx = new ClassMemberIndex(getClass().getClassLoader());
+        // java.awt.Point's getX()/getY()/getLocation() are bean-property getters that
+        // win over the same-named fields x,y (DRL property access binds to bean
+        // properties, so the getter-derived view is the semantically correct one).
+        List<Field> pointMembers = idx.membersOf("java.awt.Point");
+        assertTrue(pointMembers.stream().anyMatch(f -> f.name.equals("x") && f.origin == Field.Origin.GETTER));
+        assertTrue(pointMembers.stream().anyMatch(f -> f.name.equals("location") && f.origin == Field.Origin.GETTER));
+        // Pet.legs has no getter, so it surfaces as a plain FIELD.
+        List<Field> petMembers = idx.membersOf("org.drools.completion.fixtures.Pet");
+        assertTrue(petMembers.stream().anyMatch(f -> f.name.equals("legs") && f.origin == Field.Origin.FIELD));
+    }
+
+    @Test
+    void fallsBackToSourceWhenClassNotLoadable() {
+        ClassMemberIndex idx = new ClassMemberIndex(getClass().getClassLoader());
+        idx.setSourceFallback(fakeSource());
+        // com.example.Only is not on the test classpath -> reflection miss -> fallback
+        assertTrue(idx.membersOf("com.example.Only").stream().anyMatch(f -> f.name.equals("code")));
+        assertEquals(Set.of("code", "active"), idx.memberNames("com.example.Only"));
+        assertEquals(List.of("com.example.Base"), idx.supertypesOf("com.example.Only"));
+        assertEquals(List.of("Only(String)"), idx.constructorsOf("com.example.Only"));
+    }
+
+    @Test
+    void compiledWinsOverSource() {
+        ClassMemberIndex idx = new ClassMemberIndex(getClass().getClassLoader());
+        idx.setSourceFallback(fakeSource());
+        // java.lang.String IS loadable -> fallback never consulted (fake returns empty for it anyway;
+        // assert we get real reflected members, not the fake's)
+        assertTrue(idx.memberNames("java.lang.String").contains("CASE_INSENSITIVE_ORDER"));
+    }
+
+    @Test
+    void memberNamesStillNullWhenNeitherKnows() {
+        ClassMemberIndex idx = new ClassMemberIndex(getClass().getClassLoader());
+        idx.setSourceFallback(fakeSource());
+        assertNull(idx.memberNames("com.nope.Nothing"));
+    }
+
+    @Test
+    void sourceOnlyWorkspaceUsesFallback() {
+        // Zero classpath entries -> the works-before-build scenario. of() must not
+        // hand back the shared empty() singleton, or a later setSourceFallback would
+        // silently no-op.
+        ClassMemberIndex idx = ClassMemberIndex.of(Set.<Path>of());
+        idx.setSourceFallback(fakeSource());
+        assertTrue(idx.membersOf("com.example.Only").stream().anyMatch(f -> f.name.equals("code")));
     }
 }

@@ -1,0 +1,297 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.drools.completion;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+
+class JavaSourceTypeParserTest {
+
+    private JavaSourceType only(String src) {
+        List<JavaSourceType> ts = JavaSourceTypeParser.parse(src);
+        assertEquals(1, ts.size(), () -> "expected exactly one top-level type, got " + ts.size());
+        return ts.get(0);
+    }
+
+    private Optional<Field> member(JavaSourceType t, String name) {
+        return t.members.stream().filter(f -> f.name.equals(name)).findFirst();
+    }
+
+    /**
+     * Reflection lists instance members: it filters static fields out and its
+     * property scan rejects static methods. A static offered as a fact property
+     * before a build and withdrawn after it is worse than never offering it,
+     * because a rule written against it does not compile.
+     */
+    @Test
+    void staticMembersAreNotFactProperties() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String VERSION = \"1\";\n"
+            + "  public int id;\n"
+            + "  public static String getBuild() { return \"b\"; }\n"
+            + "  public String getCode() { return \"c\"; }\n"
+            + "}\n");
+
+        assertTrue(member(t, "id").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "code").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "VERSION").isEmpty(),
+            () -> "a static field is not a fact property: " + t.members);
+        assertTrue(member(t, "build").isEmpty(),
+            () -> "nor is a static getter: " + t.members);
+    }
+
+    /** The other half of that split: what {@code Type.NAME} can reach. */
+    @Test
+    void staticFieldsAndMethodsAreCapturedWithTypes() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String VERSION = \"1\";\n"
+            + "  public static final int LIMIT = 10;\n"
+            + "  public int id;\n"
+            + "  public static Order of(String code, int qty) { return null; }\n"
+            + "  public String getCode() { return \"c\"; }\n"
+            + "}\n");
+
+        assertEquals(List.of("VERSION", "LIMIT"),
+            t.staticFields.stream().map(f -> f.name).toList());
+        assertEquals("String", t.staticFields.get(0).type);
+        assertEquals("int", t.staticFields.get(1).type);
+        assertEquals(List.of("of(String, int) : Order"), t.staticMethods);
+    }
+
+    /**
+     * An interface field is implicitly {@code public static final}, so it is a
+     * constant rather than a fact property — which is how reflection reports it
+     * once the interface is compiled.
+     */
+    @Test
+    void interfaceConstantsAreStaticsNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public interface Limits {\n"
+            + "  int MAX = 10;\n"
+            + "  String getName();\n"
+            + "}\n");
+
+        assertEquals(List.of("MAX"), t.staticFields.stream().map(f -> f.name).toList());
+        assertTrue(member(t, "MAX").isEmpty(), () -> "members=" + t.members);
+        assertTrue(member(t, "name").isPresent(), () -> "members=" + t.members);
+    }
+
+    /**
+     * A static interface method is implicitly public and reachable as
+     * {@code Type.name()}, which is how reflection reports it; a private one is
+     * neither, and a static getter is not a property.
+     */
+    @Test
+    void interfaceStaticMethodsAreCapturedAndAreNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public interface Limits {\n"
+            + "  int MAX = 10;\n"
+            + "  static Limits of(int max) { return null; }\n"
+            + "  static String getLabel() { return \"l\"; }\n"
+            + "  private static int hidden() { return 0; }\n"
+            + "  String getName();\n"
+            + "}\n");
+
+        assertEquals(List.of("of(int) : Limits", "getLabel() : String"), t.staticMethods);
+        assertTrue(member(t, "label").isEmpty(), () -> "a static getter is not a member: " + t.members);
+        assertTrue(member(t, "name").isPresent(), () -> "members=" + t.members);
+    }
+
+    /** A record body may declare statics and extra constructors beside the canonical one. */
+    @Test
+    void recordStaticsAndConstructorsAreCapturedBesideItsComponents() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public record Point(int x, int y) {\n"
+            + "  public static final Point ORIGIN = new Point(0, 0);\n"
+            + "  public static Point of(int x, int y) { return new Point(x, y); }\n"
+            + "  public Point(int both) { this(both, both); }\n"
+            + "}\n");
+
+        assertEquals(List.of("ORIGIN"), t.staticFields.stream().map(f -> f.name).toList());
+        assertEquals("Point", t.staticFields.get(0).type);
+        assertEquals(List.of("of(int, int) : Point"), t.staticMethods);
+        assertEquals(List.of("Point(int, int)", "Point(int)"), t.constructors);
+        assertTrue(member(t, "x").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "ORIGIN").isEmpty(), () -> "members=" + t.members);
+    }
+
+    /** Reflection renders an array type as {@code String[]}, so the source view must as well. */
+    @Test
+    void arrayTypesKeepTheirDimensions() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static final String[] NAMES = {};\n"
+            + "  public int[][] grid;\n"
+            + "  public static java.util.List<String>[] buckets(int[] sizes, String[] tags) { return null; }\n"
+            + "  public String[] getTags() { return null; }\n"
+            + "}\n");
+
+        assertEquals("String[]", t.staticFields.get(0).type);
+        assertEquals("int[][]", member(t, "grid").orElseThrow().type);
+        assertEquals("String[]", member(t, "tags").orElseThrow().type);
+        assertEquals(List.of("buckets(int[], String[]) : List[]"), t.staticMethods);
+    }
+
+    /** Java also lets the brackets follow the name; reflection reports the same array type. */
+    @Test
+    void declaratorLevelBracketsCountTowardTheType() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public static String NAMES[] = {};\n"
+            + "  public int a[], b[][];\n"
+            + "  public static int grid(String rows[])[] { return null; }\n"
+            + "  public String getTags()[] { return null; }\n"
+            + "}\n");
+
+        assertEquals("String[]", t.staticFields.get(0).type);
+        assertEquals("int[]", member(t, "a").orElseThrow().type);
+        assertEquals("int[][]", member(t, "b").orElseThrow().type);
+        assertEquals(List.of("grid(String[]) : int[]"), t.staticMethods);
+        assertEquals("String[]", member(t, "tags").orElseThrow().type);
+    }
+
+    @Test
+    void interfaceConstantBracketsCountTowardTheType() {
+        JavaSourceType t = only(
+            "package com.example;\npublic interface Limits {\n  int LIMITS[] = {};\n}\n");
+
+        assertEquals("int[]", t.staticFields.get(0).type);
+    }
+
+    /** A constant is reachable as a member of its enum and as {@code Enum.NAME}. */
+    @Test
+    void enumConstantsAppearInBothViews() {
+        JavaSourceType t = only(
+            "package com.example;\npublic enum Severity { LOW, HIGH }\n");
+
+        assertEquals(List.of("LOW", "HIGH"), t.staticFields.stream().map(f -> f.name).toList());
+        assertTrue(member(t, "LOW").isPresent(), () -> "members=" + t.members);
+    }
+
+    /**
+     * Reflection reports public methods and public constructors only, so the
+     * source view must not offer more than the compiled view will: a member that
+     * appears before a build and vanishes after it is worse than one that never
+     * appeared, and hover's Constructors section would otherwise name a
+     * constructor the author cannot call.
+     */
+    @Test
+    void nonPublicGettersAndConstructorsAreNotMembers() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Order {\n"
+            + "  public int id;\n"
+            + "  private String secret;\n"
+            + "  private String getSecret() { return secret; }\n"
+            + "  public String getCode() { return \"c\"; }\n"
+            + "  private Order() { }\n"
+            + "  public Order(int id) { }\n"
+            + "}\n");
+
+        assertTrue(member(t, "id").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "code").isPresent(), () -> "members=" + t.members);
+        assertTrue(member(t, "secret").isEmpty(),
+            () -> "a non-public getter must not be a member: " + t.members);
+        assertEquals(List.of("Order(int)"), t.constructors);
+    }
+
+    @Test
+    void parsesClassFieldsGettersAndFqcn() {
+        JavaSourceType t = only(
+            "package com.example.model;\n"
+            + "public class Patient {\n"
+            + "  private String name;\n"
+            + "  public int ageYears;\n"
+            + "  public String getName() { return name; }\n"
+            + "  public boolean isActive() { return true; }\n"
+            + "  public Patient(String name, int ageYears) { }\n"
+            + "}\n");
+        assertEquals("com.example.model.Patient", t.fqcn);
+        assertEquals("Patient", t.simpleName);
+        assertEquals(Field.Origin.GETTER, member(t, "name").orElseThrow().origin);
+        assertEquals("int", member(t, "ageYears").orElseThrow().type);
+        assertEquals(Field.Origin.GETTER, member(t, "active").orElseThrow().origin);
+        assertTrue(t.constructors.contains("Patient(String, int)"),
+            () -> "constructors=" + t.constructors);
+    }
+
+    @Test
+    void parsesEnumConstantsWithArgs() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public enum Severity {\n"
+            + "  LOW(1), HIGH(3);\n"
+            + "  private final int weight;\n"
+            + "  Severity(int weight) { this.weight = weight; }\n"
+            + "  public int getWeight() { return weight; }\n"
+            + "}\n");
+        assertTrue(t.isEnum);
+        Field low = member(t, "LOW").orElseThrow();
+        assertEquals(Field.Origin.ENUM_CONSTANT, low.origin);
+        assertEquals("1", low.args);
+        assertEquals("Severity", low.type);
+        assertEquals(Field.Origin.GETTER, member(t, "weight").orElseThrow().origin);
+    }
+
+    @Test
+    void parsesInterfaceAndRecordNames() {
+        assertEquals("com.example.Repo", only(
+            "package com.example;\npublic interface Repo { String id(); }\n").fqcn);
+        JavaSourceType rec = only(
+            "package com.example;\npublic record Point(int x, int y) { }\n");
+        assertEquals("com.example.Point", rec.fqcn);
+        assertEquals("int", member(rec, "x").orElseThrow().type);
+        assertTrue(rec.constructors.contains("Point(int, int)"),
+            () -> "constructors=" + rec.constructors);
+    }
+
+    @Test
+    void capturesExtendsAndPosition() {
+        JavaSourceType t = only(
+            "package com.example;\n"
+            + "public class Child extends com.example.Parent {\n"
+            + "}\n");
+        assertEquals("Parent", t.extendsSimpleName);
+        assertEquals(1, t.declLine); // 0-based; "public class Child" is line index 1
+    }
+
+    @Test
+    void toleratesGarbageAndDefaultPackage() {
+        assertTrue(JavaSourceTypeParser.parse("").isEmpty());
+        // Garbage must not throw; what it returns is not specified.
+        assertDoesNotThrow(() -> JavaSourceTypeParser.parse("this is not java {{{"));
+        JavaSourceType t = only("public class NoPkg { int x; }");
+        assertEquals("NoPkg", t.fqcn); // default package => fqcn == simpleName
+    }
+}

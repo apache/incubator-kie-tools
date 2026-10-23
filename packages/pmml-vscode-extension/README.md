@@ -17,7 +17,7 @@
 
 ## Apache KIE™ PMML Scorecard Editor
 
-![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.67.0+-blue.svg)
+![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.103.0+-blue.svg)
 ![github-ci](https://github.com/apache/incubator-kie-tools/actions/workflows/ci_build.yml/badge.svg)
 
 ### **This is a pre-release version to seek feedback from the community**

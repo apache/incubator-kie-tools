@@ -104,7 +104,12 @@ public final class DRLInlayHintHelper {
         Map<String, String> accum = AccumulateFunctionTypes.get();
         List<InlayHint> hints = new ArrayList<>();
 
-        Matcher ruleMatch = RULE_BLOCK.matcher(text);
+        // Scanned with comments and string literals blanked out, so a "then"
+        // inside either does not end a rule's condition early. The mask keeps
+        // the text's length, so every offset below still indexes into text
+        // itself; it also stops a $name inside a comment or literal being
+        // mistaken for a usage worth annotating.
+        Matcher ruleMatch = RULE_BLOCK.matcher(LhsBindingResolver.maskCommentsAndStrings(text));
         while (ruleMatch.find()) {
             String whenSection = ruleMatch.group(1);
             String thenSection = ruleMatch.group(2);
@@ -171,7 +176,7 @@ public final class DRLInlayHintHelper {
      * {@link Position} (zero-based line + UTF-16 character offset on that line).
      * DRL files are ASCII in practice, so character offset matches code units.
      */
-    static Position offsetToPosition(String text, int offset) {
+    public static Position offsetToPosition(String text, int offset) {
         int safe = Math.max(0, Math.min(offset, text.length()));
         int line = 0;
         int lastNewline = -1;

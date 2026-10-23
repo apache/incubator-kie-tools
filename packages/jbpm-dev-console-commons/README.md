@@ -22,7 +22,7 @@
 Framework-agnostic code shared by the jBPM development consoles:
 
 - [`jbpm-quarkus-devui`](../jbpm-quarkus-devui) (Quarkus Dev UI extension)
-- [`jbpm-addons-springboot-dev-console`](../jbpm-addons-springboot-dev-console) (Spring Boot Dev Console)
+- [`jbpm-spring-boot-dev-console`](../jbpm-spring-boot-dev-console) (Spring Boot Dev Console)
 
 It contains the custom forms support (`FormsStorage` and its filesystem-backed implementation, plus the form model classes
 serialized by the `/forms` REST APIs) and the `User` model used to initialize the Dev UI webapp's user switcher.

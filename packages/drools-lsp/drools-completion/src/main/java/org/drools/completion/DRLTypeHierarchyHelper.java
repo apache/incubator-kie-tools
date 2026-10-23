@@ -39,8 +39,11 @@ import org.eclipse.lsp4j.TypeHierarchyItem;
  * <ul>
  *   <li><b>Prepare</b> resolves the identifier at the caret to its declaration:
  *       a DRL {@code declare} (current doc or sibling) → its {@code .drl}
- *       declare-site; or a classpath type → its project {@code .java} source
- *       (navigable only — JAR-only types resolve to nothing).</li>
+ *       declare-site; or a classpath type → its project {@code .java} source,
+ *       compiled-first, falling back to a source-parsed location (pre-build)
+ *       when the type has no compiled {@code .class} yet — see
+ *       {@link JavaSourceTypeIndex} (navigable only — JAR-only types with no
+ *       project source resolve to nothing).</li>
  *   <li><b>Supertypes</b>: a declare's {@code extends} parent (declare → {@code .drl},
  *       Java parent → reflected ancestry, navigable-only); a classpath type's
  *       direct superclass + interfaces via {@link ClassMemberIndex#supertypesOf}.</li>
@@ -78,7 +81,7 @@ public final class DRLTypeHierarchyHelper {
      */
     public static List<TypeHierarchyItem> prepare(String text, Position position, String uri,
                                                   Map<Path, String> openFiles, ClassIndex classIndex,
-                                                  Set<Path> buildOutputDirs) {
+                                                  Set<Path> buildOutputDirs, JavaSourceTypeIndex sourceIndex) {
         try {
             if (text == null || position == null) {
                 return Collections.emptyList();
@@ -92,7 +95,7 @@ public final class DRLTypeHierarchyHelper {
                 return Collections.singletonList(declareItem(declared));
             }
             TypeHierarchyItem classpath = classpathItem(
-                    DRLDefinitionHelper.resolveFqcn(text, word, classIndex), buildOutputDirs);
+                    DRLDefinitionHelper.resolveFqcn(text, word, classIndex), buildOutputDirs, sourceIndex);
             return classpath == null ? Collections.emptyList() : Collections.singletonList(classpath);
         } catch (Exception e) {
             logger.fine(() -> "prepareTypeHierarchy failed: " + e.getMessage());
@@ -106,14 +109,15 @@ public final class DRLTypeHierarchyHelper {
      */
     public static List<TypeHierarchyItem> supertypes(TypeHierarchyItem item, String declaringText,
                                                      Map<Path, String> openFiles, ClassIndex classIndex,
-                                                     ClassMemberIndex memberIndex, Set<Path> buildOutputDirs) {
+                                                     ClassMemberIndex memberIndex, Set<Path> buildOutputDirs,
+                                                     JavaSourceTypeIndex sourceIndex) {
         try {
             String fqcn = fqcnData(item);
             if (fqcn != null) {
                 // Classpath type: direct superclass + interfaces, navigable-only.
                 List<TypeHierarchyItem> out = new ArrayList<>();
                 for (String parent : memberIndex.supertypesOf(fqcn)) {
-                    TypeHierarchyItem parentItem = classpathItem(parent, buildOutputDirs);
+                    TypeHierarchyItem parentItem = classpathItem(parent, buildOutputDirs, sourceIndex);
                     if (parentItem != null) {
                         out.add(parentItem);
                     }
@@ -130,7 +134,8 @@ public final class DRLTypeHierarchyHelper {
                 return Collections.singletonList(declareItem(parentDeclare));
             }
             TypeHierarchyItem classpathParent = classpathItem(
-                    DRLDefinitionHelper.resolveFqcn(declaringText, self.extendsName, classIndex), buildOutputDirs);
+                    DRLDefinitionHelper.resolveFqcn(declaringText, self.extendsName, classIndex),
+                    buildOutputDirs, sourceIndex);
             return classpathParent == null ? Collections.emptyList()
                     : Collections.singletonList(classpathParent);
         } catch (Exception e) {
@@ -217,17 +222,40 @@ public final class DRLTypeHierarchyHelper {
         return item;  // data left null → re-resolved from uri + name
     }
 
-    /** Builds a navigable classpath item, or {@code null} when no project source resolves. */
-    private static TypeHierarchyItem classpathItem(String fqcn, Set<Path> buildOutputDirs) {
+    /**
+     * Builds a navigable classpath item: a compiled {@code .class}'s project
+     * source first, else — when no {@code .class} exists yet (pre-build) —
+     * {@code sourceIndex}'s parsed location; {@code null} when neither
+     * resolves.
+     */
+    private static TypeHierarchyItem classpathItem(String fqcn, Set<Path> buildOutputDirs,
+                                                    JavaSourceTypeIndex sourceIndex) {
         if (fqcn == null) {
             return null;
         }
         JavaSourceLocator.Result res = JavaSourceLocator.locate(fqcn, buildOutputDirs);
-        if (res == null) {
+        if (res != null) {
+            TypeHierarchyItem item = new TypeHierarchyItem(simpleName(fqcn), res.kind,
+                    res.location.getUri(), res.location.getRange(), res.location.getRange());
+            item.setData(fqcn);
+            item.setDetail(fqcn);
+            return item;
+        }
+        return sourceItem(fqcn, sourceIndex);
+    }
+
+    /** As the source-index branch of {@link #classpathItem}; {@code null} when {@code fqcn} is unindexed. */
+    private static TypeHierarchyItem sourceItem(String fqcn, JavaSourceTypeIndex sourceIndex) {
+        Path file = sourceIndex.fileOf(fqcn);
+        JavaSourceType type = sourceIndex.byFqcn(fqcn);
+        if (file == null || type == null) {
             return null;
         }
-        TypeHierarchyItem item = new TypeHierarchyItem(simpleName(fqcn), res.kind,
-                res.location.getUri(), res.location.getRange(), res.location.getRange());
+        Range range = new Range(new Position(type.declLine, type.declColumn),
+                                new Position(type.declLine, type.declColumn + type.simpleName.length()));
+        SymbolKind kind = type.isEnum ? SymbolKind.Enum : SymbolKind.Class;
+        TypeHierarchyItem item = new TypeHierarchyItem(type.simpleName, kind,
+                file.toUri().toString(), range, range);
         item.setData(fqcn);
         item.setDetail(fqcn);
         return item;

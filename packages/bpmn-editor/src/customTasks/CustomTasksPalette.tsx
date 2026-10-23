@@ -28,7 +28,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useBpmnEditorI18n } from "../i18n";
 
-export function CustomTasksPalette({ onDragStart }: { onDragStart: any }) {
+export function CustomTasksPalette({ onDragStart, onDragEnd }: { onDragStart: any; onDragEnd: any }) {
   const { i18n } = useBpmnEditorI18n();
   const { customTasks } = useCustomTasks();
 
@@ -63,6 +63,7 @@ export function CustomTasksPalette({ onDragStart }: { onDragStart: any }) {
                 gap={{ default: "gapSm" }}
                 draggable={true}
                 onDragStart={(event) => onDragStart(event, NODE_TYPES.task, "task", customTask.produce())}
+                onDragEnd={onDragEnd}
                 role="button"
               >
                 <FlexItem>{customTask.iconSvgElement}</FlexItem>

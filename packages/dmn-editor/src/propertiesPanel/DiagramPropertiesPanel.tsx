@@ -23,6 +23,7 @@ import { DrawerHead, DrawerPanelContent } from "@patternfly/react-core/dist/js/c
 import { GlobalDiagramProperties } from "./GlobalDiagramProperties";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { MultipleNodeProperties } from "./MultipleNodeProperties";
+import { SingleEdgeProperties } from "./SingleEdgeProperties";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./DiagramPropertiesPanel.css";
@@ -32,6 +33,9 @@ export function DiagramPropertiesPanel() {
   const { externalModelsByNamespace } = useExternalModels();
   const selectedNodesById = useDmnEditorStore(
     (s) => s.computed(s).getDiagramData(externalModelsByNamespace).selectedNodesById
+  );
+  const selectedEdgesById = useDmnEditorStore(
+    (s) => s.computed(s).getDiagramData(externalModelsByNamespace).selectedEdgesById
   );
 
   return (
@@ -50,9 +54,12 @@ export function DiagramPropertiesPanel() {
       }}
     >
       <DrawerHead>
-        {selectedNodesById.size <= 0 && <GlobalDiagramProperties />}
+        {selectedNodesById.size <= 0 && selectedEdgesById.size <= 0 && <GlobalDiagramProperties />}
         {selectedNodesById.size === 1 && <SingleNodeProperties nodeId={[...selectedNodesById.keys()][0]} />}
         {selectedNodesById.size > 1 && <MultipleNodeProperties nodeIds={[...selectedNodesById.keys()]} />}
+        {selectedNodesById.size <= 0 && selectedEdgesById.size === 1 && (
+          <SingleEdgeProperties edgeId={[...selectedEdgesById.keys()][0]} />
+        )}
       </DrawerHead>
     </DrawerPanelContent>
   );

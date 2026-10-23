@@ -20,6 +20,7 @@
 import { test, expect } from "../__fixtures__/base";
 import { ExternalFile } from "../__fixtures__/files";
 import { NodeType } from "../__fixtures__/nodes";
+import { withSortedAttributes } from "../__fixtures__/prettier";
 
 test.describe("DMN Editor - Standalone - API", () => {
   test.describe("getContent", () => {
@@ -31,8 +32,12 @@ test.describe("DMN Editor - Standalone - API", () => {
     test("should get DMN contents of input DMN file", async ({ editor, files }) => {
       await editor.setContent("loanPreQualification.dmn", await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN));
       await expect(editor.get().getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
-      expect(await editor.getFormattedContent()).toEqual(
-        await files.getFormattedFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN)
+      // Attribute order is normalized on both sides. `DOMParser` implementations report an element's attributes in
+      // different orders, and the marshaller serializes them in whatever order it received, so the exact bytes depend
+      // on the browser. Chrome 153 started sorting namespace declarations, which is what made this assertion fail.
+      // Everything else is still compared exactly. See `withSortedAttributes`.
+      expect(withSortedAttributes(await editor.getFormattedContent())).toEqual(
+        withSortedAttributes(await files.getFormattedFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN))
       );
     });
 

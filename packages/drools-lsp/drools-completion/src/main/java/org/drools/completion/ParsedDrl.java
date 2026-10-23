@@ -24,7 +24,7 @@ import java.util.List;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.drools.drl.parser.antlr4.DRL10Parser;
-import org.drools.drl.parser.antlr4.DRLParserHelper;
+import org.drools.drl.parser.antlr4.DRL10ParserHelper;
 import org.eclipse.lsp4j.Position;
 
 /**
@@ -85,7 +85,7 @@ final class ParsedDrl {
      * after), or {@code null} when {@code position} resolves to no token.
      */
     Integer tokenIndexAt(Position position) {
-        return DRLParserHelper.computeTokenIndex(
+        return DRL10ParserHelper.computeTokenIndex(
                 parser, position.getLine() + 1, position.getCharacter());
     }
 

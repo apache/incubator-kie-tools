@@ -73,7 +73,7 @@ quarkus.http.auth.permission.public.policy=permit
 > In both cases, if using CORS, remember to allow the Management Console origin:
 >
 > ```properties
-> quarkus.http.cors=true
+> quarkus.http.cors.enabled=true
 > quarkus.http.cors.origins=<MANAGEMENT_CONSOLE_ORIGIN> # Using `*` will allow all origins.
 > ```
 

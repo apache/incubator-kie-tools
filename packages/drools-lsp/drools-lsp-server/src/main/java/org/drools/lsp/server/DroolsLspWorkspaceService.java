@@ -24,6 +24,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import org.drools.formatter.FormatterOptions;
 import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
 import org.eclipse.lsp4j.services.WorkspaceService;
@@ -47,6 +50,46 @@ public class DroolsLspWorkspaceService implements WorkspaceService {
 
     @Override
     public void didChangeConfiguration(DidChangeConfigurationParams params) {
+        if (server.clientProvidesConfiguration()) {
+            server.pullSettings();
+            return;
+        }
+        Object settings = params == null ? null : params.getSettings();
+        FormatterOptions options = formatterOptionsIn(settings);
+        if (options != null) {
+            server.getTextDocumentService().setFormatterOptions(options);
+        }
+        JsonObject compile = lspSectionIn(settings, "compile");
+        if (compile != null) {
+            server.applyCompileSettings(compile);
+        }
+    }
+
+    static FormatterOptions formatterOptionsIn(Object settings) {
+        JsonObject formatter = lspSectionIn(settings, "formatter");
+        return formatter == null ? null : FormatterOptions.fromJson(formatter);
+    }
+
+    /**
+     * The named object under {@code drools.lsp} in a pushed didChangeConfiguration
+     * payload, or null. The walk is drools, lsp, name because that is how
+     * vscode-languageclient nests a pushed section
+     * ({@code SyncConfigurationFeature.extractSettingsInformation}).
+     */
+    static JsonObject lspSectionIn(Object settings, String name) {
+        if (!(settings instanceof JsonObject root)) {
+            return null;
+        }
+        JsonElement drools = root.get("drools");
+        if (!(drools instanceof JsonObject d)) {
+            return null;
+        }
+        JsonElement lsp = d.get("lsp");
+        if (!(lsp instanceof JsonObject l)) {
+            return null;
+        }
+        JsonElement section = l.get(name);
+        return section instanceof JsonObject s ? s : null;
     }
 
     @Override

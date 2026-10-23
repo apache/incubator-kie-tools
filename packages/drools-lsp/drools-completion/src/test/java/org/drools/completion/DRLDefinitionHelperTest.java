@@ -52,7 +52,7 @@ class DRLDefinitionHelperTest {
         // Caret on "Person" inside the pattern.
         List<Location> defs = DRLDefinitionHelper.findDefinitions(
                 "myDocument", DECLARE_DRL, new Position(8, 6),
-                ClassIndex.empty(), Set.of());
+                ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty());
 
         assertThat(defs).hasSize(1);
         Location loc = defs.get(0);
@@ -88,13 +88,76 @@ class DRLDefinitionHelperTest {
         // Caret on "Pet" in the pattern.
         List<Location> defs = DRLDefinitionHelper.findDefinitions(
                 "myDocument", drl, new Position(6, 5),
-                ClassIndex.empty(), Set.of(module.resolve("target/classes")));
+                ClassIndex.empty(), Set.of(module.resolve("target/classes")), JavaSourceTypeIndex.empty());
 
         assertThat(defs).hasSize(1);
         Location loc = defs.get(0);
         assertThat(loc.getUri()).isEqualTo(petJava.toUri().toString());
         assertThat(loc.getRange().getStart().getLine()).isEqualTo(1);
         assertThat(loc.getRange().getStart().getCharacter()).isEqualTo(13);
+    }
+
+    @Test
+    void javaSourceDefinitionFallsBackToSourceIndexBeforeBuild(@TempDir Path srcRoot) throws Exception {
+        // No target/classes at all — the type has never been compiled.
+        Path fooDir = srcRoot.resolve("com/example");
+        Files.createDirectories(fooDir);
+        Path fooJava = fooDir.resolve("Foo.java");
+        Files.writeString(fooJava, "package com.example;\npublic class Foo {\n}\n");
+
+        JavaSourceTypeIndex sourceIndex = JavaSourceTypeIndex.build(Set.of(srcRoot), List.of());
+
+        String drl = """
+                package demo;
+
+                import com.example.Foo;
+
+                rule R
+                  when
+                    Foo( )
+                  then
+                end
+                """;
+
+        // Caret on "Foo" in the pattern (line 6, col 5); buildOutputDirs is
+        // empty so JavaSourceLocator.locate has nothing to find.
+        List<Location> defs = DRLDefinitionHelper.findDefinitions(
+                "myDocument", drl, new Position(6, 5),
+                ClassIndex.empty(), Set.of(), sourceIndex);
+
+        assertThat(defs).hasSize(1);
+        Location loc = defs.get(0);
+        assertThat(loc.getUri()).isEqualTo(fooJava.toUri().toString());
+        assertThat(loc.getRange().getStart().getLine()).isEqualTo(1);
+        assertThat(loc.getRange().getStart().getCharacter()).isEqualTo(13);
+        assertThat(loc.getRange().getEnd().getCharacter()).isEqualTo(16);
+    }
+
+    @Test
+    void javaSourceDefinitionWithEmptySourceIndexYieldsNothing(@TempDir Path srcRoot) throws Exception {
+        Path fooDir = srcRoot.resolve("com/example");
+        Files.createDirectories(fooDir);
+        Files.writeString(fooDir.resolve("Foo.java"), "package com.example;\npublic class Foo {\n}\n");
+
+        String drl = """
+                package demo;
+
+                import com.example.Foo;
+
+                rule R
+                  when
+                    Foo( )
+                  then
+                end
+                """;
+
+        // Same shape as the fallback test, but with an empty source index and
+        // no build output — pre-existing "no navigable location" behavior.
+        List<Location> defs = DRLDefinitionHelper.findDefinitions(
+                "myDocument", drl, new Position(6, 5),
+                ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty());
+
+        assertThat(defs).isEmpty();
     }
 
     @Test
@@ -109,7 +172,7 @@ class DRLDefinitionHelperTest {
 
         List<Location> defs = DRLDefinitionHelper.findDefinitions(
                 "myDocument", DECLARE_DRL, new Position(8, 6),
-                ClassIndex.empty(), Set.of(module.resolve("target/classes")));
+                ClassIndex.empty(), Set.of(module.resolve("target/classes")), JavaSourceTypeIndex.empty());
 
         assertThat(defs).hasSize(1);
         assertThat(defs.get(0).getUri()).isEqualTo("myDocument");
@@ -126,7 +189,7 @@ class DRLDefinitionHelperTest {
 
         List<Location> defs = DRLDefinitionHelper.findDefinitions(
                 current.toUri().toString(), drl, new Position(3, 5),
-                ClassIndex.empty(), Set.of());
+                ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty());
 
         assertThat(defs).hasSize(1);
         assertThat(defs.get(0).getUri()).isEqualTo(types.toUri().toString());
@@ -151,7 +214,7 @@ class DRLDefinitionHelperTest {
         // Caret on "Person" inside the LHS // comment (line 6) — not a real use.
         List<Location> defs = DRLDefinitionHelper.findDefinitions(
                 "myDocument", drl, new Position(6, 9),
-                ClassIndex.empty(), Set.of());
+                ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty());
 
         assertThat(defs).isEmpty();
     }
@@ -160,7 +223,7 @@ class DRLDefinitionHelperTest {
     void unknownSymbolYieldsNoDefinitions() {
         List<Location> defs = DRLDefinitionHelper.findDefinitions(
                 "myDocument", DECLARE_DRL, new Position(8, 14),
-                ClassIndex.empty(), Set.of());
+                ClassIndex.empty(), Set.of(), JavaSourceTypeIndex.empty());
         // "name" is a field, not a definable type in v1.
         assertThat(defs).isEmpty();
     }
@@ -170,14 +233,16 @@ class DRLDefinitionHelperTest {
         // No siblings (non-file URI), so every parser built is for the current doc.
         DRLParsers.resetParseCount();
         DRLDefinitionHelper.findDefinitions(
-                "myDocument", DECLARE_DRL, new Position(8, 6), ClassIndex.empty(), Set.of());
+                "myDocument", DECLARE_DRL, new Position(8, 6), ClassIndex.empty(), Set.of(),
+                JavaSourceTypeIndex.empty());
         assertThat(DRLParsers.parseCount()).isEqualTo(1);
     }
 
     @Test
     void nullTextYieldsNoDefinitions() {
         assertThat(DRLDefinitionHelper.findDefinitions(
-                "myDocument", null, new Position(0, 0), ClassIndex.empty(), Set.of()))
+                "myDocument", null, new Position(0, 0), ClassIndex.empty(), Set.of(),
+                JavaSourceTypeIndex.empty()))
                 .isEmpty();
     }
 }
