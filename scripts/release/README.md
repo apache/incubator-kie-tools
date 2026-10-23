@@ -60,7 +60,7 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 
 ## Prerequisites
 
-- Node.js 22, pnpm, Go, Helm 3, Docker — depending on which components you need
+- Node.js 24, pnpm, Go, Helm 3, Docker — depending on which components you need
 - Repository bootstrapped: `pnpm bootstrap`
 - Credentials set as environment variables (only needed for `--publish`)
 
@@ -108,7 +108,6 @@ apache-kie-<version>-incubating-kogito-bundle-vscode-extension.vsix
 apache-kie-<version>-incubating-business-automation-bundle-vscode-extension.vsix
 apache-kie-<version>-incubating-extended-services-vscode-extension.vsix
 apache-kie-<version>-incubating-sandbox-webapp.zip
-apache-kie-<version>-incubating-business-automation-standalone-editors.zip
 apache-kie-<version>-incubating-sandbox-accelerator-quarkus.zip
 apache-kie-<version>-incubating-sandbox-helm-chart.tar.gz
 apache-kie-<version>-incubating-runtime-tools-console-helm-chart.tar.gz
