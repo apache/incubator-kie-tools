@@ -22,7 +22,7 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
 import { useCallback, useLayoutEffect } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { useBpmnEditorStore, useBpmnEditorStoreApi } from "../store/StoreContext";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";

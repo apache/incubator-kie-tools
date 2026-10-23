@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useState, useEffect, useRef, useMemo } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import {
   BpmnNodeElement,
   BpmnNodeType,

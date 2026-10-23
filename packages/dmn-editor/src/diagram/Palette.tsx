@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NodeType } from "./connections/graphStructure";
@@ -102,10 +102,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
-      const selectedNodes = rfStoreApi
-        .getState()
-        .getNodes()
-        .filter((s) => s.selected);
+      const selectedNodes = rfStoreApi.getState().nodes.filter((s) => s.selected);
 
       if (selectedNodes.length <= 0) {
         return;

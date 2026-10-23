@@ -17,13 +17,16 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { SnapGrid } from "../snapgrid/SnapGrid";
 import { DC__Point, DC__Shape } from "../maths/model";
 import { GraphStructureAdjacencyList, GraphStructureEdge } from "../graph/graph";
 import { ContainmentMode } from "../graph/graphStructure";
 
-export type XyFlowReactKieDiagramNodeData<N extends string, NData extends XyFlowReactKieDiagramNodeData<N, NData>> = {
+export type XyFlowReactKieDiagramNodeData<
+  N extends string,
+  NData extends XyFlowReactKieDiagramNodeData<N, NData>,
+> = Record<string, unknown> & {
   shape: DC__Shape;
   /**
    * We don't use Reactflow's parenting mechanism because it is
@@ -33,7 +36,7 @@ export type XyFlowReactKieDiagramNodeData<N extends string, NData extends XyFlow
   parentXyFlowNode: RF.Node<NData, N> | undefined;
 };
 
-export type XyFlowReactKieDiagramEdgeData = {
+export type XyFlowReactKieDiagramEdgeData = Record<string, unknown> & {
   edgeInfo: GraphStructureEdge;
   ["di:waypoint"]: DC__Point[];
   ["@_id"]: string;

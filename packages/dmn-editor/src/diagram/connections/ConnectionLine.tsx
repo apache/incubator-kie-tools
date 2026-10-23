@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { snapPoint } from "../SnapGrid";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import {
@@ -61,8 +61,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   );
 
   const { "@_x": fromX, "@_y": fromY } = getBoundsCenterPoint({
-    x: fromNode?.positionAbsolute?.x,
-    y: fromNode?.positionAbsolute?.y,
+    x: fromNode?.internals?.positionAbsolute?.x,
+    y: fromNode?.internals?.positionAbsolute?.y,
     width: fromNode?.width,
     height: fromNode?.height,
   });
