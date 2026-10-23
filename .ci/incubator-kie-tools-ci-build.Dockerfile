@@ -81,7 +81,7 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | 
 
 # Node setup
 RUN source $HOME/.nvm/nvm.sh && \
-    nvm install 24.21.0 && \
+    nvm install 24.13.0 && \
     sudo update-alternatives --install /usr/local/bin/node node $(which node) 1 && \
     sudo update-alternatives --install /usr/local/bin/npm npm $(which npm) 1
 
@@ -95,7 +95,7 @@ RUN curl -s "https://get.sdkman.io" | bash && \
     source "$HOME/.sdkman/bin/sdkman-init.sh" && \
     sdk install java 17.0.11-tem && \
     sudo update-alternatives --install /usr/local/bin/java java $(which java) 1 && \
-    sdk install maven 3.9.16 && \
+    sdk install maven 3.9.11 && \
     sudo update-alternatives --install /usr/local/bin/mvn mvn $(which mvn) 1 && \
     sdk flush
 
@@ -126,7 +126,7 @@ RUN wget https://get.helm.sh/helm-v3.15.2-linux-amd64.tar.gz -P /tmp && \
 ENV HOME="/home/nonrootuser"
 ENV JAVA_HOME="${HOME}/.sdkman/candidates/java/current/"
 ENV MAVEN_HOME="${HOME}/.sdkman/candidates/maven/current/"
-ENV NODE_HOME="${HOME}/.nvm/versions/node/v24.21.0"
+ENV NODE_HOME="${HOME}/.nvm/versions/node/v24.13.0"
 ENV DISPLAY=":99"
 ENV NODE_OPTIONS="--max_old_space_size=6144"
 ENV GOPATH="${HOME}/go"

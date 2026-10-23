@@ -204,7 +204,8 @@ release_chrome_extensions() {
 
         local tmp_kie="${ARTIFACTS_DIR}/kie-editors-tmp"
         mkdir -p "${tmp_kie}"
-        cp -r packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} "${tmp_kie}/"
+        [[ -d "packages/chrome-extension-pack-kogito-kie-editors/dist/fonts" ]] && cp -r packages/chrome-extension-pack-kogito-kie-editors/dist/fonts "${tmp_kie}/"
+        cp packages/chrome-extension-pack-kogito-kie-editors/dist/*-envelope.* "${tmp_kie}/" 2>/dev/null || true
         (cd "${tmp_kie}" && zip -r \
             "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension-editors.zip" .)
         rm -rf "${tmp_kie}"
@@ -534,7 +535,7 @@ release_github_pages() {
     echo "--- GitHub Pages / webapp / accelerator ---"
 
     if [[ "${SKIP_BUILD}" == "false" ]]; then
-        echo "Building online-editor, kie-editors-standalone, chrome-extension-pack-kogito-kie-editors, kie-sandbox-accelerator-quarkus..."
+        echo "Building online-editor, chrome-extension-pack-kogito-kie-editors, kie-sandbox-accelerator-quarkus..."
         export ONLINE_EDITOR__buildInfo="${VERSION}"
         export ONLINE_EDITOR__extendedServicesCompatibleVersion="${VERSION}"
         export ONLINE_EDITOR__devDeploymentBaseImageRegistry="docker.io"
@@ -551,7 +552,6 @@ release_github_pages() {
         export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag="${VERSION}"
         pnpm \
             -F "@kie-tools/online-editor..." \
-            -F "@kie-tools/kie-editors-standalone..." \
             -F "@kie-tools/chrome-extension-pack-kogito-kie-editors..." \
             -F "@kie-tools/kie-sandbox-accelerator-quarkus..." \
             build:prod
@@ -561,7 +561,6 @@ release_github_pages() {
         mkdir -p "${ARTIFACTS_DIR}"
         for src_path_suffix in \
             "packages/online-editor/dist:apache-kie-${VERSION}-incubating-sandbox-webapp.zip" \
-            "packages/kie-editors-standalone/dist:apache-kie-${VERSION}-incubating-business-automation-standalone-editors.zip" \
             "packages/kie-sandbox-accelerator-quarkus/dist:apache-kie-${VERSION}-incubating-sandbox-accelerator-quarkus.zip"
         do
             local src="${REPO_ROOT}/${src_path_suffix%%:*}"
@@ -612,8 +611,6 @@ release_github_pages() {
                 rm -rf editors/latest && ln -s "${VERSION}" editors/latest
                 cp -r "${online_dist}/." .
             fi
-            local standalone_dist="${REPO_ROOT}/packages/kie-editors-standalone/dist"
-            [[ -d "${standalone_dist}" ]] && cp -r "${standalone_dist}/." "editors/${VERSION}/"
             local chrome_dist="${REPO_ROOT}/packages/chrome-extension-pack-kogito-kie-editors/dist"
             if [[ -d "${chrome_dist}" ]]; then
                 local chrome_dir="chrome-extension/${VERSION}"
@@ -622,7 +619,7 @@ release_github_pages() {
                 cp "${chrome_dist}"/*-envelope.* "${chrome_dir}/" 2>/dev/null || true
             fi
             git add .
-            git commit -m "Deploy ${VERSION} (Online Editor + Standalone Editors + Chrome Extension editors)" \
+            git commit -m "Deploy ${VERSION} (Online Editor + Chrome Extension editors)" \
                 || echo "  (nothing to commit)"
             git push origin gh-pages
         )
