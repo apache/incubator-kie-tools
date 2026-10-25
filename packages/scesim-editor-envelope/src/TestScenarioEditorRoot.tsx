@@ -122,7 +122,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
-    const marshaller = this.getMarshaller(content);
+    const { marshaller, scesimModel } = this.getMarshallerAndModel(content);
 
     // Save stack
     let savedStackPointer: SceSimModel[] = [];
@@ -132,7 +132,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       savedStackPointer = [...prev.stack];
       return {
         error: undefined,
-        stack: [marshaller.parser.parse()],
+        stack: [scesimModel],
         openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
         pointer: 0,
       };
@@ -179,7 +179,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
 
   // Internal methods
 
-  private getMarshaller(content: string) {
+  private getMarshallerAndModel(content: string) {
     try {
       const marshaller = getMarshaller(content || EMPTY_ONE_EIGHT);
       const scesimModel = marshaller.parser.parse();
@@ -194,7 +194,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
         );
       }
 
-      return marshaller;
+      return { marshaller, scesimModel };
     } catch (e) {
       this.setState((s) => ({
         ...s,
