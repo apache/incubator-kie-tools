@@ -64,16 +64,19 @@ export function open(args: {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-    <script type="text/javascript">
-      ${dmnEnvelopeJs}
-    </script>
   </head>
   <body>
     <div id="envelope-app" />
   </body>
 </html>
   `;
+  // The envelope is injected through the DOM rather than inlined in `srcdoc`, so its code is never parsed as HTML.
+  // Inline script text breaks on `</script>`, or on `<!--` followed by `<script`, which a bundle can't rule out.
+  iframe.addEventListener("load", () => {
+    const envelopeScript = iframe.contentDocument!.createElement("script");
+    envelopeScript.text = dmnEnvelopeJs;
+    iframe.contentDocument!.head.appendChild(envelopeScript);
+  });
   iframe.id = "dmn-editor-standalone";
   iframe.style.width = "100%";
   iframe.style.height = "100%";
