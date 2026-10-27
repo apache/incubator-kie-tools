@@ -51,6 +51,8 @@ jobs:
 
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: "Checkout @ Simulated squashed-merge if PR"
         id: checkout_pr
@@ -196,7 +198,7 @@ jobs:
           eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --if-present --workspace-concurrency=1 build:prod"
 
       - name: "Check tests result (`main` only)"
-        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
+        if: always() && !cancelled() && steps.setup_build_mode.conclusion == 'success' && steps.setup_build_mode.outputs.mode != 'none'
         uses: actions/github-script@v6
         env:
           KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
