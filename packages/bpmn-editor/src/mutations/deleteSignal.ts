@@ -55,7 +55,8 @@ export function deleteSignal({
       array[index].__$$element === "endEvent" ||
       array[index].__$$element === "intermediateThrowEvent" ||
       array[index].__$$element === "startEvent" ||
-      array[index].__$$element === "intermediateCatchEvent"
+      array[index].__$$element === "intermediateCatchEvent" ||
+      array[index].__$$element === "boundaryEvent"
     ) {
       for (const eventDefinition of array[index]?.eventDefinition ?? []) {
         if (
