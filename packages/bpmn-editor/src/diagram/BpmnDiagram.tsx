@@ -47,7 +47,7 @@ import { PositionalNodeHandleId } from "@kie-tools/xyflow-react-kie-diagram/dist
 import { Draft } from "immer";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import * as RF from "reactflow";
+import * as RF from "@xyflow/react";
 import { useBpmnEditor } from "../BpmnEditorContext";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addEdge } from "../mutations/addEdge";

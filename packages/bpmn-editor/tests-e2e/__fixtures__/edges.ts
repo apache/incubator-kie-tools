@@ -41,7 +41,7 @@ export class Edges {
   }
 
   public getByIds(args: { from: string; to: string }): Locator {
-    return this.page.getByRole("button", { name: `Edge from ${args.from} to ${args.to}` });
+    return this.page.getByLabel(`Edge from ${args.from} to ${args.to}`);
   }
 
   public async getType(args: { from: string; to: string }): Promise<EdgeType> {
