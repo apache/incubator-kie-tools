@@ -290,6 +290,7 @@ export function addEdge({
   if (__readonly_keepWaypoints && removedLabel?.["dc:Bounds"]) {
     newBpmnEdge["bpmndi:BPMNLabel"] = {
       ...removedLabel,
+      "@_id": generateUuid(),
       "dc:Bounds": getEdgeLabelBoundsAfterWaypointsChange({
         __readonly_labelBounds: removedLabel["dc:Bounds"],
         __readonly_previousWaypoints: removedBpmnEdge?.["di:waypoint"],

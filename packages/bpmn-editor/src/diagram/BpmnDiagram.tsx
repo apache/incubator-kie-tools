@@ -519,7 +519,7 @@ export function BpmnDiagram({
         if (deletedLabel?.["dc:Bounds"]) {
           newBpmnEdge["bpmndi:BPMNLabel"] = {
             ...deletedLabel,
-            "@_id": deletedLabel["@_id"] ?? generateUuid(),
+            "@_id": generateUuid(),
             "dc:Bounds": getEdgeLabelBoundsAfterWaypointsChange({
               __readonly_labelBounds: deletedLabel["dc:Bounds"],
               __readonly_previousWaypoints: deletedWaypoints,

@@ -97,6 +97,7 @@ function isReferenceOf(referenceEdge: EdgeWithLabel, edge: EdgeWithLabel) {
   if (
     !referenceBounds ||
     !labelBounds ||
+    referenceEdge["bpmndi:BPMNLabel"]?.["@_id"] !== edge["bpmndi:BPMNLabel"]?.["@_id"] ||
     referenceBounds["@_width"] !== labelBounds["@_width"] ||
     referenceBounds["@_height"] !== labelBounds["@_height"]
   ) {
@@ -179,7 +180,10 @@ export function getEdgeLabelCenter(bounds: Partial<DC__Bounds> | undefined): Poi
 
 type Point = { x: number; y: number };
 type PointOnPath = Point & { segmentIndex: number; segmentFraction: number; lengthFraction: number };
-type EdgeWithLabel = { "di:waypoint"?: DC__Point[]; "bpmndi:BPMNLabel"?: { "dc:Bounds"?: DC__Bounds } };
+type EdgeWithLabel = {
+  "di:waypoint"?: DC__Point[];
+  "bpmndi:BPMNLabel"?: { "@_id"?: string; "dc:Bounds"?: DC__Bounds };
+};
 
 const REFERENCE_TOLERANCE = 0.01;
 
