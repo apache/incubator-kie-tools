@@ -118,6 +118,7 @@ export const en: BpmnEditorI18n = {
     addDataMapping: (entryTitle: string): string => `Add ${entryTitle} data mapping`,
     messageInfoIconHelperText:
       "For message events, the data type is determined by the messages type. To change it, update the message type in the Properties Manager(Messages tab).",
+    reservedInputName: "This input should be entered as a property for the task.",
   },
   eventDefinitionProperties: {
     message: "Message",
