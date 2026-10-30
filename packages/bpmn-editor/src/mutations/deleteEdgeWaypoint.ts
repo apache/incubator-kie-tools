@@ -20,6 +20,7 @@
 import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { updateEdgeWaypointsKeepingLabelAttached } from "./repositionEdgeLabel";
 
 export function deleteEdgeWaypoint({
   definitions,
@@ -43,5 +44,7 @@ export function deleteEdgeWaypoint({
     );
   }
 
-  diagramElement["di:waypoint"]!.splice(__readonly_waypointIndex, 1);
+  updateEdgeWaypointsKeepingLabelAttached(diagramElement, () => {
+    diagramElement["di:waypoint"]!.splice(__readonly_waypointIndex, 1);
+  });
 }
