@@ -15,6 +15,159 @@
    under the License.
 -->
 
-# KIE Tools :: Scripts
+# Release Scripts
 
-This directory contains source code for packages hosting scripts that are used throughout the monorepo. Packages in this directory are all dependencies of the root `package.json`, making them available at the top-level, and to all packages on `packages` and `examples` directories during their builds.
+Local-first scripts for releasing Apache KIE Tools. All components are released together under a single unified build.
+
+> **This page is the script reference only.** Who can run a release, the
+> credentials, the Jenkins jobs, the step-by-step procedure and the
+> troubleshooting guide are in the
+> [Apache KIE Release Procedure](https://kie.apache.org/community/devs/release-procedure)
+> (single source of truth).
+
+## Available Scripts
+
+| Script                     | What it does                                                                 |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| `release-all.sh`           | **The** release script — builds all components and optionally publishes them |
+| `create-source-tarball.sh` | Utility: creates an Apache-compliant source zip from the current `HEAD`      |
+
+## Usage
+
+```bash
+./scripts/release/release-all.sh <version>             # build all components (dry run — nothing published)
+./scripts/release/release-all.sh <version> --rc        # build + collect Apache RC artifacts
+./scripts/release/release-all.sh <version> --publish   # build + publish to all public registries
+```
+
+### Optional flags
+
+| Flag                 | Effect                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| _(none)_             | Build everything locally — nothing is published or uploaded                                             |
+| `--rc`               | Build and collect all artifacts into `release-artifacts/` for an Apache RC vote                         |
+| `--publish`          | Build and push/publish to all public registries and services                                            |
+| `--skip-build`       | Skip `pnpm build:prod` (use existing `dist/` output)                                                    |
+| `--upload-url <url>` | GitHub Release upload URL (required by `--publish` for binary assets)                                   |
+| `--registry <url>`   | Container registry (default: `docker.io/apache`)                                                        |
+| `--git-ref <ref>`    | Git reference used to create the source tarball (default: `HEAD`). The RC Jenkins job passes the RC tag |
+
+## What is released
+
+`release-all.sh` covers all KIE Tools components in one build:
+
+1. **NPM packages** — all public packages under `packages/`
+2. **Chrome extensions** — `chrome-extension-pack-kogito-kie-editors`
+3. **VSCode extensions** — all `.vsix` packages
+4. **Container images** — all Kogito / sandbox images
+5. **Helm charts** — sandbox and runtime-tools-consoles charts
+6. **GitHub Pages / webapp** — online-editor, standalone editors, Quarkus accelerator
+7. **dev-deployment-upload-service** — cross-platform binaries
+8. **Source tarball** — Apache-compliant source zip
+
+## Prerequisites
+
+- Node.js 24 or newer and pnpm 10.34.4 (see `engines` and `packageManager` in the root `package.json`)
+- Go 1.26, Helm 3, Docker — depending on which components you need
+- **Bash 4 or newer.** `release-all.sh` uses associative arrays, so the Bash 3.2 that macOS ships does not work. Install a newer one with `brew install bash`
+- **Docker must be running** to build and save the container images. If it is not, the script prints a warning and **skips the container images without failing**. Check that the `*-image.tar.gz` files are in `release-artifacts/` before you sign and upload an RC
+- Repository bootstrapped: `pnpm bootstrap`
+- Credentials set as environment variables (only needed for `--publish`)
+
+## Local Testing
+
+### Full RC dry-run from a fresh clone
+
+```bash
+# 1. Bootstrap once
+pnpm bootstrap
+
+# 2. Build and collect all RC artifacts (linters/tests/e2e suppressed automatically)
+./scripts/release/release-all.sh 10.3.0 --rc
+
+# 3. Inspect
+ls -lh release-artifacts/
+```
+
+### Fast iteration (repo already built)
+
+If you have already run a full build and just want to re-collect artifacts:
+
+```bash
+rm -rf release-artifacts/
+./scripts/release/release-all.sh 10.3.0 --rc --skip-build
+```
+
+`--skip-build` skips the `pnpm build:prod` step and goes straight to zipping/copying
+from the existing `dist/` folders. Artifact collection is identical to a full run.
+
+## RC Artifact Names
+
+All artifacts produced by `--rc` follow the Apache incubator convention:
+`apache-kie-<version>-incubating-<artifact-name>.<ext>`
+
+```
+apache-kie-<version>-incubating-tools-npm-packages.zip
+apache-kie-<version>-incubating-business-automation-chrome-extension.zip
+apache-kie-<version>-incubating-business-automation-chrome-extension-editors.zip
+apache-kie-<version>-incubating-bpmn-vscode-extension.vsix
+apache-kie-<version>-incubating-dmn-vscode-extension.vsix
+apache-kie-<version>-incubating-drl-vscode-extension.vsix
+apache-kie-<version>-incubating-pmml-vscode-extension.vsix
+apache-kie-<version>-incubating-kogito-bundle-vscode-extension.vsix
+apache-kie-<version>-incubating-business-automation-bundle-vscode-extension.vsix
+apache-kie-<version>-incubating-extended-services-vscode-extension.vsix
+apache-kie-<version>-incubating-sandbox-webapp.zip
+apache-kie-<version>-incubating-sandbox-accelerator-quarkus.zip
+apache-kie-<version>-incubating-sandbox-helm-chart.tar.gz
+apache-kie-<version>-incubating-runtime-tools-console-helm-chart.tar.gz
+apache-kie-<version>-incubating-<image-name>-image.tar.gz  (one per container image)
+apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-arm64.tar.gz
+apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz
+apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-linux-x86.tar.gz
+apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-windows-x86.tar.gz
+apache-kie-<version>-incubating-sources.zip  (source zip — always created)
+```
+
+Container image names (`<image-name>`):
+`cors-proxy`, `sandbox-webapp`, `sandbox-extended-services`,
+`sandbox-dev-deployment-base`, `sandbox-dev-deployment-dmn-form-webapp`,
+`sandbox-dev-deployment-quarkus-blank-app`, `kogito-management-console`
+
+## Credentials (for `--publish`)
+
+| Component                     | Required environment variables                                                                        |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------- |
+| NPM packages                  | `NPM_TOKEN`                                                                                           |
+| VSCode extensions             | `VSCE_PAT`                                                                                            |
+| Chrome extensions             | `CHROME_CLIENT_ID`, `CHROME_CLIENT_SECRET`, `CHROME_REFRESH_TOKEN`, `CHROME_KIE_EDITORS_EXTENSION_ID` |
+| Container images              | `DOCKER_USERNAME`, `DOCKER_PASSWORD`                                                                  |
+| Helm charts                   | `HELM_REGISTRY` (default: `docker.io/apache`), optionally `HELM_USERNAME` / `HELM_PASSWORD`           |
+| GitHub Pages / webapp         | `GITHUB_TOKEN`                                                                                        |
+| dev-deployment-upload-service | `GITHUB_TOKEN`, `--upload-url`                                                                        |
+
+See [`CHROME_STORE_SETUP.md`](CHROME_STORE_SETUP.md) for Chrome Web Store credential setup.
+
+## Version Management
+
+Before running the release script, update the version throughout the repo:
+
+```bash
+pnpm update-version-to 10.3.0
+pnpm update-kogito-version-to --maven 10.3.0
+pnpm update-stream-name-to 10.3.0
+```
+
+## Troubleshooting
+
+**Permission denied** — `chmod +x scripts/release/release-all.sh`
+
+**`declare: -A: invalid option`** — you are running Bash 3.2 (macOS default). Install Bash 4+ and run the script with it.
+
+**pnpm not found** — `corepack enable` (the version is pinned by `packageManager`)
+
+**Build fails** — run `pnpm bootstrap` first
+
+**NPM publish fails** — verify `NPM_TOKEN` is set and you have publish rights to `@kie-tools` packages
+
+**A component failed** — the script runs every component, lists the failed ones at the end and exits non-zero. Some publishers are not safe to re-run; read the Troubleshooting section of the [Release Procedure](https://kie.apache.org/community/devs/release-procedure) before you run `--publish` again.
