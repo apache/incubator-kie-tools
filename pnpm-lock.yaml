@@ -5099,9 +5099,6 @@ importers:
       '@kie-tools/vscode-java-code-completion-extension-plugin':
         specifier: workspace:*
         version: link:../vscode-java-code-completion-extension-plugin
-      minimatch:
-        specifier: 5.1.9
-        version: 5.1.9
       monaco-editor:
         specifier: ^0.39.0
         version: 0.39.0
@@ -5136,9 +5133,6 @@ importers:
       '@types/fs-extra':
         specifier: ^11.0.1
         version: 11.0.4
-      '@types/minimatch':
-        specifier: ^3.0.5
-        version: 3.0.5
       '@types/mocha':
         specifier: ^10.0.7
         version: 10.0.10
