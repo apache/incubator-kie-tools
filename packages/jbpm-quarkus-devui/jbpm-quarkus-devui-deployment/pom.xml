@@ -54,11 +54,11 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-deployment</artifactId>
+      <artifactId>quarkus-rest-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson-deployment</artifactId>
+      <artifactId>quarkus-rest-jackson-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -66,24 +66,11 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-client-deployment</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-multipart-deployment</artifactId>
+      <artifactId>quarkus-rest-client-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-extension-spi</artifactId>
-    </dependency>
-    <dependency>
-      <!--
-        Transitively imported by io.quarkus:quarkus-resteasy-multipart-deployment
-        Overriding it to fix CVE-2024-21742
-        Can be removed once the parent dependency updates it to a 0.8.11+ version
-      -->
-      <groupId>org.apache.james</groupId>
-      <artifactId>apache-mime4j-core</artifactId>
     </dependency>
     <dependency>
       <!-- 
