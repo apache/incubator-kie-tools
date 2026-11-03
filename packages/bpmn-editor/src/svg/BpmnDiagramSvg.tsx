@@ -117,15 +117,13 @@ export function BpmnDiagramSvg({
   customTasks: CustomTask[] | undefined;
   snapGrid: SnapGrid;
 }) {
+  const fontStyle = getNodeStyle({ bpmnFontStyle: getBpmnFontStyle({ isEnabled: true }) }).fontCssProperties;
+
   const sortedNodesByParent = useMemo(() => sortNodesByParent(nodes), [nodes]);
   const { nodesSvg, nodesById } = useMemo(() => {
     const nodesById = new Map<string, RF.Node<BpmnDiagramNodeData, BpmnNodeType>>();
 
     const nodesSvg = sortedNodesByParent.map((node) => {
-      const { fontCssProperties: fontStyle } = getNodeStyle({
-        bpmnFontStyle: getBpmnFontStyle({ isEnabled: true }),
-      });
-
       nodesById.set(node.id, node);
 
       const { height, width, strokeWidth, strokeDasharray, borderRadius, ...style } = node.style!;
@@ -353,12 +351,31 @@ export function BpmnDiagramSvg({
           shapeSource: e.data?.bpmnShapeSource,
           shapeTarget: e.data?.bpmnShapeTarget,
         });
+
+        const edgeLabel =
+          e.data?.bpmnElement.__$$element === "sequenceFlow" ? e.data.bpmnElement["@_name"]?.trim() : undefined;
+        const waypoints = e.data?.bpmnEdge?.["di:waypoint"] ?? [];
+        // Match the interactive editor label position: second waypoint for multi-segment edges,
+        // otherwise midpoint of the single segment (matches Edges.tsx logic).
+        const labelAnchor =
+          waypoints.length > 2
+            ? waypoints[1]
+            : waypoints.length === 2
+              ? {
+                  "@_x": (waypoints[0]["@_x"] + waypoints[1]["@_x"]) / 2,
+                  "@_y": (waypoints[0]["@_y"] + waypoints[1]["@_y"]) / 2,
+                }
+              : undefined;
+
         return (
           // bpmn2nodeid is necessary for the Kogito SVG Add-on
           <g key={e.id} id={e.id} {...({ bpmn2nodeid: e.id } as any)}>
             {e.type === EDGE_TYPES.sequenceFlow && <SequenceFlowPath d={path} />}
             {e.type === EDGE_TYPES.association && <AssociationPath d={path} direction={"None"} />}
             {e.type === EDGE_TYPES.compensationAssociation && <AssociationPath d={path} direction={"One"} />}
+            {edgeLabel && labelAnchor && (
+              <EdgeLabelSvg x={labelAnchor["@_x"]} y={labelAnchor["@_y"]} label={edgeLabel} />
+            )}
           </g>
         );
       })}
@@ -518,4 +535,46 @@ export function sortNodesByParent(
   }
 
   return sorted;
+}
+
+// SVG equivalent of the .kie-bpmn-editor--floating-edge-label CSS badge used in the interactive editor:
+// dark rounded-rect background (#334), white italic bold text, matching font-size 0.8em ≈ 13px at 16px base.
+const EDGE_LABEL_FONT_SIZE = 13;
+const EDGE_LABEL_PADDING_X = 6;
+const EDGE_LABEL_PADDING_Y = 4;
+const EDGE_LABEL_BORDER_RADIUS = 10;
+const EDGE_LABEL_BG_COLOR = "#334455";
+const EDGE_LABEL_TEXT_COLOR = "#ffffff";
+
+export function EdgeLabelSvg({ x, y, label }: { x: number; y: number; label: string }) {
+  // Approximate text width: average character width at the given font size.
+  const approxCharWidth = EDGE_LABEL_FONT_SIZE * 0.6;
+  const textWidth = label.length * approxCharWidth;
+  const rectWidth = textWidth + EDGE_LABEL_PADDING_X * 2;
+  const rectHeight = EDGE_LABEL_FONT_SIZE + EDGE_LABEL_PADDING_Y * 2;
+
+  return (
+    <g transform={`translate(${x - rectWidth / 2}, ${y - rectHeight / 2})`}>
+      <rect
+        width={rectWidth}
+        height={rectHeight}
+        rx={EDGE_LABEL_BORDER_RADIUS}
+        ry={EDGE_LABEL_BORDER_RADIUS}
+        fill={EDGE_LABEL_BG_COLOR}
+        opacity={0.9}
+      />
+      <text
+        x={rectWidth / 2}
+        y={EDGE_LABEL_PADDING_Y + EDGE_LABEL_FONT_SIZE * 0.85}
+        textAnchor={"middle"}
+        fill={EDGE_LABEL_TEXT_COLOR}
+        fontSize={EDGE_LABEL_FONT_SIZE}
+        fontStyle={"italic"}
+        fontWeight={"bold"}
+        fontFamily={"arial, sans-serif"}
+      >
+        {label}
+      </text>
+    </g>
+  );
 }
