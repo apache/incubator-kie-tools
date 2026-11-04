@@ -79,11 +79,11 @@ const FormsTable: React.FC<FormsTableProps> = ({ channelApi, formsData, setForms
     [columns, formsData, setFormsData]
   );
 
+  // Applies the initial sort only when loading finishes. It must not depend on `formsData`,
+  // otherwise sorting (which creates a new array) would re-trigger this effect in an infinite loop.
   useEffect(() => {
-    if (!_.isEmpty(formsData)) {
-      onSort(2, "desc");
-    }
-  }, [formsData, isLoading, onSort]);
+    setFormsData((current) => (_.isEmpty(current) ? current : _.orderBy(current, ["lastModified"], ["desc"])));
+  }, [isLoading, setFormsData]);
 
   const formsLoadingComponent: JSX.Element = (
     <Bullseye>
