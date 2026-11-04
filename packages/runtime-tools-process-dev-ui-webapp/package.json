@@ -33,7 +33,6 @@
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-webapp-components": "workspace:*",
     "@patternfly/patternfly": "^5.4.1",
-    "@patternfly/react-code-editor": "5.4.3",
     "@patternfly/react-core": "^5.4.1",
     "@patternfly/react-icons": "^5.4.1",
     "@patternfly/react-table": "^5.4.1",
