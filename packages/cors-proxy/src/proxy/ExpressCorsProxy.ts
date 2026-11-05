@@ -88,7 +88,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
       this.logger.log("Proxying to: ", info.proxyUrl.toString());
       this.logger.debugEscapeNewLines("Proxy Method: ", req.method);
-      this.logger.debug("Proxy Headers: ", outHeaders);
+      this.logger.debugEscapeNewLines("Proxy Headers: ", outHeaders);
 
       const proxyResponse = await fetch(info.proxyUrl, {
         method: req.method,
@@ -98,7 +98,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         body: req.method !== "GET" && req.method !== "HEAD" ? req : undefined,
         agent: this.getProxyAgent(info),
       });
-      this.logger.debug("Proxy Response status: ", proxyResponse.status);
+      this.logger.debugEscapeNewLines("Proxy Response status: ", proxyResponse.status);
 
       if (req.method == "OPTIONS") {
         res.header("Access-Control-Allow-Methods", info.corsConfig?.allowMethods.join(", ") ?? "*");
@@ -123,7 +123,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         res.setHeader("x-redirected-url", info.proxyUrl.toString());
       }
 
-      this.logger.debug("New Response Headers: ", res.getHeaders());
+      this.logger.debugEscapeNewLines("New Response Headers: ", res.getHeaders());
 
       res.status(proxyResponse.status);
 
@@ -290,7 +290,9 @@ class Logger {
     if (!this.verbose) {
       return;
     }
-    console.debug(message.replace(/\r?\n|\r/g, "_"), arg ?? "");
+    const escapeNewLines = (value: string) => value.replace(/\r?\n|\r/g, "_");
+    const argText = arg == null ? "" : typeof arg === "string" ? arg : JSON.stringify(arg);
+    console.debug(escapeNewLines(message), escapeNewLines(argText));
   }
 
   public warn(message: string, arg?: any) {
