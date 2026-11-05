@@ -3,6 +3,8 @@ packages:
   - "examples/*"
   - "scripts/*"
 overrides:
+  # CVE-2026-101908: Axios prototype pollution and header override vulnerabilities
+  "axios": "^1.20.0"
   # CVE-2026-15195: Prototype pollution in Pointer.set. Fixed in 15.3.6.
   "@apidevtools/swagger-parser>@apidevtools/json-schema-ref-parser": "^15.3.6"
   "cross-spawn": "^7.0.6"
@@ -14,8 +16,9 @@ overrides:
   "minimatch@^5>brace-expansion": "2.1.7"
   "openapi-types": "7.2.3"
   # CVE-2026-82417, CVE-2026-82562: TypeError in qs.stringify on a non-callable constructor.isBuffer
+  # CVE-2026-110910: qs.stringify with allowEmptyArrays fails to encode the key of an empty array
   # Overriding transitive dependency until all parents update to patched qs version
-  "qs": "^6.16.0"
+  "qs": "6.16.2"
   "path-to-regexp@^0": "0.1.13"
   "react-dropzone": "^11.4.2"
   "superagent": "10.2.2"
@@ -30,10 +33,10 @@ overrides:
   "minimatch@^4": "5.1.9"
   # CVE-2026-1526, CVE-2026-2229, CVE-2026-1528, CVE-2026-1527, CVE-2026-1525, CVE-2026-2203, CVE-2026-12151, CVE-2026-9679, CVE-2026-11525, CVE-2026-6733, CVE-2026-16729, CVE-2026-15157, CVE-2026-16728,
   # CVE-2026-19534 (DoS via unrequested WebSocket subprotocol), CVE-2026-85024 (DoS via permessage-deflate decompression),
-  # CVE-2026-18540 (response splitting via retry interceptor): Fix security vulnerabilities in undici.
-  # Upgraded from ^6.28.0 to ^6.29.0 (first clean same-major release; 6.28.1+ all clean on deps.dev).
+  # CVE-2026-18540 (response splitting via retry interceptor), CVE-2026-87018, CVE-2026-109869, CVE-2026-109383, CVE-2026-109924, CVE-2026-109932: Fix security vulnerabilities in undici.
+  # Upgraded to ^6.29.1 to fix security vulnerabilities in undici.
   # Waiting for @openapi-contrib/openapi-schema-to-json-schema to release patched version.
-  "undici": "^6.29.0"
+  "undici": "^6.29.1"
   # CVE-2026-41907: Fix security vulnerability in uuid
   # Transitive dependencies (node-notifier@8.0.2, jest-junit@16.0.0) still use uuid@8.3.2
   "uuid": "^11.1.1"
@@ -48,3 +51,14 @@ overrides:
   # express@4.x pins ~2.0.7 and express@5.x pins ^2.0.7 — both ranges allow 2.0.8.
   # Overriding transitive dependency until express ships proxy-addr >= 2.0.8 natively.
   "proxy-addr": "2.0.8"
+  # CVE-2026-116689: Fix security vulnerability in follow-redirects (transitive dependency of axios/http-proxy)
+  "follow-redirects": "1.16.2"
+  # CVE-2026-111181: Ensure Express 4 uses patched body-parser when the lockfile is regenerated
+  "express@4>body-parser": "~1.20.9"
+  # Overriding transitive dependency until @storybook/core-common and ts-jest update to patched handlebars version
+  "handlebars": "4.7.10"
+  # CVE-2023-54404: Upgrade all transitive zod dependencies to latest patched 4.x release
+  "zod": "^4.6.7"
+  # Overriding uri-js
+  "ajv-formats-draft2019>uri-js": "npm:fast-uri@^3.1.9"
+  "json-refs>uri-js": "npm:fast-uri@^3.1.9"
