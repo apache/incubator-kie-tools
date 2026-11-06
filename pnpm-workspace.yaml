@@ -53,12 +53,18 @@ overrides:
   "proxy-addr": "2.0.8"
   # CVE-2026-116689: Fix security vulnerability in follow-redirects (transitive dependency of axios/http-proxy)
   "follow-redirects": "1.16.2"
-  # CVE-2026-111181: Ensure Express 4 uses patched body-parser when the lockfile is regenerated
-  "express@4>body-parser": "~1.20.9"
+  # CVE-2026-111181: body-parser < 1.20.9 is vulnerable. express@4 declares a ~1.20.x range, but karma and
+  # apollo-server-express pin 1.20.6 exactly, so an express-scoped override does not cover them.
+  # Overriding transitive dependency until all parents update to a patched body-parser version.
+  "body-parser@^1": "~1.20.9"
   # Overriding transitive dependency until @storybook/core-common and ts-jest update to patched handlebars version
   "handlebars": "4.7.10"
   # CVE-2023-54404: Upgrade all transitive zod dependencies to latest patched 4.x release
   "zod": "^4.6.7"
+  # CVE-2026-110306, CVE-2026-110180, CVE-2026-110095, CVE-2026-110725: fast-uri 3.x < 3.1.9 is vulnerable.
+  # ajv@8.x still resolved fast-uri 3.1.8.
+  # Overriding transitive dependency until all parents update to a patched fast-uri version.
+  "fast-uri@^3": "^3.1.9"
   # Overriding uri-js
   "ajv-formats-draft2019>uri-js": "npm:fast-uri@^3.1.9"
   "json-refs>uri-js": "npm:fast-uri@^3.1.9"
