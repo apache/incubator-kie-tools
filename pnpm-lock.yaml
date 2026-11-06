@@ -6815,9 +6815,6 @@ importers:
       '@patternfly/patternfly':
         specifier: ^5.4.1
         version: 5.4.2
-      '@patternfly/react-code-editor':
-        specifier: 5.4.3
-        version: 5.4.3(monaco-editor@0.39.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@patternfly/react-core':
         specifier: ^5.4.1
         version: 5.4.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -11414,16 +11411,6 @@ packages:
       '@cfworker/json-schema':
         optional: true
 
-  '@monaco-editor/loader@1.7.0':
-    resolution: {integrity: sha512-gIwR1HrJrrx+vfyOhYmCZ0/JcWqG5kbfG7+d3f/C1LXk2EvzAbHSg3MQ5lO2sMlo9izoAZ04shohfKLVT6crVA==}
-
-  '@monaco-editor/react@4.7.0':
-    resolution: {integrity: sha512-cyzXQCtO47ydzxpQtCGSQGOC8Gk3ZUeBXFAxD+CWXYFo5OqZyZUonFl0DwUlTyAfRHntBfw2p3w4s9R6oe1eCA==}
-    peerDependencies:
-      monaco-editor: '>= 0.25.0 < 1'
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   '@mongodb-js/saslprep@1.4.12':
     resolution: {integrity: sha512-QAfAMwNgnYxZ2C6D1HgeP7Gc4i/uvJRim415PCIL9ptRxWMNbWeLBYb2/9R4pGKny/s1FVu2JA2cxCUBUOggrA==}
 
@@ -11809,12 +11796,6 @@ packages:
 
   '@patternfly/react-charts@7.4.9':
     resolution: {integrity: sha512-kFnl4al8A5rRyvp13xpPhP4fnIhpAr3KQzAJEfznk2JdrYMnKmNdxF3HH8KHplwH5gG4nmUWzX60lpNaFKn1/A==}
-    peerDependencies:
-      react: ^17 || ^18
-      react-dom: ^17 || ^18
-
-  '@patternfly/react-code-editor@5.4.3':
-    resolution: {integrity: sha512-zcnbJpMzHgKG/Zi9lYc3iYS+R4J+/mlrjdHeV2FXy1qssMrl7ZCDuCck0eefPOcZWImQ8cTtNx/9cXhvG0iqLA==}
     peerDependencies:
       react: ^17 || ^18
       react-dom: ^17 || ^18
@@ -21997,9 +21978,6 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
-  state-local@1.0.7:
-    resolution: {integrity: sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==}
-
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
     engines: {node: '>= 0.6'}
@@ -27033,17 +27011,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@monaco-editor/loader@1.7.0':
-    dependencies:
-      state-local: 1.0.7
-
-  '@monaco-editor/react@4.7.0(monaco-editor@0.39.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@monaco-editor/loader': 1.7.0
-      monaco-editor: 0.39.0
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
   '@mongodb-js/saslprep@1.4.12':
     dependencies:
       sparse-bitfield: 3.0.3
@@ -27432,19 +27399,6 @@ snapshots:
       victory-tooltip: 37.3.6(react@18.3.1)
       victory-voronoi-container: 37.3.6(react@18.3.1)
       victory-zoom-container: 37.3.6(react@18.3.1)
-
-  '@patternfly/react-code-editor@5.4.3(monaco-editor@0.39.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@monaco-editor/react': 4.7.0(monaco-editor@0.39.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@patternfly/react-core': 5.4.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@patternfly/react-icons': 5.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@patternfly/react-styles': 5.4.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-dropzone: 11.7.1(react@18.3.1)
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - monaco-editor
 
   '@patternfly/react-core@5.4.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -40850,8 +40804,6 @@ snapshots:
       wait-on: 9.0.4(debug@4.4.3)
     transitivePeerDependencies:
       - supports-color
-
-  state-local@1.0.7: {}
 
   statuses@1.5.0: {}
 
