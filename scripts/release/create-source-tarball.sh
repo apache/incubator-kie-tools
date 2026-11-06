@@ -59,6 +59,7 @@ echo "Output:    $OUTPUT_DIR"
 echo "=========================================="
 
 mkdir -p "$OUTPUT_DIR"
+OUTPUT_DIR="$(cd "$OUTPUT_DIR" && pwd)"
 ZIPFILE="$OUTPUT_DIR/apache-kie-$VERSION-incubating-sources.zip"
 
 cd "$REPO_ROOT"

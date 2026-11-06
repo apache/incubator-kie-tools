@@ -81,6 +81,17 @@ if [[ -z "${VERSION}" ]]; then
     exit 1
 fi
 
+if [[ "${PUBLISH}" == "true" && -z "${UPLOAD_URL}" ]]; then
+    echo "ERROR: --upload-url is required when --publish is specified."
+    exit 1
+fi
+
+# Production defaults for Chrome extension and Online Editor builds
+export CHROME_EXTENSION__routerTargetOrigin="${CHROME_EXTENSION__routerTargetOrigin:-https://apache.github.io}"
+export CHROME_EXTENSION__routerRelativePath="${CHROME_EXTENSION__routerRelativePath:-incubator-kie-kogito-online/chrome-extension/${VERSION}}"
+export CHROME_EXTENSION__manifestFile="${CHROME_EXTENSION__manifestFile:-manifest.prod.json}"
+export CHROME_EXTENSION__onlineEditorUrl="${CHROME_EXTENSION__onlineEditorUrl:-https://apache.github.io/incubator-kie-kogito-online}"
+
 ARTIFACTS_DIR="${REPO_ROOT}/release-artifacts"
 
 echo "=========================================="
@@ -485,6 +496,8 @@ release_helm_charts() {
 
         local chart_dir
         chart_dir="$(dirname "${chart_yaml}")"
+        local chart_name
+        chart_name=$(grep '^name:' "${chart_yaml}" | head -1 | awk '{print $2}' | tr -d '"'"'")
         local tmp_dir
         tmp_dir=$(mktemp -d)
         cp -r "${chart_dir}/." "${tmp_dir}/chart"
@@ -494,8 +507,12 @@ release_helm_charts() {
         helm package "${tmp_dir}/chart" --destination "${helm_tmp_pkg}"
         rm -rf "${tmp_dir}"
 
-        local found
-        found=$(find "${helm_tmp_pkg}" -maxdepth 1 -name "*-${VERSION}.tgz" | head -1)
+        local found=""
+        if [[ -n "${chart_name}" && -f "${helm_tmp_pkg}/${chart_name}-${VERSION}.tgz" ]]; then
+            found="${helm_tmp_pkg}/${chart_name}-${VERSION}.tgz"
+        else
+            found=$(find "${helm_tmp_pkg}" -maxdepth 1 -name "*-${VERSION}.tgz" | head -1)
+        fi
         if [[ -n "${found}" ]]; then
             cp "${found}" "${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
             echo "  DONE  ${output_dir}/apache-kie-${VERSION}-incubating-${slug}.tar.gz"
@@ -536,20 +553,23 @@ release_github_pages() {
 
     if [[ "${SKIP_BUILD}" == "false" ]]; then
         echo "Building online-editor, chrome-extension-pack-kogito-kie-editors, kie-sandbox-accelerator-quarkus..."
-        export ONLINE_EDITOR__buildInfo="${VERSION}"
-        export ONLINE_EDITOR__extendedServicesCompatibleVersion="${VERSION}"
-        export ONLINE_EDITOR__devDeploymentBaseImageRegistry="docker.io"
-        export ONLINE_EDITOR__devDeploymentBaseImageAccount="apache"
-        export ONLINE_EDITOR__devDeploymentBaseImageName="incubator-kie-sandbox-dev-deployment-base"
-        export ONLINE_EDITOR__devDeploymentBaseImageTag="${VERSION}"
-        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry="docker.io"
-        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount="apache"
-        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageName="incubator-kie-sandbox-dev-deployment-dmn-form-webapp"
-        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag="${VERSION}"
-        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry="docker.io"
-        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount="apache"
-        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName="incubator-kie-sandbox-dev-deployment-quarkus-blank-app"
-        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag="${VERSION}"
+        export ONLINE_EDITOR__buildInfo="${ONLINE_EDITOR__buildInfo:-${VERSION}}"
+        export ONLINE_EDITOR__extendedServicesCompatibleVersion="${ONLINE_EDITOR__extendedServicesCompatibleVersion:-${VERSION}}"
+        export ONLINE_EDITOR__corsProxyUrl="${ONLINE_EDITOR__corsProxyUrl:-https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud}"
+        export ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl="${ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl:-https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator.git}"
+        export ONLINE_EDITOR__quarkusAcceleratorGitRef="${ONLINE_EDITOR__quarkusAcceleratorGitRef:-${VERSION}}"
+        export ONLINE_EDITOR__devDeploymentBaseImageRegistry="${ONLINE_EDITOR__devDeploymentBaseImageRegistry:-docker.io}"
+        export ONLINE_EDITOR__devDeploymentBaseImageAccount="${ONLINE_EDITOR__devDeploymentBaseImageAccount:-apache}"
+        export ONLINE_EDITOR__devDeploymentBaseImageName="${ONLINE_EDITOR__devDeploymentBaseImageName:-incubator-kie-sandbox-dev-deployment-base}"
+        export ONLINE_EDITOR__devDeploymentBaseImageTag="${ONLINE_EDITOR__devDeploymentBaseImageTag:-${VERSION}}"
+        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry:-docker.io}"
+        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount:-apache}"
+        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageName="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageName:-incubator-kie-sandbox-dev-deployment-dmn-form-webapp}"
+        export ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag:-${VERSION}}"
+        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry:-docker.io}"
+        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount:-apache}"
+        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName:-incubator-kie-sandbox-dev-deployment-quarkus-blank-app}"
+        export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag:-${VERSION}}"
         pnpm \
             -F "@kie-tools/online-editor..." \
             -F "@kie-tools/chrome-extension-pack-kogito-kie-editors..." \
@@ -669,6 +689,7 @@ release_dev_deployment_upload_service() {
     declare -A PLATFORM_MAP=(
         ["dev-deployment-upload-service-darwin-arm64-${VERSION}.tar.gz"]="apache-kie-${VERSION}-incubating-sandbox-dev-deployment-upload-service-macOS-arm64.tar.gz"
         ["dev-deployment-upload-service-darwin-amd64-${VERSION}.tar.gz"]="apache-kie-${VERSION}-incubating-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz"
+        ["dev-deployment-upload-service-linux-arm64-${VERSION}.tar.gz"]="apache-kie-${VERSION}-incubating-sandbox-dev-deployment-upload-service-linux-arm64.tar.gz"
         ["dev-deployment-upload-service-linux-amd64-${VERSION}.tar.gz"]="apache-kie-${VERSION}-incubating-sandbox-dev-deployment-upload-service-linux-x86.tar.gz"
         ["dev-deployment-upload-service-windows-amd64-${VERSION}.tar.gz"]="apache-kie-${VERSION}-incubating-sandbox-dev-deployment-upload-service-windows-x86.tar.gz"
     )
@@ -695,6 +716,9 @@ release_dev_deployment_upload_service() {
         fi
         for src_name in "${!PLATFORM_MAP[@]}"; do
             upload_github_asset "${dist}/${src_name}" "${src_name}" "application/gzip"
+            if [[ -f "${dist}/${src_name}.sha256" ]]; then
+                upload_github_asset "${dist}/${src_name}.sha256" "${src_name}.sha256" "text/plain"
+            fi
         done
         echo "dev-deployment-upload-service binaries uploaded."
     fi

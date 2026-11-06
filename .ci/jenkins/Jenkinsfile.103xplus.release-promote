@@ -54,6 +54,9 @@ pipeline {
                     if (params.BASE_REF == '') {
                         error("BASE_REF (approved RC tag, e.g. 10.3.0-rc1) is required")
                     }
+                    if (!params.BASE_REF.startsWith("${params.RELEASE_VERSION}-rc")) {
+                        error("BASE_REF '${params.BASE_REF}' must be an RC tag for RELEASE_VERSION '${params.RELEASE_VERSION}' (e.g. ${params.RELEASE_VERSION}-rc1)")
+                    }
                     currentBuild.displayName = "${params.RELEASE_VERSION} (${params.BASE_REF})"
                 }
             }
@@ -131,11 +134,30 @@ pipeline {
                                 gh release delete "\${FINAL_TAG}" --repo "${pipelineVars.githubRepositorySlug}" --yes
                             fi
 
-                            PREV_TAG="\$(git tag --sort=-version:refname | grep -v "^\${FINAL_TAG}\$" | head -1 || true)"
+                            # Fetch tags to identify previous release tag for changelog generation
+                            git fetch --tags origin
+
+                            PREV_TAG="\$(git tag -l --sort=-version:refname | grep -v -- '-rc' | awk -v target="\${FINAL_TAG}" '
+                                BEGIN { found = 0 }
+                                {
+                                    if (\$0 == target) {
+                                        found = 1
+                                        next
+                                    }
+                                    if (found) {
+                                        print \$0
+                                        exit
+                                    }
+                                }
+                            ' || true)"
+                            if [[ -z "\${PREV_TAG}" ]]; then
+                                PREV_TAG="\$(git tag -l --sort=-version:refname | grep -v -- '-rc' | grep -v "^\${FINAL_TAG}\$" | head -1 || true)"
+                            fi
 
                             gh release create "\${FINAL_TAG}" \
                                 --repo "${pipelineVars.githubRepositorySlug}" \
                                 --title "\${FINAL_TAG}" \
+                                --verify-tag \
                                 --generate-notes \
                                 \${PREV_TAG:+--notes-start-tag "\${PREV_TAG}"}
                             """
