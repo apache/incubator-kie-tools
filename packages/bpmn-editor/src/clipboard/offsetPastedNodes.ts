@@ -44,5 +44,12 @@ export function offsetPastedNodes(
       waypoint["@_x"] += offsetX;
       waypoint["@_y"] += offsetY;
     }
+
+    // Moved labels stay with their edge.
+    const labelBounds = edge["bpmndi:BPMNLabel"]?.["dc:Bounds"];
+    if (labelBounds) {
+      labelBounds["@_x"] += offsetX;
+      labelBounds["@_y"] += offsetY;
+    }
   }
 }

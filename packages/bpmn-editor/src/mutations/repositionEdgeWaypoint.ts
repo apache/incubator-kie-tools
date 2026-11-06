@@ -20,20 +20,25 @@
 import { DC__Point } from "@kie-tools/xyflow-react-kie-diagram/dist/maths/model";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
+import { updateEdgeWaypointsKeepingLabelAttached } from "./repositionEdgeLabel";
 import { BPMN20__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_0/ts-gen/types";
 
 export function repositionEdgeWaypoint({
   definitions,
+  __readonly_labelReferenceDefinitions,
   __readonly_edgeIndex,
   __readonly_waypointIndex,
   __readonly_waypoint,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
+  __readonly_labelReferenceDefinitions?: BPMN20__tDefinitions;
   __readonly_edgeIndex: number;
   __readonly_waypointIndex: number;
   __readonly_waypoint: DC__Point;
 }) {
   const { diagramElements } = addOrGetProcessAndDiagramElements({ definitions });
+  const referenceElements =
+    __readonly_labelReferenceDefinitions?.["bpmndi:BPMNDiagram"]?.[0]?.["bpmndi:BPMNPlane"]["di:DiagramElement"];
 
   const diagramElement = diagramElements[__readonly_edgeIndex];
   if (diagramElement.__$$element !== "bpmndi:BPMNEdge") {
@@ -46,5 +51,13 @@ export function repositionEdgeWaypoint({
     );
   }
 
-  diagramElement["di:waypoint"]![__readonly_waypointIndex] = __readonly_waypoint;
+  updateEdgeWaypointsKeepingLabelAttached(
+    diagramElement,
+    () => {
+      diagramElement["di:waypoint"]![__readonly_waypointIndex] = __readonly_waypoint;
+    },
+    referenceElements?.find((e) => e.__$$element === "bpmndi:BPMNEdge" && e["@_id"] === diagramElement["@_id"]) as
+      | typeof diagramElement
+      | undefined
+  );
 }

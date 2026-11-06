@@ -51,3 +51,19 @@
   border-color: #006ba4;
   box-shadow: #006ba4 2px 2px 6px;
 }
+
+/* Centered on saved position. */
+.kie-bpmn-editor--floating-edge-label.pinned {
+  margin: 0;
+}
+
+/* Renderer disables pointer events. */
+.kie-bpmn-editor--floating-edge-label.movable {
+  pointer-events: all;
+  cursor: move;
+  touch-action: none;
+}
+
+.kie-bpmn-editor--floating-edge-label.dragging {
+  z-index: 1;
+}

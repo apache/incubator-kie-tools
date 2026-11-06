@@ -25,6 +25,8 @@ interface ScesimEditorEnvelopeDictionary extends ReferenceDictionary<{
   i: string;
   misc: string;
   openCloseDockPanel: string;
+  unableToOpenFile: string;
+  errorMessage: string;
 }> {}
 
 export interface ScesimEditorEnvelopeI18n extends ScesimEditorEnvelopeDictionary, CommonI18n {}

@@ -64,26 +64,27 @@ const FormsTable: React.FC<FormsTableProps> = ({ channelApi, formsData, setForms
         direction: direction,
       };
 
-      const sortedData = _.orderBy(
-        formsData,
-        _.keys({
-          [sortObj.property]: sortObj.direction,
-        }),
-        _.values({
-          [sortObj.property]: sortObj.direction,
-        })
+      setFormsData((current) =>
+        _.orderBy(
+          current,
+          _.keys({
+            [sortObj.property]: sortObj.direction,
+          }),
+          _.values({
+            [sortObj.property]: sortObj.direction,
+          })
+        )
       );
-      setFormsData(sortedData);
       setSortBy(sortObj);
     },
-    [columns, formsData, setFormsData]
+    [columns, setFormsData]
   );
 
+  // `onSort` doesn't depend on `formsData` (it uses a functional state update), so this effect
+  // only re-runs when loading finishes and does not loop when sorting creates a new array.
   useEffect(() => {
-    if (!_.isEmpty(formsData)) {
-      onSort(2, "desc");
-    }
-  }, [formsData, isLoading, onSort]);
+    onSort(2, "desc");
+  }, [isLoading, onSort]);
 
   const formsLoadingComponent: JSX.Element = (
     <Bullseye>

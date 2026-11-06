@@ -23,7 +23,7 @@ import { getMarshaller } from "@kie-tools/bpmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { BpmnEditorWrapper, StorybookBpmnEditorProps } from "../../bpmnEditorStoriesWrapper";
 import { BpmnEditor, BpmnEditorProps } from "../../../src/BpmnEditor";
-import { GRPC_API_CALL_TASK, REST_API_CALL_TASK } from "./other/OtherCustomTasks";
+import { GRPC_API_CALL_TASK, REST_API_CALL_TASK, RESERVED_INPUTS_TASK, WID_LIKE_TASK } from "./other/OtherCustomTasks";
 
 export const generateEmptyBpmn20 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
@@ -90,6 +90,6 @@ export const CustomTasks: Story = {
     issueTrackerHref: "",
     xml: marshaller.builder.build(model),
     //
-    customTasks: [REST_API_CALL_TASK, GRPC_API_CALL_TASK],
+    customTasks: [REST_API_CALL_TASK, GRPC_API_CALL_TASK, RESERVED_INPUTS_TASK, WID_LIKE_TASK],
   },
 };

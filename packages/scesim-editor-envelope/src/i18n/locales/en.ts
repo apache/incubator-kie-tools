@@ -26,4 +26,6 @@ export const en: ScesimEditorEnvelopeI18n = {
   i: "I",
   misc: "Misc",
   openCloseDockPanel: "Open/Close dock panel",
+  unableToOpenFile: "Unable to open file.",
+  errorMessage: "Error details:",
 };
