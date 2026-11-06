@@ -92,6 +92,24 @@ export CHROME_EXTENSION__routerRelativePath="${CHROME_EXTENSION__routerRelativeP
 export CHROME_EXTENSION__manifestFile="${CHROME_EXTENSION__manifestFile:-manifest.prod.json}"
 export CHROME_EXTENSION__onlineEditorUrl="${CHROME_EXTENSION__onlineEditorUrl:-https://apache.github.io/incubator-kie-kogito-online}"
 
+export ONLINE_EDITOR__buildInfo="${ONLINE_EDITOR__buildInfo:-${VERSION}}"
+export ONLINE_EDITOR__extendedServicesCompatibleVersion="${ONLINE_EDITOR__extendedServicesCompatibleVersion:-${VERSION}}"
+export ONLINE_EDITOR__corsProxyUrl="${ONLINE_EDITOR__corsProxyUrl:-https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud}"
+export ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl="${ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl:-https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator.git}"
+export ONLINE_EDITOR__quarkusAcceleratorGitRef="${ONLINE_EDITOR__quarkusAcceleratorGitRef:-${VERSION}}"
+export ONLINE_EDITOR__devDeploymentBaseImageRegistry="${ONLINE_EDITOR__devDeploymentBaseImageRegistry:-docker.io}"
+export ONLINE_EDITOR__devDeploymentBaseImageAccount="${ONLINE_EDITOR__devDeploymentBaseImageAccount:-apache}"
+export ONLINE_EDITOR__devDeploymentBaseImageName="${ONLINE_EDITOR__devDeploymentBaseImageName:-incubator-kie-sandbox-dev-deployment-base}"
+export ONLINE_EDITOR__devDeploymentBaseImageTag="${ONLINE_EDITOR__devDeploymentBaseImageTag:-${VERSION}}"
+export ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry:-docker.io}"
+export ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount:-apache}"
+export ONLINE_EDITOR__devDeploymentDmnFormWebappImageName="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageName:-incubator-kie-sandbox-dev-deployment-dmn-form-webapp}"
+export ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag="${ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag:-${VERSION}}"
+export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry:-docker.io}"
+export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount:-apache}"
+export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName:-incubator-kie-sandbox-dev-deployment-quarkus-blank-app}"
+export ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag="${ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag:-${VERSION}}"
+
 ARTIFACTS_DIR="${REPO_ROOT}/release-artifacts"
 
 echo "=========================================="
@@ -411,10 +429,7 @@ release_container_images() {
         for candidate in \
             "docker.io/apache/${image_name}:${VERSION}" \
             "apache/${image_name}:${VERSION}" \
-            "${image_name}:${VERSION}" \
-            "docker.io/apache/${image_name}:latest" \
-            "apache/${image_name}:latest" \
-            "${image_name}:latest"; do
+            "${image_name}:${VERSION}"; do
             if docker image inspect "${candidate}" &>/dev/null; then
                 source_image="${candidate}"
                 break
@@ -620,18 +635,23 @@ release_github_pages() {
             git config user.email "asf-ci-kie@jenkins.kie.apache.org"
             git config user.name "Apache KIE Release Bot"
             git config credential.helper "store --file=${git_cred_file}"
+
+            local online_dist="${REPO_ROOT}/packages/online-editor/dist"
+            if [[ ! -d "${online_dist}" ]]; then
+                echo "ERROR: packages/online-editor/dist not found"
+                return 1
+            fi
+            local chrome_dist="${REPO_ROOT}/packages/chrome-extension-pack-kogito-kie-editors/dist"
+
             # Exclude .git so subsequent git operations in this subshell are not broken.
             find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'dev' ! -name 'editors' ! -name 'standalone' \
                 ! -name 'chrome-extension' ! -name '.nojekyll' ! -name 'CNAME' -exec rm -rf {} +
 
-            local online_dist="${REPO_ROOT}/packages/online-editor/dist"
-            if [[ -d "${online_dist}" ]]; then
-                local editors_dir="editors/${VERSION}"
-                rm -rf "${editors_dir}" && mkdir -p "${editors_dir}"
-                rm -rf editors/latest && ln -s "${VERSION}" editors/latest
-                cp -r "${online_dist}/." .
-            fi
-            local chrome_dist="${REPO_ROOT}/packages/chrome-extension-pack-kogito-kie-editors/dist"
+            local editors_dir="editors/${VERSION}"
+            rm -rf "${editors_dir}" && mkdir -p "${editors_dir}"
+            rm -rf editors/latest && ln -s "${VERSION}" editors/latest
+            cp -r "${online_dist}/." .
+
             if [[ -d "${chrome_dist}" ]]; then
                 local chrome_dir="chrome-extension/${VERSION}"
                 rm -rf "${chrome_dir}" && mkdir -p "${chrome_dir}"

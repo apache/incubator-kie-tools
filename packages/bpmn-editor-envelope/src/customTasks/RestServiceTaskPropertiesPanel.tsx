@@ -30,10 +30,7 @@ import { Select, SelectList, SelectOption } from "@patternfly/react-core/dist/js
 import { MenuToggle, MenuToggleElement } from "@patternfly/react-core/dist/js/components/MenuToggle";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table/dist/js/components/Table";
-import {
-  BidirectionalDataMappingFormSection,
-  useDataMapping,
-} from "@kie-tools/bpmn-editor/dist/propertiesPanel/dataMapping/DataMappingFormSection";
+import { BidirectionalDataMappingFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/dataMapping/DataMappingFormSection";
 import { OnEntryAndExitScriptsFormSection } from "@kie-tools/bpmn-editor/dist/propertiesPanel/onEntryAndExitScripts/OnEntryAndExitScriptsFormSection";
 import { FormGroup, FormSection, ActionGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -51,7 +48,11 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries } from "../i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { DataMapping, setDataMappingForElement } from "@kie-tools/bpmn-editor/dist/mutations/_dataMapping";
+import {
+  DataMapping,
+  getDataMapping,
+  setDataMappingForElement,
+} from "@kie-tools/bpmn-editor/dist/mutations/_dataMapping";
 import { DEFAULT_DATA_TYPES } from "@kie-tools/bpmn-editor/dist/mutations/addOrGetItemDefinitions";
 import { BpmnEditorChannelApi } from "../BpmnEditorChannelApi";
 import {
@@ -89,7 +90,9 @@ export type ContentDataVariable = {
 export const RestServiceTaskPropertiesPanel: CustomTask["propertiesPanelComponent"] = ({ task }) => {
   const i18n = new I18n(bpmnEditorEnvelopeI18nDefaults, bpmnEditorEnvelopeI18nDictionaries).getCurrent();
   const bpmnEditorStoreApi = useBpmnEditorStoreApi();
-  const { inputDataMapping, outputDataMapping } = useDataMapping(task, () => {});
+  // Read the full data mapping straight from the model. `useDataMapping` strips the reserved inputs
+  // (Url, Host, ...) that this panel is responsible for editing.
+  const { inputDataMapping, outputDataMapping } = React.useMemo(() => getDataMapping(task), [task]);
   const { channelApi } = useKogitoEditorEnvelopeContext<KogitoEditorEnvelopeApi, BpmnEditorChannelApi>();
 
   const [localUrl, setLocalUrl] = React.useState<string>("");

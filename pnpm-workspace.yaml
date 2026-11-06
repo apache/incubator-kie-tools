@@ -10,8 +10,8 @@ overrides:
   "graphql": "14.3.1"
   # CVE-2026-33750: Fix security vulnerability in brace-expansion
   # Overriding transitive dependency until minimatch updates to patched brace-expansion version
-  "minimatch@^3>brace-expansion": "1.1.18"
-  "minimatch@^5>brace-expansion": "2.1.4"
+  "minimatch@^3>brace-expansion": "1.1.21"
+  "minimatch@^5>brace-expansion": "2.1.7"
   "openapi-types": "7.2.3"
   # CVE-2026-82417, CVE-2026-82562: TypeError in qs.stringify on a non-callable constructor.isBuffer
   # Overriding transitive dependency until all parents update to patched qs version

@@ -29,13 +29,16 @@ import { Normalized } from "../normalization/normalize";
 import { addOrGetProcessAndDiagramElements } from "./addOrGetProcessAndDiagramElements";
 import { visitFlowElementsAndArtifacts } from "./_elementVisitor";
 import { repositionNode } from "./repositionNode";
+import { updateEdgeWaypointsKeepingLabelAttached } from "./repositionEdgeLabel";
 
 export function resizeNode({
   definitions,
+  __readonly_labelReferenceDefinitions,
   __readonly_snapGrid,
   __readonly_change,
 }: {
   definitions: Normalized<BPMN20__tDefinitions>;
+  __readonly_labelReferenceDefinitions?: BPMN20__tDefinitions;
   __readonly_snapGrid: SnapGrid;
   __readonly_change: {
     bpmnElement: BpmnNodeElement;
@@ -49,6 +52,8 @@ export function resizeNode({
   const edgeIndexesAlreadyUpdated = new Set<number>();
 
   const { process, diagramElements } = addOrGetProcessAndDiagramElements({ definitions });
+  const referenceElements =
+    __readonly_labelReferenceDefinitions?.["bpmndi:BPMNDiagram"]?.[0]?.["bpmndi:BPMNPlane"]["di:DiagramElement"];
 
   const shape = diagramElements?.[__readonly_change.shapeIndex] as Normalized<DC__Shape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
@@ -103,6 +108,7 @@ export function resizeNode({
         }
 
         repositionNode({
+          __readonly_labelReferenceDefinitions,
           definitions,
           controlWaypointsByEdge: new Map(),
           __readonly_change: {
@@ -151,8 +157,16 @@ export function resizeNode({
       });
 
       const offset = offsetByPosition(getHandlePosition({ shapeBounds, waypoint }).handlePosition);
-      waypoint["@_x"] += offset.x;
-      waypoint["@_y"] += offset.y;
+      updateEdgeWaypointsKeepingLabelAttached(
+        edge,
+        () => {
+          waypoint["@_x"] += offset.x;
+          waypoint["@_y"] += offset.y;
+        },
+        referenceElements?.find((e) => e.__$$element === "bpmndi:BPMNEdge" && e["@_id"] === edge["@_id"]) as
+          | typeof edge
+          | undefined
+      );
     }
   };
 
