@@ -34,7 +34,7 @@ function loadEditor() {
   // In this case resources are added alongside the main content and can be used as
   // an included model.
   // The paths are important here! Since path2/loan-pre-qualification.dmn is in a
-  // different parent path than the main content (path1/can-drive.dmn), it won't be availabe
+  // different parent path than the main content (path1/can-drive.dmn), it won't be available
   // to be used as an included model.
   // Examples:
   // | Path                           | Available |
