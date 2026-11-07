@@ -34,7 +34,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/lodash": "^4.14.168",
     "@types/node": "^24.13.3",
-    "glob": "^10.2.7",
+    "glob": "^14.0.2",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "typescript": "^5.9.3"
