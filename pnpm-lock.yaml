@@ -5,7 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  axios: ^1.20.0
   '@apidevtools/swagger-parser>@apidevtools/json-schema-ref-parser': ^15.3.6
   cross-spawn: ^7.0.6
   d3-color: 3.1.0
@@ -13,7 +12,7 @@ overrides:
   minimatch@^3>brace-expansion: 1.1.21
   minimatch@^5>brace-expansion: 2.1.7
   openapi-types: 7.2.3
-  qs: 6.16.2
+  qs: ^6.16.2
   path-to-regexp@^0: 0.1.13
   react-dropzone: ^11.4.2
   superagent: 10.2.2
@@ -30,11 +29,7 @@ overrides:
   picomatch@4: 4.0.4
   '@cypress/request>form-data': 4.0.6
   proxy-addr: 2.0.8
-  follow-redirects: 1.16.2
-  body-parser@^1: ~1.20.9
-  handlebars: 4.7.10
   zod: ^4.6.7
-  fast-uri@^3: ^3.1.9
   ajv-formats-draft2019>uri-js: npm:fast-uri@^3.1.9
   json-refs>uri-js: npm:fast-uri@^3.1.9
 
@@ -6680,7 +6675,7 @@ importers:
         specifier: ^3.13.0
         version: 3.13.0(encoding@0.1.13)(express@4.22.2)(graphql@14.3.1)
       body-parser:
-        specifier: ~1.20.9
+        specifier: ^1.20.3
         version: 1.20.9
       concurrently:
         specifier: ^8.2.2
