@@ -21,6 +21,7 @@
 // Run after the IPMC vote passes to:
 //   1. Create and push the official release Git tag (e.g. 10.3.0) pointing to the approved RC commit.
 //   2. Create the GitHub Release for incubator-kie-tools (required before release-publish).
+//   3. Move the approved RC in Apache SVN from dist/dev to dist/release, and delete the other RCs of the release.
 
 pipeline {
     agent {
@@ -67,6 +68,7 @@ pipeline {
                 script {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
             }
         }
@@ -107,9 +109,14 @@ pipeline {
                             # Fetch the approved RC tag
                             git fetch origin "refs/tags/${params.BASE_REF}:refs/tags/${params.BASE_REF}"
 
-                            # Create and push the final release tag pointing to the RC commit
-                            git tag -a "${params.RELEASE_VERSION}" "${params.BASE_REF}" -m "Release ${params.RELEASE_VERSION}"
-                            git push origin "${params.RELEASE_VERSION}"
+                            # Create and push the final release tag pointing to the RC commit.
+                            # If a previous run already pushed it (e.g. it failed in a later stage), reuse it.
+                            if git ls-remote --exit-code --tags origin "refs/tags/${params.RELEASE_VERSION}" >/dev/null 2>&1; then
+                                echo "Tag ${params.RELEASE_VERSION} already exists on origin, skipping tag creation"
+                            else
+                                git tag -a "${params.RELEASE_VERSION}" "${params.BASE_REF}" -m "Release ${params.RELEASE_VERSION}"
+                                git push origin "${params.RELEASE_VERSION}"
+                            fi
                             """
                         }
                     }
@@ -163,6 +170,20 @@ pipeline {
                             """
                         }
                     }
+                }
+            }
+        }
+
+        stage('Promote artifacts in Apache SVN') {
+            steps {
+                script {
+                    releaseUtils.promoteArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${params.BASE_REF}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
                 }
             }
         }

@@ -40,6 +40,7 @@ class PipelineVars implements Serializable {
     String mavenSettingsNightlyConfigFileId = 'kie-nightly-authn-settings'
     String defaultArtifactsTempDir = 'artifacts-tmp'
     String asfReleaseStagingRepository = 'https://dist.apache.org/repos/dist/dev/incubator/kie'
+    String asfReleaseRepository = 'https://dist.apache.org/repos/dist/release/incubator/kie'
     String asfReleaseGPGKeyCredentialsId = 'GPG_KEY_FILE'
     String asfReleaseSVNStagingCredentialsId = 'kie-svn-credentials'
     String kieToolsCiBuildImageRegistry = 'docker.io'

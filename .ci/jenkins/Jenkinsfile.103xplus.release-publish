@@ -245,8 +245,7 @@ pipeline {
             echo ""
             echo "Next steps:"
             echo "1. Verify packages are available in registries"
-            echo "2. Move artifacts from dev/ to release/ in Apache SVN"
-            echo "3. Announce the release"
+            echo "2. Announce the release"
             echo "=========================================="
         }
         failure {

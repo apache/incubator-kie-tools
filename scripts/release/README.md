@@ -151,11 +151,11 @@ pnpm update-stream-name-to 10.3.0
 
 ## Jenkins jobs
 
-| Jenkinsfile                              | What it does                                                                           |
-| ---------------------------------------- | -------------------------------------------------------------------------------------- |
-| `Jenkinsfile.103xplus.release-candidate` | Branch cut (optional), RC tag, build, sign, upload to Apache SVN `dist/dev`            |
-| `Jenkinsfile.103xplus.release-promote`   | Creates the final release tag and GitHub Release after the vote passes                 |
-| `Jenkinsfile.103xplus.release-publish`   | Publishes to npm, VS Code Marketplace, Chrome Web Store, Docker Hub, and Helm registry |
+| Jenkinsfile                              | What it does                                                                                                                      |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `Jenkinsfile.103xplus.release-candidate` | Branch cut (optional), RC tag, build, sign, upload to Apache SVN `dist/dev`                                                       |
+| `Jenkinsfile.103xplus.release-promote`   | Creates the final release tag and GitHub Release, and moves the approved RC in SVN from `dev` to `release`, after the vote passes |
+| `Jenkinsfile.103xplus.release-publish`   | Publishes to npm, VS Code Marketplace, Chrome Web Store, Docker Hub, and Helm registry                                            |
 
 ## Troubleshooting
 
