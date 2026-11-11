@@ -43,12 +43,65 @@ def signArtifact(String artifactFileName) {
 def publishArtifacts(String artifactsDir, String releaseRepository, String releaseVersion, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'ASF_USERNAME', passwordVariable: 'ASF_PASSWORD')]) {
         sh """#!/bin/bash -el
-        svn co --depth=empty ${releaseRepository}/${releaseVersion} svn-kie
-        cp ${artifactsDir}/* svn-kie
-        cd svn-kie
+        SVN_URL="${releaseRepository}/${releaseVersion}"
+        # Check out the SVN working copy outside of the artifacts directory, so it is not copied into itself.
+        SVN_WORKDIR=\$(mktemp -d)/svn-kie
+        trap 'rm -rf "\$(dirname "\${SVN_WORKDIR}")"' EXIT
+
+        # Create the RC directory in the SVN staging repository when it does not exist yet.
+        # Only a "path does not exist" error triggers the creation; any other failure (network, auth, ...) aborts.
+        if SVN_LS_OUTPUT=\$(svn ls --non-interactive "\${SVN_URL}" 2>&1); then
+            echo "SVN directory \${SVN_URL} already exists"
+        elif echo "\${SVN_LS_OUTPUT}" | grep -qE "E170000|160013|non-existent|doesn't exist"; then
+            echo "SVN directory \${SVN_URL} does not exist, creating it"
+            svn mkdir --parents --non-interactive --no-auth-cache --username \${ASF_USERNAME} --password "\${ASF_PASSWORD}" -m "Create Apache KIE ${releaseVersion} staging directory" "\${SVN_URL}"
+        else
+            echo "Unable to access \${SVN_URL}:"
+            echo "\${SVN_LS_OUTPUT}"
+            exit 1
+        fi
+
+        svn co --depth=empty "\${SVN_URL}" "\${SVN_WORKDIR}"
+        find "${artifactsDir}" -maxdepth 1 -type f -exec cp {} "\${SVN_WORKDIR}" \\;
+        cd "\${SVN_WORKDIR}"
         svn add . --force
-        svn ci --non-interactive --no-auth-cache --username ${ASF_USERNAME} --password '${ASF_PASSWORD}' -m "Apache KIE ${releaseVersion} artifacts"
-        rm -rf svn-kie
+        svn ci --non-interactive --no-auth-cache --username \${ASF_USERNAME} --password "\${ASF_PASSWORD}" -m "Apache KIE ${releaseVersion} artifacts"
+        """.trim()
+    }
+}
+
+/**
+* Promote an approved RC in SVN: move dist/dev/<rcTag> to dist/release/<releaseVersion>, then delete the other
+* RC directories of the same release (e.g. rc1 when rc2 was approved) that are still in dist/dev.
+*/
+def promoteArtifacts(String stagingRepository, String releaseRepository, String releaseVersion, String rcTag, String credentialsId) {
+    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'ASF_USERNAME', passwordVariable: 'ASF_PASSWORD')]) {
+        sh """#!/bin/bash -el
+        set -euo pipefail
+        SRC_URL="${stagingRepository}/${rcTag}"
+        DEST_URL="${releaseRepository}/${releaseVersion}"
+
+        # The approved RC must still be in dist/dev.
+        if ! svn ls --non-interactive "\${SRC_URL}" > /dev/null 2>&1; then
+            echo "ERROR: \${SRC_URL} does not exist. Was it already promoted?"
+            exit 1
+        fi
+
+        # Never overwrite a release that was already published.
+        if svn ls --non-interactive "\${DEST_URL}" > /dev/null 2>&1; then
+            echo "ERROR: \${DEST_URL} already exists. Refusing to overwrite a published release."
+            exit 1
+        fi
+
+        svn mv --non-interactive --no-auth-cache --username \${ASF_USERNAME} --password "\${ASF_PASSWORD}" \\
+            -m "Release Apache KIE ${releaseVersion}" "\${SRC_URL}" "\${DEST_URL}"
+
+        # Delete the other RCs of this release that are still in dist/dev (only "<releaseVersion>-rcN" directories).
+        for OLD_RC in \$(svn ls --non-interactive "${stagingRepository}" | tr -d '/' | grep -E "^${releaseVersion}-rc[0-9]+\\\$" || true); do
+            echo "Deleting superseded RC \${OLD_RC} from dist/dev"
+            svn rm --non-interactive --no-auth-cache --username \${ASF_USERNAME} --password "\${ASF_PASSWORD}" \\
+                -m "Remove superseded RC \${OLD_RC}" "${stagingRepository}/\${OLD_RC}"
+        done
         """.trim()
     }
 }
