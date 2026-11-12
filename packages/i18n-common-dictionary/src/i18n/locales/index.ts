@@ -19,3 +19,4 @@
 
 export { en } from "./en";
 export { de } from "./de";
+export { es } from "./es";
