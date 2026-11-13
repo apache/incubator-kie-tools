@@ -295,7 +295,7 @@ export const es: TranslatedDictionary<DmnEditorI18n> = {
     outputDecisions: "Decisiones de salida",
     encapsulatedDecisions: "Decisiones encapsuladas",
     inputDecisions: "Decisiones de entrada",
-    inputData: "Datos de entrada",
+    inputData: "Input Data",
     empty: "Vacío",
     invokingDecisionService: "Invocar este Decision Service en FEEL",
     placeholderUrlTitle: "Ingrese un título...",
