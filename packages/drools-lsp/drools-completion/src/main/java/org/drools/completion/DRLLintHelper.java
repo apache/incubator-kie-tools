@@ -75,6 +75,14 @@ import org.eclipse.lsp4j.TextEdit;
  */
 public final class DRLLintHelper {
 
+    public static final String CODE_MISSING_END          = "missing-end";
+    public static final String CODE_MISSING_SEPARATOR    = "missing-separator";
+    public static final String CODE_MISSING_SEMICOLON    = "missing-semicolon";
+    public static final String CODE_UNBALANCED_PARENS    = "unbalanced-parens";
+    public static final String CODE_MVEL_PROPERTY_ACCESS = "mvel-property-access";
+    public static final String CODE_UNKNOWN_TYPE         = "unknown-type";
+    public static final String CODE_UNKNOWN_MEMBER       = "unknown-member";
+
     private static final String PROP_MISSING_END          = "drools.lsp.lint.missingEnd";
     private static final String PROP_MISSING_SEPARATOR    = "drools.lsp.lint.missingSeparator";
     private static final String PROP_MISSING_SEMICOLON    = "drools.lsp.lint.missingSemicolon";
@@ -148,7 +156,7 @@ public final class DRLLintHelper {
         if (mvelSeverity != null) {
             out.addAll(lintMvelPropertyAccess(sanitized, mvelSeverity));
         }
-        return out;
+        return DRLLintSuppression.filter(out, text);
     }
 
     // ── unbalanced parentheses in the LHS ────────────────────────────────
@@ -214,6 +222,7 @@ public final class DRLLintHelper {
                         Diagnostic d = new Diagnostic();
                         d.setSeverity(severity);
                         d.setSource("drools-lint");
+                        d.setCode(CODE_UNBALANCED_PARENS);
                         d.setMessage("Unmatched ')' — no corresponding '('");
                         d.setRange(new Range(new Position(i, col),
                                              new Position(i, col + 1)));
@@ -240,6 +249,7 @@ public final class DRLLintHelper {
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
             d.setSource("drools-lint");
+            d.setCode(CODE_UNBALANCED_PARENS);
             d.setMessage("Unclosed '(' — missing matching ')'");
             d.setRange(new Range(new Position(open[0], open[1]),
                                  new Position(open[0], open[1] + 1)));
@@ -366,7 +376,7 @@ public final class DRLLintHelper {
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
             d.setSource("drools-lint");
-            d.setCode("mvel-property-access");
+            d.setCode(CODE_MVEL_PROPERTY_ACCESS);
             d.setMessage("Prefer MVEL property access '" + f.property
                     + "' over '" + f.accessor + "()' in constraints");
             d.setRange(new Range(new Position(f.line, f.startCol),
@@ -567,6 +577,7 @@ public final class DRLLintHelper {
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
             d.setSource("drools-lint");
+            d.setCode(CODE_MISSING_SEMICOLON);
             d.setMessage("Likely missing ';' at the end of this consequence statement");
             d.setRange(new Range(new Position(i, col),
                                  new Position(i, col + 1)));
@@ -658,6 +669,7 @@ public final class DRLLintHelper {
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
             d.setSource("drools-lint");
+            d.setCode(CODE_MISSING_SEPARATOR);
             d.setMessage("Likely missing ',' between constraints (newline is not a separator)");
             d.setRange(new Range(new Position(i, col),
                                  new Position(i, col + 1)));
@@ -722,6 +734,7 @@ public final class DRLLintHelper {
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
             d.setSource("drools-lint");
+            d.setCode(CODE_MISSING_END);
             d.setRange(new Range(new Position(rs[0], startCol),
                                  new Position(rs[0], endCol)));
             d.setMessage("Missing 'end' for rule/query starting at line " + (rs[0] + 1));
@@ -845,7 +858,7 @@ public final class DRLLintHelper {
                            siblingImports, classpathResolved, severity, out);
             }
         }
-        return out;
+        return DRLLintSuppression.filter(out, text);
     }
 
     /** Walks {@code node}, checking each pattern's object type against {@code cu}'s resolution. */
@@ -1021,7 +1034,7 @@ public final class DRLLintHelper {
         Diagnostic d = new Diagnostic();
         d.setSeverity(severity);
         d.setSource("drools-type");
-        d.setCode("unknown-member");
+        d.setCode(CODE_UNKNOWN_MEMBER);
         d.setRange(range);
         String msg = "'" + member + "' is not a member of '" + container + "'";
         if (suggestion != null && !suggestion.isBlank() && !suggestion.equals(member)) {
@@ -1039,7 +1052,7 @@ public final class DRLLintHelper {
         Diagnostic d = new Diagnostic();
         d.setSeverity(severity);
         d.setSource("drools-type");
-        d.setCode("unknown-type");
+        d.setCode(CODE_UNKNOWN_TYPE);
         d.setRange(range);
 
         String msg = "Unknown type '" + candidate + "'";
