@@ -45,6 +45,9 @@ import org.drools.drl.parser.antlr4.DRL10Parser;
  *       (including trailing {@code );}) would exceed the line limit is marked.
  *       Marked groups get one argument per line with the closing {@code )}
  *       on its own line at the same indent as the opening.</li>
+ *   <li>{@code emitRhsStatementInBlock} tracks unbraced {@code if}/{@code else if}/
+ *       {@code else} headers so their single-statement consequences are indented
+ *       one level deeper, matching standard Java indentation rules.</li>
  * </ul>
  */
 final class RhsFormatter {
@@ -55,6 +58,34 @@ final class RhsFormatter {
   // next label in the same block or at the block's own "}" — never by a "}"
   // that closes a nested if, loop or switch.
   private final Deque<Integer> caseBumps = new ArrayDeque<>();
+
+  /**
+   * Tracks a pending unbraced {@code if}, {@code else if}, or {@code else}
+   * header waiting for its single-statement consequence to be emitted.
+   *
+   * <p>{@code baseDepth} is the indentation level at which the header itself
+   * was emitted; the consequence runs at {@code baseDepth + 1}. Once the
+   * consequence statement has been emitted, {@code consequenceDone} is set to
+   * {@code true}. At that point the context waits to either be claimed by a
+   * matching {@code else} clause (if {@code canTakeElse} is {@code true}) or
+   * to be popped so depth is restored before the next sibling statement.
+   */
+  private static final class IfContext {
+    final int baseDepth;
+    /** True for {@code if} and {@code else if}; false for standalone {@code else}. */
+    final boolean canTakeElse;
+    boolean consequenceDone;
+
+    IfContext(int baseDepth, boolean canTakeElse) {
+      this.baseDepth = baseDepth;
+      this.canTakeElse = canTakeElse;
+      this.consequenceDone = false;
+    }
+  }
+
+  // Stack of pending unbraced if/else-if/else headers whose single-statement
+  // consequence has not yet been fully emitted and unwound.
+  private final Deque<IfContext> ifStack = new ArrayDeque<>();
 
   RhsFormatter(Emitter e) {
     this.e = e;
@@ -84,6 +115,7 @@ final class RhsFormatter {
   private void emitConsequenceBody(DRL10Parser.ConsequenceBodyContext ctx) {
     if (ctx == null || ctx.getChildCount() == 0) return;
     caseBumps.clear();
+    ifStack.clear();
 
     int startIdx = ctx.getStart().getTokenIndex();
     int stopIdx = ctx.getStop().getTokenIndex();
@@ -160,8 +192,12 @@ final class RhsFormatter {
   }
 
   /**
-   * Wrapper around {@link #emitRhsStatement} that manages brace-depth and
-   * case/default label splitting so that switch blocks are formatted as:
+   * Wrapper around {@link #emitRhsStatement} that manages brace-depth,
+   * case/default label splitting, and unbraced {@code if}/{@code else if}/
+   * {@code else} indentation so that consequence bodies are formatted using
+   * standard Java indentation rules.
+   *
+   * <p>Switch blocks are formatted as:
    * <pre>
    *   switch( x )
    *   {
@@ -171,10 +207,23 @@ final class RhsFormatter {
    *       value = ...;
    *   }
    * </pre>
-   * Rules:
+   *
+   * <p>Unbraced {@code if}/{@code else if}/{@code else} chains are indented as:
+   * <pre>
+   *   if ( cond )
+   *     doSomething();
+   *   else if ( other )
+   *     doOther();
+   *   else
+   *     doDefault();
+   *   afterChain();
+   * </pre>
+   *
+   * <p>Rules:
    * <ul>
    *   <li>Statement starting with {@code }} → unwind the case bump of the block
-   *       being closed, then decrement depth before emit.</li>
+   *       being closed, then decrement depth before emit. Also pops any completed
+   *       {@code if} contexts whose braced block is now closing.</li>
    *   <li>Statement ending with {@code {} → increment depth after emit and open
    *       a block with no case bump yet.</li>
    *   <li>Statement starting with {@code case} or {@code default} → unwind the
@@ -182,6 +231,13 @@ final class RhsFormatter {
    *       {@code :}: a label with its consequence on the same line is emitted
    *       label, consequence one level deeper, depth restored; a label alone
    *       bumps the block by 1 for the statements that follow.</li>
+   *   <li>Statement that is an unbraced {@code if}/{@code else if}/{@code else}
+   *       header → push an {@link IfContext} and increment depth so the next
+   *       statement (the single-statement consequence) is emitted one level in.</li>
+   *   <li>An {@code else} or {@code else if} clause → restore depth to the base
+   *       depth of the matching {@code if} context before emitting the clause.</li>
+   *   <li>Any other statement → pop completed {@link IfContext} entries, restoring
+   *       depth to where it was before the unbraced chain began.</li>
    * </ul>
    */
   private void emitRhsStatementInBlock(List<String> toks) {
@@ -190,12 +246,23 @@ final class RhsFormatter {
     String first = toks.get(0);
     String last  = toks.get(toks.size() - 1);
 
+    // ── Step 1: depth adjustments before emitting ────────────────────────────
+
     if (first.equals("}")) {
+      // Pop any completed if-contexts that were awaiting an else that never
+      // came — their consequence was the block now being closed.
+      popCompletedIfContexts();
       e.depth -= caseBumps.isEmpty() ? 0 : caseBumps.pop();
       e.depth--;
+    } else if (startsLikeElse(toks)) {
+      // Align back to the matching if/else-if header depth before emitting.
+      alignDepthForElse();
+    } else {
+      // Any non-else, non-closing-brace statement ends pending if-contexts.
+      popCompletedIfContexts();
     }
 
-    // case / default label splitting.
+    // ── Step 2: case / default label splitting ───────────────────────────────
     // Handles: "case", "default" (separate tokens) and "default:" (fused token).
     if (isCaseLabelStart(first)) {
       e.depth -= currentCaseBump();
@@ -220,16 +287,159 @@ final class RhsFormatter {
       return;
     }
 
+    // ── Step 3: emit ─────────────────────────────────────────────────────────
     emitRhsStatement(toks);
 
+    // ── Step 4: depth adjustments after emitting ─────────────────────────────
     if (last.equals("{")) {
+      // A "{" that immediately follows an unbraced if/else header satisfies it;
+      // the context was for a single-statement consequence, but the user wrote
+      // a block — pop it without the depth that openBlock() will add again.
+      if (!ifStack.isEmpty() && !ifStack.peek().consequenceDone) {
+        IfContext ctx = ifStack.pop();
+        // Restore depth to base so that openBlock() brings it to base+1.
+        e.depth = ctx.baseDepth;
+      }
       openBlock();
+    } else if (isUnbracedIfElseHeader(toks)) {
+      // Push a new context and indent one level for the consequence.
+      boolean canTakeElse = isIfOrElseIfHeader(toks);
+      ifStack.push(new IfContext(e.depth, canTakeElse));
+      e.depth++;
+    } else {
+      // This statement completes the consequence for the pending unbraced if/else chain.
+      // In a nested chain like "if (a) if (b) stmt;", stmt completes both if (b) and if (a).
+      if (!ifStack.isEmpty()) {
+        int targetDepth = e.depth;
+        for (IfContext ctx : ifStack) {
+          if (!ctx.consequenceDone) {
+            ctx.consequenceDone = true;
+            targetDepth = ctx.baseDepth;
+          }
+        }
+        e.depth = targetDepth;
+      }
     }
   }
 
   private void openBlock() {
     e.depth++;
     caseBumps.push(0);
+  }
+
+  // ── If/else context helpers ───────────────────────────────────────────────
+
+  /**
+   * Pop completed {@link IfContext} entries from the top of the stack,
+   * restoring {@code e.depth} to the base depth of the first non-completed
+   * entry (or to its own base depth if the stack becomes empty).
+   */
+  private void popCompletedIfContexts() {
+    while (!ifStack.isEmpty() && ifStack.peek().consequenceDone) {
+      ifStack.pop();
+    }
+  }
+
+  /**
+   * Align {@code e.depth} to the base depth of the innermost {@link IfContext}
+   * that can still take an {@code else} clause ({@code consequenceDone == true}
+   * and {@code canTakeElse == true}). Pops any intervening completed contexts
+   * that cannot take an else (e.g. a trailing {@code else} whose consequence
+   * just finished, or nested if-contexts inside the matched one).
+   *
+   * <p>If no matching context exists (which should not happen in well-formed
+   * code) the method is a no-op.
+   */
+  private void alignDepthForElse() {
+    // First pop any contexts that are done and cannot take an else.
+    while (!ifStack.isEmpty()
+        && ifStack.peek().consequenceDone
+        && !ifStack.peek().canTakeElse) {
+      ifStack.pop();
+    }
+    // If the top is a completed context that can take an else, align to it.
+    if (!ifStack.isEmpty() && ifStack.peek().consequenceDone && ifStack.peek().canTakeElse) {
+      e.depth = ifStack.peek().baseDepth;
+      // The else will become the new header; remove the matched context so the
+      // else's own IfContext replaces it.
+      ifStack.pop();
+    }
+  }
+
+  /**
+   * Returns {@code true} if {@code toks} represents an unbraced
+   * {@code if}/{@code else if}/{@code else} header — i.e. a control-flow
+   * header that expects exactly one statement as its body, without an opening
+   * {@code {}.
+   *
+   * <p>A token list is an unbraced if/else header when:
+   * <ul>
+   *   <li>It does NOT end with {@code {}, {@code ;}, or {@code ,}.</li>
+   *   <li>Its first visible token is {@code if} and last token is {@code )}.</li>
+   *   <li>It is a standalone {@code else} (size 1, token is "else").</li>
+   *   <li>It starts with {@code else}, second token is {@code if}, and last
+   *       token is {@code )} — i.e. {@code else if (...)}.</li>
+   *   <li>It starts with {@code }} followed by {@code else} (and optionally
+   *       {@code if (...)}) — i.e. {@code } else} or {@code } else if (...)}.</li>
+   * </ul>
+   */
+  private boolean isUnbracedIfElseHeader(List<String> toks) {
+    if (toks.isEmpty()) return false;
+    String last = toks.get(toks.size() - 1);
+    // A header never ends with a block opener, terminator, or comma.
+    if (last.equals("{") || last.equals(";") || last.equals(",")) return false;
+
+    String first = toks.get(0);
+
+    // "if ( ... )"
+    if ("if".equals(first) && ")".equals(last)) return true;
+
+    // "else"  (standalone)
+    if ("else".equals(first) && toks.size() == 1) return true;
+
+    // "else if ( ... )"
+    if ("else".equals(first) && toks.size() >= 2 && "if".equals(toks.get(1))
+        && ")".equals(last)) return true;
+
+    // "} else"  or  "} else if ( ... )"
+    if ("}".equals(first) && toks.size() >= 2 && "else".equals(toks.get(1))) {
+      if (toks.size() == 2) return true; // "} else"
+      if (toks.size() >= 3 && "if".equals(toks.get(2)) && ")".equals(last)) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns {@code true} when the unbraced header represented by {@code toks}
+   * is an {@code if} or {@code else if} clause (which can be followed by an
+   * {@code else}), as opposed to a bare {@code else} (which cannot).
+   */
+  private boolean isIfOrElseIfHeader(List<String> toks) {
+    if (toks.isEmpty()) return false;
+    String first = toks.get(0);
+    // "if (...)"
+    if ("if".equals(first)) return true;
+    // "else if (...)"
+    if ("else".equals(first) && toks.size() >= 2 && "if".equals(toks.get(1))) return true;
+    // "} else if (...)"
+    if ("}".equals(first) && toks.size() >= 3
+        && "else".equals(toks.get(1)) && "if".equals(toks.get(2))) return true;
+    return false;
+  }
+
+  /**
+   * Returns {@code true} if the statement starts with an {@code else} clause
+   * (possibly preceded by {@code }}).
+   * Covers: {@code "else"}, {@code "else if (...)"}, {@code "} else"},
+   * {@code "} else if (...)"}.
+   */
+  private boolean startsLikeElse(List<String> toks) {
+    if (toks.isEmpty()) return false;
+    String first = toks.get(0);
+    if ("else".equals(first)) return true;
+    if ("}".equals(first) && toks.size() >= 2 && "else".equals(toks.get(1))) return true;
+    return false;
   }
 
   private int currentCaseBump() {
