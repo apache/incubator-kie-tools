@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { en } from "./locales";
+import { en, es } from "./locales";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import { DmnEditorI18n } from "./DmnEditorI18n";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
@@ -28,7 +28,10 @@ export const dmnEditorI18nDefaults: I18nDefaults<DmnEditorI18n> = {
   locale: "en",
   dictionary: en,
 };
-export const dmnEditorDictionaries: I18nDictionaries<DmnEditorI18n> = new Map([["en", en]]);
+export const dmnEditorDictionaries: I18nDictionaries<DmnEditorI18n> = new Map([
+  ["en", en],
+  ["es", es],
+]);
 export const DmnEditorI18nContext = React.createContext<I18nContextType<DmnEditorI18n>>({} as never);
 
 export function useDmnEditorI18n(): I18nContextType<DmnEditorI18n> {
