@@ -89,6 +89,12 @@ export const threeLevelRecursionC = () => {
   });
 };
 
+export const creditScoreUnaryTests = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/refactor/creditScoreUnaryTests.dmn",
+  });
+};
+
 export const sampleLoanDmnModel = () => {
   return getModelXmlForTestFixtures({
     normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/refactor/sampleLoan.dmn",
