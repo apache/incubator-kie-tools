@@ -226,7 +226,8 @@ SIZE=$(du -h "$ZIPFILE" | cut -f1)
 echo "Created: $ZIPFILE ($SIZE)"
 
 # The root of the zip must contain exactly these entries.
-actual_entries=$(unzip -Z1 "$ZIPFILE" | awk -F/ -v root="$ROOT_DIR_NAME" '$1 == root && $2 != "" {print $2}' | sort -u | paste -sd' ' -)
+# LC_ALL=C: the order must not depend on the locale of the machine running the release.
+actual_entries=$(unzip -Z1 "$ZIPFILE" | awk -F/ -v root="$ROOT_DIR_NAME" '$1 == root && $2 != "" {print $2}' | LC_ALL=C sort -u | paste -sd' ' -)
 expected_entries="BUILD DISCLAIMER-WIP LICENSE NOTICE incubator-kie incubator-kie-tools"
 if [[ "$actual_entries" != "$expected_entries" ]]; then
     echo "ERROR: unexpected content in $ROOT_DIR_NAME/"
