@@ -367,6 +367,48 @@ release_vscode() {
 }
 
 # ---------------------------------------------------------------------------
+# Helper: succeeds if both paths live on the same filesystem (device id).
+# GNU stat first (Linux), BSD stat as fallback (macOS).
+# ---------------------------------------------------------------------------
+same_filesystem() {
+    local dev_a dev_b
+    dev_a="$(stat -c %d "$1" 2>/dev/null || stat -f %d "$1")"
+    dev_b="$(stat -c %d "$2" 2>/dev/null || stat -f %d "$2")"
+    [[ "${dev_a}" == "${dev_b}" ]]
+}
+
+# ---------------------------------------------------------------------------
+# Helper: the container image packages build <package>/dist/tmp-m2 out of the
+# default Maven local repository using hard links (`cp -al`, see
+# `prepareHardLinkedM2ForPackage` in packages/maven-base). Hard links cannot
+# cross filesystems, so when the default local repository (e.g. ~/.m2 of the CI
+# user) is not on the same filesystem as the workspace, the build fails with
+# "cp: cannot create hard link ...: Invalid cross-device link".
+# In that case, seed a repository inside the workspace from the default one and
+# point Maven to it via MAVEN_OPTS (also picked up by `settings.localRepository`).
+# ---------------------------------------------------------------------------
+ensure_m2_on_workspace_filesystem() {
+    local default_repo
+    default_repo="$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout \
+        -f "${REPO_ROOT}/packages/maven-base/empty-pom.xml" 2>/dev/null | tail -n 1 | tr -d '\r' || true)"
+
+    if [[ -z "${default_repo}" || ! -d "${default_repo}" ]]; then
+        return 0
+    fi
+
+    if same_filesystem "${default_repo}" "${REPO_ROOT}"; then
+        return 0
+    fi
+
+    local workspace_repo="${REPO_ROOT}/node_modules/.cache/m2-repository"
+    echo "Maven local repository '${default_repo}' is on a different filesystem than '${REPO_ROOT}'."
+    echo "Hard links are not possible across filesystems. Using '${workspace_repo}' as the Maven local repository."
+    mkdir -p "${workspace_repo}"
+    cp -a "${default_repo}/." "${workspace_repo}/"
+    export MAVEN_OPTS="${MAVEN_OPTS:-} -Dmaven.repo.local=${workspace_repo}"
+}
+
+# ---------------------------------------------------------------------------
 # 4. Container images
 # ---------------------------------------------------------------------------
 release_container_images() {
@@ -390,6 +432,7 @@ release_container_images() {
             echo "WARN: Docker is not running — skipping container image build"
             return 0
         fi
+        ensure_m2_on_workspace_filesystem
         echo "Building container images..."
         for artifact_name in "${!IMAGES[@]}"; do
             local mapping="${IMAGES[$artifact_name]}"
