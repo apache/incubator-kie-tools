@@ -48,8 +48,9 @@ def startFluxbox() {
 
 /**
 * Setup PNPM parameters for building KIE-Tools
+* stagingRepositories (optional): Maven repository URLs (e.g. Apache Nexus staging) added as an always-active profile.
 */
-def setupPnpm(String mavenSettingsFileId = '') {
+def setupPnpm(String mavenSettingsFileId = '', String stagingRepositories = '') {
     sh """
     #!/bin/bash -el
     pnpm config set network-timeout 1000000
@@ -66,6 +67,17 @@ def setupPnpm(String mavenSettingsFileId = '') {
             pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
             """.trim()
         }
+    }
+
+    if (stagingRepositories?.trim()) {
+        // Own file + --global-settings: Maven only honors the first --settings, which `pnpm bootstrap` already sets.
+        withEnv(["STAGING_REPOSITORIES=${stagingRepositories.trim()}"]) {
+            sh '''#!/bin/bash -el
+            node scripts/release/add-staging-repositories.js "${WORKSPACE}/kie-staging-settings.xml" "${STAGING_REPOSITORIES}"
+            '''.trim()
+        }
+        // Via MAVEN_ARGS, not .mvn/maven.config (copied into container images where this path does not exist).
+        env.MAVEN_ARGS = [env.MAVEN_ARGS, "--global-settings=${env.WORKSPACE}/kie-staging-settings.xml"].findAll { it?.trim() }.join(' ')
     }
 }
 

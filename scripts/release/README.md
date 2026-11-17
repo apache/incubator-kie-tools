@@ -24,7 +24,7 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 | Script                     | What it does                                                                 |
 | -------------------------- | ---------------------------------------------------------------------------- |
 | `release-all.sh`           | **The** release script — builds all components and optionally publishes them |
-| `create-source-tarball.sh` | Utility: creates an Apache-compliant source zip from the current `HEAD`      |
+| `create-source-tarball.sh` | Creates the source release zip of `incubator-kie` + `incubator-kie-tools`    |
 
 ## Usage
 
@@ -117,7 +117,7 @@ apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-arm6
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-linux-x86.tar.gz
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-windows-x86.tar.gz
-apache-kie-<version>-incubating-sources.zip  (source zip — always created)
+apache-kie-<version>-incubating-sources.zip  (source zip — always created, see "Source zip")
 ```
 
 Container image names (`<image-name>`):
