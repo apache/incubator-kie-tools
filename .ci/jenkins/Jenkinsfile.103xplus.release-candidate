@@ -56,6 +56,11 @@ pipeline {
             description: 'Branch cut, part 1: create branch X.Y.x (derived from RELEASE_VERSION) from main and push it. Only for the first RC of a new minor (e.g. 10.3.0-rc1). Fails if X.Y.x already exists',
             defaultValue: false
         )
+        string(
+            name: 'STAGING_REPOSITORIES',
+            description: 'Maven repositories (comma, space or new line separated) added to the build settings so upstream 10.3+ artifacts that are only in Apache Nexus staging (e.g. kogito-apps-bom) resolve. Use the closed orgapachekie-NNNN repositories, or keep the default staging group. Empty = rely only on the Jenkins settings file',
+            defaultValue: 'https://repository.apache.org/content/groups/staging/'
+        )
         booleanParam(
             name: 'UPDATE_STREAM_VERSION',
             description: 'Branch cut, part 2: set the development version in all files on X.Y.x (project version X.Y.999, kogito maven X.Y.999-SNAPSHOT, stream name X.Y.x), commit and push. Use together with CREATE_STREAM_BRANCH for a normal branch cut, or alone if X.Y.x was already created',
@@ -157,7 +162,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}", "${params.STAGING_REPOSITORIES}")
                     }
                 }
             }

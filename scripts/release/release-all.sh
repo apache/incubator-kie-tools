@@ -366,6 +366,37 @@ release_vscode() {
     fi
 }
 
+# Helper: succeeds if both paths are on the same filesystem (GNU stat, BSD fallback).
+same_filesystem() {
+    local dev_a dev_b
+    dev_a="$(stat -c %d "$1" 2>/dev/null || stat -f %d "$1")"
+    dev_b="$(stat -c %d "$2" 2>/dev/null || stat -f %d "$2")"
+    [[ "${dev_a}" == "${dev_b}" ]]
+}
+
+# Helper: image builds hard-link the Maven repo (`cp -al`), which fails across filesystems; if ~/.m2 is on another
+# one, seed a repo inside the workspace and point Maven to it via MAVEN_OPTS.
+ensure_m2_on_workspace_filesystem() {
+    local default_repo
+    default_repo="$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout \
+        -f "${REPO_ROOT}/packages/maven-base/empty-pom.xml" 2>/dev/null | tail -n 1 | tr -d '\r' || true)"
+
+    if [[ -z "${default_repo}" || ! -d "${default_repo}" ]]; then
+        return 0
+    fi
+
+    if same_filesystem "${default_repo}" "${REPO_ROOT}"; then
+        return 0
+    fi
+
+    local workspace_repo="${REPO_ROOT}/node_modules/.cache/m2-repository"
+    echo "Maven local repository '${default_repo}' is on a different filesystem than '${REPO_ROOT}'."
+    echo "Hard links are not possible across filesystems. Using '${workspace_repo}' as the Maven local repository."
+    mkdir -p "${workspace_repo}"
+    cp -a "${default_repo}/." "${workspace_repo}/"
+    export MAVEN_OPTS="${MAVEN_OPTS:-} -Dmaven.repo.local=${workspace_repo}"
+}
+
 # ---------------------------------------------------------------------------
 # 4. Container images
 # ---------------------------------------------------------------------------
@@ -390,6 +421,7 @@ release_container_images() {
             echo "WARN: Docker is not running — skipping container image build"
             return 0
         fi
+        ensure_m2_on_workspace_filesystem
         echo "Building container images..."
         for artifact_name in "${!IMAGES[@]}"; do
             local mapping="${IMAGES[$artifact_name]}"
@@ -750,35 +782,10 @@ release_dev_deployment_upload_service() {
 release_source_tarball() {
     echo ""
     echo "--- Source tarball ---"
-    mkdir -p "${ARTIFACTS_DIR}"
-    local zipfile="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-sources.zip"
-    local archive_ref="${GIT_REF}"
-
-    # If archiving HEAD and there are uncommitted working tree modifications (e.g. local version bumps),
-    # create a stash commit to ensure the working tree state is preserved in the archive.
-    if [[ "${archive_ref}" == "HEAD" ]] && ! git diff --quiet HEAD 2>/dev/null; then
-        local stash_sha
-        stash_sha=$(git stash create 2>/dev/null || true)
-        if [[ -n "${stash_sha}" ]]; then
-            archive_ref="${stash_sha}"
-        fi
-    fi
-
-    echo "Creating git archive from ref ${archive_ref}..."
-    git archive --format=zip --prefix="apache-kie-${VERSION}-incubating/" "${archive_ref}" > "${zipfile}"
-    if ! unzip -t "${zipfile}" > /dev/null 2>&1; then
-        echo "ERROR: Source zip verification failed"
-        return 1
-    fi
-    local size
-    size=$(du -h "${zipfile}" | cut -f1)
-    echo "Created: ${zipfile} (${size})"
-    local zip_contents
-    zip_contents=$(unzip -l "${zipfile}")
-    for required in LICENSE NOTICE DISCLAIMER-WIP; do
-        echo "${zip_contents}" | grep -q "apache-kie-${VERSION}-incubating/${required}" \
-            || echo "WARN: ${required} not found in source zip"
-    done
+    # Contains both incubator-kie and incubator-kie-tools; incubator-kie uses the same ref unless KIE_GIT_REF/KIE_REPO are set.
+    "${SCRIPT_DIR}/create-source-tarball.sh" "${VERSION}" \
+        --git-ref "${GIT_REF}" \
+        --output-dir "${ARTIFACTS_DIR}"
 }
 
 # ---------------------------------------------------------------------------
