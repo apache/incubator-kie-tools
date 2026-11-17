@@ -24,7 +24,7 @@ Local-first scripts for releasing Apache KIE Tools. All components are released 
 | Script                     | What it does                                                                 |
 | -------------------------- | ---------------------------------------------------------------------------- |
 | `release-all.sh`           | **The** release script — builds all components and optionally publishes them |
-| `create-source-tarball.sh` | Utility: creates an Apache-compliant source zip from the current `HEAD`      |
+| `create-source-tarball.sh` | Creates the source release zip of `incubator-kie` + `incubator-kie-tools`    |
 
 ## Usage
 
@@ -117,13 +117,40 @@ apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-arm6
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-linux-x86.tar.gz
 apache-kie-<version>-incubating-sandbox-dev-deployment-upload-service-windows-x86.tar.gz
-apache-kie-<version>-incubating-sources.zip  (source zip — always created)
+apache-kie-<version>-incubating-sources.zip  (source zip — always created, see "Source zip")
 ```
 
 Container image names (`<image-name>`):
 `cors-proxy`, `sandbox-webapp`, `sandbox-extended-services`,
 `sandbox-dev-deployment-base`, `sandbox-dev-deployment-dmn-form-webapp`,
 `sandbox-dev-deployment-quarkus-blank-app`, `kogito-management-console`
+
+## Source zip
+
+`apache-kie-<version>-incubating-sources.zip` is the Apache source release. It covers both repositories, so its
+content is:
+
+```
+apache-kie-<version>-incubating/
+  BUILD                  how to build everything from source (tool versions read from repo/build-dependencies-versions.json)
+  DISCLAIMER-WIP
+  LICENSE                incubator-kie LICENSE + third-party sections of incubator-kie-tools (paths prefixed with the repo directory)
+  NOTICE                 incubator-kie NOTICE + paragraphs of incubator-kie-tools not already in it
+  incubator-kie/         git archive of apache/incubator-kie
+  incubator-kie-tools/   git archive of this repository
+```
+
+`release-all.sh --git-ref <ref>` archives `<ref>` of this repository **and** the same ref of `incubator-kie`, so the
+RC tag must exist in both repositories. To use different sources:
+
+```bash
+./scripts/release/create-source-tarball.sh 10.3.0-rc1 \
+    --git-ref 10.3.0-rc1 --kie-git-ref 10.3.0-rc1 \
+    --kie-repo https://github.com/apache/incubator-kie.git   # or a local path
+```
+
+`KIE_REPO` and `KIE_GIT_REF` environment variables are honored when the options are not given. The script fails if
+the zip root does not contain exactly the entries above.
 
 ## Credentials (for `--publish`)
 

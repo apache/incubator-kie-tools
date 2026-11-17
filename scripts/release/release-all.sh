@@ -750,35 +750,11 @@ release_dev_deployment_upload_service() {
 release_source_tarball() {
     echo ""
     echo "--- Source tarball ---"
-    mkdir -p "${ARTIFACTS_DIR}"
-    local zipfile="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-sources.zip"
-    local archive_ref="${GIT_REF}"
-
-    # If archiving HEAD and there are uncommitted working tree modifications (e.g. local version bumps),
-    # create a stash commit to ensure the working tree state is preserved in the archive.
-    if [[ "${archive_ref}" == "HEAD" ]] && ! git diff --quiet HEAD 2>/dev/null; then
-        local stash_sha
-        stash_sha=$(git stash create 2>/dev/null || true)
-        if [[ -n "${stash_sha}" ]]; then
-            archive_ref="${stash_sha}"
-        fi
-    fi
-
-    echo "Creating git archive from ref ${archive_ref}..."
-    git archive --format=zip --prefix="apache-kie-${VERSION}-incubating/" "${archive_ref}" > "${zipfile}"
-    if ! unzip -t "${zipfile}" > /dev/null 2>&1; then
-        echo "ERROR: Source zip verification failed"
-        return 1
-    fi
-    local size
-    size=$(du -h "${zipfile}" | cut -f1)
-    echo "Created: ${zipfile} (${size})"
-    local zip_contents
-    zip_contents=$(unzip -l "${zipfile}")
-    for required in LICENSE NOTICE DISCLAIMER-WIP; do
-        echo "${zip_contents}" | grep -q "apache-kie-${VERSION}-incubating/${required}" \
-            || echo "WARN: ${required} not found in source zip"
-    done
+    # The source release contains both incubator-kie and incubator-kie-tools (plus BUILD, LICENSE, NOTICE and
+    # DISCLAIMER-WIP). incubator-kie is taken from the same ref as this repository unless KIE_GIT_REF/KIE_REPO say otherwise.
+    "${SCRIPT_DIR}/create-source-tarball.sh" "${VERSION}" \
+        --git-ref "${GIT_REF}" \
+        --output-dir "${ARTIFACTS_DIR}"
 }
 
 # ---------------------------------------------------------------------------

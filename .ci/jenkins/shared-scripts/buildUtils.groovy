@@ -48,8 +48,12 @@ def startFluxbox() {
 
 /**
 * Setup PNPM parameters for building KIE-Tools
+*
+* stagingRepositories (optional): comma/space/newline separated list of Maven repository URLs (e.g. Apache
+* Nexus staging) that are written to a separate Maven global settings file as an always-active profile, so
+* release candidates can resolve upstream artifacts that are not on Maven Central yet.
 */
-def setupPnpm(String mavenSettingsFileId = '') {
+def setupPnpm(String mavenSettingsFileId = '', String stagingRepositories = '') {
     sh """
     #!/bin/bash -el
     pnpm config set network-timeout 1000000
@@ -65,6 +69,18 @@ def setupPnpm(String mavenSettingsFileId = '') {
             cp ${MAVEN_SETTINGS_FILE} ${WORKSPACE}/kie-settings.xml
             pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
             """.trim()
+        }
+    }
+
+    if (stagingRepositories?.trim()) {
+        // Written to its own file and wired via --global-settings: `pnpm bootstrap` prepends its own `--settings`
+        // to .mvn/maven.config and Maven only honors the first one, so a profile added to kie-settings.xml would be
+        // ignored. Global settings are merged with the user settings instead.
+        withEnv(["STAGING_REPOSITORIES=${stagingRepositories.trim()}"]) {
+            sh '''#!/bin/bash -el
+            node scripts/release/add-staging-repositories.js "${WORKSPACE}/kie-staging-settings.xml" "${STAGING_REPOSITORIES}"
+            pnpm -r exec 'bash' '-c' 'echo --global-settings=${WORKSPACE}/kie-staging-settings.xml >> .mvn/maven.config'
+            '''.trim()
         }
     }
 }
