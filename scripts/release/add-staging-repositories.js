@@ -26,7 +26,9 @@
 // published to staging (e.g. kogito-apps-bom:10.3.0) before they reach Maven Central, without
 // having to hand-edit the credentials-bearing settings file managed in Jenkins.
 //
-// In CI, pass a NEW file here and wire it through `--global-settings=<file>` in `.mvn/maven.config`.
+// In CI, pass a NEW file here and wire it through `--global-settings=<file>` in the `MAVEN_ARGS` environment
+// variable (see `setupPnpm` in .ci/jenkins/shared-scripts/buildUtils.groovy). Do not write it to `.mvn/maven.config`:
+// some of those files are copied into container images, where the CI path does not exist.
 // Do not add it to the file passed as `--settings`: `pnpm bootstrap` prepends its own `--settings`
 // and Maven honors only the first one, so a profile added there would be silently ignored.
 //

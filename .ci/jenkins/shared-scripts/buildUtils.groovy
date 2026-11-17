@@ -79,9 +79,13 @@ def setupPnpm(String mavenSettingsFileId = '', String stagingRepositories = '') 
         withEnv(["STAGING_REPOSITORIES=${stagingRepositories.trim()}"]) {
             sh '''#!/bin/bash -el
             node scripts/release/add-staging-repositories.js "${WORKSPACE}/kie-staging-settings.xml" "${STAGING_REPOSITORIES}"
-            pnpm -r exec 'bash' '-c' 'echo --global-settings=${WORKSPACE}/kie-staging-settings.xml >> .mvn/maven.config'
             '''.trim()
         }
+        // Passed to Maven through MAVEN_ARGS (Maven 3.9+) and NOT written to the per-package .mvn/maven.config: some
+        // packages (e.g. dev-deployment-quarkus-blank-app) have that file copied into container images, where this
+        // Jenkins-only path does not exist and Maven fails with "The specified global settings file does not exist".
+        // env.* assignments persist across the stages of the pipeline.
+        env.MAVEN_ARGS = [env.MAVEN_ARGS, "--global-settings=${env.WORKSPACE}/kie-staging-settings.xml"].findAll { it?.trim() }.join(' ')
     }
 }
 
