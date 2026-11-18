@@ -19,7 +19,7 @@
 
 import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
-import { includeMathModelDmn, mathDmnModel, sampleLoanDmnModel } from "../fs/fixtures";
+import { includeMathModelDmn, mathDmnModel, sampleLoanDmnModel, creditScoreUnaryTests } from "../fs/fixtures";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
@@ -42,6 +42,50 @@ describe("Refactor renamed identifiers", () => {
     ).toEqual(
       "(Changed Input.Amount * ((Changed Input.Rate/100)/12)) / (1-(1/(1+(Changed Input.Rate/100)/12) * -Changed Input.Term))"
     );
+  });
+
+  test("rename input element - should update referenced decision table input expression", async () => {
+    const identifiersRefactor = new IdentifiersRefactor({
+      writeableDmnDefinitions: getDefinitions(sampleLoanDmnModel()),
+      _readonly_externalDmnModelsByNamespaceMap: new Map(),
+    });
+
+    // Rename "Credit Score" to "Changed Credit Score"
+    identifiersRefactor.rename({
+      identifierUuid: "_4C89E59C-FDDA-438C-8D1F-0B1194EF6DAE",
+      newName: "Changed Credit Score",
+    });
+
+    // We reload to re-read the DMN file and make sure that the changes was correctly applied to it
+    identifiersRefactor.reload();
+
+    const expressions = Array.from(
+      identifiersRefactor.getExpressionsThatUseTheIdentifier("_4C89E59C-FDDA-438C-8D1F-0B1194EF6DAE")
+    ).map((e) => e.fullExpression);
+
+    expect(expressions).toContain("Changed Credit Score.FICO");
+  });
+
+  test("rename input element - should update referenced decision table input unary test", async () => {
+    const identifiersRefactor = new IdentifiersRefactor({
+      writeableDmnDefinitions: getDefinitions(creditScoreUnaryTests()),
+      _readonly_externalDmnModelsByNamespaceMap: new Map(),
+    });
+
+    // Rename "Credit Score" to "Changed Credit Score"
+    identifiersRefactor.rename({
+      identifierUuid: "_4C89E59C-FDDA-438C-8D1F-0B1194EF6DAE",
+      newName: "Changed Credit Score",
+    });
+
+    // We reload to re-read the DMN file and make sure that the changes was correctly applied to it
+    identifiersRefactor.reload();
+
+    const expressions = Array.from(
+      identifiersRefactor.getExpressionsThatUseTheIdentifier("_4C89E59C-FDDA-438C-8D1F-0B1194EF6DAE")
+    ).map((e) => e.fullExpression);
+
+    expect(expressions).toContain(">= Changed Credit Score.FICO");
   });
 
   test("rename bkm element - should update referenced expressions", async () => {

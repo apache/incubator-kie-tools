@@ -330,12 +330,12 @@ BooleanLiteral
 
 // #7
 simplePositiveUnaryTest
-    : op=LT  {this.helper.enableDynamicResolution();}  endpoint {this.helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
-    | op=GT  {this.helper.enableDynamicResolution();}  endpoint {this.helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
-    | op=LE {this.helper.enableDynamicResolution();}  endpoint {this.helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
-    | op=GE {this.helper.enableDynamicResolution();}  endpoint {this.helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
-    | op=EQUAL  {this.helper.enableDynamicResolution();}  endpoint {this.helper.disableDynamicResolution();}   #positiveUnaryTestIneq
-    | op=NOTEQUAL {this.helper.enableDynamicResolution();}  endpoint {this.helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    : op=LT  endpoint   #positiveUnaryTestIneqInterval
+    | op=GT  endpoint   #positiveUnaryTestIneqInterval
+    | op=LE  endpoint   #positiveUnaryTestIneqInterval
+    | op=GE  endpoint   #positiveUnaryTestIneqInterval
+    | op=EQUAL  endpoint   #positiveUnaryTestIneq
+    | op=NOTEQUAL  endpoint   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
     ;
 
