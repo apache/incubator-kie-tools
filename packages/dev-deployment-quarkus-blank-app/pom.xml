@@ -59,7 +59,6 @@
     <version.org.apache.commons.commons-compress>1.28.0</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.commons-io>2.21.0</version.commons-io>
-    <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
 
     <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
@@ -89,18 +88,6 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- This was added when the latest version of protobuf brought by Quarkus was 3.25.0 -->
-    <!-- To address CVE-2024-7254, affecting protobuf:3.25.0 -->
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-      <version>${version.com.google.protobuf}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java-util</artifactId>
-      <version>${version.com.google.protobuf}</version>
-    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
