@@ -52,10 +52,25 @@ public final class DRLDiagnosticHelper {
         public final DRL10Parser.CompilationUnitContext compilationUnit;
         /** One diagnostic per syntax error, in document order. */
         public final List<Diagnostic> diagnostics;
+        /** All tokens produced by the lexer, including comments and whitespace off-channel. */
+        public final List<Token> tokens;
+        /** Suppression index parsed from comment tokens in the document. */
+        public final DRLLintSuppression.SuppressionIndex suppression;
 
-        Parsed(DRL10Parser.CompilationUnitContext compilationUnit, List<Diagnostic> diagnostics) {
+        Parsed(DRL10Parser.CompilationUnitContext compilationUnit, List<Diagnostic> diagnostics,
+               List<Token> tokens, DRLLintSuppression.SuppressionIndex suppression) {
             this.compilationUnit = compilationUnit;
             this.diagnostics = diagnostics;
+            this.tokens = tokens;
+            this.suppression = suppression;
+        }
+
+        Parsed(DRL10Parser.CompilationUnitContext compilationUnit, List<Diagnostic> diagnostics, List<Token> tokens) {
+            this(compilationUnit, diagnostics, tokens, null);
+        }
+
+        Parsed(DRL10Parser.CompilationUnitContext compilationUnit, List<Diagnostic> diagnostics) {
+            this(compilationUnit, diagnostics, Collections.emptyList(), null);
         }
     }
 
@@ -68,7 +83,7 @@ public final class DRLDiagnosticHelper {
      */
     public static Parsed parse(String text) {
         if (text == null || text.isEmpty()) {
-            return new Parsed(null, Collections.emptyList());
+            return new Parsed(null, Collections.emptyList(), Collections.emptyList(), new DRLLintSuppression.SuppressionIndex());
         }
         DRL10Parser parser = DRL10ParserHelper.createDrlParser(text);
         List<Diagnostic> diagnostics = new ArrayList<>();
@@ -91,7 +106,10 @@ public final class DRLDiagnosticHelper {
         // error recovery left unread.
         CommonTokenStream tokens = (CommonTokenStream) parser.getTokenStream();
         tokens.fill();
-        return new Parsed(compilationUnit, DeprecatedConstructs.reclassify(text, tokens.getTokens(), diagnostics));
+        List<Token> allTokens = tokens.getTokens();
+        DRLLintSuppression.SuppressionIndex suppression = DRLLintSuppression.parse(allTokens, text);
+        return new Parsed(compilationUnit, DeprecatedConstructs.reclassify(text, allTokens, diagnostics, suppression),
+                allTokens, suppression);
     }
 
     /**

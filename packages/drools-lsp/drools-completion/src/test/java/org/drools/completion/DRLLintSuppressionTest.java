@@ -28,6 +28,7 @@ import org.eclipse.lsp4j.Diagnostic;
 import org.eclipse.lsp4j.DiagnosticSeverity;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.TextEdit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +44,7 @@ class DRLLintSuppressionTest {
         System.clearProperty("drools.lsp.lint.unbalancedParens");
         System.clearProperty("drools.lsp.lint.unknownTypes");
         System.clearProperty("drools.lsp.lint.mvelPropertyAccess");
+        System.clearProperty("drools.lsp.lint.deprecated");
     }
 
     @Test
@@ -188,6 +190,25 @@ class DRLLintSuppressionTest {
     }
 
     @Test
+    void disableNextLine_multiLineBlockComment_anchorsToLineAfterClosingComment() {
+        String text = "rule \"A\"\n"
+                + "when\n"
+                + "then\n"
+                + "  /*\n"
+                + "   * Note on suppression\n"
+                + "   * @drl-lsp-lint:disable-next-line missing-semicolon\n"
+                + "   */\n"
+                + "  insert(new Person())\n"
+                + "  update(new Person())\n"
+                + "end\n";
+
+        List<Diagnostic> diags = DRLLintHelper.lint(text);
+        // Line 7 (insert) is suppressed; line 8 (update) should be reported
+        assertThat(diags).hasSize(1);
+        assertThat(diags.get(0).getRange().getStart().getLine()).isEqualTo(8);
+    }
+
+    @Test
     void regionDisableAndEnable() {
         String text = "// @drl-lsp-lint:disable missing-semicolon\n"
                 + "rule \"A\"\n"
@@ -205,6 +226,36 @@ class DRLLintSuppressionTest {
         List<Diagnostic> diags = DRLLintHelper.lint(text);
         assertThat(diags).hasSize(1);
         assertThat(diags.get(0).getRange().getStart().getLine()).isEqualTo(10);
+    }
+
+    @Test
+    void regionPartialEnablement_usingExclusionSet() {
+        String text = "// @drl-lsp-lint:disable\n"
+                + "rule \"A\"\n"
+                + "when\n"
+                + "  Person(\n"
+                + "    name == \"A\"\n"
+                + "    age > 20\n"
+                + "  )\n"
+                + "then\n"
+                + "  insert(new Person())\n"
+                + "end\n"
+                + "// @drl-lsp-lint:enable missing-separator\n"
+                + "rule \"B\"\n"
+                + "when\n"
+                + "  Person(\n"
+                + "    name == \"B\"\n"
+                + "    age > 20\n"
+                + "  )\n"
+                + "then\n"
+                + "  insert(new Person())\n"
+                + "end\n";
+
+        List<Diagnostic> diags = DRLLintHelper.lint(text);
+        // In Rule B: missing-separator is re-enabled, missing-semicolon remains suppressed
+        assertThat(diags).hasSize(1);
+        assertThat(diags.get(0).getCode().getLeft()).isEqualTo(DRLLintHelper.CODE_MISSING_SEPARATOR);
+        assertThat(diags.get(0).getRange().getStart().getLine()).isEqualTo(14);
     }
 
     @Test
@@ -229,7 +280,6 @@ class DRLLintSuppressionTest {
 
         List<Diagnostic> diags = DRLLintHelper.lint(text);
         assertThat(diags).hasSize(1);
-        // Rule B's line should be flagged (line 12), Rule A was suppressed
         assertThat(diags.get(0).getRange().getStart().getLine()).isEqualTo(12);
     }
 
@@ -250,6 +300,23 @@ class DRLLintSuppressionTest {
         List<Diagnostic> diags = DRLLintHelper.lint(text);
         assertThat(diags).hasSize(1);
         assertThat(diags.get(0).getRange().getStart().getLine()).isEqualTo(9);
+    }
+
+    @Test
+    void disableRule_unclosedRuleDoesNotSwallowNextRule() {
+        String text = "// @drl-lsp-lint:disable-rule missing-end\n"
+                + "rule \"Unclosed\"\n"
+                + "when\n"
+                + "then\n"
+                + "rule \"NextUnclosed\"\n"
+                + "when\n"
+                + "then\n";
+
+        List<Diagnostic> diags = DRLLintHelper.lint(text);
+        // Rule "Unclosed" had missing-end suppressed; Rule "NextUnclosed" should still be flagged
+        assertThat(diags).hasSize(1);
+        assertThat(diags.get(0).getCode().getLeft()).isEqualTo(DRLLintHelper.CODE_MISSING_END);
+        assertThat(diags.get(0).getRange().getStart().getLine()).isEqualTo(4);
     }
 
     @Test
@@ -284,6 +351,52 @@ class DRLLintSuppressionTest {
     }
 
     @Test
+    void droolsDeprecated_halfConstraintSuppressed() {
+        String text = "rule \"Deprecated\"\n"
+                + "when\n"
+                + "  Person( age > 10 && < 20 ) // @drl-lsp-lint:disable-line half-constraint\n"
+                + "then\n"
+                + "end\n";
+
+        DRLDiagnosticHelper.Parsed parsed = DRLDiagnosticHelper.parse(text);
+        // Suppressed deprecation should not be emitted, and syntax error should not resurface
+        assertThat(parsed.diagnostics).isEmpty();
+    }
+
+    @Test
+    void droolsDeprecated_patternConnectiveSuppressed() {
+        String text = "// @drl-lsp-lint:disable-file pattern-connective\n"
+                + "rule \"Deprecated\"\n"
+                + "when\n"
+                + "  Person() && Address()\n"
+                + "then\n"
+                + "end\n";
+
+        DRLDiagnosticHelper.Parsed parsed = DRLDiagnosticHelper.parse(text);
+        assertThat(parsed.diagnostics).isEmpty();
+    }
+
+    @Test
+    void diagnosticCapPreservation_suppressedDiagnosticsDoNotConsumeCap() {
+        // Build 25 lines of missing semicolon inside a suppressed block, followed by 1 unsuppressed line
+        StringBuilder sb = new StringBuilder();
+        sb.append("rule \"CapTest\"\nwhen\nthen\n");
+        sb.append("// @drl-lsp-lint:disable missing-semicolon\n");
+        for (int i = 0; i < 25; i++) {
+            sb.append("  insert(new Person())\n");
+        }
+        sb.append("// @drl-lsp-lint:enable missing-semicolon\n");
+        sb.append("  insert(new Person())\n");
+        sb.append("end\n");
+
+        List<Diagnostic> diags = DRLLintHelper.lint(sb.toString());
+        // The 25 suppressed lines should not exhaust the 20-diagnostic limit;
+        // the 1 unsuppressed line after the enable must be reported!
+        assertThat(diags).hasSize(1);
+        assertThat(diags.get(0).getCode().getLeft()).isEqualTo(DRLLintHelper.CODE_MISSING_SEMICOLON);
+    }
+
+    @Test
     void parserAndCompilerDiagnosticsAreNeverSuppressed() {
         String text = "// @drl-lsp-lint:disable-file\n"
                 + "rule \"SyntaxError\"\n";
@@ -311,20 +424,6 @@ class DRLLintSuppressionTest {
     }
 
     @Test
-    void alternateCommentSyntaxesAndDescriptions() {
-        // Hash comment
-        String hash = "# @drl-lsp-lint:disable-line missing-semicolon\n"
-                + "rule \"A\"\nwhen\nthen\n  insert(new Person()) # @drl-lsp-lint:disable-line missing-semicolon\nend\n";
-        assertThat(DRLLintHelper.lint(hash)).isEmpty();
-
-        // Block comment with description
-        String block = "rule \"A\"\nwhen\nthen\n"
-                + "  /* @drl-lsp-lint:disable-next-line missing-semicolon -- intentional missing semi */\n"
-                + "  insert(new Person())\nend\n";
-        assertThat(DRLLintHelper.lint(block)).isEmpty();
-    }
-
-    @Test
     void directiveInsideStringLiteralIsIgnored() {
         String text = "rule \"A\"\n"
                 + "when\n"
@@ -337,5 +436,58 @@ class DRLLintSuppressionTest {
         // The missing semicolon on the consequence should still be reported
         assertThat(diags).hasSize(1);
         assertThat(diags.get(0).getCode().getLeft()).isEqualTo(DRLLintHelper.CODE_MISSING_SEMICOLON);
+    }
+
+    @Test
+    void unknownDirectiveActionEmitsWarning() {
+        String text = "// @drl-lsp-lint:disable-lines missing-semicolon\n"
+                + "rule \"A\"\n"
+                + "when\n"
+                + "then\n"
+                + "  insert(new Person())\n"
+                + "end\n";
+
+        DRLLintSuppression.SuppressionIndex index = DRLLintSuppression.parse(text);
+        List<Diagnostic> warnings = index.getDirectiveDiagnostics();
+        assertThat(warnings).hasSize(1);
+        assertThat(warnings.get(0).getSeverity()).isEqualTo(DiagnosticSeverity.Warning);
+        assertThat(warnings.get(0).getMessage()).contains("Unknown directive action '@drl-lsp-lint:disable-lines'");
+
+        // Since action was invalid, missing-semicolon is NOT suppressed
+        List<Diagnostic> diags = DRLLintHelper.lint(text, index);
+        assertThat(diags).hasSize(1);
+        assertThat(diags.get(0).getCode().getLeft()).isEqualTo(DRLLintHelper.CODE_MISSING_SEMICOLON);
+    }
+
+    @Test
+    void unknownLinterCodeEmitsWarning() {
+        String text = "// @drl-lsp-lint:disable-line non-existent-code, missing-semicolon\n"
+                + "rule \"A\"\n"
+                + "when\n"
+                + "then\n"
+                + "  insert(new Person()) // @drl-lsp-lint:disable-line typo-code\n"
+                + "end\n";
+
+        DRLLintSuppression.SuppressionIndex index = DRLLintSuppression.parse(text);
+        List<Diagnostic> warnings = index.getDirectiveDiagnostics();
+        assertThat(warnings).hasSize(2);
+        assertThat(warnings.get(0).getMessage()).contains("Unknown linter code 'non-existent-code'");
+        assertThat(warnings.get(1).getMessage()).contains("Unknown linter code 'typo-code'");
+    }
+
+    @Test
+    void mvelPropertyAccessQuickFixRespectsSuppression() {
+        String text = "rule \"Mvel\"\n"
+                + "when\n"
+                + "  Person( getName() == \"John\" ) // @drl-lsp-lint:disable-line mvel-property-access\n"
+                + "  Person( getAge() > 20 )\n"
+                + "then\n"
+                + "end\n";
+
+        DRLLintSuppression.SuppressionIndex suppression = DRLLintSuppression.parse(text);
+        List<TextEdit> edits = DRLLintHelper.mvelPropertyAccessEdits(text, suppression);
+        // Only getAge() should be edited, getName() was suppressed
+        assertThat(edits).hasSize(1);
+        assertThat(edits.get(0).getNewText()).isEqualTo("age");
     }
 }

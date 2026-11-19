@@ -64,7 +64,13 @@ final class DeprecatedConstructs {
     /** System property: severity for deprecated-construct diagnostics. */
     static final String PROP_DEPRECATED = "drools.lsp.lint.deprecated";
 
-    private static final String SOURCE = "drools-deprecated";
+    public static final String SOURCE = "drools-deprecated";
+
+    public static final String CODE_HALF_CONSTRAINT           = "half-constraint";
+    public static final String CODE_PATTERN_CONNECTIVE        = "pattern-connective";
+    public static final String CODE_LHS_CONNECTIVE_ANNOTATION = "lhs-connective-annotation";
+    public static final String CODE_AGENDA_GROUP              = "agenda-group";
+    public static final String CODE_CUSTOM_OPERATOR           = "custom-operator";
 
     private static final String REMOVAL = " will be removed in a future version (LanguageLevel.DRL10)";
 
@@ -75,15 +81,17 @@ final class DeprecatedConstructs {
      * decision (moving or dropping an annotation), so no quick fix is offered.
      */
     private static final class Finding {
+        final String code;
         final String message;
         final String replacement;
         final Token last;
 
-        Finding(String message, String replacement) {
-            this(message, replacement, null);
+        Finding(String code, String message, String replacement) {
+            this(code, message, replacement, null);
         }
 
-        Finding(String message, String replacement, Token last) {
+        Finding(String code, String message, String replacement, Token last) {
+            this.code = code;
             this.message = message;
             this.replacement = replacement;
             this.last = last;
@@ -128,6 +136,11 @@ final class DeprecatedConstructs {
      * or nothing matches.
      */
     static List<Diagnostic> reclassify(String text, List<Token> lexed, List<Diagnostic> syntaxDiagnostics) {
+        return reclassify(text, lexed, syntaxDiagnostics, null);
+    }
+
+    static List<Diagnostic> reclassify(String text, List<Token> lexed, List<Diagnostic> syntaxDiagnostics,
+                                       DRLLintSuppression.SuppressionIndex suppression) {
         List<Diagnostic> syntax = syntaxDiagnostics == null ? List.of() : syntaxDiagnostics;
         if (text == null || text.isEmpty()) {
             return syntax;
@@ -165,17 +178,20 @@ final class DeprecatedConstructs {
 
             Finding finding = describe(tokens, i, inLhs, atGroupLevel, text);
             if (finding != null && claimedLines.add(token.getLine() - 1)) {
-                Diagnostic d = new Diagnostic();
-                d.setSeverity(severity);
-                d.setSource(SOURCE);
-                d.setMessage(finding.message);
-                d.setRange(rangeOf(token, finding.last == null ? token : finding.last));
-                // The replacement rides in `data` for the quick fix, the same
-                // way the unknown-type lint carries its suggestion.
-                if (finding.replacement != null) {
-                    d.setData(finding.replacement);
+                if (suppression == null || !suppression.isSuppressed(finding.code, token.getLine() - 1)) {
+                    Diagnostic d = new Diagnostic();
+                    d.setSeverity(severity);
+                    d.setSource(SOURCE);
+                    d.setCode(finding.code);
+                    d.setMessage(finding.message);
+                    d.setRange(rangeOf(token, finding.last == null ? token : finding.last));
+                    // The replacement rides in `data` for the quick fix, the same
+                    // way the unknown-type lint carries its suggestion.
+                    if (finding.replacement != null) {
+                        d.setData(finding.replacement);
+                    }
+                    found.add(d);
                 }
-                found.add(d);
             }
 
             if (type == DRL10Lexer.LPAREN) {
@@ -185,7 +201,7 @@ final class DeprecatedConstructs {
                 parens.pop();
             }
         }
-        if (found.isEmpty()) {
+        if (claimedLines.isEmpty()) {
             return syntax;
         }
         for (Diagnostic d : syntax) {
@@ -218,7 +234,7 @@ final class DeprecatedConstructs {
         // `ref.order > $ref.order && ref.order < $x`.
         if (insideConstraint && connective && next != null && RELATIONAL.contains(next.getType())) {
             String operand = leftOperandOfPreviousComparison(tokens, index, text);
-            return new Finding("Deprecated: half constraint '" + token.getText() + " " + next.getText()
+            return new Finding(CODE_HALF_CONSTRAINT, "Deprecated: half constraint '" + token.getText() + " " + next.getText()
                     + "'" + REMOVAL + " — repeat the left operand.",
                     operand == null ? null : token.getText() + " " + operand);
         }
@@ -230,7 +246,7 @@ final class DeprecatedConstructs {
         if (inLhs && atGroupLevel && connective
                 && previous != null && previous.getType() == DRL10Lexer.RPAREN) {
             String replacement = type == DRL10Lexer.AND ? "and" : "or";
-            return new Finding("Deprecated: connecting patterns with '" + token.getText() + "'"
+            return new Finding(CODE_PATTERN_CONNECTIVE, "Deprecated: connecting patterns with '" + token.getText() + "'"
                     + REMOVAL + " — use '" + replacement + "' instead.", replacement);
         }
 
@@ -239,7 +255,7 @@ final class DeprecatedConstructs {
         // dropping it is a judgement call, so no fix is offered.
         if (inLhs && atGroupLevel && type == DRL10Lexer.AT
                 && previous != null && LHS_CONNECTIVE.contains(previous.getType())) {
-            return new Finding("Deprecated: annotation after '" + previous.getText() + "' in the LHS"
+            return new Finding(CODE_LHS_CONNECTIVE_ANNOTATION, "Deprecated: annotation after '" + previous.getText() + "' in the LHS"
                     + REMOVAL + "; annotations elsewhere remain supported.", null);
         }
 
@@ -252,7 +268,7 @@ final class DeprecatedConstructs {
                 && index + 3 < tokens.size()
                 && "group".equals(tokens.get(index + 2).getText())
                 && isStringLiteral(tokens.get(index + 3))) {
-            return new Finding("Deprecated: 'agenda-group'" + REMOVAL
+            return new Finding(CODE_AGENDA_GROUP, "Deprecated: 'agenda-group'" + REMOVAL
                     + " — use 'ruleflow-group', which the engine treats as the same group.",
                     "ruleflow-group", tokens.get(index + 2));
         }
@@ -268,7 +284,7 @@ final class DeprecatedConstructs {
                 && OPERAND_END.contains(operand.getType())
                 && isOperandStart(next)
                 && CustomOperators.isRegistered(token.getText())) {
-            return new Finding("Deprecated: custom operator '" + token.getText()
+            return new Finding(CODE_CUSTOM_OPERATOR, "Deprecated: custom operator '" + token.getText()
                     + "' requires a '##' prefix in DRL10 — write '##" + token.getText() + "'.",
                     "##" + token.getText());
         }

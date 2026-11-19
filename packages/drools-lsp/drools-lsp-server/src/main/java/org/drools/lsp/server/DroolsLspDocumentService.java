@@ -50,6 +50,7 @@ import org.drools.completion.DRLFoldingRangeHelper;
 import org.drools.completion.DRLHoverHelper;
 import org.drools.completion.DRLInlayHintHelper;
 import org.drools.completion.DRLLintHelper;
+import org.drools.completion.DRLLintSuppression;
 import org.drools.completion.DRLTypeHierarchyHelper;
 import org.drools.completion.JavaSourceTypeIndex;
 import org.drools.formatter.DRLFormatter;
@@ -237,7 +238,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
         DRLDiagnosticHelper.Parsed parsed = DRLDiagnosticHelper.parse(text);
         List<Diagnostic> diagnostics = new ArrayList<>(parsed.diagnostics);
         try {
-            diagnostics.addAll(DRLLintHelper.lint(text));
+            diagnostics.addAll(DRLLintHelper.lint(text, parsed.suppression));
         } catch (Exception e) {
             logger.log(Level.WARNING, "Lint pass failed for " + uri, e);
         }
@@ -245,6 +246,9 @@ public class DroolsLspDocumentService implements TextDocumentService {
             diagnostics.addAll(unknownTypeDiagnostics(uri, text, parsed));
         } catch (Exception e) {
             logger.log(Level.WARNING, "Unknown-type lint failed for " + uri, e);
+        }
+        if (parsed.suppression != null) {
+            diagnostics.addAll(parsed.suppression.getDirectiveDiagnostics());
         }
         return diagnostics;
     }
@@ -268,7 +272,7 @@ public class DroolsLspDocumentService implements TextDocumentService {
         // reports every one of them as a typo until the build catches up.
         return DRLLintHelper.lintUnknownTypes(text, parsed.compilationUnit, documentPath,
                 openSiblings(documentPath), classIndex, classMemberIndex,
-                server.isDependencyClasspathResolved());
+                server.isDependencyClasspathResolved(), parsed.suppression);
     }
 
     @Override
@@ -757,7 +761,8 @@ public class DroolsLspDocumentService implements TextDocumentService {
             String uri, String text, Range requested) {
         List<TextEdit> edits;
         try {
-            edits = DRLLintHelper.mvelPropertyAccessEdits(text);
+            DRLLintSuppression.SuppressionIndex suppression = DRLLintSuppression.parse(text);
+            edits = DRLLintHelper.mvelPropertyAccessEdits(text, suppression);
         } catch (Exception e) {
             return Collections.emptyList();
         }
