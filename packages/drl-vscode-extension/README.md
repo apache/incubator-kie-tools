@@ -277,6 +277,47 @@ A recognized construct replaces the parse errors on its line. `drools.lsp.lint.d
 
 Custom operators are the `drools.evaluator.<id>` entries of `META-INF/kie.properties.conf` on the project classpath, read where the engine reads them. The server registers those ids with its parser, so `##id` is accepted in the editor as it is by the engine; an identifier no configuration declares stays a parse error. Operators registered from Java code are not seen.
 
+## Linter Suppression
+
+Diagnostic suppression directives allow silencing specific or all linter diagnostics directly within DRL source files using comments. Directives belong to the `@drl-lsp-lint` namespace and apply strictly to `drools-lint`, `drools-type`, and `drools-deprecated` diagnostics. Parser/syntax errors (`drools-drl-parser`) and compiler diagnostics (`drools`) are never suppressed.
+
+### Directives
+
+| Directive                                        | Scope                  | Description                                                                                               |
+| ------------------------------------------------ | ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| `// @drl-lsp-lint:disable-file [code, ...]`      | Entire file            | Suppresses matching codes (or all codes) for the entire file                                              |
+| `// @drl-lsp-lint:disable-line [code, ...]`      | Current line           | Suppresses matching codes on the current line                                                             |
+| `// @drl-lsp-lint:disable-next-line [code, ...]` | Next line              | Suppresses matching codes on the line immediately following (for block comments, the line following `*/`) |
+| `// @drl-lsp-lint:disable-rule [code, ...]`      | Enclosing or next rule | Suppresses matching codes for the entire rule or query block                                              |
+| `// @drl-lsp-lint:disable [code, ...]`           | Region start           | Starts a suppression region from this line downwards                                                      |
+| `// @drl-lsp-lint:enable [code, ...]`            | Region end             | Ends a suppression region from this line downwards                                                        |
+
+Directives accept both single-line (`//`) and multi-line (`/* ... */`) comments. A trailing `-- <reason>` can be used to document the suppression reason:
+
+```drl
+// @drl-lsp-lint:disable-next-line missing-semicolon -- legacy consequence format
+insert(new Person())
+```
+
+### Diagnostic Codes
+
+| Code                        | Source              | Description                                                                |
+| --------------------------- | ------------------- | -------------------------------------------------------------------------- |
+| `missing-end`               | `drools-lint`       | Missing `end` keyword terminating a rule or query                          |
+| `missing-separator`         | `drools-lint`       | Missing constraint separator (comma/semicolon) between pattern constraints |
+| `missing-semicolon`         | `drools-lint`       | Missing semicolon terminating a consequence statement                      |
+| `unbalanced-parens`         | `drools-lint`       | Unclosed or unmatched parentheses in LHS or consequence                    |
+| `mvel-property-access`      | `drools-lint`       | Method getter call in LHS when property access style is preferred          |
+| `unknown-type`              | `drools-type`       | Unrecognized type reference or likely typo in declared type                |
+| `unknown-member`            | `drools-type`       | Unknown member or enum constant on a declared type                         |
+| `half-constraint`           | `drools-deprecated` | Deprecated half constraint (e.g. `age > 18 && < 65`)                       |
+| `pattern-connective`        | `drools-deprecated` | Deprecated pattern connective `&&` or `\|\|`                               |
+| `lhs-connective-annotation` | `drools-deprecated` | Deprecated annotation immediately following an LHS connective              |
+| `agenda-group`              | `drools-deprecated` | Deprecated `agenda-group` attribute                                        |
+| `custom-operator`           | `drools-deprecated` | Custom operator missing required `##` prefix in DRL10                      |
+
+When no code is specified, all suppressible diagnostic codes are suppressed by default. Unknown directive actions and codes emit warning diagnostics.
+
 ## Known Issues
 
 If you find any issues, please report them in [GitHub Issues](https://github.com/apache/incubator-kie-tools/issues).
