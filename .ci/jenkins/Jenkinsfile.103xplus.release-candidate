@@ -185,9 +185,23 @@ pipeline {
         stage('Bootstrap') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    pnpm bootstrap
-                    '''
+                    script {
+                        if (params.CREATE_STREAM_BRANCH) {
+                            // Building from main: it uses a '-local' Kogito version, so Drools and Kogito are built from source.
+                            sh '''#!/bin/bash -el
+                            pnpm bootstrap
+                            '''
+                        } else {
+                            // Building from an existing X.Y.x: it is still at the development Kogito version (X.Y.999-SNAPSHOT),
+                            // which is not published anywhere and is not built locally, so a full bootstrap would fail to resolve
+                            // e.g. kogito-apps-bom. Bootstrap only the root (enough to run the update scripts) and set the
+                            // Kogito version to RELEASE_VERSION first; its own bootstrap then resolves it from the staging repositories.
+                            sh """#!/bin/bash -el
+                            pnpm bootstrap:root
+                            pnpm update-kogito-version-to --maven ${params.RELEASE_VERSION}
+                            """
+                        }
+                    }
                 }
             }
         }

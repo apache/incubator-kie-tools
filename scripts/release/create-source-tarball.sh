@@ -113,6 +113,9 @@ fi
 git -c advice.detachedHead=false clone "${clone_args[@]}" "$KIE_REPO" "$KIE_CLONE"
 git -C "$KIE_CLONE" archive --format=tar HEAD | tar -x -C "$STAGE/incubator-kie"
 
+# Remove compiled archives/binaries from source distribution
+rm -f "$STAGE/incubator-kie/kogito-gradle-plugin-test/gradle/wrapper/gradle-wrapper.jar"
+
 # --- Top-level files --------------------------------------------------------------------------------------------
 KIE_DIR="$STAGE/incubator-kie"
 TOOLS_DIR="$STAGE/incubator-kie-tools"
