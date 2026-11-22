@@ -150,6 +150,50 @@ upload_github_asset() {
 }
 
 # ---------------------------------------------------------------------------
+# Helpers: LICENSE / NOTICE for convenience binaries
+# LICENSE = root LICENSE + bundled third-party appendix; NOTICE = root NOTICE.
+# ---------------------------------------------------------------------------
+LEGAL_DIR="$(mktemp -d)"
+cat "${REPO_ROOT}/LICENSE" "${SCRIPT_DIR}/BINARY-LICENSE-APPENDIX.txt" > "${LEGAL_DIR}/LICENSE"
+cp "${REPO_ROOT}/NOTICE" "${LEGAL_DIR}/NOTICE"
+legal_dir() { echo "${LEGAL_DIR}"; }
+
+# Copies LICENSE and NOTICE into a directory. Optional 2nd arg: sub-directory name inside it.
+add_legal_to_dir() {
+    local dir="$1" sub="${2:-}"
+    [[ -n "${sub}" ]] && { dir="${dir}/${sub}"; mkdir -p "${dir}"; }
+    cp "$(legal_dir)/LICENSE" "${dir}/LICENSE"
+    cp "$(legal_dir)/NOTICE" "${dir}/NOTICE"
+}
+
+# Adds LICENSE and NOTICE at the root of an existing .zip file.
+add_legal_to_zip() {
+    zip -q -j "$1" "$(legal_dir)/LICENSE" "$(legal_dir)/NOTICE"
+}
+
+# Adds LICENSE and NOTICE to a .tar.gz/.tgz. Optional 2nd arg: sub-directory inside the archive.
+add_legal_to_targz() {
+    local archive="$1" sub="${2:-}"
+    local tmp
+    tmp="$(mktemp -d)"
+    tar -xzf "${archive}" -C "${tmp}"
+    add_legal_to_dir "${tmp}" "${sub}"
+    tar -czf "${archive}" -C "${tmp}" .
+    rm -rf "${tmp}"
+}
+
+# Adds LICENSE.txt and NOTICE.txt to extension/ inside a .vsix (replaces the plain Apache LICENSE).
+add_legal_to_vsix() {
+    local vsix="$1" tmp
+    tmp="$(mktemp -d)"
+    mkdir -p "${tmp}/extension"
+    cp "$(legal_dir)/LICENSE" "${tmp}/extension/LICENSE.txt"
+    cp "$(legal_dir)/NOTICE" "${tmp}/extension/NOTICE.txt"
+    (cd "${tmp}" && zip -q "${vsix}" extension/LICENSE.txt extension/NOTICE.txt)
+    rm -rf "${tmp}"
+}
+
+# ---------------------------------------------------------------------------
 # 1. NPM packages
 # ---------------------------------------------------------------------------
 release_npm_packages() {
@@ -172,6 +216,9 @@ release_npm_packages() {
         pub_filter=$(pnpm -r exec bash -c \
             'if [[ $(jq -r ".private" package.json) != "true" ]]; then echo "-F $(jq -r ".name" package.json)"; fi')
         pnpm ${pub_filter} exec bash -c "pnpm pack --pack-destination ${tmp_dir}"
+        for tgz in "${tmp_dir}"/*.tgz; do
+            add_legal_to_targz "${tgz}" "package"
+        done
         (cd "${tmp_dir}" && zip -r "${ARTIFACTS_DIR}/${zip_file}" .)
         rm -rf "${tmp_dir}"
         echo "RC artifact: ${ARTIFACTS_DIR}/${zip_file}"
@@ -230,11 +277,13 @@ release_chrome_extensions() {
         mkdir -p "${ARTIFACTS_DIR}"
         cp "${kie_editors_zip}" \
             "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension.zip"
+        add_legal_to_zip "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension.zip"
 
         local tmp_kie="${ARTIFACTS_DIR}/kie-editors-tmp"
         mkdir -p "${tmp_kie}"
         [[ -d "packages/chrome-extension-pack-kogito-kie-editors/dist/fonts" ]] && cp -r packages/chrome-extension-pack-kogito-kie-editors/dist/fonts "${tmp_kie}/"
         cp packages/chrome-extension-pack-kogito-kie-editors/dist/*-envelope.* "${tmp_kie}/" 2>/dev/null || true
+        add_legal_to_dir "${tmp_kie}"
         (cd "${tmp_kie}" && zip -r \
             "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension-editors.zip" .)
         rm -rf "${tmp_kie}"
@@ -334,6 +383,7 @@ release_vscode() {
                 local dest="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-${suffix}.vsix"
                 echo "  COPY  $(basename "${dest}")"
                 cp "${vsix}" "${dest}"
+                add_legal_to_vsix "${dest}"
             else
                 echo "  SKIP  ${ext} (no .vsix found)"
             fi
@@ -548,6 +598,7 @@ release_helm_charts() {
         local tmp_dir
         tmp_dir=$(mktemp -d)
         cp -r "${chart_dir}/." "${tmp_dir}/chart"
+        add_legal_to_dir "${tmp_dir}/chart"
         sed -i.bak "s/^version:.*/version: ${VERSION}/" "${tmp_dir}/chart/Chart.yaml"
         sed -i.bak "s/^appVersion:.*/appVersion: \"${VERSION}\"/" "${tmp_dir}/chart/Chart.yaml"
         rm -f "${tmp_dir}/chart/Chart.yaml.bak"
@@ -635,6 +686,7 @@ release_github_pages() {
             if [[ -d "${src}" ]]; then
                 echo "  ZIP  ${zip_name}"
                 (cd "${src}" && zip -r "${ARTIFACTS_DIR}/${zip_name}" .)
+                add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
             else
                 echo "  SKIP  ${zip_name} (${src} not found)"
             fi
@@ -752,6 +804,7 @@ release_dev_deployment_upload_service() {
             local rc_name="${PLATFORM_MAP[$src_name]}"
             if [[ -f "${dist}/${src_name}" ]]; then
                 cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}"
+                add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
                 echo "  COPY  ${rc_name}"
             else
                 echo "ERROR: Artifact ${dist}/${src_name} not found"
