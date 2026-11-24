@@ -1,0 +1,63 @@
+
+
+------------------------------------------------------------------------------------
+BUNDLED THIRD-PARTY COMPONENTS (extended-services-java)
+
+This binary distribution bundles the Java application "extended-services-java"
+together with its runtime dependency jars (under dist/extended-services-java/lib/main).
+The jars below are NOT licensed under the Apache License 2.0 alone; they are distributed
+under their own license terms. All other bundled jars are licensed under the Apache
+License 2.0.
+
+Eclipse Public License - v 2.0 (EPL-2.0), https://www.eclipse.org/legal/epl-2.0/
+    org.eclipse.jdt.ecj-3.44.0.jar                         (Eclipse JDT Core compiler)
+  Dual-licensed EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0; used under EPL-2.0:
+    jakarta.json.jakarta.json-api-2.1.3.jar
+    jakarta.annotation.jakarta.annotation-api-3.0.0.jar
+    jakarta.resource.jakarta.resource-api-2.1.0.jar
+    jakarta.el.jakarta.el-api-6.0.1.jar
+    jakarta.transaction.jakarta.transaction-api-2.0.1.jar
+    jakarta.ws.rs.jakarta.ws.rs-api-3.1.0.jar
+    jakarta.interceptor.jakarta.interceptor-api-2.2.0.jar
+    org.glassfish.expressly.expressly-6.0.0.jar
+    org.eclipse.parsson.parsson-1.1.8.jar
+
+Mozilla Public License, version 2.0 (MPL-2.0), https://www.mozilla.org/MPL/2.0/
+    net.sf.saxon.Saxon-HE-12.10.jar                        (https://www.saxonica.com/)
+    Source code: https://github.com/Saxonica/Saxon-HE
+
+GNU General Public License v2 with the Classpath Exception (GPL-2.0-only WITH Classpath-exception-2.0)
+    io.smallrye.classfile.jdk-classfile-backport-26.jar
+
+Eclipse Distribution License - v 1.0 (BSD-3-Clause), https://www.eclipse.org/org/documents/edl-v10.php
+    jakarta.activation.jakarta.activation-api-2.1.4.jar
+    jakarta.xml.bind.jakarta.xml.bind-api-4.0.4.jar
+
+BSD-3-Clause License
+    com.google.protobuf.protobuf-java-3.25.5.jar, protobuf-java-util-3.25.5.jar
+    com.thoughtworks.xstream.xstream-1.4.21.jar
+    org.antlr.antlr-runtime-3.5.2.jar, antlr4-runtime-4.13.2.jar
+    org.ow2.asm.asm-9.11.1.jar, asm-tree-9.11.1.jar, asm-analysis-9.11.1.jar, asm-util-9.11.1.jar
+    org.jpmml.pmml-model-1.6.4.jar
+
+BSD-2-Clause License
+    org.crac.crac-1.5.0.jar                                (lib/boot)
+
+MIT License
+    ch.obermuhlner.big-math-2.0.1.jar
+    org.slf4j.slf4j-api-2.0.17.jar
+
+MIT-0 License
+    org.reactivestreams.reactive-streams-1.0.4.jar
+
+Indiana University Extreme! Lab Software License (Apache Software License 1.1 style)
+    io.github.x-stream.mxparser-1.2.2.jar
+
+Public Domain
+    org.jboss.jboss-transaction-spi-8.0.0.Final.jar
+    xmlpull.xmlpull-1.1.3.1.jar
+
+Dual-licensed, used under the Apache License 2.0:
+    io.vertx.vertx-*-4.5.34.jar                            (EPL-2.0 OR Apache-2.0)
+    org.eclipse.jetty.toolchain.jetty-jakarta-servlet-api-5.0.2.jar   (EPL-1.0 OR Apache-2.0)
+    com.github.javaparser.javaparser-core-3.27.0.jar       (LGPL-3.0 OR Apache-2.0)

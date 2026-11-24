@@ -1,17 +1,13 @@
 
 
 ------------------------------------------------------------------------------------
-BUNDLED THIRD-PARTY COMPONENTS (convenience binaries only)
+BUNDLED THIRD-PARTY COMPONENTS
 
-The convenience binaries of Apache KIE Tools bundle third-party software that is
-distributed under its own license terms. Besides the components listed below, the
-bundles produced by webpack include per-bundle "*.js.LICENSE.txt" files with the
-licenses of the JavaScript dependencies bundled in them; those files are part of
-this distribution and remain applicable.
+This binary distribution bundles the following third-party component, which is
+distributed under its own license terms:
 
 elkjs (https://github.com/kieler/elkjs)
-    Bundled by the DMN editor and the artifacts that embed it.
-    Copyright (c) Kiel University and others.
+    Bundled by the DMN editor.
     Licensed under the Eclipse Public License - v 2.0 (EPL-2.0)
     https://www.eclipse.org/legal/epl-2.0/
     Source code: https://github.com/kieler/elkjs and https://github.com/eclipse/elk

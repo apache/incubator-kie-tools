@@ -151,18 +151,37 @@ upload_github_asset() {
 
 # ---------------------------------------------------------------------------
 # Helpers: LICENSE / NOTICE for convenience binaries
-# LICENSE = root LICENSE + bundled third-party appendix; NOTICE = root NOTICE.
+# LICENSE = root LICENSE + (optional) appendix listing the third-party components bundled
+# by that specific artifact. Select it per call with LEGAL_PROFILE=<profile>:
+#   (unset)           root LICENSE only
+#   elkjs             BINARY-LICENSE-APPENDIX.txt                    (DMN editor: sandbox-webapp, chrome editors, dmn vsix)
+#   extended-services BINARY-LICENSE-APPENDIX-extended-services.txt  (extended-services vsix)
+#   drl               BINARY-LICENSE-APPENDIX-drl.txt                (drl vsix)
+#   go                BINARY-LICENSE-APPENDIX-go.txt                 (dev-deployment-upload-service binaries)
+# NOTICE = root NOTICE.
 # ---------------------------------------------------------------------------
 LEGAL_DIR="$(mktemp -d)"
-cat "${REPO_ROOT}/LICENSE" "${SCRIPT_DIR}/BINARY-LICENSE-APPENDIX.txt" > "${LEGAL_DIR}/LICENSE"
+cp "${REPO_ROOT}/LICENSE" "${LEGAL_DIR}/LICENSE"
 cp "${REPO_ROOT}/NOTICE" "${LEGAL_DIR}/NOTICE"
-legal_dir() { echo "${LEGAL_DIR}"; }
+for _p in elkjs:BINARY-LICENSE-APPENDIX.txt \
+          extended-services:BINARY-LICENSE-APPENDIX-extended-services.txt \
+          drl:BINARY-LICENSE-APPENDIX-drl.txt \
+          go:BINARY-LICENSE-APPENDIX-go.txt; do
+    mkdir -p "${LEGAL_DIR}/${_p%%:*}"
+    cat "${REPO_ROOT}/LICENSE" "${SCRIPT_DIR}/${_p#*:}" > "${LEGAL_DIR}/${_p%%:*}/LICENSE"
+    cp "${REPO_ROOT}/NOTICE" "${LEGAL_DIR}/${_p%%:*}/NOTICE"
+done
+legal_dir() { if [[ -n "${LEGAL_PROFILE:-}" ]]; then echo "${LEGAL_DIR}/${LEGAL_PROFILE}"; else echo "${LEGAL_DIR}"; fi; }
 
 # Copies LICENSE and NOTICE into a directory. Optional 2nd arg: sub-directory name inside it.
 add_legal_to_dir() {
     local dir="$1" sub="${2:-}"
     [[ -n "${sub}" ]] && { dir="${dir}/${sub}"; mkdir -p "${dir}"; }
-    cp "$(legal_dir)/LICENSE" "${dir}/LICENSE"
+    # KEEP_EXISTING_LICENSE=true: do not overwrite a LICENSE already shipped by the package
+    # (e.g. packages whose own LICENSE already carries third-party notices); NOTICE is always added.
+    if [[ "${KEEP_EXISTING_LICENSE:-false}" != "true" || ! -f "${dir}/LICENSE" ]]; then
+        cp "$(legal_dir)/LICENSE" "${dir}/LICENSE"
+    fi
     cp "$(legal_dir)/NOTICE" "${dir}/NOTICE"
 }
 
@@ -174,11 +193,16 @@ add_legal_to_zip() {
 # Adds LICENSE and NOTICE to a .tar.gz/.tgz. Optional 2nd arg: sub-directory inside the archive.
 add_legal_to_targz() {
     local archive="$1" sub="${2:-}"
-    local tmp
+    local tmp entries=() entry
     tmp="$(mktemp -d)"
     tar -xzf "${archive}" -C "${tmp}"
     add_legal_to_dir "${tmp}" "${sub}"
-    tar -czf "${archive}" -C "${tmp}" .
+    # Repack with top-level names (no leading "./"): `npm publish` cannot read tarballs that
+    # have a "./" entry (fails with ENOENT package.json).
+    for entry in "${tmp}"/* "${tmp}"/.[!.]*; do
+        [[ -e "${entry}" ]] && entries+=("$(basename "${entry}")")
+    done
+    tar -czf "${archive}" -C "${tmp}" "${entries[@]}"
     rm -rf "${tmp}"
 }
 
@@ -191,6 +215,30 @@ add_legal_to_vsix() {
     cp "$(legal_dir)/NOTICE" "${tmp}/extension/NOTICE.txt"
     (cd "${tmp}" && zip -q "${vsix}" extension/LICENSE.txt extension/NOTICE.txt)
     rm -rf "${tmp}"
+}
+
+# Packs every public workspace package into <dest_dir> (*.tgz) and adds LICENSE + NOTICE
+# (package/LICENSE, package/NOTICE) to each tarball. Used for both the RC zip and publishing,
+# so that the tarballs published to the registry carry the same legal files.
+pack_public_npm_packages_with_legal() {
+    local dest_dir="$1" pub_filter
+    mkdir -p "${dest_dir}"
+    pub_filter=$(pnpm -r exec bash -c \
+        'if [[ $(jq -r ".private" package.json) != "true" ]]; then echo "-F $(jq -r ".name" package.json)"; fi')
+    pnpm ${pub_filter} exec bash -c "pnpm pack --pack-destination ${dest_dir}"
+    for tgz in "${dest_dir}"/*.tgz; do
+        # Packages shipping third-party files listed in the root LICENSE (XSDs, DefaultBackend.js)
+        # get the root LICENSE; the one embedding elkjs also gets the elkjs appendix. All others
+        # keep their own (plain Apache-2.0) package LICENSE.
+        case "$(tar -xzOf "${tgz}" package/package.json | jq -r ".name")" in
+            @kie-tools/dmn-editor-standalone)
+                LEGAL_PROFILE=elkjs add_legal_to_targz "${tgz}" "package" ;;
+            @kie-tools/dmn-marshaller|@kie-tools/bpmn-marshaller|@kie-tools/kie-sandbox-fs|@kie-tools/xml-parser-ts-codegen)
+                add_legal_to_targz "${tgz}" "package" ;;
+            *)
+                KEEP_EXISTING_LICENSE=true add_legal_to_targz "${tgz}" "package" ;;
+        esac
+    done
 }
 
 # ---------------------------------------------------------------------------
@@ -211,14 +259,8 @@ release_npm_packages() {
     if [[ "${RC_MODE}" == "true" ]]; then
         local tmp_dir="${ARTIFACTS_DIR}/npm-packages-tmp"
         local zip_file="apache-kie-${VERSION}-incubating-tools-npm-packages.zip"
-        mkdir -p "${tmp_dir}" "${ARTIFACTS_DIR}"
-        local pub_filter
-        pub_filter=$(pnpm -r exec bash -c \
-            'if [[ $(jq -r ".private" package.json) != "true" ]]; then echo "-F $(jq -r ".name" package.json)"; fi')
-        pnpm ${pub_filter} exec bash -c "pnpm pack --pack-destination ${tmp_dir}"
-        for tgz in "${tmp_dir}"/*.tgz; do
-            add_legal_to_targz "${tgz}" "package"
-        done
+        mkdir -p "${ARTIFACTS_DIR}"
+        pack_public_npm_packages_with_legal "${tmp_dir}"
         (cd "${tmp_dir}" && zip -r "${ARTIFACTS_DIR}/${zip_file}" .)
         rm -rf "${tmp_dir}"
         echo "RC artifact: ${ARTIFACTS_DIR}/${zip_file}"
@@ -235,18 +277,22 @@ release_npm_packages() {
         echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "${npmrc_tmp}"
         export NPM_CONFIG_USERCONFIG="${npmrc_tmp}"
 
-        local pub_filter
-        pub_filter=$(pnpm -r exec bash -c \
-            'if [[ $(jq -r ".private" package.json) != "true" ]]; then echo "-F $(jq -r ".name" package.json)"; fi')
-        pnpm ${pub_filter} exec bash -c '
-            PKG_NAME=$(jq -r ".name" package.json)
-            if ! npm view ${PKG_NAME}@'"${VERSION}"' name --userconfig "'"${npmrc_tmp}"'" &>/dev/null; then
-                echo "Publishing ${PKG_NAME}@'"${VERSION}"'"
-                pnpm publish --no-git-checks --access public --userconfig "'"${npmrc_tmp}"'"
+        # Publish the same tarballs that carry LICENSE + NOTICE (a plain `pnpm publish` would
+        # not include NOTICE, nor the root LICENSE for packages without their own).
+        local publish_dir
+        publish_dir="$(mktemp -d)"
+        pack_public_npm_packages_with_legal "${publish_dir}"
+        for tgz in "${publish_dir}"/*.tgz; do
+            local PKG_NAME
+            PKG_NAME=$(tar -xzOf "${tgz}" package/package.json | jq -r ".name")
+            if ! npm view "${PKG_NAME}@${VERSION}" name --userconfig "${npmrc_tmp}" &>/dev/null; then
+                echo "Publishing ${PKG_NAME}@${VERSION}"
+                npm publish "${tgz}" --access public --userconfig "${npmrc_tmp}"
             else
-                echo "Skipping ${PKG_NAME}@'"${VERSION}"' (already published)"
+                echo "Skipping ${PKG_NAME}@${VERSION} (already published)"
             fi
-        '
+        done
+        rm -rf "${publish_dir}"
         rm -f "${npmrc_tmp}"
         trap - EXIT
         echo "NPM packages published."
@@ -283,7 +329,7 @@ release_chrome_extensions() {
         mkdir -p "${tmp_kie}"
         [[ -d "packages/chrome-extension-pack-kogito-kie-editors/dist/fonts" ]] && cp -r packages/chrome-extension-pack-kogito-kie-editors/dist/fonts "${tmp_kie}/"
         cp packages/chrome-extension-pack-kogito-kie-editors/dist/*-envelope.* "${tmp_kie}/" 2>/dev/null || true
-        add_legal_to_dir "${tmp_kie}"
+        LEGAL_PROFILE=elkjs add_legal_to_dir "${tmp_kie}"
         (cd "${tmp_kie}" && zip -r \
             "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension-editors.zip" .)
         rm -rf "${tmp_kie}"
@@ -383,7 +429,12 @@ release_vscode() {
                 local dest="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-${suffix}.vsix"
                 echo "  COPY  $(basename "${dest}")"
                 cp "${vsix}" "${dest}"
-                add_legal_to_vsix "${dest}"
+                case "${ext}" in
+                    dmn-vscode-extension)               LEGAL_PROFILE=elkjs add_legal_to_vsix "${dest}" ;;
+                    extended-services-vscode-extension) LEGAL_PROFILE=extended-services add_legal_to_vsix "${dest}" ;;
+                    drl-vscode-extension)               LEGAL_PROFILE=drl add_legal_to_vsix "${dest}" ;;
+                    *)                                  add_legal_to_vsix "${dest}" ;;
+                esac
             else
                 echo "  SKIP  ${ext} (no .vsix found)"
             fi
@@ -686,7 +737,11 @@ release_github_pages() {
             if [[ -d "${src}" ]]; then
                 echo "  ZIP  ${zip_name}"
                 (cd "${src}" && zip -r "${ARTIFACTS_DIR}/${zip_name}" .)
-                add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
+                if [[ "${zip_name}" == *sandbox-webapp.zip ]]; then
+                    LEGAL_PROFILE=elkjs add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
+                else
+                    add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
+                fi
             else
                 echo "  SKIP  ${zip_name} (${src} not found)"
             fi
@@ -804,7 +859,7 @@ release_dev_deployment_upload_service() {
             local rc_name="${PLATFORM_MAP[$src_name]}"
             if [[ -f "${dist}/${src_name}" ]]; then
                 cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}"
-                add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
+                LEGAL_PROFILE=go add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
                 echo "  COPY  ${rc_name}"
             else
                 echo "ERROR: Artifact ${dist}/${src_name} not found"
