@@ -359,5 +359,9 @@ repo/graph.dot
 repo/repo.iml
 scripts/check-junit-report-results/tests/index.test.js
 scripts/check-junit-report-results/tests/reports/empty.xml
+scripts/release/BINARY-LICENSE-APPENDIX-drl.txt
+scripts/release/BINARY-LICENSE-APPENDIX-extended-services.txt
+scripts/release/BINARY-LICENSE-APPENDIX-go.txt
+scripts/release/BINARY-LICENSE-APPENDIX.txt
 scripts/run-script-if/README.md
 scripts/scripts.iml
