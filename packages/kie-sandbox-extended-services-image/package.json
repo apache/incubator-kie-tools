@@ -16,10 +16,11 @@
     "build:dev": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
-    "copy:assets": "pnpm copy:extended-services-java",
+    "copy:assets": "pnpm copy:extended-services-java && pnpm copy:legal",
     "copy:extended-services-java": "run-script-os",
     "copy:extended-services-java:linux:darwin": "cp -R ./node_modules/@kie-tools/extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services",
     "copy:extended-services-java:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services\"",
+    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal",
     "image:docker:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImageEnv.registry)\" -a \"$(build-env extendedServicesImageEnv.account)\" -n \"$(build-env extendedServicesImageEnv.name)\" -t \"$(build-env extendedServicesImageEnv.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesImageEnv.port)\""
   },
   "dependencies": {

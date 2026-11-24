@@ -44,6 +44,8 @@ RUN mkdir $HOME \
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
 
+COPY dist-dev/legal/ /licenses/
+
 COPY --chown=1000:0 dist-dev/cors-proxy $HOME/cors-proxy
 
 EXPOSE $CORS_PROXY_DEFAULT_PORT

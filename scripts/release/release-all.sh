@@ -151,37 +151,19 @@ upload_github_asset() {
 
 # ---------------------------------------------------------------------------
 # Helpers: LICENSE / NOTICE for convenience binaries
-# LICENSE = root LICENSE + (optional) appendix listing the third-party components bundled
-# by that specific artifact. Select it per call with LEGAL_PROFILE=<profile>:
-#   (unset)           root LICENSE only
-#   elkjs             BINARY-LICENSE-APPENDIX.txt                    (DMN editor: sandbox-webapp, chrome editors, dmn vsix)
-#   extended-services BINARY-LICENSE-APPENDIX-extended-services.txt  (extended-services vsix)
-#   drl               BINARY-LICENSE-APPENDIX-drl.txt                (drl vsix)
-#   go                BINARY-LICENSE-APPENDIX-go.txt                 (dev-deployment-upload-service binaries)
-# NOTICE = root NOTICE.
+# One consolidated LICENSE (root LICENSE + BINARY-LICENSE-APPENDIX.txt) and one NOTICE (root NOTICE), generated
+# by build-legal.js, are used for every artifact (npm packages, extensions, web apps, Helm charts, binaries).
+# The container images get the same files at build time (the `copy:legal` script of each *-image package).
 # ---------------------------------------------------------------------------
 LEGAL_DIR="$(mktemp -d)"
-cp "${REPO_ROOT}/LICENSE" "${LEGAL_DIR}/LICENSE"
-cp "${REPO_ROOT}/NOTICE" "${LEGAL_DIR}/NOTICE"
-for _p in elkjs:BINARY-LICENSE-APPENDIX.txt \
-          extended-services:BINARY-LICENSE-APPENDIX-extended-services.txt \
-          drl:BINARY-LICENSE-APPENDIX-drl.txt \
-          go:BINARY-LICENSE-APPENDIX-go.txt; do
-    mkdir -p "${LEGAL_DIR}/${_p%%:*}"
-    cat "${REPO_ROOT}/LICENSE" "${SCRIPT_DIR}/${_p#*:}" > "${LEGAL_DIR}/${_p%%:*}/LICENSE"
-    cp "${REPO_ROOT}/NOTICE" "${LEGAL_DIR}/${_p%%:*}/NOTICE"
-done
-legal_dir() { if [[ -n "${LEGAL_PROFILE:-}" ]]; then echo "${LEGAL_DIR}/${LEGAL_PROFILE}"; else echo "${LEGAL_DIR}"; fi; }
+node "${SCRIPT_DIR}/build-legal.js" "${LEGAL_DIR}"
+legal_dir() { echo "${LEGAL_DIR}"; }
 
 # Copies LICENSE and NOTICE into a directory. Optional 2nd arg: sub-directory name inside it.
 add_legal_to_dir() {
     local dir="$1" sub="${2:-}"
     [[ -n "${sub}" ]] && { dir="${dir}/${sub}"; mkdir -p "${dir}"; }
-    # KEEP_EXISTING_LICENSE=true: do not overwrite a LICENSE already shipped by the package
-    # (e.g. packages whose own LICENSE already carries third-party notices); NOTICE is always added.
-    if [[ "${KEEP_EXISTING_LICENSE:-false}" != "true" || ! -f "${dir}/LICENSE" ]]; then
-        cp "$(legal_dir)/LICENSE" "${dir}/LICENSE"
-    fi
+    cp "$(legal_dir)/LICENSE" "${dir}/LICENSE"
     cp "$(legal_dir)/NOTICE" "${dir}/NOTICE"
 }
 
@@ -227,17 +209,7 @@ pack_public_npm_packages_with_legal() {
         'if [[ $(jq -r ".private" package.json) != "true" ]]; then echo "-F $(jq -r ".name" package.json)"; fi')
     pnpm ${pub_filter} exec bash -c "pnpm pack --pack-destination ${dest_dir}"
     for tgz in "${dest_dir}"/*.tgz; do
-        # Packages shipping third-party files listed in the root LICENSE (XSDs, DefaultBackend.js)
-        # get the root LICENSE; the one embedding elkjs also gets the elkjs appendix. All others
-        # keep their own (plain Apache-2.0) package LICENSE.
-        case "$(tar -xzOf "${tgz}" package/package.json | jq -r ".name")" in
-            @kie-tools/dmn-editor-standalone)
-                LEGAL_PROFILE=elkjs add_legal_to_targz "${tgz}" "package" ;;
-            @kie-tools/dmn-marshaller|@kie-tools/bpmn-marshaller|@kie-tools/kie-sandbox-fs|@kie-tools/xml-parser-ts-codegen)
-                add_legal_to_targz "${tgz}" "package" ;;
-            *)
-                KEEP_EXISTING_LICENSE=true add_legal_to_targz "${tgz}" "package" ;;
-        esac
+        add_legal_to_targz "${tgz}" "package"
     done
 }
 
@@ -319,17 +291,20 @@ release_chrome_extensions() {
         return 1
     fi
 
-    if [[ "${RC_MODE}" == "true" ]]; then
+    # The copies in ARTIFACTS_DIR carry LICENSE + NOTICE; --publish uploads them to the Chrome Web Store.
+    local chrome_zip="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension.zip"
+    if [[ "${RC_MODE}" == "true" || "${PUBLISH}" == "true" ]]; then
         mkdir -p "${ARTIFACTS_DIR}"
-        cp "${kie_editors_zip}" \
-            "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension.zip"
-        add_legal_to_zip "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension.zip"
+        cp "${kie_editors_zip}" "${chrome_zip}"
+        add_legal_to_zip "${chrome_zip}"
+    fi
 
+    if [[ "${RC_MODE}" == "true" ]]; then
         local tmp_kie="${ARTIFACTS_DIR}/kie-editors-tmp"
         mkdir -p "${tmp_kie}"
         [[ -d "packages/chrome-extension-pack-kogito-kie-editors/dist/fonts" ]] && cp -r packages/chrome-extension-pack-kogito-kie-editors/dist/fonts "${tmp_kie}/"
         cp packages/chrome-extension-pack-kogito-kie-editors/dist/*-envelope.* "${tmp_kie}/" 2>/dev/null || true
-        LEGAL_PROFILE=elkjs add_legal_to_dir "${tmp_kie}"
+        add_legal_to_dir "${tmp_kie}"
         (cd "${tmp_kie}" && zip -r \
             "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension-editors.zip" .)
         rm -rf "${tmp_kie}"
@@ -386,7 +361,7 @@ release_chrome_extensions() {
         }
 
         if [[ -n "${CHROME_KIE_EDITORS_EXTENSION_ID:-}" ]]; then
-            _chrome_upload "${CHROME_KIE_EDITORS_EXTENSION_ID}" "${kie_editors_zip}"
+            _chrome_upload "${CHROME_KIE_EDITORS_EXTENSION_ID}" "${chrome_zip}"
             _chrome_publish "${CHROME_KIE_EDITORS_EXTENSION_ID}"
             echo "Chrome extension published."
         else
@@ -419,7 +394,8 @@ release_vscode() {
         pnpm ${filter} build:prod
     fi
 
-    if [[ "${RC_MODE}" == "true" ]]; then
+    # The copies in ARTIFACTS_DIR carry LICENSE + NOTICE; --publish publishes and uploads these copies.
+    if [[ "${RC_MODE}" == "true" || "${PUBLISH}" == "true" ]]; then
         mkdir -p "${ARTIFACTS_DIR}"
         for ext in "${!EXTENSIONS[@]}"; do
             local suffix="${EXTENSIONS[$ext]}"
@@ -429,12 +405,7 @@ release_vscode() {
                 local dest="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-${suffix}.vsix"
                 echo "  COPY  $(basename "${dest}")"
                 cp "${vsix}" "${dest}"
-                case "${ext}" in
-                    dmn-vscode-extension)               LEGAL_PROFILE=elkjs add_legal_to_vsix "${dest}" ;;
-                    extended-services-vscode-extension) LEGAL_PROFILE=extended-services add_legal_to_vsix "${dest}" ;;
-                    drl-vscode-extension)               LEGAL_PROFILE=drl add_legal_to_vsix "${dest}" ;;
-                    *)                                  add_legal_to_vsix "${dest}" ;;
-                esac
+                add_legal_to_vsix "${dest}"
             else
                 echo "  SKIP  ${ext} (no .vsix found)"
             fi
@@ -449,10 +420,11 @@ release_vscode() {
         fi
         echo "Publishing to VSCode Marketplace..."
         for ext in "${!EXTENSIONS[@]}"; do
-            find "packages/${ext}" -maxdepth 2 -name "*.vsix" | while read -r vsix; do
-                echo "  Publishing: ${vsix}"
-                npx vsce publish --packagePath "${vsix}" --pat "${VSCE_PAT}"
-            done
+            local artifact="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-${EXTENSIONS[$ext]}.vsix"
+            if [[ -f "${artifact}" ]]; then
+                echo "  Publishing: ${artifact}"
+                npx vsce publish --packagePath "${artifact}" --pat "${VSCE_PAT}"
+            fi
         done
         echo "VSCode extensions published."
     fi
@@ -460,9 +432,13 @@ release_vscode() {
     if [[ "${PUBLISH}" == "true" && -n "${UPLOAD_URL:-}" && -n "${GITHUB_TOKEN:-}" ]]; then
         echo "Uploading .vsix files to GitHub Release..."
         for ext in "${!EXTENSIONS[@]}"; do
-            find "packages/${ext}" -maxdepth 2 -name "*.vsix" | while read -r vsix; do
-                upload_github_asset "${vsix}" "$(basename "${vsix}")" "application/zip"
-            done
+            local artifact="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-${EXTENSIONS[$ext]}.vsix"
+            if [[ -f "${artifact}" ]]; then
+                # Keep the asset name of the .vsix built by vsce (e.g. dmn-vscode-extension-<version>.vsix).
+                local original_vsix
+                original_vsix=$(find "packages/${ext}" -maxdepth 2 -name "*.vsix" | head -1)
+                upload_github_asset "${artifact}" "$(basename "${original_vsix}")" "application/zip"
+            fi
         done
     fi
 }
@@ -737,11 +713,7 @@ release_github_pages() {
             if [[ -d "${src}" ]]; then
                 echo "  ZIP  ${zip_name}"
                 (cd "${src}" && zip -r "${ARTIFACTS_DIR}/${zip_name}" .)
-                if [[ "${zip_name}" == *sandbox-webapp.zip ]]; then
-                    LEGAL_PROFILE=elkjs add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
-                else
-                    add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
-                fi
+                add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
             else
                 echo "  SKIP  ${zip_name} (${src} not found)"
             fi
@@ -853,20 +825,21 @@ release_dev_deployment_upload_service() {
         ["dev-deployment-upload-service-windows-amd64-${VERSION}.tar.gz"]="apache-kie-${VERSION}-incubating-sandbox-dev-deployment-upload-service-windows-x86.tar.gz"
     )
 
-    if [[ "${RC_MODE}" == "true" ]]; then
+    # The copies in ARTIFACTS_DIR carry LICENSE + NOTICE; --publish uploads these copies.
+    if [[ "${RC_MODE}" == "true" || "${PUBLISH}" == "true" ]]; then
         mkdir -p "${ARTIFACTS_DIR}"
         for src_name in "${!PLATFORM_MAP[@]}"; do
             local rc_name="${PLATFORM_MAP[$src_name]}"
             if [[ -f "${dist}/${src_name}" ]]; then
                 cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}"
-                LEGAL_PROFILE=go add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
+                add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
                 echo "  COPY  ${rc_name}"
             else
                 echo "ERROR: Artifact ${dist}/${src_name} not found"
                 return 1
             fi
         done
-        echo "RC artifacts in: ${ARTIFACTS_DIR}"
+        echo "Artifacts in: ${ARTIFACTS_DIR}"
     fi
 
     if [[ "${PUBLISH}" == "true" ]]; then
@@ -875,10 +848,17 @@ release_dev_deployment_upload_service() {
             return 1
         fi
         for src_name in "${!PLATFORM_MAP[@]}"; do
-            upload_github_asset "${dist}/${src_name}" "${src_name}" "application/gzip"
-            if [[ -f "${dist}/${src_name}.sha256" ]]; then
-                upload_github_asset "${dist}/${src_name}.sha256" "${src_name}.sha256" "text/plain"
+            local artifact="${ARTIFACTS_DIR}/${PLATFORM_MAP[$src_name]}"
+            # getDevDeploymentUploadService.sh downloads "<src_name>" and verifies it against "<src_name>.sha256",
+            # so the assets keep their original names and the checksum is recomputed for the repacked tarball.
+            local sha256_file="${artifact}.sha256"
+            if command -v sha256sum &>/dev/null; then
+                sha256sum "${artifact}" | awk '{print $1}' > "${sha256_file}"
+            else
+                shasum -a 256 "${artifact}" | awk '{print $1}' > "${sha256_file}"
             fi
+            upload_github_asset "${artifact}" "${src_name}" "application/gzip"
+            upload_github_asset "${sha256_file}" "${src_name}.sha256" "text/plain"
         done
         echo "dev-deployment-upload-service binaries uploaded."
     fi
