@@ -20,7 +20,7 @@
     "copy:image-env-to-json": "run-script-os",
     "copy:image-env-to-json:linux:darwin": "cp ./node_modules/@kie-tools/image-env-to-json/dist/image-env-to-json-linux-amd64 ./dist-dev/",
     "copy:image-env-to-json:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/image-env-to-json/dist/image-env-to-json-linux-amd64 ./dist-dev/\"",
-    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal",
+    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal js,go",
     "copy:online-editor": "run-script-os",
     "copy:online-editor:linux:darwin": "cp -R ./node_modules/@kie-tools/online-editor/dist/ ./dist-dev/online-editor",
     "copy:online-editor:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/online-editor/dist/ ./dist-dev/online-editor\"",

@@ -151,19 +151,28 @@ upload_github_asset() {
 
 # ---------------------------------------------------------------------------
 # Helpers: LICENSE / NOTICE for convenience binaries
-# One consolidated LICENSE (root LICENSE + BINARY-LICENSE-APPENDIX.txt) and one NOTICE (root NOTICE), generated
-# by build-legal.js, are used for every artifact (npm packages, extensions, web apps, Helm charts, binaries).
+# One NOTICE (root NOTICE) and one shared license inventory (BINARY-LICENSE-APPENDIX.txt). build-legal.js writes
+# root LICENSE + only the inventory sections that apply to an artifact. Select them per call with
+# LEGAL_PROFILE=<comma-separated sections: js,go,drl,ext> (unset = root LICENSE only, nothing third-party bundled).
 # The container images get the same files at build time (the `copy:legal` script of each *-image package).
 # ---------------------------------------------------------------------------
 LEGAL_DIR="$(mktemp -d)"
-node "${SCRIPT_DIR}/build-legal.js" "${LEGAL_DIR}"
-legal_dir() { echo "${LEGAL_DIR}"; }
+legal_dir() {
+    local p="${LEGAL_PROFILE:-}" d
+    d="${LEGAL_DIR}/${p:-root}"
+    [[ -f "${d}/LICENSE" ]] || node "${SCRIPT_DIR}/build-legal.js" "${d}" "${p}"
+    echo "${d}"
+}
 
 # Copies LICENSE and NOTICE into a directory. Optional 2nd arg: sub-directory name inside it.
+# KEEP_EXISTING_LICENSE=true: keep a LICENSE already shipped by the package (it can carry its own third-party
+# copyright, e.g. @kie-tools-core/monaco-editor); NOTICE is always added.
 add_legal_to_dir() {
     local dir="$1" sub="${2:-}"
     [[ -n "${sub}" ]] && { dir="${dir}/${sub}"; mkdir -p "${dir}"; }
-    cp "$(legal_dir)/LICENSE" "${dir}/LICENSE"
+    if [[ "${KEEP_EXISTING_LICENSE:-false}" != "true" || ! -f "${dir}/LICENSE" ]]; then
+        cp "$(legal_dir)/LICENSE" "${dir}/LICENSE"
+    fi
     cp "$(legal_dir)/NOTICE" "${dir}/NOTICE"
 }
 
@@ -209,7 +218,17 @@ pack_public_npm_packages_with_legal() {
         'if [[ $(jq -r ".private" package.json) != "true" ]]; then echo "-F $(jq -r ".name" package.json)"; fi')
     pnpm ${pub_filter} exec bash -c "pnpm pack --pack-destination ${dest_dir}"
     for tgz in "${dest_dir}"/*.tgz; do
-        add_legal_to_targz "${tgz}" "package"
+        # Packages shipping third-party files listed in the root LICENSE (XSDs, DefaultBackend.js) get the root
+        # LICENSE; the standalone editors bundle JavaScript libraries and fonts. All others keep their own package
+        # LICENSE (never replaced) and get NOTICE.
+        case "$(tar -xzOf "${tgz}" package/package.json | jq -r ".name")" in
+            @kie-tools/dmn-editor-standalone|@kie-tools/bpmn-editor-standalone)
+                LEGAL_PROFILE=js add_legal_to_targz "${tgz}" "package" ;;
+            @kie-tools/dmn-marshaller|@kie-tools/bpmn-marshaller|@kie-tools/xml-parser-ts-codegen)
+                add_legal_to_targz "${tgz}" "package" ;;
+            *)
+                KEEP_EXISTING_LICENSE=true add_legal_to_targz "${tgz}" "package" ;;
+        esac
     done
 }
 
@@ -234,6 +253,7 @@ release_npm_packages() {
         mkdir -p "${ARTIFACTS_DIR}"
         pack_public_npm_packages_with_legal "${tmp_dir}"
         (cd "${tmp_dir}" && zip -r "${ARTIFACTS_DIR}/${zip_file}" .)
+        add_legal_to_zip "${ARTIFACTS_DIR}/${zip_file}"
         rm -rf "${tmp_dir}"
         echo "RC artifact: ${ARTIFACTS_DIR}/${zip_file}"
     fi
@@ -405,7 +425,13 @@ release_vscode() {
                 local dest="${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-${suffix}.vsix"
                 echo "  COPY  $(basename "${dest}")"
                 cp "${vsix}" "${dest}"
-                add_legal_to_vsix "${dest}"
+                case "${ext}" in
+                    dmn-vscode-extension|bpmn-vscode-extension|pmml-vscode-extension|vscode-extension-kogito-bundle|vscode-extension-kie-ba-bundle)
+                                                        LEGAL_PROFILE=js add_legal_to_vsix "${dest}" ;;
+                    extended-services-vscode-extension) LEGAL_PROFILE=ext add_legal_to_vsix "${dest}" ;;
+                    drl-vscode-extension)               LEGAL_PROFILE=drl add_legal_to_vsix "${dest}" ;;
+                    *)                                  add_legal_to_vsix "${dest}" ;;
+                esac
             else
                 echo "  SKIP  ${ext} (no .vsix found)"
             fi
@@ -713,7 +739,11 @@ release_github_pages() {
             if [[ -d "${src}" ]]; then
                 echo "  ZIP  ${zip_name}"
                 (cd "${src}" && zip -r "${ARTIFACTS_DIR}/${zip_name}" .)
-                add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
+                if [[ "${zip_name}" == *sandbox-webapp.zip ]]; then
+                    LEGAL_PROFILE=js add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
+                else
+                    add_legal_to_zip "${ARTIFACTS_DIR}/${zip_name}"
+                fi
             else
                 echo "  SKIP  ${zip_name} (${src} not found)"
             fi
@@ -762,12 +792,14 @@ release_github_pages() {
             rm -rf "${editors_dir}" && mkdir -p "${editors_dir}"
             rm -rf editors/latest && ln -s "${VERSION}" editors/latest
             cp -r "${online_dist}/." .
+            LEGAL_PROFILE=js add_legal_to_dir .
 
             if [[ -d "${chrome_dist}" ]]; then
                 local chrome_dir="chrome-extension/${VERSION}"
                 rm -rf "${chrome_dir}" && mkdir -p "${chrome_dir}"
                 cp -r "${chrome_dist}/fonts" "${chrome_dir}/" 2>/dev/null || true
                 cp "${chrome_dist}"/*-envelope.* "${chrome_dir}/" 2>/dev/null || true
+                LEGAL_PROFILE=js add_legal_to_dir "${chrome_dir}"
             fi
             git add .
             git commit -m "Deploy ${VERSION} (Online Editor + Chrome Extension editors)" \
@@ -789,6 +821,7 @@ release_github_pages() {
                 # orphan branch contains only the intended accelerator content.
                 git rm -rf . --quiet 2>/dev/null || true
                 cp -r "${accel_content}/." .
+                add_legal_to_dir .
                 git add .
                 git commit -m "Apache KIE Sandbox Quarkus Accelerator ${VERSION}"
                 git tag "${VERSION}"

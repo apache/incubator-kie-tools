@@ -17,7 +17,7 @@
     "build:dev": "pnpm build",
     "build:prod": "pnpm build",
     "copy:assets": "rimraf dist-dev && mkdir -p ./dist-dev && pnpm copy:quarkus-app && pnpm copy:maven-m2-repo-via-http-image--settings-xml && pnpm copy:legal",
-    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal",
+    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal go",
     "copy:maven-m2-repo-via-http-image--settings-xml": "run-script-os",
     "copy:maven-m2-repo-via-http-image--settings-xml:linux:darwin": "M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' m2-repo-via-http) envsubst < ./node_modules/@kie-tools/maven-m2-repo-via-http-image/settings.xml.envsubst > dist-dev/settings.xml",
     "copy:maven-m2-repo-via-http-image--settings-xml:win32": "pnpm powershell \"(Get-Content ./node_modules/@kie-tools/maven-m2-repo-via-http-image/settings.xml.envsubst) -replace '$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL', $(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' m2-repo-via-http) | Set-Content ./dist-dev/settings.xml\"",

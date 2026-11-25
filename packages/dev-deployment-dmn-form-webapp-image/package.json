@@ -23,7 +23,7 @@
     "copy:image-env-to-json": "run-script-os",
     "copy:image-env-to-json:linux:darwin": "cp ./node_modules/@kie-tools/image-env-to-json/dist/image-env-to-json-linux-amd64 ./dist-dev/",
     "copy:image-env-to-json:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/image-env-to-json/dist/image-env-to-json-linux-amd64 ./dist-dev/\"",
-    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal",
+    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal js,go",
     "create-test-image:build-only": "kie-tools--image-builder build -r \"$(build-env devDeploymentDmnFormWebappImage.registry)\" -a \"$(build-env devDeploymentDmnFormWebappImage.account)\" -n \"$(build-env devDeploymentDmnFormWebappImage.name)\" -t \"$(build-env devDeploymentDmnFormWebappImage.buildTag)\"",
     "create-test-image:kind": "kie-tools--image-builder kind -r \"$(build-env devDeploymentDmnFormWebappImage.registry)\" -a \"$(build-env devDeploymentDmnFormWebappImage.account)\" -n \"$(build-env devDeploymentDmnFormWebappImage.name)\" -t \"$(build-env devDeploymentDmnFormWebappImage.buildTag)\" --kind-cluster-name kie-sandbox-dev-cluster",
     "create-test-image:minikube": "kie-tools--image-builder minikube -r \"$(build-env devDeploymentDmnFormWebappImage.registry)\" -a \"$(build-env devDeploymentDmnFormWebappImage.account)\" -n \"$(build-env devDeploymentDmnFormWebappImage.name)\" -t \"$(build-env devDeploymentDmnFormWebappImage.buildTag)\"",

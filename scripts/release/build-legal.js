@@ -18,27 +18,47 @@
  * under the License.
  */
 
-// Writes the consolidated LICENSE and NOTICE of the binary distributions of Apache KIE Tools into <dest-dir>.
-//   LICENSE = <repo root>/LICENSE + scripts/release/BINARY-LICENSE-APPENDIX.txt
+// Writes the LICENSE and NOTICE of the binary distributions of Apache KIE Tools into <dest-dir>.
+//   LICENSE = <repo root>/LICENSE + the entries of scripts/release/BINARY-LICENSE-APPENDIX.txt selected by <profile>
 //   NOTICE  = <repo root>/NOTICE
-// This is the single source for the legal files shipped in the release artifacts (npm packages, VS Code and Chrome
-// extensions, web apps, Helm charts, upload-service binaries) and in the container images.
-// Usage: node build-legal.js <dest-dir>
+// BINARY-LICENSE-APPENDIX.txt is the single shared inventory of bundled third-party components. It is split in blocks
+// by "#@section <a>,<b>" marker lines ("*" = always). <profile> is a comma-separated list of sections:
+//   js   JavaScript bundles (PatternFly, Monaco, React, Lodash, elkjs, Red Hat fonts, ...)
+//   go   Go binaries (dev-deployment-upload-service, image-env-to-json)
+//   drl  drools-lsp-server jar
+//   ext  extended-services-java jars
+// Without <profile> only the root LICENSE is written (artifacts that bundle no third-party component).
+// Usage: node build-legal.js <dest-dir> [profile]
 
 const fs = require("fs");
 const path = require("path");
 
 const destDir = process.argv[2];
+const profile = (process.argv[3] || "").split(",").filter(Boolean);
 if (!destDir) {
-  console.error("Usage: node build-legal.js <dest-dir>");
+  console.error("Usage: node build-legal.js <dest-dir> [profile]");
   process.exit(1);
 }
 
 const repoRoot = path.resolve(__dirname, "..", "..");
+let license = fs.readFileSync(path.join(repoRoot, "LICENSE"), "utf8");
+
+if (profile.length > 0) {
+  let include = false;
+  const lines = fs.readFileSync(path.join(__dirname, "BINARY-LICENSE-APPENDIX.txt"), "utf8").split("\n");
+  const selected = [];
+  for (const line of lines) {
+    const marker = line.match(/^#@section (.+)$/);
+    if (marker) {
+      const sections = marker[1].split(",").map((s) => s.trim());
+      include = sections.includes("*") || sections.some((s) => profile.includes(s));
+    } else if (include) {
+      selected.push(line);
+    }
+  }
+  license += "\n" + selected.join("\n");
+}
 
 fs.mkdirSync(destDir, { recursive: true });
-fs.writeFileSync(
-  path.join(destDir, "LICENSE"),
-  fs.readFileSync(path.join(repoRoot, "LICENSE")) + fs.readFileSync(path.join(__dirname, "BINARY-LICENSE-APPENDIX.txt"))
-);
+fs.writeFileSync(path.join(destDir, "LICENSE"), license);
 fs.copyFileSync(path.join(repoRoot, "NOTICE"), path.join(destDir, "NOTICE"));
