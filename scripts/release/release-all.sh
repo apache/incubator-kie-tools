@@ -316,7 +316,7 @@ release_chrome_extensions() {
     if [[ "${RC_MODE}" == "true" || "${PUBLISH}" == "true" ]]; then
         mkdir -p "${ARTIFACTS_DIR}"
         cp "${kie_editors_zip}" "${chrome_zip}"
-        add_legal_to_zip "${chrome_zip}"
+        LEGAL_PROFILE=js add_legal_to_zip "${chrome_zip}"
     fi
 
     if [[ "${RC_MODE}" == "true" ]]; then
@@ -324,7 +324,7 @@ release_chrome_extensions() {
         mkdir -p "${tmp_kie}"
         [[ -d "packages/chrome-extension-pack-kogito-kie-editors/dist/fonts" ]] && cp -r packages/chrome-extension-pack-kogito-kie-editors/dist/fonts "${tmp_kie}/"
         cp packages/chrome-extension-pack-kogito-kie-editors/dist/*-envelope.* "${tmp_kie}/" 2>/dev/null || true
-        add_legal_to_dir "${tmp_kie}"
+        LEGAL_PROFILE=js add_legal_to_dir "${tmp_kie}"
         (cd "${tmp_kie}" && zip -r \
             "${ARTIFACTS_DIR}/apache-kie-${VERSION}-incubating-business-automation-chrome-extension-editors.zip" .)
         rm -rf "${tmp_kie}"
@@ -865,7 +865,7 @@ release_dev_deployment_upload_service() {
             local rc_name="${PLATFORM_MAP[$src_name]}"
             if [[ -f "${dist}/${src_name}" ]]; then
                 cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}"
-                add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
+                LEGAL_PROFILE=go add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
                 echo "  COPY  ${rc_name}"
             else
                 echo "ERROR: Artifact ${dist}/${src_name} not found"

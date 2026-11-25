@@ -20,6 +20,8 @@ FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.5
 # Argument for configuring the port
 ARG PORT=80
 
+COPY dist-dev/legal/ /licenses/
+
 # Install required packages: httpd and unzip, clean up after installation
 RUN microdnf --disableplugin=subscription-manager -y install httpd \
  && microdnf --disableplugin=subscription-manager clean all

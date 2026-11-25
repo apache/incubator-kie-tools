@@ -13,9 +13,10 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build": "pnpm copy:legal && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:dev": "pnpm build",
     "build:prod": "pnpm build",
+    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal",
     "image:docker:build": "kie-tools--image-builder build -r \"$(build-env mavenM2RepoViaHttpImage.registry)\" -a \"$(build-env mavenM2RepoViaHttpImage.account)\" -n \"$(build-env mavenM2RepoViaHttpImage.name)\" -t \"$(build-env mavenM2RepoViaHttpImage.buildTag)\""
   },
   "devDependencies": {
