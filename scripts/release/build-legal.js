@@ -23,10 +23,12 @@
 //   NOTICE  = <repo root>/NOTICE
 // BINARY-LICENSE-APPENDIX.txt is the single shared inventory of bundled third-party components. It is split in blocks
 // by "#@section <a>,<b>" marker lines ("*" = always). <profile> is a comma-separated list of sections:
-//   js   JavaScript bundles (PatternFly, Monaco, React, Lodash, elkjs, Red Hat fonts, ...)
-//   go   Go binaries (dev-deployment-upload-service, image-env-to-json)
-//   drl  drools-lsp-server jar
-//   ext  extended-services-java jars
+//   js      JavaScript bundles (PatternFly, Monaco, React, Lodash, elkjs, Red Hat fonts, ...)
+//   chrome  JavaScript bundled in the Chrome extension ZIP (React, Octokit, minimatch, ...; no elkjs/PatternFly/fonts)
+//   go      Go binaries (dev-deployment-upload-service, image-env-to-json)
+//   drl     drools-lsp-server jar
+//   ext     extended-services-java jars
+//   quarkus Maven dependencies of the dev deployment Quarkus blank app image
 // Without <profile> only the root LICENSE is written (artifacts that bundle no third-party component).
 // Usage: node build-legal.js <dest-dir> [profile]
 

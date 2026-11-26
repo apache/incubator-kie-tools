@@ -47,6 +47,34 @@ Other JavaScript dependencies bundled by webpack carry their own "*.js.LICENSE.t
 next to the bundles; those files remain applicable.
 
 
+#@section chrome
+1. JavaScript components of the Chrome extension (content script bundled in the extension ZIP)
+------------------------------------------------------------------------------------
+
+The extension ZIP does not contain elkjs, PatternFly or the Red Hat fonts; those belong to
+the separate editors distribution.
+
+MIT License
+    React, React DOM, Scheduler (react, react-dom, scheduler)   Copyright (c) Facebook, Inc. and its affiliates
+    Octokit (@octokit/rest, core, request, request-error, endpoint, graphql, auth-token,
+    plugin-paginate-rest, plugin-request-log, plugin-rest-endpoint-methods, types)
+                                                            Copyright (c) Octokit contributors
+    node-fetch (https://github.com/node-fetch/node-fetch)   Copyright (c) 2016 David Frank
+    is-plain-object (https://github.com/jonschlinkert/is-plain-object)
+                                                            Copyright (c) 2014-2017, Jon Schlinkert
+    brace-expansion, balanced-match                         Copyright (c) 2013 Julian Gruber
+    process (https://github.com/defunctzombie/node-process) Copyright (c) 2013 Roman Shtylman
+
+ISC License
+    minimatch (https://github.com/isaacs/minimatch)         Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
+    once, wrappy                                            Copyright (c) Isaac Z. Schlueter and Contributors
+    universal-user-agent                                    Copyright (c) 2018, Gregor Martynus
+    deprecation                                             Copyright (c) Gregor Martynus and contributors
+
+Apache License 2.0
+    before-after-hook (https://github.com/gr2m/before-after-hook)
+
+
 #@section go
 2. Go components (dev-deployment-upload-service, the dev deployment base image and the
    image-env-to-json executable shipped in the web application images)
@@ -162,12 +190,99 @@ Third-party DTDs, entity sets and schemas in org.xmlresolver.xmlresolver-5.3.3-d
     Where a file carries its own notice, that notice remains applicable.
 
 
+#@section quarkus
+5. Java components of the dev deployment Quarkus blank app (dev-deployment-quarkus-blank-app-image)
+------------------------------------------------------------------------------------
+
+The Maven dependencies of the blank app (pre-populated in the image's local Maven repository
+and on the application's runtime classpath). The components below are NOT licensed under
+the Apache License 2.0 alone; all other bundled jars are licensed under the Apache License 2.0.
+
+Eclipse Public License - v 2.0 (EPL-2.0)
+    org.eclipse.jdt:ecj:3.44.0                             (Eclipse JDT Core compiler)
+  Dual-licensed EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0; used under EPL-2.0:
+    jakarta.json:jakarta.json-api:2.1.3
+    jakarta.annotation:jakarta.annotation-api:3.0.0
+    jakarta.resource:jakarta.resource-api:2.1.0
+    jakarta.el:jakarta.el-api:6.0.1
+    jakarta.transaction:jakarta.transaction-api:2.0.1
+    jakarta.interceptor:jakarta.interceptor-api:2.2.0
+    jakarta.authentication:jakarta.authentication-api:3.1.0
+    jakarta.authorization:jakarta.authorization-api:3.0.0
+    jakarta.servlet:jakarta.servlet-api:6.0.0
+    jakarta.ws.rs:jakarta.ws.rs-api:3.1.0
+    org.eclipse.parsson:parsson:1.1.8
+  Dual-licensed EPL-2.0 OR BSD-3-Clause (Eclipse Distribution License); used under EDL-1.0:
+    jakarta.persistence:jakarta.persistence-api:3.2.0
+    org.locationtech.jts:jts-core:1.19.0
+
+Mozilla Public License, version 2.0 (MPL-2.0)
+    net.sf.saxon:Saxon-HE:12.10                            (https://www.saxonica.com/)
+    Source code: https://github.com/Saxonica/Saxon-HE
+    com.h2database:h2:2.4.240                              (MPL-2.0 OR EPL-1.0; used under MPL-2.0)
+    Source code: https://github.com/h2database/h2database
+
+GNU General Public License v2 with the Classpath Exception (GPL-2.0-only WITH Classpath-exception-2.0)
+    io.smallrye.classfile:jdk-classfile-backport:26
+
+Eclipse Distribution License - v 1.0 (BSD-3-Clause; copyright holder: Eclipse Foundation, Inc.)
+    jakarta.activation:jakarta.activation-api:2.1.4
+    jakarta.xml.bind:jakarta.xml.bind-api:4.0.4
+    org.eclipse.angus:angus-activation:2.0.3
+    org.glassfish.jaxb:jaxb-core:4.0.8, jaxb-runtime:4.0.6, txw2:4.0.8
+    com.sun.istack:istack-commons-runtime:4.1.2
+
+BSD-3-Clause License
+    com.google.protobuf:protobuf-java:3.25.5, protobuf-java-util:3.25.5
+    com.thoughtworks.xstream:xstream:1.4.21
+    org.antlr:antlr-runtime:3.5.2, antlr4-runtime:4.13.2
+    org.ow2.asm:asm:9.11.1, asm-tree:9.11.1, asm-analysis:9.11.1, asm-util:9.11.1
+    org.jpmml:pmml-model:1.6.4
+
+BSD-2-Clause License
+    org.crac:crac:1.5.0
+
+MIT License
+    ch.obermuhlner:big-math:2.0.1
+    org.slf4j:slf4j-api:2.0.17                             Copyright (c) 2004-2022 QOS.ch
+    com.graphql-java:graphql-java:25.0, graphql-java-extended-scalars:24.0
+    Native Brotli library (https://github.com/google/brotli), bundled in the brotli4j native
+    jars com.aayushatharva.brotli4j:native-*:1.23.0 (brotli4j itself is Apache License 2.0)
+                                                           Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors.
+
+MIT-0 License
+    org.reactivestreams:reactive-streams:1.0.4
+
+Indiana University Extreme! Lab Software License (Apache Software License 1.1 style)
+    io.github.x-stream:mxparser:1.2.2
+
+Public Domain
+    xmlpull:xmlpull:1.1.3.1
+
+Dual-licensed, used under the Apache License 2.0:
+    io.vertx:vertx-*:4.5.34                                (EPL-2.0 OR Apache-2.0; some modules EPL-1.0 OR Apache-2.0)
+    org.eclipse.jetty.toolchain:jetty-jakarta-servlet-api:5.0.2   (EPL-1.0 OR Apache-2.0)
+    com.github.javaparser:javaparser-core:3.27.0           (LGPL-3.0 OR Apache-2.0)
+
+Third-party DTDs, entity sets and schemas in org.xmlresolver:xmlresolver:5.3.3:data
+(the xmlresolver code itself is Apache License 2.0):
+    W3C DTDs, entity sets and schemas (XHTML, MathML, SVG, XML Schema, XSLT 3.0, ISO 8879 and
+    ISO 9573-13 entity sets)           Copyright (c) W3C (MIT, ERCIM, Keio, Beihang);
+                                       W3C Software and Document Notice and License (below)
+    RDDL DTDs (www.rddl.org)           Copyright (c) 2000-2001 Jonathan Borden; permission to use,
+                                       copy, modify and distribute is granted provided the copyright
+                                       notice and permission paragraph in each file are retained
+    XML Catalogs schemas (xmlcatalogs.org, OASIS)
+    Where a file carries its own notice, that notice remains applicable.
+
+
+
 #@section *
 ------------------------------------------------------------------------------------
 LICENSE TEXTS
 ------------------------------------------------------------------------------------
 
-#@section js,drl,ext
+#@section js,drl,ext,quarkus,chrome
 ====================================================================================
 MIT License
 
@@ -189,8 +304,27 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (The copyright holder of each MIT-licensed component is listed in the sections above.)
 
+#@section chrome
+====================================================================================
+ISC License
 
-#@section js,drl,ext
+Permission to use, copy, modify, and/or distribute this software for any purpose with or
+without fee is hereby granted, provided that the above copyright notice and this
+permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO
+EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+(The copyright holder of each ISC-licensed component is listed in the section above.)
+
+
+
+
+#@section js,drl,ext,quarkus
 ====================================================================================
 BSD-3-Clause License (also the Eclipse Distribution License - v 1.0)
 
@@ -222,7 +356,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 in the component's own files.)
 
 
-#@section ext
+#@section ext,quarkus
 ====================================================================================
 BSD-2-Clause License
 
@@ -280,7 +414,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#@section ext
+#@section ext,quarkus
 ====================================================================================
 W3C Software and Document Notice and License
 (applies to the W3C DTDs, entity sets and schemas in xmlresolver-*-data.jar)
@@ -331,7 +465,7 @@ written prior permission. Title to copyright in this work will at all
 times remain with copyright holders.
 
 
-#@section js,drl,ext
+#@section js,drl,ext,quarkus
 ====================================================================================
 Eclipse Public License - v 2.0 (EPL-2.0)
 (applies to the EPL-2.0 components listed above)
@@ -615,7 +749,7 @@ version(s), and exceptions or additional permissions here}."
   You may add additional accurate notices of copyright ownership.
 
 
-#@section ext
+#@section ext,quarkus
 ====================================================================================
 Mozilla Public License Version 2.0 (MPL-2.0)
 (Saxon-HE; source code: https://github.com/Saxonica/Saxon-HE)
@@ -995,7 +1129,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   defined by the Mozilla Public License, v. 2.0.
 
 
-#@section ext
+#@section ext,quarkus
 ====================================================================================
 MIT No Attribution (MIT-0)
 (applies to org.reactivestreams.reactive-streams; copyright is held by its authors)
@@ -1015,7 +1149,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#@section ext
+#@section ext,quarkus
 ====================================================================================
 Indiana University Extreme! Lab Software License
 (applies to io.github.x-stream.mxparser)
@@ -1043,7 +1177,7 @@ Alternatively, this acknowledgment may appear in the software itself, and wherev
 LICENSEE UNDERSTANDS THAT SOFTWARE IS PROVIDED "AS IS" FOR WHICH NO WARRANTIES AS TO CAPABILITIES OR ACCURACY ARE MADE. INDIANA UNIVERSITY GIVES NO WARRANTIES AND MAKES NO REPRESENTATION THAT SOFTWARE IS FREE OF INFRINGEMENT OF THIRD PARTY PATENT, COPYRIGHT, OR OTHER PROPRIETARY RIGHTS. INDIANA UNIVERSITY MAKES NO WARRANTIES THAT SOFTWARE IS FREE FROM "BUGS", "VIRUSES", "TROJAN HORSES", "TRAP DOORS", "WORMS", OR OTHER HARMFUL CODE. LICENSEE ASSUMES THE ENTIRE RISK AS TO THE PERFORMANCE OF SOFTWARE AND/OR ASSOCIATED MATERIALS, AND TO THE PERFORMANCE AND VALIDITY OF INFORMATION GENERATED USING SOFTWARE.
 
 
-#@section ext
+#@section ext,quarkus
 ====================================================================================
 Eclipse Public License - v 1.0 (EPL-1.0)
 (applies to org.eclipse.jetty.toolchain.jetty-jakarta-servlet-api, used under the Apache License 2.0)
@@ -1121,7 +1255,7 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation.
 
 
-#@section ext
+#@section ext,quarkus
 ====================================================================================
 GNU General Public License, version 2 (GPL-2.0-only) with the Classpath Exception
 (applies to io.smallrye.classfile.jdk-classfile-backport)

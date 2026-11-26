@@ -153,7 +153,7 @@ upload_github_asset() {
 # Helpers: LICENSE / NOTICE for convenience binaries
 # One NOTICE (root NOTICE) and one shared license inventory (BINARY-LICENSE-APPENDIX.txt). build-legal.js writes
 # root LICENSE + only the inventory sections that apply to an artifact. Select them per call with
-# LEGAL_PROFILE=<comma-separated sections: js,go,drl,ext> (unset = root LICENSE only, nothing third-party bundled).
+# LEGAL_PROFILE=<comma-separated sections: js,chrome,go,drl,ext,quarkus> (unset = root LICENSE only, nothing third-party bundled).
 # The container images get the same files at build time (the `copy:legal` script of each *-image package).
 # ---------------------------------------------------------------------------
 LEGAL_DIR="$(mktemp -d)"
@@ -316,7 +316,8 @@ release_chrome_extensions() {
     if [[ "${RC_MODE}" == "true" || "${PUBLISH}" == "true" ]]; then
         mkdir -p "${ARTIFACTS_DIR}"
         cp "${kie_editors_zip}" "${chrome_zip}"
-        LEGAL_PROFILE=js add_legal_to_zip "${chrome_zip}"
+        # The extension ZIP only bundles the content script (no elkjs, PatternFly or fonts: those are in the editors ZIP).
+        LEGAL_PROFILE=chrome add_legal_to_zip "${chrome_zip}"
     fi
 
     if [[ "${RC_MODE}" == "true" ]]; then
@@ -865,7 +866,7 @@ release_dev_deployment_upload_service() {
             local rc_name="${PLATFORM_MAP[$src_name]}"
             if [[ -f "${dist}/${src_name}" ]]; then
                 cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}"
-                LEGAL_PROFILE=go add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
+                add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
                 echo "  COPY  ${rc_name}"
             else
                 echo "ERROR: Artifact ${dist}/${src_name} not found"
