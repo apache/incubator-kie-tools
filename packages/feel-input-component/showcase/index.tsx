@@ -40,7 +40,7 @@ if (!feelServerUrl) {
 const FeelEditor = () => {
   const [feelExpression, setFeelExpression] = useState("");
   const [feelResult, setFeelResult] = useState("");
-  const suggestionProvider = useCallback((text, row, col) => {
+  const suggestionProvider = useCallback((text: string, row: number, col: number) => {
     return FeelService.getInstance().getSuggestions(text, row, col);
   }, []);
 
