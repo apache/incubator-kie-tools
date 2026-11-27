@@ -158,7 +158,7 @@ BSD-2-Clause License
     org.crac.crac-1.5.0.jar                                (lib/boot)
 
 MIT License
-    ch.obermuhlner.big-math-2.0.1.jar
+    ch.obermuhlner.big-math-2.0.1.jar                      Copyright (c) 2016 Eric Obermühlner
     org.slf4j.slf4j-api-2.0.17.jar                         Copyright (c) 2004-2022 QOS.ch
     Native Brotli library (https://github.com/google/brotli), bundled in the brotli4j native
     jars com.aayushatharva.brotli4j.native-*-1.23.0.jar (brotli4j itself is Apache License 2.0)
@@ -243,7 +243,7 @@ BSD-2-Clause License
     org.crac:crac:1.5.0
 
 MIT License
-    ch.obermuhlner:big-math:2.0.1
+    ch.obermuhlner:big-math:2.0.1                          Copyright (c) 2016 Eric Obermühlner
     org.slf4j:slf4j-api:2.0.17                             Copyright (c) 2004-2022 QOS.ch
     com.graphql-java:graphql-java:25.0, graphql-java-extended-scalars:24.0
     Native Brotli library (https://github.com/google/brotli), bundled in the brotli4j native

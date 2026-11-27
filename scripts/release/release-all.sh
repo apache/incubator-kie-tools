@@ -219,10 +219,11 @@ pack_public_npm_packages_with_legal() {
     pnpm ${pub_filter} exec bash -c "pnpm pack --pack-destination ${dest_dir}"
     for tgz in "${dest_dir}"/*.tgz; do
         # Packages shipping third-party files listed in the root LICENSE (XSDs, DefaultBackend.js) get the root
-        # LICENSE; the standalone editors bundle JavaScript libraries and fonts. All others keep their own package
-        # LICENSE (never replaced) and get NOTICE.
+        # LICENSE; the standalone editors and webpack-bundled webapps bundle JavaScript libraries and fonts. All
+        # others keep their own package LICENSE (never replaced) and get NOTICE.
         case "$(tar -xzOf "${tgz}" package/package.json | jq -r ".name")" in
-            @kie-tools/dmn-editor-standalone|@kie-tools/bpmn-editor-standalone)
+            @kie-tools/dmn-editor-standalone|@kie-tools/bpmn-editor-standalone|\
+@kie-tools/runtime-tools-management-console-webapp|@kie-tools/runtime-tools-process-dev-ui-webapp)
                 LEGAL_PROFILE=js add_legal_to_targz "${tgz}" "package" ;;
             @kie-tools/dmn-marshaller|@kie-tools/bpmn-marshaller|@kie-tools/xml-parser-ts-codegen)
                 add_legal_to_targz "${tgz}" "package" ;;
