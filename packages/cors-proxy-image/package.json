@@ -13,12 +13,13 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "pnpm cleanup && pnpm copy:cors-proxy-package && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
-    "build:prod": "pnpm cleanup && pnpm copy:cors-proxy-package && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
+    "build:dev": "pnpm cleanup && pnpm copy:cors-proxy-package && pnpm copy:legal && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
+    "build:prod": "pnpm cleanup && pnpm copy:cors-proxy-package && pnpm copy:legal && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:cors-proxy-package": "run-script-os",
     "copy:cors-proxy-package:linux:darwin": "cp -R ./node_modules/@kie-tools/cors-proxy/dist/ dist-dev/cors-proxy/",
     "copy:cors-proxy-package:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/cors-proxy/dist/ dist-dev/cors-proxy/\"",
+    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal",
     "docker:build": "kie-tools--image-builder build -r \"$(build-env corsProxyImage.image.registry)\" -a \"$(build-env corsProxyImage.image.account)\" -n \"$(build-env corsProxyImage.image.name)\" -t \"$(build-env corsProxyImage.image.buildTag)\" --build-arg \"CORS_PROXY_DEFAULT_PORT=$(build-env corsProxyImage.image.port)\" --build-arg \"CORS_PROXY_DEFAULT_ALLOWED_ORIGINS=$(build-env corsProxyImage.image.allowedOrigins)\" --build-arg \"CORS_PROXY_DEFAULT_VERBOSE=$(build-env corsProxyImage.image.verbose)\" --build-arg \"CORS_PROXY_DEFAULT_ALLOW_HOSTS=$(build-env corsProxyImage.image.allowedHosts)\""
   },
   "devDependencies": {

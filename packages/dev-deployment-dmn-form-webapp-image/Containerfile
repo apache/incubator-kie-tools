@@ -20,6 +20,8 @@ FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.5
 ARG DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT=8081
 ENV DEV_DEPLOYMENT_DMN_FORM_WEBAPP_PORT=$DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT
 
+COPY dist-dev/legal/ /licenses/
+
 COPY entrypoint.sh dist-dev/image-env-to-json-linux-amd64 dist-dev/EnvJson.schema.json /tmp/
 
 RUN microdnf --disableplugin=subscription-manager -y install httpd \
