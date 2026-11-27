@@ -26,6 +26,8 @@ ENV ROOT_PATH="/"
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app/src/main/resources
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
+COPY dist-dev/legal/ /licenses/
+
 COPY --chown=$USER_ID:$USER_ID dist-dev/quarkus-app $HOME_PATH/app/
 COPY --chown=$USER_ID:$USER_ID dist-dev/settings.xml /tmp/kogito/.m2/settings.xml
 

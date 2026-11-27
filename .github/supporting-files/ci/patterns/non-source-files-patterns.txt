@@ -8,7 +8,7 @@ docs
 gifs
 repo
 devbox.*
-DISCLAIMER-WIP
+DISCLAIMER
 NOTICE
 .vscode
 .idea
