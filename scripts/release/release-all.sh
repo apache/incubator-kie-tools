@@ -867,7 +867,7 @@ release_dev_deployment_upload_service() {
             local rc_name="${PLATFORM_MAP[$src_name]}"
             if [[ -f "${dist}/${src_name}" ]]; then
                 cp "${dist}/${src_name}" "${ARTIFACTS_DIR}/${rc_name}"
-                add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
+                LEGAL_PROFILE=go add_legal_to_targz "${ARTIFACTS_DIR}/${rc_name}"
                 echo "  COPY  ${rc_name}"
             else
                 echo "ERROR: Artifact ${dist}/${src_name} not found"
