@@ -92,6 +92,15 @@ function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean; useD
   }
 }
 
+function isPodman(engine: string): boolean {
+  try {
+    const output = execSync(`${engine} --version`, { stdio: "pipe" }).toString();
+    return output.toLowerCase().includes("podman");
+  } catch {
+    return false;
+  }
+}
+
 function checkBuildEngine(args: ArgsType) {
   try {
     execSync(`command ${process.platform === "win32" ? "" : "-v"} ${args.engine}`, {
@@ -129,10 +138,11 @@ function buildArchImage(args: ArgsType & { arch: string[] | undefined }, imageFu
 
 function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
   console.log(`[image-builder] Building native image`);
+  const useDockerFlags = !isPodman(args.engine);
   const buildNativeCommand = `${args.engine} build
     --progress=plain
-    --load
-    ${args.allowHostNetworkAccess ? "--allow network.host --network host" : ""}
+    ${useDockerFlags ? "--load" : ""}
+    ${args.allowHostNetworkAccess ? (useDockerFlags ? "--allow network.host --network host" : "--network host") : ""}
     ${args.push ? "--push" : ""}
     ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
     ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")}
