@@ -75,6 +75,17 @@ import org.eclipse.lsp4j.TextEdit;
  */
 public final class DRLLintHelper {
 
+    public static final String SOURCE                   = "drools-lint";
+    public static final String SOURCE_TYPE              = "drools-type";
+
+    public static final String CODE_MISSING_END          = "missing-end";
+    public static final String CODE_MISSING_SEPARATOR    = "missing-separator";
+    public static final String CODE_MISSING_SEMICOLON    = "missing-semicolon";
+    public static final String CODE_UNBALANCED_PARENS    = "unbalanced-parens";
+    public static final String CODE_MVEL_PROPERTY_ACCESS = "mvel-property-access";
+    public static final String CODE_UNKNOWN_TYPE         = "unknown-type";
+    public static final String CODE_UNKNOWN_MEMBER       = "unknown-member";
+
     private static final String PROP_MISSING_END          = "drools.lsp.lint.missingEnd";
     private static final String PROP_MISSING_SEPARATOR    = "drools.lsp.lint.missingSeparator";
     private static final String PROP_MISSING_SEMICOLON    = "drools.lsp.lint.missingSemicolon";
@@ -93,17 +104,85 @@ public final class DRLLintHelper {
             Pattern.compile("(?<![\\w.$])([A-Z][A-Za-z0-9_$]*(?:\\.[A-Za-z0-9_$]+)+)");
 
     private static final Pattern RULE_KEYWORD =
-            Pattern.compile("^\\s*(rule|query)\\b", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("^\\s*(rule|query)\\b");
     private static final Pattern DECLARE_KEYWORD =
-            Pattern.compile("^\\s*declare\\b", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("^\\s*declare\\b");
     private static final Pattern END_AT_START =
-            Pattern.compile("^end\\b", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("^end\\b");
     private static final Pattern END_AT_END =
-            Pattern.compile("(?:^|\\s)end$", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("(?:^|\\s)end$");
     private static final Pattern WHEN_KEYWORD =
-            Pattern.compile("^\\s*when\\b", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("^\\s*when\\b");
     private static final Pattern THEN_KEYWORD =
-            Pattern.compile("^\\s*then\\b", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("^\\s*then\\b");
+
+    /** Represents a scanned rule or query block and whether it was properly closed. */
+    public static final class RuleBlock {
+        public final int startLine;
+        public final int endLine; // -1 if unclosed
+        public final int startCol;
+        public final boolean isQuery;
+
+        public RuleBlock(int startLine, int endLine, int startCol, boolean isQuery) {
+            this.startLine = startLine;
+            this.endLine = endLine;
+            this.startCol = startCol;
+            this.isQuery = isQuery;
+        }
+
+        public boolean isClosed() {
+            return endLine >= 0;
+        }
+    }
+
+    /**
+     * Scans {@code sanitized} text for rule and query blocks, tracking unclosed rules
+     * with a stack so unclosed rules do not prematurely swallow subsequent blocks.
+     */
+    public static List<RuleBlock> scanRuleBlocks(String sanitized) {
+        String[] lines = sanitized.split("\r?\n", -1);
+        List<RuleBlock> completed = new ArrayList<>();
+        List<RuleBlock> openRules = new ArrayList<>();
+        boolean inDeclare = false;
+
+        for (int i = 0; i < lines.length; i++) {
+            String raw = lines[i];
+            String trimmed = raw.trim();
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+
+            Matcher rm = RULE_KEYWORD.matcher(trimmed);
+            if (rm.find()) {
+                inDeclare = false;
+                boolean isQuery = "query".equalsIgnoreCase(rm.group(1));
+                if (END_AT_END.matcher(trimmed).find() && trimmed.length() > rm.end()) {
+                    completed.add(new RuleBlock(i, i, firstNonWhitespaceCol(raw), isQuery));
+                } else {
+                    openRules.add(new RuleBlock(i, -1, firstNonWhitespaceCol(raw), isQuery));
+                }
+                continue;
+            }
+            if (DECLARE_KEYWORD.matcher(trimmed).find()) {
+                inDeclare = true;
+                continue;
+            }
+
+            boolean closes = END_AT_START.matcher(trimmed).find()
+                    || END_AT_END.matcher(trimmed).find();
+            if (closes) {
+                if (inDeclare) {
+                    inDeclare = false;
+                } else if (!openRules.isEmpty()) {
+                    RuleBlock open = openRules.remove(openRules.size() - 1);
+                    completed.add(new RuleBlock(open.startLine, i, open.startCol, open.isQuery));
+                }
+            }
+        }
+        completed.addAll(openRules);
+        completed.sort(java.util.Comparator.comparingInt(b -> b.startLine));
+        return completed;
+    }
     /** A bare pattern header opening its paren at end of line: {@code Person(}. */
     private static final Pattern PATTERN_HEADER_LINE = Pattern.compile(
             "^\\s*(?:(?:not|exists|forall)\\s+)?\\$?[A-Za-z_][\\w$]*\\s*\\(\\s*$",
@@ -122,6 +201,15 @@ public final class DRLLintHelper {
      * when every pass is disabled.
      */
     public static List<Diagnostic> lint(String text) {
+        return lint(text, DRLLintSuppression.parse(text));
+    }
+
+    /**
+     * Runs all enabled lint passes over {@code text} with the given suppression index.
+     * Suppressed findings are dropped before checking per-pass limits so they do
+     * not consume the diagnostic cap.
+     */
+    public static List<Diagnostic> lint(String text, DRLLintSuppression.SuppressionIndex suppression) {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
@@ -130,23 +218,23 @@ public final class DRLLintHelper {
 
         DiagnosticSeverity endSeverity = severityFor(PROP_MISSING_END);
         if (endSeverity != null) {
-            out.addAll(lintMissingRuleEnds(sanitized, endSeverity));
+            out.addAll(lintMissingRuleEnds(sanitized, endSeverity, suppression));
         }
         DiagnosticSeverity separatorSeverity = severityFor(PROP_MISSING_SEPARATOR);
         if (separatorSeverity != null) {
-            out.addAll(lintMissingConstraintSeparators(sanitized, separatorSeverity));
+            out.addAll(lintMissingConstraintSeparators(sanitized, separatorSeverity, suppression));
         }
         DiagnosticSeverity semicolonSeverity = severityFor(PROP_MISSING_SEMICOLON);
         if (semicolonSeverity != null) {
-            out.addAll(lintMissingThenSemicolons(sanitized, text, semicolonSeverity));
+            out.addAll(lintMissingThenSemicolons(sanitized, text, semicolonSeverity, suppression));
         }
         DiagnosticSeverity parenSeverity = severityFor(PROP_UNBALANCED_PARENS);
         if (parenSeverity != null) {
-            out.addAll(lintUnbalancedParens(sanitized, parenSeverity));
+            out.addAll(lintUnbalancedParens(sanitized, parenSeverity, suppression));
         }
         DiagnosticSeverity mvelSeverity = severityFor(PROP_MVEL_PROPERTY_ACCESS, "off");
         if (mvelSeverity != null) {
-            out.addAll(lintMvelPropertyAccess(sanitized, mvelSeverity));
+            out.addAll(lintMvelPropertyAccess(sanitized, mvelSeverity, suppression));
         }
         return out;
     }
@@ -162,7 +250,8 @@ public final class DRLLintHelper {
      * sanitized text, so parens in strings and comments don't count.
      */
     private static List<Diagnostic> lintUnbalancedParens(String sanitized,
-                                                         DiagnosticSeverity severity) {
+                                                         DiagnosticSeverity severity,
+                                                         DRLLintSuppression.SuppressionIndex suppression) {
         String[] lines = sanitized.split("\r?\n", -1);
         List<Diagnostic> out = new ArrayList<>();
         List<int[]> openParens = new ArrayList<>(); // {line, col}
@@ -178,7 +267,7 @@ public final class DRLLintHelper {
                 // A new rule/query while parens are still open: flush what the
                 // previous section left unclosed, then track the new block
                 // (query bodies are pattern regions from the start; rules from `when`).
-                reportUnclosed(openParens, lines, out, severity);
+                reportUnclosed(openParens, lines, out, severity, suppression);
                 inLhs = "query".equalsIgnoreCase(ruleStart.group(1));
                 inRhs = false;
                 continue;
@@ -190,13 +279,13 @@ public final class DRLLintHelper {
                 continue;
             }
             if (inLhs && THEN_KEYWORD.matcher(line).find()) {
-                reportUnclosed(openParens, lines, out, severity);
+                reportUnclosed(openParens, lines, out, severity, suppression);
                 inLhs = false;
                 inRhs = true;
                 continue;
             }
             if (END_AT_START.matcher(line).find() && (inLhs || inRhs)) {
-                reportUnclosed(openParens, lines, out, severity);
+                reportUnclosed(openParens, lines, out, severity, suppression);
                 inLhs = false;
                 inRhs = false;
                 continue;
@@ -211,9 +300,13 @@ public final class DRLLintHelper {
                     openParens.add(new int[] {i, col});
                 } else if (c == ')') {
                     if (openParens.isEmpty()) {
+                        if (suppression != null && suppression.isSuppressed(CODE_UNBALANCED_PARENS, i)) {
+                            continue;
+                        }
                         Diagnostic d = new Diagnostic();
                         d.setSeverity(severity);
-                        d.setSource("drools-lint");
+                        d.setSource(SOURCE);
+                        d.setCode(CODE_UNBALANCED_PARENS);
                         d.setMessage("Unmatched ')' — no corresponding '('");
                         d.setRange(new Range(new Position(i, col),
                                              new Position(i, col + 1)));
@@ -227,19 +320,24 @@ public final class DRLLintHelper {
                 }
             }
         }
-        reportUnclosed(openParens, lines, out, severity);
+        reportUnclosed(openParens, lines, out, severity, suppression);
         return out;
     }
 
     private static void reportUnclosed(List<int[]> openParens, String[] lines,
-                                       List<Diagnostic> out, DiagnosticSeverity severity) {
+                                       List<Diagnostic> out, DiagnosticSeverity severity,
+                                       DRLLintSuppression.SuppressionIndex suppression) {
         for (int[] open : openParens) {
+            if (suppression != null && suppression.isSuppressed(CODE_UNBALANCED_PARENS, open[0])) {
+                continue;
+            }
             if (out.size() >= MAX_DIAGNOSTICS_PER_PASS) {
                 break;
             }
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
-            d.setSource("drools-lint");
+            d.setSource(SOURCE);
+            d.setCode(CODE_UNBALANCED_PARENS);
             d.setMessage("Unclosed '(' — missing matching ')'");
             d.setRange(new Range(new Position(open[0], open[1]),
                                  new Position(open[0], open[1] + 1)));
@@ -360,13 +458,17 @@ public final class DRLLintHelper {
      * static calls.
      */
     private static List<Diagnostic> lintMvelPropertyAccess(String sanitized,
-                                                           DiagnosticSeverity severity) {
+                                                           DiagnosticSeverity severity,
+                                                           DRLLintSuppression.SuppressionIndex suppression) {
         List<Diagnostic> out = new ArrayList<>();
         for (AccessorFinding f : findLhsAccessorFindings(sanitized)) {
+            if (suppression != null && suppression.isSuppressed(CODE_MVEL_PROPERTY_ACCESS, f.line)) {
+                continue;
+            }
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
-            d.setSource("drools-lint");
-            d.setCode("mvel-property-access");
+            d.setSource(SOURCE);
+            d.setCode(CODE_MVEL_PROPERTY_ACCESS);
             d.setMessage("Prefer MVEL property access '" + f.property
                     + "' over '" + f.accessor + "()' in constraints");
             d.setRange(new Range(new Position(f.line, f.startCol),
@@ -380,18 +482,29 @@ public final class DRLLintHelper {
     }
 
     /**
-     * Returns the {@link TextEdit}s that rewrite every flagged LHS getter call
+     * Returns the {@link TextEdit}s that rewrite every unsuppressed flagged LHS getter call
      * to MVEL property access ({@code getCode()} → {@code code}). Drives the
-     * code-action quick-fix; uses the same detection as
-     * {@link #lintMvelPropertyAccess}.
+     * code-action quick-fix.
      */
     public static List<TextEdit> mvelPropertyAccessEdits(String text) {
+        return mvelPropertyAccessEdits(text, null);
+    }
+
+    /**
+     * Returns the {@link TextEdit}s that rewrite every unsuppressed flagged LHS getter call
+     * to MVEL property access ({@code getCode()} → {@code code}), taking suppression into account
+     * so suppressed getter calls are not rewritten by quick-fixes.
+     */
+    public static List<TextEdit> mvelPropertyAccessEdits(String text, DRLLintSuppression.SuppressionIndex suppression) {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
         String sanitized = sanitize(text);
         List<TextEdit> out = new ArrayList<>();
         for (AccessorFinding f : findLhsAccessorFindings(sanitized)) {
+            if (suppression != null && suppression.isSuppressed(CODE_MVEL_PROPERTY_ACCESS, f.line)) {
+                continue;
+            }
             out.add(new TextEdit(
                     new Range(new Position(f.line, f.startCol), new Position(f.line, f.endCol)),
                     f.property));
@@ -464,7 +577,8 @@ public final class DRLLintHelper {
      */
     private static List<Diagnostic> lintMissingThenSemicolons(String sanitized,
                                                               String original,
-                                                              DiagnosticSeverity severity) {
+                                                              DiagnosticSeverity severity,
+                                                              DRLLintSuppression.SuppressionIndex suppression) {
         String[] lines = sanitized.split("\r?\n", -1);
         String[] originalLines = original.split("\r?\n", -1);
         List<Diagnostic> out = new ArrayList<>();
@@ -563,10 +677,15 @@ public final class DRLLintHelper {
                 continue;
             }
 
+            if (suppression != null && suppression.isSuppressed(CODE_MISSING_SEMICOLON, i)) {
+                continue;
+            }
+
             int col = Math.max(0, lastNonWhitespaceCol(raw));
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
-            d.setSource("drools-lint");
+            d.setSource(SOURCE);
+            d.setCode(CODE_MISSING_SEMICOLON);
             d.setMessage("Likely missing ';' at the end of this consequence statement");
             d.setRange(new Range(new Position(i, col),
                                  new Position(i, col + 1)));
@@ -597,7 +716,8 @@ public final class DRLLintHelper {
      * literals and comment lines cannot corrupt the depth bookkeeping.
      */
     private static List<Diagnostic> lintMissingConstraintSeparators(String sanitized,
-                                                                    DiagnosticSeverity severity) {
+                                                                    DiagnosticSeverity severity,
+                                                                    DRLLintSuppression.SuppressionIndex suppression) {
         String[] lines = sanitized.split("\r?\n", -1);
         List<Diagnostic> out = new ArrayList<>();
 
@@ -654,10 +774,15 @@ public final class DRLLintHelper {
                 continue;
             }
 
+            if (suppression != null && suppression.isSuppressed(CODE_MISSING_SEPARATOR, i)) {
+                continue;
+            }
+
             int col = Math.max(0, lastNonWhitespaceCol(raw));
             Diagnostic d = new Diagnostic();
             d.setSeverity(severity);
-            d.setSource("drools-lint");
+            d.setSource(SOURCE);
+            d.setCode(CODE_MISSING_SEPARATOR);
             d.setMessage("Likely missing ',' between constraints (newline is not a separator)");
             d.setRange(new Range(new Position(i, col),
                                  new Position(i, col + 1)));
@@ -673,61 +798,38 @@ public final class DRLLintHelper {
 
     /**
      * Reports {@code rule}/{@code query} blocks that are never closed with
-     * {@code end}. {@code declare} blocks are tracked separately so their
-     * {@code end} doesn't close a rule; a declare block left unclosed does
-     * not suppress tracking of subsequent rules (a {@code rule} keyword
-     * cannot legally appear inside {@code declare}, so it implicitly
-     * terminates the tracking of one).
+     * {@code end}. Uses {@link #scanRuleBlocks} to track open rules with a stack,
+     * ensuring unclosed rules do not swallow later rules.
      */
     private static List<Diagnostic> lintMissingRuleEnds(String sanitized,
-                                                        DiagnosticSeverity severity) {
+                                                        DiagnosticSeverity severity,
+                                                        DRLLintSuppression.SuppressionIndex suppression) {
         String[] lines = sanitized.split("\r?\n", -1);
         List<Diagnostic> out = new ArrayList<>();
-        List<int[]> openRules = new ArrayList<>(); // {line, startCol}
-        boolean inDeclare = false;
 
-        for (int i = 0; i < lines.length; i++) {
-            String raw = lines[i];
-            String trimmed = raw.trim();
-            if (trimmed.isEmpty()) {
-                continue;
-            }
-
-            if (RULE_KEYWORD.matcher(trimmed).find()) {
-                inDeclare = false;
-                openRules.add(new int[] {i, firstNonWhitespaceCol(raw)});
-            } else if (DECLARE_KEYWORD.matcher(trimmed).find()) {
-                inDeclare = true;
-            }
-
-            boolean closes = END_AT_START.matcher(trimmed).find()
-                    || END_AT_END.matcher(trimmed).find();
-            if (closes) {
-                if (inDeclare) {
-                    inDeclare = false;
-                } else if (!openRules.isEmpty()) {
-                    openRules.remove(openRules.size() - 1);
+        for (RuleBlock r : scanRuleBlocks(sanitized)) {
+            if (!r.isClosed()) {
+                if (suppression != null && suppression.isSuppressed(CODE_MISSING_END, r.startLine)) {
+                    continue;
                 }
-            }
-        }
-
-        for (int[] rs : openRules) {
-            String raw = lines[rs[0]];
-            int startCol = rs[1];
-            int keywordLen = raw.trim().toLowerCase().startsWith("query") ? 5 : 4;
-            int endCol = Math.min(raw.length(), startCol + keywordLen);
-            if (endCol <= startCol) {
-                endCol = Math.min(raw.length(), startCol + 1);
-            }
-            Diagnostic d = new Diagnostic();
-            d.setSeverity(severity);
-            d.setSource("drools-lint");
-            d.setRange(new Range(new Position(rs[0], startCol),
-                                 new Position(rs[0], endCol)));
-            d.setMessage("Missing 'end' for rule/query starting at line " + (rs[0] + 1));
-            out.add(d);
-            if (out.size() >= MAX_DIAGNOSTICS_PER_PASS) {
-                break;
+                String raw = lines[r.startLine];
+                int startCol = r.startCol;
+                int keywordLen = r.isQuery ? 5 : 4;
+                int endCol = Math.min(raw.length(), startCol + keywordLen);
+                if (endCol <= startCol) {
+                    endCol = Math.min(raw.length(), startCol + 1);
+                }
+                Diagnostic d = new Diagnostic();
+                d.setSeverity(severity);
+                d.setSource(SOURCE);
+                d.setCode(CODE_MISSING_END);
+                d.setRange(new Range(new Position(r.startLine, startCol),
+                                     new Position(r.startLine, endCol)));
+                d.setMessage("Missing 'end' for rule/query starting at line " + (r.startLine + 1));
+                out.add(d);
+                if (out.size() >= MAX_DIAGNOSTICS_PER_PASS) {
+                    break;
+                }
             }
         }
         return out;
@@ -743,50 +845,32 @@ public final class DRLLintHelper {
     public static List<Diagnostic> lintUnknownTypes(String text, Path documentPath,
                                                     Map<Path, String> openFiles, ClassIndex classIndex,
                                                     ClassMemberIndex memberIndex, boolean classpathResolved) {
+        return lintUnknownTypes(text, documentPath, openFiles, classIndex, memberIndex, classpathResolved, DRLLintSuppression.parse(text));
+    }
+
+    public static List<Diagnostic> lintUnknownTypes(String text, Path documentPath,
+                                                    Map<Path, String> openFiles, ClassIndex classIndex,
+                                                    ClassMemberIndex memberIndex, boolean classpathResolved,
+                                                    DRLLintSuppression.SuppressionIndex suppression) {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
         return lintUnknownTypes(text, DRLParsers.silent(text).compilationUnit(), documentPath,
-                openFiles, classIndex, memberIndex, classpathResolved);
+                openFiles, classIndex, memberIndex, classpathResolved, suppression);
     }
 
-    /**
-     * Flags type references that resolve to no known type and, for likely typos
-     * (within bounded Levenshtein ≤ 2 of a known name), suggests the right one.
-     * Candidates come from three sources:
-     * <ul>
-     *   <li>pattern object types, read from the parse tree (so nested
-     *       {@code exists}/{@code not}/{@code from}/{@code accumulate} patterns
-     *       are covered);</li>
-     *   <li>upper-case-led qualified references in LHS constraints, e.g.
-     *       {@code Pet.Dog.name} — the head type is
-     *       resolved, then the first upper-case member segment is verified
-     *       against the head's reflected members (enum constants, fields, nested
-     *       types); lower-case property segments are not chased;</li>
-     *   <li>{@code new T(...)} in the consequence, matched by regex — the RHS is
-     *       lexed into opaque chunks the grammar does not structure.</li>
-     * </ul>
-     * A type is known when it is a declared type or resolves via
-     * {@link DRLCompletionHelper#resolveFqcn} (imports, wildcard imports, the
-     * class index, or {@code java.lang}) — the same resolution hover, completion
-     * and go-to-definition use. The caller supplies the parsed {@code cu}
-     * (shared with the syntax pass) and it is reused here for declared-type
-     * extraction. Self-gated by {@code drools.lsp.lint.unknownTypes}
-     * (default {@code warning}; {@code off} disables).
-     *
-     * @param cu                the parsed compilation unit (shared with the syntax pass); may be {@code null}
-     * @param documentPath      document path for sibling declared-type lookup; may be {@code null}
-     * @param openFiles         open unsaved sibling buffers, so cross-file declares count; may be empty
-     * @param classIndex        resolved classpath index, for type resolution and suggestions
-     * @param memberIndex       member reflection, for verifying classpath qualified-reference members
-     * @param classpathResolved whether the project classpath has resolved; when {@code false}, only
-     *                          checks derivable from the DRL alone run (declared types and declared-enum
-     *                          members), since a non-declared name can't be confirmed unknown without it
-     */
     public static List<Diagnostic> lintUnknownTypes(String text, DRL10Parser.CompilationUnitContext cu,
                                                     Path documentPath, Map<Path, String> openFiles,
                                                     ClassIndex classIndex, ClassMemberIndex memberIndex,
                                                     boolean classpathResolved) {
+        return lintUnknownTypes(text, cu, documentPath, openFiles, classIndex, memberIndex, classpathResolved, DRLLintSuppression.parse(text));
+    }
+
+    public static List<Diagnostic> lintUnknownTypes(String text, DRL10Parser.CompilationUnitContext cu,
+                                                    Path documentPath, Map<Path, String> openFiles,
+                                                    ClassIndex classIndex, ClassMemberIndex memberIndex,
+                                                    boolean classpathResolved,
+                                                    DRLLintSuppression.SuppressionIndex suppression) {
         if (text == null || text.isEmpty() || cu == null) {
             return Collections.emptyList();
         }
@@ -831,9 +915,9 @@ public final class DRLLintHelper {
 
         List<Diagnostic> out = new ArrayList<>();
         collectPatternTypes(cu, cu, known, suggestions, classIndex, siblingImports,
-                            classpathResolved, severity, out);
+                            classpathResolved, severity, suppression, out);
         scanQualifiedRefs(cu, sanitized, declared, suggestions, cu, classIndex, memberIndex,
-                          siblingImports, classpathResolved, severity, out);
+                          siblingImports, classpathResolved, severity, suppression, out);
 
         Matcher then = THEN_END_BLOCK.matcher(sanitized);
         while (then.find() && out.size() < MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
@@ -842,7 +926,7 @@ public final class DRLLintHelper {
             while (newType.find() && out.size() < MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
                 Range range = rangeOf(sanitized, base + newType.start(1), base + newType.end(1));
                 addUnknown(newType.group(1), range, known, suggestions, cu, classIndex,
-                           siblingImports, classpathResolved, severity, out);
+                           siblingImports, classpathResolved, severity, suppression, out);
             }
         }
         return out;
@@ -853,7 +937,9 @@ public final class DRLLintHelper {
                                             Set<String> known, Set<String> suggestions,
                                             ClassIndex classIndex, Collection<String> extraImports,
                                             boolean classpathResolved,
-                                            DiagnosticSeverity severity, List<Diagnostic> out) {
+                                            DiagnosticSeverity severity,
+                                            DRLLintSuppression.SuppressionIndex suppression,
+                                            List<Diagnostic> out) {
         if (out.size() >= MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
             return;
         }
@@ -866,12 +952,12 @@ public final class DRLLintHelper {
                         new Position(stop.getLine() - 1,
                                      stop.getCharPositionInLine() + stop.getText().length()));
                 addUnknown(pattern.objectType.getText(), range, known, suggestions, cu, classIndex,
-                           extraImports, classpathResolved, severity, out);
+                           extraImports, classpathResolved, severity, suppression, out);
             }
         }
         for (int i = 0; i < node.getChildCount(); i++) {
             collectPatternTypes(node.getChild(i), cu, known, suggestions, classIndex, extraImports,
-                                classpathResolved, severity, out);
+                                classpathResolved, severity, suppression, out);
         }
     }
 
@@ -887,7 +973,9 @@ public final class DRLLintHelper {
                                           DRL10Parser.CompilationUnitContext cu, ClassIndex classIndex,
                                           ClassMemberIndex memberIndex, Collection<String> extraImports,
                                           boolean classpathResolved,
-                                          DiagnosticSeverity severity, List<Diagnostic> out) {
+                                          DiagnosticSeverity severity,
+                                          DRLLintSuppression.SuppressionIndex suppression,
+                                          List<Diagnostic> out) {
         if (out.size() >= MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
             return;
         }
@@ -898,14 +986,14 @@ public final class DRLLintHelper {
                 Matcher m = QUALIFIED_REF.matcher(sanitized.substring(start, stop + 1));
                 while (m.find() && out.size() < MAX_UNKNOWN_TYPE_DIAGNOSTICS) {
                     checkChain(m.group(1), start + m.start(1), sanitized, declared, suggestions,
-                               cu, classIndex, memberIndex, extraImports, classpathResolved, severity, out);
+                               cu, classIndex, memberIndex, extraImports, classpathResolved, severity, suppression, out);
                 }
             }
             return; // the section's whole text is covered; no nested when-sections
         }
         for (int i = 0; i < node.getChildCount(); i++) {
             scanQualifiedRefs(node.getChild(i), sanitized, declared, suggestions, cu, classIndex,
-                              memberIndex, extraImports, classpathResolved, severity, out);
+                              memberIndex, extraImports, classpathResolved, severity, suppression, out);
         }
     }
 
@@ -922,7 +1010,9 @@ public final class DRLLintHelper {
                                    DRL10Parser.CompilationUnitContext cu, ClassIndex classIndex,
                                    ClassMemberIndex memberIndex, Collection<String> extraImports,
                                    boolean classpathResolved,
-                                   DiagnosticSeverity severity, List<Diagnostic> out) {
+                                   DiagnosticSeverity severity,
+                                   DRLLintSuppression.SuppressionIndex suppression,
+                                   List<Diagnostic> out) {
         int dot = chain.indexOf('.');
         String head = chain.substring(0, dot);
         int memberStart = dot + 1;
@@ -937,8 +1027,11 @@ public final class DRLLintHelper {
             if (headType.isEnum && memberIsType) {
                 Set<String> names = declaredMemberNames(headType);
                 if (!names.contains(member)) {
-                    out.add(memberWarning(member, head, memberRange(sanitized, chainStart, memberStart, member),
-                            bestTypoSuggestion(member, names), severity));
+                    Range range = memberRange(sanitized, chainStart, memberStart, member);
+                    if (suppression == null || !suppression.isSuppressed(CODE_UNKNOWN_MEMBER, range.getStart().getLine())) {
+                        out.add(memberWarning(member, head, range,
+                                bestTypoSuggestion(member, names), severity));
+                    }
                 }
             }
             return;
@@ -949,9 +1042,12 @@ public final class DRLLintHelper {
         if (headFqcn == null) {
             // Can't be sure it's a typo vs an unresolved real classpath type.
             if (classpathResolved) {
-                out.add(makeUnknownTypeWarning(head,
-                        rangeOf(sanitized, chainStart, chainStart + head.length()),
-                        bestTypoSuggestion(head, suggestions), severity));
+                Range range = rangeOf(sanitized, chainStart, chainStart + head.length());
+                if (suppression == null || !suppression.isSuppressed(CODE_UNKNOWN_TYPE, range.getStart().getLine())) {
+                    out.add(makeUnknownTypeWarning(head,
+                            range,
+                            bestTypoSuggestion(head, suggestions), severity));
+                }
             }
             return;
         }
@@ -962,9 +1058,12 @@ public final class DRLLintHelper {
         if (members == null || members.contains(member)) {
             return; // head not loadable (can't verify) or member is valid
         }
-        out.add(memberWarning(member, toSimpleTypeName(head),
-                memberRange(sanitized, chainStart, memberStart, member),
-                bestTypoSuggestion(member, members), severity));
+        Range range = memberRange(sanitized, chainStart, memberStart, member);
+        if (suppression == null || !suppression.isSuppressed(CODE_UNKNOWN_MEMBER, range.getStart().getLine())) {
+            out.add(memberWarning(member, toSimpleTypeName(head),
+                    range,
+                    bestTypoSuggestion(member, members), severity));
+        }
     }
 
     private static Range memberRange(String sanitized, int chainStart, int memberStart, String member) {
@@ -993,7 +1092,9 @@ public final class DRLLintHelper {
                                    Set<String> suggestions, DRL10Parser.CompilationUnitContext cu,
                                    ClassIndex classIndex, Collection<String> extraImports,
                                    boolean classpathResolved,
-                                   DiagnosticSeverity severity, List<Diagnostic> out) {
+                                   DiagnosticSeverity severity,
+                                   DRLLintSuppression.SuppressionIndex suppression,
+                                   List<Diagnostic> out) {
         if (candidate == null) {
             return;
         }
@@ -1009,6 +1110,9 @@ public final class DRLLintHelper {
         if (!classpathResolved) {
             return;
         }
+        if (suppression != null && suppression.isSuppressed(CODE_UNKNOWN_TYPE, range.getStart().getLine())) {
+            return;
+        }
         out.add(makeUnknownTypeWarning(trimmed, range, bestTypoSuggestion(simple, suggestions), severity));
     }
 
@@ -1020,8 +1124,8 @@ public final class DRLLintHelper {
                                             String suggestion, DiagnosticSeverity severity) {
         Diagnostic d = new Diagnostic();
         d.setSeverity(severity);
-        d.setSource("drools-type");
-        d.setCode("unknown-member");
+        d.setSource(SOURCE_TYPE);
+        d.setCode(CODE_UNKNOWN_MEMBER);
         d.setRange(range);
         String msg = "'" + member + "' is not a member of '" + container + "'";
         if (suggestion != null && !suggestion.isBlank() && !suggestion.equals(member)) {
@@ -1038,8 +1142,8 @@ public final class DRLLintHelper {
                                                      String suggestion, DiagnosticSeverity severity) {
         Diagnostic d = new Diagnostic();
         d.setSeverity(severity);
-        d.setSource("drools-type");
-        d.setCode("unknown-type");
+        d.setSource(SOURCE_TYPE);
+        d.setCode(CODE_UNKNOWN_TYPE);
         d.setRange(range);
 
         String msg = "Unknown type '" + candidate + "'";
