@@ -1,6 +1,6 @@
 {
   "name": "drl-vscode-extension",
-  "version": "10.3.999",
+  "version": "10.3.0",
   "description": "Edit DRL (Drools Rule Language) files",
   "license": "Apache-2.0",
   "publisher": "kie-group",
