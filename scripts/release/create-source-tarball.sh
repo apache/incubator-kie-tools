@@ -22,7 +22,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Creates apache-kie-<version>-incubating-sources.zip with both incubator-kie and incubator-kie-tools,
-# plus BUILD, DISCLAIMER-WIP and merged LICENSE/NOTICE files.
+# plus BUILD, DISCLAIMER and merged LICENSE/NOTICE files.
 
 usage() {
     echo "Usage: $0 <version> [--git-ref <ref>] [--kie-git-ref <ref>] [--kie-repo <url|path>] [--output-dir <dir>]"
@@ -119,7 +119,7 @@ rm -f "$STAGE/incubator-kie/kogito-gradle-plugin-test/gradle/wrapper/gradle-wrap
 # --- Top-level files --------------------------------------------------------------------------------------------
 KIE_DIR="$STAGE/incubator-kie"
 TOOLS_DIR="$STAGE/incubator-kie-tools"
-for f in LICENSE NOTICE DISCLAIMER-WIP; do
+for f in LICENSE NOTICE DISCLAIMER; do
     for d in "$KIE_DIR" "$TOOLS_DIR"; do
         [[ -f "$d/$f" ]] || { echo "ERROR: $f not found in $d"; exit 1; }
     done
@@ -150,7 +150,7 @@ awk 'BEGIN { RS = ""; ORS = "\n\n" }
      f == 1 { seen[p] = 1; print p; next }
      !(p in seen) { print p }' "$KIE_DIR/NOTICE" "$TOOLS_DIR/NOTICE" > "$STAGE/NOTICE"
 
-cp "$TOOLS_DIR/DISCLAIMER-WIP" "$STAGE/DISCLAIMER-WIP"
+cp "$TOOLS_DIR/DISCLAIMER" "$STAGE/DISCLAIMER"
 
 # BUILD: tool versions come from the tools repository so they cannot drift.
 tool_version() {
@@ -220,7 +220,7 @@ echo "Created: $ZIPFILE ($SIZE)"
 
 # The root of the zip must contain exactly these entries (LC_ALL=C: locale-independent order).
 actual_entries=$(unzip -Z1 "$ZIPFILE" | awk -F/ -v root="$ROOT_DIR_NAME" '$1 == root && $2 != "" {print $2}' | LC_ALL=C sort -u | paste -sd' ' -)
-expected_entries="BUILD DISCLAIMER-WIP LICENSE NOTICE incubator-kie incubator-kie-tools"
+expected_entries="BUILD DISCLAIMER LICENSE NOTICE incubator-kie incubator-kie-tools"
 if [[ "$actual_entries" != "$expected_entries" ]]; then
     echo "ERROR: unexpected content in $ROOT_DIR_NAME/"
     echo "  expected: $expected_entries"

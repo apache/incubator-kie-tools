@@ -24,6 +24,8 @@ ARG EXTENDED_SERVICES_DEFAULT_PORT=21345
 
 ENV EXTENDED_SERVICES_PORT=$EXTENDED_SERVICES_DEFAULT_PORT
 
+COPY dist-dev/legal/ /licenses/
+
 COPY --chown=1000:0 dist-dev/kie_sandbox_extended_services /kie-sandbox/kie_sandbox_extended_services
 
 EXPOSE $EXTENDED_SERVICES_DEFAULT_PORT

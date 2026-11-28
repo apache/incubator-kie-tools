@@ -15,7 +15,8 @@
   "scripts": {
     "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
     "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
-    "copy-assets": "rimraf dist-dev && pnpm copy-upload-service-assets",
+    "copy:legal": "node ../../scripts/release/build-legal.js dist-dev/legal go",
+    "copy-assets": "rimraf dist-dev && pnpm copy-upload-service-assets && pnpm copy:legal",
     "copy-upload-service-assets": "run-script-os",
     "copy-upload-service-assets:linux:darwin": "mkdir -p ./dist-dev && cp -R ./node_modules/@kie-tools/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64 ./dist-dev/dev-deployment-upload-service",
     "copy-upload-service-assets:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64 ./dist-dev/dev-deployment-upload-service\"",

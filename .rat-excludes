@@ -5,7 +5,7 @@
 .prettierignore
 .rat-excludes
 .rat-reports
-DISCLAIMER-WIP
+DISCLAIMER
 _intellij-project/maven-based-packages-@-kie-tools.iml
 devbox.lock
 dockerignore
@@ -359,5 +359,6 @@ repo/graph.dot
 repo/repo.iml
 scripts/check-junit-report-results/tests/index.test.js
 scripts/check-junit-report-results/tests/reports/empty.xml
+scripts/release/BINARY-LICENSE-APPENDIX.txt
 scripts/run-script-if/README.md
 scripts/scripts.iml
